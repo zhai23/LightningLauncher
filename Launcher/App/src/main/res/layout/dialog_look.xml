@@ -26,48 +26,54 @@
             android:layout_height="60dp"
             android:layout_weight="1"
             android:background="@drawable/bkg_button"
-            android:padding="5dp"
-            android:src="@drawable/bkg_blossoms" />
+            android:padding="8dp"
+            android:src="@drawable/bg_px_purple" />
 
         <ImageView
             android:id="@+id/theme1"
             android:layout_width="0dp"
             android:layout_height="60dp"
             android:layout_weight="1"
-            android:padding="5dp"
-            android:src="@drawable/bkg_drips" />
+            android:background="@drawable/bkg_button"
+            android:padding="8dp"
+            android:src="@drawable/bg_px_red" />
 
         <ImageView
             android:id="@+id/theme2"
             android:layout_width="0dp"
             android:layout_height="60dp"
             android:layout_weight="1"
-            android:padding="5dp"
-            android:src="@drawable/bkg_orange" />
+            android:background="@drawable/bkg_button"
+            android:padding="8dp"
+            android:src="@drawable/bg_px_green" />
 
         <ImageView
             android:id="@+id/theme3"
             android:layout_width="0dp"
             android:layout_height="60dp"
             android:layout_weight="1"
-            android:padding="5dp"
-            android:src="@drawable/bkg_dawn" />
+            android:background="@drawable/bkg_button"
+            android:padding="8dp"
+            android:src="@drawable/bg_px_orange" />
 
         <ImageView
             android:id="@+id/theme4"
             android:layout_width="0dp"
             android:layout_height="60dp"
             android:layout_weight="1"
-            android:padding="5dp"
-            android:src="@drawable/bkg_bland" />
+            android:background="@drawable/bkg_button"
+            android:padding="8dp"
+            android:src="@drawable/bg_px_white" />
 
         <ImageView
             android:id="@+id/theme_custom"
             android:layout_width="0dp"
             android:layout_height="60dp"
             android:layout_weight="1"
-            android:padding="5dp"
-            android:src="@drawable/bkg_custom" />
+            android:background="@drawable/bkg_button"
+            android:padding="10dp"
+            android:src="@drawable/bkg_custom"
+            android:tint="#3B90D1" />
     </LinearLayout>
 
     <LinearLayout
@@ -80,8 +86,9 @@
 
         <TextView
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
+            android:gravity="center_vertical"
             android:text="@string/icons_size"
             android:textColor="@android:color/white"
             android:textSize="16sp" />
@@ -105,7 +112,8 @@
         android:layout_marginTop="10dp"
         android:background="@drawable/bkg_button"
         android:orientation="horizontal"
-        android:padding="10dp">
+        android:padding="10dp"
+        android:visibility="gone">
 
         <TextView
             android:layout_width="0dp"

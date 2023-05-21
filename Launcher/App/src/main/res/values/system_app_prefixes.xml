@@ -22,5 +22,7 @@
         <item>eu.kanade.tachiyomi.extension</item>
         <item>com.mixplorer.addon</item>
         <item>com.ghisler.tcplugins</item>
+        <!-- Messenger Redirect -->
+        <item>com.facebook.orca</item>
     </string-array>
 </resources>

@@ -12,10 +12,10 @@
         style="@style/SettingTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Platform Visibilty" />
+        android:text="Show/Hide Types" />
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="230dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal">
 
@@ -28,8 +28,9 @@
             android:orientation="vertical">
 
             <ImageView
-                android:layout_width="100dp"
-                android:layout_height="80dp"
+                android:layout_width="110dp"
+                android:layout_height="90dp"
+                android:padding="10dp"
                 android:src="@drawable/ic_platform_vr" />
 
             <TextView
@@ -37,7 +38,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="2dp"
-                android:text="VR" />
+                android:text="VR Apps" />
 
         </LinearLayout>
 
@@ -45,13 +46,13 @@
             android:id="@+id/settings_android"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
             android:background="@drawable/bkg_button"
             android:orientation="vertical">
 
             <ImageView
-                android:layout_width="100dp"
-                android:layout_height="80dp"
+                android:layout_width="110dp"
+                android:layout_height="90dp"
+                android:padding="10dp"
                 android:src="@drawable/ic_platform_android" />
 
             <TextView
@@ -59,28 +60,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="2dp"
-                android:text="2D" />
+                android:text="2D Apps" />
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/settings_psp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bkg_button"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="100dp"
-                android:layout_height="80dp"
-                android:src="@drawable/ic_platform_psp" />
-
-            <TextView
-                style="@style/SettingSubtitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="2dp"
-                android:text="PSP" />
         </LinearLayout>
 
     </LinearLayout>
