@@ -12,19 +12,26 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
     }
 
-    fun launch(): Boolean {
+    var OPENED_WEB = false
+    private fun launch(): Boolean {
         var launchIntent = packageManager.getLaunchIntentForPackage("com.threethan.launcher")
-        launchIntent?.let { startActivity(it); return true; }
+        launchIntent?.let { return launchIt(it); }
         launchIntent = packageManager.getLaunchIntentForPackage("com.basti564.dreamgrid")
-        launchIntent?.let { startActivity(it); return true; }
+        launchIntent?.let { return launchIt(it); }
         launchIntent = packageManager.getLaunchIntentForPackage("com.veticia.piLauncherNext")
-        launchIntent?.let { startActivity(it); return true; }
+        launchIntent?.let { return launchIt(it); }
         return false;
+    }
+    private fun launchIt(launchIntent: Intent): Boolean {
+        launchIntent!!.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION
+        startActivity(launchIntent)
+        return true
     }
 
     override fun onResume() {
         super.onResume()
-        if (!launch()) {
+        if (!launch() && !OPENED_WEB) {
+            OPENED_WEB = true
             val browserIntent = Intent(
                 Intent.ACTION_VIEW,
                 Uri.parse(DOWNLOAD_URL)
