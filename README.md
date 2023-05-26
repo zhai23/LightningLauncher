@@ -8,7 +8,7 @@ It has been built with a focus on speed, reliability, and convenience.
 - Simple, sleek interface
 - Loads in 1-2 seconds
 - Up to date, high res icons from [custom respoitories](https://github.com/basti564/LauncherIcons), thanks to [basti564](https://github.com/basti564/)
-- Automatic grouping of VR & 2D apps
+- Automatic grouping of VR & 2D apps  (Into the default "Apps" and "Tools" groups, as long as they're not renamed)
 - Flexible manual grouping & hiding
 - LauncherShortcut to add to your dock, supporting multiwindow and launching in-game
 
