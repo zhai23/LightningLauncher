@@ -6,10 +6,9 @@ android {
 
     defaultConfig {
         minSdkVersion 23
-        //noinspection ExpiredTargetSdkVersion
-        targetSdkVersion 23
-        versionCode 200
-        versionName "2.0.0"
+        targetSdkVersion 33
+        versionCode 210
+        versionName "2.1.0"
     }
 
     compileOptions {

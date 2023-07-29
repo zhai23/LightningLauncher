@@ -3,7 +3,7 @@
     android:description="@string/service_desc"
     android:settingsActivity=""
     android:accessibilityEventTypes="typeWindowStateChanged"
-    android:accessibilityFlags="flagDefault|flagRequestAccessibilityButton"
+    android:accessibilityFlags="flagDefault"
     android:notificationTimeout="1000"
     android:canRetrieveWindowContent="true"
     android:canRequestFilterKeyEvents="true" />

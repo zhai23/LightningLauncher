@@ -148,13 +148,13 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Log.i("LauncherStartup", "0. Set View");
+        Log.i("LauncherStartup", "1. Set View");
 
 
         setContentView(R.layout.activity_main);
 
 
-        Log.i("LauncherStartup", "1. Get Setting Provider");
+        Log.i("LauncherStartup", "2. Get Setting Provider");
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         settingsProvider = SettingsProvider.getInstance(this);
@@ -403,13 +403,7 @@ public class MainActivity extends Activity {
         dialog.findViewById(R.id.settings_service).setOnClickListener(view -> {
             Intent localIntent = new Intent("android.settings.ACCESSIBILITY_SETTINGS");
             localIntent.setPackage("com.android.settings");
-            finish();
-            new Timer().schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    startActivity(localIntent);
-                }
-            }, 600);
+            startActivity(localIntent);
         });
     }
 
@@ -496,6 +490,7 @@ public class MainActivity extends Activity {
     public void openAppDetails(String pkg) {
         Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         intent.setData(Uri.parse("package:" + pkg));
+
         startActivity(intent);
     }
 

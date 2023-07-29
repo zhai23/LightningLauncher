@@ -9,6 +9,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.threethan.launcher.platforms.AbstractPlatform;
+import com.threethan.launcher.platforms.AppPlatform;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,6 +30,7 @@ public class SettingsProvider {
     private static Context context;
     private final String KEY_APP_GROUPS = "prefAppGroups";
     private final String KEY_APP_LIST = "prefAppList";
+    private final String KEY_LAUNCH_OUT = "prefLaunchOutList";
     private final String KEY_SELECTED_GROUPS = "prefSelectedGroups";
     private final String SEPARATOR = "\r";
     //storage
@@ -36,6 +38,7 @@ public class SettingsProvider {
     private Map<String, String> appListMap = new HashMap<>();
     private Set<String> appGroupsSet = new HashSet<>();
     private Set<String> selectedGroupsSet = new HashSet<>();
+    private static Set<String> appsToLaunchOut = new HashSet<>();
 
     private SettingsProvider(Context context) {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -62,6 +65,15 @@ public class SettingsProvider {
         return retVal;
     }
 
+    public static boolean getAppLaunchOut(String pkg) {
+        return (appsToLaunchOut.contains(pkg));
+    }
+
+    public static void setAppLaunchOut(String pkg, boolean shouldLaunchOut) {
+        if (shouldLaunchOut) appsToLaunchOut.add(pkg);
+        else appsToLaunchOut.remove(pkg);
+    }
+
     public Map<String, String> getAppList() {
         readValues();
         return appListMap;
@@ -86,7 +98,9 @@ public class SettingsProvider {
             // Sort if groups are present
             for (ApplicationInfo app : allApps) {
                 if (!appListMap.containsKey(app.packageName)) {
-                    appListMap.put(app.packageName, AbstractPlatform.isVirtualRealityApp(app) ? context.getString(R.string.default_apps_group) : context.getString(R.string.android_apps_group));
+                    final boolean isVr = AbstractPlatform.isVirtualRealityApp(app);
+                    appListMap.put(app.packageName, isVr ? context.getString(R.string.default_apps_group) : context.getString(R.string.android_apps_group));
+                    if (isVr) appsToLaunchOut.add(app.packageName);
                 }
             }
         }
@@ -109,7 +123,7 @@ public class SettingsProvider {
             boolean showAll = selected.isEmpty();
             boolean isNotAssigned = !apps.containsKey(pkg) && first;
             boolean isInGroup = apps.containsKey(pkg) && selected.contains(apps.get(pkg));
-            boolean isVr = hasMetadata(installedApplication, "com.samsung.android.vr.application.mode");
+            boolean isVr = hasMetadata(installedApplication, "com.oculus.supportedDevices");
             boolean isEnvironment = !isVr && hasMetadata(installedApplication, "com.oculus.environmentVersion");
             if (showAll || isNotAssigned || isInGroup) {
                 boolean isSystemApp = (installedApplication.flags & ApplicationInfo.FLAG_SYSTEM) == 1;
@@ -152,14 +166,9 @@ public class SettingsProvider {
 
         return sortedApps;
     }
-
     public boolean hasMetadata(ApplicationInfo app, String metadata) {
         if (app.metaData != null) {
-            for (String key : app.metaData.keySet()) {
-                if (metadata.compareTo(key) == 0) {
-                    return true;
-                }
-            }
+            return app.metaData.keySet().contains(metadata);
         }
         return false;
     }
@@ -211,6 +220,7 @@ public class SettingsProvider {
             defaultGroupsSet.add(context.getString(R.string.android_apps_group));
             appGroupsSet = sharedPreferences.getStringSet(KEY_APP_GROUPS, defaultGroupsSet);
             selectedGroupsSet = sharedPreferences.getStringSet(KEY_SELECTED_GROUPS, defaultGroupsSet);
+            appsToLaunchOut = sharedPreferences.getStringSet(KEY_LAUNCH_OUT, defaultGroupsSet);
 
             appListMap.clear();
 
@@ -232,6 +242,7 @@ public class SettingsProvider {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putStringSet(KEY_APP_GROUPS, appGroupsSet);
             editor.putStringSet(KEY_SELECTED_GROUPS, selectedGroupsSet);
+            editor.putStringSet(KEY_LAUNCH_OUT, appsToLaunchOut);
 
             Map<String, Set<String>> appListSetMap = new HashMap<>();
             for (String group : appGroupsSet) {

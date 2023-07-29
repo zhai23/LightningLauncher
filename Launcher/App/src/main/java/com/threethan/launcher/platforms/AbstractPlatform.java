@@ -240,7 +240,7 @@ public abstract class AbstractPlatform {
                 }
             }
         } catch (FileNotFoundException e) {
-            System.err.println("File not found: " + e.getMessage());
+            Log.d("File not found", e.getMessage());
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -157,7 +158,7 @@ public class AppsAdapter extends BaseAdapter{
                     } else if (event.getAction() == DragEvent.ACTION_DRAG_ENDED) {
                         mainActivityContext.reloadUI();
                     } else if (event.getAction() == DragEvent.ACTION_DROP) {
-                        if (System.currentTimeMillis() - lastClickTime < 250) {
+                        if (System.currentTimeMillis() - lastClickTime < 300) {
                             try {
                                 showAppDetails(currentApp);
                             } catch (PackageManager.NameNotFoundException e) {
@@ -220,6 +221,23 @@ public class AppsAdapter extends BaseAdapter{
 
         // info action
         appDetailsDialog.findViewById(R.id.info).setOnClickListener(view13 -> mainActivityContext.openAppDetails(currentApp.packageName));
+
+        // toggle launch mode
+        final boolean[] launchOut = {SettingsProvider.getAppLaunchOut(currentApp.packageName)};
+        final Button launchModeBtn = appDetailsDialog.findViewById(R.id.launch_mode);
+        final boolean isVr = AbstractPlatform.isVirtualRealityApp(currentApp);
+        if (isVr) { //VR apps MUST launch out, so just hide the option
+            launchModeBtn.setVisibility(View.GONE);
+            if (!launchOut[0]) SettingsProvider.setAppLaunchOut(currentApp.packageName, true); //Failsafe
+        } else {
+            launchModeBtn.setVisibility(View.VISIBLE);
+            launchModeBtn.setText(context.getString(launchOut[0] ? R.string.launch_out : R.string.launch_in));
+            appDetailsDialog.findViewById(R.id.launch_mode).setOnClickListener(view13 -> {
+                SettingsProvider.setAppLaunchOut(currentApp.packageName, !launchOut[0]);
+                launchOut[0] = SettingsProvider.getAppLaunchOut(currentApp.packageName);
+                launchModeBtn.setText(context.getString(launchOut[0] ? R.string.launch_out : R.string.launch_in));
+            });
+        }
 
         // set name
         PackageManager packageManager = mainActivityContext.getPackageManager();

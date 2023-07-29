@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Lightning Launcher</string>
-    <string name="default_apps_group">Apps</string>
+    <string name="default_apps_group">Games</string>
     <string name="android_apps_group">Tools</string>
     <string name="add_group">Add Group</string>
     <string name="delete_group">Delete Group</string>
@@ -15,4 +15,8 @@
 
     <string name="service_desc">When this service is enabled, Lightning Launcher will open automatically when you hover the cursor over the App Library icon for about half a second. This may make it difficult to access the normal app launcher!</string>
     <string name="accessibility_event_name">[App Library]</string>
+
+    <string name="launch_in">Runs in: this window</string>
+    <string name="launch_out">Runs in: own window</string>
+
 </resources>
