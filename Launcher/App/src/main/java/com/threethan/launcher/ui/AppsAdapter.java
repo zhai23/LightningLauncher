@@ -228,7 +228,6 @@ public class AppsAdapter extends BaseAdapter{
         final boolean isVr = AbstractPlatform.isVirtualRealityApp(currentApp);
         if (isVr) { //VR apps MUST launch out, so just hide the option
             launchModeBtn.setVisibility(View.GONE);
-            if (!launchOut[0]) SettingsProvider.setAppLaunchOut(currentApp.packageName, true); //Failsafe
         } else {
             launchModeBtn.setVisibility(View.VISIBLE);
             launchModeBtn.setText(context.getString(launchOut[0] ? R.string.launch_out : R.string.launch_in));

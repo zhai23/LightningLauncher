@@ -39,6 +39,7 @@ public class SettingsProvider {
     private Set<String> appGroupsSet = new HashSet<>();
     private Set<String> selectedGroupsSet = new HashSet<>();
     private static Set<String> appsToLaunchOut = new HashSet<>();
+    private Set<String> appsToLaunchOutNS = new HashSet<>();
 
     private SettingsProvider(Context context) {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -100,7 +101,6 @@ public class SettingsProvider {
                 if (!appListMap.containsKey(app.packageName)) {
                     final boolean isVr = AbstractPlatform.isVirtualRealityApp(app);
                     appListMap.put(app.packageName, isVr ? context.getString(R.string.default_apps_group) : context.getString(R.string.android_apps_group));
-                    if (isVr) appsToLaunchOut.add(app.packageName);
                 }
             }
         }
@@ -166,6 +166,7 @@ public class SettingsProvider {
 
         return sortedApps;
     }
+
     public boolean hasMetadata(ApplicationInfo app, String metadata) {
         if (app.metaData != null) {
             return app.metaData.keySet().contains(metadata);
@@ -232,9 +233,13 @@ public class SettingsProvider {
                     appListMap.put(app, group);
                 }
             }
+
+            appsToLaunchOut = sharedPreferences.getStringSet(KEY_LAUNCH_OUT, defaultGroupsSet);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
     private synchronized void storeValues() {
