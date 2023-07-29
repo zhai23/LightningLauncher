@@ -52,6 +52,10 @@ Now you can use the Messenger icon on the dock to open LightningLauncher from an
 ![goodscr2](https://github.com/threethan/LightningLauncher/assets/12588584/5e5abb5b-a5d5-4f00-9385-6a0f707acc36)
 ![goodscr3](https://github.com/threethan/LightningLauncher/assets/12588584/d20ee2b2-4e18-4107-ad54-ec1a72295f53)
 
+## Multitasking
+- You can open the launcher however you'd like during gameplay. Note that performance of 2D apps will be poor while a demanding game is running.
+- By long-pressing an app, you can set it to open in its own window, independent of the launcher. This allows for painless multitasking, but *some apps may consistently launch if set to open in their own windows* 
+- Alternatively, the launcher shortcut and service/main can both be run separately if using the Quest's multitasking, giving you two windows.
 
 
 ## Similar Projects
