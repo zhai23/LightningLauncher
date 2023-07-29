@@ -4,14 +4,11 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import java.util.Timer
+import java.util.TimerTask
 
 class MainActivity : ComponentActivity() {
     private val DOWNLOAD_URL = "https://github.com/threethan/LightningLauncher/releases/"
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     var OPENED_WEB = false
     private fun launch(): Boolean {
         var launchIntent = packageManager.getLaunchIntentForPackage("com.threethan.launcher")
@@ -24,6 +21,7 @@ class MainActivity : ComponentActivity() {
     }
     private fun launchIt(launchIntent: Intent): Boolean {
         launchIntent!!.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION
+        finish()
         startActivity(launchIntent)
         return true
     }

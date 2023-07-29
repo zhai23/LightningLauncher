@@ -230,7 +230,7 @@ public abstract class AbstractPlatform {
         }).start();
     }
 
-    public abstract void runApp(Context context, ApplicationInfo applicationInfo);
+    public abstract void runApp(Activity context, ApplicationInfo applicationInfo);
 
     boolean downloadIconFromUrl(String url, File iconFile) {
         try {

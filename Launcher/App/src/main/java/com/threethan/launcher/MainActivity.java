@@ -145,17 +145,6 @@ public class MainActivity extends Activity {
     private boolean platformsPageOpen = false;
     private boolean loaded = false;
 
-    public static void run(Context context) {
-        try {
-            Intent intent = new Intent(context, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(intent);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     @SuppressLint("SourceLockedOrientationActivity")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -489,18 +478,6 @@ public class MainActivity extends Activity {
     }
 
     public void openApp(ApplicationInfo app) {
-//        //fallback action
-//        new Thread(() -> {
-//            try {
-//                sleep(100);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//            if (activityHasFocus && !AbstractPlatform.isHTCHeadset()) {
-//                openAppDetails(app.packageName);
-//            }
-//        }).start();
-
         //open the app
         AbstractPlatform platform = AbstractPlatform.getPlatform(app);
         platform.runApp(this, app);
