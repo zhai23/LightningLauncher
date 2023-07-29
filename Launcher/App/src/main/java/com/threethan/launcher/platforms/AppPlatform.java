@@ -30,5 +30,12 @@ public class AppPlatform extends AbstractPlatform {
                 context.startActivity(launchIntent);
             }
         }, 600);
+        // Backup, in case the first call fails
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                context.startActivity(launchIntent);
+            }
+        }, 1500);
     }
 }

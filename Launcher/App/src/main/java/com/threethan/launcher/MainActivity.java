@@ -6,7 +6,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
@@ -19,7 +18,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.TypedValue;
@@ -28,7 +26,6 @@ import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.Switch;
@@ -45,6 +42,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import eightbitlab.com.blurview.BlurView;
 import eightbitlab.com.blurview.RenderScriptBlur;
@@ -135,15 +134,14 @@ public class MainActivity extends Activity {
     GridView appGridView;
     ImageView backgroundImageView;
     GridView groupPanelGridView;
-    private boolean activityHasFocus;
     SharedPreferences sharedPreferences;
     private SettingsProvider settingsProvider;
     private ImageView selectedImageView;
-
     private boolean settingsPageOpen = false;
     private boolean lookPageOpen = false;
     private boolean platformsPageOpen = false;
     private boolean loaded = false;
+    private boolean activityHasFocus = false;
 
     @SuppressLint("SourceLockedOrientationActivity")
     @Override
@@ -400,6 +398,18 @@ public class MainActivity extends Activity {
                 showSettingsLook();
                 lookPageOpen = true;
             }
+        });
+
+        dialog.findViewById(R.id.settings_service).setOnClickListener(view -> {
+            Intent localIntent = new Intent("android.settings.ACCESSIBILITY_SETTINGS");
+            localIntent.setPackage("com.android.settings");
+            finish();
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    startActivity(localIntent);
+                }
+            }, 600);
         });
     }
 

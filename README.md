@@ -4,13 +4,16 @@ LightningLauncher is a launcher designed for Oculus Quest that supports both off
 
 It has been built with a focus on speed, reliability, and convenience.
 
+Unlike other launchers, it opens apps as separate windows. *This allows VR apps to open on the lastest versions of the Quest OS!* You can also drag a window to either side slot, then open the launcher again to easily multitask. 
+
 ## Features
 - Simple, sleek interface
 - Loads in 1-2 seconds
 - Up to date, high res icons from [custom respoitories](https://github.com/basti564/LauncherIcons), thanks to [basti564](https://github.com/basti564/)
 - Automatic grouping of VR & 2D apps  (Into the default "Apps" and "Tools" groups, as long as they're not renamed)
 - Flexible manual grouping & hiding
-- LauncherShortcut to add to your dock, supporting multiwindow and launching in-game
+- Convenient & reliable Shortcut Service OR Shortcut Icon to add to your dock
+- Support for multitasking and launching without closing your game
 
 
 ## Releases
@@ -22,16 +25,26 @@ Find the latest releases [here](https://github.com/threethan/LightningLauncher/r
 [Developer Mode / Apk installation guide](https://levelup.gitconnected.com/install-android-apps-onto-the-oculus-quest-2-without-going-through-the-app-store-a3336cac3a0e)
 
 1. Install LightningLauncher from [releases](https://github.com/threethan/LightningLauncher/releases/latest).
-2. If Facebook Messenger is installed, uninstall it.
-3. Install LauncherRedirect from [releases](https://github.com/threethan/LightningLauncher/releases/latest).
-4. Find "Messenger" on the apps screen. Select the three dots, then "Pin to Universal Menu."
+2. (Recommended) Select one (or both) of the options below for easier use
+
+### Option 1 - Shortcut Service
+1. Open LightningLauncher
+2. Click the settings cog on the top-right, then select "Library Shortcut Service"
+3. Click "Lightning Launcher" on the list
+4. Turn on the switch to enable the service
+
+Now LightningLauncher will open when you hover your cursor over the library icon for about half a second. This works even in games!
+> **Note**
+> This will make the default app launcher difficult, but not impossible, to open. The service can be disabled the same way you enabled it.
+
+### Option 2 - Shortcut Icon
+1. If Facebook Messenger is installed, uninstall it.
+2. Install LauncherRedirect from [releases](https://github.com/threethan/LightningLauncher/releases/latest).
+3. Find "Messenger" on the apps screen. Select the three dots, then "Pin to Universal Menu."
 
 Now you can use the Messenger icon on the dock to open LightningLauncher from anywhere - even in game!
-
 > **Note**
-> 
 > You will periodically see popups informing you that your messenger app is modified. If you select restore, you will need to repeat Steps 2&3.
-> These notices should subside over time.
 
 ## Screenshots
 ![goodscr0](https://github.com/threethan/LightningLauncher/assets/12588584/8a8645f0-f983-473b-a0a8-bba28d39bbda)
