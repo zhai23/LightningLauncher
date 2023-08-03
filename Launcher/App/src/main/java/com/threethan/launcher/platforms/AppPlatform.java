@@ -25,7 +25,7 @@ public class AppPlatform extends AbstractPlatform {
                 public void run() {
                     context.startActivity(launchIntent);
                 }
-            }, 615);
+            }, 650);
         } else {
             context.startActivity(launchIntent);
         }
