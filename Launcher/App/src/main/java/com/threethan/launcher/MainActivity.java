@@ -1,7 +1,5 @@
 package com.threethan.launcher;
 
-import static java.lang.Thread.sleep;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -42,8 +40,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import eightbitlab.com.blurview.BlurView;
 import eightbitlab.com.blurview.RenderScriptBlur;
@@ -53,9 +49,6 @@ class BackgroundTask extends AsyncTask {
 
     Drawable backgroundThemeDrawable;
     MainActivity owner;
-    int newScaleValueIndex;
-    boolean editMode;
-    boolean names;
     @Override
     protected Object doInBackground(Object[] objects) {
         Log.i("LauncherStartup", "BackgroundFetch");
@@ -173,13 +166,11 @@ public class MainActivity extends Activity {
             if (hasSelection) {
                 GroupsAdapter groupsAdapter = (GroupsAdapter) groupPanelGridView.getAdapter();
                 for (String app : currentSelectedApps) groupsAdapter.setGroup(app, groups.get(position));
+                currentSelectedApps = new HashSet<>();
                 hasSelection = false;
-                updateSelectionHint();
                 reloadUI();
             } else {
                 if (position == groups.size()) {
-                    settingsProvider.selectGroup(GroupsAdapter.HIDDEN_GROUP);
-                } else if (position == groups.size() + 1) {
                     settingsProvider.selectGroup(settingsProvider.addGroup());
                 } else {
                     settingsProvider.selectGroup(groups.get(position));
@@ -224,13 +215,9 @@ public class MainActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        if (AbstractPlatform.isMagicLeapHeadset()) {
-            super.onBackPressed();
-        } else {
-            if (!settingsPageOpen) {
-                showSettingsMain();
-                settingsPageOpen = true;
-            }
+        if (!settingsPageOpen) {
+            showSettingsMain();
+            settingsPageOpen = true;
         }
     }
 
@@ -297,10 +284,6 @@ public class MainActivity extends Activity {
                 }
             }
         }
-    }
-
-    public String getSelectedPackage() {
-        return ((AppsAdapter) appGridView.getAdapter()).getSelectedPackage();
     }
 
     void initBlur() {

@@ -9,7 +9,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.threethan.launcher.platforms.AbstractPlatform;
-import com.threethan.launcher.platforms.AppPlatform;
+import com.threethan.launcher.ui.GroupsAdapter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,14 +32,12 @@ public class SettingsProvider {
     private final String KEY_APP_LIST = "prefAppList";
     private final String KEY_LAUNCH_OUT = "prefLaunchOutList";
     private final String KEY_SELECTED_GROUPS = "prefSelectedGroups";
-    private final String SEPARATOR = "\r";
     //storage
     private final SharedPreferences sharedPreferences;
     private Map<String, String> appListMap = new HashMap<>();
     private Set<String> appGroupsSet = new HashSet<>();
     private Set<String> selectedGroupsSet = new HashSet<>();
     private static Set<String> appsToLaunchOut = new HashSet<>();
-    private Set<String> appsToLaunchOutNS = new HashSet<>();
 
     private SettingsProvider(Context context) {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -99,6 +97,7 @@ public class SettingsProvider {
             // Sort if groups are present
             for (ApplicationInfo app : allApps) {
                 if (!appListMap.containsKey(app.packageName)) {
+                    Log.i("Automatically Sorted", app.packageName);
                     final boolean isVr = AbstractPlatform.isVirtualRealityApp(app);
                     appListMap.put(app.packageName, isVr ? context.getString(R.string.default_apps_group) : context.getString(R.string.android_apps_group));
                 }
@@ -159,8 +158,6 @@ public class SettingsProvider {
         } else {
             Log.e("LauncherStartup", "ANDROID VERSION TOO OLD TO SORT APPS!");
         }
-        // Compare on display name (slow)
-        // Collections.sort(sortedApps, Comparator.comparing(a -> ((String) getAppDisplayName(context, a.packageName, a.loadLabel(packageManager)).toUpperCase();)));
 
         Log.i("LauncherStartup", "A3. Sort Done!");
 
@@ -198,10 +195,11 @@ public class SettingsProvider {
         readValues();
         ArrayList<String> sortedApplicationList = new ArrayList<>(selected ? selectedGroupsSet : appGroupsSet);
         Collections.sort(sortedApplicationList, (a, b) -> {
-            String simplifiedNameA = simplifyName(a.toUpperCase());
-            String simplifiedNameB = simplifyName(b.toUpperCase());
-            return simplifiedNameA.compareTo(simplifiedNameB);
+            if (GroupsAdapter.HIDDEN_GROUP.equals(a)) return  1;
+            if (GroupsAdapter.HIDDEN_GROUP.equals(b)) return -1;
+            return a.toUpperCase().compareTo(b.toUpperCase());
         });
+
         return sortedApplicationList;
     }
 
@@ -225,6 +223,7 @@ public class SettingsProvider {
 
             appListMap.clear();
 
+            appGroupsSet.add(GroupsAdapter.HIDDEN_GROUP);
             for (String group : appGroupsSet) {
                 Set<String> appListSet = new HashSet<>();
                 appListSet = sharedPreferences.getStringSet(KEY_APP_LIST+group, appListSet);
@@ -255,7 +254,10 @@ public class SettingsProvider {
             }
             for (String pkg : appListMap.keySet()) {
                 Set<String> group = appListSetMap.get(appListMap.get(pkg));
-                if (group == null) group = appListSetMap.get(context.getString(R.string.android_apps_group));
+                if (group == null) {
+                    Log.w("Package Didn't have a group! It will be added to tools.", pkg);
+                    group = appListSetMap.get(context.getString(R.string.android_apps_group));
+                }
 
                 group.add(pkg);
             }
@@ -294,19 +296,5 @@ public class SettingsProvider {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(appInfo.packageName, newName);
         editor.apply();
-    }
-
-    public String simplifyName(String name) {
-        StringBuilder simplifiedName = new StringBuilder();
-        for (int i = 0; i < name.length(); i++) {
-            char c = name.charAt(i);
-            if ((c >= 'A') && (c <= 'Z')) simplifiedName.append(c);
-            if ((c >= '0') && (c <= '9')) simplifiedName.append(c);
-        }
-        return simplifiedName.toString();
-    }
-
-    public boolean isPlatformEnabled(String key) {
-        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean(key, true);
     }
 }

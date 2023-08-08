@@ -4,9 +4,7 @@ import android.app.AlertDialog;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
 import android.util.Log;
-import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,8 +41,10 @@ public class GroupsAdapter extends BaseAdapter {
 
         SettingsProvider settings = SettingsProvider.getInstance(mainActivity);
         appGroups = settings.getAppGroupsSorted(false);
+        if (!editMode) {
+            appGroups.remove(GroupsAdapter.HIDDEN_GROUP);
+        }
         if (editMode) {
-            appGroups.add(HIDDEN_GROUP);
             appGroups.add("+ " + mainActivity.getString(R.string.add_group));
         }
         selectedGroups = settings.getSelectedGroups();
@@ -168,39 +168,6 @@ public class GroupsAdapter extends BaseAdapter {
 
         // set the look
         setLook(position, convertView, holder.menu);
-
-        // set drag and drop
-        final View finalConvertView = convertView;
-        convertView.setOnDragListener((view, event) -> {
-            if (event.getAction() == DragEvent.ACTION_DRAG_ENTERED) {
-                int[] colors = new int[]{Color.argb(192, 128, 128, 255), Color.TRANSPARENT};
-                GradientDrawable.Orientation orientation = GradientDrawable.Orientation.LEFT_RIGHT;
-                finalConvertView.setBackground(new GradientDrawable(orientation, colors));
-            } else if (event.getAction() == DragEvent.ACTION_DRAG_EXITED) {
-                setLook(position, finalConvertView, holder.menu);
-            } else if (event.getAction() == DragEvent.ACTION_DROP) {
-                // add group or hidden group selection
-                String name = appGroups.get(position);
-                List<String> appGroupsList = settingsProvider.getAppGroupsSorted(false);
-                if (appGroupsList.size() + 1 == position) {
-                    name = settingsProvider.addGroup();
-                } else if (appGroupsList.size() == position) {
-                    name = HIDDEN_GROUP;
-                }
-
-                // move app into group
-                String packageName = mainActivity.getSelectedPackage();
-                Set<String> selectedGroup = settingsProvider.getSelectedGroups();
-                Map<String, String> apps = settingsProvider.getAppList();
-                apps.remove(packageName);
-                apps.put(packageName, name);
-                settingsProvider.setAppList(apps);
-
-                // false to dragged icon fly back
-                return !selectedGroup.contains(name);
-            }
-            return true;
-        });
 
         TextView textView = convertView.findViewById(R.id.textLabel);
         setTextViewValue(textView, appGroups.get(position));

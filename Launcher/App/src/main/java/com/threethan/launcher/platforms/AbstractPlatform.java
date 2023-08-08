@@ -8,7 +8,6 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
@@ -21,7 +20,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Objects;
@@ -127,26 +125,6 @@ public abstract class AbstractPlatform {
         }
     }
 
-    public static boolean isHTCHeadset() {
-        String manufacturer = Build.MANUFACTURER.toUpperCase();
-        return manufacturer.startsWith("HTC");
-    }
-
-    public static boolean isMagicLeapHeadset() {
-        String manufacturer = Build.MANUFACTURER.toUpperCase();
-        return manufacturer.startsWith("MAGIC LEAP");
-    }
-
-    public static boolean isOculusHeadset() {
-        String manufacturer = Build.MANUFACTURER.toUpperCase();
-        return manufacturer.startsWith("META") || manufacturer.startsWith("OCULUS");
-    }
-
-    public static boolean isPicoHeadset() {
-        String manufacturer = Build.MANUFACTURER.toUpperCase();
-        return manufacturer.startsWith("PICO") || manufacturer.startsWith("PİCO"); // PİCO on turkish systems
-    }
-
     public static boolean isVirtualRealityApp(ApplicationInfo applicationInfo) {
         if (applicationInfo.metaData != null) {
             for (String key : applicationInfo.metaData.keySet()) {
@@ -163,8 +141,6 @@ public abstract class AbstractPlatform {
         }
         return false;
     }
-
-    public abstract boolean isSupported(Context context);
 
     public Drawable loadIcon(Activity activity, ApplicationInfo appInfo) throws PackageManager.NameNotFoundException {
         PackageManager packageManager = activity.getPackageManager();
@@ -250,7 +226,7 @@ public abstract class AbstractPlatform {
                 }
             }
         } catch (FileNotFoundException e) {
-            Log.d("File not found", e.getMessage());
+//            Log.d("File not found", e.getMessage());
         } catch (IOException e) {
             e.printStackTrace();
         }

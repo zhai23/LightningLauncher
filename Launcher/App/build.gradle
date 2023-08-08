@@ -27,8 +27,6 @@ android {
         abortOnError true
         disable 'Accessibility'
     }
-
-    buildToolsVersion '33.0.0'
 }
 
 dependencies {
