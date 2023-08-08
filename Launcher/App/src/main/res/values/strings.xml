@@ -19,4 +19,7 @@
     <string name="launch_in">Runs in: this window</string>
     <string name="launch_out">Runs in: own window</string>
 
+    <string name="edit_off">Turn On Edit Mode</string>
+    <string name="edit_on">Turn Off Edit Mode</string>
+
 </resources>

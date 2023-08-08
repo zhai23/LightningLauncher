@@ -84,7 +84,7 @@
             app:blurOverlayColor="#30FFFFFF">
 
             <ImageView
-                android:id="@+id/logo"
+                android:id="@+id/settingsIcon"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:alpha="0.6"

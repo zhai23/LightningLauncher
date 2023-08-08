@@ -30,7 +30,8 @@ public abstract class AbstractPlatform {
     protected static final HashMap<String, Drawable> cachedIcons = new HashMap<>();
     protected static final HashSet<String> excludedIconPackages = new HashSet<>();
 
-    private static final String OCULUS_ICONS_URL = "https://raw.githubusercontent.com/basti564/LauncherIcons/main/oculus_square/";
+    private static final String OCULUS_ICONS_URL = "https://raw.githubusercontent.com/basti564/LauncherIcons/main/oculus_landscape/";
+//    private static final String OCULUS_ICONS_URL = "https://raw.githubusercontent.com/basti564/LauncherIcons/main/oculus_square/";
     private static final String PICO_ICONS_URL = "https://raw.githubusercontent.com/basti564/LauncherIcons/main/pico_square/";
     private static final String VIVEPORT_ICONS_URL = "https://raw.githubusercontent.com/basti564/LauncherIcons/main/viveport_square/";
     private static final String VIVE_BUSINESS_ICONS_URL = "https://raw.githubusercontent.com/basti564/LauncherIcons/main/vive_business_square/";
@@ -126,18 +127,11 @@ public abstract class AbstractPlatform {
     }
 
     public static boolean isVirtualRealityApp(ApplicationInfo applicationInfo) {
-        if (applicationInfo.metaData != null) {
-            for (String key : applicationInfo.metaData.keySet()) {
-                if (key.contains("com.oculus.supportedDevices")) {
-                    return true;
-                }
-                if (key.contains("vr.application.mode")) {
-                    return true;
-                }
-                if (key.startsWith("notch.config")) {
-                    return true;
-                }
-            }
+        if (applicationInfo.metaData == null) return false;
+        if (applicationInfo.metaData.keySet().contains("com.oculus.supportedDevices")) return true;
+        if (applicationInfo.metaData.keySet().contains("vr.application.mode")) return true;
+        for (String key : applicationInfo.metaData.keySet()) {
+            if (key.startsWith("notch.config")) return true;
         }
         return false;
     }

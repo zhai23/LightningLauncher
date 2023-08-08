@@ -1,7 +1,5 @@
 package com.threethan.launcher;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
@@ -24,6 +22,7 @@ import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.Switch;
@@ -134,18 +133,15 @@ public class MainActivity extends Activity {
     private boolean lookPageOpen = false;
     private boolean platformsPageOpen = false;
     private boolean loaded = false;
-    private boolean activityHasFocus = false;
+    public ProgressBar progressBar;
 
-    @SuppressLint("SourceLockedOrientationActivity")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         Log.i("LauncherStartup", "1. Set View");
 
-
         setContentView(R.layout.activity_main);
-
 
         Log.i("LauncherStartup", "2. Get Setting Provider");
 
@@ -201,8 +197,8 @@ public class MainActivity extends Activity {
         });
 
         // Set logo button
-        ImageView settingsLogoImageView = findViewById(R.id.logo);
-        settingsLogoImageView.setOnClickListener(view -> {
+        ImageView settingsImageView = findViewById(R.id.settingsIcon);
+        settingsImageView.setOnClickListener(view -> {
             if (!settingsPageOpen) {
                 showSettingsMain();
                 settingsPageOpen = true;
@@ -210,52 +206,50 @@ public class MainActivity extends Activity {
         });
 
         Log.i("LauncherStartup", "4. Done");
-
     }
 
     @Override
     public void onBackPressed() {
         if (!settingsPageOpen) {
-            showSettingsMain();
-            settingsPageOpen = true;
+            if (editMode) {
+                editMode = false;
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean(SettingsProvider.KEY_EDITMODE, editMode);
+                editor.apply();
+                reloadUI();
+            } else {
+                showSettingsMain();
+                settingsPageOpen = true;
+            }
         }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        activityHasFocus = false;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        activityHasFocus = true;
-
-        String[] requiredPermissions = {
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-        };
-        boolean hasReadPermission = checkSelfPermission(requiredPermissions[0]) == PackageManager.PERMISSION_GRANTED;
-        boolean hasWritePermission = checkSelfPermission(requiredPermissions[1]) == PackageManager.PERMISSION_GRANTED;
-        if (hasReadPermission && hasWritePermission) {
-            if (!loaded) {
-                // Load Packages
-                PackageManager packageManager = getPackageManager();
-                allApps = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);
-                // Reload UI
-                reloadUI();
-                loaded = true;
-            } else {
-                new RecheckPackagesTask().execute(this);
-            }
-        } else {
-            requestPermissions(requiredPermissions, 0);
+        // Hide throbber if going back from another activity
+        if (progressBar != null) {
+            progressBar.setVisibility(View.GONE);
+            progressBar = null;
         }
 
+        if (!loaded) {
+            // Load Packages
+            PackageManager packageManager = getPackageManager();
+            allApps = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);
+            // Reload UI
+            reloadUI();
+            loaded = true;
+        } else {
+            new RecheckPackagesTask().execute(this);
+        }
     }
-
     public void setSelectedImageView(ImageView imageView) {
         selectedImageView = imageView;
     }
@@ -279,7 +273,6 @@ public class MainActivity extends Activity {
                     Bitmap themeBitmap = ImageUtils.getResizedBitmap(BitmapFactory.decodeFile(image.getPath()), 1280);
                     ImageUtils.saveBitmap(themeBitmap, new File(getApplicationInfo().dataDir, CUSTOM_THEME));
                     setTheme(selectedThemeImageViews, THEME_DRAWABLES.length);
-                    reloadUI();
                     break;
                 }
             }
@@ -308,6 +301,17 @@ public class MainActivity extends Activity {
         blurView0.setClipToOutline(true);
         blurView1.setOutlineProvider(ViewOutlineProvider.BACKGROUND);
         blurView1.setClipToOutline(true);
+
+        // Update then deactivate bv
+        blurView0.setActivated(false);
+        blurView0.setActivated(true);
+        blurView0.setActivated(false);
+
+        // Update then deactivate bv
+        blurView1.setActivated(false);
+        blurView1.setActivated(true);
+        blurView1.setActivated(false);
+
     }
 
     List<ApplicationInfo> allApps;
@@ -348,7 +352,7 @@ public class MainActivity extends Activity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt(SettingsProvider.KEY_CUSTOM_THEME, index);
         editor.apply();
-        restartActivity();
+        reloadUI();
     }
 
     private boolean editMode = false;
@@ -358,10 +362,12 @@ public class MainActivity extends Activity {
 
         dialog.setOnDismissListener(dialogInterface -> settingsPageOpen = false);
 
-        ImageView apps = dialog.findViewById(R.id.settings_apps_image);
-        editMode = !sharedPreferences.getBoolean(SettingsProvider.KEY_EDITMODE, false);
-        apps.setImageResource(editMode ? R.drawable.ic_editing_on : R.drawable.ic_editing_off);
-        dialog.findViewById(R.id.settings_apps).setOnClickListener(view1 -> {
+        ImageView editIcon = dialog.findViewById(R.id.settings_edit_image);
+        TextView editText = dialog.findViewById(R.id.settings_edit_text);
+        editIcon.setImageResource(editMode ? R.drawable.ic_editing_on : R.drawable.ic_editing_off);
+        editText.setText(editMode ? R.string.edit_on : R.string.edit_off);
+        dialog.findViewById(R.id.settings_edit).setOnClickListener(view1 -> {
+            editMode = !editMode;
             ArrayList<String> selectedGroups = settingsProvider.getAppGroupsSorted(true);
             if (editMode && (selectedGroups.size() > 1)) {
                 Set<String> selectFirst = new HashSet<>();
@@ -372,8 +378,8 @@ public class MainActivity extends Activity {
             editor.putBoolean(SettingsProvider.KEY_EDITMODE, editMode);
             editor.apply();
             reloadUI();
-            editMode = !editMode;
-            apps.setImageResource(editMode ? R.drawable.ic_editing_on : R.drawable.ic_editing_off);
+            editIcon.setImageResource(editMode ? R.drawable.ic_editing_on : R.drawable.ic_editing_off);
+            editText.setText(editMode ? R.string.edit_on : R.string.edit_off);
         });
 
         dialog.findViewById(R.id.settings_look).setOnClickListener(view -> {
@@ -418,14 +424,12 @@ public class MainActivity extends Activity {
                 editor.putInt(SettingsProvider.KEY_CUSTOM_SCALE, value + 55);
                 editor.apply();
             }
-
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
             }
-
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                restartActivity();
+                reloadUI();
             }
         });
         scale.setProgress(sharedPreferences.getInt(SettingsProvider.KEY_CUSTOM_SCALE, DEFAULT_SCALE) -55);
@@ -441,6 +445,7 @@ public class MainActivity extends Activity {
                 dialog.findViewById(R.id.theme4),
                 dialog.findViewById(R.id.theme_custom)
         };
+
         for (ImageView image : views) {
             image.setBackground(getDrawable(R.drawable.bkg_button));
             image.setImageAlpha(255);
@@ -449,13 +454,19 @@ public class MainActivity extends Activity {
         views[theme].setImageAlpha(192);
         for (int i = 0; i < views.length; i++) {
             int index = i;
-            views[i].setOnClickListener(view12 -> {
+            views[i].setOnClickListener(view -> {
                 if (index >= THEME_DRAWABLES.length) {
                     selectedThemeImageViews = views;
                     ImageUtils.showImagePicker(this, PICK_THEME_CODE);
                 } else {
                     setTheme(views, index);
                 }
+                for (ImageView image : views) {
+                    image.setBackground(getDrawable(R.drawable.bkg_button));
+                    image.setImageAlpha(255);
+                }
+                views[index].setBackground(getDrawable(R.drawable.bkg_button_sel));
+                views[index].setImageAlpha(192);
             });
         }
     }
@@ -473,7 +484,12 @@ public class MainActivity extends Activity {
     public void openAppDetails(String pkg) {
         Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         intent.setData(Uri.parse("package:" + pkg));
-
+        startActivity(intent);
+    }
+    public void uninstallApp(String pkg) {
+        Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
+        Log.w("Upkg", pkg);
+        intent.setData(Uri.parse("package:" + pkg));
         startActivity(intent);
     }
 

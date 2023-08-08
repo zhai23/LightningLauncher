@@ -8,8 +8,11 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.RenderEffect;
+import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
@@ -18,6 +21,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridLayout;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -36,6 +41,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 class IconTask extends AsyncTask {
     private final AtomicReference<ImageView> imageView = new AtomicReference<>();
+    private final AtomicReference<ImageView> imageViewBg = new AtomicReference<>();
     private Drawable appIcon;
 
     @Override
@@ -44,6 +50,7 @@ class IconTask extends AsyncTask {
         final MainActivity mainActivityContext = (MainActivity) objects[2];
         final AbstractPlatform appPlatform = AbstractPlatform.getPlatform(currentApp);
         imageView.set((ImageView) objects[3]);
+        imageViewBg.set((ImageView) objects[4]);
 
         try {
             appIcon = appPlatform.loadIcon(mainActivityContext, currentApp);
@@ -55,6 +62,7 @@ class IconTask extends AsyncTask {
     @Override
     protected void onPostExecute(Object _n) {
         imageView.get().setImageDrawable(appIcon);
+        imageViewBg.get().setImageDrawable(appIcon);
     }
 }
 
@@ -69,7 +77,6 @@ public class AppsAdapter extends BaseAdapter{
     private final boolean showTextLabels;
     private final int itemScale;
     private final SettingsProvider settingsProvider;
-
     public AppsAdapter(MainActivity context, boolean editMode, int scale, boolean names, List<ApplicationInfo> allApps) {
         mainActivityContext = context;
         isEditMode = editMode;
@@ -86,8 +93,10 @@ public class AppsAdapter extends BaseAdapter{
     private static class ViewHolder {
         LinearLayout layout;
         ImageView imageView;
+        ImageView imageViewBg;
         TextView textView;
         ProgressBar progressBar;
+        Button moreButton;
     }
 
     public int getCount() { return appList.size(); }
@@ -108,15 +117,20 @@ public class AppsAdapter extends BaseAdapter{
 
         if (convertView == null) {
             // Create a new ViewHolder and inflate the layout
-            convertView = layoutInflater.inflate(R.layout.lv_app, parent, false);
+            int layout = AbstractPlatform.isVirtualRealityApp(currentApp) ? R.layout.lv_app_vr : R.layout.lv_app;
+
+            convertView = layoutInflater.inflate(layout, parent, false);
             holder = new ViewHolder();
             holder.layout = convertView.findViewById(R.id.layout);
             holder.imageView = convertView.findViewById(R.id.imageLabel);
+            holder.imageViewBg = convertView.findViewById(R.id.imageLabelBg);
             holder.textView = convertView.findViewById(R.id.textLabel);
             holder.progressBar = convertView.findViewById(R.id.progress_bar);
 
+            holder.moreButton = convertView.findViewById(R.id.moreButton);
+
             // Set clipToOutline to true on imageView (Workaround for bug)
-            holder.imageView.setClipToOutline(true);
+            holder.layout.setClipToOutline(true);
 
             // Set size of items
             ViewGroup.LayoutParams params = holder.layout.getLayoutParams();
@@ -125,6 +139,11 @@ public class AppsAdapter extends BaseAdapter{
             holder.layout.setLayoutParams(params);
 
             convertView.setTag(holder);
+
+            if( AbstractPlatform.isVirtualRealityApp(currentApp)) {
+                ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                convertView.setLayoutParams(lp);
+            }
         } else {
             // ViewHolder already exists, reuse it
             holder = (ViewHolder) convertView.getTag();
@@ -158,7 +177,7 @@ public class AppsAdapter extends BaseAdapter{
                     } else if (event.getAction() == DragEvent.ACTION_DRAG_ENDED) {
                         mainActivityContext.reloadUI();
                     } else if (event.getAction() == DragEvent.ACTION_DROP) {
-                        if (System.currentTimeMillis() - lastClickTime < 300) {
+                        if (System.currentTimeMillis() - lastClickTime < 400) {
                             try {
                                 showAppDetails(currentApp);
                             } catch (PackageManager.NameNotFoundException e) {
@@ -175,7 +194,15 @@ public class AppsAdapter extends BaseAdapter{
         } else {
             holder.layout.setOnClickListener(view -> {
                 holder.progressBar.setVisibility(View.VISIBLE);
+                mainActivityContext.progressBar = holder.progressBar;
                 mainActivityContext.openApp(currentApp);
+            });
+            holder.moreButton.setOnClickListener(view -> {
+                try {
+                    showAppDetails(currentApp);
+                } catch (PackageManager.NameNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
             });
             holder.layout.setOnLongClickListener(view -> {
                 try {
@@ -190,7 +217,7 @@ public class AppsAdapter extends BaseAdapter{
         // set application icon
 //        Log.i("DreamGrid", "loading icon for app: " + currentApp.packageName);
 
-        new IconTask().execute(this, currentApp, mainActivityContext, holder.imageView);
+        new IconTask().execute(this, currentApp, mainActivityContext, holder.imageView, holder.imageViewBg);
 
         return convertView;
     }
@@ -220,7 +247,8 @@ public class AppsAdapter extends BaseAdapter{
         appDetailsDialog.show();
 
         // info action
-        appDetailsDialog.findViewById(R.id.info).setOnClickListener(view13 -> mainActivityContext.openAppDetails(currentApp.packageName));
+        appDetailsDialog.findViewById(R.id.info).setOnClickListener(view -> mainActivityContext.openAppDetails(currentApp.packageName));
+        appDetailsDialog.findViewById(R.id.uninstall).setOnClickListener(view -> mainActivityContext.uninstallApp(currentApp.packageName));
 
         // toggle launch mode
         final boolean[] launchOut = {SettingsProvider.getAppLaunchOut(currentApp.packageName)};
@@ -231,7 +259,7 @@ public class AppsAdapter extends BaseAdapter{
         } else {
             launchModeBtn.setVisibility(View.VISIBLE);
             launchModeBtn.setText(context.getString(launchOut[0] ? R.string.launch_out : R.string.launch_in));
-            appDetailsDialog.findViewById(R.id.launch_mode).setOnClickListener(view13 -> {
+            appDetailsDialog.findViewById(R.id.launch_mode).setOnClickListener(view -> {
                 SettingsProvider.setAppLaunchOut(currentApp.packageName, !launchOut[0]);
                 launchOut[0] = SettingsProvider.getAppLaunchOut(currentApp.packageName);
                 launchModeBtn.setText(context.getString(launchOut[0] ? R.string.launch_out : R.string.launch_in));
@@ -243,7 +271,7 @@ public class AppsAdapter extends BaseAdapter{
         String name = SettingsProvider.getAppDisplayName(mainActivityContext, currentApp.packageName, currentApp.loadLabel(packageManager));
         final EditText appNameEditText = appDetailsDialog.findViewById(R.id.app_name);
         appNameEditText.setText(name);
-        appDetailsDialog.findViewById(R.id.ok).setOnClickListener(view12 -> {
+        appDetailsDialog.findViewById(R.id.ok).setOnClickListener(view -> {
             settingsProvider.setAppDisplayName(context, currentApp, appNameEditText.getText().toString());
             mainActivityContext.reloadUI();
             appDetailsDialog.dismiss();
