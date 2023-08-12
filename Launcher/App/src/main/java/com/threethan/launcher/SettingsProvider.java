@@ -21,13 +21,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/** @noinspection deprecation*/
 public class SettingsProvider {
     public static final String KEY_CUSTOM_NAMES = "KEY_CUSTOM_NAMES";
     public static final String KEY_CUSTOM_SCALE = "KEY_CUSTOM_SCALE";
     public static final String KEY_CUSTOM_THEME = "KEY_CUSTOM_THEME";
-    public static final String KEY_EDITMODE = "KEY_EDITMODE";
+    public static final String KEY_EDIT_MODE = "KEY_EDIT_MODE";
+    public static final String KEY_SEEN_LAUNCH_OUT_POPUP = "KEY_SEEN_LAUNCH_OUT_POPUP";
+
+    public static final String NEEDS_META_DATA = "NEEDS_META_DATA";
+    public static final String KEY_VR_SET = "KEY_VR_SET";
+    public static final String KEY_2D_SET = "KEY_2D_SET";
+    public static final String KEY_SUPPORTED_SET = "KEY_SUPPORTED_SET";
+    public static final String KEY_UNSUPPORTED_SET = "KEY_UNSUPPORTED_SET";
+
+    public static final String KEY_WIDE_VR = "KEY_WIDE_VR";
+    public static final String KEY_WIDE_2D = "KEY_WIDE_2D";
     private static SettingsProvider instance;
-    private static Context context;
+//    private static Context context;
     private final String KEY_APP_GROUPS = "prefAppGroups";
     private final String KEY_APP_LIST = "prefAppList";
     private final String KEY_LAUNCH_OUT = "prefLaunchOutList";
@@ -41,7 +52,7 @@ public class SettingsProvider {
 
     private SettingsProvider(Context context) {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        SettingsProvider.context = context;
+//        SettingsProvider.context = context;
     }
 
     public static synchronized SettingsProvider getInstance(Context context) {
@@ -58,7 +69,7 @@ public class SettingsProvider {
         }
 
         String retVal = label.toString();
-        if (retVal == null || retVal.equals("")) {
+        if (retVal.equals("")) {
             retVal = pkg;
         }
         return retVal;
@@ -73,85 +84,69 @@ public class SettingsProvider {
         else appsToLaunchOut.remove(pkg);
     }
 
-    public Map<String, String> getAppList() {
-        readValues();
+    public Map<String, String> getAppList(Context context) {
+        readValues(context);
         return appListMap;
     }
 
-    public void setAppList(Map<String, String> appList) {
+    public void setAppList(Map<String, String> appList, Context context) {
         appListMap = appList;
-        storeValues();
+        storeValues(context);
     }
 
-    public ArrayList<ApplicationInfo> getInstalledApps(Context context, List<String> selected, boolean first, List<ApplicationInfo> allApps) {
+    public ArrayList<ApplicationInfo> getInstalledApps(MainActivity mainActivity, List<String> selected, boolean first, List<ApplicationInfo> allApps) {
 
         // Get list of installed apps
-        Map<String, String> apps = getAppList();
+        Map<String, String> apps = getAppList(mainActivity);
 
-        ArrayList<ApplicationInfo> installedApplications = new ArrayList<>();
-
-        Log.i("LauncherStartup", "A0. Start Auto Sort");
+        //Start Auto Sort"
 
         //Sort
-        if (appGroupsSet.contains(context.getString(R.string.default_apps_group)) && appGroupsSet.contains(context.getString(R.string.android_apps_group))) {
+        if (appGroupsSet.contains(mainActivity.getString(R.string.default_apps_group)) && appGroupsSet.contains(mainActivity.getString(R.string.android_apps_group))) {
             // Sort if groups are present
             for (ApplicationInfo app : allApps) {
                 if (!appListMap.containsKey(app.packageName)) {
-                    Log.i("Automatically Sorted", app.packageName);
-                    final boolean isVr = AbstractPlatform.isVirtualRealityApp(app);
-                    appListMap.put(app.packageName, isVr ? context.getString(R.string.default_apps_group) : context.getString(R.string.android_apps_group));
+//                    Log.i("Automatically Sorted", app.packageName);
+                    final boolean isVr = AbstractPlatform.isVirtualRealityApp(app, mainActivity);
+                    appListMap.put(app.packageName, isVr ? mainActivity.getString(R.string.default_apps_group) : mainActivity.getString(R.string.android_apps_group));
                 }
             }
+            // Since this goes over all apps & checks if they're vr, we can safely decide we don't need meta data for them on subsequent launchers
+            mainActivity.sharedPreferences.edit().putBoolean(SettingsProvider.NEEDS_META_DATA, false).apply();
         }
 
-        Log.i("LauncherStartup", "A1. Save Auto Sort");
+        // Save Auto Sort
 
 
-        installedApplications.addAll(allApps);
+        ArrayList<ApplicationInfo> installedApplications = new ArrayList<>(allApps);
 
         // Save changes to app list
-        setAppList(appListMap);
+        setAppList(appListMap, mainActivity);
 
-        Log.i("LauncherStartup", "A2. Map Packages");
+        // Map Packages
 
         // Put them into a map with package name as keyword for faster handling
-        String packageName = context.getApplicationContext().getPackageName();
+        String packageName = mainActivity.getApplicationContext().getPackageName();
         Map<String, ApplicationInfo> appMap = new LinkedHashMap<>();
         for (ApplicationInfo installedApplication : installedApplications) {
             String pkg = installedApplication.packageName;
+
             boolean showAll = selected.isEmpty();
             boolean isNotAssigned = !apps.containsKey(pkg) && first;
             boolean isInGroup = apps.containsKey(pkg) && selected.contains(apps.get(pkg));
-            boolean isVr = hasMetadata(installedApplication, "com.oculus.supportedDevices");
-            boolean isEnvironment = !isVr && hasMetadata(installedApplication, "com.oculus.environmentVersion");
+
             if (showAll || isNotAssigned || isInGroup) {
-                boolean isSystemApp = (installedApplication.flags & ApplicationInfo.FLAG_SYSTEM) == 1;
-                String[] systemAppPrefixes = context.getResources().getStringArray(R.array.system_app_prefixes);
-                String[] nonSystemAppPrefixes = context.getResources().getStringArray(R.array.non_system_app_prefixes);
-                for (String prefix : systemAppPrefixes) {
-                    if (pkg.startsWith(prefix)) {
-                        isSystemApp = true;
-                        break;
-                    }
-                }
-                for (String prefix : nonSystemAppPrefixes) {
-                    if (pkg.startsWith(prefix)) {
-                        isSystemApp = false;
-                        break;
-                    }
-                }
-                if (pkg.equals("com.android.settings")) isSystemApp = false;
-                if (!isSystemApp && !isEnvironment && !pkg.equals(packageName)) {
+                if (AbstractPlatform.isSupportedApp(installedApplication, mainActivity) && !pkg.equals(packageName)) {
                     appMap.put(pkg, installedApplication);
                 }
             }
         }
 
-        Log.i("LauncherStartup", "A2. Sort by Package Name");
+        // Sort by Package Name
 
         // Create new list of apps
         ArrayList<ApplicationInfo> sortedApps = new ArrayList<>(appMap.values());
-        PackageManager packageManager = context.getPackageManager();
+        PackageManager packageManager = mainActivity.getPackageManager();
         // Compare on app name (fast)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             Collections.sort(sortedApps, Comparator.comparing(a -> ((String) a.loadLabel(packageManager))));
@@ -159,40 +154,33 @@ public class SettingsProvider {
             Log.e("LauncherStartup", "ANDROID VERSION TOO OLD TO SORT APPS!");
         }
 
-        Log.i("LauncherStartup", "A3. Sort Done!");
+        // Sort Done!
 
         return sortedApps;
     }
 
-    public boolean hasMetadata(ApplicationInfo app, String metadata) {
-        if (app.metaData != null) {
-            return app.metaData.keySet().contains(metadata);
-        }
-        return false;
-    }
-
-    public Set<String> getAppGroups() {
-        readValues();
+    public Set<String> getAppGroups(Context context) {
+        readValues(context);
         return appGroupsSet;
     }
 
-    public void setAppGroups(Set<String> appGroups) {
+    public void setAppGroups(Set<String> appGroups, Context context) {
         appGroupsSet = appGroups;
-        storeValues();
+        storeValues(context);
     }
 
-    public Set<String> getSelectedGroups() {
-        readValues();
+    public Set<String> getSelectedGroups(Context context) {
+        readValues(context);
         return selectedGroupsSet;
     }
 
-    public void setSelectedGroups(Set<String> appGroups) {
+    public void setSelectedGroups(Set<String> appGroups, Context context) {
         selectedGroupsSet = appGroups;
-        storeValues();
+        storeValues(context);
     }
 
-    public ArrayList<String> getAppGroupsSorted(boolean selected) {
-        readValues();
+    public ArrayList<String> getAppGroupsSorted(boolean selected, Context context) {
+        readValues(context);
         ArrayList<String> sortedApplicationList = new ArrayList<>(selected ? selectedGroupsSet : appGroupsSet);
         Collections.sort(sortedApplicationList, (a, b) -> {
             if (GroupsAdapter.HIDDEN_GROUP.equals(a)) return  1;
@@ -205,14 +193,16 @@ public class SettingsProvider {
 
     public void resetGroups(){
         SharedPreferences.Editor editor = sharedPreferences.edit();
+        for (String group : appGroupsSet) {
+            editor.remove(KEY_APP_LIST + group);
+        }
         editor.remove(KEY_APP_GROUPS);
         editor.remove(KEY_SELECTED_GROUPS);
         editor.remove(KEY_APP_LIST);
         editor.apply();
-        readValues();
     }
 
-    private synchronized void readValues() {
+     synchronized void readValues(Context context) {
         try {
             Set<String> defaultGroupsSet = new HashSet<>();
             defaultGroupsSet.add(context.getString(R.string.default_apps_group));
@@ -241,7 +231,7 @@ public class SettingsProvider {
 
     }
 
-    private synchronized void storeValues() {
+    private synchronized void storeValues(Context context) {
         try {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putStringSet(KEY_APP_GROUPS, appGroupsSet);
@@ -258,7 +248,7 @@ public class SettingsProvider {
                     Log.w("Package Didn't have a group! It will be added to tools.", pkg);
                     group = appListSetMap.get(context.getString(R.string.android_apps_group));
                 }
-
+                assert group != null;
                 group.add(pkg);
             }
             for (String group : appGroupsSet) {
@@ -270,9 +260,9 @@ public class SettingsProvider {
         }
     }
 
-    public String addGroup() {
+    public String addGroup(Context context) {
         String newGroupName = "New";
-        List<String> existingGroups = getAppGroupsSorted(false);
+        List<String> existingGroups = getAppGroupsSorted(false, context);
         if (existingGroups.contains(newGroupName)) {
             int index = 1;
             while (existingGroups.contains(newGroupName + " " + index)) {
@@ -281,14 +271,14 @@ public class SettingsProvider {
             newGroupName = newGroupName + " " + index;
         }
         existingGroups.add(newGroupName);
-        setAppGroups(new HashSet<>(existingGroups));
+        setAppGroups(new HashSet<>(existingGroups), context);
         return newGroupName;
     }
 
-    public void selectGroup(String name) {
+    public void selectGroup(String name, Context context) {
         Set<String> selectFirst = new HashSet<>();
         selectFirst.add(name);
-        setSelectedGroups(selectFirst);
+        setSelectedGroups(selectFirst, context);
     }
 
     public void setAppDisplayName(Context context, ApplicationInfo appInfo, String newName) {

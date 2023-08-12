@@ -2,8 +2,7 @@
 <accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
     android:description="@string/service_desc"
     android:settingsActivity=""
-    android:accessibilityEventTypes="typeWindowStateChanged"
+    android:packageNames="com.oculus.systemux, com.threethan.launcher"
+    android:accessibilityEventTypes="typeWindowStateChanged|typeViewHoverExit"
     android:accessibilityFlags="flagDefault"
-    android:notificationTimeout="1000"
-    android:canRetrieveWindowContent="true"
-    android:canRequestFilterKeyEvents="true" />
+    android:notificationTimeout="1000" />

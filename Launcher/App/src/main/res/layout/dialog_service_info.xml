@@ -10,19 +10,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingBottom="20dp"
-        android:textSize="20sp"
+        android:text="@string/service_title"
         android:textColor="@android:color/white"
-        android:text="@string/edit_group"/>
+        android:textSize="20sp" />
 
-    <EditText
-        android:id="@+id/group_name"
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
-        android:backgroundTint="@android:color/white"
-        android:textColor="@android:color/white"
         android:autofillHints="text"
-        android:inputType="text" />
+        android:backgroundTint="@android:color/white"
+        android:text="@string/service_message"
+        android:textColor="@android:color/white" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -31,24 +30,14 @@
         android:layout_gravity="end">
 
         <Button
-            android:id="@+id/group_delete"
+            android:id="@+id/ok"
             style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bkg_button_pad"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:text="@string/delete_group"
-            android:textColor="@android:color/white" />
-
-        <Button
-            android:id="@+id/cancel"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
+            android:layout_weight="1"
             android:background="@drawable/bkg_button_pad"
-            android:text="@android:string/ok"
+            android:text="@string/next"
             android:textColor="@android:color/white" />
     </LinearLayout>
 </LinearLayout>

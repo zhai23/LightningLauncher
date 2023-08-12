@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="system_app_prefixes">
-        <item>com.facebook.arvr</item>
+    <string-array name="unsupported_app_prefixes">
         <item>com.meta.AccountsCenter.pwa</item>
         <item>com.meta.environment</item>
         <item>com.oculus.accountscenter</item>
@@ -16,5 +15,7 @@
         <item>oculuspwa</item>
         <!-- Messenger Redirect -->
         <item>com.facebook.orca</item>
+        <!-- Fb just doesn't work for some reason -->
+        <item>com.facebook.facebookvr</item>
     </string-array>
 </resources>

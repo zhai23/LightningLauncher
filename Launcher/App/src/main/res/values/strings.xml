@@ -7,19 +7,36 @@
     <string name="delete_group">Delete Group</string>
     <string name="edit_group">Edit Group</string>
     <string name="app_details">App Details</string>
-    <string name="apps_hidden">Hidden</string>
+    <string name="apps_hidden">- Hidden</string>
 
     <string name="background_opacity">Background Opacity</string>
     <string name="icons_size">Icon Size</string>
     <string name="show_app_names">Show App Names</string>
 
-    <string name="service_desc">When this service is enabled, Lightning Launcher will open automatically when you hover the cursor over the App Library icon for about half a second. This may make it difficult to access the normal app launcher!</string>
+    <string name="wide_vr">Banner-Style VR Apps</string>
+    <string name="wide_2d">Banner-Style 2D Apps</string>
+
+    <string name="service_desc">When this service is enabled, Lightning Launcher will open automatically when you hover the cursor over the App Library icon for about half a second. (This may make it difficult to access the default launcher)</string>
     <string name="accessibility_event_name">[App Library]</string>
 
     <string name="launch_in">Runs in: this window</string>
     <string name="launch_out">Runs in: own window</string>
 
+    <string name="launch_title">Warning</string>
+    <string name="launch_message">Launching 2D apps in their own window allows for easy multitasking, but will cause certain apps to not always launch.\n\nIf you have issues, disable this option.</string>
+
+    <string name="service_title">Instructions</string>
+    <string name="service_message">1. Press CONTINUE to open accessibility settings.\n2. Click on LightningLauncher\n3. Switch the service on or off at the top of the page.\n\nWhen it\'s on, you can open LightningLauncher by hovering the cursor over the "App Library" button on the dock.</string>
+
+    <string name="cancel">Cancel</string>
+    <string name="understood">Got it</string>
+    <string name="next">Continue</string>
+
+
     <string name="edit_off">Turn On Edit Mode</string>
     <string name="edit_on">Turn Off Edit Mode</string>
+
+    <string name="selection_hint">Click a group to move the selected app.</string>
+    <string name="selection_hint_multiple">%d apps selected. Click a group to move them.</string>
 
 </resources>

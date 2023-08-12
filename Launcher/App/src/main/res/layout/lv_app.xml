@@ -8,17 +8,16 @@
     android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clip"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_height="match_parent"
+        android:background="@drawable/bkg_app">
 
         <Button
             android:id="@+id/moreButton"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:background="@drawable/more_selector"
-            android:paddingTop="8dp"
-            android:paddingEnd="6dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -26,8 +25,9 @@
             android:id="@+id/imageLabelBg"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@drawable/bkg_app"
             android:scaleType="fitCenter"
+            android:scaleX="80"
+            android:scaleY="90"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
@@ -38,25 +38,12 @@
             android:id="@+id/imageLabel"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@drawable/bkg_app"
             android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <ProgressBar
-            android:id="@+id/progress_bar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:theme="@style/ThemeOverlay.Holo"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@+id/imageLabel"
-            app:layout_constraintEnd_toEndOf="@+id/imageLabel"
-            app:layout_constraintStart_toStartOf="@+id/imageLabel"
-            app:layout_constraintTop_toTopOf="@+id/imageLabel" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -69,7 +56,7 @@
         android:shadowRadius="5"
         android:singleLine="true"
         android:textColor="@android:color/white"
-        android:textSize="16sp"
+        android:textSize="14sp"
         app:strokeColor="#80000000"
         app:strokeWidth="1.5dp" />
 </LinearLayout>

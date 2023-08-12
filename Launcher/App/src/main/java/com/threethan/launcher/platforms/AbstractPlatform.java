@@ -2,6 +2,7 @@ package com.threethan.launcher.platforms;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -10,8 +11,13 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.widget.ImageView;
 
 import androidx.core.content.res.ResourcesCompat;
+
+import com.threethan.launcher.MainActivity;
+import com.threethan.launcher.R;
+import com.threethan.launcher.SettingsProvider;
 
 import java.io.DataInputStream;
 import java.io.File;
@@ -29,18 +35,18 @@ public abstract class AbstractPlatform {
 
     protected static final HashMap<String, Drawable> cachedIcons = new HashMap<>();
     protected static final HashSet<String> excludedIconPackages = new HashSet<>();
-
-    private static final String OCULUS_ICONS_URL = "https://raw.githubusercontent.com/basti564/LauncherIcons/main/oculus_landscape/";
-//    private static final String OCULUS_ICONS_URL = "https://raw.githubusercontent.com/basti564/LauncherIcons/main/oculus_square/";
-    private static final String PICO_ICONS_URL = "https://raw.githubusercontent.com/basti564/LauncherIcons/main/pico_square/";
-    private static final String VIVEPORT_ICONS_URL = "https://raw.githubusercontent.com/basti564/LauncherIcons/main/viveport_square/";
-    private static final String VIVE_BUSINESS_ICONS_URL = "https://raw.githubusercontent.com/basti564/LauncherIcons/main/vive_business_square/";
-
+    private static final String[] ICON_URLS = {
+            "https://raw.githubusercontent.com/basti564/LauncherIcons/main/oculus_square/",
+            "https://raw.githubusercontent.com/basti564/LauncherIcons/main/pico_square/",
+            "https://raw.githubusercontent.com/basti564/LauncherIcons/main/viveport_square/"};
+    private static final String[] ICON_URLS_WIDE = {
+            "https://raw.githubusercontent.com/basti564/LauncherIcons/main/oculus_landscape/",
+            "https://raw.githubusercontent.com/basti564/LauncherIcons/main/pico_landscape/",
+            "https://raw.githubusercontent.com/basti564/LauncherIcons/main/viveport_landscape/"};
     public static void clearIconCache() {
         excludedIconPackages.clear();
         cachedIcons.clear();
     }
-
     public static boolean isImageFileComplete(File imageFile) {
         boolean success = false;
         try {
@@ -61,25 +67,30 @@ public abstract class AbstractPlatform {
         return success;
     }
 
-    public static AbstractPlatform getPlatform(ApplicationInfo applicationInfo) {
+    public static AbstractPlatform getPlatform(ApplicationInfo ignoredApplicationInfo) {
         return new AppPlatform();
     }
 
-    public static File packageToPath(Context context, String packageName) {
+    public static File packageToPath(Context context, String packageName, boolean ignoredIsWide) {
         return new File(context.getApplicationInfo().dataDir, packageName + ".webp");
     }
 
-    public static boolean updateIcon(File file, String packageName) {
+    public static void updateIcon(File file, String packageName, ImageView[] imageViews) {
         try {
             Drawable newIconDrawable = Drawable.createFromPath(file.getAbsolutePath());
             if (newIconDrawable != null) {
-                cachedIcons.put(packageName, newIconDrawable);
-                return true;
+                cachedIcons.put(packageName, newIconDrawable); // Success
+                if (imageViews != null) {
+                    for(ImageView imageView : imageViews) {
+                        imageView.setImageDrawable(newIconDrawable);
+                    }
+                }
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return false;
+
     }
 
     protected static boolean saveStream(InputStream inputStream, File outputFile) {
@@ -125,18 +136,100 @@ public abstract class AbstractPlatform {
             return false;
         }
     }
+    static HashSet<String> setVr = new HashSet<>();
+    static HashSet<String> set2d = new HashSet<>();
 
-    public static boolean isVirtualRealityApp(ApplicationInfo applicationInfo) {
+    public static boolean isVirtualRealityApp(ApplicationInfo applicationInfo, MainActivity mainActivity) {
+        final SharedPreferences sharedPreferences = mainActivity.sharedPreferences;
+        if (setVr.isEmpty()) {
+            sharedPreferences.getStringSet(SettingsProvider.KEY_VR_SET, setVr);
+            sharedPreferences.getStringSet(SettingsProvider.KEY_2D_SET, set2d);
+        }
+        if (setVr.contains(applicationInfo.packageName)) return true;
+        if (set2d.contains(applicationInfo.packageName)) return false;
+
+        if (checkVirtualRealityApp(applicationInfo)) {
+            setVr.add(applicationInfo.packageName);
+            sharedPreferences.edit().putStringSet(SettingsProvider.KEY_VR_SET, setVr).apply();
+            return true;
+        } else {
+            set2d.add(applicationInfo.packageName);
+            sharedPreferences.edit().putStringSet(SettingsProvider.KEY_2D_SET, set2d).apply();
+            return false;
+        }
+
+    }
+    private static boolean checkVirtualRealityApp(ApplicationInfo applicationInfo) {
         if (applicationInfo.metaData == null) return false;
-        if (applicationInfo.metaData.keySet().contains("com.oculus.supportedDevices")) return true;
-        if (applicationInfo.metaData.keySet().contains("vr.application.mode")) return true;
         for (String key : applicationInfo.metaData.keySet()) {
             if (key.startsWith("notch.config")) return true;
+            if (key.contains("com.oculus.supportedDevices")) return true;
+            if (key.contains("vr.application.mode")) return true;
         }
         return false;
     }
 
-    public Drawable loadIcon(Activity activity, ApplicationInfo appInfo) throws PackageManager.NameNotFoundException {
+    static HashSet<String> setSupported = new HashSet<>();
+    static HashSet<String> setUnsupported = new HashSet<>();
+    public static boolean isSupportedApp(ApplicationInfo appInfo, MainActivity mainActivity) {
+        final SharedPreferences sharedPreferences = mainActivity.sharedPreferences;
+        if (setSupported.isEmpty()) {
+            sharedPreferences.getStringSet(SettingsProvider.KEY_SUPPORTED_SET, setSupported);
+            sharedPreferences.getStringSet(SettingsProvider.KEY_UNSUPPORTED_SET, setUnsupported);
+        }
+
+        if (setSupported.contains(appInfo.packageName)) return true;
+        if (setUnsupported.contains(appInfo.packageName)) return false;
+
+        if (checkSupportedApp(appInfo, mainActivity)) {
+            setSupported.add(appInfo.packageName);
+            sharedPreferences.edit().putStringSet(SettingsProvider.KEY_SUPPORTED_SET, setSupported).apply();
+            return true;
+        } else {
+            setUnsupported.add(appInfo.packageName);
+            sharedPreferences.edit().putStringSet(SettingsProvider.KEY_UNSUPPORTED_SET, setUnsupported).apply();
+            return false;
+        }
+
+    }
+    private static boolean checkSupportedApp(ApplicationInfo applicationInfo, MainActivity mainActivity) {
+        boolean isSupportedApp = (applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 1;
+        String[] systemAppPrefixes = mainActivity.getResources().getStringArray(R.array.unsupported_app_prefixes);
+        String[] nonSystemAppPrefixes = mainActivity.getResources().getStringArray(R.array.supported_app_prefixes);
+        if (applicationInfo.packageName.equals("com.android.settings")) return true;
+
+        if (applicationInfo.metaData != null) {
+            boolean isVr = isVirtualRealityApp(applicationInfo, mainActivity);
+            if (!isVr && applicationInfo.metaData.keySet().contains("com.oculus.environmentVersion")) return false;
+        }
+
+        if (isSupportedApp) {
+            for (String prefix : systemAppPrefixes) {
+                if (applicationInfo.packageName.startsWith(prefix)) {
+                    isSupportedApp = false;
+                    break;
+                }
+            }
+        }
+        if (!isSupportedApp) {
+            for (String prefix : nonSystemAppPrefixes) {
+                if (applicationInfo.packageName.startsWith(prefix)) {
+                    isSupportedApp = true;
+                    break;
+                }
+            }
+        }
+        return isSupportedApp;
+    }
+
+    public static boolean isWideApp(ApplicationInfo applicationInfo, MainActivity mainActivity) {
+        final boolean isVr = isVirtualRealityApp(applicationInfo, mainActivity);
+        final SharedPreferences sharedPreferences = mainActivity.sharedPreferences;
+        if (isVr) return sharedPreferences.getBoolean(SettingsProvider.KEY_WIDE_VR, true);
+        else      return sharedPreferences.getBoolean(SettingsProvider.KEY_WIDE_2D, false);
+    }
+
+    public Drawable loadIcon(MainActivity activity, ApplicationInfo appInfo, ImageView[] imageViews) throws PackageManager.NameNotFoundException {
         PackageManager packageManager = activity.getPackageManager();
         Resources resources;
 
@@ -153,26 +246,31 @@ public abstract class AbstractPlatform {
 
         Drawable appIcon = ResourcesCompat.getDrawableForDensity(resources, iconId, DisplayMetrics.DENSITY_XXXHIGH, null);
 
-        final File iconFile = packageToPath(activity, appInfo.packageName);
+        final boolean isWide = isWideApp(appInfo, activity);
+        final File iconFile = packageToPath(activity, appInfo.packageName, isWide);
 
         if (iconFile.exists()) {
-            AbstractPlatform.updateIcon(iconFile, appInfo.packageName);
+            AbstractPlatform.updateIcon(iconFile, appInfo.packageName, null);
             return Drawable.createFromPath(iconFile.getAbsolutePath());
         }
 
-        downloadIcon(activity, appInfo.packageName, () -> {
-           updateIcon(iconFile, appInfo.packageName);
-        });
         if (cachedIcons.containsKey(appInfo.packageName)) {
             return cachedIcons.get(appInfo.packageName);
         }
+        if (isVirtualRealityApp(appInfo, activity)) {downloadIcon(activity, appInfo, () -> updateIcon(iconFile, appInfo.packageName, imageViews)); }
         return appIcon;
     }
 
     private final ConcurrentHashMap<String, Object> locks = new ConcurrentHashMap<>();
 
-    private void downloadIcon(final Activity activity, String pkgName, final Runnable callback) {
-        final File iconFile = packageToPath(activity, pkgName);
+    private void downloadIcon(final MainActivity activity, ApplicationInfo appInfo, final Runnable callback) {
+        final String pkgName = appInfo.packageName;
+        if (excludedIconPackages.contains(pkgName)) return;
+        else excludedIconPackages.add(pkgName);
+
+        final boolean isWide = isWideApp(appInfo, activity);
+        final File iconFile = packageToPath(activity, pkgName, isWide);
+
         new Thread(() -> {
             Object lock = locks.putIfAbsent(pkgName, new Object());
             if (lock == null) {
@@ -180,27 +278,13 @@ public abstract class AbstractPlatform {
             }
             synchronized (Objects.requireNonNull(lock)) {
                 try {
-                    String url = OCULUS_ICONS_URL + pkgName + ".jpg";
-                    if (downloadIconFromUrl(url, iconFile)) {
-                        activity.runOnUiThread(callback);
-                        return;
+                    for (String url: isWide ? ICON_URLS_WIDE : ICON_URLS) {
+                        if (downloadIconFromUrl(url + pkgName + ".jpg", iconFile)) {
+                            activity.runOnUiThread(callback);
+                            return;
+                        }
                     }
-                    url = PICO_ICONS_URL + pkgName + ".png";
-                    if (downloadIconFromUrl(url, iconFile)) {
-                        activity.runOnUiThread(callback);
-                        return;
-                    }
-                    url = VIVEPORT_ICONS_URL + pkgName + ".webp";
-                    if (downloadIconFromUrl(url, iconFile)) {
-                        activity.runOnUiThread(callback);
-                        return;
-                    }
-                    url = VIVE_BUSINESS_ICONS_URL + pkgName + ".webp";
-                    if (downloadIconFromUrl(url, iconFile)) {
-                        activity.runOnUiThread(callback);
-                        return;
-                    }
-//                    Log.i("downloadIcon", "Missing icon: " +iconFile.getName());
+                    // If we get here, it failed to fetch. That's fine though.
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
@@ -220,7 +304,7 @@ public abstract class AbstractPlatform {
                 }
             }
         } catch (FileNotFoundException e) {
-//            Log.d("File not found", e.getMessage());
+            System.err.println("File not found: " + e.getMessage());
         } catch (IOException e) {
             e.printStackTrace();
         }

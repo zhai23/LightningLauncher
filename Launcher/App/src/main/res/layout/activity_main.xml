@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/linearLayoutMain"
+    android:id="@+id/mainLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bkg_window"
@@ -15,98 +15,161 @@
         android:scaleType="centerCrop"
         android:visibility="visible" />
 
-    <FrameLayout
+    <com.threethan.launcher.ui.FadingTopScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fadingEdge="vertical"
+        android:fadingEdgeLength="65dp"
+        android:requiresFadingEdge="vertical">
 
         <LinearLayout
+            android:id="@+id/scrollerLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
             android:orientation="vertical">
 
-            <eightbitlab.com.blurview.BlurView
-                android:id="@+id/blurView0"
+            <com.threethan.launcher.ui.DynamicHeightGridView
+                android:id="@+id/appsViewWide"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="22dp"
-                android:layout_marginRight="75dp"
-                android:layout_marginBottom="11dp"
-                android:background="@drawable/rounded"
-                app:blurOverlayColor="#30FFFFFF">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:baselineAligned="false"
-                    android:orientation="horizontal">
-
-                    <GridView
-                        android:id="@+id/groupsView"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:divider="#00000000"
-                        android:dividerHeight="0dp"
-                        android:padding="0dp" />
-                </LinearLayout>
-
-            </eightbitlab.com.blurview.BlurView>
-
-            <GridView
-                android:id="@+id/appsView"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:columnWidth="101dp"
                 android:gravity="center"
                 android:horizontalSpacing="15dp"
                 android:numColumns="auto_fit"
-                android:paddingLeft="20dp"
-                android:paddingTop="5dp"
-                android:paddingRight="20dp"
-                android:scrollbarStyle="outsideOverlay"
-                android:scrollbars="none"
+                android:stretchMode="columnWidth"
+                android:verticalSpacing="15dp" />
+
+            <com.threethan.launcher.ui.DynamicHeightGridView
+                android:id="@+id/appsView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:horizontalSpacing="15dp"
+                android:numColumns="auto_fit"
                 android:stretchMode="columnWidth"
                 android:verticalSpacing="15dp" />
         </LinearLayout>
+    </com.threethan.launcher.ui.FadingTopScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <eightbitlab.com.blurview.BlurView
-            android:id="@+id/blurView1"
-            android:layout_width="41dp"
-            android:layout_height="40dp"
-            android:layout_gravity="right"
-            android:layout_marginLeft="20dp"
+            android:id="@+id/blurView0"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="22dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginBottom="30dp"
+            android:layout_marginEnd="75dp"
+            android:layout_marginBottom="11dp"
             android:background="@drawable/rounded"
-            app:blurOverlayColor="#30FFFFFF">
+            app:blurOverlayColor="#46000000">
 
-            <ImageView
-                android:id="@+id/settingsIcon"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:alpha="0.6"
-                android:background="@android:color/transparent"
-                android:padding="8dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_config" />
+                android:layout_height="wrap_content"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <GridView
+                    android:id="@+id/groupsView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:divider="#00000000"
+                    android:dividerHeight="0dp"
+                    android:minWidth="100dp"
+                    android:padding="0dp" />
+            </LinearLayout>
+
         </eightbitlab.com.blurview.BlurView>
-    </FrameLayout>
+
+
+    </LinearLayout>
+
+    <eightbitlab.com.blurview.BlurView
+        android:id="@+id/blurView1"
+        android:layout_width="41dp"
+        android:layout_height="40dp"
+        android:layout_gravity="end"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="22dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/rounded"
+        app:blurOverlayColor="#4A000000">
+
+        <ImageView
+            android:id="@+id/settingsIcon"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0.5"
+            android:background="@android:color/transparent"
+            android:padding="8dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_config" />
+    </eightbitlab.com.blurview.BlurView>
 
     <TextView
         android:id="@+id/SelectionHint"
-        style="@style/SettingSubtitle"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
         android:layout_marginStart="5dp"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="5dp"
         android:layout_marginBottom="5dp"
         android:background="@drawable/bkg_dialog"
-        android:visibility="invisible" />
+        android:gravity="center"
+        android:padding="10dp"
+        android:textColor="@color/ef_colorTextPrimary"
+        android:textSize="16sp"
+        android:visibility="invisible"
+        tools:text="@string/selection_hint"
+        tools:visibility="visible" />
 
-</RelativeLayout>
+    <FrameLayout
+        android:id="@+id/openAnim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bkg_app"
+        android:focusable="true"
+        android:touchscreenBlocksFocus="true"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <ImageView
+            android:id="@+id/openIconBg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:scaleX="100"
+            android:scaleY="100"
+            android:src="@drawable/ic_appicon" />
+
+        <ImageView
+            android:id="@+id/openIcon"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitStart"
+            android:src="@drawable/ic_appicon" />
+
+    </FrameLayout>
+
+    <ProgressBar
+        android:id="@+id/openProgress"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:alpha="0"
+        android:indeterminate="true"
+        android:indeterminateTint="#AAAAAA"
+        android:theme="@style/ThemeOverlay.Material"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+</FrameLayout>

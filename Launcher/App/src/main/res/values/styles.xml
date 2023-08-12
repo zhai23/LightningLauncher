@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <style name="ThemeOverlay.Material" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:windowAnimationStyle">@null</item>
-        <item name="android:windowBackground">#00000000</item>
-    </style>
-
-    <style name="ThemeOverlay.Holo" parent="android:Theme.Holo.Light.NoActionBar">
-        <item name="android:windowAnimationStyle">@null</item>
-        <item name="android:windowBackground">#00000000</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowActivityTransitions">false</item>
     </style>
 
     <style name="SettingTitle">

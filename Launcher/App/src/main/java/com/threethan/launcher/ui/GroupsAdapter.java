@@ -1,10 +1,9 @@
 package com.threethan.launcher.ui;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +19,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 public class GroupsAdapter extends BaseAdapter {
@@ -40,14 +40,14 @@ public class GroupsAdapter extends BaseAdapter {
         settingsProvider = SettingsProvider.getInstance(activity);
 
         SettingsProvider settings = SettingsProvider.getInstance(mainActivity);
-        appGroups = settings.getAppGroupsSorted(false);
+        appGroups = settings.getAppGroupsSorted(false, mainActivity);
         if (!editMode) {
             appGroups.remove(GroupsAdapter.HIDDEN_GROUP);
         }
-        if (editMode) {
+        if (editMode && appGroups.size() < MAX_GROUPS) {
             appGroups.add("+ " + mainActivity.getString(R.string.add_group));
         }
-        selectedGroups = settings.getSelectedGroups();
+        selectedGroups = settings.getSelectedGroups(mainActivity);
     }
 
     public int getCount() {
@@ -74,12 +74,13 @@ public class GroupsAdapter extends BaseAdapter {
 
     private void setTextViewValue(TextView textView, String value) {
         if (HIDDEN_GROUP.equals(value)) {
-            textView.setText(" -  " + mainActivity.getString(R.string.apps_hidden));
+            textView.setText(mainActivity.getString(R.string.apps_hidden));
         } else {
             textView.setText(value);
         }
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
@@ -97,34 +98,29 @@ public class GroupsAdapter extends BaseAdapter {
         setTextViewValue(holder.textView, getItem(position));
 
         // set menu action
-        Drawable drawable = holder.menu.getContext().getDrawable(R.drawable.ic_info);
-        assert drawable != null;
-        drawable.setColorFilter(Color.parseColor("#90000000"), PorterDuff.Mode.SRC_ATOP);
-        holder.menu.setBackground(drawable);
+        holder.menu.getContext().getDrawable(R.drawable.ic_info);
         holder.menu.setOnClickListener(view -> {
 
-            final Map<String, String> apps = settingsProvider.getAppList();
-            final Set<String> appGroupsList = settingsProvider.getAppGroups();
-            final String oldGroupName = settingsProvider.getAppGroupsSorted(false).get(position);
+            final Map<String, String> apps = settingsProvider.getAppList(mainActivity);
+            final Set<String> appGroupsList = settingsProvider.getAppGroups(mainActivity);
+            final String oldGroupName = settingsProvider.getAppGroupsSorted(false,mainActivity).get(position);
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
-            builder.setView(R.layout.dialog_group_details);
+            AlertDialog dialog = new AlertDialog.Builder(mainActivity).setView(R.layout.dialog_group_details).create();
 
-            AlertDialog dialog = builder.create();
-            dialog.getWindow().setBackgroundDrawableResource(R.drawable.bkg_dialog);
+            Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawableResource(R.drawable.bkg_dialog);
             dialog.show();
 
             final EditText groupNameInput = dialog.findViewById(R.id.group_name);
             groupNameInput.setText(oldGroupName);
 
-            dialog.findViewById(R.id.ok).setOnClickListener(view1 -> {
+            dialog.findViewById(R.id.cancel).setOnClickListener(view1 -> {
                 String newGroupName = groupNameInput.getText().toString();
                 if (newGroupName.length() > 0) {
                     appGroupsList.remove(oldGroupName);
                     appGroupsList.add(newGroupName);
                     Map<String, String> updatedAppList = new HashMap<>();
                     for (String packageName : apps.keySet()) {
-                        if (apps.get(packageName).compareTo(oldGroupName) == 0) {
+                        if (Objects.requireNonNull(apps.get(packageName)).compareTo(oldGroupName) == 0) {
                             updatedAppList.put(packageName, newGroupName);
                         } else {
                             updatedAppList.put(packageName, apps.get(packageName));
@@ -132,15 +128,15 @@ public class GroupsAdapter extends BaseAdapter {
                     }
                     HashSet<String> selectedGroup = new HashSet<>();
                     selectedGroup.add(newGroupName);
-                    settingsProvider.setSelectedGroups(selectedGroup);
-                    settingsProvider.setAppGroups(appGroupsList);
-                    settingsProvider.setAppList(updatedAppList);
+                    settingsProvider.setSelectedGroups(selectedGroup, mainActivity);
+                    settingsProvider.setAppGroups(appGroupsList, mainActivity);
+                    settingsProvider.setAppList(updatedAppList, mainActivity);
                     mainActivity.reloadUI();
                 }
-                dialog.dismiss();
+                dialog.cancel();
             });
 
-            dialog.findViewById(R.id.group_delete).setOnClickListener(view12 -> {
+            dialog.findViewById(R.id.group_delete).setOnClickListener(view2 -> {
                 HashMap<String, String> newAppList = new HashMap<>();
                 for (String packageName : apps.keySet()) {
                     if (oldGroupName.equals(apps.get(packageName))) {
@@ -149,20 +145,23 @@ public class GroupsAdapter extends BaseAdapter {
                         newAppList.put(packageName, apps.get(packageName));
                     }
                 }
-                settingsProvider.setAppList(newAppList);
+                settingsProvider.setAppList(newAppList, mainActivity);
 
                 appGroupsList.remove(oldGroupName);
-                settingsProvider.setAppGroups(appGroupsList);
 
-                Set<String> firstSelectedGroup = new HashSet<>();
-                try{
-                    firstSelectedGroup.add(settingsProvider.getAppGroupsSorted(false).get(0));
-                    settingsProvider.setSelectedGroups(firstSelectedGroup);
-                }catch(IndexOutOfBoundsException e){
+                if (appGroupsList.size() <= 1) {
                     settingsProvider.resetGroups();
+                } else {
+
+                    settingsProvider.setAppGroups(appGroupsList, mainActivity);
+
+                    Set<String> firstSelectedGroup = new HashSet<>();
+                    firstSelectedGroup.add(settingsProvider.getAppGroupsSorted(false,mainActivity).get(0));
+                    settingsProvider.setSelectedGroups(firstSelectedGroup,mainActivity);
                 }
-                mainActivity.reloadUI();
                 dialog.dismiss();
+
+                mainActivity.reloadUI();
             });
         });
 
@@ -175,11 +174,11 @@ public class GroupsAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public void setGroup(String packageName, String groupName) {
-        Map<String, String> apps = settingsProvider.getAppList();
+    public void setGroup(String packageName, String groupName, Context context) {
+        Map<String, String> apps = settingsProvider.getAppList(context);
         apps.remove(packageName);
         apps.put(packageName, groupName);
-        settingsProvider.setAppList(apps);
+        settingsProvider.setAppList(apps, context);
     }
 
     private void setLook(int position, View itemView, View menu) {
@@ -201,7 +200,7 @@ public class GroupsAdapter extends BaseAdapter {
             }
             itemView.setBackgroundResource(shapeResourceId);
             TextView textView = itemView.findViewById(R.id.textLabel);
-            textView.setTextColor(Color.parseColor("#FF000000")); // set selected tab text color
+            textView.setTextColor(Color.parseColor("#FFFFFFFF")); // set selected tab text color
             if (isEditMode && (position < getCount() - 2)) {
                 menu.setVisibility(View.VISIBLE);
             } else {
@@ -210,7 +209,7 @@ public class GroupsAdapter extends BaseAdapter {
         } else {
             itemView.setBackgroundColor(Color.TRANSPARENT);
             TextView textView = itemView.findViewById(R.id.textLabel);
-            textView.setTextColor(Color.parseColor("#90000000")); // set unselected tab text color
+            textView.setTextColor(Color.parseColor("#98FFFFFF")); // set unselected tab text color
             menu.setVisibility(View.GONE);
         }
     }
