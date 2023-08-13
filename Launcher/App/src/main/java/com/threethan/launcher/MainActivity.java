@@ -241,12 +241,13 @@ public class MainActivity extends Activity {
     }
 
     private boolean resetOpenAnim() {
+        final boolean rv = (findViewById(R.id.openAnim).getVisibility() == View.VISIBLE);
         findViewById(R.id.openAnim).setVisibility(View.INVISIBLE);
         findViewById(R.id.openAnim).setScaleX(1);
         findViewById(R.id.openAnim).setScaleY(1);
+        findViewById(R.id.openIcon).setAlpha(1.0f);
         findViewById(R.id.openProgress).setVisibility(View.INVISIBLE);
-
-        return (findViewById(R.id.openAnim).getVisibility() == View.VISIBLE);
+        return rv;
     }
     @Override
     public void onBackPressed() {
