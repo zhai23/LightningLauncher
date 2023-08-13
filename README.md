@@ -4,15 +4,16 @@ LightningLauncher is a launcher designed for Oculus Quest that supports both off
 
 It has been built with a focus on speed, reliability, and convenience.
 
-Unlike other launchers, it opens apps as separate windows. *This allows VR apps to open on the lastest versions of the Quest OS!* You can also drag a window to either side slot, then open the launcher again to easily multitask. 
+It can run on any Android device, but has been tailored for the lastest updates to the Oculus/Meta Quest OS.
 
 ## Features
 - Simple, sleek interface
 - Loads in 1-2 seconds
-- Up to date, high res icons from [custom respoitories](https://github.com/basti564/LauncherIcons), thanks to [basti564](https://github.com/basti564/)
+- Up to date, high res icons from [custom respositories](https://github.com/basti564/LauncherIcons), thanks to [basti564](https://github.com/basti564/)
 - Automatic grouping of VR & 2D apps  (Into the default "Apps" and "Tools" groups, as long as they're not renamed)
 - Flexible manual grouping & hiding
 - Convenient & reliable Shortcut Service OR Shortcut Icon to add to your dock
+- Customizable native UI
 - Support for multitasking and launching without closing your game
 
 
@@ -52,6 +53,7 @@ Now you can use the Messenger icon on the dock to open LightningLauncher from an
 - Alternatively, the launcher shortcut and service/main can both be run separately if using the Quest's multitasking, giving you two windows.
 
 ## Screenshots
+*Need to be updated to show 3.0 interface...*
 ![goodscr0](https://github.com/threethan/LightningLauncher/assets/12588584/8a8645f0-f983-473b-a0a8-bba28d39bbda)
 ![goodscr1](https://github.com/threethan/LightningLauncher/assets/12588584/47e83a44-e540-43fe-81ac-2e2a84bd0f23)
 ![goodscr2](https://github.com/threethan/LightningLauncher/assets/12588584/5e5abb5b-a5d5-4f00-9385-6a0f707acc36)
