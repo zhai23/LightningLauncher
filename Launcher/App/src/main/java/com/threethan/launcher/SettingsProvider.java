@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -12,7 +11,6 @@ import com.threethan.launcher.platforms.AbstractPlatform;
 import com.threethan.launcher.ui.GroupsAdapter;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -24,11 +22,13 @@ import java.util.Set;
 /** @noinspection deprecation*/
 public class SettingsProvider {
     public static final String KEY_CUSTOM_NAMES = "KEY_CUSTOM_NAMES";
+    public static final String KEY_CUSTOM_NAMES_WIDE = "KEY_CUSTOM_NAMES_WIDE";
     public static final String KEY_CUSTOM_SCALE = "KEY_CUSTOM_SCALE";
+    public static final String KEY_CUSTOM_MARGIN = "KEY_CUSTOM_MARGIN";
     public static final String KEY_CUSTOM_THEME = "KEY_CUSTOM_THEME";
     public static final String KEY_EDIT_MODE = "KEY_EDIT_MODE";
+    public static final String KEY_DARK_MODE = "KEY_DARK_MODE";
     public static final String KEY_SEEN_LAUNCH_OUT_POPUP = "KEY_SEEN_LAUNCH_OUT_POPUP";
-
     public static final String NEEDS_META_DATA = "NEEDS_META_DATA";
     public static final String KEY_VR_SET = "KEY_VR_SET";
     public static final String KEY_2D_SET = "KEY_2D_SET";
@@ -38,7 +38,6 @@ public class SettingsProvider {
     public static final String KEY_WIDE_VR = "KEY_WIDE_VR";
     public static final String KEY_WIDE_2D = "KEY_WIDE_2D";
     private static SettingsProvider instance;
-//    private static Context context;
     private final String KEY_APP_GROUPS = "prefAppGroups";
     private final String KEY_APP_LIST = "prefAppList";
     private final String KEY_LAUNCH_OUT = "prefLaunchOutList";
@@ -52,7 +51,6 @@ public class SettingsProvider {
 
     private SettingsProvider(Context context) {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-//        SettingsProvider.context = context;
     }
 
     public static synchronized SettingsProvider getInstance(Context context) {
@@ -148,14 +146,8 @@ public class SettingsProvider {
         ArrayList<ApplicationInfo> sortedApps = new ArrayList<>(appMap.values());
         PackageManager packageManager = mainActivity.getPackageManager();
         // Compare on app name (fast)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            Collections.sort(sortedApps, Comparator.comparing(a -> ((String) a.loadLabel(packageManager))));
-        } else {
-            Log.e("LauncherStartup", "ANDROID VERSION TOO OLD TO SORT APPS!");
-        }
-
+        sortedApps.sort(Comparator.comparing(a -> ((String) a.loadLabel(packageManager))));
         // Sort Done!
-
         return sortedApps;
     }
 
@@ -182,8 +174,8 @@ public class SettingsProvider {
     public ArrayList<String> getAppGroupsSorted(boolean selected, Context context) {
         readValues(context);
         ArrayList<String> sortedApplicationList = new ArrayList<>(selected ? selectedGroupsSet : appGroupsSet);
-        Collections.sort(sortedApplicationList, (a, b) -> {
-            if (GroupsAdapter.HIDDEN_GROUP.equals(a)) return  1;
+        sortedApplicationList.sort((a, b) -> {
+            if (GroupsAdapter.HIDDEN_GROUP.equals(a)) return 1;
             if (GroupsAdapter.HIDDEN_GROUP.equals(b)) return -1;
             return a.toUpperCase().compareTo(b.toUpperCase());
         });

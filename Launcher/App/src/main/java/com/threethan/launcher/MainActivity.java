@@ -10,6 +10,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,6 +19,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -25,6 +27,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
+import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ScrollView;
@@ -50,15 +53,15 @@ import java.util.Set;
 import eightbitlab.com.blurview.BlurView;
 import eightbitlab.com.blurview.RenderScriptBlur;
 
-/** @noinspection deprecation, rawtypes */
-class BackgroundTask extends AsyncTask {
+/** @noinspection deprecation */
+class BackgroundTask extends AsyncTask<Object, Void, Object> {
 
     Drawable backgroundThemeDrawable;
     @SuppressLint("StaticFieldLeak")
     MainActivity owner;
     @SuppressLint("UseCompatLoadingForDrawables")
     @Override
-    protected Object doInBackground(Object[] objects) {
+    protected Object doInBackground(Object... objects) {
         owner = (MainActivity) objects[0];
         int backgroundThemeIndex = owner.sharedPreferences.getInt(SettingsProvider.KEY_CUSTOM_THEME, MainActivity.DEFAULT_THEME);
         if (backgroundThemeIndex < MainActivity.BACKGROUND_DRAWABLES.length) {
@@ -73,10 +76,13 @@ class BackgroundTask extends AsyncTask {
 
     @Override
     protected void onPostExecute(Object _n) {
-        owner.backgroundImageView.setImageDrawable(backgroundThemeDrawable);
-        owner.ready = true;
-        owner.initBlur();
+        owner.mainView.post(() -> {
+            owner.backgroundImageView.setImageDrawable(backgroundThemeDrawable);
+            owner.ready = true;
+            owner.initBlur();
+        });
     }
+
 }
 
 /** @noinspection deprecation, rawtypes */
@@ -115,24 +121,36 @@ public class MainActivity extends Activity {
     public static final int PICK_ICON_CODE = 450;
     public static final int PICK_THEME_CODE = 95;
     public static final String CUSTOM_THEME = "theme.png";
+    public boolean darkMode = false;
+    public boolean DEFAULT_DARK_MODE = false;
     static final boolean DEFAULT_NAMES = true;
-    static final int DEFAULT_SCALE = 160;
+    static final boolean DEFAULT_NAMES_WIDE = true;
+    static final int DEFAULT_SCALE = 112;
+    static final int DEFAULT_MARGIN = 32;
     static final int DEFAULT_THEME = 0;
     static final int[] BACKGROUND_DRAWABLES = {
-            R.drawable.bg_px_purple,
+            R.drawable.bg_px_blue,
             R.drawable.bg_px_red,
-            R.drawable.bg_px_green,
-            R.drawable.bg_px_orange,
             R.drawable.bg_px_white,
+            R.drawable.bg_px_orange,
+            R.drawable.bg_px_purple,
             R.drawable.bg_meta,
     };
     static final int[] BACKGROUND_COLORS = {
-            Color.parseColor("#74575c"),
-            Color.parseColor("#d26f5d"),
-            Color.parseColor("#e4eac8"),
-            Color.parseColor("#f9ce9b"),
+            Color.parseColor("#25374f"),
+            Color.parseColor("#f89b94"),
             Color.parseColor("#d9d4da"),
-            Color.parseColor("#1d2f39"),
+            Color.parseColor("#f9ce9b"),
+            Color.parseColor("#74575c"),
+            Color.parseColor("#202a36"),
+    };
+    static final boolean[] BACKGROUND_DARK = {
+            true,
+            false,
+            false,
+            false,
+            true,
+            true,
     };
     DynamicHeightGridView appGridView;
     DynamicHeightGridView appGridViewWide;
@@ -146,7 +164,7 @@ public class MainActivity extends Activity {
     private boolean lookPageOpen = false;
     private boolean loaded = false;
     boolean ready  = false;
-    private View mainView;
+    public View mainView;
     private int prevViewWidth;
 
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
@@ -190,8 +208,8 @@ public class MainActivity extends Activity {
                 updateSelectionHint();
             }
             settingsProvider.selectGroup(groups.get(position), getApplicationContext());
-            reloadUI();
 
+            reloadUI();
         });
 
         // Multiple group selection
@@ -323,6 +341,8 @@ public class MainActivity extends Activity {
 
             updateAppLists();
             // Reload UI
+            mainView.postDelayed(this::runUpdater, 1000);
+            reloadBG();
             reloadUI();
             loaded = true;
         } else {
@@ -362,6 +382,12 @@ public class MainActivity extends Activity {
         BlurView blurView0 = findViewById(R.id.blurView0);
         BlurView blurView1 = findViewById(R.id.blurView1);
 
+        blurView0.setOverlayColor(Color.parseColor(darkMode ? "#4A000000" : "#50FFFFFF"));
+        blurView1.setOverlayColor(Color.parseColor(darkMode ? "#4A000000" : "#50FFFFFF"));
+
+        ImageView settingsIcon = findViewById(R.id.settingsIcon);
+        settingsIcon.setImageTintList(ColorStateList.valueOf(Color.parseColor(darkMode ? "#FFFFFF" : "#000000")));
+
         float blurRadiusDp = 15f;
 
         View windowDecorView = getWindow().getDecorView();
@@ -397,29 +423,20 @@ public class MainActivity extends Activity {
     List<ApplicationInfo> wideApps;
     List<ApplicationInfo> squareApps;
 
-    @SuppressWarnings("unchecked")
-    public void reloadUI() {
-
-        Log.i("LightningLauncher","Reloading UI");
-
-        // Start, Execute Background Task
-
+    public void reloadBG() {
+        // Set initial color, execute background task
         int backgroundThemeIndex = sharedPreferences.getInt(SettingsProvider.KEY_CUSTOM_THEME, DEFAULT_THEME);
         if (backgroundThemeIndex < BACKGROUND_DRAWABLES.length) {
             backgroundImageView.setBackgroundColor(BACKGROUND_COLORS[backgroundThemeIndex]);
             getWindow().setNavigationBarColor(BACKGROUND_COLORS[backgroundThemeIndex]);
             getWindow().setStatusBarColor(BACKGROUND_COLORS[backgroundThemeIndex]);
-
         }
         new BackgroundTask().execute(this);
+    }
+    public void reloadUI() {
+        Log.i("LightningLauncher","Reloading UI");
 
-        // Get Preferences
-
-        boolean names = sharedPreferences.getBoolean(SettingsProvider.KEY_CUSTOM_NAMES, DEFAULT_NAMES);
-        int newScaleValueIndex = getPixelFromDip(sharedPreferences.getInt(SettingsProvider.KEY_CUSTOM_SCALE, DEFAULT_SCALE));
-        appGridView.setColumnWidth(newScaleValueIndex/2);
-        appGridViewWide.setColumnWidth(newScaleValueIndex);
-
+        darkMode = sharedPreferences.getBoolean(SettingsProvider.KEY_DARK_MODE, DEFAULT_DARK_MODE);
         editMode = sharedPreferences.getBoolean(SettingsProvider.KEY_EDIT_MODE, false);
 
         // Switch off of hidden if we just exited edit mode
@@ -431,37 +448,67 @@ public class MainActivity extends Activity {
         updateSelectionHint();
 
         // Set adapters
+        mainView.post(this::setAdapters);
+    }
+    public void setAdapters() {
+        // Get and apply margin
+        int marginValue = getPixelFromDip(sharedPreferences.getInt(SettingsProvider.KEY_CUSTOM_MARGIN, DEFAULT_MARGIN));
+        boolean names = sharedPreferences.getBoolean(SettingsProvider.KEY_CUSTOM_NAMES, DEFAULT_NAMES);
+        boolean namesWide = sharedPreferences.getBoolean(SettingsProvider.KEY_CUSTOM_NAMES_WIDE, DEFAULT_NAMES_WIDE);
 
-        appGridViewWide.setAdapter(new AppsAdapter(this, editMode, names, wideApps));
+        appGridView.setMargin(marginValue, names);
+        appGridViewWide.setMargin(marginValue, namesWide);
+        final FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        lp.setMargins(marginValue, Math.max(0,marginValue-dp(23)), marginValue, marginValue+dp(20));
+        findViewById(R.id.scrollerLayout).setLayoutParams(lp);
+
         appGridView.setAdapter(new AppsAdapter(this, editMode, names, squareApps));
+        appGridViewWide.setAdapter(new AppsAdapter(this, editMode, namesWide, wideApps));
+
         scrollView.scrollTo(0,0); // Reset scroll
         scrollView.smoothScrollTo(0,0); // Cancel inertia
 
         groupPanelGridView.setAdapter(new GroupsAdapter(this, editMode));
 
+        prevViewWidth = -1;
         updateGridViewHeights();
-
-        Log.i("LightningLauncher","Reloaded UI");
-
     }
+    public void runUpdater() {
+        new Updater(this).checkForUpdate();
+    }
+
     public void updateGridViewHeights() {
         if (mainView.getWidth() == prevViewWidth) return;
         prevViewWidth = mainView.getWidth();
 
-        final int group_columns = Math.min(groupPanelGridView.getAdapter().getCount(), prevViewWidth/400);
-        groupPanelGridView.setNumColumns(group_columns);
-        final int group_rows = (int) Math.ceil((double) groupPanelGridView.getAdapter().getCount() / group_columns);
-        View scrollInterior = (View) findViewById(R.id.scrollerLayout);
-        scrollInterior.setPadding(0,dp(23 + 20) + dp(40)*group_rows, 0,0);
+        // Group rows and relevant values
+        if (groupPanelGridView.getAdapter() != null) {
+            final int group_columns = Math.min(groupPanelGridView.getAdapter().getCount(), prevViewWidth / 400);
+            groupPanelGridView.setNumColumns(group_columns);
+            final int group_rows = (int) Math.ceil((double) groupPanelGridView.getAdapter().getCount() / group_columns);
+            View scrollInterior = findViewById(R.id.scrollerLayout);
+            scrollInterior.setPadding(0, dp(23 + 22) + dp(40) * group_rows, 0, 0);
+        }
+
+        int scaleValue = dp(sharedPreferences.getInt(SettingsProvider.KEY_CUSTOM_SCALE, DEFAULT_SCALE));
+        int estimatedWidth = prevViewWidth;
+        appGridView.setNumColumns((int) Math.round((double) estimatedWidth/scaleValue));
+        appGridViewWide.setNumColumns((int) Math.round((double) estimatedWidth/scaleValue/2));
     }
 
     public void setBackground(int index) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt(SettingsProvider.KEY_CUSTOM_THEME, index);
+        editor.putBoolean(SettingsProvider.KEY_DARK_MODE, BACKGROUND_DARK[index]);
         editor.apply();
-        reloadUI();
+        reloadBG();
     }
 
+    @Override
+    public void finish() {
+        Log.e("Finishing!", "---");
+        super.finish();
+    }
     private boolean editMode = false;
 
     private void showSettingsMain() {
@@ -521,11 +568,28 @@ public class MainActivity extends Activity {
 
         dialog.setOnDismissListener(dialogInterface -> lookPageOpen = false);
 
+        @SuppressLint("UseSwitchCompatOrMaterialCode") Switch dark = dialog.findViewById(R.id.switch_dark_mode);
+        dark.setChecked(sharedPreferences.getBoolean(SettingsProvider.KEY_DARK_MODE, DEFAULT_DARK_MODE));
+        dark.setOnCheckedChangeListener((compoundButton, value) -> {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean(SettingsProvider.KEY_DARK_MODE, value);
+            editor.apply();
+            reloadUI();
+        });
+
         @SuppressLint("UseSwitchCompatOrMaterialCode") Switch names = dialog.findViewById(R.id.switch_names);
         names.setChecked(sharedPreferences.getBoolean(SettingsProvider.KEY_CUSTOM_NAMES, DEFAULT_NAMES));
         names.setOnCheckedChangeListener((compoundButton, value) -> {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean(SettingsProvider.KEY_CUSTOM_NAMES, value);
+            editor.apply();
+            reloadUI();
+        });
+        @SuppressLint("UseSwitchCompatOrMaterialCode") Switch wideNames = dialog.findViewById(R.id.switch_names_wide);
+        wideNames.setChecked(sharedPreferences.getBoolean(SettingsProvider.KEY_CUSTOM_NAMES_WIDE, DEFAULT_NAMES_WIDE));
+        wideNames.setOnCheckedChangeListener((compoundButton, value) -> {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean(SettingsProvider.KEY_CUSTOM_NAMES_WIDE, value);
             editor.apply();
             reloadUI();
         });
@@ -555,7 +619,7 @@ public class MainActivity extends Activity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int value, boolean b) {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putInt(SettingsProvider.KEY_CUSTOM_SCALE, value + 55);
+                editor.putInt(SettingsProvider.KEY_CUSTOM_SCALE, value);
                 editor.apply();
             }
             @Override
@@ -566,9 +630,29 @@ public class MainActivity extends Activity {
                 reloadUI();
             }
         });
-        scale.setProgress(sharedPreferences.getInt(SettingsProvider.KEY_CUSTOM_SCALE, DEFAULT_SCALE) -55);
-        scale.setMax(210 - 55);
-        // scale.setMin(55);
+        scale.setProgress(sharedPreferences.getInt(SettingsProvider.KEY_CUSTOM_SCALE, DEFAULT_SCALE));
+        scale.setMax(174);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) scale.setMin(50);
+
+        SeekBar margin = dialog.findViewById(R.id.bar_margin);
+        margin.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int value, boolean b) {
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putInt(SettingsProvider.KEY_CUSTOM_MARGIN, value);
+                editor.apply();
+            }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                reloadUI();
+            }
+        });
+        margin.setProgress(sharedPreferences.getInt(SettingsProvider.KEY_CUSTOM_MARGIN, DEFAULT_MARGIN));
+        margin.setMax(59);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) margin.setMin(5);
 
         int theme = sharedPreferences.getInt(SettingsProvider.KEY_CUSTOM_THEME, DEFAULT_THEME);
         ImageView[] views = {
@@ -594,6 +678,7 @@ public class MainActivity extends Activity {
                     ImageUtils.showImagePicker(this, PICK_THEME_CODE);
                 } else {
                     setBackground(index);
+                    dark.setChecked(sharedPreferences.getBoolean(SettingsProvider.KEY_DARK_MODE, DEFAULT_DARK_MODE));
                 }
                 for (ImageView image : views) {
                     image.setBackground(getDrawable(R.drawable.bkg_button_trans));

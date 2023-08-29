@@ -23,19 +23,6 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/imageLabelBg"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:scaleType="fitEnd"
-            android:scaleX="100"
-            android:scaleY="100"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="720:405"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
             android:id="@+id/imageLabel"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -46,27 +33,24 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/textLabel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="5dp"
-            android:gravity="center|right"
-            android:shadowColor="#80000000"
-            android:shadowRadius="5"
-            android:singleLine="true"
-            android:textAlignment="textEnd"
-            android:textColor="@android:color/white"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="@id/imageLabel"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:strokeColor="#80000000"
-            app:strokeWidth="1.5dp"
-            tools:text="App Name Here" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/textLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="5dp"
+        android:gravity="center"
+        android:paddingTop="3dp"
+        android:shadowRadius="5"
+        android:singleLine="true"
+        android:textAlignment="textEnd"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        app:strokeColor="#80000000"
+        app:strokeWidth="1.5dp"
+        tools:text="App Name Here" />
 
 </LinearLayout>

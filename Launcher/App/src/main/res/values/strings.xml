@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="app_name">Lightning Launcher</string>
     <string name="default_apps_group">Games</string>
     <string name="android_apps_group">Tools</string>
@@ -9,12 +9,20 @@
     <string name="app_details">App Details</string>
     <string name="apps_hidden">- Hidden</string>
 
-    <string name="background_opacity">Background Opacity</string>
-    <string name="icons_size">Icon Size</string>
-    <string name="show_app_names">Show App Names</string>
+    <string name="icons_size">Target Size</string>
+    <string name="icons_margin">Margin</string>
 
-    <string name="wide_vr">Banner-Style VR Apps</string>
-    <string name="wide_2d">Banner-Style 2D Apps</string>
+    <string name="apps_vr">VR Apps</string>
+    <string name="apps_2d">2D Apps</string>
+    <string name="app_name_icon">App Icons</string>
+    <string name="app_name_wide">App Banners</string>
+
+    <string name="background_header">Wallpaper &amp; Style</string>
+    <string name="icon_header">Icons &amp; Layout</string>
+    <string name="wide_header">Display as Banner</string>
+    <string name="name_header">Show App Names</string>
+
+    <string name="dark_mode">Dark Header &amp; Light Text</string>
 
     <string name="service_desc">When this service is enabled, Lightning Launcher will open automatically when you hover the cursor over the App Library icon for about half a second. (This may make it difficult to access the default launcher)</string>
     <string name="accessibility_event_name">[App Library]</string>
@@ -38,5 +46,13 @@
 
     <string name="selection_hint">Click a group to move the selected app.</string>
     <string name="selection_hint_multiple">%d apps selected. Click a group to move them.</string>
+
+    <string name="update_title">An update is available!</string>
+    <string name="update_content">Update from version %1$s to %2$s, without taking off your headset!</string>
+    <string name="update_button">Continue</string>
+
+    <string name="update_failed_title">Not working?</string>
+    <string name="update_failed_content">Restart the app to try again. If you got a "Problem Staging" message, it might take a couple tries.</string>
+    <string name="update_failed_button">Dismiss</string>
 
 </resources>

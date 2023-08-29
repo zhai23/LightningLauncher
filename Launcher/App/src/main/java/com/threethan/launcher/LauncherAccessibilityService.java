@@ -25,12 +25,7 @@ public class LauncherAccessibilityService extends AccessibilityService
                 Intent launchIntent = new Intent(this, MainActivity.class);
 
                 launchIntent.setFlags(
-                        Intent.FLAG_ACTIVITY_NEW_TASK |
-                                Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                                Intent.FLAG_ACTIVITY_CLEAR_TASK |
-                                Intent.FLAG_ACTIVITY_SINGLE_TOP |
-                                Intent.FLAG_ACTIVITY_NO_HISTORY |
-                                Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
+                    Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
                 );
                 Log.i("LightningLauncherService", "Opening launcher activity from accessibility event");
                 startActivity(launchIntent);
@@ -40,11 +35,7 @@ public class LauncherAccessibilityService extends AccessibilityService
                         Log.i("LightningLauncherService", "Opening launcher activity from accessibility event (delayed)");
                         startActivity(launchIntent);
                     }
-                }, 800);
-
-
-
-            }
+                }, 800);}
         }
     }
     public void onInterrupt() {}

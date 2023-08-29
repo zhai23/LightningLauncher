@@ -5,7 +5,6 @@ import android.util.AttributeSet;
 import android.widget.GridView;
 
 public class DynamicHeightGridView extends GridView {
-
     public DynamicHeightGridView(Context context) {
         super(context);
     }
@@ -25,12 +24,17 @@ public class DynamicHeightGridView extends GridView {
     }
 
     private void fixHeight() {
-
+        if (getAdapter() == null) return;
         int items = getAdapter().getCount();
         int columns = getNumColumns();
+
         int rows = (int) Math.ceil((double) items / (double)columns);
 
         setMeasuredDimension(getMeasuredWidth(), getMeasuredHeight()*rows + getVerticalSpacing()*rows);
     }
 
+    public void setMargin(int margin, boolean names) {
+        setVerticalSpacing(names ? margin/2 : margin);
+        setHorizontalSpacing(margin);
+    }
 }

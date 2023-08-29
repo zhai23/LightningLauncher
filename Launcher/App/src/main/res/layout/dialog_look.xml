@@ -17,6 +17,18 @@
             android:layout_height="wrap_content"
             android:text="Customize Appearance" />
 
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:paddingLeft="5dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="5dp"
+            android:text="@string/background_header"
+            android:textColor="@android:color/white"
+            android:textSize="20sp" />
+
         <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="58dp"
@@ -37,7 +49,7 @@
                     android:background="@drawable/bkg_button_trans"
                     android:padding="8dp"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/bg_px_purple" />
+                    android:src="@drawable/bg_px_blue" />
 
                 <ImageView
                     android:id="@+id/theme1"
@@ -59,7 +71,7 @@
                     android:background="@drawable/bkg_button_trans"
                     android:padding="8dp"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/bg_px_green" />
+                    android:src="@drawable/bg_px_white" />
 
                 <ImageView
                     android:id="@+id/theme3"
@@ -81,7 +93,7 @@
                     android:background="@drawable/bkg_button_trans"
                     android:padding="8dp"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/bg_px_white" />
+                    android:src="@drawable/bg_px_purple" />
 
                 <ImageView
                     android:id="@+id/theme5"
@@ -110,8 +122,47 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginTop="10dp"
+            android:layout_marginEnd="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/bkg_button_pad"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:singleLine="true"
+                android:text="@string/dark_mode"
+                android:textColor="@android:color/white"
+                android:textSize="16sp" />
+
+            <Switch
+                android:id="@+id/switch_dark_mode"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:thumb="@drawable/switch_thumb_custom"
+                android:track="@drawable/switch_track_custom" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:paddingLeft="5dp"
+            android:paddingTop="10dp"
+            android:text="@string/icon_header"
+            android:textColor="@android:color/white"
+            android:textSize="20sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:background="@drawable/bkg_button_pad"
             android:orientation="horizontal"
             android:padding="10dp">
@@ -121,6 +172,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
+                android:singleLine="true"
                 android:text="@string/icons_size"
                 android:textColor="@android:color/white"
                 android:textSize="16sp" />
@@ -140,35 +192,6 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/bkg_button_pad"
-            android:orientation="horizontal"
-            android:padding="10dp"
-            android:visibility="gone">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/background_opacity"
-                android:textColor="@android:color/white"
-                android:textSize="16sp" />
-
-            <SeekBar
-                android:id="@+id/bar_opacity"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1"
-                android:max="255"
-                android:padding="0dp"
-                android:progressDrawable="@drawable/seekbar_custom"
-                android:thumb="@null" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="10dp"
             android:background="@drawable/bkg_button_pad"
@@ -177,65 +200,167 @@
 
             <TextView
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="@string/show_app_names"
+                android:gravity="center_vertical"
+                android:singleLine="true"
+                android:text="@string/icons_margin"
                 android:textColor="@android:color/white"
                 android:textSize="16sp" />
 
-            <Switch
-                android:id="@+id/switch_names"
-                android:layout_width="wrap_content"
+            <SeekBar
+                android:id="@+id/bar_margin"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:thumb="@drawable/switch_thumb_custom"
-                android:track="@drawable/switch_track_custom" />
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:max="255"
+                android:padding="0dp"
+                android:progressBackgroundTint="@android:color/white"
+                android:progressDrawable="@drawable/seekbar_custom"
+                android:thumb="@null" />
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:paddingLeft="5dp"
+            android:paddingTop="10dp"
+            android:text="@string/wide_header"
+            android:textColor="@android:color/white"
+            android:textSize="20sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/bkg_button_pad"
-            android:orientation="horizontal"
-            android:padding="10dp">
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="5dp"
                 android:layout_weight="1"
-                android:text="@string/wide_vr"
-                android:textColor="@android:color/white"
-                android:textSize="16sp" />
+                android:background="@drawable/bkg_button_pad"
+                android:orientation="horizontal"
+                android:padding="10dp">
 
-            <Switch
-                android:id="@+id/switch_wide_vr"
-                android:layout_width="wrap_content"
+                <TextView
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:singleLine="true"
+                    android:text="@string/apps_vr"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp" />
+
+                <Switch
+                    android:id="@+id/switch_wide_vr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:thumb="@drawable/switch_thumb_custom"
+                    android:track="@drawable/switch_track_custom" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:thumb="@drawable/switch_thumb_custom"
-                android:track="@drawable/switch_track_custom" />
+                android:layout_marginStart="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/bkg_button_pad"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+                <TextView
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:singleLine="true"
+                    android:text="@string/apps_2d"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp" />
+
+                <Switch
+                    android:id="@+id/switch_wide_2d"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:thumb="@drawable/switch_thumb_custom"
+                    android:track="@drawable/switch_track_custom" />
+            </LinearLayout>
+
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:paddingLeft="5dp"
+            android:paddingTop="10dp"
+            android:text="@string/name_header"
+            android:textColor="@android:color/white"
+            android:textSize="20sp" />
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/bkg_button_pad"
-            android:orientation="horizontal"
-            android:padding="10dp">
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="5dp"
                 android:layout_weight="1"
-                android:text="@string/wide_2d"
-                android:textColor="@android:color/white"
-                android:textSize="16sp" />
+                android:background="@drawable/bkg_button_pad"
+                android:orientation="horizontal"
+                android:padding="10dp">
 
-            <Switch
-                android:id="@+id/switch_wide_2d"
-                android:layout_width="wrap_content"
+                <TextView
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:singleLine="true"
+                    android:text="@string/app_name_icon"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp" />
+
+                <Switch
+                    android:id="@+id/switch_names"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:thumb="@drawable/switch_thumb_custom"
+                    android:track="@drawable/switch_track_custom" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:thumb="@drawable/switch_thumb_custom"
-                android:track="@drawable/switch_track_custom" />
+                android:layout_marginStart="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/bkg_button_pad"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+                <TextView
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:singleLine="true"
+                    android:text="@string/app_name_wide"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp" />
+
+                <Switch
+                    android:id="@+id/switch_names_wide"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:thumb="@drawable/switch_thumb_custom"
+                    android:track="@drawable/switch_track_custom" />
+            </LinearLayout>
+
         </LinearLayout>
+
     </LinearLayout>
 </ScrollView>

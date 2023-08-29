@@ -3,6 +3,7 @@ package com.threethan.launcher.ui;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -199,8 +200,9 @@ public class GroupsAdapter extends BaseAdapter {
                 shapeResourceId = R.drawable.middle_selected_tab;
             }
             itemView.setBackgroundResource(shapeResourceId);
+            itemView.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(mainActivity.darkMode ? "#50000000" : "#FFFFFF")));
             TextView textView = itemView.findViewById(R.id.textLabel);
-            textView.setTextColor(Color.parseColor("#FFFFFFFF")); // set selected tab text color
+            textView.setTextColor(Color.parseColor(mainActivity.darkMode ? "#FFFFFFFF" : "#FF000000")); // set selected tab text color
             if (isEditMode && (position < getCount() - 2)) {
                 menu.setVisibility(View.VISIBLE);
             } else {
@@ -209,7 +211,7 @@ public class GroupsAdapter extends BaseAdapter {
         } else {
             itemView.setBackgroundColor(Color.TRANSPARENT);
             TextView textView = itemView.findViewById(R.id.textLabel);
-            textView.setTextColor(Color.parseColor("#98FFFFFF")); // set unselected tab text color
+            textView.setTextColor(Color.parseColor(mainActivity.darkMode ? "#98FFFFFF" : "#98000000")); // set unselected tab text color
             menu.setVisibility(View.GONE);
         }
     }

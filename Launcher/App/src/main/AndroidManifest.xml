@@ -3,11 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES"/>
-
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-
 
     <uses-feature android:name="android.hardware.vr.headtracking" android:required="false" android:version="1"/>
     <uses-feature android:name="oculus.software.handtracking" android:required="false"/>
@@ -28,13 +25,28 @@
             android:name=".MainActivity"
             android:screenOrientation="unspecified"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
-            android:exported="true">
+            android:exported="true"
+            android:launchMode="singleInstance"
+            android:excludeFromRecents="true"
+            android:resizeableActivity="true"
+            android:noHistory="true"
+            android:finishOnTaskLaunch="true"
+            android:finishOnCloseSystemDialogs="true"
+            android:clearTaskOnLaunch="true">
+
+            <layout android:defaultWidth="706dp"
+                android:defaultHeight="442dp"
+                android:gravity="top|end" />
+
+            <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
+            <meta-data android:name="com.oculus.vrshell.free_resizing_limits" android:value="300,2000,500,1000"/>
 
             <intent-filter>
+                <action android:name="com.oculus.vrshell.SHELL_MAIN"/>
                 <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.HOME"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT"/>
                 <action android:name="com.threethan.launcher.FINISH" />
             </intent-filter>
         </activity>
@@ -53,4 +65,7 @@
         </service>
 
     </application>
+
+
+
 </manifest>

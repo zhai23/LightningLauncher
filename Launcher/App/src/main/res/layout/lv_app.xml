@@ -22,19 +22,6 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/imageLabelBg"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:scaleType="fitCenter"
-            android:scaleX="80"
-            android:scaleY="90"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
             android:id="@+id/imageLabel"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -50,13 +37,14 @@
     <TextView
         android:id="@+id/textLabel"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="35sp"
+        android:layout_marginTop="-1sp"
         android:gravity="center"
-        android:shadowColor="#80000000"
-        android:shadowRadius="5"
-        android:singleLine="true"
+        android:lineSpacingExtra="-4dp"
+        android:maxLines="2"
+        android:singleLine="false"
         android:textColor="@android:color/white"
-        android:textSize="14sp"
+        android:textSize="16sp"
         app:strokeColor="#80000000"
         app:strokeWidth="1.5dp" />
 </LinearLayout>

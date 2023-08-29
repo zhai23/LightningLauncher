@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -39,8 +40,6 @@ import java.util.Objects;
 class IconTask extends AsyncTask {
     @SuppressLint("StaticFieldLeak")
     private ImageView imageView;
-    @SuppressLint("StaticFieldLeak")
-    private ImageView imageViewBg;
     private Drawable appIcon;
 
     @Override
@@ -49,10 +48,9 @@ class IconTask extends AsyncTask {
         final MainActivity mainActivityContext = (MainActivity) objects[2];
         final AbstractPlatform appPlatform = AbstractPlatform.getPlatform(currentApp);
         imageView = (ImageView) objects[3];
-        imageViewBg = (ImageView) objects[4];
 
         try {
-            ImageView[] imageViews = {imageView, imageViewBg};
+            ImageView[] imageViews = {imageView};
             appIcon = appPlatform.loadIcon(mainActivityContext, currentApp, imageViews);
         } catch (Resources.NotFoundException | PackageManager.NameNotFoundException e) {
             Log.d("DreamGrid", "Error loading icon for app: " + currentApp.packageName, e);
@@ -62,7 +60,6 @@ class IconTask extends AsyncTask {
     @Override
     protected void onPostExecute(Object _n) {
         imageView.setImageDrawable(appIcon);
-        imageViewBg.setImageDrawable(appIcon);
     }
 }
 
@@ -122,7 +119,6 @@ public class AppsAdapter extends BaseAdapter{
             holder = new ViewHolder();
             holder.layout = convertView.findViewById(R.id.layout);
             holder.imageView = convertView.findViewById(R.id.imageLabel);
-            holder.imageViewBg = convertView.findViewById(R.id.imageLabelBg);
             holder.textView = convertView.findViewById(R.id.textLabel);
             holder.moreButton = convertView.findViewById(R.id.moreButton);
 
@@ -143,8 +139,12 @@ public class AppsAdapter extends BaseAdapter{
         // set value into textview
         PackageManager packageManager = mainActivity.getPackageManager();
         String name = SettingsProvider.getAppDisplayName(mainActivity, currentApp.packageName, currentApp.loadLabel(packageManager));
-        holder.textView.setText(name);
         holder.textView.setVisibility(showTextLabels ? View.VISIBLE : View.GONE);
+        if (showTextLabels) {
+            holder.textView.setText(name);
+            holder.textView.setTextColor(Color.parseColor(mainActivity.darkMode ? "#FFFFFF" : "#000000"));
+            holder.textView.setShadowLayer(6, 0, 0, Color.parseColor(mainActivity.darkMode ? "#000000" : "#20FFFFFF"));
+        }
 
         if (isEditMode) {
             // short click for app details, long click to activate drag and drop
