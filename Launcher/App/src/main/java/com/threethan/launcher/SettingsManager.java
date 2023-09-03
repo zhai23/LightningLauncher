@@ -57,8 +57,10 @@ public class SettingsProvider {
     private final String KEY_SELECTED_GROUPS = "prefSelectedGroups";
 
     // group
-    private final String KEY_DEFAULT_GROUP_2D = "Apps";
-    private final String KEY_DEFAULT_GROUP_VR = "Tools";
+    public static final String KEY_GROUP_2D = "KEY_DEFAULT_GROUP_2D";
+    public static final String KEY_GROUP_VR = "KEY_DEFAULT_GROUP_VR";
+    public static final String DEFAULT_GROUP_2D = "Apps";
+    public static final String DEFAULT_GROUP_VR = "Games";
 
     // theme
     public static final String KEY_BACKGROUND = "KEY_CUSTOM_THEME";
@@ -144,35 +146,32 @@ public class SettingsProvider {
         else appsToLaunchOut.remove(pkg);
     }
 
-    public Map<String, String> getAppList(Context context) {
-        readValues(context);
+    public Map<String, String> getAppList() {
+        readValues();
         return appListMap;
     }
 
-    public void setAppList(Map<String, String> appList, Context context) {
+    public void setAppList(Map<String, String> appList) {
         appListMap = appList;
-        storeValues(context);
+        storeValues();
     }
 
     public ArrayList<ApplicationInfo> getInstalledApps(MainActivity mainActivity, List<String> selected, boolean first, List<ApplicationInfo> allApps) {
 
         // Get list of installed apps
-        Map<String, String> apps = getAppList(mainActivity);
+        Map<String, String> apps = getAppList();
 
         //Start Auto Sort"
 
-        //Sort
-        if (appGroupsSet.contains(getDefaultGroup(false)) || appGroupsSet.contains(getDefaultGroup(true))) {
-            // Sort if groups are present
-            for (ApplicationInfo app : allApps) {
-                if (!appListMap.containsKey(app.packageName)) {
-                    final boolean isVr = AbstractPlatform.isVirtualRealityApp(app, mainActivity);
-                    appListMap.put(app.packageName, getDefaultGroup(isVr));
-                }
+        // Sort into groups
+        for (ApplicationInfo app : allApps) {
+            if (!appListMap.containsKey(app.packageName)) {
+                final boolean isVr = AbstractPlatform.isVirtualRealityApp(app, mainActivity);
+                appListMap.put(app.packageName, getDefaultGroup(isVr));
             }
-            // Since this goes over all apps & checks if they're vr, we can safely decide we don't need meta data for them on subsequent launchers
-            mainActivity.sharedPreferences.edit().putBoolean(SettingsProvider.NEEDS_META_DATA, false).apply();
         }
+        // Since this goes over all apps & checks if they're vr, we can safely decide we don't need meta data for them on subsequent launchers
+        mainActivity.sharedPreferences.edit().putBoolean(SettingsProvider.NEEDS_META_DATA, false).apply();
 
         // Save Auto Sort
 
@@ -180,7 +179,7 @@ public class SettingsProvider {
         ArrayList<ApplicationInfo> installedApplications = new ArrayList<>(allApps);
 
         // Save changes to app list
-        setAppList(appListMap, mainActivity);
+        setAppList(appListMap);
 
         // Map Packages
 
@@ -212,41 +211,41 @@ public class SettingsProvider {
         return sortedApps;
     }
 
-    public Set<String> getAppGroups(Context context) {
-        readValues(context);
+    public Set<String> getAppGroups() {
+        readValues();
         return appGroupsSet;
     }
 
-    public void setAppGroups(Set<String> appGroups, Context context) {
+    public void setAppGroups(Set<String> appGroups) {
         appGroupsSet = appGroups;
-        storeValues(context);
+        storeValues();
     }
 
-    public Set<String> getSelectedGroups(Context context) {
-        readValues(context);
+    public Set<String> getSelectedGroups() {
+        readValues();
         return selectedGroupsSet;
     }
 
-    public void setSelectedGroups(Set<String> appGroups, Context context) {
+    public void setSelectedGroups(Set<String> appGroups) {
         selectedGroupsSet = appGroups;
-        storeValues(context);
+        storeValues();
     }
 
-    public ArrayList<String> getAppGroupsSorted(boolean selected, Context context) {
-        readValues(context);
+    public ArrayList<String> getAppGroupsSorted(boolean selected) {
+        readValues();
         ArrayList<String> sortedApplicationList = new ArrayList<>(selected ? selectedGroupsSet : appGroupsSet);
         sortedApplicationList.sort(Comparator.comparing(String::toUpperCase));
-        // Move hidden group to end
-        if (sortedApplicationList.contains(GroupsAdapter.HIDDEN_GROUP)) {
-            sortedApplicationList.remove(GroupsAdapter.HIDDEN_GROUP);
-            sortedApplicationList.add(GroupsAdapter.HIDDEN_GROUP);
-        }
+
         // Move vr group to start
         if (sortedApplicationList.contains(getDefaultGroup(true))) {
             sortedApplicationList.remove(getDefaultGroup(true));
             sortedApplicationList.add(0, getDefaultGroup(true));
         }
-
+        // Move hidden group to end
+        if (sortedApplicationList.contains(GroupsAdapter.HIDDEN_GROUP)) {
+            sortedApplicationList.remove(GroupsAdapter.HIDDEN_GROUP);
+            sortedApplicationList.add(GroupsAdapter.HIDDEN_GROUP);
+        }
         return sortedApplicationList;
     }
 
@@ -261,11 +260,13 @@ public class SettingsProvider {
         editor.apply();
     }
 
-    public static String getDefaultGroup(boolean vr) {
-        return vr ? "Games" : "Apps";
+    public String getDefaultGroup(boolean vr) {
+        final String group = vr ? sharedPreferences.getString(KEY_GROUP_VR, DEFAULT_GROUP_VR) : sharedPreferences.getString(KEY_GROUP_2D, DEFAULT_GROUP_2D);
+        if (!appGroupsSet.contains(group)) return GroupsAdapter.HIDDEN_GROUP;
+        else return group;
     }
 
-    synchronized void readValues(Context context) {
+    synchronized void readValues() {
         try {
             Set<String> defaultGroupsSet = new HashSet<>();
             defaultGroupsSet.add(getDefaultGroup(true));
@@ -294,7 +295,7 @@ public class SettingsProvider {
 
     }
 
-    private synchronized void storeValues(Context context) {
+    private synchronized void storeValues() {
         try {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putStringSet(KEY_APP_GROUPS, appGroupsSet);
@@ -326,9 +327,9 @@ public class SettingsProvider {
         }
     }
 
-    public String addGroup(Context context) {
+    public String addGroup() {
         String newGroupName = "New";
-        List<String> existingGroups = getAppGroupsSorted(false, context);
+        List<String> existingGroups = getAppGroupsSorted(false);
         if (existingGroups.contains(newGroupName)) {
             int index = 1;
             while (existingGroups.contains(newGroupName + " " + index)) {
@@ -337,14 +338,14 @@ public class SettingsProvider {
             newGroupName = newGroupName + " " + index;
         }
         existingGroups.add(newGroupName);
-        setAppGroups(new HashSet<>(existingGroups), context);
+        setAppGroups(new HashSet<>(existingGroups));
         return newGroupName;
     }
 
-    public void selectGroup(String name, Context context) {
+    public void selectGroup(String name) {
         Set<String> selectFirst = new HashSet<>();
         selectFirst.add(name);
-        setSelectedGroups(selectFirst, context);
+        setSelectedGroups(selectFirst);
     }
 
     public void setAppDisplayName(Context context, ApplicationInfo appInfo, String newName) {
@@ -381,8 +382,8 @@ public class SettingsProvider {
                     if (sharedPreferences.getInt(KEY_BACKGROUND, DEFAULT_BACKGROUND) == 6) {
                         sharedPreferences.edit().putInt(KEY_BACKGROUND, -1).apply();
                     }
-                    final Map<String, String> apps = settingsProvider.getAppList(mainActivity);
-                    final Set<String> appGroupsList = settingsProvider.getAppGroups(mainActivity);
+                    final Map<String, String> apps = settingsProvider.getAppList();
+                    final Set<String> appGroupsList = settingsProvider.getAppGroups();
                     final String oldGroupName = "Tools";
                     final String newGroupName = "Apps";
                     appGroupsList.remove(oldGroupName);
@@ -397,9 +398,9 @@ public class SettingsProvider {
                     }
                     HashSet<String> selectedGroup = new HashSet<>();
                     selectedGroup.add(newGroupName);
-                    settingsProvider.setSelectedGroups(selectedGroup, mainActivity);
-                    settingsProvider.setAppGroups(appGroupsList, mainActivity);
-                    settingsProvider.setAppList(updatedAppList, mainActivity);
+                    settingsProvider.setSelectedGroups(selectedGroup);
+                    settingsProvider.setAppGroups(appGroupsList);
+                    settingsProvider.setAppList(updatedAppList);
                     mainActivity.refreshInterface();
                 }
             }
