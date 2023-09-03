@@ -17,7 +17,7 @@ public class AppPlatform extends AbstractPlatform {
 
         if (SettingsProvider.getAppLaunchOut(appInfo.packageName) || AbstractPlatform.isVirtualRealityApp(appInfo, (MainActivity) context)) {
             context.finish();
-            context.overridePendingTransition(0, 0); // Cancel closing anime. May not do anything on quest.
+            context.overridePendingTransition(0, 0); // Cancel closing animation. Doesn't work on quest, but doesn't hurt
             assert launchIntent != null;
             launchIntent.setFlags(
                 Intent.FLAG_ACTIVITY_NEW_TASK |

@@ -13,6 +13,7 @@ import com.threethan.launcher.ui.GroupsAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,8 +28,6 @@ public class SettingsProvider {
     public static final String KEY_MARGIN = "KEY_CUSTOM_MARGIN";
     static final int DEFAULT_SCALE = 112;
     static final int DEFAULT_MARGIN = 32;
-
-
 
     public static final String KEY_EDIT_MODE = "KEY_EDIT_MODE";
     public static final String KEY_SEEN_LAUNCH_OUT_POPUP = "KEY_SEEN_LAUNCH_OUT_POPUP";
@@ -59,14 +58,17 @@ public class SettingsProvider {
     // theme
     public static final String KEY_BACKGROUND = "KEY_CUSTOM_THEME";
     public static final String KEY_DARK_MODE = "KEY_DARK_MODE";
+    public static final String KEY_GROUP_MODE = "KEY_GROUP_MODE";
     static final int DEFAULT_BACKGROUND = 0;
     static final boolean DEFAULT_DARK_MODE = true;
+    static final boolean DEFAULT_GROUP_MODE = true;
 
     static final int[] BACKGROUND_DRAWABLES = {
             R.drawable.bg_px_blue,
             R.drawable.bg_px_red,
             R.drawable.bg_px_white,
             R.drawable.bg_px_orange,
+            R.drawable.bg_px_green,
             R.drawable.bg_px_purple,
             R.drawable.bg_meta,
     };
@@ -75,11 +77,13 @@ public class SettingsProvider {
             Color.parseColor("#f89b94"),
             Color.parseColor("#d9d4da"),
             Color.parseColor("#f9ce9b"),
+            Color.parseColor("#e4eac8"),
             Color.parseColor("#74575c"),
             Color.parseColor("#202a36"),
     };
     static final boolean[] BACKGROUND_DARK = {
             true,
+            false,
             false,
             false,
             false,
@@ -90,7 +94,7 @@ public class SettingsProvider {
     //compat
     public final String KEY_COMPATIBILITY_VERSION = "KEY_COMPATIBILITY_VERSION";
     public static int CURRENT_COMPATIBILITY_VERSION = 1;
-    private static int[] VERSIONS_WITH_BACKGROUND_CHANGES = {1};
+    private static final List<Integer> VERSIONS_WITH_BACKGROUND_CHANGES = Collections.singletonList(1);
 
     //storage
     private final SharedPreferences sharedPreferences;
@@ -154,7 +158,6 @@ public class SettingsProvider {
             // Sort if groups are present
             for (ApplicationInfo app : allApps) {
                 if (!appListMap.containsKey(app.packageName)) {
-//                    Log.i("Automatically Sorted", app.packageName);
                     final boolean isVr = AbstractPlatform.isVirtualRealityApp(app, mainActivity);
                     appListMap.put(app.packageName, isVr ? mainActivity.getString(R.string.default_apps_group) : mainActivity.getString(R.string.android_apps_group));
                 }
@@ -272,7 +275,7 @@ public class SettingsProvider {
         }
 
     }
-    synchronized void checkCompatibilityUpdate(Context context) {
+    synchronized void checkCompatibilityUpdate() {
         int storedVersion = sharedPreferences.getInt(KEY_COMPATIBILITY_VERSION, -1);
         if (storedVersion == -1) {
             if (sharedPreferences.getInt(KEY_BACKGROUND, -1) == -1) return; // return if fresh install
@@ -280,20 +283,44 @@ public class SettingsProvider {
         }
         
         if (storedVersion == CURRENT_COMPATIBILITY_VERSION) return; //Return if no update
-        if (storedVersion > CURRENT_COMPATIBILITY_VERSION) Log.e("CompatibilityUpdate Error", "Previous version greater than current!");
-        // If updated
-        for (int version=0; version <= CURRENT_COMPATIBILITY_VERSION; version++) {
-            if (Arrays.asList(VERSIONS_WITH_BACKGROUND_CHANGES).contains(version)) {
-                int backgroundIndex =   sharedPreferences.getInt(KEY_BACKGROUND, DEFAULT_BACKGROUND);
-                if (backgroundIndex < BACKGROUND_DARK.length) {
-                    sharedPreferences.edit().putBoolean(KEY_DARK_MODE, BACKGROUND_DARK[backgroundIndex]).apply();
-                } else if (storedVersion == 0) {
-                    sharedPreferences.edit().putBoolean(KEY_DARK_MODE, DEFAULT_DARK_MODE).apply();
+
+        try {
+            if (storedVersion > CURRENT_COMPATIBILITY_VERSION)
+                Log.e("CompatibilityUpdate Error", "Previous version greater than current!");
+            // If updated
+            for (int version = 0; version <= CURRENT_COMPATIBILITY_VERSION; version++) {
+                if (VERSIONS_WITH_BACKGROUND_CHANGES.contains(version)) {
+                    int backgroundIndex = sharedPreferences.getInt(KEY_BACKGROUND, DEFAULT_BACKGROUND);
+                    if (backgroundIndex >= 0 && backgroundIndex < BACKGROUND_DARK.length) {
+                        sharedPreferences.edit().putBoolean(KEY_DARK_MODE, BACKGROUND_DARK[backgroundIndex]).apply();
+                    } else if (storedVersion == 0) {
+                        sharedPreferences.edit().putBoolean(KEY_DARK_MODE, DEFAULT_DARK_MODE).apply();
+                    }
+                    // updates may reference the specific version in the future
                 }
-                // updates may reference the specific version in the future
+                switch (version) {
+                    case (0):
+                        if (sharedPreferences.getInt(KEY_BACKGROUND, DEFAULT_BACKGROUND) == 6) {
+                            sharedPreferences.edit().putInt(KEY_BACKGROUND, -1).apply();
+                        }
+                        break;
+                    default:
+                        break;
+                }
             }
-            // conditionals will be added here in the future for different versions
+            Log.i("Settings Updated", String.format("Updated from v%s to v%s (Settings versions are not the same as app versions)",
+                    storedVersion, CURRENT_COMPATIBILITY_VERSION));
+        } catch (Exception e) {
+            // This *shouldn't* fail, but if it does we should not crash
+            Log.e("CompatibilityUpdate Error", "An exception occurred when attempting to perform the compatibility update!");
+            e.printStackTrace();
         }
+
+        // Clear the icon cache (failsafe)
+        AbstractPlatform.clearIconCache();
+
+        // Store the updated version
+        sharedPreferences.edit().putInt(KEY_COMPATIBILITY_VERSION, CURRENT_COMPATIBILITY_VERSION).apply();
     }
 
     private synchronized void storeValues(Context context) {

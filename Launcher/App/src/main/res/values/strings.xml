@@ -9,6 +9,8 @@
     <string name="app_details">App Details</string>
     <string name="apps_hidden">- Hidden</string>
 
+    <string name="edit_mode">Edit Mode</string>
+
     <string name="icons_size">Icon Target Size</string>
     <string name="icons_margin">Icon Margin</string>
 
@@ -19,8 +21,9 @@
 
     <string name="settings_main">Launcher Settings</string>
     <string name="settings_appearance">Customize Appearance</string>
-    <string name="settings_service">Library Shortcut Service</string>
+    <string name="settings_service">Library Shortcut</string>
 
+    <string name="behavior_header">Behavior</string>
     <string name="background_header">Wallpaper &amp; Style</string>
     <string name="icon_header">Icons &amp; Layout</string>
     <string name="wide_header">Display as Banner</string>
@@ -29,16 +32,28 @@
     <string name="dark_mode">Dark Top Bar &amp; Light Text</string>
     <string name="group_mode">Show Groups &amp; Top Bar</string>
 
-    <string name="service_desc">When this service is enabled, Lightning Launcher will open automatically when you hover the cursor over the App Library icon for about half a second. (This may make it difficult to access the default launcher)</string>
+    <string name="service_desc">When this service is enabled, Lightning Launcher will open automatically when you hover
+        the cursor over the App Library icon on the right of dock for about half a second.\n(This may make it difficult to access the default launcher)\n
+        \nMake sure to enable the \"Use Lightning Launcher\" switch - the \"Lightning Launcher Shortcut\" switch won\'t do anything on the Quest!
+    </string>
     <string name="accessibility_event_name">[App Library]</string>
 
     <string name="launch_switch">Separate Window</string>
 
     <string name="launch_title">Warning</string>
-    <string name="launch_message">Launching 2D apps in a separate window allows for easier multitasking on Quest devices, but will cause certain apps to not always launch.\n\nIf you have any issues, disable this option!</string>
+    <string name="launch_message">Launching 2D apps in a separate window allows for easier multitasking on Quest devices,
+        but will cause certain apps to not always launch.\n\nIf you have any issues, disable this option!</string>
 
-    <string name="service_title">Instructions</string>
-    <string name="service_message">1. Press CONTINUE to open accessibility settings.\n2. Click on Lightning Launcher\n3. Switch the service on or off at the top of the page.\n\nWhen it\'s on, you can open Lightning Launcher by hovering the cursor over the App Library button on the dock.</string>
+    <string name="service_title">Launcher Shortcuts</string>
+    <string name="service_subtitle">Easily Access Lightning Launcher</string>
+    <string name="service_info">By enabling the shortcut service, Lighting Launcher will open when you hover over the App Library icon on the right of the dock,
+    essentially replacing the default launcher.\n\nAlternatively,
+        you can use the LauncherShortcut apk provided on the GitHub. (Make sure to carefully read the instructions in the README if you choose this option)</string>
+    <string name="service_instructions">Enabling the Shortcut Service</string>
+    <string name="service_message">1. Use the button to open Android\'s accessibility settings\n2.
+        Click on \"Lightning Launcher\"\n3.
+        Switch the service on (or off) at the top of the page\n4.
+        Click \"Allow\" if you get a prompt</string>
     <string name="service_next">Continue to Accessibility Settings</string>
 
 
@@ -59,7 +74,7 @@
     <string name="update_button">Continue</string>
 
     <string name="update_failed_title">Not working?</string>
-    <string name="update_failed_content">Restart the app to try again. If you got a "Problem Staging" message, it might take a couple tries.</string>
+    <string name="update_failed_content">Restart the app to try again. If you got a Problem Staging message, it might take a couple tries.</string>
     <string name="update_failed_button">Dismiss</string>
 
 </resources>

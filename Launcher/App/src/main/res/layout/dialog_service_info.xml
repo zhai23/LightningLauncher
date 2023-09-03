@@ -1,39 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/layout"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:background="@drawable/bkg_dialog"
-    android:orientation="vertical"
-    android:padding="20dp">
-
-    <TextView
-        style="@style/SettingMidTitle"
-        android:layout_width="match_parent"
+<ScrollView android:layout_width="match_parent"
+    android:layout_height="match_parent" xmlns:android="http://schemas.android.com/apk/res/android">
+        <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/service_title" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:autofillHints="text"
-        android:backgroundTint="@android:color/white"
-        android:text="@string/service_message"
-        android:textColor="@android:color/white" />
-
-    <FrameLayout
-        android:id="@+id/confirm"
-        android:layout_width="350dp"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bkg_button">
+        android:background="@drawable/bkg_dialog"
+        android:orientation="vertical"
+        android:padding="20dp">
 
         <TextView
-            style="@style/SettingButtonLabel"
-            android:layout_width="wrap_content"
+            style="@style/SettingTitle"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/service_next" />
-    </FrameLayout>
+            android:text="@string/service_title" />
 
-</LinearLayout>
+        <TextView
+            style="@style/SettingSubtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/service_subtitle" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:autofillHints="text"
+                android:backgroundTint="@android:color/white"
+                android:text="@string/service_info"
+                android:textColor="@android:color/white" />
+
+            <TextView
+                style="@style/SettingSubtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/service_instructions" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:autofillHints="text"
+                android:backgroundTint="@android:color/white"
+                android:text="@string/service_message"
+                android:textColor="@android:color/white" />
+
+        <FrameLayout
+            android:id="@+id/confirm"
+            android:layout_width="370dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bkg_button">
+
+            <TextView
+                style="@style/SettingButtonLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/service_next" />
+        </FrameLayout>
+
+    </LinearLayout>
+</ScrollView>

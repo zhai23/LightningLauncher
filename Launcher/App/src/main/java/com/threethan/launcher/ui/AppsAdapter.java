@@ -147,27 +147,26 @@ public class AppsAdapter extends BaseAdapter{
 
         if (isEditMode) {
             // short click for app details, long click to activate drag and drop
-            holder.layout.setOnTouchListener((view, motionEvent) -> {
+            holder.layout.setOnClickListener((view) -> {
                 {
                     boolean selected = mainActivity.selectApp(currentApp.packageName);
                     view.setAlpha(selected? 0.5F : 1.0F);
                 }
-                return false;
             });
         } else {
             holder.layout.setOnClickListener(view -> {
                 if (!(SettingsProvider.getAppLaunchOut(currentApp.packageName) || AbstractPlatform.isVirtualRealityApp(currentApp, mainActivity))) animateOpen(holder);
                 mainActivity.openApp(currentApp);
             });
-            holder.layout.setOnLongClickListener(view -> {
-                try {
-                    showAppDetails(currentApp);
-                } catch (PackageManager.NameNotFoundException e) {
-                    throw new RuntimeException(e);
-                }
-                return false;
-            });
         }
+        holder.layout.setOnLongClickListener(view -> {
+            try {
+                showAppDetails(currentApp);
+            } catch (PackageManager.NameNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+            return false;
+        });
         holder.moreButton.setOnClickListener(view -> {
             try {
                 showAppDetails(currentApp);

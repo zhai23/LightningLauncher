@@ -1,5 +1,6 @@
 package com.threethan.launcher;
 
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -11,7 +12,6 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -27,6 +27,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -64,13 +65,13 @@ class BackgroundTask extends AsyncTask<Object, Void, Object> {
     @Override
     protected Object doInBackground(Object... objects) {
         owner = (MainActivity) objects[0];
-        int backgroundThemeIndex = owner.sharedPreferences.getInt(SettingsProvider.KEY_BACKGROUND, SettingsProvider.DEFAULT_BACKGROUND);
-        if (backgroundThemeIndex < SettingsProvider.BACKGROUND_DRAWABLES.length) {
-            backgroundThemeDrawable = owner.getDrawable(SettingsProvider.BACKGROUND_DRAWABLES[backgroundThemeIndex]);
+        int background = owner.sharedPreferences.getInt(SettingsProvider.KEY_BACKGROUND, SettingsProvider.DEFAULT_BACKGROUND);
+        if (background >= 0 && background < SettingsProvider.BACKGROUND_DRAWABLES.length) {
+            backgroundThemeDrawable = owner.getDrawable(SettingsProvider.BACKGROUND_DRAWABLES[background]);
         } else {
             File file = new File(owner.getApplicationInfo().dataDir, MainActivity.CUSTOM_THEME);
-            Bitmap themeBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
-            backgroundThemeDrawable = new BitmapDrawable(owner.getResources(), themeBitmap);
+            Bitmap backgroundBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+            backgroundThemeDrawable = new BitmapDrawable(owner.getResources(), backgroundBitmap);
         }
         return null;
     }
@@ -95,7 +96,7 @@ class RecheckPackagesTask extends AsyncTask {
     boolean changeFound;
     @Override
     protected Object doInBackground(Object[] objects) {
-        Log.i("PackageCheck", "Checking for package changes");
+        Log.v("PackageCheck", "Checking for package changes");
 
         owner = (MainActivity) objects[0];
 
@@ -121,7 +122,7 @@ class RecheckPackagesTask extends AsyncTask {
 public class MainActivity extends Activity {
     public static final int PICK_ICON_CODE = 450;
     public static final int PICK_THEME_CODE = 95;
-    public static final String CUSTOM_THEME = "theme.png";
+    public static final String CUSTOM_THEME = "background.png";
     public boolean darkMode = false;
     DynamicHeightGridView appGridView;
     DynamicHeightGridView appGridViewWide;
@@ -132,7 +133,6 @@ public class MainActivity extends Activity {
     private SettingsProvider settingsProvider;
     private ImageView selectedImageView;
     private boolean settingsPageOpen = false;
-    private boolean lookPageOpen = false;
     private boolean loaded = false;
     boolean ready  = false;
     public View mainView;
@@ -143,17 +143,17 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Log.i("LauncherStartup", "1. Set View");
+        Log.v("LauncherStartup", "1. Set View");
 
         setContentView(R.layout.activity_main);
 
-        Log.i("LauncherStartup", "2. Get Setting Provider");
+        Log.v("LauncherStartup", "2. Get Setting Provider");
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         settingsProvider = SettingsProvider.getInstance(this);
-        settingsProvider.checkCompatibilityUpdate(this);
+        settingsProvider.checkCompatibilityUpdate();
 
-        Log.i("LauncherStartup", "3. Get UI Instances");
+        Log.v("LauncherStartup", "3. Get UI Instances");
 
         mainView = findViewById(R.id.mainLayout);
         mainView.addOnLayoutChangeListener((view, i, i1, i2, i3, i4, i5, i6, i7) -> updateGridViewHeights());
@@ -209,7 +209,7 @@ public class MainActivity extends Activity {
         ImageView settingsImageView = findViewById(R.id.settingsIcon);
         settingsImageView.setOnClickListener(view -> {
             if (!settingsPageOpen) {
-                showSettingsMain();
+                showSettings();
                 settingsPageOpen = true;
             }
         });
@@ -220,7 +220,7 @@ public class MainActivity extends Activity {
         IntentFilter filter2 = new IntentFilter(DONT_FINISH_ACTION);
         registerReceiver(dontFinishReceiver, filter2);
 
-        Log.i("LauncherStartup", "4. Done");
+        Log.v("LauncherStartup", "4. Done");
     }
 
     @Override
@@ -250,7 +250,7 @@ public class MainActivity extends Activity {
                 editor.apply();
                 refreshInterface();
             } else {
-                showSettingsMain();
+                showSettings();
                 settingsPageOpen = true;
             }
         }
@@ -341,8 +341,8 @@ public class MainActivity extends Activity {
             if (resultCode == RESULT_OK) {
 
                 for (Image image : ImagePicker.getImages(data)) {
-                    Bitmap themeBitmap = ImageUtils.getResizedBitmap(BitmapFactory.decodeFile(image.getPath()), 1280);
-                    ImageUtils.saveBitmap(themeBitmap, new File(getApplicationInfo().dataDir, CUSTOM_THEME));
+                    Bitmap backgroundBitmap = ImageUtils.getResizedBitmap(BitmapFactory.decodeFile(image.getPath()), 1280);
+                    ImageUtils.saveBitmap(backgroundBitmap, new File(getApplicationInfo().dataDir, CUSTOM_THEME));
                     setBackground(SettingsProvider.BACKGROUND_DRAWABLES.length);
                     break;
                 }
@@ -397,16 +397,16 @@ public class MainActivity extends Activity {
 
     public void refreshBackground() {
         // Set initial color, execute background task
-        int backgroundThemeIndex = sharedPreferences.getInt(SettingsProvider.KEY_BACKGROUND, SettingsProvider.DEFAULT_BACKGROUND);
-        if (backgroundThemeIndex < SettingsProvider.BACKGROUND_DRAWABLES.length) {
-            backgroundImageView.setBackgroundColor(SettingsProvider.BACKGROUND_COLORS[backgroundThemeIndex]);
-            getWindow().setNavigationBarColor(SettingsProvider.BACKGROUND_COLORS[backgroundThemeIndex]);
-            getWindow().setStatusBarColor(SettingsProvider.BACKGROUND_COLORS[backgroundThemeIndex]);
+        int background = sharedPreferences.getInt(SettingsProvider.KEY_BACKGROUND, SettingsProvider.DEFAULT_BACKGROUND);
+        if (background >= 0 && background < SettingsProvider.BACKGROUND_DRAWABLES.length) {
+            backgroundImageView.setBackgroundColor(SettingsProvider.BACKGROUND_COLORS[background]);
+            getWindow().setNavigationBarColor(SettingsProvider.BACKGROUND_COLORS[background]);
+            getWindow().setStatusBarColor(SettingsProvider.BACKGROUND_COLORS[background]);
         }
         new BackgroundTask().execute(this);
     }
     public void refreshInterface() {
-        Log.i("LightningLauncher","Reloading UI");
+        Log.v("LightningLauncher","Reloading UI");
 
         darkMode = sharedPreferences.getBoolean(SettingsProvider.KEY_DARK_MODE, SettingsProvider.DEFAULT_DARK_MODE);
         editMode = sharedPreferences.getBoolean(SettingsProvider.KEY_EDIT_MODE, false);
@@ -424,7 +424,7 @@ public class MainActivity extends Activity {
     }
     public void setAdapters() {
         // Get and apply margin
-        int marginValue = getPixelFromDip(sharedPreferences.getInt(SettingsProvider.KEY_MARGIN, SettingsProvider.DEFAULT_MARGIN));
+        int marginValue = dp(sharedPreferences.getInt(SettingsProvider.KEY_MARGIN, SettingsProvider.DEFAULT_MARGIN));
         boolean names = sharedPreferences.getBoolean(SettingsProvider.KEY_SHOW_NAMES_ICON, SettingsProvider.DEFAULT_SHOW_NAMES_ICON);
         boolean namesWide = sharedPreferences.getBoolean(SettingsProvider.KEY_SHOW_NAMES_WIDE, SettingsProvider.DEFAULT_SHOW_NAMES_WIDE);
 
@@ -469,10 +469,9 @@ public class MainActivity extends Activity {
     }
 
     public void setBackground(int index) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt(SettingsProvider.KEY_BACKGROUND, index);
-        editor.putBoolean(SettingsProvider.KEY_DARK_MODE, SettingsProvider.BACKGROUND_DARK[index]);
-        editor.apply();
+        if (index > SettingsProvider.BACKGROUND_DRAWABLES.length) index = -1;
+        else sharedPreferences.edit().putBoolean(SettingsProvider.KEY_DARK_MODE, SettingsProvider.BACKGROUND_DARK[index]).apply();
+        sharedPreferences.edit().putInt(SettingsProvider.KEY_BACKGROUND, index).apply();
         refreshBackground();
     }
 
@@ -482,18 +481,28 @@ public class MainActivity extends Activity {
         super.finish();
     }
     private boolean editMode = false;
-
-    private void showSettingsMain() {
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private void showSettings() {
+        settingsPageOpen = true;
         AlertDialog dialog = DialogHelper.build(this, R.layout.dialog_settings);
         dialog.setOnDismissListener(dialogInterface -> settingsPageOpen = false);
 
-        ImageView editIcon = dialog.findViewById(R.id.settings_edit_image);
-        TextView editText = dialog.findViewById(R.id.settings_edit_text);
-        editIcon.setImageResource(editMode ? R.drawable.ic_editing_on : R.drawable.ic_editing_off);
-        editText.setText(editMode ? R.string.edit_on : R.string.edit_off);
-        dialog.findViewById(R.id.settings_edit).setOnClickListener(view1 -> {
+        // Functional
+        dialog.findViewById(R.id.shortcut_service).setOnClickListener(view -> {
+            AlertDialog subDialog = DialogHelper.build(this, R.layout.dialog_service_info);
+
+            subDialog.findViewById(R.id.confirm).setOnClickListener(view1 -> {
+                // Navigate to accessibility settings
+                Intent localIntent = new Intent("android.settings.ACCESSIBILITY_SETTINGS");
+                localIntent.setPackage("com.android.settings");
+                startActivity(localIntent);
+            });
+        });
+        @SuppressLint("UseSwitchCompatOrMaterialCode")
+        Switch editSwitch = dialog.findViewById(R.id.edit_mode);
+        editSwitch.setChecked(editMode);
+        editSwitch.setOnClickListener(view1 -> {
             editMode = !editMode;
-            prevViewWidth = 0; // Indicates the need to update top padding
             ArrayList<String> selectedGroups = settingsProvider.getAppGroupsSorted(true, getApplicationContext());
             if (editMode && (selectedGroups.size() > 1)) {
                 Set<String> selectFirst = new HashSet<>();
@@ -504,35 +513,10 @@ public class MainActivity extends Activity {
             editor.putBoolean(SettingsProvider.KEY_EDIT_MODE, editMode);
             editor.apply();
             refreshInterface();
-            editIcon.setImageResource(editMode ? R.drawable.ic_editing_on : R.drawable.ic_editing_off);
-            editText.setText(editMode ? R.string.edit_on : R.string.edit_off);
         });
 
-        dialog.findViewById(R.id.settings_look).setOnClickListener(view -> {
-            if (!lookPageOpen) {
-                showSettingsLook();
-            }
-        });
 
-        dialog.findViewById(R.id.settings_service).setOnClickListener(view -> {
-            AlertDialog subDialog = DialogHelper.build(this, R.layout.dialog_service_info);
-
-            subDialog.findViewById(R.id.confirm).setOnClickListener(view1 -> {
-                // Navigate to accessibility settings
-                Intent localIntent = new Intent("android.settings.ACCESSIBILITY_SETTINGS");
-                localIntent.setPackage("com.android.settings");
-                startActivity(localIntent);
-            });
-        });
-    }
-
-    @SuppressLint("UseCompatLoadingForDrawables")
-    private void showSettingsLook() {
-        lookPageOpen = true;
-
-        AlertDialog dialog = DialogHelper.build(this, R.layout.dialog_look);
-        dialog.setOnDismissListener(dialogInterface -> lookPageOpen = false);
-
+        // Wallpaper and style
         @SuppressLint("UseSwitchCompatOrMaterialCode") Switch dark = dialog.findViewById(R.id.switch_dark_mode);
         dark.setChecked(sharedPreferences.getBoolean(SettingsProvider.KEY_DARK_MODE, SettingsProvider.DEFAULT_DARK_MODE));
         dark.setOnCheckedChangeListener((compoundButton, value) -> {
@@ -540,45 +524,63 @@ public class MainActivity extends Activity {
             editor.putBoolean(SettingsProvider.KEY_DARK_MODE, value);
             editor.apply();
             refreshInterface();
+            initBlur();
         });
+        ImageView[] views = {
+                dialog.findViewById(R.id.background0),
+                dialog.findViewById(R.id.background1),
+                dialog.findViewById(R.id.background2),
+                dialog.findViewById(R.id.background3),
+                dialog.findViewById(R.id.background4),
+                dialog.findViewById(R.id.background5),
+                dialog.findViewById(R.id.background6),
+                dialog.findViewById(R.id.background_custom)
+        };
+        int background = sharedPreferences.getInt(SettingsProvider.KEY_BACKGROUND, SettingsProvider.DEFAULT_BACKGROUND);
+        if (background < 0) background = views.length-1;
 
-        @SuppressLint("UseSwitchCompatOrMaterialCode") Switch names = dialog.findViewById(R.id.switch_names);
-        names.setChecked(sharedPreferences.getBoolean(SettingsProvider.KEY_SHOW_NAMES_ICON, SettingsProvider.DEFAULT_SHOW_NAMES_ICON));
-        names.setOnCheckedChangeListener((compoundButton, value) -> {
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean(SettingsProvider.KEY_SHOW_NAMES_ICON, value);
-            editor.apply();
-            refreshInterface();
-        });
-        @SuppressLint("UseSwitchCompatOrMaterialCode") Switch wideNames = dialog.findViewById(R.id.switch_names_wide);
-        wideNames.setChecked(sharedPreferences.getBoolean(SettingsProvider.KEY_SHOW_NAMES_WIDE, SettingsProvider.DEFAULT_SHOW_NAMES_WIDE));
-        wideNames.setOnCheckedChangeListener((compoundButton, value) -> {
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean(SettingsProvider.KEY_SHOW_NAMES_WIDE, value);
-            editor.apply();
-            refreshInterface();
-        });
+        for (ImageView image : views) {
+            image.setClipToOutline(true);
+        }
+        final int selectedWallpaperWidth = dp(320-38*(views.length-1)-30);
+        views[background].getLayoutParams().width = dp(selectedWallpaperWidth);
+        views[background].requestLayout();
+        for (int i = 0; i < views.length; i++) {
+            int index = i;
+            views[i].setOnClickListener(view -> {
 
-        @SuppressLint("UseSwitchCompatOrMaterialCode") Switch wideVR = dialog.findViewById(R.id.switch_wide_vr);
-        wideVR.setChecked(sharedPreferences.getBoolean(SettingsProvider.KEY_WIDE_VR, SettingsProvider.DEFAULT_WIDE_VR));
-        wideVR.setOnCheckedChangeListener((compoundButton, value) -> {
-            AbstractPlatform.clearIconCache();
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean(SettingsProvider.KEY_WIDE_VR, value);
-            editor.apply();
-            updateAppLists();
-            refreshInterface();
-        });
-        @SuppressLint("UseSwitchCompatOrMaterialCode") Switch wide2D = dialog.findViewById(R.id.switch_wide_2d);
-        wide2D.setChecked(sharedPreferences.getBoolean(SettingsProvider.KEY_WIDE_2D, SettingsProvider.DEFAULT_WIDE_2D));
-        wide2D.setOnCheckedChangeListener((compoundButton, value) -> {
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean(SettingsProvider.KEY_WIDE_2D, value);
-            editor.apply();
-            updateAppLists();
-            refreshInterface();
-        });
+                ImageView last = views[sharedPreferences.getInt(SettingsProvider.KEY_BACKGROUND, SettingsProvider.DEFAULT_BACKGROUND)];
+                if (last == view) return;
 
+                ValueAnimator viewAnimator = ValueAnimator.ofInt(view.getWidth(), dp(selectedWallpaperWidth));
+                viewAnimator.setDuration(250);
+                viewAnimator.setInterpolator(new DecelerateInterpolator());
+                viewAnimator.addUpdateListener(animation -> {
+                    view.getLayoutParams().width = (int) animation.getAnimatedValue();
+                    view.requestLayout();
+                });
+                viewAnimator.start();
+
+                ValueAnimator lastAnimator = ValueAnimator.ofInt(last.getWidth(), dp(30));
+                lastAnimator.setDuration(250);
+                lastAnimator.setInterpolator(new DecelerateInterpolator());
+                lastAnimator.addUpdateListener(animation -> {
+                    last.getLayoutParams().width = (int) animation.getAnimatedValue();
+                    last.requestLayout();
+                });
+                lastAnimator.start();
+
+                if (index == SettingsProvider.BACKGROUND_DRAWABLES.length) {
+                    ImageUtils.showImagePicker(this, PICK_THEME_CODE);
+                } else {
+                    setBackground(index);
+                    dark.setChecked(sharedPreferences.getBoolean(SettingsProvider.KEY_DARK_MODE, SettingsProvider.DEFAULT_DARK_MODE));
+                }
+            });
+        }
+
+
+        // Icons & Layout
         SeekBar scale = dialog.findViewById(R.id.bar_scale);
         scale.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -587,9 +589,11 @@ public class MainActivity extends Activity {
                 editor.putInt(SettingsProvider.KEY_SCALE, value);
                 editor.apply();
             }
+
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
             }
+
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 refreshInterface();
@@ -607,9 +611,11 @@ public class MainActivity extends Activity {
                 editor.putInt(SettingsProvider.KEY_MARGIN, value);
                 editor.apply();
             }
+
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
             }
+
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 refreshInterface();
@@ -619,45 +625,47 @@ public class MainActivity extends Activity {
         margin.setMax(59);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) margin.setMin(5);
 
-        int theme = sharedPreferences.getInt(SettingsProvider.KEY_BACKGROUND, SettingsProvider.DEFAULT_BACKGROUND);
-        ImageView[] views = {
-                dialog.findViewById(R.id.theme0),
-                dialog.findViewById(R.id.theme1),
-                dialog.findViewById(R.id.theme2),
-                dialog.findViewById(R.id.theme3),
-                dialog.findViewById(R.id.theme4),
-                dialog.findViewById(R.id.theme5),
-                dialog.findViewById(R.id.theme_custom)
-        };
 
-        for (ImageView image : views) {
-            image.setBackground(getDrawable(R.drawable.bkg_button_wallpaper));
-            image.setImageAlpha(255);
-            image.setClipToOutline(true);
-        }
-        views[theme].setBackground(getDrawable(R.drawable.bkg_button_wallpaper_sel));
-        views[theme].setImageAlpha(192);
-        for (int i = 0; i < views.length; i++) {
-            int index = i;
-            views[i].setOnClickListener(view -> {
-                if (index == SettingsProvider.BACKGROUND_DRAWABLES.length) {
-                    ImageUtils.showImagePicker(this, PICK_THEME_CODE);
-                } else {
-                    setBackground(index);
-                    dark.setChecked(sharedPreferences.getBoolean(SettingsProvider.KEY_DARK_MODE, SettingsProvider.DEFAULT_DARK_MODE));
-                }
-                for (ImageView image : views) {
-                    image.setBackground(getDrawable(R.drawable.bkg_button_wallpaper));
-                    image.setImageAlpha(255);
-                }
-                views[index].setBackground(getDrawable(R.drawable.bkg_button_wallpaper_sel));
-                views[index].setImageAlpha(192);
-            });
-        }
-    }
 
-    int getPixelFromDip(int dip) {
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, getResources().getDisplayMetrics());
+        // Wide display
+        @SuppressLint("UseSwitchCompatOrMaterialCode")
+        Switch wideVR = dialog.findViewById(R.id.switch_wide_vr);
+        wideVR.setChecked(sharedPreferences.getBoolean(SettingsProvider.KEY_WIDE_VR, SettingsProvider.DEFAULT_WIDE_VR));
+        wideVR.setOnCheckedChangeListener((compoundButton, value) -> {
+            AbstractPlatform.clearIconCache();
+            sharedPreferences.edit().putBoolean(SettingsProvider.KEY_WIDE_VR, value).apply();
+            updateAppLists();
+            refreshInterface();
+        });
+        @SuppressLint("UseSwitchCompatOrMaterialCode")
+        Switch wide2D = dialog.findViewById(R.id.switch_wide_2d);
+        wide2D.setChecked(sharedPreferences.getBoolean(SettingsProvider.KEY_WIDE_2D, SettingsProvider.DEFAULT_WIDE_2D));
+        wide2D.setOnCheckedChangeListener((compoundButton, value) -> {
+            sharedPreferences.edit().putBoolean(SettingsProvider.KEY_WIDE_2D, value).apply();
+            updateAppLists();
+            refreshInterface();
+        });
+
+
+        // Names
+        @SuppressLint("UseSwitchCompatOrMaterialCode")
+        Switch names = dialog.findViewById(R.id.switch_names);
+        names.setChecked(sharedPreferences.getBoolean(SettingsProvider.KEY_SHOW_NAMES_ICON, SettingsProvider.DEFAULT_SHOW_NAMES_ICON));
+        names.setOnCheckedChangeListener((compoundButton, value) -> {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean(SettingsProvider.KEY_SHOW_NAMES_ICON, value);
+            editor.apply();
+            refreshInterface();
+        });
+        @SuppressLint("UseSwitchCompatOrMaterialCode")
+        Switch wideNames = dialog.findViewById(R.id.switch_names_wide);
+        wideNames.setChecked(sharedPreferences.getBoolean(SettingsProvider.KEY_SHOW_NAMES_WIDE, SettingsProvider.DEFAULT_SHOW_NAMES_WIDE));
+        wideNames.setOnCheckedChangeListener((compoundButton, value) -> {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean(SettingsProvider.KEY_SHOW_NAMES_WIDE, value);
+            editor.apply();
+            refreshInterface();
+        });
     }
 
     public void openApp(ApplicationInfo app) {
@@ -701,7 +709,6 @@ public class MainActivity extends Activity {
         else selectionHint.setText(getString(R.string.selection_hint_multiple, size));
         selectionHint.setVisibility(currentSelectedApps.isEmpty() ? View.INVISIBLE : View.VISIBLE);
     }
-
     void updateAppLists() {
         wideApps = new ArrayList<>();
         squareApps = new ArrayList<>();
@@ -710,14 +717,8 @@ public class MainActivity extends Activity {
             else squareApps.add(app);
         }
     }
-
     public int dp(float dip) {
-        Resources r = getResources();
-        float px = TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                dip,
-                r.getDisplayMetrics()
-        );
-        return ((int) px);
+        final int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, getResources().getDisplayMetrics());
+        return px;
     }
 }

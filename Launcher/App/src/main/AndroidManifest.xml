@@ -31,8 +31,8 @@
             android:resizeableActivity="true"
             android:noHistory="true"
             android:finishOnTaskLaunch="true"
-            android:finishOnCloseSystemDialogs="true"
-            android:clearTaskOnLaunch="true">
+            android:clearTaskOnLaunch="true"
+            android:finishOnCloseSystemDialogs="true">
 
             <layout android:defaultWidth="706dp"
                 android:defaultHeight="442dp"

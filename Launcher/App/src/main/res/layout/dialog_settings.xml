@@ -1,119 +1,482 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/layout"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/bkg_dialog"
+    android:clipChildren="true"
     android:orientation="vertical"
-    android:padding="20dp">
-
-    <TextView
-        style="@style/SettingTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/settings_main" />
+    android:padding="0dp"
+    tools:ignore="TextSizeCheck">
 
     <LinearLayout
-        android:layout_width="300sp"
+        android:id="@+id/layout"
+        android:layout_width="410dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="20dp">
 
-        <FrameLayout
-            android:id="@+id/settings_edit"
+        <TextView
+            style="@style/SettingTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/bkg_button">
+            android:text="@string/settings_main" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
 
             <LinearLayout
-                android:id="@+id/settings_edit"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center">
-
-                <ImageView
-                    android:id="@+id/settings_edit_image"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="center_vertical"
-                    android:padding="4dp"
-                    android:src="@drawable/ic_editing_on" />
+                android:layout_marginEnd="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/bkg_button"
+                android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/settings_edit_text"
-                    style="@style/SettingSubtitle"
+                    style="@style/SettingButtonLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:singleLine="true"
+                    android:text="@string/edit_mode"
+                    tools:ignore="NestedWeights" />
+
+                <Switch
+                    android:id="@+id/edit_mode"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="20dp"
-                    android:text="@string/edit_on"
-                    tools:ignore="TextSizeCheck" />
+                    android:layout_height="wrap_content"
+                    android:thumb="@drawable/switch_thumb_custom"
+                    android:track="@drawable/switch_track_custom"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
 
             </LinearLayout>
-        </FrameLayout>
-
-        <FrameLayout
-            android:id="@+id/settings_look"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/bkg_button">
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center">
-
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="center_vertical"
-                    android:padding="4dp"
-                    android:src="@drawable/ic_look" />
+                android:id="@+id/shortcut_service"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/bkg_button">
 
                 <TextView
-                    style="@style/SettingSubtitle"
+                    style="@style/SettingButtonLabel"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="20dp"
-                    android:text="@string/settings_appearance"
-                    tools:ignore="TextSizeCheck" />
-
-            </LinearLayout>
-        </FrameLayout>
-
-        <FrameLayout
-            android:id="@+id/settings_service"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bkg_button">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center">
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:paddingStart="5dp"
+                    android:singleLine="true"
+                    android:text="@string/settings_service"
+                    tools:ignore="NestedWeights,RtlSymmetry" />
 
                 <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="center_vertical"
-                    android:padding="4dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="-10dp"
+                    android:layout_marginEnd="-8dp"
                     android:src="@drawable/ic_shortcut" />
 
-                <TextView
-                    style="@style/SettingSubtitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="20dp"
-                    android:text="@string/settings_service"
-                    tools:ignore="TextSizeCheck" />
             </LinearLayout>
-        </FrameLayout>
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:paddingStart="5dp"
+            android:paddingTop="25dp"
+            android:paddingEnd="5dp"
+            android:paddingBottom="5dp"
+            android:text="@string/background_header"
+            android:textColor="@android:color/white"
+            android:textSize="20sp" />
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@drawable/bkg_button"
+                android:orientation="horizontal"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp">
+
+                <ImageView
+                    android:id="@+id/background0"
+                    android:layout_width="30dp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/bkg_button_wallpaper"
+                    android:padding="0dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/bg_px_blue"
+                    tools:ignore="ImageContrastCheck" />
+
+                <ImageView
+                    android:id="@+id/background1"
+                    android:layout_width="30dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/bkg_button_wallpaper"
+                    android:padding="0dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/bg_px_red"
+                    tools:ignore="ImageContrastCheck" />
+
+                <ImageView
+                    android:id="@+id/background2"
+                    android:layout_width="30dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/bkg_button_wallpaper"
+                    android:padding="0dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/bg_px_white"
+                    tools:ignore="ImageContrastCheck" />
+
+                <ImageView
+                    android:id="@+id/background3"
+                    android:layout_width="30dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/bkg_button_wallpaper"
+                    android:padding="0dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/bg_px_orange"
+                    tools:ignore="ImageContrastCheck" />
+
+                <ImageView
+                    android:id="@+id/background4"
+                    android:layout_width="30dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/bkg_button_wallpaper"
+                    android:padding="0dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/bg_px_green"
+                    tools:ignore="ImageContrastCheck" />
+
+                <ImageView
+                    android:id="@+id/background5"
+                    android:layout_width="30dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/bkg_button_wallpaper"
+                    android:padding="0dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/bg_px_purple"
+                    tools:ignore="ImageContrastCheck" />
+
+                <ImageView
+                    android:id="@+id/background6"
+                    android:layout_width="30dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bkg_button_wallpaper"
+                    android:padding="0dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/bg_meta"
+                    tools:ignore="ImageContrastCheck" />
+
+                <ImageView
+                    android:id="@+id/background_custom"
+                    android:layout_width="30dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/bkg_button_wallpaper"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="6dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/bkg_custom"
+                    tools:ignore="ImageContrastCheck" />
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/bkg_button"
+            android:gravity="clip_vertical|center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/SettingButtonLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:singleLine="true"
+                android:text="@string/dark_mode"
+                tools:ignore="NestedWeights" />
+
+            <Switch
+                android:id="@+id/switch_dark_mode"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:showText="false"
+                android:splitTrack="false"
+                android:thumb="@drawable/switch_thumb_custom"
+                android:track="@drawable/switch_track_custom"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:paddingStart="5dp"
+            android:paddingTop="13dp"
+            android:paddingEnd="5dp"
+            android:text="@string/icon_header"
+            android:textColor="@android:color/white"
+            android:textSize="20sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/bkg_button"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/SettingButtonLabel"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:singleLine="true"
+                android:text="@string/icons_size" />
+
+            <SeekBar
+                android:id="@+id/bar_scale"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:max="255"
+                android:padding="0dp"
+                android:progressBackgroundTint="@android:color/white"
+                android:progressDrawable="@drawable/seekbar_custom"
+                android:thumb="@null" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bkg_button"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/SettingButtonLabel"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:singleLine="true"
+                android:text="@string/icons_margin" />
+
+            <SeekBar
+                android:id="@+id/bar_margin"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:max="255"
+                android:padding="0dp"
+                android:progressBackgroundTint="@android:color/white"
+                android:progressDrawable="@drawable/seekbar_custom"
+                android:thumb="@null" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/bkg_button"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/SettingButtonLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:singleLine="true"
+                android:text="@string/group_mode"
+                tools:ignore="NestedWeights" />
+
+            <Switch
+                android:id="@+id/switch_group_mode"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:thumb="@drawable/switch_thumb_custom"
+                android:track="@drawable/switch_track_custom"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:paddingStart="5dp"
+            android:paddingTop="13dp"
+            android:paddingEnd="5dp"
+            android:text="@string/wide_header"
+            android:textColor="@android:color/white"
+            android:textSize="20sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:layout_weight="1"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/bkg_button"
+                android:orientation="horizontal"
+
+                tools:ignore="NestedWeights">
+
+                <TextView
+                    style="@style/SettingButtonLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:singleLine="true"
+                    android:text="@string/apps_vr" />
+
+                <Switch
+                    android:id="@+id/switch_wide_vr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:thumb="@drawable/switch_thumb_custom"
+                    android:track="@drawable/switch_track_custom"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/bkg_button"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/SettingButtonLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:singleLine="true"
+                    android:text="@string/apps_2d" />
+
+                <Switch
+                    android:id="@+id/switch_wide_2d"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:thumb="@drawable/switch_thumb_custom"
+                    android:track="@drawable/switch_track_custom"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:paddingStart="5dp"
+            android:paddingTop="13dp"
+            android:paddingEnd="5dp"
+            android:text="@string/name_header"
+            android:textColor="@android:color/white"
+            android:textSize="20sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/bkg_button"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/SettingButtonLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:singleLine="true"
+                    android:text="@string/app_name_icon"
+                    tools:ignore="NestedWeights" />
+
+                <Switch
+                    android:id="@+id/switch_names"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:thumb="@drawable/switch_thumb_custom"
+                    android:track="@drawable/switch_track_custom"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/bkg_button"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/SettingButtonLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:singleLine="true"
+                    android:text="@string/app_name_wide"
+                    tools:ignore="NestedWeights" />
+
+                <Switch
+                    android:id="@+id/switch_names_wide"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:thumb="@drawable/switch_thumb_custom"
+                    android:track="@drawable/switch_track_custom"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+            </LinearLayout>
+
+        </LinearLayout>
 
     </LinearLayout>
-
-</LinearLayout>
+</ScrollView>
