@@ -311,7 +311,7 @@ public class SettingsManager {
             for (String pkg : appListMap.keySet()) {
                 Set<String> group = appListSetMap.get(appListMap.get(pkg));
                 if (group == null) {
-                    Log.w("Package Didn't have a group! It will be added to the default 2D group.", pkg);
+                    Log.v("Missing group! Maybe in transit?", pkg);
                     group = appListSetMap.get(getDefaultGroup(false));
                 }
                 if (group == null) {

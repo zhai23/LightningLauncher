@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -130,9 +131,18 @@ public class GroupsAdapter extends BaseAdapter {
 
             dialog.findViewById(R.id.confirm).setOnClickListener(view1 -> {
                 String newGroupName = groupNameInput.getText().toString();
+
+                // Move the default group when we rename
+                if (settingsManager.getDefaultGroup(false).equals(groupName))
+                    mainActivity.sharedPreferences.edit().putString(SettingsManager.KEY_GROUP_2D, newGroupName).apply();
+                if (settingsManager.getDefaultGroup(true).equals(groupName))
+                    mainActivity.sharedPreferences.edit().putString(SettingsManager.KEY_GROUP_VR, newGroupName).apply();
+
                 if (newGroupName.length() > 0) {
                     appGroupsList.remove(groupName);
                     appGroupsList.add(newGroupName);
+
+                    // Move apps when we rename
                     Map<String, String> updatedAppList = new HashMap<>();
                     for (String packageName : apps.keySet()) {
                         if (Objects.requireNonNull(apps.get(packageName)).compareTo(groupName) == 0) {
@@ -141,6 +151,9 @@ public class GroupsAdapter extends BaseAdapter {
                             updatedAppList.put(packageName, apps.get(packageName));
                         }
                     }
+
+
+
                     HashSet<String> selectedGroup = new HashSet<>();
                     selectedGroup.add(newGroupName);
                     settingsManager.setSelectedGroups(selectedGroup);
