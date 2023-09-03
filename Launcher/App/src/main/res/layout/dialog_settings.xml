@@ -4,6 +4,7 @@
     android:id="@+id/layout"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:background="@drawable/bkg_dialog"
     android:orientation="vertical"
     android:padding="20dp">
 
@@ -11,81 +12,107 @@
         style="@style/SettingTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Launcher Settings" />
+        android:text="@string/settings_main" />
 
     <LinearLayout
-        android:layout_width="300dp"
-        android:layout_height="match_parent"
+        android:layout_width="300sp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:orientation="vertical">
 
-        <LinearLayout
+        <FrameLayout
             android:id="@+id/settings_edit"
-            android:layout_width="300dp"
-            android:layout_height="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:background="@drawable/bkg_button">
 
-            <ImageView
-                android:id="@+id/settings_edit_image"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:padding="12dp"
-                android:src="@drawable/ic_editing_on" />
+            <LinearLayout
+                android:id="@+id/settings_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
 
-            <TextView
-                android:id="@+id/settings_edit_text"
-                style="@style/SettingSubtitle"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginRight="10dp"
-                android:gravity="left|center_vertical"
-                android:text="@string/edit_on" />
-        </LinearLayout>
+                <ImageView
+                    android:id="@+id/settings_edit_image"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center_vertical"
+                    android:padding="4dp"
+                    android:src="@drawable/ic_editing_on" />
 
-        <LinearLayout
+                <TextView
+                    android:id="@+id/settings_edit_text"
+                    style="@style/SettingSubtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="20dp"
+                    android:text="@string/edit_on"
+                    tools:ignore="TextSizeCheck" />
+
+            </LinearLayout>
+        </FrameLayout>
+
+        <FrameLayout
             android:id="@+id/settings_look"
-            android:layout_width="300dp"
-            android:layout_height="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:background="@drawable/bkg_button">
 
-            <ImageView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:padding="12dp"
-                android:src="@drawable/ic_look" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
 
-            <TextView
-                style="@style/SettingSubtitle"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginRight="10dp"
-                android:gravity="left|center_vertical"
-                android:text="Customize Appearance" />
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center_vertical"
+                    android:padding="4dp"
+                    android:src="@drawable/ic_look" />
 
-        </LinearLayout>
+                <TextView
+                    style="@style/SettingSubtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="20dp"
+                    android:text="@string/settings_appearance"
+                    tools:ignore="TextSizeCheck" />
 
-        <LinearLayout
+            </LinearLayout>
+        </FrameLayout>
+
+        <FrameLayout
             android:id="@+id/settings_service"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:background="@drawable/bkg_button">
 
-            <ImageView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:padding="12dp"
-                android:src="@drawable/ic_shortcut" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
 
-            <TextView
-                style="@style/SettingSubtitle"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginRight="10dp"
-                android:gravity="left|center_vertical"
-                android:text="Library Shortcut Service" />
-        </LinearLayout>
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center_vertical"
+                    android:padding="4dp"
+                    android:src="@drawable/ic_shortcut" />
+
+                <TextView
+                    style="@style/SettingSubtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="20dp"
+                    android:text="@string/settings_service"
+                    tools:ignore="TextSizeCheck" />
+            </LinearLayout>
+        </FrameLayout>
 
     </LinearLayout>
 

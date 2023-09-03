@@ -225,8 +225,8 @@ public abstract class AbstractPlatform {
     public static boolean isWideApp(ApplicationInfo applicationInfo, MainActivity mainActivity) {
         final boolean isVr = isVirtualRealityApp(applicationInfo, mainActivity);
         final SharedPreferences sharedPreferences = mainActivity.sharedPreferences;
-        if (isVr) return sharedPreferences.getBoolean(SettingsProvider.KEY_WIDE_VR, true);
-        else      return sharedPreferences.getBoolean(SettingsProvider.KEY_WIDE_2D, false);
+        if (isVr) return sharedPreferences.getBoolean(SettingsProvider.KEY_WIDE_VR, SettingsProvider.DEFAULT_WIDE_VR);
+        else      return sharedPreferences.getBoolean(SettingsProvider.KEY_WIDE_2D, SettingsProvider.DEFAULT_WIDE_2D);
     }
 
     public Drawable loadIcon(MainActivity activity, ApplicationInfo appInfo, ImageView[] imageViews) throws PackageManager.NameNotFoundException {

@@ -2,7 +2,7 @@
     <item>
         <shape android:shape="rectangle">
             <size android:height="28dp" />
-            <solid android:color="@android:color/darker_gray" />
+            <solid android:color="#404044" />
             <corners android:radius="14dp" />
         </shape>
     </item>
@@ -18,7 +18,7 @@
             <shape android:shape="rectangle">
                 <size android:height="28dp" />
                 <corners android:radius="14dp" />
-                <solid android:color="@android:color/white" />
+                <solid android:color="#FFF" />
             </shape>
         </clip>
     </item>

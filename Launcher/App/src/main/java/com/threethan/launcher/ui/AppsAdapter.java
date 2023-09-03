@@ -23,6 +23,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.threethan.launcher.MainActivity;
@@ -33,7 +34,6 @@ import com.threethan.launcher.platforms.AbstractPlatform;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /** @noinspection deprecation, rawtypes */
 class IconTask extends AsyncTask {
@@ -61,7 +61,7 @@ class IconTask extends AsyncTask {
         imageView.setImageDrawable(appIcon);
     }
 }
-
+@SuppressLint("UseSwitchCompatOrMaterialCode")
 public class AppsAdapter extends BaseAdapter{
     private static Drawable iconDrawable;
     private static File iconFile;
@@ -112,7 +112,7 @@ public class AppsAdapter extends BaseAdapter{
 
         if (convertView == null) {
             // Create a new ViewHolder and inflate the layout
-            int layout = AbstractPlatform.isWideApp(currentApp, mainActivity) ? R.layout.lv_app_wide : R.layout.lv_app;
+            int layout = AbstractPlatform.isWideApp(currentApp, mainActivity) ? R.layout.lv_app_wide : R.layout.lv_app_icon;
 
             convertView = layoutInflater.inflate(layout, parent, false);
             holder = new ViewHolder();
@@ -193,12 +193,9 @@ public class AppsAdapter extends BaseAdapter{
             //No longer sets icon here but that should be fine
         }
     }
-
     private void showAppDetails(ApplicationInfo currentApp) throws PackageManager.NameNotFoundException {
         // set layout
-        AlertDialog appDetailsDialog = new AlertDialog.Builder(mainActivity).setView(R.layout.dialog_app_details).create();
-        Objects.requireNonNull(appDetailsDialog.getWindow()).setBackgroundDrawableResource(R.drawable.bkg_dialog);
-        appDetailsDialog.show();
+        AlertDialog appDetailsDialog = DialogHelper.build(mainActivity, R.layout.dialog_app_details);
 
         // info action
         appDetailsDialog.findViewById(R.id.info).setOnClickListener(view -> mainActivity.openAppDetails(currentApp.packageName));
@@ -206,38 +203,38 @@ public class AppsAdapter extends BaseAdapter{
 
         // toggle launch mode
         final boolean[] launchOut = {SettingsProvider.getAppLaunchOut(currentApp.packageName)};
-        final Button launchModeBtn = appDetailsDialog.findViewById(R.id.launch_mode);
+        final Switch launchModeSwitch = appDetailsDialog.findViewById(R.id.launch_mode_switch);
         final boolean isVr = AbstractPlatform.isVirtualRealityApp(currentApp, mainActivity);
         if (isVr) { //VR apps MUST launch out, so just hide the option
-            launchModeBtn.setVisibility(View.GONE);
+            launchModeSwitch.setVisibility(View.GONE);
         } else {
-            launchModeBtn.setVisibility(View.VISIBLE);
-            launchModeBtn.setText(mainActivity.getString(launchOut[0] ? R.string.launch_out : R.string.launch_in));
+            launchModeSwitch.setVisibility(View.VISIBLE);
+            launchModeSwitch.setChecked(launchOut[0]);
 
-            appDetailsDialog.findViewById(R.id.launch_mode).setOnClickListener(view -> {
+            appDetailsDialog.findViewById(R.id.launch_mode_switch).setOnClickListener(view -> {
 
                 if (mainActivity.sharedPreferences.getBoolean(SettingsProvider.KEY_SEEN_LAUNCH_OUT_POPUP, false)) {
                     // Actually set
                     SettingsProvider.setAppLaunchOut(currentApp.packageName, !launchOut[0]);
                     launchOut[0] = SettingsProvider.getAppLaunchOut(currentApp.packageName);
-                    launchModeBtn.setText(mainActivity.getString(launchOut[0] ? R.string.launch_out : R.string.launch_in));
                     return;
                 }
-                AlertDialog subDialog = new AlertDialog.Builder(mainActivity).setView(R.layout.dialog_launch_out_info).create();
-                Objects.requireNonNull(subDialog.getWindow()).setBackgroundDrawableResource(R.drawable.bkg_dialog);
-                subDialog.show();
+                AlertDialog dialog = new AlertDialog.Builder(mainActivity).setView(R.layout.dialog_launch_out_info).create();
+                dialog.show();
 
-                subDialog.findViewById(R.id.ok).setOnClickListener(view1 -> {
+                dialog.findViewById(R.id.confirm).setOnClickListener(view1 -> {
                     SharedPreferences.Editor editor = mainActivity.sharedPreferences.edit();
                     editor.putBoolean(SettingsProvider.KEY_SEEN_LAUNCH_OUT_POPUP, true).apply();
                     editor.apply();
-                    subDialog.dismiss();
+                    dialog.dismiss();
                     // Actually set
                     SettingsProvider.setAppLaunchOut(currentApp.packageName, !launchOut[0]);
                     launchOut[0] = SettingsProvider.getAppLaunchOut(currentApp.packageName);
-                    launchModeBtn.setText(mainActivity.getString(launchOut[0] ? R.string.launch_out : R.string.launch_in));
                 });
-                subDialog.findViewById(R.id.cancel).setOnClickListener(view1 -> subDialog.dismiss());
+                dialog.findViewById(R.id.cancel).setOnClickListener(view1 -> {
+                    dialog.dismiss(); // Dismiss without setting value
+                    launchModeSwitch.setChecked(false); // Revert switch
+                });
             });
         }
 
@@ -246,11 +243,11 @@ public class AppsAdapter extends BaseAdapter{
         String name = SettingsProvider.getAppDisplayName(mainActivity, currentApp.packageName, currentApp.loadLabel(packageManager));
         final EditText appNameEditText = appDetailsDialog.findViewById(R.id.app_name);
         appNameEditText.setText(name);
-        appDetailsDialog.findViewById(R.id.cancel).setOnClickListener(view -> {
+        appDetailsDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
             appDetailsDialog.dismiss();
 
             settingsProvider.setAppDisplayName(mainActivity, currentApp, appNameEditText.getText().toString());
-            mainActivity.reloadUI();
+            mainActivity.refreshInterface();
         });
 
         // load icon

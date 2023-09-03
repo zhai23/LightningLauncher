@@ -106,15 +106,12 @@ public class GroupsAdapter extends BaseAdapter {
             final Set<String> appGroupsList = settingsProvider.getAppGroups(mainActivity);
             final String oldGroupName = settingsProvider.getAppGroupsSorted(false,mainActivity).get(position);
 
-            AlertDialog dialog = new AlertDialog.Builder(mainActivity).setView(R.layout.dialog_group_details).create();
-
-            Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawableResource(R.drawable.bkg_dialog);
-            dialog.show();
+            AlertDialog dialog = DialogHelper.build(mainActivity, R.layout.dialog_group_details);
 
             final EditText groupNameInput = dialog.findViewById(R.id.group_name);
             groupNameInput.setText(oldGroupName);
 
-            dialog.findViewById(R.id.cancel).setOnClickListener(view1 -> {
+            dialog.findViewById(R.id.confirm).setOnClickListener(view1 -> {
                 String newGroupName = groupNameInput.getText().toString();
                 if (newGroupName.length() > 0) {
                     appGroupsList.remove(oldGroupName);

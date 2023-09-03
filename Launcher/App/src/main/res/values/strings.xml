@@ -9,35 +9,42 @@
     <string name="app_details">App Details</string>
     <string name="apps_hidden">- Hidden</string>
 
-    <string name="icons_size">Target Size</string>
-    <string name="icons_margin">Margin</string>
+    <string name="icons_size">Icon Target Size</string>
+    <string name="icons_margin">Icon Margin</string>
 
     <string name="apps_vr">VR Apps</string>
     <string name="apps_2d">2D Apps</string>
     <string name="app_name_icon">App Icons</string>
     <string name="app_name_wide">App Banners</string>
 
+    <string name="settings_main">Launcher Settings</string>
+    <string name="settings_appearance">Customize Appearance</string>
+    <string name="settings_service">Library Shortcut Service</string>
+
     <string name="background_header">Wallpaper &amp; Style</string>
     <string name="icon_header">Icons &amp; Layout</string>
     <string name="wide_header">Display as Banner</string>
     <string name="name_header">Show App Names</string>
 
-    <string name="dark_mode">Dark Header &amp; Light Text</string>
+    <string name="dark_mode">Dark Top Bar &amp; Light Text</string>
+    <string name="group_mode">Show Groups &amp; Top Bar</string>
 
     <string name="service_desc">When this service is enabled, Lightning Launcher will open automatically when you hover the cursor over the App Library icon for about half a second. (This may make it difficult to access the default launcher)</string>
     <string name="accessibility_event_name">[App Library]</string>
 
-    <string name="launch_in">Runs in: this window</string>
-    <string name="launch_out">Runs in: own window</string>
+    <string name="launch_switch">Separate Window</string>
 
     <string name="launch_title">Warning</string>
-    <string name="launch_message">Launching 2D apps in their own window allows for easy multitasking, but will cause certain apps to not always launch.\n\nIf you have issues, disable this option.</string>
+    <string name="launch_message">Launching 2D apps in a separate window allows for easier multitasking on Quest devices, but will cause certain apps to not always launch.\n\nIf you have any issues, disable this option!</string>
 
     <string name="service_title">Instructions</string>
-    <string name="service_message">1. Press CONTINUE to open accessibility settings.\n2. Click on LightningLauncher\n3. Switch the service on or off at the top of the page.\n\nWhen it\'s on, you can open LightningLauncher by hovering the cursor over the "App Library" button on the dock.</string>
+    <string name="service_message">1. Press CONTINUE to open accessibility settings.\n2. Click on Lightning Launcher\n3. Switch the service on or off at the top of the page.\n\nWhen it\'s on, you can open Lightning Launcher by hovering the cursor over the App Library button on the dock.</string>
+    <string name="service_next">Continue to Accessibility Settings</string>
+
 
     <string name="cancel">Cancel</string>
-    <string name="understood">Got it</string>
+    <string name="understood">Got It!</string>
+    <string name="confirm">Confirm</string>
     <string name="next">Continue</string>
 
 

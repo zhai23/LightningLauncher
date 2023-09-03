@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -11,6 +12,7 @@ import com.threethan.launcher.platforms.AbstractPlatform;
 import com.threethan.launcher.ui.GroupsAdapter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,13 +23,14 @@ import java.util.Set;
 
 /** @noinspection deprecation*/
 public class SettingsProvider {
-    public static final String KEY_CUSTOM_NAMES = "KEY_CUSTOM_NAMES";
-    public static final String KEY_CUSTOM_NAMES_WIDE = "KEY_CUSTOM_NAMES_WIDE";
-    public static final String KEY_CUSTOM_SCALE = "KEY_CUSTOM_SCALE";
-    public static final String KEY_CUSTOM_MARGIN = "KEY_CUSTOM_MARGIN";
-    public static final String KEY_CUSTOM_THEME = "KEY_CUSTOM_THEME";
+    public static final String KEY_SCALE = "KEY_CUSTOM_SCALE";
+    public static final String KEY_MARGIN = "KEY_CUSTOM_MARGIN";
+    static final int DEFAULT_SCALE = 112;
+    static final int DEFAULT_MARGIN = 32;
+
+
+
     public static final String KEY_EDIT_MODE = "KEY_EDIT_MODE";
-    public static final String KEY_DARK_MODE = "KEY_DARK_MODE";
     public static final String KEY_SEEN_LAUNCH_OUT_POPUP = "KEY_SEEN_LAUNCH_OUT_POPUP";
     public static final String NEEDS_META_DATA = "NEEDS_META_DATA";
     public static final String KEY_VR_SET = "KEY_VR_SET";
@@ -35,28 +38,59 @@ public class SettingsProvider {
     public static final String KEY_SUPPORTED_SET = "KEY_SUPPORTED_SET";
     public static final String KEY_UNSUPPORTED_SET = "KEY_UNSUPPORTED_SET";
 
+    // banner-style display by app type
     public static final String KEY_WIDE_VR = "KEY_WIDE_VR";
     public static final String KEY_WIDE_2D = "KEY_WIDE_2D";
+    public static final boolean DEFAULT_WIDE_VR = true;
+    public static final boolean DEFAULT_WIDE_2D = false;
+
+    // show names by display type
+    public static final String KEY_SHOW_NAMES_ICON = "KEY_CUSTOM_NAMES";
+    public static final String KEY_SHOW_NAMES_WIDE = "KEY_CUSTOM_NAMES_WIDE";
+    static final boolean DEFAULT_SHOW_NAMES_ICON = true;
+    static final boolean DEFAULT_SHOW_NAMES_WIDE = true;
+
     private static SettingsProvider instance;
     private final String KEY_APP_GROUPS = "prefAppGroups";
     private final String KEY_APP_LIST = "prefAppList";
     private final String KEY_LAUNCH_OUT = "prefLaunchOutList";
     private final String KEY_SELECTED_GROUPS = "prefSelectedGroups";
-    //defaults
+
+    // theme
+    public static final String KEY_BACKGROUND = "KEY_CUSTOM_THEME";
+    public static final String KEY_DARK_MODE = "KEY_DARK_MODE";
+    static final int DEFAULT_BACKGROUND = 0;
     static final boolean DEFAULT_DARK_MODE = true;
-    static final boolean DEFAULT_NAMES = true;
-    static final boolean DEFAULT_NAMES_WIDE = true;
-    static final int DEFAULT_SCALE = 112;
-    static final int DEFAULT_MARGIN = 32;
-    static final int DEFAULT_THEME = 0;
+
+    static final int[] BACKGROUND_DRAWABLES = {
+            R.drawable.bg_px_blue,
+            R.drawable.bg_px_red,
+            R.drawable.bg_px_white,
+            R.drawable.bg_px_orange,
+            R.drawable.bg_px_purple,
+            R.drawable.bg_meta,
+    };
+    static final int[] BACKGROUND_COLORS = {
+            Color.parseColor("#25374f"),
+            Color.parseColor("#f89b94"),
+            Color.parseColor("#d9d4da"),
+            Color.parseColor("#f9ce9b"),
+            Color.parseColor("#74575c"),
+            Color.parseColor("#202a36"),
+    };
+    static final boolean[] BACKGROUND_DARK = {
+            true,
+            false,
+            false,
+            false,
+            true,
+            true,
+    };
 
     //compat
     public final String KEY_COMPATIBILITY_VERSION = "KEY_COMPATIBILITY_VERSION";
-    public final int DEFAULT_COMPATIBILITY_VERSION = 0;
-    public final int CURRENT_COMPATIBILITY_VERSION = 0;
-    public final String KEY_WALLPAPER_VERSION = "KEY_COMPATIBILITY_VERSION";
-    public final int DEFAULT_WALLPAPER_VERSION = 0;
-    public final int CURRENT_WALLPAPER_VERSION = 0;
+    public static int CURRENT_COMPATIBILITY_VERSION = 1;
+    private static int[] VERSIONS_WITH_BACKGROUND_CHANGES = {1};
 
     //storage
     private final SharedPreferences sharedPreferences;
@@ -237,6 +271,29 @@ public class SettingsProvider {
             e.printStackTrace();
         }
 
+    }
+    synchronized void checkCompatibilityUpdate(Context context) {
+        int storedVersion = sharedPreferences.getInt(KEY_COMPATIBILITY_VERSION, -1);
+        if (storedVersion == -1) {
+            if (sharedPreferences.getInt(KEY_BACKGROUND, -1) == -1) return; // return if fresh install
+            storedVersion = 0; // set version to 0 if coming from a version before this system was added
+        }
+        
+        if (storedVersion == CURRENT_COMPATIBILITY_VERSION) return; //Return if no update
+        if (storedVersion > CURRENT_COMPATIBILITY_VERSION) Log.e("CompatibilityUpdate Error", "Previous version greater than current!");
+        // If updated
+        for (int version=0; version <= CURRENT_COMPATIBILITY_VERSION; version++) {
+            if (Arrays.asList(VERSIONS_WITH_BACKGROUND_CHANGES).contains(version)) {
+                int backgroundIndex =   sharedPreferences.getInt(KEY_BACKGROUND, DEFAULT_BACKGROUND);
+                if (backgroundIndex < BACKGROUND_DARK.length) {
+                    sharedPreferences.edit().putBoolean(KEY_DARK_MODE, BACKGROUND_DARK[backgroundIndex]).apply();
+                } else if (storedVersion == 0) {
+                    sharedPreferences.edit().putBoolean(KEY_DARK_MODE, DEFAULT_DARK_MODE).apply();
+                }
+                // updates may reference the specific version in the future
+            }
+            // conditionals will be added here in the future for different versions
+        }
     }
 
     private synchronized void storeValues(Context context) {

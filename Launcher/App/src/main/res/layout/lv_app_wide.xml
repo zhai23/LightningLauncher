@@ -46,7 +46,6 @@
         android:paddingTop="3dp"
         android:shadowRadius="5"
         android:singleLine="true"
-        android:textAlignment="textEnd"
         android:textColor="@android:color/white"
         android:textSize="18sp"
         app:strokeColor="#80000000"

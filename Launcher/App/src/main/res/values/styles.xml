@@ -8,16 +8,38 @@
 
     <style name="SettingTitle">
         <item name="android:textColor">#FFFFFF</item>
-        <item name="android:textSize">30dp</item>
+        <item name="android:textSize">30sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:layout_marginBottom">10dp</item>
         <item name="android:gravity">center_horizontal</item>
     </style>
     <style name="SettingSubtitle">
         <item name="android:textColor">#FFFFFF</item>
-        <item name="android:textSize">20dp</item>
-        <item name="android:gravity">left</item>
-        <item name="android:layout_marginLeft">5dp</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:gravity">center_horizontal</item>
+    </style>
+
+    <style name="SettingMidTitle">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:paddingBottom">10dp</item>
+    </style>
+
+    <style name="SettingButtonLabel">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:paddingRight">6dp</item>
+        <item name="android:gravity">left|center_vertical</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="dialog" parent="Theme.AppCompat.Dialog.Alert">
+        <item name="windowMinWidthMajor">0%</item>
+        <item name="windowMinWidthMinor">0%</item>
+        <item name="android:windowMinWidthMajor">0%</item>
+        <item name="android:windowMinWidthMinor">0%</item>
     </style>
 
 </resources>
