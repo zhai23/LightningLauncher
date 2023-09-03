@@ -18,7 +18,7 @@
 
         <View
             android:id="@+id/view"
-            android:layout_width="400dp"
+            android:layout_width="360dp"
             android:layout_height="wrap_content" />
 
         <TextView
@@ -104,16 +104,16 @@
 
         <HorizontalScrollView
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:scrollbars="none">
 
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="42dp"
                 android:background="@drawable/bkg_button"
                 android:orientation="horizontal"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp">
+                android:paddingStart="6dp"
+                android:paddingEnd="6dp">
 
                 <ImageView
                     android:id="@+id/background0"
@@ -127,9 +127,9 @@
 
                 <ImageView
                     android:id="@+id/background1"
-                    android:layout_width="30dp"
+                    android:layout_width="32dp"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginStart="4dp"
                     android:background="@drawable/bkg_button_wallpaper"
                     android:padding="0dp"
                     android:scaleType="centerCrop"
@@ -138,9 +138,9 @@
 
                 <ImageView
                     android:id="@+id/background2"
-                    android:layout_width="30dp"
+                    android:layout_width="32dp"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginStart="4dp"
                     android:background="@drawable/bkg_button_wallpaper"
                     android:padding="0dp"
                     android:scaleType="centerCrop"
@@ -149,9 +149,9 @@
 
                 <ImageView
                     android:id="@+id/background3"
-                    android:layout_width="30dp"
+                    android:layout_width="32dp"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginStart="4dp"
                     android:background="@drawable/bkg_button_wallpaper"
                     android:padding="0dp"
                     android:scaleType="centerCrop"
@@ -160,9 +160,9 @@
 
                 <ImageView
                     android:id="@+id/background4"
-                    android:layout_width="30dp"
+                    android:layout_width="32dp"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginStart="4dp"
                     android:background="@drawable/bkg_button_wallpaper"
                     android:padding="0dp"
                     android:scaleType="centerCrop"
@@ -171,9 +171,9 @@
 
                 <ImageView
                     android:id="@+id/background5"
-                    android:layout_width="30dp"
+                    android:layout_width="32dp"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginStart="4dp"
                     android:background="@drawable/bkg_button_wallpaper"
                     android:padding="0dp"
                     android:scaleType="centerCrop"
@@ -182,9 +182,9 @@
 
                 <ImageView
                     android:id="@+id/background6"
-                    android:layout_width="30dp"
+                    android:layout_width="32dp"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginStart="4dp"
                     android:background="@drawable/bkg_button_wallpaper"
                     android:padding="0dp"
                     android:scaleType="centerCrop"
@@ -193,9 +193,9 @@
 
                 <ImageView
                     android:id="@+id/background7"
-                    android:layout_width="30dp"
+                    android:layout_width="32dp"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginStart="4dp"
                     android:layout_weight="1"
                     android:background="@drawable/bkg_button_wallpaper"
                     android:padding="0dp"
@@ -205,9 +205,9 @@
 
                 <ImageView
                     android:id="@+id/background_custom"
-                    android:layout_width="30dp"
+                    android:layout_width="32dp"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginStart="4dp"
                     android:background="@drawable/bkg_button_wallpaper"
                     android:paddingTop="3dp"
                     android:paddingBottom="6dp"

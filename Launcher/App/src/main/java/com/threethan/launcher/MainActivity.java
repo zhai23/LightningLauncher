@@ -65,9 +65,9 @@ class BackgroundTask extends AsyncTask<Object, Void, Object> {
     @Override
     protected Object doInBackground(Object... objects) {
         owner = (MainActivity) objects[0];
-        int background = owner.sharedPreferences.getInt(SettingsProvider.KEY_BACKGROUND, SettingsProvider.DEFAULT_BACKGROUND);
-        if (background >= 0 && background < SettingsProvider.BACKGROUND_DRAWABLES.length) {
-            backgroundThemeDrawable = owner.getDrawable(SettingsProvider.BACKGROUND_DRAWABLES[background]);
+        int background = owner.sharedPreferences.getInt(SettingsManager.KEY_BACKGROUND, SettingsManager.DEFAULT_BACKGROUND);
+        if (background >= 0 && background < SettingsManager.BACKGROUND_DRAWABLES.length) {
+            backgroundThemeDrawable = owner.getDrawable(SettingsManager.BACKGROUND_DRAWABLES[background]);
         } else {
             File file = new File(owner.getApplicationInfo().dataDir, MainActivity.CUSTOM_THEME);
             Bitmap backgroundBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
@@ -110,7 +110,7 @@ class RecheckPackagesTask extends AsyncTask {
         if (changeFound) {
             Log.i("PackageCheck", "Package change detected!");
 
-            owner.sharedPreferences.edit().putBoolean(SettingsProvider.NEEDS_META_DATA, true).apply();
+            owner.sharedPreferences.edit().putBoolean(SettingsManager.NEEDS_META_DATA, true).apply();
             owner.allApps = foundApps;
             owner.updateAppLists();
             owner.refreshInterface();
@@ -130,7 +130,7 @@ public class MainActivity extends Activity {
     ImageView backgroundImageView;
     GridView groupPanelGridView;
     public SharedPreferences sharedPreferences;
-    public SettingsProvider settingsProvider;
+    public SettingsManager settingsManager;
     private ImageView selectedImageView;
     private boolean settingsPageOpen = false;
     private boolean loaded = false;
@@ -150,8 +150,8 @@ public class MainActivity extends Activity {
         Log.v("LauncherStartup", "2. Get Setting Provider");
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        settingsProvider = SettingsProvider.getInstance(this);
-        settingsProvider.checkCompatibilityUpdate(this);
+        settingsManager = SettingsManager.getInstance(this);
+        settingsManager.checkCompatibilityUpdate(this);
 
         Log.v("LauncherStartup", "3. Get UI Instances");
 
@@ -165,43 +165,43 @@ public class MainActivity extends Activity {
 
         // Handle group click listener
         groupPanelGridView.setOnItemClickListener((parent, view, position, id) -> {
-            List<String> groups = settingsProvider.getAppGroupsSorted(false,getApplicationContext());
+            List<String> groups = settingsManager.getAppGroupsSorted(false);
             // If the new group button was selected, create and select a new group
             if (position == groups.size()) {
-                final String newName = settingsProvider.addGroup(getApplicationContext());
-                groups = settingsProvider.getAppGroupsSorted(false,getApplicationContext());
+                final String newName = settingsManager.addGroup();
+                groups = settingsManager.getAppGroupsSorted(false);
                 position = groups.indexOf(newName);
             }
             // Move apps if any are selected
             if (!currentSelectedApps.isEmpty()) {
                 GroupsAdapter groupsAdapter = (GroupsAdapter) groupPanelGridView.getAdapter();
-                for (String app : currentSelectedApps) groupsAdapter.setGroup(app, groups.get(position), getApplicationContext());
+                for (String app : currentSelectedApps) groupsAdapter.setGroup(app, groups.get(position));
                 currentSelectedApps.clear();
                 updateSelectionHint();
             }
-            settingsProvider.selectGroup(groups.get(position), getApplicationContext());
+            settingsManager.selectGroup(groups.get(position));
 
             refreshInterface();
         });
 
         // Multiple group selection
         groupPanelGridView.setOnItemLongClickListener((parent, view, position, id) -> {
-            if (!sharedPreferences.getBoolean(SettingsProvider.KEY_EDIT_MODE, false)) {
-                List<String> groups = settingsProvider.getAppGroupsSorted(false, getApplicationContext());
-                Set<String> selectedGroups = settingsProvider.getSelectedGroups(getApplicationContext());
+            List<String> groups = settingsManager.getAppGroupsSorted(false);
+            Set<String> selectedGroups = settingsManager.getSelectedGroups();
 
-                String item = groups.get(position);
-                if (selectedGroups.contains(item)) {
-                    selectedGroups.remove(item);
-                } else {
-                    selectedGroups.add(item);
-                }
-                if (selectedGroups.isEmpty()) {
-                    selectedGroups.add(groups.get(0));
-                }
-                settingsProvider.setSelectedGroups(selectedGroups,getApplicationContext());
-                refreshInterface();
+            if (position >= groups.size() || position < 0) return false;
+
+            String item = groups.get(position);
+            if (selectedGroups.contains(item)) {
+                selectedGroups.remove(item);
+            } else {
+                selectedGroups.add(item);
             }
+            if (selectedGroups.isEmpty()) {
+                selectedGroups.add(groups.get(0));
+            }
+            settingsManager.setSelectedGroups(selectedGroups);
+            refreshInterface();
             return true;
         });
 
@@ -247,7 +247,7 @@ public class MainActivity extends Activity {
             if (editMode) {
                 editMode = false;
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putBoolean(SettingsProvider.KEY_EDIT_MODE, editMode);
+                editor.putBoolean(SettingsManager.KEY_EDIT_MODE, editMode);
                 editor.apply();
                 refreshInterface();
             } else {
@@ -290,14 +290,14 @@ public class MainActivity extends Activity {
             allApps = packageManager.getInstalledApplications(0);
             // Load sets & check that they're not empty (Sometimes string sets are emptied on reinstall but not booleans)
             Set<String> setAll = new HashSet<>();
-            sharedPreferences.getStringSet(SettingsProvider.KEY_VR_SET, setAll);
+            sharedPreferences.getStringSet(SettingsManager.KEY_VR_SET, setAll);
             Set<String> set2d = new HashSet<>();
-            sharedPreferences.getStringSet(SettingsProvider.KEY_2D_SET, set2d);
+            sharedPreferences.getStringSet(SettingsManager.KEY_2D_SET, set2d);
             setAll.addAll(set2d);
 
-            if (setAll.isEmpty()) sharedPreferences.edit().putBoolean(SettingsProvider.NEEDS_META_DATA, true).apply();
+            if (setAll.isEmpty()) sharedPreferences.edit().putBoolean(SettingsManager.NEEDS_META_DATA, true).apply();
             // Check if we need metadata and load accordingly
-            final boolean needsMeta = sharedPreferences.getBoolean(SettingsProvider.NEEDS_META_DATA, true);
+            final boolean needsMeta = sharedPreferences.getBoolean(SettingsManager.NEEDS_META_DATA, true);
             Log.i("LightningLauncher", needsMeta ? "(Re)Loading app list with meta data" : "Loading saved package list (no meta data)");
             if (needsMeta) {
                 allApps = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);
@@ -344,7 +344,7 @@ public class MainActivity extends Activity {
                 for (Image image : ImagePicker.getImages(data)) {
                     Bitmap backgroundBitmap = ImageUtils.getResizedBitmap(BitmapFactory.decodeFile(image.getPath()), 1280);
                     ImageUtils.saveBitmap(backgroundBitmap, new File(getApplicationInfo().dataDir, CUSTOM_THEME));
-                    setBackground(SettingsProvider.BACKGROUND_DRAWABLES.length);
+                    setBackground(SettingsManager.BACKGROUND_DRAWABLES.length);
                     break;
                 }
             }
@@ -406,9 +406,9 @@ public class MainActivity extends Activity {
 
     public void refreshBackground() {
         // Set initial color, execute background task
-        int background = sharedPreferences.getInt(SettingsProvider.KEY_BACKGROUND, SettingsProvider.DEFAULT_BACKGROUND);
-        boolean custom = background < 0 || background > SettingsProvider.BACKGROUND_COLORS.length;
-        int backgroundColor = custom ? Color.parseColor("#404044") : SettingsProvider.BACKGROUND_COLORS[background];
+        int background = sharedPreferences.getInt(SettingsManager.KEY_BACKGROUND, SettingsManager.DEFAULT_BACKGROUND);
+        boolean custom = background < 0 || background > SettingsManager.BACKGROUND_COLORS.length;
+        int backgroundColor = custom ? Color.parseColor("#404044") : SettingsManager.BACKGROUND_COLORS[background];
 
         backgroundImageView.setBackgroundColor(backgroundColor);
         getWindow().setNavigationBarColor(backgroundColor);
@@ -419,9 +419,9 @@ public class MainActivity extends Activity {
     public void refreshInterface() {
         Log.v("LightningLauncher","Reloading UI");
 
-        darkMode = sharedPreferences.getBoolean(SettingsProvider.KEY_DARK_MODE, SettingsProvider.DEFAULT_DARK_MODE);
-        editMode = sharedPreferences.getBoolean(SettingsProvider.KEY_EDIT_MODE, false);
-        groupsEnabled = sharedPreferences.getBoolean(SettingsProvider.KEY_GROUPS_ENABLED, SettingsProvider.DEFAULT_GROUPS_ENABLED);
+        darkMode = sharedPreferences.getBoolean(SettingsManager.KEY_DARK_MODE, SettingsManager.DEFAULT_DARK_MODE);
+        editMode = sharedPreferences.getBoolean(SettingsManager.KEY_EDIT_MODE, false);
+        groupsEnabled = sharedPreferences.getBoolean(SettingsManager.KEY_GROUPS_ENABLED, SettingsManager.DEFAULT_GROUPS_ENABLED);
         if (!groupsEnabled && editMode) {
             groupsEnabled = true;
             updateTopBar();
@@ -429,13 +429,13 @@ public class MainActivity extends Activity {
 
         ArrayList<String> selectedGroups;
         // Switch off of hidden if we just exited edit mode
-        settingsProvider.readValues(getApplicationContext());
+        settingsManager.readValues();
 
-        selectedGroups = settingsProvider.getAppGroupsSorted(groupsEnabled, getApplicationContext());
+        selectedGroups = settingsManager.getAppGroupsSorted(groupsEnabled);
         if (!editMode && selectedGroups.contains(GroupsAdapter.HIDDEN_GROUP)) {
-            final ArrayList<String> validGroups = settingsProvider.getAppGroupsSorted(false, getApplicationContext());
+            final ArrayList<String> validGroups = settingsManager.getAppGroupsSorted(false);
             validGroups.remove(GroupsAdapter.HIDDEN_GROUP);
-            settingsProvider.setSelectedGroups(new HashSet<>(validGroups), getApplicationContext());
+            settingsManager.setSelectedGroups(new HashSet<>(validGroups));
         }
         if (!editMode) currentSelectedApps.clear();
         updateSelectionHint();
@@ -445,9 +445,9 @@ public class MainActivity extends Activity {
     }
     public void setAdapters() {
         // Get and apply margin
-        int marginPx = dp(sharedPreferences.getInt(SettingsProvider.KEY_MARGIN, SettingsProvider.DEFAULT_MARGIN));
-        boolean names = sharedPreferences.getBoolean(SettingsProvider.KEY_SHOW_NAMES_ICON, SettingsProvider.DEFAULT_SHOW_NAMES_ICON);
-        boolean namesWide = sharedPreferences.getBoolean(SettingsProvider.KEY_SHOW_NAMES_WIDE, SettingsProvider.DEFAULT_SHOW_NAMES_WIDE);
+        int marginPx = dp(sharedPreferences.getInt(SettingsManager.KEY_MARGIN, SettingsManager.DEFAULT_MARGIN));
+        boolean names = sharedPreferences.getBoolean(SettingsManager.KEY_SHOW_NAMES_ICON, SettingsManager.DEFAULT_SHOW_NAMES_ICON);
+        boolean namesWide = sharedPreferences.getBoolean(SettingsManager.KEY_SHOW_NAMES_WIDE, SettingsManager.DEFAULT_SHOW_NAMES_WIDE);
 
         appGridView.setMargin(marginPx, names);
         appGridViewWide.setMargin(marginPx, namesWide);
@@ -483,23 +483,24 @@ public class MainActivity extends Activity {
             groupPanelGridView.setNumColumns(group_columns);
             final int groupRows = (int) Math.ceil((double) groupPanelGridView.getAdapter().getCount() / group_columns);
             scrollInterior.setPadding(0, dp(23 + 22) + dp(40) * groupRows, 0, 0);
+            scrollView.setFadingEdgeLength(dp(23 + 22) + dp(40) * groupRows);
         } else {
-            int marginPx = dp(sharedPreferences.getInt(SettingsProvider.KEY_MARGIN, SettingsProvider.DEFAULT_MARGIN));
+            int marginPx = dp(sharedPreferences.getInt(SettingsManager.KEY_MARGIN, SettingsManager.DEFAULT_MARGIN));
             scrollInterior.setPadding(0, 0, 0, marginPx);
             FadingTopScrollView scrollView = findViewById(R.id.mainScrollView);
             scrollView.setFadingEdgeLength(0);
         }
 
-        int targetSizePx = dp(sharedPreferences.getInt(SettingsProvider.KEY_SCALE, SettingsProvider.DEFAULT_SCALE));
+        int targetSizePx = dp(sharedPreferences.getInt(SettingsManager.KEY_SCALE, SettingsManager.DEFAULT_SCALE));
         int estimatedWidth = prevViewWidth;
         appGridView.setNumColumns((int) Math.round((double) estimatedWidth/targetSizePx));
         appGridViewWide.setNumColumns((int) Math.round((double) estimatedWidth/targetSizePx/2));
     }
 
     public void setBackground(int index) {
-        if (index >= SettingsProvider.BACKGROUND_DRAWABLES.length || index < 0) index = -1;
-        else sharedPreferences.edit().putBoolean(SettingsProvider.KEY_DARK_MODE, SettingsProvider.BACKGROUND_DARK[index]).apply();
-        sharedPreferences.edit().putInt(SettingsProvider.KEY_BACKGROUND, index).apply();
+        if (index >= SettingsManager.BACKGROUND_DRAWABLES.length || index < 0) index = -1;
+        else sharedPreferences.edit().putBoolean(SettingsManager.KEY_DARK_MODE, SettingsManager.BACKGROUND_DARK[index]).apply();
+        sharedPreferences.edit().putInt(SettingsManager.KEY_BACKGROUND, index).apply();
         refreshBackground();
     }
 
@@ -531,14 +532,14 @@ public class MainActivity extends Activity {
         editSwitch.setChecked(editMode);
         editSwitch.setOnClickListener(view1 -> {
             editMode = !editMode;
-            ArrayList<String> selectedGroups = settingsProvider.getAppGroupsSorted(true, getApplicationContext());
+            ArrayList<String> selectedGroups = settingsManager.getAppGroupsSorted(true);
             if (editMode && (selectedGroups.size() > 1)) {
                 Set<String> selectFirst = new HashSet<>();
                 selectFirst.add(selectedGroups.get(0));
-                settingsProvider.setSelectedGroups(selectFirst, getApplicationContext());
+                settingsManager.setSelectedGroups(selectFirst);
             }
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean(SettingsProvider.KEY_EDIT_MODE, editMode);
+            editor.putBoolean(SettingsManager.KEY_EDIT_MODE, editMode);
             editor.apply();
             refreshInterface();
         });
@@ -546,30 +547,30 @@ public class MainActivity extends Activity {
 
         // Wallpaper and style
         @SuppressLint("UseSwitchCompatOrMaterialCode") Switch dark = dialog.findViewById(R.id.switch_dark_mode);
-        dark.setChecked(sharedPreferences.getBoolean(SettingsProvider.KEY_DARK_MODE, SettingsProvider.DEFAULT_DARK_MODE));
+        dark.setChecked(sharedPreferences.getBoolean(SettingsManager.KEY_DARK_MODE, SettingsManager.DEFAULT_DARK_MODE));
         dark.setOnCheckedChangeListener((compoundButton, value) -> {
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean(SettingsProvider.KEY_DARK_MODE, value);
+            editor.putBoolean(SettingsManager.KEY_DARK_MODE, value);
             editor.apply();
             refreshInterface();
         });
         @SuppressLint("UseSwitchCompatOrMaterialCode") Switch groups = dialog.findViewById(R.id.switch_group_mode);
-        groups.setChecked(sharedPreferences.getBoolean(SettingsProvider.KEY_GROUPS_ENABLED, SettingsProvider.DEFAULT_GROUPS_ENABLED));
+        groups.setChecked(sharedPreferences.getBoolean(SettingsManager.KEY_GROUPS_ENABLED, SettingsManager.DEFAULT_GROUPS_ENABLED));
         groups.setOnCheckedChangeListener((sw, value) -> {
-            if (!sharedPreferences.getBoolean(SettingsProvider.KEY_SEEN_HIDDEN_GROUPS_POPUP, false) && value != SettingsProvider.DEFAULT_GROUPS_ENABLED) {
+            if (!sharedPreferences.getBoolean(SettingsManager.KEY_SEEN_HIDDEN_GROUPS_POPUP, false) && value != SettingsManager.DEFAULT_GROUPS_ENABLED) {
                 AlertDialog subDialog = DialogHelper.build(this, R.layout.dialog_hide_groups_info);
                 subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
-                    sharedPreferences.edit().putBoolean(SettingsProvider.KEY_SEEN_HIDDEN_GROUPS_POPUP, true)
-                                            .putBoolean(SettingsProvider.KEY_GROUPS_ENABLED, value).apply();
+                    sharedPreferences.edit().putBoolean(SettingsManager.KEY_SEEN_HIDDEN_GROUPS_POPUP, true)
+                                            .putBoolean(SettingsManager.KEY_GROUPS_ENABLED, value).apply();
                     refreshInterface();
                     subDialog.dismiss();
                 });
                 subDialog.findViewById(R.id.cancel).setOnClickListener(view -> {
                     subDialog.dismiss(); // Dismiss without setting
-                    groups.setChecked(SettingsProvider.DEFAULT_GROUPS_ENABLED); // Revert switch
+                    groups.setChecked(SettingsManager.DEFAULT_GROUPS_ENABLED); // Revert switch
                 });
             } else {
-                sharedPreferences.edit().putBoolean(SettingsProvider.KEY_GROUPS_ENABLED, value).apply();
+                sharedPreferences.edit().putBoolean(SettingsManager.KEY_GROUPS_ENABLED, value).apply();
                 refreshInterface();
             }
         });
@@ -584,21 +585,22 @@ public class MainActivity extends Activity {
                 dialog.findViewById(R.id.background7),
                 dialog.findViewById(R.id.background_custom)
         };
-        int background = sharedPreferences.getInt(SettingsProvider.KEY_BACKGROUND, SettingsProvider.DEFAULT_BACKGROUND);
+        int background = sharedPreferences.getInt(SettingsManager.KEY_BACKGROUND, SettingsManager.DEFAULT_BACKGROUND);
         if (background < 0) background = views.length-1;
 
         for (ImageView image : views) {
             image.setClipToOutline(true);
         }
-        final int selectedWallpaperWidthPx = dp(410-38*(views.length-1)-30);
+        final int wallpaperWidth = 32;
+        final int selectedWallpaperWidthPx = dp(360+20-(wallpaperWidth+4)*(views.length-1)-wallpaperWidth);
         views[background].getLayoutParams().width = selectedWallpaperWidthPx;
         views[background].requestLayout();
         for (int i = 0; i < views.length; i++) {
             int index = i;
             views[i].setOnClickListener(view -> {
 
-                int lastIndex = sharedPreferences.getInt(SettingsProvider.KEY_BACKGROUND, SettingsProvider.DEFAULT_BACKGROUND);
-                if (lastIndex >= SettingsProvider.BACKGROUND_DRAWABLES.length || lastIndex < 0) lastIndex = SettingsProvider.BACKGROUND_DRAWABLES.length;
+                int lastIndex = sharedPreferences.getInt(SettingsManager.KEY_BACKGROUND, SettingsManager.DEFAULT_BACKGROUND);
+                if (lastIndex >= SettingsManager.BACKGROUND_DRAWABLES.length || lastIndex < 0) lastIndex = SettingsManager.BACKGROUND_DRAWABLES.length;
                 ImageView last = views[lastIndex];
                 if (last == view) return;
 
@@ -611,7 +613,7 @@ public class MainActivity extends Activity {
                 });
                 viewAnimator.start();
 
-                ValueAnimator lastAnimator = ValueAnimator.ofInt(last.getWidth(), dp(30));
+                ValueAnimator lastAnimator = ValueAnimator.ofInt(last.getWidth(), dp(wallpaperWidth));
                 lastAnimator.setDuration(250);
                 lastAnimator.setInterpolator(new DecelerateInterpolator());
                 lastAnimator.addUpdateListener(animation -> {
@@ -620,11 +622,11 @@ public class MainActivity extends Activity {
                 });
                 lastAnimator.start();
 
-                if (index == SettingsProvider.BACKGROUND_DRAWABLES.length) {
+                if (index == SettingsManager.BACKGROUND_DRAWABLES.length) {
                     ImageUtils.showImagePicker(this, PICK_THEME_CODE);
                 } else {
                     setBackground(index);
-                    dark.setChecked(sharedPreferences.getBoolean(SettingsProvider.KEY_DARK_MODE, SettingsProvider.DEFAULT_DARK_MODE));
+                    dark.setChecked(sharedPreferences.getBoolean(SettingsManager.KEY_DARK_MODE, SettingsManager.DEFAULT_DARK_MODE));
                 }
             });
         }
@@ -636,7 +638,7 @@ public class MainActivity extends Activity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int value, boolean b) {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putInt(SettingsProvider.KEY_SCALE, value);
+                editor.putInt(SettingsManager.KEY_SCALE, value);
                 editor.apply();
             }
 
@@ -649,7 +651,7 @@ public class MainActivity extends Activity {
                 refreshInterface();
             }
         });
-        scale.setProgress(sharedPreferences.getInt(SettingsProvider.KEY_SCALE, SettingsProvider.DEFAULT_SCALE));
+        scale.setProgress(sharedPreferences.getInt(SettingsManager.KEY_SCALE, SettingsManager.DEFAULT_SCALE));
         scale.setMax(174);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) scale.setMin(50);
 
@@ -658,7 +660,7 @@ public class MainActivity extends Activity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int value, boolean b) {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putInt(SettingsProvider.KEY_MARGIN, value);
+                editor.putInt(SettingsManager.KEY_MARGIN, value);
                 editor.apply();
             }
 
@@ -671,7 +673,7 @@ public class MainActivity extends Activity {
                 refreshInterface();
             }
         });
-        margin.setProgress(sharedPreferences.getInt(SettingsProvider.KEY_MARGIN, SettingsProvider.DEFAULT_MARGIN));
+        margin.setProgress(sharedPreferences.getInt(SettingsManager.KEY_MARGIN, SettingsManager.DEFAULT_MARGIN));
         margin.setMax(59);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) margin.setMin(5);
 
@@ -680,18 +682,18 @@ public class MainActivity extends Activity {
         // Wide display
         @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch wideVR = dialog.findViewById(R.id.switch_wide_vr);
-        wideVR.setChecked(sharedPreferences.getBoolean(SettingsProvider.KEY_WIDE_VR, SettingsProvider.DEFAULT_WIDE_VR));
+        wideVR.setChecked(sharedPreferences.getBoolean(SettingsManager.KEY_WIDE_VR, SettingsManager.DEFAULT_WIDE_VR));
         wideVR.setOnCheckedChangeListener((compoundButton, value) -> {
             AbstractPlatform.clearIconCache();
-            sharedPreferences.edit().putBoolean(SettingsProvider.KEY_WIDE_VR, value).apply();
+            sharedPreferences.edit().putBoolean(SettingsManager.KEY_WIDE_VR, value).apply();
             updateAppLists();
             refreshInterface();
         });
         @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch wide2D = dialog.findViewById(R.id.switch_wide_2d);
-        wide2D.setChecked(sharedPreferences.getBoolean(SettingsProvider.KEY_WIDE_2D, SettingsProvider.DEFAULT_WIDE_2D));
+        wide2D.setChecked(sharedPreferences.getBoolean(SettingsManager.KEY_WIDE_2D, SettingsManager.DEFAULT_WIDE_2D));
         wide2D.setOnCheckedChangeListener((compoundButton, value) -> {
-            sharedPreferences.edit().putBoolean(SettingsProvider.KEY_WIDE_2D, value).apply();
+            sharedPreferences.edit().putBoolean(SettingsManager.KEY_WIDE_2D, value).apply();
             updateAppLists();
             refreshInterface();
         });
@@ -700,19 +702,19 @@ public class MainActivity extends Activity {
         // Names
         @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch names = dialog.findViewById(R.id.switch_names);
-        names.setChecked(sharedPreferences.getBoolean(SettingsProvider.KEY_SHOW_NAMES_ICON, SettingsProvider.DEFAULT_SHOW_NAMES_ICON));
+        names.setChecked(sharedPreferences.getBoolean(SettingsManager.KEY_SHOW_NAMES_ICON, SettingsManager.DEFAULT_SHOW_NAMES_ICON));
         names.setOnCheckedChangeListener((compoundButton, value) -> {
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean(SettingsProvider.KEY_SHOW_NAMES_ICON, value);
+            editor.putBoolean(SettingsManager.KEY_SHOW_NAMES_ICON, value);
             editor.apply();
             refreshInterface();
         });
         @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch wideNames = dialog.findViewById(R.id.switch_names_wide);
-        wideNames.setChecked(sharedPreferences.getBoolean(SettingsProvider.KEY_SHOW_NAMES_WIDE, SettingsProvider.DEFAULT_SHOW_NAMES_WIDE));
+        wideNames.setChecked(sharedPreferences.getBoolean(SettingsManager.KEY_SHOW_NAMES_WIDE, SettingsManager.DEFAULT_SHOW_NAMES_WIDE));
         wideNames.setOnCheckedChangeListener((compoundButton, value) -> {
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean(SettingsProvider.KEY_SHOW_NAMES_WIDE, value);
+            editor.putBoolean(SettingsManager.KEY_SHOW_NAMES_WIDE, value);
             editor.apply();
             refreshInterface();
         });

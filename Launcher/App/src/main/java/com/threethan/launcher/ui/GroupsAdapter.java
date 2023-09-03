@@ -2,7 +2,6 @@ package com.threethan.launcher.ui;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -10,11 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.threethan.launcher.MainActivity;
 import com.threethan.launcher.R;
-import com.threethan.launcher.SettingsProvider;
+import com.threethan.launcher.SettingsManager;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,7 +29,7 @@ public class GroupsAdapter extends BaseAdapter {
     private final MainActivity mainActivity;
     private final List<String> appGroups;
     private final Set<String> selectedGroups;
-    private final SettingsProvider settingsProvider;
+    private final SettingsManager settingsManager;
     private final boolean isEditMode;
 
     /**
@@ -38,17 +38,17 @@ public class GroupsAdapter extends BaseAdapter {
     public GroupsAdapter(MainActivity activity, boolean editMode) {
         mainActivity = activity;
         isEditMode = editMode;
-        settingsProvider = SettingsProvider.getInstance(activity);
+        settingsManager = SettingsManager.getInstance(activity);
 
-        SettingsProvider settings = SettingsProvider.getInstance(mainActivity);
-        appGroups = settings.getAppGroupsSorted(false, mainActivity);
+        SettingsManager settings = SettingsManager.getInstance(mainActivity);
+        appGroups = settings.getAppGroupsSorted(false);
         if (!editMode) {
             appGroups.remove(GroupsAdapter.HIDDEN_GROUP);
         }
         if (editMode && appGroups.size() < MAX_GROUPS) {
             appGroups.add("+ " + mainActivity.getString(R.string.add_group));
         }
-        selectedGroups = settings.getSelectedGroups(mainActivity);
+        selectedGroups = settings.getSelectedGroups();
     }
 
     public int getCount() {
@@ -102,23 +102,40 @@ public class GroupsAdapter extends BaseAdapter {
         holder.menu.getContext().getDrawable(R.drawable.ic_info);
         holder.menu.setOnClickListener(view -> {
 
-            final Map<String, String> apps = settingsProvider.getAppList(mainActivity);
-            final Set<String> appGroupsList = settingsProvider.getAppGroups(mainActivity);
-            final String oldGroupName = settingsProvider.getAppGroupsSorted(false,mainActivity).get(position);
+            final Map<String, String> apps = settingsManager.getAppList();
+            final Set<String> appGroupsList = settingsManager.getAppGroups();
+            final String groupName = settingsManager.getAppGroupsSorted(false).get(position);
 
             AlertDialog dialog = DialogHelper.build(mainActivity, R.layout.dialog_group_details);
 
             final EditText groupNameInput = dialog.findViewById(R.id.group_name);
-            groupNameInput.setText(oldGroupName);
+            groupNameInput.setText(groupName);
+
+            @SuppressLint("UseSwitchCompatOrMaterialCode")
+            Switch switch_2d = dialog.findViewById(R.id.switch_default_2d);
+            @SuppressLint("UseSwitchCompatOrMaterialCode")
+            Switch switch_vr = dialog.findViewById(R.id.switch_default_vr);
+            switch_2d.setChecked(mainActivity.settingsManager.getDefaultGroup(false).equals(groupName));
+            switch_vr.setChecked(mainActivity.settingsManager.getDefaultGroup(true).equals(groupName));
+            switch_2d.setOnCheckedChangeListener((switchView, value) -> {
+                String newDefault = value ? groupName : SettingsManager.DEFAULT_GROUP_2D;
+                if ((!value && groupName.equals(newDefault)) || !appGroups.contains(newDefault)) newDefault = null;
+                mainActivity.sharedPreferences.edit().putString(SettingsManager.KEY_GROUP_2D, newDefault).apply();
+            });
+            switch_vr.setOnCheckedChangeListener((switchView, value) -> {
+                String newDefault = value ? groupName : SettingsManager.DEFAULT_GROUP_VR;
+                if ((!value && groupName.equals(newDefault)) || !appGroups.contains(newDefault)) newDefault = null;
+                mainActivity.sharedPreferences.edit().putString(SettingsManager.KEY_GROUP_VR, newDefault).apply();
+            });
 
             dialog.findViewById(R.id.confirm).setOnClickListener(view1 -> {
                 String newGroupName = groupNameInput.getText().toString();
                 if (newGroupName.length() > 0) {
-                    appGroupsList.remove(oldGroupName);
+                    appGroupsList.remove(groupName);
                     appGroupsList.add(newGroupName);
                     Map<String, String> updatedAppList = new HashMap<>();
                     for (String packageName : apps.keySet()) {
-                        if (Objects.requireNonNull(apps.get(packageName)).compareTo(oldGroupName) == 0) {
+                        if (Objects.requireNonNull(apps.get(packageName)).compareTo(groupName) == 0) {
                             updatedAppList.put(packageName, newGroupName);
                         } else {
                             updatedAppList.put(packageName, apps.get(packageName));
@@ -126,9 +143,9 @@ public class GroupsAdapter extends BaseAdapter {
                     }
                     HashSet<String> selectedGroup = new HashSet<>();
                     selectedGroup.add(newGroupName);
-                    settingsProvider.setSelectedGroups(selectedGroup, mainActivity);
-                    settingsProvider.setAppGroups(appGroupsList, mainActivity);
-                    settingsProvider.setAppList(updatedAppList, mainActivity);
+                    settingsManager.setSelectedGroups(selectedGroup);
+                    settingsManager.setAppGroups(appGroupsList);
+                    settingsManager.setAppList(updatedAppList);
                     mainActivity.refreshInterface();
                 }
                 dialog.cancel();
@@ -137,25 +154,25 @@ public class GroupsAdapter extends BaseAdapter {
             dialog.findViewById(R.id.group_delete).setOnClickListener(view2 -> {
                 HashMap<String, String> newAppList = new HashMap<>();
                 for (String packageName : apps.keySet()) {
-                    if (oldGroupName.equals(apps.get(packageName))) {
+                    if (groupName.equals(apps.get(packageName))) {
                         newAppList.put(packageName, HIDDEN_GROUP);
                     } else {
                         newAppList.put(packageName, apps.get(packageName));
                     }
                 }
-                settingsProvider.setAppList(newAppList, mainActivity);
+                settingsManager.setAppList(newAppList);
 
-                appGroupsList.remove(oldGroupName);
+                appGroupsList.remove(groupName);
 
                 if (appGroupsList.size() <= 1) {
-                    settingsProvider.resetGroups();
+                    settingsManager.resetGroups();
                 } else {
 
-                    settingsProvider.setAppGroups(appGroupsList, mainActivity);
+                    settingsManager.setAppGroups(appGroupsList);
 
                     Set<String> firstSelectedGroup = new HashSet<>();
-                    firstSelectedGroup.add(settingsProvider.getAppGroupsSorted(false,mainActivity).get(0));
-                    settingsProvider.setSelectedGroups(firstSelectedGroup,mainActivity);
+                    firstSelectedGroup.add(settingsManager.getAppGroupsSorted(false).get(0));
+                    settingsManager.setSelectedGroups(firstSelectedGroup);
                 }
                 dialog.dismiss();
 
@@ -172,11 +189,11 @@ public class GroupsAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public void setGroup(String packageName, String groupName, Context context) {
-        Map<String, String> apps = settingsProvider.getAppList(context);
+    public void setGroup(String packageName, String groupName) {
+        Map<String, String> apps = settingsManager.getAppList();
         apps.remove(packageName);
         apps.put(packageName, groupName);
-        settingsProvider.setAppList(apps, context);
+        settingsManager.setAppList(apps);
     }
 
     private void setLook(int position, View itemView, View menu) {

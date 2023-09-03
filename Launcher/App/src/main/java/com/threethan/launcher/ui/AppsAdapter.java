@@ -27,7 +27,7 @@ import android.widget.TextView;
 
 import com.threethan.launcher.MainActivity;
 import com.threethan.launcher.R;
-import com.threethan.launcher.SettingsProvider;
+import com.threethan.launcher.SettingsManager;
 import com.threethan.launcher.platforms.AbstractPlatform;
 
 import java.io.File;
@@ -69,18 +69,18 @@ public class AppsAdapter extends BaseAdapter{
     private final List<ApplicationInfo> appList;
     private final boolean isEditMode;
     private final boolean showTextLabels;
-    private final SettingsProvider settingsProvider;
+    private final SettingsManager settingsManager;
 
     public AppsAdapter(MainActivity context, boolean editMode, boolean names, List<ApplicationInfo> allApps) {
         mainActivity = context;
         isEditMode = editMode;
         showTextLabels = names;
-        settingsProvider = SettingsProvider.getInstance(mainActivity);
+        settingsManager = SettingsManager.getInstance(mainActivity);
 
-        ArrayList<String> sortedGroups = settingsProvider.getAppGroupsSorted(false, mainActivity);
-        ArrayList<String> sortedSelectedGroups = settingsProvider.getAppGroupsSorted(true, mainActivity);
+        ArrayList<String> sortedGroups = settingsManager.getAppGroupsSorted(false);
+        ArrayList<String> sortedSelectedGroups = settingsManager.getAppGroupsSorted(true);
         boolean isFirstGroupSelected = !sortedSelectedGroups.isEmpty() && !sortedGroups.isEmpty() && sortedSelectedGroups.get(0).compareTo(sortedGroups.get(0)) == 0;
-        appList = settingsProvider.getInstalledApps(context, sortedSelectedGroups, isFirstGroupSelected, allApps);
+        appList = settingsManager.getInstalledApps(context, sortedSelectedGroups, isFirstGroupSelected, allApps);
     }
 
     private static class ViewHolder {
@@ -136,7 +136,7 @@ public class AppsAdapter extends BaseAdapter{
 
         // set value into textview
         PackageManager packageManager = mainActivity.getPackageManager();
-        String name = SettingsProvider.getAppDisplayName(mainActivity, currentApp.packageName, currentApp.loadLabel(packageManager));
+        String name = SettingsManager.getAppDisplayName(mainActivity, currentApp.packageName, currentApp.loadLabel(packageManager));
         holder.textView.setVisibility(showTextLabels ? View.VISIBLE : View.GONE);
         if (showTextLabels) {
             holder.textView.setText(name);
@@ -151,7 +151,7 @@ public class AppsAdapter extends BaseAdapter{
             });
         } else {
             holder.layout.setOnClickListener(view -> {
-                if (!(SettingsProvider.getAppLaunchOut(currentApp.packageName) || AbstractPlatform.isVirtualRealityApp(currentApp, mainActivity))) animateOpen(holder);
+                if (!(SettingsManager.getAppLaunchOut(currentApp.packageName) || AbstractPlatform.isVirtualRealityApp(currentApp, mainActivity))) animateOpen(holder);
                 mainActivity.openApp(currentApp);
             });
         }
@@ -198,7 +198,7 @@ public class AppsAdapter extends BaseAdapter{
         appDetailsDialog.findViewById(R.id.uninstall).setOnClickListener(view -> mainActivity.uninstallApp(currentApp.packageName));
 
         // toggle launch mode
-        final boolean[] launchOut = {SettingsProvider.getAppLaunchOut(currentApp.packageName)};
+        final boolean[] launchOut = {SettingsManager.getAppLaunchOut(currentApp.packageName)};
         final Switch launchModeSwitch = appDetailsDialog.findViewById(R.id.launch_mode_switch);
         final View launchModeSection = appDetailsDialog.findViewById(R.id.launch_mode_section);
         final View refreshIconButton = appDetailsDialog.findViewById(R.id.refresh_icon_button);
@@ -232,40 +232,40 @@ public class AppsAdapter extends BaseAdapter{
             launchModeSection.setVisibility(View.GONE);
             refreshIconButton.setVisibility(View.VISIBLE);
 
-            refreshIconButton.setOnClickListener(view -> {
-                appPlatform.reloadIcon(mainActivity, currentApp, new ImageView[]{iconImage});
-            });
+            refreshIconButton.setOnClickListener(view -> appPlatform.reloadIcon(mainActivity, currentApp, new ImageView[]{iconImage}));
         } else {
             launchModeSection.setVisibility(View.VISIBLE);
             refreshIconButton.setVisibility(View.GONE);
             launchModeSwitch.setChecked(launchOut[0]);
 
             launchModeSwitch.setOnCheckedChangeListener((sw, value) -> {
-                if (!mainActivity.sharedPreferences.getBoolean(SettingsProvider.KEY_SEEN_LAUNCH_OUT_POPUP, false) && value) {
+                if (!mainActivity.sharedPreferences.getBoolean(SettingsManager.KEY_SEEN_LAUNCH_OUT_POPUP, false) && value) {
                     AlertDialog dialog = DialogHelper.build(mainActivity, R.layout.dialog_launch_out_info);
                     dialog.findViewById(R.id.confirm).setOnClickListener(view -> {
-                        mainActivity.sharedPreferences.edit().putBoolean(SettingsProvider.KEY_SEEN_LAUNCH_OUT_POPUP, true).apply();
+                        mainActivity.sharedPreferences.edit().putBoolean(SettingsManager.KEY_SEEN_LAUNCH_OUT_POPUP, true).apply();
                         dialog.dismiss();
+                        SettingsManager.setAppLaunchOut(currentApp.packageName, !launchOut[0]);
+                        launchOut[0] = SettingsManager.getAppLaunchOut(currentApp.packageName);
                     });
                     dialog.findViewById(R.id.cancel).setOnClickListener(view -> {
                         dialog.dismiss(); // Dismiss without setting
                         launchModeSwitch.setChecked(false); // Revert switch
                     });
                 } else {
-                    SettingsProvider.setAppLaunchOut(currentApp.packageName, !launchOut[0]);
-                    launchOut[0] = SettingsProvider.getAppLaunchOut(currentApp.packageName);
+                    SettingsManager.setAppLaunchOut(currentApp.packageName, !launchOut[0]);
+                    launchOut[0] = SettingsManager.getAppLaunchOut(currentApp.packageName);
                 }
             });
         }
 
         // set name
-        String name = SettingsProvider.getAppDisplayName(mainActivity, currentApp.packageName, currentApp.loadLabel(packageManager));
+        String name = SettingsManager.getAppDisplayName(mainActivity, currentApp.packageName, currentApp.loadLabel(packageManager));
         final EditText appNameEditText = appDetailsDialog.findViewById(R.id.app_name);
         appNameEditText.setText(name);
         appDetailsDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
             appDetailsDialog.dismiss();
 
-            settingsProvider.setAppDisplayName(mainActivity, currentApp, appNameEditText.getText().toString());
+            settingsManager.setAppDisplayName(mainActivity, currentApp, appNameEditText.getText().toString());
             mainActivity.refreshInterface();
         });
 

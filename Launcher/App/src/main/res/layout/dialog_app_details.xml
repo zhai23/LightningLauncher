@@ -70,7 +70,7 @@
                 android:layout_height="35dp"
                 android:layout_gravity="bottom"
                 android:autofillHints="text"
-                android:background="@drawable/bkg_app_name"
+                android:background="@drawable/bkg_name_app"
                 android:inputType="text"
                 android:selectAllOnFocus="true"
                 android:singleLine="true"

@@ -17,7 +17,7 @@ import androidx.core.content.res.ResourcesCompat;
 
 import com.threethan.launcher.MainActivity;
 import com.threethan.launcher.R;
-import com.threethan.launcher.SettingsProvider;
+import com.threethan.launcher.SettingsManager;
 
 import java.io.DataInputStream;
 import java.io.File;
@@ -141,19 +141,19 @@ public abstract class AbstractPlatform {
     public static boolean isVirtualRealityApp(ApplicationInfo applicationInfo, MainActivity mainActivity) {
         final SharedPreferences sharedPreferences = mainActivity.sharedPreferences;
         if (setVr.isEmpty()) {
-            sharedPreferences.getStringSet(SettingsProvider.KEY_VR_SET, setVr);
-            sharedPreferences.getStringSet(SettingsProvider.KEY_2D_SET, set2d);
+            sharedPreferences.getStringSet(SettingsManager.KEY_VR_SET, setVr);
+            sharedPreferences.getStringSet(SettingsManager.KEY_2D_SET, set2d);
         }
         if (setVr.contains(applicationInfo.packageName)) return true;
         if (set2d.contains(applicationInfo.packageName)) return false;
 
         if (checkVirtualRealityApp(applicationInfo)) {
             setVr.add(applicationInfo.packageName);
-            sharedPreferences.edit().putStringSet(SettingsProvider.KEY_VR_SET, setVr).apply();
+            sharedPreferences.edit().putStringSet(SettingsManager.KEY_VR_SET, setVr).apply();
             return true;
         } else {
             set2d.add(applicationInfo.packageName);
-            sharedPreferences.edit().putStringSet(SettingsProvider.KEY_2D_SET, set2d).apply();
+            sharedPreferences.edit().putStringSet(SettingsManager.KEY_2D_SET, set2d).apply();
             return false;
         }
 
@@ -173,8 +173,8 @@ public abstract class AbstractPlatform {
     public static boolean isSupportedApp(ApplicationInfo appInfo, MainActivity mainActivity) {
         final SharedPreferences sharedPreferences = mainActivity.sharedPreferences;
         if (setSupported.isEmpty()) {
-            sharedPreferences.getStringSet(SettingsProvider.KEY_SUPPORTED_SET, setSupported);
-            sharedPreferences.getStringSet(SettingsProvider.KEY_UNSUPPORTED_SET, setUnsupported);
+            sharedPreferences.getStringSet(SettingsManager.KEY_SUPPORTED_SET, setSupported);
+            sharedPreferences.getStringSet(SettingsManager.KEY_UNSUPPORTED_SET, setUnsupported);
         }
 
         if (setSupported.contains(appInfo.packageName)) return true;
@@ -182,11 +182,11 @@ public abstract class AbstractPlatform {
 
         if (checkSupportedApp(appInfo, mainActivity)) {
             setSupported.add(appInfo.packageName);
-            sharedPreferences.edit().putStringSet(SettingsProvider.KEY_SUPPORTED_SET, setSupported).apply();
+            sharedPreferences.edit().putStringSet(SettingsManager.KEY_SUPPORTED_SET, setSupported).apply();
             return true;
         } else {
             setUnsupported.add(appInfo.packageName);
-            sharedPreferences.edit().putStringSet(SettingsProvider.KEY_UNSUPPORTED_SET, setUnsupported).apply();
+            sharedPreferences.edit().putStringSet(SettingsManager.KEY_UNSUPPORTED_SET, setUnsupported).apply();
             return false;
         }
 
@@ -212,8 +212,8 @@ public abstract class AbstractPlatform {
     public static boolean isWideApp(ApplicationInfo applicationInfo, MainActivity mainActivity) {
         final boolean isVr = isVirtualRealityApp(applicationInfo, mainActivity);
         final SharedPreferences sharedPreferences = mainActivity.sharedPreferences;
-        if (isVr) return sharedPreferences.getBoolean(SettingsProvider.KEY_WIDE_VR, SettingsProvider.DEFAULT_WIDE_VR);
-        else      return sharedPreferences.getBoolean(SettingsProvider.KEY_WIDE_2D, SettingsProvider.DEFAULT_WIDE_2D);
+        if (isVr) return sharedPreferences.getBoolean(SettingsManager.KEY_WIDE_VR, SettingsManager.DEFAULT_WIDE_VR);
+        else      return sharedPreferences.getBoolean(SettingsManager.KEY_WIDE_2D, SettingsManager.DEFAULT_WIDE_2D);
     }
 
     public Drawable loadIcon(MainActivity activity, ApplicationInfo appInfo, ImageView[] imageViews) throws PackageManager.NameNotFoundException {

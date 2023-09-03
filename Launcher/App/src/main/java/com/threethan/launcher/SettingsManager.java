@@ -23,7 +23,7 @@ import java.util.Objects;
 import java.util.Set;
 
 /** @noinspection deprecation*/
-public class SettingsProvider {
+public class SettingsManager {
     public static final String KEY_SCALE = "KEY_CUSTOM_SCALE";
     public static final String KEY_MARGIN = "KEY_CUSTOM_MARGIN";
     static final int DEFAULT_SCALE = 112;
@@ -50,7 +50,7 @@ public class SettingsProvider {
     static final boolean DEFAULT_SHOW_NAMES_ICON = true;
     static final boolean DEFAULT_SHOW_NAMES_WIDE = true;
 
-    private static SettingsProvider instance;
+    private static SettingsManager instance;
     private final String KEY_APP_GROUPS = "prefAppGroups";
     private final String KEY_APP_LIST = "prefAppList";
     private final String KEY_LAUNCH_OUT = "prefLaunchOutList";
@@ -113,15 +113,15 @@ public class SettingsProvider {
     private Set<String> selectedGroupsSet = new HashSet<>();
     private static Set<String> appsToLaunchOut = new HashSet<>();
 
-    private SettingsProvider(Context context) {
+    private SettingsManager(Context context) {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
-    public static synchronized SettingsProvider getInstance(Context context) {
-        if (SettingsProvider.instance == null) {
-            SettingsProvider.instance = new SettingsProvider(context);
+    public static synchronized SettingsManager getInstance(Context context) {
+        if (SettingsManager.instance == null) {
+            SettingsManager.instance = new SettingsManager(context);
         }
-        return SettingsProvider.instance;
+        return SettingsManager.instance;
     }
 
     public static String getAppDisplayName(Context context, String pkg, CharSequence label) {
@@ -171,7 +171,7 @@ public class SettingsProvider {
             }
         }
         // Since this goes over all apps & checks if they're vr, we can safely decide we don't need meta data for them on subsequent launchers
-        mainActivity.sharedPreferences.edit().putBoolean(SettingsProvider.NEEDS_META_DATA, false).apply();
+        mainActivity.sharedPreferences.edit().putBoolean(SettingsManager.NEEDS_META_DATA, false).apply();
 
         // Save Auto Sort
 
@@ -257,6 +257,8 @@ public class SettingsProvider {
         editor.remove(KEY_APP_GROUPS);
         editor.remove(KEY_SELECTED_GROUPS);
         editor.remove(KEY_APP_LIST);
+        editor.remove(KEY_GROUP_2D);
+        editor.remove(KEY_GROUP_VR);
         editor.apply();
     }
 
@@ -269,8 +271,8 @@ public class SettingsProvider {
     synchronized void readValues() {
         try {
             Set<String> defaultGroupsSet = new HashSet<>();
-            defaultGroupsSet.add(getDefaultGroup(true));
-            defaultGroupsSet.add(getDefaultGroup(false));
+            defaultGroupsSet.add(DEFAULT_GROUP_VR);
+            defaultGroupsSet.add(DEFAULT_GROUP_2D);
             appGroupsSet = sharedPreferences.getStringSet(KEY_APP_GROUPS, defaultGroupsSet);
             selectedGroupsSet = sharedPreferences.getStringSet(KEY_SELECTED_GROUPS, defaultGroupsSet);
             appsToLaunchOut = sharedPreferences.getStringSet(KEY_LAUNCH_OUT, defaultGroupsSet);
@@ -378,12 +380,12 @@ public class SettingsProvider {
                     // updates may reference the specific version in the future
                 }
                 if (version == 0) {
-                    SettingsProvider settingsProvider = mainActivity.settingsProvider;
+                    SettingsManager settingsManager = mainActivity.settingsManager;
                     if (sharedPreferences.getInt(KEY_BACKGROUND, DEFAULT_BACKGROUND) == 6) {
                         sharedPreferences.edit().putInt(KEY_BACKGROUND, -1).apply();
                     }
-                    final Map<String, String> apps = settingsProvider.getAppList();
-                    final Set<String> appGroupsList = settingsProvider.getAppGroups();
+                    final Map<String, String> apps = settingsManager.getAppList();
+                    final Set<String> appGroupsList = settingsManager.getAppGroups();
                     final String oldGroupName = "Tools";
                     final String newGroupName = "Apps";
                     appGroupsList.remove(oldGroupName);
@@ -398,9 +400,9 @@ public class SettingsProvider {
                     }
                     HashSet<String> selectedGroup = new HashSet<>();
                     selectedGroup.add(newGroupName);
-                    settingsProvider.setSelectedGroups(selectedGroup);
-                    settingsProvider.setAppGroups(appGroupsList);
-                    settingsProvider.setAppList(updatedAppList);
+                    settingsManager.setSelectedGroups(selectedGroup);
+                    settingsManager.setAppGroups(appGroupsList);
+                    settingsManager.setAppList(updatedAppList);
                     mainActivity.refreshInterface();
                 }
             }

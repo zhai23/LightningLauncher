@@ -16,6 +16,8 @@
 
     <string name="apps_vr">VR Apps</string>
     <string name="apps_2d">2D Apps</string>
+    <string name="default_2d">Default for New 2D Apps</string>
+    <string name="default_vr">Default for New VR Apps</string>
     <string name="app_name_icon">On Icons</string>
     <string name="app_name_wide">On Banners</string>
 

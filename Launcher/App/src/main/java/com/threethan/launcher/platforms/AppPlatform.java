@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 
 import com.threethan.launcher.MainActivity;
-import com.threethan.launcher.SettingsProvider;
+import com.threethan.launcher.SettingsManager;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -15,7 +15,7 @@ public class AppPlatform extends AbstractPlatform {
     public void runApp(Activity context, ApplicationInfo appInfo) {
         Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(appInfo.packageName);
 
-        if (SettingsProvider.getAppLaunchOut(appInfo.packageName) || AbstractPlatform.isVirtualRealityApp(appInfo, (MainActivity) context)) {
+        if (SettingsManager.getAppLaunchOut(appInfo.packageName) || AbstractPlatform.isVirtualRealityApp(appInfo, (MainActivity) context)) {
             context.finish();
             context.overridePendingTransition(0, 0); // Cancel closing animation. Doesn't work on quest, but doesn't hurt
             assert launchIntent != null;
