@@ -188,13 +188,13 @@ public class GroupsAdapter extends BaseAdapter {
 
             int shapeResourceId;
             if (isLeft && isRight) {
-                shapeResourceId = R.drawable.selected_tab;
+                shapeResourceId = R.drawable.tab;
             } else if (isLeft) {
-                shapeResourceId = R.drawable.left_selected_tab;
+                shapeResourceId = R.drawable.tab_left;
             } else if (isRight) {
-                shapeResourceId = R.drawable.right_selected_tab;
+                shapeResourceId = R.drawable.tab_right;
             } else {
-                shapeResourceId = R.drawable.middle_selected_tab;
+                shapeResourceId = R.drawable.tab_middle;
             }
             itemView.setBackgroundResource(shapeResourceId);
             itemView.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(mainActivity.darkMode ? "#50000000" : "#FFFFFF")));
@@ -202,6 +202,8 @@ public class GroupsAdapter extends BaseAdapter {
             textView.setTextColor(Color.parseColor(mainActivity.darkMode ? "#FFFFFFFF" : "#FF000000")); // set selected tab text color
             if (isEditMode && (position < getCount() - 2)) {
                 menu.setVisibility(View.VISIBLE);
+                menu.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(mainActivity.darkMode ? "#FFFFFFFF" : "#FF000000"))); // set selected tab text color
+
             } else {
                 menu.setVisibility(View.GONE);
             }

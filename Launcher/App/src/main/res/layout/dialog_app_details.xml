@@ -10,10 +10,11 @@
 
     <Button
         android:id="@+id/uninstall"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_gravity="end"
-        android:layout_marginEnd="40dp"
+        android:layout_marginTop="-2dp"
+        android:layout_marginEnd="37dp"
         android:background="@drawable/ic_uninstall"
         android:backgroundTint="#FFFFFF"
         android:textColor="@android:color/white"
@@ -22,9 +23,10 @@
 
     <Button
         android:id="@+id/info"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_gravity="end"
+        android:layout_marginTop="-2dp"
         android:background="@drawable/ic_info"
         android:backgroundTint="#FFFFFF"
         android:textColor="@android:color/white"
@@ -34,7 +36,7 @@
     <View
         android:id="@+id/sizer"
         android:layout_width="350dp"
-        android:layout_height="92dp"
+        android:layout_height="94dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -51,19 +53,42 @@
             android:id="@+id/app_icon"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:layout_marginEnd="10dp" />
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="3dp"
+            android:background="@drawable/bkg_app"
+            android:scaleType="centerCrop" />
 
-        <EditText
-            android:id="@+id/app_name"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:layout_weight="1"
-            android:autofillHints="text"
-            android:backgroundTint="@android:color/white"
-            android:inputType="text"
-            android:textColor="@android:color/white"
-            android:textSize="28sp" />
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/app_name"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_gravity="bottom"
+                android:autofillHints="text"
+                android:background="@drawable/bkg_app_name"
+                android:inputType="text"
+                android:selectAllOnFocus="true"
+                android:singleLine="true"
+                android:textAlignment="gravity"
+                android:textColor="@android:color/white"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/packageName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="3dp"
+                android:layout_marginTop="-2sp"
+                android:singleLine="true"
+                android:textColor="#79FFFFFF"
+                tools:text="com.package.name" />
+        </LinearLayout>
+
     </LinearLayout>
 
     <LinearLayout
@@ -78,12 +103,30 @@
         app:layout_constraintTop_toBottomOf="@+id/sizer">
 
         <LinearLayout
+            android:id="@+id/refresh_icon_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/bkg_button">
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/bkg_button"
+            android:visibility="gone">
 
             <TextView
-                android:id="@+id/textView5"
+                style="@style/SettingButtonLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/reload_icon" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/launch_mode_section"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/bkg_button"
+            android:visibility="visible">
+
+            <TextView
                 style="@style/SettingButtonLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -102,14 +145,12 @@
             android:id="@+id/confirm"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginStart="10dp"
             android:background="@drawable/bkg_button">
 
             <TextView
                 style="@style/SettingButtonLabel"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:gravity="center|center_horizontal"
                 android:text="@string/confirm" />
         </FrameLayout>
 

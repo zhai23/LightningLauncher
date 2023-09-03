@@ -42,12 +42,12 @@ import com.threethan.launcher.platforms.AbstractPlatform;
 import com.threethan.launcher.ui.AppsAdapter;
 import com.threethan.launcher.ui.DialogHelper;
 import com.threethan.launcher.ui.DynamicHeightGridView;
+import com.threethan.launcher.ui.FadingTopScrollView;
 import com.threethan.launcher.ui.GroupsAdapter;
 import com.threethan.launcher.ui.ImageUtils;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -81,7 +81,6 @@ class BackgroundTask extends AsyncTask<Object, Void, Object> {
         owner.mainView.post(() -> {
             owner.backgroundImageView.setImageDrawable(backgroundThemeDrawable);
             owner.ready = true;
-            owner.initBlur();
         });
     }
 
@@ -123,14 +122,15 @@ public class MainActivity extends Activity {
     public static final int PICK_ICON_CODE = 450;
     public static final int PICK_THEME_CODE = 95;
     public static final String CUSTOM_THEME = "background.png";
-    public boolean darkMode = false;
+    public boolean darkMode = true;
+    public boolean groupsEnabled = true;
     DynamicHeightGridView appGridView;
     DynamicHeightGridView appGridViewWide;
     ScrollView scrollView;
     ImageView backgroundImageView;
     GridView groupPanelGridView;
     public SharedPreferences sharedPreferences;
-    private SettingsProvider settingsProvider;
+    public SettingsProvider settingsProvider;
     private ImageView selectedImageView;
     private boolean settingsPageOpen = false;
     private boolean loaded = false;
@@ -151,7 +151,7 @@ public class MainActivity extends Activity {
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         settingsProvider = SettingsProvider.getInstance(this);
-        settingsProvider.checkCompatibilityUpdate();
+        settingsProvider.checkCompatibilityUpdate(this);
 
         Log.v("LauncherStartup", "3. Get UI Instances");
 
@@ -159,7 +159,7 @@ public class MainActivity extends Activity {
         mainView.addOnLayoutChangeListener((view, i, i1, i2, i3, i4, i5, i6, i7) -> updateGridViewHeights());
         appGridView = findViewById(R.id.appsView);
         appGridViewWide = findViewById(R.id.appsViewWide);
-        scrollView = findViewById(R.id.scrollView);
+        scrollView = findViewById(R.id.mainScrollView);
         backgroundImageView = findViewById(R.id.background);
         groupPanelGridView = findViewById(R.id.groupsView);
 
@@ -210,6 +210,7 @@ public class MainActivity extends Activity {
         settingsImageView.setOnClickListener(view -> {
             if (!settingsPageOpen) {
                 showSettings();
+//                settingsImageView.setBackgroundResource(R.drawable.tab);
                 settingsPageOpen = true;
             }
         });
@@ -255,7 +256,7 @@ public class MainActivity extends Activity {
             }
         }
     }
-
+    
     public static final String FINISH_ACTION = "com.threethan.launcher.FINISH";
     public static final String DONT_FINISH_ACTION = "com.threethan.launcher.DONT_FINISH";
 
@@ -350,9 +351,17 @@ public class MainActivity extends Activity {
         }
     }
 
-    void initBlur() {
+    void updateTopBar() {
         BlurView blurView0 = findViewById(R.id.blurView0);
         BlurView blurView1 = findViewById(R.id.blurView1);
+
+        if (!groupsEnabled) {
+            blurView0.setVisibility(View.GONE);
+            blurView1.setVisibility(View.GONE);
+            return;
+        }
+        blurView0.setVisibility(View.VISIBLE);
+        blurView1.setVisibility(View.VISIBLE);
 
         blurView0.setOverlayColor(Color.parseColor(darkMode ? "#4A000000" : "#50FFFFFF"));
         blurView1.setOverlayColor(Color.parseColor(darkMode ? "#4A000000" : "#50FFFFFF"));
@@ -398,11 +407,13 @@ public class MainActivity extends Activity {
     public void refreshBackground() {
         // Set initial color, execute background task
         int background = sharedPreferences.getInt(SettingsProvider.KEY_BACKGROUND, SettingsProvider.DEFAULT_BACKGROUND);
-        if (background >= 0 && background < SettingsProvider.BACKGROUND_DRAWABLES.length) {
-            backgroundImageView.setBackgroundColor(SettingsProvider.BACKGROUND_COLORS[background]);
-            getWindow().setNavigationBarColor(SettingsProvider.BACKGROUND_COLORS[background]);
-            getWindow().setStatusBarColor(SettingsProvider.BACKGROUND_COLORS[background]);
-        }
+        boolean custom = background < 0 || background > SettingsProvider.BACKGROUND_COLORS.length;
+        int backgroundColor = custom ? Color.parseColor("#404044") : SettingsProvider.BACKGROUND_COLORS[background];
+
+        backgroundImageView.setBackgroundColor(backgroundColor);
+        getWindow().setNavigationBarColor(backgroundColor);
+        getWindow().setStatusBarColor(backgroundColor);
+
         new BackgroundTask().execute(this);
     }
     public void refreshInterface() {
@@ -410,12 +421,22 @@ public class MainActivity extends Activity {
 
         darkMode = sharedPreferences.getBoolean(SettingsProvider.KEY_DARK_MODE, SettingsProvider.DEFAULT_DARK_MODE);
         editMode = sharedPreferences.getBoolean(SettingsProvider.KEY_EDIT_MODE, false);
+        groupsEnabled = sharedPreferences.getBoolean(SettingsProvider.KEY_GROUPS_ENABLED, SettingsProvider.DEFAULT_GROUPS_ENABLED);
+        if (!groupsEnabled && editMode) {
+            groupsEnabled = true;
+            updateTopBar();
+        }
 
+        ArrayList<String> selectedGroups;
         // Switch off of hidden if we just exited edit mode
         settingsProvider.readValues(getApplicationContext());
-        ArrayList<String> selectedGroups = settingsProvider.getAppGroupsSorted(true, getApplicationContext());
-        if (!editMode && selectedGroups.contains(GroupsAdapter.HIDDEN_GROUP))
-            settingsProvider.setSelectedGroups(Collections.singleton(settingsProvider.getAppGroupsSorted(false, getApplicationContext()).get(0)), getApplicationContext());
+
+        selectedGroups = settingsProvider.getAppGroupsSorted(groupsEnabled, getApplicationContext());
+        if (!editMode && selectedGroups.contains(GroupsAdapter.HIDDEN_GROUP)) {
+            final ArrayList<String> validGroups = settingsProvider.getAppGroupsSorted(false, getApplicationContext());
+            validGroups.remove(GroupsAdapter.HIDDEN_GROUP);
+            settingsProvider.setSelectedGroups(new HashSet<>(validGroups), getApplicationContext());
+        }
         if (!editMode) currentSelectedApps.clear();
         updateSelectionHint();
 
@@ -424,15 +445,15 @@ public class MainActivity extends Activity {
     }
     public void setAdapters() {
         // Get and apply margin
-        int marginValue = dp(sharedPreferences.getInt(SettingsProvider.KEY_MARGIN, SettingsProvider.DEFAULT_MARGIN));
+        int marginPx = dp(sharedPreferences.getInt(SettingsProvider.KEY_MARGIN, SettingsProvider.DEFAULT_MARGIN));
         boolean names = sharedPreferences.getBoolean(SettingsProvider.KEY_SHOW_NAMES_ICON, SettingsProvider.DEFAULT_SHOW_NAMES_ICON);
         boolean namesWide = sharedPreferences.getBoolean(SettingsProvider.KEY_SHOW_NAMES_WIDE, SettingsProvider.DEFAULT_SHOW_NAMES_WIDE);
 
-        appGridView.setMargin(marginValue, names);
-        appGridViewWide.setMargin(marginValue, namesWide);
+        appGridView.setMargin(marginPx, names);
+        appGridViewWide.setMargin(marginPx, namesWide);
         final FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        lp.setMargins(marginValue, Math.max(0,marginValue-dp(23)), marginValue, marginValue+dp(20));
-        findViewById(R.id.scrollerLayout).setLayoutParams(lp);
+        lp.setMargins(marginPx, Math.max(0,marginPx+(groupsEnabled ? dp(-23) : 0)), marginPx, marginPx+dp(20));
+        findViewById(R.id.mainScrollInterior).setLayoutParams(lp);
 
         appGridView.setAdapter(new AppsAdapter(this, editMode, names, squareApps));
         appGridViewWide.setAdapter(new AppsAdapter(this, editMode, namesWide, wideApps));
@@ -444,6 +465,8 @@ public class MainActivity extends Activity {
 
         prevViewWidth = -1;
         updateGridViewHeights();
+        mainView.post(this::updateTopBar);
+
     }
     public void runUpdater() {
         new Updater(this).checkForUpdate();
@@ -454,22 +477,27 @@ public class MainActivity extends Activity {
         prevViewWidth = mainView.getWidth();
 
         // Group rows and relevant values
-        if (groupPanelGridView.getAdapter() != null) {
+        View scrollInterior = findViewById(R.id.mainScrollInterior);
+        if (groupPanelGridView.getAdapter() != null && groupsEnabled) {
             final int group_columns = Math.min(groupPanelGridView.getAdapter().getCount(), prevViewWidth / 400);
             groupPanelGridView.setNumColumns(group_columns);
-            final int group_rows = (int) Math.ceil((double) groupPanelGridView.getAdapter().getCount() / group_columns);
-            View scrollInterior = findViewById(R.id.scrollerLayout);
-            scrollInterior.setPadding(0, dp(23 + 22) + dp(40) * group_rows, 0, 0);
+            final int groupRows = (int) Math.ceil((double) groupPanelGridView.getAdapter().getCount() / group_columns);
+            scrollInterior.setPadding(0, dp(23 + 22) + dp(40) * groupRows, 0, 0);
+        } else {
+            int marginPx = dp(sharedPreferences.getInt(SettingsProvider.KEY_MARGIN, SettingsProvider.DEFAULT_MARGIN));
+            scrollInterior.setPadding(0, 0, 0, marginPx);
+            FadingTopScrollView scrollView = findViewById(R.id.mainScrollView);
+            scrollView.setFadingEdgeLength(0);
         }
 
-        int scaleValue = dp(sharedPreferences.getInt(SettingsProvider.KEY_SCALE, SettingsProvider.DEFAULT_SCALE));
+        int targetSizePx = dp(sharedPreferences.getInt(SettingsProvider.KEY_SCALE, SettingsProvider.DEFAULT_SCALE));
         int estimatedWidth = prevViewWidth;
-        appGridView.setNumColumns((int) Math.round((double) estimatedWidth/scaleValue));
-        appGridViewWide.setNumColumns((int) Math.round((double) estimatedWidth/scaleValue/2));
+        appGridView.setNumColumns((int) Math.round((double) estimatedWidth/targetSizePx));
+        appGridViewWide.setNumColumns((int) Math.round((double) estimatedWidth/targetSizePx/2));
     }
 
     public void setBackground(int index) {
-        if (index > SettingsProvider.BACKGROUND_DRAWABLES.length) index = -1;
+        if (index >= SettingsProvider.BACKGROUND_DRAWABLES.length || index < 0) index = -1;
         else sharedPreferences.edit().putBoolean(SettingsProvider.KEY_DARK_MODE, SettingsProvider.BACKGROUND_DARK[index]).apply();
         sharedPreferences.edit().putInt(SettingsProvider.KEY_BACKGROUND, index).apply();
         refreshBackground();
@@ -524,7 +552,26 @@ public class MainActivity extends Activity {
             editor.putBoolean(SettingsProvider.KEY_DARK_MODE, value);
             editor.apply();
             refreshInterface();
-            initBlur();
+        });
+        @SuppressLint("UseSwitchCompatOrMaterialCode") Switch groups = dialog.findViewById(R.id.switch_group_mode);
+        groups.setChecked(sharedPreferences.getBoolean(SettingsProvider.KEY_GROUPS_ENABLED, SettingsProvider.DEFAULT_GROUPS_ENABLED));
+        groups.setOnCheckedChangeListener((sw, value) -> {
+            if (!sharedPreferences.getBoolean(SettingsProvider.KEY_SEEN_HIDDEN_GROUPS_POPUP, false) && value != SettingsProvider.DEFAULT_GROUPS_ENABLED) {
+                AlertDialog subDialog = DialogHelper.build(this, R.layout.dialog_hide_groups_info);
+                subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
+                    sharedPreferences.edit().putBoolean(SettingsProvider.KEY_SEEN_HIDDEN_GROUPS_POPUP, true)
+                                            .putBoolean(SettingsProvider.KEY_GROUPS_ENABLED, value).apply();
+                    refreshInterface();
+                    subDialog.dismiss();
+                });
+                subDialog.findViewById(R.id.cancel).setOnClickListener(view -> {
+                    subDialog.dismiss(); // Dismiss without setting
+                    groups.setChecked(SettingsProvider.DEFAULT_GROUPS_ENABLED); // Revert switch
+                });
+            } else {
+                sharedPreferences.edit().putBoolean(SettingsProvider.KEY_GROUPS_ENABLED, value).apply();
+                refreshInterface();
+            }
         });
         ImageView[] views = {
                 dialog.findViewById(R.id.background0),
@@ -534,6 +581,7 @@ public class MainActivity extends Activity {
                 dialog.findViewById(R.id.background4),
                 dialog.findViewById(R.id.background5),
                 dialog.findViewById(R.id.background6),
+                dialog.findViewById(R.id.background7),
                 dialog.findViewById(R.id.background_custom)
         };
         int background = sharedPreferences.getInt(SettingsProvider.KEY_BACKGROUND, SettingsProvider.DEFAULT_BACKGROUND);
@@ -542,17 +590,19 @@ public class MainActivity extends Activity {
         for (ImageView image : views) {
             image.setClipToOutline(true);
         }
-        final int selectedWallpaperWidth = dp(320-38*(views.length-1)-30);
-        views[background].getLayoutParams().width = dp(selectedWallpaperWidth);
+        final int selectedWallpaperWidthPx = dp(410-38*(views.length-1)-30);
+        views[background].getLayoutParams().width = selectedWallpaperWidthPx;
         views[background].requestLayout();
         for (int i = 0; i < views.length; i++) {
             int index = i;
             views[i].setOnClickListener(view -> {
 
-                ImageView last = views[sharedPreferences.getInt(SettingsProvider.KEY_BACKGROUND, SettingsProvider.DEFAULT_BACKGROUND)];
+                int lastIndex = sharedPreferences.getInt(SettingsProvider.KEY_BACKGROUND, SettingsProvider.DEFAULT_BACKGROUND);
+                if (lastIndex >= SettingsProvider.BACKGROUND_DRAWABLES.length || lastIndex < 0) lastIndex = SettingsProvider.BACKGROUND_DRAWABLES.length;
+                ImageView last = views[lastIndex];
                 if (last == view) return;
 
-                ValueAnimator viewAnimator = ValueAnimator.ofInt(view.getWidth(), dp(selectedWallpaperWidth));
+                ValueAnimator viewAnimator = ValueAnimator.ofInt(view.getWidth(), selectedWallpaperWidthPx);
                 viewAnimator.setDuration(250);
                 viewAnimator.setInterpolator(new DecelerateInterpolator());
                 viewAnimator.addUpdateListener(animation -> {
@@ -718,7 +768,6 @@ public class MainActivity extends Activity {
         }
     }
     public int dp(float dip) {
-        final int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, getResources().getDisplayMetrics());
-        return px;
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, getResources().getDisplayMetrics());
     }
 }

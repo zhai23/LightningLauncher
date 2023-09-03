@@ -90,7 +90,6 @@ public abstract class AbstractPlatform {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     protected static boolean saveStream(InputStream inputStream, File outputFile) {
@@ -192,34 +191,22 @@ public abstract class AbstractPlatform {
         }
 
     }
+    private static String[] unsupportedPrefixes;
     private static boolean checkSupportedApp(ApplicationInfo applicationInfo, MainActivity mainActivity) {
-        boolean isSupportedApp = (applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 1;
-        String[] systemAppPrefixes = mainActivity.getResources().getStringArray(R.array.unsupported_app_prefixes);
-        String[] nonSystemAppPrefixes = mainActivity.getResources().getStringArray(R.array.supported_app_prefixes);
-        if (applicationInfo.packageName.equals("com.android.settings")) return true;
+        if (unsupportedPrefixes == null) unsupportedPrefixes = mainActivity.getResources().getStringArray(R.array.unsupported_app_prefixes);
 
         if (applicationInfo.metaData != null) {
             boolean isVr = isVirtualRealityApp(applicationInfo, mainActivity);
             if (!isVr && applicationInfo.metaData.keySet().contains("com.oculus.environmentVersion")) return false;
         }
+        if (mainActivity.getPackageManager().getLaunchIntentForPackage(applicationInfo.packageName) == null) return false;
 
-        if (isSupportedApp) {
-            for (String prefix : systemAppPrefixes) {
-                if (applicationInfo.packageName.startsWith(prefix)) {
-                    isSupportedApp = false;
-                    break;
-                }
+        for (String prefix : unsupportedPrefixes) {
+            if (applicationInfo.packageName.startsWith(prefix)) {
+                return false;
             }
         }
-        if (!isSupportedApp) {
-            for (String prefix : nonSystemAppPrefixes) {
-                if (applicationInfo.packageName.startsWith(prefix)) {
-                    isSupportedApp = true;
-                    break;
-                }
-            }
-        }
-        return isSupportedApp;
+        return true;
     }
 
     public static boolean isWideApp(ApplicationInfo applicationInfo, MainActivity mainActivity) {
@@ -257,8 +244,21 @@ public abstract class AbstractPlatform {
         if (cachedIcons.containsKey(appInfo.packageName)) {
             return cachedIcons.get(appInfo.packageName);
         }
-        if (isVirtualRealityApp(appInfo, activity)) {downloadIcon(activity, appInfo, () -> updateIcon(iconFile, appInfo.packageName, imageViews)); }
+        if (isVirtualRealityApp(appInfo, activity)) {downloadIcon(activity, appInfo, () -> updateIcon(iconFile, appInfo.packageName, imageViews));}
         return appIcon;
+    }
+
+    public void reloadIcon(MainActivity activity, ApplicationInfo appInfo, ImageView[] imageViews) {
+        final boolean isWide = isWideApp(appInfo, activity);
+        final File iconFile = packageToPath(activity, appInfo.packageName, isWide);
+        iconFile.delete();
+//        cachedIcons.remove(appInfo.packageName);
+        try {
+            imageViews[0].setImageDrawable(loadIcon(activity, appInfo, imageViews));
+        } catch (PackageManager.NameNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        downloadIcon(activity, appInfo, () -> updateIcon(iconFile, appInfo.packageName, imageViews));
     }
 
     private final ConcurrentHashMap<String, Object> locks = new ConcurrentHashMap<>();

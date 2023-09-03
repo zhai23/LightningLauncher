@@ -4,7 +4,6 @@ import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -146,12 +145,9 @@ public class AppsAdapter extends BaseAdapter{
         }
 
         if (isEditMode) {
-            // short click for app details, long click to activate drag and drop
             holder.layout.setOnClickListener((view) -> {
-                {
-                    boolean selected = mainActivity.selectApp(currentApp.packageName);
-                    view.setAlpha(selected? 0.5F : 1.0F);
-                }
+                boolean selected = mainActivity.selectApp(currentApp.packageName);
+                view.setAlpha(selected? 0.5F : 1.0F);
             });
         } else {
             holder.layout.setOnClickListener(view -> {
@@ -195,7 +191,8 @@ public class AppsAdapter extends BaseAdapter{
     private void showAppDetails(ApplicationInfo currentApp) throws PackageManager.NameNotFoundException {
         // set layout
         AlertDialog appDetailsDialog = DialogHelper.build(mainActivity, R.layout.dialog_app_details);
-
+        // package name
+        ((TextView) appDetailsDialog.findViewById(R.id.packageName)).setText(currentApp.packageName);
         // info action
         appDetailsDialog.findViewById(R.id.info).setOnClickListener(view -> mainActivity.openAppDetails(currentApp.packageName));
         appDetailsDialog.findViewById(R.id.uninstall).setOnClickListener(view -> mainActivity.uninstallApp(currentApp.packageName));
@@ -203,42 +200,65 @@ public class AppsAdapter extends BaseAdapter{
         // toggle launch mode
         final boolean[] launchOut = {SettingsProvider.getAppLaunchOut(currentApp.packageName)};
         final Switch launchModeSwitch = appDetailsDialog.findViewById(R.id.launch_mode_switch);
+        final View launchModeSection = appDetailsDialog.findViewById(R.id.launch_mode_section);
+        final View refreshIconButton = appDetailsDialog.findViewById(R.id.refresh_icon_button);
         final boolean isVr = AbstractPlatform.isVirtualRealityApp(currentApp, mainActivity);
+
+        // load icon
+        PackageManager packageManager = mainActivity.getPackageManager();
+
+        ImageView iconImage = appDetailsDialog.findViewById(R.id.app_icon);
+        AbstractPlatform appPlatform = AbstractPlatform.getPlatform(currentApp);
+        iconImage.setImageDrawable(appPlatform.loadIcon(mainActivity, currentApp, null));
+
+        iconImage.setClipToOutline(true);
+        if (AbstractPlatform.isWideApp(currentApp, mainActivity)) iconImage.getLayoutParams().width = mainActivity.dp(150);
+
+        iconImage.setOnClickListener(iconPickerView -> {
+            iconDrawable = currentApp.loadIcon(packageManager);
+            packageName = currentApp.packageName;
+
+            final boolean isWide = AbstractPlatform.isWideApp(currentApp, mainActivity);
+            iconFile = AbstractPlatform.packageToPath(mainActivity, currentApp.packageName, isWide);
+            if (iconFile.exists()) {
+                //noinspection ResultOfMethodCallIgnored
+                iconFile.delete();
+            }
+            mainActivity.setSelectedImageView(iconImage);
+            ImageUtils.showImagePicker(mainActivity, MainActivity.PICK_ICON_CODE);
+        });
+
         if (isVr) { //VR apps MUST launch out, so just hide the option
-            launchModeSwitch.setVisibility(View.GONE);
+            launchModeSection.setVisibility(View.GONE);
+            refreshIconButton.setVisibility(View.VISIBLE);
+
+            refreshIconButton.setOnClickListener(view -> {
+                appPlatform.reloadIcon(mainActivity, currentApp, new ImageView[]{iconImage});
+            });
         } else {
-            launchModeSwitch.setVisibility(View.VISIBLE);
+            launchModeSection.setVisibility(View.VISIBLE);
+            refreshIconButton.setVisibility(View.GONE);
             launchModeSwitch.setChecked(launchOut[0]);
 
-            appDetailsDialog.findViewById(R.id.launch_mode_switch).setOnClickListener(view -> {
-
-                if (mainActivity.sharedPreferences.getBoolean(SettingsProvider.KEY_SEEN_LAUNCH_OUT_POPUP, false)) {
-                    // Actually set
+            launchModeSwitch.setOnCheckedChangeListener((sw, value) -> {
+                if (!mainActivity.sharedPreferences.getBoolean(SettingsProvider.KEY_SEEN_LAUNCH_OUT_POPUP, false) && value) {
+                    AlertDialog dialog = DialogHelper.build(mainActivity, R.layout.dialog_launch_out_info);
+                    dialog.findViewById(R.id.confirm).setOnClickListener(view -> {
+                        mainActivity.sharedPreferences.edit().putBoolean(SettingsProvider.KEY_SEEN_LAUNCH_OUT_POPUP, true).apply();
+                        dialog.dismiss();
+                    });
+                    dialog.findViewById(R.id.cancel).setOnClickListener(view -> {
+                        dialog.dismiss(); // Dismiss without setting
+                        launchModeSwitch.setChecked(false); // Revert switch
+                    });
+                } else {
                     SettingsProvider.setAppLaunchOut(currentApp.packageName, !launchOut[0]);
                     launchOut[0] = SettingsProvider.getAppLaunchOut(currentApp.packageName);
-                    return;
                 }
-                AlertDialog dialog = new AlertDialog.Builder(mainActivity).setView(R.layout.dialog_launch_out_info).create();
-                dialog.show();
-
-                dialog.findViewById(R.id.confirm).setOnClickListener(view1 -> {
-                    SharedPreferences.Editor editor = mainActivity.sharedPreferences.edit();
-                    editor.putBoolean(SettingsProvider.KEY_SEEN_LAUNCH_OUT_POPUP, true).apply();
-                    editor.apply();
-                    dialog.dismiss();
-                    // Actually set
-                    SettingsProvider.setAppLaunchOut(currentApp.packageName, !launchOut[0]);
-                    launchOut[0] = SettingsProvider.getAppLaunchOut(currentApp.packageName);
-                });
-                dialog.findViewById(R.id.cancel).setOnClickListener(view1 -> {
-                    dialog.dismiss(); // Dismiss without setting value
-                    launchModeSwitch.setChecked(false); // Revert switch
-                });
             });
         }
 
         // set name
-        PackageManager packageManager = mainActivity.getPackageManager();
         String name = SettingsProvider.getAppDisplayName(mainActivity, currentApp.packageName, currentApp.loadLabel(packageManager));
         final EditText appNameEditText = appDetailsDialog.findViewById(R.id.app_name);
         appNameEditText.setText(name);
@@ -249,26 +269,6 @@ public class AppsAdapter extends BaseAdapter{
             mainActivity.refreshInterface();
         });
 
-        // load icon
-        ImageView tempImage = appDetailsDialog.findViewById(R.id.app_icon);
-        AbstractPlatform appPlatform = AbstractPlatform.getPlatform(currentApp);
-        tempImage.setImageDrawable(appPlatform.loadIcon(mainActivity, currentApp, null));
-
-        tempImage.setClipToOutline(true);
-
-        tempImage.setOnClickListener(iconPickerView -> {
-            iconDrawable = currentApp.loadIcon(packageManager);
-            packageName = currentApp.packageName;
-
-            final boolean isWide = AbstractPlatform.isWideApp(currentApp, mainActivity);
-            iconFile = AbstractPlatform.packageToPath(mainActivity, currentApp.packageName, isWide);
-            if (iconFile.exists()) {
-                //noinspection ResultOfMethodCallIgnored
-                iconFile.delete();
-            }
-            mainActivity.setSelectedImageView(tempImage);
-            ImageUtils.showImagePicker(mainActivity, MainActivity.PICK_ICON_CODE);
-        });
     }
 
     private void animateOpen(ViewHolder holder) {

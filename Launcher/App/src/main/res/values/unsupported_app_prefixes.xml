@@ -9,13 +9,23 @@
         <item>com.oculus.helpcenter</item>
         <item>com.oculus.mobile_mrc_setup</item>
         <item>com.oculus.remotedesktop</item>
-        <item>com.oculus.systemutilities</item>
-        <item>com.oculus.tv</item>
+        <item>com.oculus.system</item>
+        <item>com.oculus.guidebook</item>
+        <item>com.oculus.vrshell</item>
+        <item>com.oculus.shellenv</item>
+        <item>com.oculus.extrapermissions</item>
+        <item>com.oculus.os</item>
+        <item>com.oculus.integrity</item>
+        <item>com.oculus.assistant</item>
         <item>metapwa</item>
         <item>oculuspwa</item>
         <!-- Messenger Redirect -->
         <item>com.facebook.orca</item>
         <!-- Fb just doesn't work for some reason -->
         <item>com.facebook.facebookvr</item>
+        <!-- Nor does this -->
+        <item>com.oculus.tv</item>
+        <!-- This does work, but can be accessed more easily through quick settings -->
+        <item>com.oculus.xrstreamingclient</item>
     </string-array>
 </resources>

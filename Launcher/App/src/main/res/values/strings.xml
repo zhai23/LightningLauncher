@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="app_name">Lightning Launcher</string>
-    <string name="default_apps_group">Games</string>
-    <string name="android_apps_group">Tools</string>
+<!--    <string name="default_apps_group">Games</string>-->
+<!--    <string name="android_apps_group">Apps</string>-->
     <string name="add_group">Add Group</string>
     <string name="delete_group">Delete Group</string>
     <string name="edit_group">Edit Group</string>
@@ -16,8 +16,8 @@
 
     <string name="apps_vr">VR Apps</string>
     <string name="apps_2d">2D Apps</string>
-    <string name="app_name_icon">App Icons</string>
-    <string name="app_name_wide">App Banners</string>
+    <string name="app_name_icon">On Icons</string>
+    <string name="app_name_wide">On Banners</string>
 
     <string name="settings_main">Launcher Settings</string>
     <string name="settings_appearance">Customize Appearance</string>
@@ -30,7 +30,7 @@
     <string name="name_header">Show App Names</string>
 
     <string name="dark_mode">Dark Top Bar &amp; Light Text</string>
-    <string name="group_mode">Show Groups &amp; Top Bar</string>
+    <string name="group_mode">Always Show Groups &amp; Top Bar</string>
 
     <string name="service_desc">When this service is enabled, Lightning Launcher will open automatically when you hover
         the cursor over the App Library icon on the right of dock for about half a second.\n(This may make it difficult to access the default launcher)\n
@@ -39,10 +39,13 @@
     <string name="accessibility_event_name">[App Library]</string>
 
     <string name="launch_switch">Separate Window</string>
+    <string name="reload_icon">Refresh Icon / Banner</string>
 
-    <string name="launch_title">Warning</string>
     <string name="launch_message">Launching 2D apps in a separate window allows for easier multitasking on Quest devices,
         but will cause certain apps to not always launch.\n\nIf you have any issues, disable this option!</string>
+    <string name="hidden_groups_message">Hiding groups will cause all non-hidden apps to be shown together when not in edit mode.\n
+    \nThe settings icon will also be hidden. You will only be able to open settings with the back button on the top of the window, or B on your controller.
+    </string>
 
     <string name="service_title">Launcher Shortcuts</string>
     <string name="service_subtitle">Easily Access Lightning Launcher</string>
@@ -56,18 +59,17 @@
         Click \"Allow\" if you get a prompt</string>
     <string name="service_next">Continue to Accessibility Settings</string>
 
-
+    <string name="warning">Important Info</string>
     <string name="cancel">Cancel</string>
     <string name="understood">Got It!</string>
     <string name="confirm">Confirm</string>
     <string name="next">Continue</string>
 
-
     <string name="edit_off">Turn On Edit Mode</string>
     <string name="edit_on">Turn Off Edit Mode</string>
 
-    <string name="selection_hint">Click a group to move the selected app.</string>
-    <string name="selection_hint_multiple">%d apps selected. Click a group to move them.</string>
+    <string name="selection_hint">Click a group to move the selected app</string>
+    <string name="selection_hint_multiple">%d apps selected, click a group to move them</string>
 
     <string name="update_title">An update is available!</string>
     <string name="update_content">Update from version %1$s to %2$s, without taking off your headset!</string>

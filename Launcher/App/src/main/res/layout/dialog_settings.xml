@@ -11,10 +11,15 @@
 
     <LinearLayout
         android:id="@+id/layout"
-        android:layout_width="410dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="20dp">
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="400dp"
+            android:layout_height="wrap_content" />
 
         <TextView
             style="@style/SettingTitle"
@@ -41,7 +46,6 @@
                     style="@style/SettingButtonLabel"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
                     android:layout_weight="1"
                     android:singleLine="true"
                     android:text="@string/edit_mode"
@@ -70,7 +74,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:paddingStart="5dp"
                     android:singleLine="true"
                     android:text="@string/settings_service"
                     tools:ignore="NestedWeights,RtlSymmetry" />
@@ -130,7 +133,7 @@
                     android:background="@drawable/bkg_button_wallpaper"
                     android:padding="0dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/bg_px_red"
+                    android:src="@drawable/bg_px_grey"
                     tools:ignore="ImageContrastCheck" />
 
                 <ImageView
@@ -141,7 +144,7 @@
                     android:background="@drawable/bkg_button_wallpaper"
                     android:padding="0dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/bg_px_white"
+                    android:src="@drawable/bg_px_red"
                     tools:ignore="ImageContrastCheck" />
 
                 <ImageView
@@ -152,7 +155,7 @@
                     android:background="@drawable/bkg_button_wallpaper"
                     android:padding="0dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/bg_px_orange"
+                    android:src="@drawable/bg_px_white"
                     tools:ignore="ImageContrastCheck" />
 
                 <ImageView
@@ -163,7 +166,7 @@
                     android:background="@drawable/bkg_button_wallpaper"
                     android:padding="0dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/bg_px_green"
+                    android:src="@drawable/bg_px_orange"
                     tools:ignore="ImageContrastCheck" />
 
                 <ImageView
@@ -174,11 +177,22 @@
                     android:background="@drawable/bkg_button_wallpaper"
                     android:padding="0dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/bg_px_purple"
+                    android:src="@drawable/bg_px_green"
                     tools:ignore="ImageContrastCheck" />
 
                 <ImageView
                     android:id="@+id/background6"
+                    android:layout_width="30dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/bkg_button_wallpaper"
+                    android:padding="0dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/bg_px_purple"
+                    tools:ignore="ImageContrastCheck" />
+
+                <ImageView
+                    android:id="@+id/background7"
                     android:layout_width="30dp"
                     android:layout_height="match_parent"
                     android:layout_marginStart="8dp"

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -39,8 +40,9 @@
         android:layout_width="match_parent"
         android:layout_height="35sp"
         android:layout_marginTop="-1sp"
+        android:layout_marginBottom="-1dp"
         android:gravity="center"
-        android:lineSpacingExtra="-4dp"
+        android:lineSpacingExtra="-2dp"
         android:maxLines="2"
         android:singleLine="false"
         android:textColor="@android:color/white"
