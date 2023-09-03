@@ -1,4 +1,4 @@
-package com.threethan.launcher;
+package com.threethan.launcher.ui;
 
 import android.app.Activity;
 import android.graphics.Bitmap;

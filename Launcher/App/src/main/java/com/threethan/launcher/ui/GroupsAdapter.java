@@ -132,7 +132,7 @@ public class GroupsAdapter extends BaseAdapter {
                     settingsProvider.setSelectedGroups(selectedGroup, mainActivity);
                     settingsProvider.setAppGroups(appGroupsList, mainActivity);
                     settingsProvider.setAppList(updatedAppList, mainActivity);
-                    mainActivity.reloadUI();
+                    mainActivity.refreshInterface();
                 }
                 dialog.cancel();
             });
@@ -162,7 +162,7 @@ public class GroupsAdapter extends BaseAdapter {
                 }
                 dialog.dismiss();
 
-                mainActivity.reloadUI();
+                mainActivity.refreshInterface();
             });
         });
 

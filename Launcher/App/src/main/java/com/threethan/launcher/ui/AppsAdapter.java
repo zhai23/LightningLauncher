@@ -25,7 +25,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.threethan.launcher.ImageUtils;
 import com.threethan.launcher.MainActivity;
 import com.threethan.launcher.R;
 import com.threethan.launcher.SettingsProvider;

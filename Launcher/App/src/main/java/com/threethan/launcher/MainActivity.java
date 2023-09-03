@@ -41,6 +41,7 @@ import com.threethan.launcher.platforms.AbstractPlatform;
 import com.threethan.launcher.ui.AppsAdapter;
 import com.threethan.launcher.ui.DynamicHeightGridView;
 import com.threethan.launcher.ui.GroupsAdapter;
+import com.threethan.launcher.ui.ImageUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -63,7 +64,7 @@ class BackgroundTask extends AsyncTask<Object, Void, Object> {
     @Override
     protected Object doInBackground(Object... objects) {
         owner = (MainActivity) objects[0];
-        int backgroundThemeIndex = owner.sharedPreferences.getInt(SettingsProvider.KEY_CUSTOM_THEME, MainActivity.DEFAULT_THEME);
+        int backgroundThemeIndex = owner.sharedPreferences.getInt(SettingsProvider.KEY_CUSTOM_THEME, SettingsProvider.DEFAULT_THEME);
         if (backgroundThemeIndex < MainActivity.BACKGROUND_DRAWABLES.length) {
             backgroundThemeDrawable = owner.getDrawable(MainActivity.BACKGROUND_DRAWABLES[backgroundThemeIndex]);
         } else {
@@ -112,7 +113,7 @@ class RecheckPackagesTask extends AsyncTask {
             owner.sharedPreferences.edit().putBoolean(SettingsProvider.NEEDS_META_DATA, true).apply();
             owner.allApps = foundApps;
             owner.updateAppLists();
-            owner.reloadUI();
+            owner.refreshInterface();
         }
     }
 }
@@ -122,12 +123,6 @@ public class MainActivity extends Activity {
     public static final int PICK_THEME_CODE = 95;
     public static final String CUSTOM_THEME = "theme.png";
     public boolean darkMode = false;
-    public boolean DEFAULT_DARK_MODE = false;
-    static final boolean DEFAULT_NAMES = true;
-    static final boolean DEFAULT_NAMES_WIDE = true;
-    static final int DEFAULT_SCALE = 112;
-    static final int DEFAULT_MARGIN = 32;
-    static final int DEFAULT_THEME = 0;
     static final int[] BACKGROUND_DRAWABLES = {
             R.drawable.bg_px_blue,
             R.drawable.bg_px_red,
@@ -209,7 +204,7 @@ public class MainActivity extends Activity {
             }
             settingsProvider.selectGroup(groups.get(position), getApplicationContext());
 
-            reloadUI();
+            refreshInterface();
         });
 
         // Multiple group selection
@@ -228,7 +223,7 @@ public class MainActivity extends Activity {
                     selectedGroups.add(groups.get(0));
                 }
                 settingsProvider.setSelectedGroups(selectedGroups,getApplicationContext());
-                reloadUI();
+                refreshInterface();
             }
             return true;
         });
@@ -276,7 +271,7 @@ public class MainActivity extends Activity {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putBoolean(SettingsProvider.KEY_EDIT_MODE, editMode);
                 editor.apply();
-                reloadUI();
+                refreshInterface();
             } else {
                 showSettingsMain();
                 settingsPageOpen = true;
@@ -343,7 +338,7 @@ public class MainActivity extends Activity {
             // Reload UI
             mainView.postDelayed(this::runUpdater, 1000);
             reloadBG();
-            reloadUI();
+            refreshInterface();
             loaded = true;
         } else {
             new RecheckPackagesTask().execute(this);
@@ -425,7 +420,7 @@ public class MainActivity extends Activity {
 
     public void reloadBG() {
         // Set initial color, execute background task
-        int backgroundThemeIndex = sharedPreferences.getInt(SettingsProvider.KEY_CUSTOM_THEME, DEFAULT_THEME);
+        int backgroundThemeIndex = sharedPreferences.getInt(SettingsProvider.KEY_CUSTOM_THEME, SettingsProvider.DEFAULT_THEME);
         if (backgroundThemeIndex < BACKGROUND_DRAWABLES.length) {
             backgroundImageView.setBackgroundColor(BACKGROUND_COLORS[backgroundThemeIndex]);
             getWindow().setNavigationBarColor(BACKGROUND_COLORS[backgroundThemeIndex]);
@@ -433,10 +428,10 @@ public class MainActivity extends Activity {
         }
         new BackgroundTask().execute(this);
     }
-    public void reloadUI() {
+    public void refreshInterface() {
         Log.i("LightningLauncher","Reloading UI");
 
-        darkMode = sharedPreferences.getBoolean(SettingsProvider.KEY_DARK_MODE, DEFAULT_DARK_MODE);
+        darkMode = sharedPreferences.getBoolean(SettingsProvider.KEY_DARK_MODE, SettingsProvider.DEFAULT_DARK_MODE);
         editMode = sharedPreferences.getBoolean(SettingsProvider.KEY_EDIT_MODE, false);
 
         // Switch off of hidden if we just exited edit mode
@@ -452,9 +447,9 @@ public class MainActivity extends Activity {
     }
     public void setAdapters() {
         // Get and apply margin
-        int marginValue = getPixelFromDip(sharedPreferences.getInt(SettingsProvider.KEY_CUSTOM_MARGIN, DEFAULT_MARGIN));
-        boolean names = sharedPreferences.getBoolean(SettingsProvider.KEY_CUSTOM_NAMES, DEFAULT_NAMES);
-        boolean namesWide = sharedPreferences.getBoolean(SettingsProvider.KEY_CUSTOM_NAMES_WIDE, DEFAULT_NAMES_WIDE);
+        int marginValue = getPixelFromDip(sharedPreferences.getInt(SettingsProvider.KEY_CUSTOM_MARGIN, SettingsProvider.DEFAULT_MARGIN));
+        boolean names = sharedPreferences.getBoolean(SettingsProvider.KEY_CUSTOM_NAMES, SettingsProvider.DEFAULT_NAMES);
+        boolean namesWide = sharedPreferences.getBoolean(SettingsProvider.KEY_CUSTOM_NAMES_WIDE, SettingsProvider.DEFAULT_NAMES_WIDE);
 
         appGridView.setMargin(marginValue, names);
         appGridViewWide.setMargin(marginValue, namesWide);
@@ -490,7 +485,7 @@ public class MainActivity extends Activity {
             scrollInterior.setPadding(0, dp(23 + 22) + dp(40) * group_rows, 0, 0);
         }
 
-        int scaleValue = dp(sharedPreferences.getInt(SettingsProvider.KEY_CUSTOM_SCALE, DEFAULT_SCALE));
+        int scaleValue = dp(sharedPreferences.getInt(SettingsProvider.KEY_CUSTOM_SCALE, SettingsProvider.DEFAULT_SCALE));
         int estimatedWidth = prevViewWidth;
         appGridView.setNumColumns((int) Math.round((double) estimatedWidth/scaleValue));
         appGridViewWide.setNumColumns((int) Math.round((double) estimatedWidth/scaleValue/2));
@@ -534,7 +529,7 @@ public class MainActivity extends Activity {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean(SettingsProvider.KEY_EDIT_MODE, editMode);
             editor.apply();
-            reloadUI();
+            refreshInterface();
             editIcon.setImageResource(editMode ? R.drawable.ic_editing_on : R.drawable.ic_editing_off);
             editText.setText(editMode ? R.string.edit_on : R.string.edit_off);
         });
@@ -569,29 +564,29 @@ public class MainActivity extends Activity {
         dialog.setOnDismissListener(dialogInterface -> lookPageOpen = false);
 
         @SuppressLint("UseSwitchCompatOrMaterialCode") Switch dark = dialog.findViewById(R.id.switch_dark_mode);
-        dark.setChecked(sharedPreferences.getBoolean(SettingsProvider.KEY_DARK_MODE, DEFAULT_DARK_MODE));
+        dark.setChecked(sharedPreferences.getBoolean(SettingsProvider.KEY_DARK_MODE, SettingsProvider.DEFAULT_DARK_MODE));
         dark.setOnCheckedChangeListener((compoundButton, value) -> {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean(SettingsProvider.KEY_DARK_MODE, value);
             editor.apply();
-            reloadUI();
+            refreshInterface();
         });
 
         @SuppressLint("UseSwitchCompatOrMaterialCode") Switch names = dialog.findViewById(R.id.switch_names);
-        names.setChecked(sharedPreferences.getBoolean(SettingsProvider.KEY_CUSTOM_NAMES, DEFAULT_NAMES));
+        names.setChecked(sharedPreferences.getBoolean(SettingsProvider.KEY_CUSTOM_NAMES, SettingsProvider.DEFAULT_NAMES));
         names.setOnCheckedChangeListener((compoundButton, value) -> {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean(SettingsProvider.KEY_CUSTOM_NAMES, value);
             editor.apply();
-            reloadUI();
+            refreshInterface();
         });
         @SuppressLint("UseSwitchCompatOrMaterialCode") Switch wideNames = dialog.findViewById(R.id.switch_names_wide);
-        wideNames.setChecked(sharedPreferences.getBoolean(SettingsProvider.KEY_CUSTOM_NAMES_WIDE, DEFAULT_NAMES_WIDE));
+        wideNames.setChecked(sharedPreferences.getBoolean(SettingsProvider.KEY_CUSTOM_NAMES_WIDE, SettingsProvider.DEFAULT_NAMES_WIDE));
         wideNames.setOnCheckedChangeListener((compoundButton, value) -> {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean(SettingsProvider.KEY_CUSTOM_NAMES_WIDE, value);
             editor.apply();
-            reloadUI();
+            refreshInterface();
         });
 
         @SuppressLint("UseSwitchCompatOrMaterialCode") Switch wideVR = dialog.findViewById(R.id.switch_wide_vr);
@@ -602,7 +597,7 @@ public class MainActivity extends Activity {
             editor.putBoolean(SettingsProvider.KEY_WIDE_VR, value);
             editor.apply();
             updateAppLists();
-            reloadUI();
+            refreshInterface();
         });
         @SuppressLint("UseSwitchCompatOrMaterialCode") Switch wide2D = dialog.findViewById(R.id.switch_wide_2d);
         wide2D.setChecked(sharedPreferences.getBoolean(SettingsProvider.KEY_WIDE_2D, false));
@@ -611,7 +606,7 @@ public class MainActivity extends Activity {
             editor.putBoolean(SettingsProvider.KEY_WIDE_2D, value);
             editor.apply();
             updateAppLists();
-            reloadUI();
+            refreshInterface();
         });
 
         SeekBar scale = dialog.findViewById(R.id.bar_scale);
@@ -627,10 +622,10 @@ public class MainActivity extends Activity {
             }
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                reloadUI();
+                refreshInterface();
             }
         });
-        scale.setProgress(sharedPreferences.getInt(SettingsProvider.KEY_CUSTOM_SCALE, DEFAULT_SCALE));
+        scale.setProgress(sharedPreferences.getInt(SettingsProvider.KEY_CUSTOM_SCALE, SettingsProvider.DEFAULT_SCALE));
         scale.setMax(174);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) scale.setMin(50);
 
@@ -647,14 +642,14 @@ public class MainActivity extends Activity {
             }
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                reloadUI();
+                refreshInterface();
             }
         });
-        margin.setProgress(sharedPreferences.getInt(SettingsProvider.KEY_CUSTOM_MARGIN, DEFAULT_MARGIN));
+        margin.setProgress(sharedPreferences.getInt(SettingsProvider.KEY_CUSTOM_MARGIN, SettingsProvider.DEFAULT_MARGIN));
         margin.setMax(59);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) margin.setMin(5);
 
-        int theme = sharedPreferences.getInt(SettingsProvider.KEY_CUSTOM_THEME, DEFAULT_THEME);
+        int theme = sharedPreferences.getInt(SettingsProvider.KEY_CUSTOM_THEME, SettingsProvider.DEFAULT_THEME);
         ImageView[] views = {
                 dialog.findViewById(R.id.theme0),
                 dialog.findViewById(R.id.theme1),
@@ -678,7 +673,7 @@ public class MainActivity extends Activity {
                     ImageUtils.showImagePicker(this, PICK_THEME_CODE);
                 } else {
                     setBackground(index);
-                    dark.setChecked(sharedPreferences.getBoolean(SettingsProvider.KEY_DARK_MODE, DEFAULT_DARK_MODE));
+                    dark.setChecked(sharedPreferences.getBoolean(SettingsProvider.KEY_DARK_MODE, SettingsProvider.DEFAULT_DARK_MODE));
                 }
                 for (ImageView image : views) {
                     image.setBackground(getDrawable(R.drawable.bkg_button_trans));

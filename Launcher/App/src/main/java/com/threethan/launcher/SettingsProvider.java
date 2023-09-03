@@ -42,6 +42,22 @@ public class SettingsProvider {
     private final String KEY_APP_LIST = "prefAppList";
     private final String KEY_LAUNCH_OUT = "prefLaunchOutList";
     private final String KEY_SELECTED_GROUPS = "prefSelectedGroups";
+    //defaults
+    static final boolean DEFAULT_DARK_MODE = true;
+    static final boolean DEFAULT_NAMES = true;
+    static final boolean DEFAULT_NAMES_WIDE = true;
+    static final int DEFAULT_SCALE = 112;
+    static final int DEFAULT_MARGIN = 32;
+    static final int DEFAULT_THEME = 0;
+
+    //compat
+    public final String KEY_COMPATIBILITY_VERSION = "KEY_COMPATIBILITY_VERSION";
+    public final int DEFAULT_COMPATIBILITY_VERSION = 0;
+    public final int CURRENT_COMPATIBILITY_VERSION = 0;
+    public final String KEY_WALLPAPER_VERSION = "KEY_COMPATIBILITY_VERSION";
+    public final int DEFAULT_WALLPAPER_VERSION = 0;
+    public final int CURRENT_WALLPAPER_VERSION = 0;
+
     //storage
     private final SharedPreferences sharedPreferences;
     private Map<String, String> appListMap = new HashMap<>();
