@@ -30,8 +30,9 @@
     <string name="wide_header">Display as Banner</string>
     <string name="name_header">Show Names</string>
 
-    <string name="dark_mode">Dark Top Bar &amp; Light Text</string>
-    <string name="group_mode">Always Show Groups &amp; Top Bar</string>
+    <string name="dark_mode">Light Label &amp; Text Dark Group Bar</string>
+    <string name="group_mode">Always Show Group Bar</string>
+    <string name="clear_cache">Reset All Icons</string>
 
     <string name="service_desc">When this service is enabled, Lightning Launcher will open automatically when you hover
         the cursor over the App Library icon on the right of dock for about half a second.\n(This may make it difficult to access the default launcher)\n

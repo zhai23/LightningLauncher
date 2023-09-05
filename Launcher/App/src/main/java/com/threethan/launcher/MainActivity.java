@@ -41,6 +41,7 @@ import android.widget.TextView;
 import com.esafirm.imagepicker.features.ImagePicker;
 import com.esafirm.imagepicker.model.Image;
 import com.threethan.launcher.helpers.CompatibilityHelper;
+import com.threethan.launcher.helpers.LibHelper;
 import com.threethan.launcher.helpers.SettingsManager;
 import com.threethan.launcher.helpers.Updater;
 import com.threethan.launcher.platforms.AbstractPlatform;
@@ -186,12 +187,7 @@ public class MainActivity extends Activity {
                     getString(R.string.selection_moved_single, groups.get(position)) :
                     getString(R.string.selection_moved_multiple, currentSelectedApps.size(), groups.get(position))
                 );
-                selectionHint.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        selectionHint.setText(R.string.selection_hint_none);
-                    }
-                }, 2500);
+                selectionHint.postDelayed(() -> selectionHint.setText(R.string.selection_hint_none), 2500);
                 currentSelectedApps.clear();
             } else settingsManager.selectGroup(groups.get(position));
 
@@ -282,33 +278,7 @@ public class MainActivity extends Activity {
 
         if (!loaded) {
             // Load Packages
-            PackageManager packageManager = getPackageManager();
-            installedApps = packageManager.getInstalledApplications(0);
-            // Load sets & check that they're not empty (Sometimes string sets are emptied on reinstall but not booleans)
-            Set<String> setAll = new HashSet<>();
-            sharedPreferences.getStringSet(SettingsManager.KEY_VR_SET, setAll);
-            Set<String> set2d = new HashSet<>();
-            sharedPreferences.getStringSet(SettingsManager.KEY_2D_SET, set2d);
-            setAll.addAll(set2d);
-
-            if (setAll.isEmpty()) sharedPreferences.edit().putBoolean(SettingsManager.NEEDS_META_DATA, true).apply();
-            // Check if we need metadata and load accordingly
-            final boolean needsMeta = sharedPreferences.getBoolean(SettingsManager.NEEDS_META_DATA, true);
-            Log.i("LightningLauncher", needsMeta ? "(Re)Loading app list with meta data" : "Loading saved package list (no meta data)");
-            if (needsMeta) {
-                installedApps = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);
-            } else {
-                // If we don't need metadata, just use package names.
-                // This is ~200ms faster than no meta data, and ~300ms faster than with meta data
-                installedApps = new ArrayList<>();
-                for (String packageName : setAll) {
-                    ApplicationInfo applicationInfo = new ApplicationInfo();
-                    applicationInfo.packageName = packageName;
-                    installedApps.add(applicationInfo);
-                }
-            }
-
-            updateAppLists();
+            reloadPackages();
             // Reload UI
             mainView.postDelayed(this::runUpdater, 1000);
             refreshBackground();
@@ -317,6 +287,33 @@ public class MainActivity extends Activity {
         } else {
             recheckPackages();
         }
+    }
+    public void reloadPackages() {
+        boolean needsMeta = sharedPreferences.getBoolean(SettingsManager.NEEDS_META_DATA, true);
+        // Load sets & check that they're not empty (Sometimes string sets are emptied on reinstall but not booleans)
+        Set<String> setAll = new HashSet<>();
+        setAll = sharedPreferences.getStringSet(SettingsManager.KEY_VR_SET, Collections.emptySet());
+        Set<String> set2d = new HashSet<>();
+        set2d = sharedPreferences.getStringSet(SettingsManager.KEY_2D_SET, Collections.emptySet());
+        setAll = new HashSet<>(setAll);
+        setAll.addAll(set2d);
+        // Check if we need metadata and load accordingly
+        needsMeta = setAll.isEmpty() || needsMeta;
+        Log.i("LightningLauncher", needsMeta ? "(Re)Loading app list with meta data" : "Loading saved package list (no meta data)");
+        if (needsMeta) {
+            PackageManager packageManager = getPackageManager();
+            installedApps = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);
+        } else {
+            // If we don't need metadata, just use package names.
+            // This is ~200ms faster than no meta data, and ~300ms faster than with meta data
+            installedApps = new ArrayList<>();
+            for (String packageName : setAll) {
+                ApplicationInfo applicationInfo = new ApplicationInfo();
+                applicationInfo.packageName = packageName;
+                installedApps.add(applicationInfo);
+            }
+        }
+        updateAppLists();
     }
     @SuppressWarnings("unchecked")
     public void recheckPackages() {
@@ -573,21 +570,25 @@ public class MainActivity extends Activity {
         groups.setChecked(sharedPreferences.getBoolean(SettingsManager.KEY_GROUPS_ENABLED, SettingsManager.DEFAULT_GROUPS_ENABLED));
         groups.setOnCheckedChangeListener((sw, value) -> {
             if (!sharedPreferences.getBoolean(SettingsManager.KEY_SEEN_HIDDEN_GROUPS_POPUP, false) && value != SettingsManager.DEFAULT_GROUPS_ENABLED) {
+                groups.setChecked(SettingsManager.DEFAULT_GROUPS_ENABLED); // Revert switch
                 AlertDialog subDialog = DialogHelper.build(this, R.layout.dialog_hide_groups_info);
                 subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
+                    final Boolean newValue = !SettingsManager.DEFAULT_GROUPS_ENABLED;
                     sharedPreferences.edit().putBoolean(SettingsManager.KEY_SEEN_HIDDEN_GROUPS_POPUP, true)
-                                            .putBoolean(SettingsManager.KEY_GROUPS_ENABLED, value).apply();
+                                            .putBoolean(SettingsManager.KEY_GROUPS_ENABLED, newValue).apply();
                     refreshInterface();
                     subDialog.dismiss();
+                    groups.setChecked(SettingsManager.DEFAULT_GROUPS_ENABLED); // Revert switch
+
                 });
                 subDialog.findViewById(R.id.cancel).setOnClickListener(view -> {
                     subDialog.dismiss(); // Dismiss without setting
-                    groups.setChecked(SettingsManager.DEFAULT_GROUPS_ENABLED); // Revert switch
                 });
             } else {
                 sharedPreferences.edit().putBoolean(SettingsManager.KEY_GROUPS_ENABLED, value).apply();
                 refreshInterface();
             }
+            dialog.findViewById(R.id.clear_icon_cache).setOnClickListener((view) -> AbstractPlatform.clearIconCache(this));
         });
         ImageView[] views = {
                 dialog.findViewById(R.id.background0),
@@ -699,7 +700,7 @@ public class MainActivity extends Activity {
         Switch wideVR = dialog.findViewById(R.id.switch_wide_vr);
         wideVR.setChecked(sharedPreferences.getBoolean(SettingsManager.KEY_WIDE_VR, SettingsManager.DEFAULT_WIDE_VR));
         wideVR.setOnCheckedChangeListener((compoundButton, value) -> {
-            AbstractPlatform.clearIconCache();
+            AbstractPlatform.clearIconCache(this);
             sharedPreferences.edit().putBoolean(SettingsManager.KEY_WIDE_VR, value).apply();
             updateAppLists();
             refreshInterface();
@@ -716,7 +717,7 @@ public class MainActivity extends Activity {
         Switch wideWEB = dialog.findViewById(R.id.switch_wide_web);
         wideWEB.setChecked(sharedPreferences.getBoolean(SettingsManager.KEY_WIDE_WEB, SettingsManager.DEFAULT_WIDE_WEB));
         wideWEB.setOnCheckedChangeListener((compoundButton, value) -> {
-            AbstractPlatform.clearIconCache();
+            AbstractPlatform.clearIconCache(this);
             sharedPreferences.edit().putBoolean(SettingsManager.KEY_WIDE_WEB, value).apply();
             updateAppLists();
             refreshInterface();
@@ -768,7 +769,7 @@ public class MainActivity extends Activity {
     }
 
     // Edit Mode
-    Set<String> currentSelectedApps = new HashSet<>();
+    public Set<String> currentSelectedApps = new HashSet<>();
     public boolean selectApp(String app) {
         if (currentSelectedApps.contains(app)) {
             currentSelectedApps.remove(app);
@@ -802,7 +803,7 @@ public class MainActivity extends Activity {
             }
             if (!url.contains("//")) url = "https://" + url;
             String name = url.split("//")[1].split("\\.")[0];
-            name = SettingsManager.toTitleCase(name);
+            name = LibHelper.toTitleCase(name);
 
             Set<String> webApps = sharedPreferences.getStringSet(SettingsManager.KEY_WEBSITE_LIST, Collections.emptySet());
             webApps = new HashSet<>(webApps); // Copy since we're not supposed to modify directly

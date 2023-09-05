@@ -141,12 +141,9 @@ public class AppsAdapter extends BaseAdapter{
         if (isEditMode) {
             holder.layout.setOnClickListener(view -> {
                 boolean selected = mainActivity.selectApp(currentApp.packageName);
-                view.setAlpha(selected? 0.5F : 1.0F);
+                holder.layout.setAlpha(selected? 0.5F : 1.0F);
             });
-            holder.layout.setOnLongClickListener(view -> {
-                showAppDetails(currentApp);
-                return true;
-            });
+
         } else {
             holder.layout.setOnClickListener(view -> {
                 AbstractPlatform platform = AbstractPlatform.getPlatform(currentApp);
@@ -154,11 +151,14 @@ public class AppsAdapter extends BaseAdapter{
             });
             holder.layout.setOnLongClickListener(view -> {
                 mainActivity.setEditMode(true);
-                boolean selected = mainActivity.selectApp(currentApp.packageName);
-                view.setAlpha(selected? 0.5F : 1.0F);
+                mainActivity.selectApp(currentApp.packageName);
                 return true;
             });
         }
+        holder.layout.setOnLongClickListener(view -> {
+            showAppDetails(currentApp);
+            return true;
+        });
         Runnable checkHover = new Runnable() {
             @Override
             public void run() {
@@ -176,7 +176,7 @@ public class AppsAdapter extends BaseAdapter{
     }
 
     public void onImageSelected(String path, ImageView selectedImageView) {
-        AbstractPlatform.clearIconCache();
+        AbstractPlatform.clearIconCache(mainActivity);
         if (path != null) {
             Bitmap bitmap = ImageUtils.getResizedBitmap(BitmapFactory.decodeFile(path), 450);
             ImageUtils.saveBitmap(bitmap, iconFile);
@@ -220,7 +220,7 @@ public class AppsAdapter extends BaseAdapter{
             packageName = currentApp.packageName;
 
             final boolean isWide = AbstractPlatform.isWideApp(currentApp, mainActivity);
-            iconFile = AbstractPlatform.packageToPath(mainActivity, currentApp.packageName, isWide);
+            iconFile = AbstractPlatform.iconFileForPackage(mainActivity, currentApp.packageName);
             if (iconFile.exists()) {
                 //noinspection ResultOfMethodCallIgnored
                 iconFile.delete();
@@ -242,16 +242,17 @@ public class AppsAdapter extends BaseAdapter{
 
             launchModeSwitch.setOnCheckedChangeListener((sw, value) -> {
                 if (!mainActivity.sharedPreferences.getBoolean(SettingsManager.KEY_SEEN_LAUNCH_OUT_POPUP, false) && value) {
+                    launchModeSwitch.setChecked(false); // Revert switch
                     AlertDialog subDialog = DialogHelper.build(mainActivity, R.layout.dialog_launch_out_info);
                     subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
                         mainActivity.sharedPreferences.edit().putBoolean(SettingsManager.KEY_SEEN_LAUNCH_OUT_POPUP, true).apply();
                         subDialog.dismiss();
-                        SettingsManager.setAppLaunchOut(currentApp.packageName, !launchOut[0]);
+                        SettingsManager.setAppLaunchOut(currentApp.packageName, true);
                         launchOut[0] = SettingsManager.getAppLaunchOut(currentApp.packageName);
+                        launchModeSwitch.setChecked(true);
                     });
                     subDialog.findViewById(R.id.cancel).setOnClickListener(view -> {
                         subDialog.dismiss(); // Dismiss without setting
-                        launchModeSwitch.setChecked(false); // Revert switch
                     });
                 } else {
                     SettingsManager.setAppLaunchOut(currentApp.packageName, !launchOut[0]);

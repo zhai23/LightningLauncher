@@ -18,11 +18,11 @@ import java.util.Set;
 public class CompatibilityHelper {
     public static final String KEY_COMPATIBILITY_VERSION = "KEY_COMPATIBILITY_VERSION";
     public static final int CURRENT_COMPATIBILITY_VERSION = 2;
-    public static final boolean DEBUG_COMPATIBLITY = false;
+    public static final boolean DEBUG_COMPATIBILITY = true;
     public static synchronized void checkCompatibilityUpdate(MainActivity mainActivity) {
         Log.w("COMPATIBILITY", "DEBUG_COMPATIBILITY IS ON");
         SharedPreferences sharedPreferences = mainActivity.sharedPreferences;
-        int storedVersion = DEBUG_COMPATIBLITY ? 0 : sharedPreferences.getInt(CompatibilityHelper.KEY_COMPATIBILITY_VERSION, -1);
+        int storedVersion = DEBUG_COMPATIBILITY ? 0 : sharedPreferences.getInt(CompatibilityHelper.KEY_COMPATIBILITY_VERSION, -1);
         if (storedVersion == -1) {
             if (sharedPreferences.getInt(SettingsManager.KEY_BACKGROUND, -1) == -1) return; // return if fresh install
             storedVersion = 0; // set version to 0 if coming from a version before this system was added
@@ -87,9 +87,12 @@ public class CompatibilityHelper {
         }
 
         // Clear the icon cache (failsafe)
-        AbstractPlatform.clearIconCache();
+        AbstractPlatform.clearIconCache(mainActivity);
 
         // Store the updated version
-        sharedPreferences.edit().putInt(CompatibilityHelper.KEY_COMPATIBILITY_VERSION, CompatibilityHelper.CURRENT_COMPATIBILITY_VERSION).apply();
+        sharedPreferences.edit()
+                .putInt(CompatibilityHelper.KEY_COMPATIBILITY_VERSION, CompatibilityHelper.CURRENT_COMPATIBILITY_VERSION)
+                .putBoolean(SettingsManager.NEEDS_META_DATA, true)
+                .apply();
     }
 }

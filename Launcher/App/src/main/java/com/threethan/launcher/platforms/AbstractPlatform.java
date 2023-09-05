@@ -1,5 +1,6 @@
 package com.threethan.launcher.platforms;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
@@ -16,6 +17,7 @@ import androidx.core.content.res.ResourcesCompat;
 
 import com.threethan.launcher.MainActivity;
 import com.threethan.launcher.R;
+import com.threethan.launcher.helpers.LibHelper;
 import com.threethan.launcher.helpers.SettingsManager;
 
 import java.io.DataInputStream;
@@ -48,10 +50,6 @@ public abstract class AbstractPlatform {
             "https://logo.clearbit.com/google.com/%s",
             "%s/favicon.ico",
     };
-    public static void clearIconCache() {
-        excludedIconPackages.clear();
-        cachedIcons.clear();
-    }
     public static boolean isImageFileComplete(File imageFile) {
         boolean success = false;
         try {
@@ -76,7 +74,7 @@ public abstract class AbstractPlatform {
         return new AppPlatform();
     }
 
-    public static File packageToPath(Context context, String packageName, boolean ignoredIsWide) {
+    public static File iconFileForPackage(Context context, String packageName) {
         packageName = packageName.replace("//","");
         return new File(context.getApplicationInfo().dataDir, packageName + ".webp");
     }
@@ -142,6 +140,35 @@ public abstract class AbstractPlatform {
             Log.i("AbstractPlatform", "Exception while converting file " + outputFile.getAbsolutePath());
             e.printStackTrace();
             return false;
+        }
+    }
+    protected static void saveIconDrawable(Activity activity, Drawable icon, String packageName) {
+        try {
+            Bitmap bitmap = LibHelper.bitmapFromDrawable(icon);
+            if (bitmap == null) {
+                Log.i("AbstractPlatform", "Failed to load drawable bitmap for "+packageName);
+            }
+            if (bitmap != null) {
+                int width = bitmap.getWidth();
+                int height = bitmap.getHeight();
+                float aspectRatio = (float) width / height;
+                if (width > 512) {
+                    width = 512;
+                    height = Math.round(width / aspectRatio);
+                    bitmap = Bitmap.createScaledBitmap(bitmap, width, height, false);
+                }
+                try {
+                    FileOutputStream fileOutputStream = new FileOutputStream(iconFileForPackage(activity, packageName).getAbsolutePath());
+                    bitmap.compress(Bitmap.CompressFormat.WEBP, 90, fileOutputStream);
+                    fileOutputStream.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+        } catch (Exception e) {
+            Log.i("AbstractPlatform", "Exception while converting file " + packageName);
+            e.printStackTrace();
         }
     }
     static HashSet<String> setVr = new HashSet<>();
@@ -233,43 +260,48 @@ public abstract class AbstractPlatform {
     }
 
     public Drawable loadIcon(MainActivity activity, ApplicationInfo appInfo, ImageView[] imageViews) {
+        if (cachedIcons.containsKey(appInfo.packageName)) return cachedIcons.get(appInfo.packageName);
+
         PackageManager packageManager = activity.getPackageManager();
 
         Drawable appIcon = null;
-        try {
-            Resources resources = packageManager.getResourcesForApplication(appInfo.packageName);
-            int iconId = appInfo.icon;
-            if (iconId == 0) iconId = android.R.drawable.sym_def_app_icon;
-            appIcon = ResourcesCompat.getDrawableForDensity(resources, iconId, DisplayMetrics.DENSITY_XXXHIGH, null);
-        } catch (Exception ignored) {} // Fails on web apps
-
-        if (cachedIcons.containsKey(appInfo.packageName)) {
-            return cachedIcons.get(appInfo.packageName);
-        }
-
-
 
         final boolean isWide = isWideApp(appInfo, activity);
-        final File iconFile = packageToPath(activity, appInfo.packageName, isWide);
+        final File iconFile = iconFileForPackage(activity, appInfo.packageName);
 
         if (iconFile.exists()) {
             AbstractPlatform.updateIcon(iconFile, appInfo.packageName, null);
             return Drawable.createFromPath(iconFile.getAbsolutePath());
         }
+        if (cachedIcons.containsKey(appInfo.packageName)) return cachedIcons.get(appInfo.packageName);
+        try {
+            Resources resources = packageManager.getResourcesForApplication(appInfo.packageName);
+            int iconId = appInfo.icon;
+            if (iconId == 0) iconId = android.R.drawable.sym_def_app_icon;
+            appIcon = ResourcesCompat.getDrawableForDensity(resources, iconId, DisplayMetrics.DENSITY_XXXHIGH, null);
+            saveIconDrawable(activity, appIcon, appInfo.packageName);
+            return appIcon;
+        } catch (Exception ignored) {} // Fails on web apps
 
-        if (cachedIcons.containsKey(appInfo.packageName)) {
-            return cachedIcons.get(appInfo.packageName);
+        if (isVirtualRealityApp(appInfo, activity) || isWebsite(appInfo)) {
+            downloadIcon(activity, appInfo, () -> updateIcon(iconFile, appInfo.packageName, imageViews));
         }
-        if (isVirtualRealityApp(appInfo, activity) || isWebsite(appInfo)) {downloadIcon(activity, appInfo, () -> updateIcon(iconFile, appInfo.packageName, imageViews));}
-        return appIcon;
+        return null;
     }
 
     public void reloadIcon(MainActivity activity, ApplicationInfo appInfo, ImageView[] imageViews) {
         final boolean isWide = isWideApp(appInfo, activity);
-        final File iconFile = packageToPath(activity, appInfo.packageName, isWide);
+        final File iconFile = iconFileForPackage(activity, appInfo.packageName);
         iconFile.delete();
         imageViews[0].setImageDrawable(loadIcon(activity, appInfo, imageViews));
         downloadIcon(activity, appInfo, () -> updateIcon(iconFile, appInfo.packageName, imageViews));
+    }
+    public static void clearIconCache(MainActivity mainActivity) {
+        excludedIconPackages.clear();
+        cachedIcons.clear();
+        LibHelper.delete(mainActivity.getApplicationInfo().dataDir);
+        mainActivity.sharedPreferences.edit().putBoolean(SettingsManager.NEEDS_META_DATA, true).apply();
+        mainActivity.reloadPackages();
     }
 
     private final ConcurrentHashMap<String, Object> locks = new ConcurrentHashMap<>();
@@ -280,7 +312,7 @@ public abstract class AbstractPlatform {
         else excludedIconPackages.add(pkgName);
 
         final boolean isWide = isWideApp(appInfo, activity);
-        final File iconFile = packageToPath(activity, pkgName, isWide);
+        final File iconFile = iconFileForPackage(activity, pkgName);
 
         new Thread(() -> {
             Object lock = locks.putIfAbsent(pkgName, new Object());

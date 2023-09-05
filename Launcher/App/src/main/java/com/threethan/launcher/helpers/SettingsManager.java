@@ -131,7 +131,8 @@ public class SettingsManager {
     public static String getAppDisplayName(Context context, ApplicationInfo appInfo) {
         if (appNameMap.containsKey(appInfo)) return appNameMap.get(appInfo);
         String name = getAppDisplayNameInternal(context, appInfo);
-        appNameMap.put(appInfo, name);
+//        appNameMap.put(appInfo, name);
+        setAppDisplayName(context, appInfo, name);
         return name;
     }
         private static String getAppDisplayNameInternal(Context context, ApplicationInfo appInfo) {
@@ -144,7 +145,7 @@ public class SettingsManager {
         } catch (Exception ignored) {}
         return appInfo.packageName;
     }
-    public void setAppDisplayName(Context context, ApplicationInfo appInfo, String newName) {
+    public static void setAppDisplayName(Context context, ApplicationInfo appInfo, String newName) {
         appNameMap.put(appInfo, newName);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         preferences.edit().putString(appInfo.packageName, newName).apply();
@@ -173,7 +174,7 @@ public class SettingsManager {
         // Get list of installed apps
         Map<String, String> apps = getAppGroupMap();
 
-        Log.v("LauncherStartup", "X1 - Start Groups");
+        //Log.v("LauncherStartup", "X1 - Start Groups");
 
         // Sort into groups
         for (ApplicationInfo app : myApps) {
@@ -187,15 +188,16 @@ public class SettingsManager {
             }
         }
 
-        Log.v("LauncherStartup", "X2 - End Groups");
+        //Log.v("LauncherStartup", "X2 - End Groups");
 
         // Since this goes over all apps & checks if they're vr, we can safely decide we don't need meta data for them on subsequent launchers
-        mainActivity.sharedPreferences.edit().putBoolean(SettingsManager.NEEDS_META_DATA, false).apply();
+        if (mainActivity.sharedPreferences.getBoolean(SettingsManager.NEEDS_META_DATA, true))
+            mainActivity.sharedPreferences.edit().putBoolean(SettingsManager.NEEDS_META_DATA, false).apply();
 
         // Save changes to app list
         setAppGroupMap(appGroupMap);
 
-        Log.v("LauncherStartup", "X3 - Map Packages");
+        //Log.v("LauncherStartup", "X3 - Map Packages");
 
         // Map Packages
         Map<String, ApplicationInfo> appMap = new LinkedHashMap<>();
@@ -212,7 +214,7 @@ public class SettingsManager {
         }
 
 
-        Log.v("LauncherStartup", "X4 - Mapped Packages");
+        //Log.v("LauncherStartup", "X4 - Mapped Packages");
 
 
         // Sort by Package Name
@@ -220,9 +222,9 @@ public class SettingsManager {
         // Create new list of apps
         ArrayList<ApplicationInfo> sortedApps = new ArrayList<>(appMap.values());
         // Compare on app name (fast)
-        Log.v("LauncherStartup", "X5 - Start Sort");
+        //Log.v("LauncherStartup", "X5 - Start Sort");
         sortedApps.sort(Comparator.comparing(a -> getAppDisplayName(mainActivity, a).toLowerCase()));
-        Log.v("LauncherStartup", "X6 - Finish Sort");
+        //Log.v("LauncherStartup", "X6 - Finish Sort");
 
 
         // Sort Done!
@@ -286,7 +288,7 @@ public class SettingsManager {
 
     public static String getDefaultGroup(boolean vr, boolean web) {
         final String key = web ? KEY_GROUP_WEB : vr ? KEY_GROUP_2D : KEY_GROUP_VR;
-        final String def = web ? DEFAULT_GROUP_WEB : vr ? DEFAULT_GROUP_2D : DEFAULT_GROUP_VR;
+        final String def = web ? DEFAULT_GROUP_WEB : (vr ? DEFAULT_GROUP_VR : DEFAULT_GROUP_2D);
         final String group = sharedPreferences.getString(key, def);
         if (!appGroupsSet.contains(group) && !group.equals(GroupsAdapter.UNSUPPORTED_GROUP)) return GroupsAdapter.HIDDEN_GROUP;
         return group;
@@ -373,22 +375,5 @@ public class SettingsManager {
         Set<String> selectFirst = new HashSet<>();
         selectFirst.add(name);
         setSelectedGroups(selectFirst);
-    }
-
-    public static String toTitleCase(String string) {
-        if (string == null) return null;
-        boolean whiteSpace = true;
-        StringBuilder builder = new StringBuilder(string);
-        for (int i = 0; i < builder.length(); ++i) {
-            char c = builder.charAt(i);
-            if (whiteSpace) {
-                if (!Character.isWhitespace(c)) {
-                    builder.setCharAt(i, Character.toTitleCase(c));
-                    whiteSpace = false;
-                }
-            } else if (Character.isWhitespace(c)) whiteSpace = true;
-            else builder.setCharAt(i, Character.toLowerCase(c));
-        }
-        return builder.toString();
     }
 }
