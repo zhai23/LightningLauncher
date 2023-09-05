@@ -1,9 +1,12 @@
 package com.threethan.launcher;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DownloadManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -22,8 +25,6 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.Objects;
-import java.util.Timer;
-import java.util.TimerTask;
 
 // Credit to Basti for update checking code
 public class Updater {
@@ -32,10 +33,10 @@ public class Updater {
     private static final String TAG = "LightningLauncher Updater";
     private final RequestQueue requestQueue;
     private final PackageManager packageManager;
-    private final Context appContext;
+    private final MainActivity mainActivity;
 
-    public Updater(Context appContext) {
-        this.appContext = appContext;
+    public Updater(MainActivity appContext) {
+        this.mainActivity = appContext;
         this.requestQueue = Volley.newRequestQueue(appContext);
         this.packageManager = appContext.getPackageManager();
     }
@@ -53,7 +54,7 @@ public class Updater {
             JSONObject latestReleaseJson = new JSONObject(response);
             String tagName = latestReleaseJson.getString("tag_name");
             PackageInfo packageInfo = packageManager.getPackageInfo(
-                    appContext.getPackageName(), PackageManager.GET_ACTIVITIES);
+                    mainActivity.getPackageName(), PackageManager.GET_ACTIVITIES);
 
             if (!("v" + packageInfo.versionName).contains(tagName)) {
                 Log.v(TAG, "New version available!");
@@ -73,30 +74,50 @@ public class Updater {
     }
 
     private void showUpdateDialog(String curName, String newName) {
-        AlertDialog.Builder updateDialogBuilder = new AlertDialog.Builder(appContext);
-        updateDialogBuilder.setTitle(R.string.update_title);
-        updateDialogBuilder.setMessage(appContext.getString(R.string.update_content, curName, newName));
-        updateDialogBuilder.setPositiveButton(R.string.update_button, (dialog, which) -> downloadUpdate(newName));
-        AlertDialog updateAlertDialog = updateDialogBuilder.create();
-        updateAlertDialog.show();
+        try {
+            AlertDialog.Builder updateDialogBuilder = new AlertDialog.Builder(mainActivity);
+            updateDialogBuilder.setTitle(R.string.update_title);
+            updateDialogBuilder.setMessage(mainActivity.getString(R.string.update_content, curName, newName));
+            updateDialogBuilder.setPositiveButton(R.string.update_button, (dialog, which) -> downloadUpdate(newName));
+            AlertDialog updateAlertDialog = updateDialogBuilder.create();
+            updateAlertDialog.show();
+        } catch (Exception ignored) {}
     }
 
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
     public void downloadUpdate(String versionTag) {
         DownloadManager.Request request1 = new DownloadManager.Request(Uri.parse(String.format(TEMPLATE_URL, versionTag)));
         request1.setDescription("Downloading Update");   //appears the same in Notification bar while downloading
         request1.setTitle("LightningLauncher Auto-Updater");
 
-        request1.setDestinationInExternalFilesDir(appContext, "/Content", "update"+versionTag+".apk");
+        request1.setDestinationInExternalFilesDir(mainActivity, "/Content", "update"+versionTag+".apk");
 
-        DownloadManager manager1 = (DownloadManager) appContext.getSystemService(Context.DOWNLOAD_SERVICE);
+        DownloadManager manager1 = (DownloadManager) mainActivity.getSystemService(Context.DOWNLOAD_SERVICE);
         Objects.requireNonNull(manager1).enqueue(request1);
 
+        AlertDialog.Builder updateDialogBuilder = new AlertDialog.Builder(mainActivity);
+        updateDialogBuilder.setTitle(R.string.update_downloading_title);
+        updateDialogBuilder.setMessage(R.string.update_downloading_content);
+        updateDialogBuilder.setNegativeButton(R.string.update_dismiss_button, (dialog, which) -> dialog.cancel());
+        updateAlertDialog = updateDialogBuilder.create();
+        updateAlertDialog.show();
 
-        installUpdate(versionTag);
+        latestTag = versionTag;
+        mainActivity.registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
     }
+    String latestTag;
+    AlertDialog updateAlertDialog;
+    BroadcastReceiver onComplete=new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            try {
+                updateAlertDialog.dismiss();
+            } catch (Exception ignored) {}
+            installUpdate(latestTag);
+        }
+    };
 
     public void installUpdate(String versionTag) {
-        File p = appContext.getApplicationContext().getExternalFilesDir("/Content");
+        File p = mainActivity.getApplicationContext().getExternalFilesDir("/Content");
         File f = new File(p, "update"+versionTag+".apk");
         if (!f.exists()) {
             Log.w(TAG, "Failed to download APK! Will keep trying...");
@@ -104,7 +125,7 @@ public class Updater {
             return;
         }
         // provider is already included in the imagepicker lib
-        Uri apkURI = FileProvider.getUriForFile(appContext, appContext.getApplicationContext().getPackageName() + ".imagepicker.provider", f);
+        Uri apkURI = FileProvider.getUriForFile(mainActivity, mainActivity.getApplicationContext().getPackageName() + ".imagepicker.provider", f);
         Intent intent = new Intent(Intent.ACTION_VIEW);
 
         intent.setDataAndType(apkURI, "application/vnd.android.package-archive");
@@ -112,13 +133,6 @@ public class Updater {
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         intent.putExtra(Intent.EXTRA_NOT_UNKNOWN_SOURCE, true);
 
-        appContext.startActivity(intent);
-
-        AlertDialog.Builder updateDialogBuilder = new AlertDialog.Builder(appContext);
-        updateDialogBuilder.setTitle(R.string.update_failed_title);
-        updateDialogBuilder.setMessage(R.string.update_failed_content);
-        updateDialogBuilder.setPositiveButton(R.string.update_failed_button, (dialog, which) -> dialog.cancel());
-        AlertDialog updateAlertDialog = updateDialogBuilder.create();
-        updateAlertDialog.show();
+        mainActivity.startActivity(intent);
     }
 }
