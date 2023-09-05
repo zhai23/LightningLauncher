@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bkg_dialog"
+    android:orientation="vertical"
+    android:padding="20dp"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <View
+        android:id="@+id/sizer"
+        android:layout_width="350dp"
+        android:layout_height="0dp" />
+
+    <TextView
+        style="@style/SettingTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/add_website" />
+
+    <EditText
+        android:id="@+id/app_url"
+        android:layout_width="match_parent"
+        android:layout_height="40sp"
+        android:layout_gravity="bottom"
+        android:autofillHints="text"
+        android:background="@drawable/bkg_name_app"
+        android:inputType="text"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:textAlignment="gravity"
+        android:textColor="@android:color/white"
+        android:textSize="24sp" />
+
+    <TextView
+        style="@style/SettingButtonLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="2dp"
+        android:text="@string/add_website_url_label" />
+
+    <TextView
+        android:id="@+id/bad_url"
+        style="@style/SettingButtonLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/add_website_bad_url"
+        android:textColor="#C36161"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="end"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:id="@+id/cancel"
+            android:layout_width="150dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/bkg_button">
+
+            <TextView
+                style="@style/SettingButtonLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/cancel" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/confirm"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bkg_button">
+
+            <TextView
+                style="@style/SettingButtonLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/confirm" />
+        </FrameLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

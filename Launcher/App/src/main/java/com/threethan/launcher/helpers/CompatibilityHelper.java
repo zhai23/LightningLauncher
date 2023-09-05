@@ -1,0 +1,96 @@
+package com.threethan.launcher.helpers;
+
+import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.util.Log;
+
+import com.threethan.launcher.MainActivity;
+import com.threethan.launcher.platforms.AbstractPlatform;
+import com.threethan.launcher.ui.GroupsAdapter;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+public class CompatibilityHelper {
+    public static final String KEY_COMPATIBILITY_VERSION = "KEY_COMPATIBILITY_VERSION";
+    public static final int CURRENT_COMPATIBILITY_VERSION = 2;
+    public static final boolean DEBUG_COMPATIBLITY = true;
+    public static synchronized void checkCompatibilityUpdate(MainActivity mainActivity) {
+        Log.w("COMPATIBILITY", "DEBUG_COMPATIBILITY IS ON");
+        SharedPreferences sharedPreferences = mainActivity.sharedPreferences;
+        int storedVersion = DEBUG_COMPATIBLITY ? 0 : sharedPreferences.getInt(CompatibilityHelper.KEY_COMPATIBILITY_VERSION, -1);
+        if (storedVersion == -1) {
+            if (sharedPreferences.getInt(SettingsManager.KEY_BACKGROUND, -1) == -1) return; // return if fresh install
+            storedVersion = 0; // set version to 0 if coming from a version before this system was added
+        }
+
+        if (storedVersion == CompatibilityHelper.CURRENT_COMPATIBILITY_VERSION) return; //Return if no update
+
+        try {
+            if (storedVersion > CompatibilityHelper.CURRENT_COMPATIBILITY_VERSION)
+                Log.e("CompatibilityUpdate Error", "Previous version greater than current!");
+            // If updated
+            for (int version = 0; version <= CompatibilityHelper.CURRENT_COMPATIBILITY_VERSION; version++) {
+                if (SettingsManager.VERSIONS_WITH_BACKGROUND_CHANGES.contains(version)) {
+                    int backgroundIndex = sharedPreferences.getInt(SettingsManager.KEY_BACKGROUND, SettingsManager.DEFAULT_BACKGROUND);
+                    if (backgroundIndex >= 0 && backgroundIndex < SettingsManager.BACKGROUND_DARK.length) {
+                        sharedPreferences.edit().putBoolean(SettingsManager.KEY_DARK_MODE, SettingsManager.BACKGROUND_DARK[backgroundIndex]).apply();
+                    } else if (storedVersion == 0) {
+                        sharedPreferences.edit().putBoolean(SettingsManager.KEY_DARK_MODE, SettingsManager.DEFAULT_DARK_MODE).apply();
+                    }
+                    // updates may reference the specific version in the future
+                }
+                if (version == 0) {
+                    SettingsManager settingsManager = mainActivity.settingsManager;
+                    if (sharedPreferences.getInt(SettingsManager.KEY_BACKGROUND, SettingsManager.DEFAULT_BACKGROUND) == 6) {
+                        sharedPreferences.edit().putInt(SettingsManager.KEY_BACKGROUND, -1).apply();
+                    }
+                    final Map<String, String> apps = settingsManager.getAppGroupMap();
+                    final Set<String> appGroupsList = settingsManager.getAppGroups();
+                    final String oldGroupName = "Tools";
+                    final String newGroupName = "Apps";
+                    appGroupsList.remove(oldGroupName);
+                    appGroupsList.add(newGroupName);
+                    Map<String, String> updatedAppList = new HashMap<>();
+                    for (String packageName : apps.keySet()) {
+                        if (Objects.requireNonNull(apps.get(packageName)).compareTo(oldGroupName) == 0) {
+                            updatedAppList.put(packageName, newGroupName);
+                        } else {
+                            updatedAppList.put(packageName, apps.get(packageName));
+                        }
+                    }
+                    HashSet<String> selectedGroup = new HashSet<>();
+                    selectedGroup.add(newGroupName);
+                    settingsManager.setSelectedGroups(selectedGroup);
+                    settingsManager.setAppGroups(appGroupsList);
+                    SettingsManager.setAppGroupMap(updatedAppList);
+                }
+                if (version == 1) {
+                    final Map<String, String> appGroupMap = SettingsManager.getAppGroupMap();
+                    List<ApplicationInfo> apps = mainActivity.getPackageManager().getInstalledApplications(PackageManager.GET_META_DATA);
+                    for (ApplicationInfo app: apps) {
+                        if(!AbstractPlatform.isSupportedApp(app, mainActivity)) appGroupMap.put(app.packageName, GroupsAdapter.UNSUPPORTED_GROUP);
+                        Log.i("unsupport", app.packageName);
+                    }
+                    SettingsManager.setAppGroupMap(appGroupMap);
+                }
+            }
+            Log.i("Settings Updated", String.format("Updated from v%s to v%s (Settings versions are not the same as app versions)",
+                    storedVersion, CompatibilityHelper.CURRENT_COMPATIBILITY_VERSION));
+        } catch (Exception e) {
+            // This *shouldn't* fail, but if it does we should not crash
+            Log.e("CompatibilityUpdate Error", "An exception occurred when attempting to perform the compatibility update!");
+            e.printStackTrace();
+        }
+
+        // Clear the icon cache (failsafe)
+        AbstractPlatform.clearIconCache();
+
+        // Store the updated version
+        sharedPreferences.edit().putInt(CompatibilityHelper.KEY_COMPATIBILITY_VERSION, CompatibilityHelper.CURRENT_COMPATIBILITY_VERSION).apply();
+    }
+}

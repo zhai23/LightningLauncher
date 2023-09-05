@@ -23,11 +23,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.util.Patterns;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -38,6 +40,9 @@ import android.widget.TextView;
 
 import com.esafirm.imagepicker.features.ImagePicker;
 import com.esafirm.imagepicker.model.Image;
+import com.threethan.launcher.helpers.CompatibilityHelper;
+import com.threethan.launcher.helpers.SettingsManager;
+import com.threethan.launcher.helpers.Updater;
 import com.threethan.launcher.platforms.AbstractPlatform;
 import com.threethan.launcher.ui.AppsAdapter;
 import com.threethan.launcher.ui.DialogHelper;
@@ -48,6 +53,7 @@ import com.threethan.launcher.ui.ImageUtils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -102,16 +108,15 @@ class RecheckPackagesTask extends AsyncTask {
         PackageManager packageManager = owner.getPackageManager();
         foundApps = packageManager.getInstalledApplications(0);
 
-        changeFound = owner.allApps.size() != foundApps.size();
+        changeFound = owner.installedApps.size() != foundApps.size();
         return null;
     }
     @Override
     protected void onPostExecute(Object _n) {
         if (changeFound) {
             Log.i("PackageCheck", "Package change detected!");
-
             owner.sharedPreferences.edit().putBoolean(SettingsManager.NEEDS_META_DATA, true).apply();
-            owner.allApps = foundApps;
+            owner.installedApps = foundApps;
             owner.updateAppLists();
             owner.refreshInterface();
         }
@@ -124,7 +129,7 @@ public class MainActivity extends Activity {
     public static final String CUSTOM_THEME = "background.png";
     public boolean darkMode = true;
     public boolean groupsEnabled = true;
-    DynamicHeightGridView appGridView;
+    DynamicHeightGridView appGridViewIcon;
     DynamicHeightGridView appGridViewWide;
     ScrollView scrollView;
     ImageView backgroundImageView;
@@ -143,21 +148,21 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Log.v("LauncherStartup", "1. Set View");
+        Log.v("LauncherStartup", "1A. Set View");
 
         setContentView(R.layout.activity_main);
 
-        Log.v("LauncherStartup", "2. Get Setting Provider");
+        Log.v("LauncherStartup", "1B. Get Setting Provider");
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         settingsManager = SettingsManager.getInstance(this);
-        settingsManager.checkCompatibilityUpdate(this);
+        CompatibilityHelper.checkCompatibilityUpdate(this);
 
-        Log.v("LauncherStartup", "3. Get UI Instances");
+        Log.v("LauncherStartup", "1C. Get UI Instances");
 
         mainView = findViewById(R.id.mainLayout);
         mainView.addOnLayoutChangeListener((view, i, i1, i2, i3, i4, i5, i6, i7) -> updateGridViewHeights());
-        appGridView = findViewById(R.id.appsView);
+        appGridViewIcon = findViewById(R.id.appsView);
         appGridViewWide = findViewById(R.id.appsViewWide);
         scrollView = findViewById(R.id.mainScrollView);
         backgroundImageView = findViewById(R.id.background);
@@ -176,10 +181,19 @@ public class MainActivity extends Activity {
             if (!currentSelectedApps.isEmpty()) {
                 GroupsAdapter groupsAdapter = (GroupsAdapter) groupPanelGridView.getAdapter();
                 for (String app : currentSelectedApps) groupsAdapter.setGroup(app, groups.get(position));
+                TextView selectionHint = findViewById(R.id.selectionHint);
+                selectionHint.setText( currentSelectedApps.size()==1 ?
+                    getString(R.string.selection_moved_single, groups.get(position)) :
+                    getString(R.string.selection_moved_multiple, currentSelectedApps.size(), groups.get(position))
+                );
+                selectionHint.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        selectionHint.setText(R.string.selection_hint_none);
+                    }
+                }, 2500);
                 currentSelectedApps.clear();
-                updateSelectionHint();
-            }
-            settingsManager.selectGroup(groups.get(position));
+            } else settingsManager.selectGroup(groups.get(position));
 
             refreshInterface();
         });
@@ -215,14 +229,24 @@ public class MainActivity extends Activity {
                 settingsPageOpen = true;
             }
         });
+        View addWebsiteButton = findViewById(R.id.addWebsite);
+        addWebsiteButton.setOnClickListener(view -> addWebsite());
+        View stopEditingButton = findViewById(R.id.stopEditing);
+        stopEditingButton.setOnClickListener(view -> {
+            setEditMode(false);
+        });
 
         // Register the broadcast receiver
         IntentFilter filter = new IntentFilter(FINISH_ACTION);
         registerReceiver(finishReceiver, filter);
 
-        Log.v("LauncherStartup", "4. Done");
+        Log.v("LauncherStartup", "1D. Init Done");
     }
-
+    public void setEditMode(boolean value) {
+        editMode = value;
+        sharedPreferences.edit().putBoolean(SettingsManager.KEY_EDIT_MODE, editMode).apply();
+        refreshInterface();
+    }
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -241,18 +265,7 @@ public class MainActivity extends Activity {
     @Override
     public void onBackPressed() {
         if (resetOpenAnim()) return;
-        if (!settingsPageOpen) {
-            if (editMode) {
-                editMode = false;
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putBoolean(SettingsManager.KEY_EDIT_MODE, editMode);
-                editor.apply();
-                refreshInterface();
-            } else {
-                showSettings();
-                settingsPageOpen = true;
-            }
-        }
+        if (!settingsPageOpen) showSettings();
     }
     public static final String FINISH_ACTION = "com.threethan.launcher.FINISH";
     // Stuff to finish the activity when it's in the background;
@@ -262,7 +275,6 @@ public class MainActivity extends Activity {
     };
 
     @Override
-    @SuppressWarnings("unchecked")
     protected void onResume() {
         resetOpenAnim();
 
@@ -271,7 +283,7 @@ public class MainActivity extends Activity {
         if (!loaded) {
             // Load Packages
             PackageManager packageManager = getPackageManager();
-            allApps = packageManager.getInstalledApplications(0);
+            installedApps = packageManager.getInstalledApplications(0);
             // Load sets & check that they're not empty (Sometimes string sets are emptied on reinstall but not booleans)
             Set<String> setAll = new HashSet<>();
             sharedPreferences.getStringSet(SettingsManager.KEY_VR_SET, setAll);
@@ -284,15 +296,15 @@ public class MainActivity extends Activity {
             final boolean needsMeta = sharedPreferences.getBoolean(SettingsManager.NEEDS_META_DATA, true);
             Log.i("LightningLauncher", needsMeta ? "(Re)Loading app list with meta data" : "Loading saved package list (no meta data)");
             if (needsMeta) {
-                allApps = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);
+                installedApps = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);
             } else {
                 // If we don't need metadata, just use package names.
                 // This is ~200ms faster than no meta data, and ~300ms faster than with meta data
-                allApps = new ArrayList<>();
+                installedApps = new ArrayList<>();
                 for (String packageName : setAll) {
                     ApplicationInfo applicationInfo = new ApplicationInfo();
                     applicationInfo.packageName = packageName;
-                    allApps.add(applicationInfo);
+                    installedApps.add(applicationInfo);
                 }
             }
 
@@ -303,8 +315,12 @@ public class MainActivity extends Activity {
             refreshInterface();
             loaded = true;
         } else {
-            new RecheckPackagesTask().execute(this);
+            recheckPackages();
         }
+    }
+    @SuppressWarnings("unchecked")
+    public void recheckPackages() {
+        new RecheckPackagesTask().execute(this);
     }
     public void setSelectedImageView(ImageView imageView) {
         selectedImageView = imageView;
@@ -316,11 +332,11 @@ public class MainActivity extends Activity {
         if (requestCode == PICK_ICON_CODE) {
             if (resultCode == RESULT_OK) {
                 for (Image image : ImagePicker.getImages(data)) {
-                    ((AppsAdapter) appGridView.getAdapter()).onImageSelected(image.getPath(), selectedImageView);
+                    ((AppsAdapter) appGridViewIcon.getAdapter()).onImageSelected(image.getPath(), selectedImageView);
                     break;
                 }
             } else {
-                ((AppsAdapter) appGridView.getAdapter()).onImageSelected(null, selectedImageView);
+                ((AppsAdapter) appGridViewIcon.getAdapter()).onImageSelected(null, selectedImageView);
             }
         } else if (requestCode == PICK_THEME_CODE) {
             if (resultCode == RESULT_OK) {
@@ -336,6 +352,8 @@ public class MainActivity extends Activity {
     }
 
     void updateTopBar() {
+        Log.v("LauncherStartup","3A. Update TopBar");
+
         BlurView blurView0 = findViewById(R.id.blurView0);
         BlurView blurView1 = findViewById(R.id.blurView1);
 
@@ -384,7 +402,7 @@ public class MainActivity extends Activity {
 
     }
 
-    List<ApplicationInfo> allApps;
+    List<ApplicationInfo> installedApps;
     List<ApplicationInfo> wideApps;
     List<ApplicationInfo> squareApps;
 
@@ -401,7 +419,10 @@ public class MainActivity extends Activity {
         new BackgroundTask().execute(this);
     }
     public void refreshInterface() {
-        Log.v("LightningLauncher","Reloading UI");
+        mainView.post(this::refreshInterfaceInternal);
+    }
+    private void refreshInterfaceInternal() {
+        Log.v("LauncherStartup","2A. Refreshing Interface");
 
         darkMode = sharedPreferences.getBoolean(SettingsManager.KEY_DARK_MODE, SettingsManager.DEFAULT_DARK_MODE);
         editMode = sharedPreferences.getBoolean(SettingsManager.KEY_EDIT_MODE, false);
@@ -421,34 +442,54 @@ public class MainActivity extends Activity {
             validGroups.remove(GroupsAdapter.HIDDEN_GROUP);
             settingsManager.setSelectedGroups(new HashSet<>(validGroups));
         }
-        if (!editMode) currentSelectedApps.clear();
-        updateSelectionHint();
+        if (!editMode) {
+            currentSelectedApps.clear();
+            updateSelectionHint();
+        }
+        findViewById(R.id.editFooter).setVisibility(editMode ? View.VISIBLE : View.GONE);
 
         // Set adapters
+        Log.v("LauncherStartup","2B. Post Next Step");
+
         mainView.post(this::setAdapters);
     }
     public void setAdapters() {
+        Log.v("LauncherStartup","3A. Get Adapter Preferences");
+
         // Get and apply margin
         int marginPx = dp(sharedPreferences.getInt(SettingsManager.KEY_MARGIN, SettingsManager.DEFAULT_MARGIN));
         boolean names = sharedPreferences.getBoolean(SettingsManager.KEY_SHOW_NAMES_ICON, SettingsManager.DEFAULT_SHOW_NAMES_ICON);
         boolean namesWide = sharedPreferences.getBoolean(SettingsManager.KEY_SHOW_NAMES_WIDE, SettingsManager.DEFAULT_SHOW_NAMES_WIDE);
 
-        appGridView.setMargin(marginPx, names);
+
+        appGridViewIcon.setMargin(marginPx, names);
         appGridViewWide.setMargin(marginPx, namesWide);
         final FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         lp.setMargins(marginPx, Math.max(0,marginPx+(groupsEnabled ? dp(-23) : 0)), marginPx, marginPx+dp(20));
         findViewById(R.id.mainScrollInterior).setLayoutParams(lp);
 
-        appGridView.setAdapter(new AppsAdapter(this, editMode, names, squareApps));
+        Log.v("LauncherStartup","2B. Set Adapter");
+        appGridViewIcon.setAdapter(new AppsAdapter(this, editMode, names, squareApps));
+
+        Log.v("LauncherStartup","2C. Set AdapterWide");
         appGridViewWide.setAdapter(new AppsAdapter(this, editMode, namesWide, wideApps));
+
+        Log.v("LauncherStartup","2D. Reset Scroll");
 
         scrollView.scrollTo(0,0); // Reset scroll
         scrollView.smoothScrollTo(0,0); // Cancel inertia
 
+        Log.v("LauncherStartup","2E. Set Groups Adapter");
+
         groupPanelGridView.setAdapter(new GroupsAdapter(this, editMode));
+
+        Log.v("LauncherStartup","2F. Update Heights");
 
         prevViewWidth = -1;
         updateGridViewHeights();
+
+        Log.v("LauncherStartup","2G. Post Next Step");
+
         mainView.post(this::updateTopBar);
 
     }
@@ -466,18 +507,18 @@ public class MainActivity extends Activity {
             final int group_columns = Math.min(groupPanelGridView.getAdapter().getCount(), prevViewWidth / 400);
             groupPanelGridView.setNumColumns(group_columns);
             final int groupRows = (int) Math.ceil((double) groupPanelGridView.getAdapter().getCount() / group_columns);
-            scrollInterior.setPadding(0, dp(23 + 22) + dp(40) * groupRows, 0, 0);
+            scrollInterior.setPadding(0, dp(23 + 22) + dp(40) * groupRows, 0, editMode?dp(50):0);
             scrollView.setFadingEdgeLength(dp(23 + 22) + dp(40) * groupRows);
         } else {
             int marginPx = dp(sharedPreferences.getInt(SettingsManager.KEY_MARGIN, SettingsManager.DEFAULT_MARGIN));
-            scrollInterior.setPadding(0, 0, 0, marginPx);
+            scrollInterior.setPadding(0, 0, 0, marginPx+(editMode?dp(50):0));
             FadingTopScrollView scrollView = findViewById(R.id.mainScrollView);
             scrollView.setFadingEdgeLength(0);
         }
 
         int targetSizePx = dp(sharedPreferences.getInt(SettingsManager.KEY_SCALE, SettingsManager.DEFAULT_SCALE));
         int estimatedWidth = prevViewWidth;
-        appGridView.setNumColumns((int) Math.round((double) estimatedWidth/targetSizePx));
+        appGridViewIcon.setNumColumns((int) Math.round((double) estimatedWidth/targetSizePx));
         appGridViewWide.setNumColumns((int) Math.round((double) estimatedWidth/targetSizePx/2));
     }
 
@@ -486,12 +527,6 @@ public class MainActivity extends Activity {
         else sharedPreferences.edit().putBoolean(SettingsManager.KEY_DARK_MODE, SettingsManager.BACKGROUND_DARK[index]).apply();
         sharedPreferences.edit().putInt(SettingsManager.KEY_BACKGROUND, index).apply();
         refreshBackground();
-    }
-
-    @Override
-    public void finish() {
-        Log.i("Finishing activity!", "---");
-        super.finish();
     }
     private boolean editMode = false;
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -515,17 +550,13 @@ public class MainActivity extends Activity {
         Switch editSwitch = dialog.findViewById(R.id.edit_mode);
         editSwitch.setChecked(editMode);
         editSwitch.setOnClickListener(view1 -> {
-            editMode = !editMode;
+            setEditMode(!editMode);
             ArrayList<String> selectedGroups = settingsManager.getAppGroupsSorted(true);
             if (editMode && (selectedGroups.size() > 1)) {
                 Set<String> selectFirst = new HashSet<>();
                 selectFirst.add(selectedGroups.get(0));
                 settingsManager.setSelectedGroups(selectFirst);
             }
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean(SettingsManager.KEY_EDIT_MODE, editMode);
-            editor.apply();
-            refreshInterface();
         });
 
 
@@ -576,7 +607,7 @@ public class MainActivity extends Activity {
             image.setClipToOutline(true);
         }
         final int wallpaperWidth = 32;
-        final int selectedWallpaperWidthPx = dp(360+20-(wallpaperWidth+4)*(views.length-1)-wallpaperWidth);
+        final int selectedWallpaperWidthPx = dp(455+20-(wallpaperWidth+4)*(views.length-1)-wallpaperWidth);
         views[background].getLayoutParams().width = selectedWallpaperWidthPx;
         views[background].requestLayout();
         for (int i = 0; i < views.length; i++) {
@@ -681,7 +712,15 @@ public class MainActivity extends Activity {
             updateAppLists();
             refreshInterface();
         });
-
+        @SuppressLint("UseSwitchCompatOrMaterialCode")
+        Switch wideWEB = dialog.findViewById(R.id.switch_wide_web);
+        wideWEB.setChecked(sharedPreferences.getBoolean(SettingsManager.KEY_WIDE_WEB, SettingsManager.DEFAULT_WIDE_WEB));
+        wideWEB.setOnCheckedChangeListener((compoundButton, value) -> {
+            AbstractPlatform.clearIconCache();
+            sharedPreferences.edit().putBoolean(SettingsManager.KEY_WIDE_WEB, value).apply();
+            updateAppLists();
+            refreshInterface();
+        });
 
         // Names
         @SuppressLint("UseSwitchCompatOrMaterialCode")
@@ -704,27 +743,33 @@ public class MainActivity extends Activity {
         });
     }
 
-    public void openApp(ApplicationInfo app) {
-        //open the app
-        AbstractPlatform platform = AbstractPlatform.getPlatform(app);
-        platform.runApp(this, app);
-    }
-
-    public void openAppDetails(String pkg) {
+    public void openAppDetails(ApplicationInfo app) {
         Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-        intent.setData(Uri.parse("package:" + pkg));
+        intent.setData(Uri.parse("package:" + app.packageName));
         startActivity(intent);
     }
-    public void uninstallApp(String pkg) {
-        Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
-        intent.setData(Uri.parse("package:" + pkg));
-        startActivity(intent);
+    public void uninstallApp(ApplicationInfo app) {
+        if (AbstractPlatform.isWebsite(app)) {
+            Set<String> webApps = sharedPreferences.getStringSet(SettingsManager.KEY_WEBSITE_LIST, Collections.emptySet());
+            webApps = new HashSet<>(webApps); // Copy since we're not supposed to modify directly
+            webApps.remove(app.packageName);
+            sharedPreferences.edit()
+                    .putString(app.packageName, null) // set display name
+                    .putStringSet(SettingsManager.KEY_WEBSITE_LIST, webApps)
+                    .apply();
+            updateAppLists();
+            refreshInterface();
+        } else {
+            Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
+            intent.setData(Uri.parse("package:" + app.packageName));
+            startActivity(intent);
+            onPause();
+        }
     }
 
     // Edit Mode
     Set<String> currentSelectedApps = new HashSet<>();
     public boolean selectApp(String app) {
-
         if (currentSelectedApps.contains(app)) {
             currentSelectedApps.remove(app);
             updateSelectionHint();
@@ -738,19 +783,53 @@ public class MainActivity extends Activity {
     }
 
     void updateSelectionHint() {
-        TextView selectionHint = findViewById(R.id.SelectionHint);
+        TextView selectionHint = findViewById(R.id.selectionHint);
 
         final int size = currentSelectedApps.size();
-        if (size == 1) selectionHint.setText(R.string.selection_hint);
+        if (size == 0)      selectionHint.setText(R.string.selection_hint_none);
+        else if (size == 1) selectionHint.setText(R.string.selection_hint_single);
         else selectionHint.setText(getString(R.string.selection_hint_multiple, size));
-        selectionHint.setVisibility(currentSelectedApps.isEmpty() ? View.INVISIBLE : View.VISIBLE);
     }
-    void updateAppLists() {
+
+    void addWebsite() {
+        AlertDialog dialog = DialogHelper.build(this, R.layout.dialog_new_website);
+        dialog.findViewById(R.id.cancel).setOnClickListener(view -> dialog.cancel());
+        dialog.findViewById(R.id.confirm).setOnClickListener(view -> {
+            String url  = ((EditText) dialog.findViewById(R.id.app_url )).getText().toString().toLowerCase();
+            if (!Patterns.WEB_URL.matcher(url).matches() || !url.contains(".")) {
+                dialog.findViewById(R.id.bad_url).setVisibility(View.VISIBLE);
+                return;
+            }
+            if (!url.contains("//")) url = "https://" + url;
+            String name = url.split("//")[1].split("\\.")[0];
+            name = SettingsManager.toTitleCase(name);
+
+            Set<String> webApps = sharedPreferences.getStringSet(SettingsManager.KEY_WEBSITE_LIST, Collections.emptySet());
+            webApps = new HashSet<>(webApps); // Copy since we're not supposed to modify directly
+            webApps.add(url);
+
+            sharedPreferences.edit()
+                    .putString(url, name) // set display name
+                    .putStringSet(SettingsManager.KEY_WEBSITE_LIST, webApps)
+                    .apply();
+            dialog.cancel();
+            updateAppLists();
+            refreshInterface();
+        });
+    }
+    public void updateAppLists() {
         wideApps = new ArrayList<>();
         squareApps = new ArrayList<>();
-        for (ApplicationInfo app: allApps) {
+        for (ApplicationInfo app: installedApps) {
             if (AbstractPlatform.isWideApp(app, this)) wideApps.add(app);
             else squareApps.add(app);
+        }
+        Set<String> webApps = sharedPreferences.getStringSet(SettingsManager.KEY_WEBSITE_LIST, Collections.emptySet());
+        for (String url:webApps) {
+            ApplicationInfo applicationInfo = new ApplicationInfo();
+            applicationInfo.packageName = url;
+            (sharedPreferences.getBoolean(SettingsManager.KEY_WIDE_WEB, SettingsManager.DEFAULT_WIDE_WEB) ? wideApps : squareApps)
+                    .add(applicationInfo);
         }
     }
     public int dp(float dip) {

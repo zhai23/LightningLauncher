@@ -1,6 +1,5 @@
 package com.threethan.launcher.platforms;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
@@ -17,15 +16,15 @@ import androidx.core.content.res.ResourcesCompat;
 
 import com.threethan.launcher.MainActivity;
 import com.threethan.launcher.R;
-import com.threethan.launcher.SettingsManager;
+import com.threethan.launcher.helpers.SettingsManager;
 
 import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Objects;
@@ -36,13 +35,19 @@ public abstract class AbstractPlatform {
     protected static final HashMap<String, Drawable> cachedIcons = new HashMap<>();
     protected static final HashSet<String> excludedIconPackages = new HashSet<>();
     private static final String[] ICON_URLS = {
-            "https://raw.githubusercontent.com/basti564/LauncherIcons/main/oculus_square/",
-            "https://raw.githubusercontent.com/basti564/LauncherIcons/main/pico_square/",
-            "https://raw.githubusercontent.com/basti564/LauncherIcons/main/viveport_square/"};
+            "https://raw.githubusercontent.com/basti564/LauncherIcons/main/oculus_square/%s.jpg",
+            "https://raw.githubusercontent.com/basti564/LauncherIcons/main/pico_square/%s.jpg",
+            "https://raw.githubusercontent.com/basti564/LauncherIcons/main/viveport_square/%s.jpg"
+    };
     private static final String[] ICON_URLS_WIDE = {
-            "https://raw.githubusercontent.com/basti564/LauncherIcons/main/oculus_landscape/",
-            "https://raw.githubusercontent.com/basti564/LauncherIcons/main/pico_landscape/",
-            "https://raw.githubusercontent.com/basti564/LauncherIcons/main/viveport_landscape/"};
+            "https://raw.githubusercontent.com/basti564/LauncherIcons/main/oculus_landscape/%s.jpg",
+            "https://raw.githubusercontent.com/basti564/LauncherIcons/main/pico_landscape/%s.jpg",
+            "https://raw.githubusercontent.com/basti564/LauncherIcons/main/viveport_landscape/%s.jpg"
+    };
+    private static final String[] ICON_URLS_WEB = {
+            "https://logo.clearbit.com/google.com/%s",
+            "%s/favicon.ico",
+    };
     public static void clearIconCache() {
         excludedIconPackages.clear();
         cachedIcons.clear();
@@ -53,15 +58,15 @@ public abstract class AbstractPlatform {
             if (imageFile.length() > 0) {
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inJustDecodeBounds = true;
-                BitmapFactory.decodeFile(imageFile.getAbsolutePath(), options);
+                if (BitmapFactory.decodeFile(imageFile.getAbsolutePath(), options) == null) {
+                    Log.i("AbstractPlatform", "Failed to get bitmap from "+imageFile.getAbsolutePath());
+                }
                 success = (options.outWidth > 0 && options.outHeight > 0);
             }
-        } catch (Exception e) {
-            // Do nothing
-        }
+        } catch (Exception ignored) {}
 
         if (!success) {
-            Log.e("imgComplete", "Failed to validate image file: " + imageFile);
+            Log.e("AbstractPlatform", "Failed to validate image file: " + imageFile);
         }
 
         return success;
@@ -72,6 +77,7 @@ public abstract class AbstractPlatform {
     }
 
     public static File packageToPath(Context context, String packageName, boolean ignoredIsWide) {
+        packageName = packageName.replace("//","");
         return new File(context.getApplicationInfo().dataDir, packageName + ".webp");
     }
 
@@ -87,9 +93,7 @@ public abstract class AbstractPlatform {
                 }
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception ignored) {}
     }
 
     protected static boolean saveStream(InputStream inputStream, File outputFile) {
@@ -106,10 +110,14 @@ public abstract class AbstractPlatform {
             fileOutputStream.close();
 
             if (!isImageFileComplete(outputFile)) {
+                Log.i("AbstractPlatform", "Image file not complete" + outputFile.getAbsolutePath());
                 return false;
             }
 
             Bitmap bitmap = BitmapFactory.decodeFile(outputFile.getAbsolutePath());
+            if (bitmap == null) {
+                Log.i("AbstractPlatform", "Failed to get bitmap from "+outputFile.getAbsolutePath());
+            }
             if (bitmap != null) {
                 int width = bitmap.getWidth();
                 int height = bitmap.getHeight();
@@ -131,6 +139,7 @@ public abstract class AbstractPlatform {
 
             return true;
         } catch (Exception e) {
+            Log.i("AbstractPlatform", "Exception while converting file " + outputFile.getAbsolutePath());
             e.printStackTrace();
             return false;
         }
@@ -175,6 +184,10 @@ public abstract class AbstractPlatform {
         if (setSupported.isEmpty()) {
             sharedPreferences.getStringSet(SettingsManager.KEY_SUPPORTED_SET, setSupported);
             sharedPreferences.getStringSet(SettingsManager.KEY_UNSUPPORTED_SET, setUnsupported);
+            setUnsupported.add(mainActivity.getPackageName());
+            for (String url:sharedPreferences.getStringSet(SettingsManager.KEY_WEBSITE_LIST, Collections.emptySet())) {
+                setSupported.add(url);
+            }
         }
 
         if (setSupported.contains(appInfo.packageName)) return true;
@@ -189,7 +202,6 @@ public abstract class AbstractPlatform {
             sharedPreferences.edit().putStringSet(SettingsManager.KEY_UNSUPPORTED_SET, setUnsupported).apply();
             return false;
         }
-
     }
     private static String[] unsupportedPrefixes;
     private static boolean checkSupportedApp(ApplicationInfo applicationInfo, MainActivity mainActivity) {
@@ -199,39 +211,43 @@ public abstract class AbstractPlatform {
             boolean isVr = isVirtualRealityApp(applicationInfo, mainActivity);
             if (!isVr && applicationInfo.metaData.keySet().contains("com.oculus.environmentVersion")) return false;
         }
-        if (mainActivity.getPackageManager().getLaunchIntentForPackage(applicationInfo.packageName) == null) return false;
+        if (mainActivity.getPackageManager().getLaunchIntentForPackage(applicationInfo.packageName) == null)
+            return isWebsite(applicationInfo);
 
-        for (String prefix : unsupportedPrefixes) {
-            if (applicationInfo.packageName.startsWith(prefix)) {
+        for (String prefix : unsupportedPrefixes)
+            if (applicationInfo.packageName.startsWith(prefix))
                 return false;
-            }
-        }
         return true;
     }
 
     public static boolean isWideApp(ApplicationInfo applicationInfo, MainActivity mainActivity) {
         final boolean isVr = isVirtualRealityApp(applicationInfo, mainActivity);
         final SharedPreferences sharedPreferences = mainActivity.sharedPreferences;
-        if (isVr) return sharedPreferences.getBoolean(SettingsManager.KEY_WIDE_VR, SettingsManager.DEFAULT_WIDE_VR);
-        else      return sharedPreferences.getBoolean(SettingsManager.KEY_WIDE_2D, SettingsManager.DEFAULT_WIDE_2D);
+        if (isVr)  return sharedPreferences.getBoolean(SettingsManager.KEY_WIDE_VR , SettingsManager.DEFAULT_WIDE_VR );
+        final boolean isWeb = isWebsite(applicationInfo);
+        if (isWeb) return sharedPreferences.getBoolean(SettingsManager.KEY_WIDE_WEB, SettingsManager.DEFAULT_WIDE_WEB);
+        else       return sharedPreferences.getBoolean(SettingsManager.KEY_WIDE_2D , SettingsManager.DEFAULT_WIDE_2D );
+    }
+    public static boolean isWebsite(ApplicationInfo applicationInfo) {
+        return (applicationInfo.packageName.contains("//"));
     }
 
-    public Drawable loadIcon(MainActivity activity, ApplicationInfo appInfo, ImageView[] imageViews) throws PackageManager.NameNotFoundException {
+    public Drawable loadIcon(MainActivity activity, ApplicationInfo appInfo, ImageView[] imageViews) {
         PackageManager packageManager = activity.getPackageManager();
-        Resources resources;
 
-        resources = packageManager.getResourcesForApplication(appInfo.packageName);
+        Drawable appIcon = null;
+        try {
+            Resources resources = packageManager.getResourcesForApplication(appInfo.packageName);
+            int iconId = appInfo.icon;
+            if (iconId == 0) iconId = android.R.drawable.sym_def_app_icon;
+            appIcon = ResourcesCompat.getDrawableForDensity(resources, iconId, DisplayMetrics.DENSITY_XXXHIGH, null);
+        } catch (Exception ignored) {} // Fails on web apps
 
         if (cachedIcons.containsKey(appInfo.packageName)) {
             return cachedIcons.get(appInfo.packageName);
         }
 
-        int iconId = appInfo.icon;
-        if (iconId == 0) {
-            iconId = android.R.drawable.sym_def_app_icon;
-        }
 
-        Drawable appIcon = ResourcesCompat.getDrawableForDensity(resources, iconId, DisplayMetrics.DENSITY_XXXHIGH, null);
 
         final boolean isWide = isWideApp(appInfo, activity);
         final File iconFile = packageToPath(activity, appInfo.packageName, isWide);
@@ -244,7 +260,7 @@ public abstract class AbstractPlatform {
         if (cachedIcons.containsKey(appInfo.packageName)) {
             return cachedIcons.get(appInfo.packageName);
         }
-        if (isVirtualRealityApp(appInfo, activity)) {downloadIcon(activity, appInfo, () -> updateIcon(iconFile, appInfo.packageName, imageViews));}
+        if (isVirtualRealityApp(appInfo, activity) || isWebsite(appInfo)) {downloadIcon(activity, appInfo, () -> updateIcon(iconFile, appInfo.packageName, imageViews));}
         return appIcon;
     }
 
@@ -252,12 +268,7 @@ public abstract class AbstractPlatform {
         final boolean isWide = isWideApp(appInfo, activity);
         final File iconFile = packageToPath(activity, appInfo.packageName, isWide);
         iconFile.delete();
-//        cachedIcons.remove(appInfo.packageName);
-        try {
-            imageViews[0].setImageDrawable(loadIcon(activity, appInfo, imageViews));
-        } catch (PackageManager.NameNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        imageViews[0].setImageDrawable(loadIcon(activity, appInfo, imageViews));
         downloadIcon(activity, appInfo, () -> updateIcon(iconFile, appInfo.packageName, imageViews));
     }
 
@@ -278,15 +289,18 @@ public abstract class AbstractPlatform {
             }
             synchronized (Objects.requireNonNull(lock)) {
                 try {
-                    for (String url: isWide ? ICON_URLS_WIDE : ICON_URLS) {
-                        if (downloadIconFromUrl(url + pkgName + ".jpg", iconFile)) {
+                    for (String url: isWebsite(appInfo) ? ICON_URLS_WEB : (isWide ? ICON_URLS_WIDE : ICON_URLS)) {
+                        Log.v("AbstractPlatform", "Checking URL "+String.format(url, pkgName));
+
+                        if (downloadIconFromUrl(String.format(url, pkgName), iconFile)) {
                             activity.runOnUiThread(callback);
                             return;
                         }
                     }
+                    Log.v("AbstractPlatform", "Failed to find icon at any URL for " + pkgName);
                     // If we get here, it failed to fetch. That's fine though.
-                } catch (Exception e) {
-                    e.printStackTrace();
+//                } catch (Exception e) {
+//                    e.printStackTrace();
                 } finally {
                     locks.remove(pkgName);
                 }
@@ -294,17 +308,11 @@ public abstract class AbstractPlatform {
         }).start();
     }
 
-    public abstract void runApp(Activity context, ApplicationInfo applicationInfo);
+    public abstract boolean runApp(MainActivity mainActivity, ApplicationInfo applicationInfo);
 
     boolean downloadIconFromUrl(String url, File iconFile) {
-        try {
-            try (InputStream inputStream = new URL(url).openStream()) {
-                if (saveStream(inputStream, iconFile)) {
-                    return true;
-                }
-            }
-        } catch (FileNotFoundException e) {
-            System.err.println("File not found: " + e.getMessage());
+        try (InputStream inputStream = new URL(url).openStream()) {
+            if (saveStream(inputStream, iconFile)) return true;
         } catch (IOException e) {
             e.printStackTrace();
         }

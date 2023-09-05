@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="app_name">Lightning Launcher</string>
-<!--    <string name="default_apps_group">Games</string>-->
-<!--    <string name="android_apps_group">Apps</string>-->
     <string name="add_group">Add Group</string>
     <string name="delete_group">Delete Group</string>
     <string name="edit_group">Edit Group</string>
     <string name="app_details">App Details</string>
     <string name="apps_hidden">- Hidden</string>
 
-    <string name="edit_mode">Edit Mode</string>
+    <string name="edit_mode">Enable Edit Mode</string>
+    <string name="edit_mode_stop">Stop Editing</string>
 
-    <string name="icons_size">Icon Target Size</string>
+    <string name="icons_size">Icon Size</string>
     <string name="icons_margin">Icon Margin</string>
 
     <string name="apps_vr">VR Apps</string>
     <string name="apps_2d">2D Apps</string>
-    <string name="default_2d">Default for New 2D Apps</string>
-    <string name="default_vr">Default for New VR Apps</string>
-    <string name="app_name_icon">On Icons</string>
-    <string name="app_name_wide">On Banners</string>
+    <string name="apps_web">Websites</string>
+    <string name="default_group">Use this as the default group for newly added</string>
+    <string name="app_name_icon">Below Icons</string>
+    <string name="app_name_wide">Below Banners</string>
 
     <string name="settings_main">Launcher Settings</string>
     <string name="settings_appearance">Customize Appearance</string>
@@ -29,7 +28,7 @@
     <string name="background_header">Wallpaper &amp; Style</string>
     <string name="icon_header">Icons &amp; Layout</string>
     <string name="wide_header">Display as Banner</string>
-    <string name="name_header">Show App Names</string>
+    <string name="name_header">Show Names</string>
 
     <string name="dark_mode">Dark Top Bar &amp; Light Text</string>
     <string name="group_mode">Always Show Groups &amp; Top Bar</string>
@@ -48,6 +47,10 @@
     <string name="hidden_groups_message">Hiding groups will cause all non-hidden apps to be shown together when not in edit mode.\n
     \nThe settings icon will also be hidden. You will only be able to open settings with the back button on the top of the window, or B on your controller.
     </string>
+
+    <string name="add_website">Add Website</string>
+    <string name="add_website_url_label">Website URL</string>
+    <string name="add_website_bad_url">Enter a valid URL and try again</string>
 
     <string name="service_title">Launcher Shortcuts</string>
     <string name="service_subtitle">Easily Access Lightning Launcher</string>
@@ -70,9 +73,13 @@
     <string name="edit_off">Turn On Edit Mode</string>
     <string name="edit_on">Turn Off Edit Mode</string>
 
-    <string name="selection_hint">Click a group to move the selected app</string>
-    <string name="selection_hint_multiple">%d apps selected, click a group to move them</string>
+    <string name="selection_hint_none">Short press an app to select it</string>
+    <string name="selection_hint_single">1 app selected, short press a group to move it</string>
+    <string name="selection_hint_multiple">%d apps selected, short press a group to move them</string>
+    <string name="selection_moved_single">Moved an app to %s</string>
+    <string name="selection_moved_multiple">Moved %d apps to %s</string>
 
+    <!--  Updater  -->
     <string name="update_title">An update is available!</string>
     <string name="update_content">Update from version %1$s to %2$s, without taking off your headset!</string>
     <string name="update_button">Continue</string>

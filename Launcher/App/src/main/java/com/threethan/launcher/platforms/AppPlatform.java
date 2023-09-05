@@ -1,23 +1,24 @@
 package com.threethan.launcher.platforms;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
+import android.net.Uri;
+import android.util.Log;
 
 import com.threethan.launcher.MainActivity;
-import com.threethan.launcher.SettingsManager;
+import com.threethan.launcher.helpers.SettingsManager;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class AppPlatform extends AbstractPlatform {
     @Override
-    public void runApp(Activity context, ApplicationInfo appInfo) {
-        Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(appInfo.packageName);
+    public boolean runApp(MainActivity mainActivity, ApplicationInfo appInfo) {
+        Intent launchIntent = mainActivity.getPackageManager().getLaunchIntentForPackage(appInfo.packageName);
 
-        if (SettingsManager.getAppLaunchOut(appInfo.packageName) || AbstractPlatform.isVirtualRealityApp(appInfo, (MainActivity) context)) {
-            context.finish();
-            context.overridePendingTransition(0, 0); // Cancel closing animation. Doesn't work on quest, but doesn't hurt
+        if (SettingsManager.getAppLaunchOut(appInfo.packageName) || AbstractPlatform.isVirtualRealityApp(appInfo, (MainActivity) mainActivity)) {
+            mainActivity.finish();
+            mainActivity.overridePendingTransition(0, 0); // Cancel closing animation. Doesn't work on quest, but doesn't hurt
             assert launchIntent != null;
             launchIntent.setFlags(
                 Intent.FLAG_ACTIVITY_NEW_TASK |
@@ -35,14 +36,28 @@ public class AppPlatform extends AbstractPlatform {
                         Intent browserIntent = new Intent(Intent.ACTION_MAIN);
                         browserIntent.setPackage(launchIntent.getPackage());
                         browserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        context.startActivity(browserIntent);
+                        mainActivity.startActivity(browserIntent);
                     } catch (Exception e) {
-                        context.startActivity(launchIntent);
+                        mainActivity.startActivity(launchIntent);
                     }
                 }
             }, 650);
+            return false;
         } else {
-            if (launchIntent != null) context.startActivity(launchIntent);
+            if (isWebsite(appInfo)) {
+                String url = appInfo.packageName;
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                mainActivity.startActivity(i);
+                return true;
+            } else if (launchIntent != null ){
+                mainActivity.startActivity(launchIntent);
+                return true;
+            } else {
+                Log.w("AppPlatform", "Package could not be launched, may have been uninstalled " +appInfo.packageName);
+                mainActivity.recheckPackages();
+                return false;
+            }
         }
     }
 }

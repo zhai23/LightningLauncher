@@ -107,24 +107,67 @@
             android:src="@drawable/ic_config" />
     </eightbitlab.com.blurview.BlurView>
 
-    <TextView
-        android:id="@+id/SelectionHint"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/editFooter"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginBottom="5dp"
-        android:background="@drawable/bkg_dialog"
-        android:gravity="center"
-        android:padding="10dp"
-        android:textColor="@color/ef_colorTextPrimary"
-        android:textSize="16sp"
-        android:visibility="invisible"
-        tools:text="@string/selection_hint"
-        tools:visibility="visible" />
+        android:layout_gravity="bottom"
+        android:orientation="horizontal"
+        android:paddingBottom="10dp">
 
+        <TextView
+            android:id="@+id/selectionHint"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/bkg_dialog"
+            android:gravity="center"
+            android:paddingStart="15dp"
+            android:paddingTop="10dp"
+            android:paddingEnd="15dp"
+            android:paddingBottom="10dp"
+            android:singleLine="true"
+            android:text="@string/selection_hint_none"
+            android:textColor="@color/ef_colorTextPrimary"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/addWebsite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal|end"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/bkg_dialog"
+            android:gravity="center"
+            android:paddingStart="15dp"
+            android:paddingTop="10dp"
+            android:paddingEnd="15dp"
+            android:paddingBottom="10dp"
+            android:text="@string/add_website"
+            android:textColor="@color/ef_colorTextPrimary"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/stopEditing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal|end"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/bkg_dialog"
+            android:gravity="center"
+            android:paddingStart="15dp"
+            android:paddingTop="10dp"
+            android:paddingEnd="15dp"
+            android:paddingBottom="10dp"
+            android:text="@string/edit_mode_stop"
+            android:textColor="@color/ef_colorTextPrimary"
+            android:textSize="16sp" />
+    </LinearLayout>
     <FrameLayout
         android:id="@+id/openAnim"
         android:layout_width="match_parent"

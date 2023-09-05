@@ -1,4 +1,4 @@
-package com.threethan.launcher;
+package com.threethan.launcher.helpers;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -19,6 +19,8 @@ import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.threethan.launcher.MainActivity;
+import com.threethan.launcher.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;

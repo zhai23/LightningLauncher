@@ -1,9 +1,12 @@
-package com.threethan.launcher;
+package com.threethan.launcher.helpers;
 
 import android.accessibilityservice.AccessibilityService;
 import android.content.Intent;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
+
+import com.threethan.launcher.MainActivity;
+import com.threethan.launcher.R;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -23,6 +26,7 @@ public class LauncherAccessibilityService extends AccessibilityService
                 Intent launchIntent = new Intent(this, MainActivity.class);
 
                 launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+
 
                 Log.i("LightningLauncherService", "Opening launcher activity from accessibility event");
                 startActivity(launchIntent);

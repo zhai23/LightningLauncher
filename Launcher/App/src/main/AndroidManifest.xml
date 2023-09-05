@@ -21,6 +21,8 @@
         android:usesCleartextTraffic="true"
         android:allowBackup="true">
 
+        <meta-data android:name="com.oculus.supportedDevices" android:value="all"/>
+
         <activity
             android:name=".MainActivity"
             android:screenOrientation="unspecified"
@@ -46,12 +48,13 @@
                 <category android:name="android.intent.category.HOME"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
                 <category android:name="android.intent.category.DEFAULT"/>
+
                 <action android:name="com.threethan.launcher.FINISH" />
             </intent-filter>
         </activity>
 
         <service
-            android:name=".LauncherAccessibilityService"
+            android:name=".helpers.LauncherAccessibilityService"
             android:label="@string/app_name"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
             android:exported="true">
