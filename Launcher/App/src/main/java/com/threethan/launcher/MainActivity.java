@@ -198,7 +198,9 @@ public class MainActivity extends Activity {
                 selectedGroups.add(item);
             }
             if (selectedGroups.isEmpty()) {
-                selectedGroups.add(groups.get(0));
+                view.findViewById(R.id.menu).callOnClick();
+                selectedGroups.add(item);
+                return true;
             }
             settingsManager.setSelectedGroups(selectedGroups);
             refreshInterface();
@@ -210,7 +212,6 @@ public class MainActivity extends Activity {
         settingsImageView.setOnClickListener(view -> {
             if (!settingsPageOpen) {
                 showSettings();
-//                settingsImageView.setBackgroundResource(R.drawable.tab);
                 settingsPageOpen = true;
             }
         });
@@ -218,8 +219,6 @@ public class MainActivity extends Activity {
         // Register the broadcast receiver
         IntentFilter filter = new IntentFilter(FINISH_ACTION);
         registerReceiver(finishReceiver, filter);
-        IntentFilter filter2 = new IntentFilter(DONT_FINISH_ACTION);
-        registerReceiver(dontFinishReceiver, filter2);
 
         Log.v("LauncherStartup", "4. Done");
     }
@@ -228,7 +227,6 @@ public class MainActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(finishReceiver);
-        unregisterReceiver(dontFinishReceiver);
     }
 
     private boolean resetOpenAnim() {
@@ -256,30 +254,16 @@ public class MainActivity extends Activity {
             }
         }
     }
-    
     public static final String FINISH_ACTION = "com.threethan.launcher.FINISH";
-    public static final String DONT_FINISH_ACTION = "com.threethan.launcher.DONT_FINISH";
-
     // Stuff to finish the activity when it's in the background;
     // More straightforward methods don't work on Quest.
-    private boolean canFinishOnStop;
-    private boolean canFinishOnIntent;
     private final BroadcastReceiver finishReceiver = new BroadcastReceiver() {
-        @Override public void onReceive(Context context, Intent intent) { canFinishOnStop = true; if (canFinishOnIntent) finish();}
+        @Override public void onReceive(Context context, Intent intent) { finish();}
     };
-    private final BroadcastReceiver dontFinishReceiver = new BroadcastReceiver() {
-        @Override public void onReceive(Context context, Intent intent) {canFinishOnStop = false;}
-    };
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (canFinishOnStop) finish();
-        else canFinishOnIntent = true;
-    }
+
     @Override
     @SuppressWarnings("unchecked")
     protected void onResume() {
-        canFinishOnIntent = false;
         resetOpenAnim();
 
         super.onResume();

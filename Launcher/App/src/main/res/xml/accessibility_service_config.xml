@@ -2,7 +2,7 @@
 <accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
     android:description="@string/service_desc"
     android:settingsActivity=""
-    android:packageNames="com.oculus.systemux, com.threethan.launcher"
-    android:accessibilityEventTypes="typeWindowStateChanged|typeViewHoverExit"
+    android:packageNames="com.oculus.systemux"
+    android:accessibilityEventTypes="typeWindowStateChanged"
     android:accessibilityFlags="flagDefault"
-    android:notificationTimeout="1000" />
+    android:notificationTimeout="500" />

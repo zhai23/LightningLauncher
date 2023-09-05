@@ -77,8 +77,8 @@
     <string name="update_content">Update from version %1$s to %2$s, without taking off your headset!</string>
     <string name="update_button">Continue</string>
 
-    <string name="update_failed_title">Not working?</string>
-    <string name="update_failed_content">Restart the app to try again. If you got a Problem Staging message, it might take a couple tries.</string>
-    <string name="update_failed_button">Dismiss</string>
+    <string name="update_downloading_title">Downloading Update</string>
+    <string name="update_downloading_content">You should get a prompt to install in a few seconds</string>
+    <string name="update_dismiss_button">Hide</string>
 
 </resources>
