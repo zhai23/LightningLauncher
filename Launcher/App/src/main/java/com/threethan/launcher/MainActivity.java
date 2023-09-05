@@ -439,16 +439,17 @@ public class MainActivity extends Activity {
             validGroups.remove(GroupsAdapter.HIDDEN_GROUP);
             settingsManager.setSelectedGroups(new HashSet<>(validGroups));
         }
-        if (!editMode) {
-            currentSelectedApps.clear();
-            updateSelectionHint();
-        }
+
         findViewById(R.id.editFooter).setVisibility(editMode ? View.VISIBLE : View.GONE);
 
         // Set adapters
         Log.v("LauncherStartup","2B. Post Next Step");
 
         mainView.post(this::setAdapters);
+        if (!editMode) {
+            currentSelectedApps.clear();
+            updateSelectionHint();
+        }
     }
     public void setAdapters() {
         Log.v("LauncherStartup","3A. Get Adapter Preferences");
