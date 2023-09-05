@@ -18,7 +18,7 @@ import java.util.Set;
 public class CompatibilityHelper {
     public static final String KEY_COMPATIBILITY_VERSION = "KEY_COMPATIBILITY_VERSION";
     public static final int CURRENT_COMPATIBILITY_VERSION = 2;
-    public static final boolean DEBUG_COMPATIBLITY = true;
+    public static final boolean DEBUG_COMPATIBLITY = false;
     public static synchronized void checkCompatibilityUpdate(MainActivity mainActivity) {
         Log.w("COMPATIBILITY", "DEBUG_COMPATIBILITY IS ON");
         SharedPreferences sharedPreferences = mainActivity.sharedPreferences;
@@ -74,7 +74,6 @@ public class CompatibilityHelper {
                     List<ApplicationInfo> apps = mainActivity.getPackageManager().getInstalledApplications(PackageManager.GET_META_DATA);
                     for (ApplicationInfo app: apps) {
                         if(!AbstractPlatform.isSupportedApp(app, mainActivity)) appGroupMap.put(app.packageName, GroupsAdapter.UNSUPPORTED_GROUP);
-                        Log.i("unsupport", app.packageName);
                     }
                     SettingsManager.setAppGroupMap(appGroupMap);
                 }
