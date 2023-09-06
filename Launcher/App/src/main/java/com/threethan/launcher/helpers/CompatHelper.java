@@ -22,6 +22,7 @@ public class CompatHelper {
     public static synchronized void checkCompatibilityUpdate(MainActivity mainActivity) {
         Log.w("COMPATIBILITY", "DEBUG_COMPATIBILITY IS ON");
         SharedPreferences sharedPreferences = mainActivity.sharedPreferences;
+        SharedPreferences.Editor sharedPreferenceEditor = mainActivity.sharedPreferenceEditor;
         int storedVersion = DEBUG_COMPATIBILITY ? 0 : sharedPreferences.getInt(CompatHelper.KEY_COMPATIBILITY_VERSION, -1);
         if (storedVersion == -1) {
             if (sharedPreferences.getInt(SettingsManager.KEY_BACKGROUND, -1) == -1) return; // return if fresh install
@@ -38,16 +39,16 @@ public class CompatHelper {
                 if (SettingsManager.VERSIONS_WITH_BACKGROUND_CHANGES.contains(version)) {
                     int backgroundIndex = sharedPreferences.getInt(SettingsManager.KEY_BACKGROUND, SettingsManager.DEFAULT_BACKGROUND);
                     if (backgroundIndex >= 0 && backgroundIndex < SettingsManager.BACKGROUND_DARK.length) {
-                        sharedPreferences.edit().putBoolean(SettingsManager.KEY_DARK_MODE, SettingsManager.BACKGROUND_DARK[backgroundIndex]).apply();
+                        sharedPreferenceEditor.putBoolean(SettingsManager.KEY_DARK_MODE, SettingsManager.BACKGROUND_DARK[backgroundIndex]);
                     } else if (storedVersion == 0) {
-                        sharedPreferences.edit().putBoolean(SettingsManager.KEY_DARK_MODE, SettingsManager.DEFAULT_DARK_MODE).apply();
+                        sharedPreferenceEditor.putBoolean(SettingsManager.KEY_DARK_MODE, SettingsManager.DEFAULT_DARK_MODE);
                     }
                     // updates may reference the specific version in the future
                 }
                 if (version == 0) {
                     SettingsManager settingsManager = mainActivity.settingsManager;
                     if (sharedPreferences.getInt(SettingsManager.KEY_BACKGROUND, SettingsManager.DEFAULT_BACKGROUND) == 6) {
-                        sharedPreferences.edit().putInt(SettingsManager.KEY_BACKGROUND, -1).apply();
+                        sharedPreferenceEditor.putInt(SettingsManager.KEY_BACKGROUND, -1);
                     }
                     final Map<String, String> apps = SettingsManager.getAppGroupMap();
                     final Set<String> appGroupsList = settingsManager.getAppGroups();
@@ -84,10 +85,10 @@ public class CompatHelper {
 
         CompatHelper.clearIconCache(mainActivity);
         // Store the updated version
-        sharedPreferences.edit()
+        sharedPreferenceEditor
                 .putInt(CompatHelper.KEY_COMPATIBILITY_VERSION, CompatHelper.CURRENT_COMPATIBILITY_VERSION)
                 .putBoolean(SettingsManager.NEEDS_META_DATA, true)
-                .apply();
+                ;
     }
 
     public static void recheckSupported(MainActivity mainActivity) {
@@ -109,34 +110,33 @@ public class CompatHelper {
         AbstractPlatform.excludedIconPackages.clear();
         AbstractPlatform.cachedIcons.clear();
         AbstractPlatform.dontDownloadIconPackages.clear();
-        mainActivity.sharedPreferences.edit()
+        mainActivity.sharedPreferenceEditor
                 .remove(SettingsManager.NEEDS_META_DATA)
                 .remove(SettingsManager.DONT_DOWNLOAD_ICONS)
-                .apply();
+                ;
         storeAndReload(mainActivity);
     }
 
     public static void clearLabels(MainActivity mainActivity) {
         SettingsManager.appLabelCache.clear();
         HashSet<String> setAll = AbstractPlatform.getAllPackages(mainActivity);
-        SharedPreferences.Editor editor = mainActivity.sharedPreferences.edit();
+        SharedPreferences.Editor editor = mainActivity.sharedPreferenceEditor;
         for (String packageName : setAll) editor.remove(packageName);
         editor.putBoolean(SettingsManager.NEEDS_META_DATA, true);
-        editor.apply();
         storeAndReload(mainActivity);
     }
     public static void clearSort(MainActivity mainActivity) {
         SettingsManager.getAppGroupMap().clear();
         Set<String> appGroupsSet = mainActivity.sharedPreferences.getStringSet(SettingsManager.KEY_APP_GROUPS, null);
         if (appGroupsSet == null) return;
-        SharedPreferences.Editor editor = mainActivity.sharedPreferences.edit();
+        SharedPreferences.Editor editor = mainActivity.sharedPreferenceEditor;
         for (String groupName : appGroupsSet) editor.remove(SettingsManager.KEY_GROUP_APP_LIST +groupName);
         editor.putBoolean(SettingsManager.NEEDS_META_DATA, true);
-        editor.apply();
         storeAndReload(mainActivity);
     }
 
     private static void storeAndReload(MainActivity mainActivity) {
+        mainActivity.sharedPreferenceEditor.apply();
         CompatHelper.recheckSupported(mainActivity);
         SettingsManager.storeValues();
         mainActivity.reloadPackages();

@@ -24,12 +24,12 @@
             style="@style/SettingSubtitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
             android:text="@string/service_subtitle" />
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="125sp"
-            android:layout_marginBottom="10dp"
+            android:layout_height="120sp"
             android:autofillHints="text"
             android:backgroundTint="@android:color/white"
             android:text="@string/service_info"

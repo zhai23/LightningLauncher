@@ -116,9 +116,8 @@ class RecheckPackagesTask extends AsyncTask {
     protected void onPostExecute(Object _n) {
         if (changeFound) {
             Log.i("PackageCheck", "Package change detected!");
-            owner.sharedPreferences.edit().putBoolean(SettingsManager.NEEDS_META_DATA, true).apply();
-            owner.installedApps = foundApps;
-            owner.updateAppLists();
+            owner.sharedPreferenceEditor.putBoolean(SettingsManager.NEEDS_META_DATA, true);
+            owner.reloadPackages();
             owner.refreshInterface();
         }
     }
@@ -136,6 +135,7 @@ public class MainActivity extends Activity {
     ImageView backgroundImageView;
     GridView groupPanelGridView;
     public SharedPreferences sharedPreferences;
+    public SharedPreferences.Editor sharedPreferenceEditor;
     public SettingsManager settingsManager;
     private ImageView selectedImageView;
     private boolean settingsPageOpen = false;
@@ -144,7 +144,6 @@ public class MainActivity extends Activity {
     public View mainView;
     public View fadeView;
     private int prevViewWidth;
-
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,6 +156,8 @@ public class MainActivity extends Activity {
         Log.v("LauncherStartup", "1B. Get Setting Provider");
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        sharedPreferenceEditor = sharedPreferences.edit();
+
         settingsManager = SettingsManager.getInstance(this);
         CompatHelper.checkCompatibilityUpdate(this);
 
@@ -170,6 +171,13 @@ public class MainActivity extends Activity {
         fadeView = scrollView;
         backgroundImageView = findViewById(R.id.background);
         groupPanelGridView = findViewById(R.id.groupsView);
+        mainView.post(new Runnable() {
+            @Override
+            public void run() {
+                sharedPreferenceEditor.apply();
+                mainView.post(this);
+            }
+        });
 
         // Handle group click listener
         groupPanelGridView.setOnItemClickListener((parent, view, position, id) -> {
@@ -192,7 +200,7 @@ public class MainActivity extends Activity {
                     getString(R.string.selection_moved_single, groups.get(position)) :
                     getString(R.string.selection_moved_multiple, currentSelectedApps.size(), groups.get(position))
                 );
-                selectionHint.postDelayed(() -> selectionHint.setText(R.string.selection_hint_none), 2500);
+                selectionHint.postDelayed(this::updateSelectionHint, 2000);
                 currentSelectedApps.clear();
                 refreshInterface();
             } else if (settingsManager.selectGroup(groups.get(position))) refreshInterface();
@@ -243,7 +251,7 @@ public class MainActivity extends Activity {
     }
     public void setEditMode(boolean value) {
         editMode = value;
-        sharedPreferences.edit().putBoolean(SettingsManager.KEY_EDIT_MODE, editMode).apply();
+        sharedPreferenceEditor.putBoolean(SettingsManager.KEY_EDIT_MODE, editMode);
         refreshInterface();
     }
     @Override
@@ -292,6 +300,7 @@ public class MainActivity extends Activity {
         }
     }
     public void reloadPackages() {
+        sharedPreferenceEditor.apply();
         boolean needsMeta = sharedPreferences.getBoolean(SettingsManager.NEEDS_META_DATA, true);
         // Load sets & check that they're not empty (Sometimes string sets are emptied on reinstall but not booleans)
         HashSet<String> setAll = AbstractPlatform.getAllPackages(this);
@@ -299,10 +308,10 @@ public class MainActivity extends Activity {
         needsMeta = setAll.isEmpty() || needsMeta;
         Log.i("LightningLauncher", needsMeta ? "(Re)Loading app list with meta data" : "Loading saved package list (no meta data)");
         if (needsMeta) {
-            sharedPreferences.edit()
+            sharedPreferenceEditor
                     .remove(SettingsManager.KEY_VR_SET)
                     .remove(SettingsManager.KEY_2D_SET)
-                    .apply();
+                    ;
             AbstractPlatform.clearPackageLists();
             PackageManager packageManager = getPackageManager();
             installedApps = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);
@@ -420,6 +429,8 @@ public class MainActivity extends Activity {
     List<ApplicationInfo> iconApps;
 
     public void refreshBackground() {
+        sharedPreferenceEditor.apply();
+
         // Set initial color, execute background task
         int background = sharedPreferences.getInt(SettingsManager.KEY_BACKGROUND, SettingsManager.DEFAULT_BACKGROUND);
         boolean custom = background < 0 || background > SettingsManager.BACKGROUND_COLORS.length;
@@ -439,6 +450,8 @@ public class MainActivity extends Activity {
         }
     }
     private void refreshInterfaceInternal() {
+        sharedPreferenceEditor.apply();
+
         Log.v("LauncherStartup","2A. Refreshing Interface");
         fadeView.setAlpha(0); // Set opacity for animation
 
@@ -469,9 +482,9 @@ public class MainActivity extends Activity {
             selectionHint.setOnClickListener((view) -> {
                 if (currentSelectedApps.isEmpty()) {
                     final Adapter appAdapterIcon = ((GridView) findViewById(R.id.appsViewIcon)).getAdapter();
-                    for (int i=0; i<appAdapterIcon.getCount(); i++) selectApp(((ApplicationInfo) appAdapterIcon.getItem(i)).packageName);
+                    for (int i=0; i<appAdapterIcon.getCount(); i++) currentSelectedApps.add(((ApplicationInfo) appAdapterIcon.getItem(i)).packageName);
                     final Adapter appsAdapterWide = ((GridView) findViewById(R.id.appsViewWide)).getAdapter();
-                    for (int i=0; i<appsAdapterWide.getCount(); i++) selectApp(((ApplicationInfo) appsAdapterWide.getItem(i)).packageName);
+                    for (int i=0; i<appsAdapterWide.getCount(); i++) currentSelectedApps.add(((ApplicationInfo) appsAdapterWide.getItem(i)).packageName);
                     selectionHint.setText(R.string.selection_hint_all);
                 } else {
                     currentSelectedApps.clear();
@@ -513,7 +526,7 @@ public class MainActivity extends Activity {
         appGridViewWide.setAdapter(new AppsAdapter(this, editMode, namesWide, wideApps));
 
         if (sharedPreferences.getBoolean(SettingsManager.NEEDS_META_DATA, true))
-            sharedPreferences.edit().putBoolean(SettingsManager.NEEDS_META_DATA, false).apply();
+            sharedPreferenceEditor.putBoolean(SettingsManager.NEEDS_META_DATA, false);
 
         Log.v("LauncherStartup","2D. Reset Scroll");
 
@@ -566,8 +579,8 @@ public class MainActivity extends Activity {
 
     public void setBackground(int index) {
         if (index >= SettingsManager.BACKGROUND_DRAWABLES.length || index < 0) index = -1;
-        else sharedPreferences.edit().putBoolean(SettingsManager.KEY_DARK_MODE, SettingsManager.BACKGROUND_DARK[index]).apply();
-        sharedPreferences.edit().putInt(SettingsManager.KEY_BACKGROUND, index).apply();
+        else sharedPreferenceEditor.putBoolean(SettingsManager.KEY_DARK_MODE, SettingsManager.BACKGROUND_DARK[index]);
+        sharedPreferenceEditor.putInt(SettingsManager.KEY_BACKGROUND, index);
         refreshBackground();
     }
     private boolean editMode = false;
@@ -606,9 +619,7 @@ public class MainActivity extends Activity {
         @SuppressLint("UseSwitchCompatOrMaterialCode") Switch dark = dialog.findViewById(R.id.switch_dark_mode);
         dark.setChecked(sharedPreferences.getBoolean(SettingsManager.KEY_DARK_MODE, SettingsManager.DEFAULT_DARK_MODE));
         dark.setOnCheckedChangeListener((compoundButton, value) -> {
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean(SettingsManager.KEY_DARK_MODE, value);
-            editor.apply();
+            sharedPreferenceEditor.putBoolean(SettingsManager.KEY_DARK_MODE, value);
             refreshInterface();
         });
         ImageView[] views = {
@@ -674,9 +685,7 @@ public class MainActivity extends Activity {
         scale.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int value, boolean b) {
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putInt(SettingsManager.KEY_SCALE, value);
-                editor.apply();
+                sharedPreferenceEditor.putInt(SettingsManager.KEY_SCALE, value);
             }
 
             @Override
@@ -696,9 +705,7 @@ public class MainActivity extends Activity {
         margin.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int value, boolean b) {
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putInt(SettingsManager.KEY_MARGIN, value);
-                editor.apply();
+                sharedPreferenceEditor.putInt(SettingsManager.KEY_MARGIN, value);
             }
 
             @Override
@@ -722,8 +729,8 @@ public class MainActivity extends Activity {
                 AlertDialog subDialog = DialogHelper.build(this, R.layout.dialog_hide_groups_info);
                 subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
                     final boolean newValue = !SettingsManager.DEFAULT_GROUPS_ENABLED;
-                    sharedPreferences.edit().putBoolean(SettingsManager.KEY_SEEN_HIDDEN_GROUPS_POPUP, true)
-                            .putBoolean(SettingsManager.KEY_GROUPS_ENABLED, newValue).apply();
+                    sharedPreferenceEditor.putBoolean(SettingsManager.KEY_SEEN_HIDDEN_GROUPS_POPUP, true)
+                            .putBoolean(SettingsManager.KEY_GROUPS_ENABLED, newValue);
                     groups.setChecked(!SettingsManager.DEFAULT_GROUPS_ENABLED);
                     refreshInterface();
                     subDialog.dismiss();
@@ -733,7 +740,7 @@ public class MainActivity extends Activity {
                     subDialog.dismiss(); // Dismiss without setting
                 });
             } else {
-                sharedPreferences.edit().putBoolean(SettingsManager.KEY_GROUPS_ENABLED, value).apply();
+                sharedPreferenceEditor.putBoolean(SettingsManager.KEY_GROUPS_ENABLED, value);
                 refreshInterface();
             }
         });
@@ -747,7 +754,7 @@ public class MainActivity extends Activity {
         wideVR.setChecked(sharedPreferences.getBoolean(SettingsManager.KEY_WIDE_VR, SettingsManager.DEFAULT_WIDE_VR));
         wideVR.setOnCheckedChangeListener((compoundButton, value) -> {
             CompatHelper.clearIconCache(this);
-            sharedPreferences.edit().putBoolean(SettingsManager.KEY_WIDE_VR, value).apply();
+            sharedPreferenceEditor.putBoolean(SettingsManager.KEY_WIDE_VR, value);
             updateAppLists();
             refreshInterface();
         });
@@ -755,7 +762,7 @@ public class MainActivity extends Activity {
         Switch wide2D = dialog.findViewById(R.id.switch_wide_2d);
         wide2D.setChecked(sharedPreferences.getBoolean(SettingsManager.KEY_WIDE_2D, SettingsManager.DEFAULT_WIDE_2D));
         wide2D.setOnCheckedChangeListener((compoundButton, value) -> {
-            sharedPreferences.edit().putBoolean(SettingsManager.KEY_WIDE_2D, value).apply();
+            sharedPreferenceEditor.putBoolean(SettingsManager.KEY_WIDE_2D, value);
             updateAppLists();
             refreshInterface();
         });
@@ -764,7 +771,7 @@ public class MainActivity extends Activity {
         wideWEB.setChecked(sharedPreferences.getBoolean(SettingsManager.KEY_WIDE_WEB, SettingsManager.DEFAULT_WIDE_WEB));
         wideWEB.setOnCheckedChangeListener((compoundButton, value) -> {
             CompatHelper.clearIcons(this);
-            sharedPreferences.edit().putBoolean(SettingsManager.KEY_WIDE_WEB, value).apply();
+            sharedPreferenceEditor.putBoolean(SettingsManager.KEY_WIDE_WEB, value);
             updateAppLists();
             refreshInterface();
         });
@@ -774,18 +781,14 @@ public class MainActivity extends Activity {
         Switch names = dialog.findViewById(R.id.switch_names);
         names.setChecked(sharedPreferences.getBoolean(SettingsManager.KEY_SHOW_NAMES_ICON, SettingsManager.DEFAULT_SHOW_NAMES_ICON));
         names.setOnCheckedChangeListener((compoundButton, value) -> {
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean(SettingsManager.KEY_SHOW_NAMES_ICON, value);
-            editor.apply();
+            sharedPreferenceEditor.putBoolean(SettingsManager.KEY_SHOW_NAMES_ICON, value);
             refreshInterface();
         });
         @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch wideNames = dialog.findViewById(R.id.switch_names_wide);
         wideNames.setChecked(sharedPreferences.getBoolean(SettingsManager.KEY_SHOW_NAMES_WIDE, SettingsManager.DEFAULT_SHOW_NAMES_WIDE));
         wideNames.setOnCheckedChangeListener((compoundButton, value) -> {
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean(SettingsManager.KEY_SHOW_NAMES_WIDE, value);
-            editor.apply();
+            sharedPreferenceEditor.putBoolean(SettingsManager.KEY_SHOW_NAMES_WIDE, value);
             refreshInterface();
         });
     }
@@ -800,10 +803,9 @@ public class MainActivity extends Activity {
             Set<String> webApps = sharedPreferences.getStringSet(SettingsManager.KEY_WEBSITE_LIST, Collections.emptySet());
             webApps = new HashSet<>(webApps); // Copy since we're not supposed to modify directly
             webApps.remove(app.packageName);
-            sharedPreferences.edit()
+            sharedPreferenceEditor
                     .putString(app.packageName, null) // set display name
-                    .putStringSet(SettingsManager.KEY_WEBSITE_LIST, webApps)
-                    .apply();
+                    .putStringSet(SettingsManager.KEY_WEBSITE_LIST, webApps);
             updateAppLists();
             refreshInterface();
         } else {
@@ -841,6 +843,8 @@ public class MainActivity extends Activity {
     }
 
     void addWebsite() {
+        sharedPreferenceEditor.apply();
+
         AlertDialog dialog = DialogHelper.build(this, R.layout.dialog_new_website);
 
         dialog.findViewById(R.id.cancel).setOnClickListener(view -> dialog.cancel());
@@ -857,15 +861,15 @@ public class MainActivity extends Activity {
             webApps = new HashSet<>(webApps); // Copy since we're not supposed to modify directly
             webApps.add(url);
 
-            sharedPreferences.edit()
-                    .putStringSet(SettingsManager.KEY_WEBSITE_LIST, webApps)
-                    .apply();
+            sharedPreferenceEditor.putStringSet(SettingsManager.KEY_WEBSITE_LIST, webApps);
             dialog.cancel();
             updateAppLists();
             refreshInterface();
         });
     }
     public void updateAppLists() {
+        sharedPreferenceEditor.apply();
+
         wideApps = new ArrayList<>();
         iconApps = new ArrayList<>();
         for (ApplicationInfo app: installedApps) {

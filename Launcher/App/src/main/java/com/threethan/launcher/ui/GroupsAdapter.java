@@ -125,17 +125,17 @@ public class GroupsAdapter extends BaseAdapter {
             switch_2d .setOnCheckedChangeListener((switchView, value) -> {
                 String newDefault = value ? groupName : SettingsManager.DEFAULT_GROUP_2D;
                 if ((!value && groupName.equals(newDefault)) || !appGroups.contains(newDefault)) newDefault = null;
-                mainActivity.sharedPreferences.edit().putString(SettingsManager.KEY_GROUP_2D , newDefault).apply();
+                mainActivity.sharedPreferenceEditor.putString(SettingsManager.KEY_GROUP_2D , newDefault);
             });
             switch_vr .setOnCheckedChangeListener((switchView, value) -> {
                 String newDefault = value ? groupName : SettingsManager.DEFAULT_GROUP_VR;
                 if ((!value && groupName.equals(newDefault)) || !appGroups.contains(newDefault)) newDefault = null;
-                mainActivity.sharedPreferences.edit().putString(SettingsManager.KEY_GROUP_VR , newDefault).apply();
+                mainActivity.sharedPreferenceEditor.putString(SettingsManager.KEY_GROUP_VR , newDefault);
             });
             switch_web .setOnCheckedChangeListener((switchView, value) -> {
                 String newDefault = value ? groupName : SettingsManager.DEFAULT_GROUP_VR;
                 if ((!value && groupName.equals(newDefault)) || !appGroups.contains(newDefault)) newDefault = null;
-                mainActivity.sharedPreferences.edit().putString(SettingsManager.KEY_GROUP_WEB, newDefault).apply();
+                mainActivity.sharedPreferenceEditor.putString(SettingsManager.KEY_GROUP_WEB, newDefault);
             });
 
             dialog.findViewById(R.id.confirm).setOnClickListener(view1 -> {
@@ -144,11 +144,11 @@ public class GroupsAdapter extends BaseAdapter {
 
                 // Move the default group when we rename
                 if (SettingsManager.getDefaultGroup(false, false).equals(groupName))
-                    mainActivity.sharedPreferences.edit().putString(SettingsManager.KEY_GROUP_2D, newGroupName).apply();
+                    mainActivity.sharedPreferenceEditor.putString(SettingsManager.KEY_GROUP_2D, newGroupName);
                 if (SettingsManager.getDefaultGroup(true, false).equals(groupName))
-                    mainActivity.sharedPreferences.edit().putString(SettingsManager.KEY_GROUP_VR, newGroupName).apply();
+                    mainActivity.sharedPreferenceEditor.putString(SettingsManager.KEY_GROUP_VR, newGroupName);
                 if (SettingsManager.getDefaultGroup(false, true).equals(groupName))
-                    mainActivity.sharedPreferences.edit().putString(SettingsManager.KEY_GROUP_WEB,newGroupName).apply();
+                    mainActivity.sharedPreferenceEditor.putString(SettingsManager.KEY_GROUP_WEB,newGroupName);
 
 
                 if (newGroupName.length() > 0) {

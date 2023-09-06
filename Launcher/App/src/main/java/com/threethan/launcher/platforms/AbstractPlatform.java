@@ -194,6 +194,7 @@ public abstract class AbstractPlatform {
 
     public static boolean isVirtualRealityApp(ApplicationInfo applicationInfo, MainActivity mainActivity) {
         final SharedPreferences sharedPreferences = mainActivity.sharedPreferences;
+        final SharedPreferences.Editor sharedPreferenceEditor = mainActivity.sharedPreferenceEditor;
         if (setVr.isEmpty()) {
             setVr = sharedPreferences.getStringSet(SettingsManager.KEY_VR_SET, setVr);
             set2d = sharedPreferences.getStringSet(SettingsManager.KEY_2D_SET, set2d);
@@ -204,12 +205,12 @@ public abstract class AbstractPlatform {
         if (
             checkVirtualRealityApp(applicationInfo)) {
             setVr.add(applicationInfo.packageName);
-            mainActivity.mainView.post(() -> {sharedPreferences.edit().putStringSet(SettingsManager.KEY_VR_SET, setVr).apply();});
+            mainActivity.mainView.post(() -> {sharedPreferenceEditor.putStringSet(SettingsManager.KEY_VR_SET, setVr);});
 
             return true;
         } else {
             set2d.add(applicationInfo.packageName);
-            mainActivity.mainView.post(() -> {sharedPreferences.edit().putStringSet(SettingsManager.KEY_2D_SET, set2d).apply();});
+            mainActivity.mainView.post(() -> {sharedPreferenceEditor.putStringSet(SettingsManager.KEY_2D_SET, set2d);});
             return false;
         }
     }
@@ -227,6 +228,7 @@ public abstract class AbstractPlatform {
     static HashSet<String> setUnsupported = new HashSet<>();
     public static boolean isSupportedApp(ApplicationInfo appInfo, MainActivity mainActivity) {
         final SharedPreferences sharedPreferences = mainActivity.sharedPreferences;
+        final SharedPreferences.Editor sharedPreferenceEditor = mainActivity.sharedPreferenceEditor;
         if (setSupported.isEmpty()) {
             sharedPreferences.getStringSet(SettingsManager.KEY_SUPPORTED_SET, setSupported);
             sharedPreferences.getStringSet(SettingsManager.KEY_UNSUPPORTED_SET, setUnsupported);
@@ -239,11 +241,11 @@ public abstract class AbstractPlatform {
 
         if (checkSupportedApp(appInfo, mainActivity)) {
             setSupported.add(appInfo.packageName);
-            sharedPreferences.edit().putStringSet(SettingsManager.KEY_SUPPORTED_SET, setSupported).apply();
+            sharedPreferenceEditor.putStringSet(SettingsManager.KEY_SUPPORTED_SET, setSupported);
             return true;
         } else {
             setUnsupported.add(appInfo.packageName);
-            sharedPreferences.edit().putStringSet(SettingsManager.KEY_UNSUPPORTED_SET, setUnsupported).apply();
+            sharedPreferenceEditor.putStringSet(SettingsManager.KEY_UNSUPPORTED_SET, setUnsupported);
             return false;
         }
     }
@@ -352,7 +354,7 @@ public abstract class AbstractPlatform {
                     e.printStackTrace();
                 } finally {
                     dontDownloadIconPackages.add(pkgName);
-                    activity.sharedPreferences.edit().putStringSet(SettingsManager.DONT_DOWNLOAD_ICONS, dontDownloadIconPackages).apply();
+                    activity.sharedPreferenceEditor.putStringSet(SettingsManager.DONT_DOWNLOAD_ICONS, dontDownloadIconPackages);
                     locks.remove(pkgName);
                 }
             }

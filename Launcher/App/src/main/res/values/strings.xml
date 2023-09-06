@@ -64,9 +64,9 @@
         you can use the LauncherShortcut apk provided on the GitHub. (Make sure to carefully read the instructions in the README if you choose this option)</string>
     <string name="service_instructions">Enabling the Shortcut Service</string>
     <string name="service_message">1. Use the button to open Android\'s accessibility settings\n2.
-        Click on \"Lightning Launcher\"\n3.
+        Tap on \"Lightning Launcher\"\n3.
         Switch the service on (or off) at the top of the page\n4.
-        Click \"Allow\" if you get a prompt</string>
+        Tap \"Allow\" on the prompt</string>
     <string name="service_next">Continue to Accessibility Settings</string>
 
     <string name="warning">Important Info</string>
@@ -78,9 +78,9 @@
     <string name="edit_off">Turn On Edit Mode</string>
     <string name="edit_on">Turn Off Edit Mode</string>
 
-    <string name="selection_hint_none">Short press an app to select it</string>
-    <string name="selection_hint_single">1 app selected, short press a group to move it</string>
-    <string name="selection_hint_multiple">%d apps selected, short press a group to move them</string>
+    <string name="selection_hint_none">Tap an app to or tap here to select</string>
+    <string name="selection_hint_single">1 app selected, tap a group to move it</string>
+    <string name="selection_hint_multiple">%d apps selected, tap a group to move them</string>
     <string name="selection_moved_single">Moved an app to %s</string>
     <string name="selection_moved_multiple">Moved %d apps to %s</string>
     <string name="selection_hint_cleared">Cleared selection</string>

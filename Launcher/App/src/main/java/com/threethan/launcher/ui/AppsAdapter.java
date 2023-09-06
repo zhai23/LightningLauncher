@@ -130,7 +130,7 @@ public class AppsAdapter extends BaseAdapter{
         }
 
         // set value into textview
-        String name = SettingsManager.getAppLabel(mainActivity, currentApp);
+        String name = SettingsManager.getAppLabel(currentApp);
         holder.textView.setVisibility(showTextLabels ? View.VISIBLE : View.GONE);
         if (showTextLabels) {
             holder.textView.setText(name);
@@ -252,7 +252,7 @@ public class AppsAdapter extends BaseAdapter{
                     launchModeSwitch.setChecked(false); // Revert switch
                     AlertDialog subDialog = DialogHelper.build(mainActivity, R.layout.dialog_launch_out_info);
                     subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
-                        mainActivity.sharedPreferences.edit().putBoolean(SettingsManager.KEY_SEEN_LAUNCH_OUT_POPUP, true).apply();
+                        mainActivity.sharedPreferenceEditor.putBoolean(SettingsManager.KEY_SEEN_LAUNCH_OUT_POPUP, true);
                         subDialog.dismiss();
                         SettingsManager.setAppLaunchOut(currentApp.packageName, true);
                         launchOut[0] = SettingsManager.getAppLaunchOut(currentApp.packageName);
@@ -269,11 +269,11 @@ public class AppsAdapter extends BaseAdapter{
         }
 
         // set name
-        String name = SettingsManager.getAppLabel(mainActivity, currentApp);
+        String name = SettingsManager.getAppLabel(currentApp);
         final EditText appNameEditText = dialog.findViewById(R.id.app_name);
         appNameEditText.setText(name);
         dialog.findViewById(R.id.confirm).setOnClickListener(view -> {
-            SettingsManager.setAppLabel(mainActivity, currentApp, appNameEditText.getText().toString());
+            SettingsManager.setAppLabel(currentApp, appNameEditText.getText().toString());
             dialog.dismiss();
             mainActivity.refreshInterface();
         });

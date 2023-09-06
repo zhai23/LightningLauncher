@@ -110,29 +110,33 @@ public class SettingsManager {
 
     //storage
     private static SharedPreferences sharedPreferences = null;
+    private static SharedPreferences.Editor sharedPreferenceEditor = null;
+    private static MainActivity mainActivity = null;
     private static Map<String, String> appGroupMap = new HashMap<>();
     private static Set<String> appGroupsSet = new HashSet<>();
     private static Set<String> selectedGroupsSet = new HashSet<>();
     private static Set<String> appsToLaunchOut = new HashSet<>();
 
-    private SettingsManager(Context context) {
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+    private SettingsManager(MainActivity activity) {
+        mainActivity = activity;
+        sharedPreferences = mainActivity.sharedPreferences;
+        sharedPreferenceEditor = mainActivity.sharedPreferenceEditor;
     }
 
-    public static synchronized SettingsManager getInstance(Context context) {
+    public static synchronized SettingsManager getInstance(MainActivity context) {
         if (SettingsManager.instance == null) SettingsManager.instance = new SettingsManager(context);
         return SettingsManager.instance;
     }
 
     public static HashMap<ApplicationInfo, String> appLabelCache = new HashMap<>();
-    public static String getAppLabel(Context context, ApplicationInfo appInfo) {
+    public static String getAppLabel(ApplicationInfo appInfo) {
         if (appLabelCache.containsKey(appInfo)) return appLabelCache.get(appInfo);
-        String name = checkAppLabel(context, appInfo);
-        setAppLabel(context, appInfo, name);
+        String name = checkAppLabel(appInfo);
+        setAppLabel(appInfo, name);
         return name;
     }
-    private static String checkAppLabel(Context context, ApplicationInfo appInfo) {
-        String name = PreferenceManager.getDefaultSharedPreferences(context).getString(appInfo.packageName, "");
+    private static String checkAppLabel(ApplicationInfo appInfo) {
+        String name = sharedPreferences.getString(appInfo.packageName, "");
         if (!name.isEmpty()) return name;
         if (AbstractPlatform.isWebsite(appInfo)) {
             name = appInfo.packageName.split("//")[1].split("\\.")[0];
@@ -140,15 +144,14 @@ public class SettingsManager {
             if (!name.isEmpty()) return name;
         }
         try {
-            String label = appInfo.loadLabel(context.getPackageManager()).toString();
+            String label = appInfo.loadLabel(mainActivity.getPackageManager()).toString();
             if (!label.isEmpty()) return label;
         } catch (Exception ignored) {}
         return appInfo.packageName;
     }
-    public static void setAppLabel(Context context, ApplicationInfo appInfo, String newName) {
+    public static void setAppLabel(ApplicationInfo appInfo, String newName) {
         appLabelCache.put(appInfo, newName);
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        preferences.edit().putString(appInfo.packageName, newName).apply();
+        sharedPreferenceEditor.putString(appInfo.packageName, newName);
     }
     public static boolean getAppLaunchOut(String pkg) {
         return (appsToLaunchOut.contains(pkg));
@@ -160,13 +163,13 @@ public class SettingsManager {
     }
 
     public static Map<String, String> getAppGroupMap() {
-        readValues();
+        if (appGroupMap.isEmpty()) readValues();
         return appGroupMap;
     }
 
     public static void setAppGroupMap(Map<String, String> value) {
         appGroupMap = value;
-        storeValues();
+        queueStoreValues();
     }
 
     public List<ApplicationInfo> getInstalledApps(MainActivity mainActivity, List<String> selected, List<ApplicationInfo> myApps) {
@@ -231,7 +234,7 @@ public class SettingsManager {
         ArrayList<ApplicationInfo> sortedApps = new ArrayList<>(appMap.values());
         // Compare on app name (fast)
         //Log.v("LauncherStartup", "X5 - Start Sort");
-        sortedApps.sort(Comparator.comparing(a -> getAppLabel(mainActivity, a).toLowerCase()));
+        sortedApps.sort(Comparator.comparing(a -> getAppLabel(a).toLowerCase()));
         //Log.v("LauncherStartup", "X6 - Finish Sort");
 
 
@@ -240,27 +243,27 @@ public class SettingsManager {
     }
 
     public Set<String> getAppGroups() {
-        readValues();
+        if (appGroupsSet.isEmpty()) readValues();
         return appGroupsSet;
     }
 
     public void setAppGroups(Set<String> appGroups) {
         appGroupsSet = appGroups;
-        storeValues();
+        queueStoreValues();
     }
 
     public Set<String> getSelectedGroups() {
-        readValues();
+        if (selectedGroupsSet.isEmpty()) readValues();
         return selectedGroupsSet;
     }
 
     public void setSelectedGroups(Set<String> appGroups) {
         selectedGroupsSet = appGroups;
-        storeValues();
+        queueStoreValues();
     }
 
     public ArrayList<String> getAppGroupsSorted(boolean selected) {
-        readValues();
+        if ((selected ? selectedGroupsSet : appGroupsSet).isEmpty()) readValues();
         ArrayList<String> sortedAppGroupMap = new ArrayList<>(selected ? selectedGroupsSet : appGroupsSet);
         sortedAppGroupMap.sort(Comparator.comparing(String::toUpperCase));
 
@@ -282,7 +285,7 @@ public class SettingsManager {
     }
 
     public void resetGroups(){
-        SharedPreferences.Editor editor = sharedPreferences.edit();
+        SharedPreferences.Editor editor = sharedPreferenceEditor;
         for (String group : appGroupsSet) {
             editor.remove(KEY_GROUP_APP_LIST + group);
         }
@@ -291,7 +294,6 @@ public class SettingsManager {
         editor.remove(KEY_GROUP_APP_LIST);
         editor.remove(KEY_GROUP_2D);
         editor.remove(KEY_GROUP_VR);
-        editor.apply();
     }
 
     public static String getDefaultGroup(boolean vr, boolean web) {
@@ -326,10 +328,12 @@ public class SettingsManager {
             e.printStackTrace();
         }
     }
-
+    private static void queueStoreValues() {
+        mainActivity.mainView.post(SettingsManager::storeValues);
+    }
     public synchronized static void storeValues() {
         try {
-            SharedPreferences.Editor editor = sharedPreferences.edit();
+            SharedPreferences.Editor editor = sharedPreferenceEditor;
             editor.putStringSet(KEY_APP_GROUPS, appGroupsSet);
             editor.putStringSet(KEY_SELECTED_GROUPS, selectedGroupsSet);
             editor.putStringSet(KEY_LAUNCH_OUT, appsToLaunchOut);
@@ -351,7 +355,6 @@ public class SettingsManager {
             for (String group : appGroupsSet) {
                 editor.putStringSet(KEY_GROUP_APP_LIST + group, appListSetMap.get(group));
             }
-            editor.apply();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -375,7 +378,6 @@ public class SettingsManager {
     public boolean selectGroup(String name) {
         Set<String> selectedGroups = getSelectedGroups();
         if (selectedGroups.size() == 1 && selectedGroups.contains(name)) return false; // Cancel if clicking same group
-        Log.i("SG", selectedGroups.toString());
 
         Set<String> selectFirst = new HashSet<>();
         selectFirst.add(name);
