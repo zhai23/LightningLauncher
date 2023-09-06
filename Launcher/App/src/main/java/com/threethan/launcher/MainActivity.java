@@ -472,8 +472,9 @@ public class MainActivity extends Activity {
             settingsManager.setSelectedGroups(new HashSet<>(validGroups));
         }
 
+        final View editFooter = findViewById(R.id.editFooter);
         if (editMode) { // Edit bar theming
-            findViewById(R.id.editFooter).setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(darkMode ? "#60000000" : "#70bebebe")));
+            editFooter.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(darkMode ? "#60000000" : "#70bebebe")));
             TextView selectionHint = findViewById(R.id.selectionHint);
             for (TextView textView: new TextView[]{selectionHint, findViewById(R.id.addWebsite), findViewById(R.id.stopEditing)}) {
                 textView.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(darkMode ? "#3a3a3c" : "#FFFFFF")));
@@ -493,7 +494,7 @@ public class MainActivity extends Activity {
                 selectionHint.postDelayed(this::updateSelectionHint, 2000);
             });
         }
-        findViewById(R.id.editFooter).setVisibility(editMode ? View.VISIBLE : View.GONE);
+        editFooter.setVisibility(editMode ? View.VISIBLE : View.GONE);
 
         // Set adapters
         Log.v("LauncherStartup","2B. Post Next Step");
@@ -631,6 +632,7 @@ public class MainActivity extends Activity {
                 dialog.findViewById(R.id.background5),
                 dialog.findViewById(R.id.background6),
                 dialog.findViewById(R.id.background7),
+                dialog.findViewById(R.id.background8),
                 dialog.findViewById(R.id.background_custom)
         };
         int background = sharedPreferences.getInt(SettingsManager.KEY_BACKGROUND, SettingsManager.DEFAULT_BACKGROUND);

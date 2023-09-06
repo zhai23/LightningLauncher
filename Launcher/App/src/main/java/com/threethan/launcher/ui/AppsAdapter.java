@@ -131,7 +131,7 @@ public class AppsAdapter extends BaseAdapter{
 
         // set value into textview
         String name = SettingsManager.getAppLabel(currentApp);
-        holder.textView.setVisibility(showTextLabels ? View.VISIBLE : View.GONE);
+        holder.textView.setVisibility(showTextLabels ? View.VISIBLE : View.INVISIBLE);
         if (showTextLabels) {
             holder.textView.setText(name);
             holder.textView.setTextColor(Color.parseColor(mainActivity.darkMode ? "#FFFFFF" : "#000000"));

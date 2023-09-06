@@ -79,6 +79,7 @@ public class SettingsManager {
             R.drawable.bg_px_blue,
             R.drawable.bg_px_grey,
             R.drawable.bg_px_red,
+            R.drawable.bg_px_yellow,
             R.drawable.bg_px_white,
             R.drawable.bg_px_orange,
             R.drawable.bg_px_green,
@@ -89,6 +90,7 @@ public class SettingsManager {
             Color.parseColor("#25374f"),
             Color.parseColor("#eaebea"),
             Color.parseColor("#f89b94"),
+            Color.parseColor("#f2eac9"),
             Color.parseColor("#d9d4da"),
             Color.parseColor("#f9ce9b"),
             Color.parseColor("#e4eac8"),
@@ -102,11 +104,17 @@ public class SettingsManager {
             false,
             false,
             false,
+            false,
             true,
             true,
     };
 
-    public static final List<Integer> VERSIONS_WITH_BACKGROUND_CHANGES = Collections.singletonList(1);
+    public static List<Integer> getVersionsWithBackgroundChanges() {
+        List<Integer> out = Collections.EMPTY_LIST;
+        out.add(1);
+        out.add(2);
+        return out;
+    }
 
     //storage
     private static SharedPreferences sharedPreferences = null;

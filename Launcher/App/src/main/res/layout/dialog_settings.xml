@@ -152,7 +152,7 @@
                     android:background="@drawable/bkg_button_wallpaper"
                     android:padding="0dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/bg_px_white"
+                    android:src="@drawable/bg_px_yellow"
                     tools:ignore="ImageContrastCheck" />
 
                 <ImageView
@@ -163,7 +163,7 @@
                     android:background="@drawable/bkg_button_wallpaper"
                     android:padding="0dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/bg_px_orange"
+                    android:src="@drawable/bg_px_white"
                     tools:ignore="ImageContrastCheck" />
 
                 <ImageView
@@ -174,7 +174,7 @@
                     android:background="@drawable/bkg_button_wallpaper"
                     android:padding="0dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/bg_px_green"
+                    android:src="@drawable/bg_px_orange"
                     tools:ignore="ImageContrastCheck" />
 
                 <ImageView
@@ -185,11 +185,22 @@
                     android:background="@drawable/bkg_button_wallpaper"
                     android:padding="0dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/bg_px_purple"
+                    android:src="@drawable/bg_px_green"
                     tools:ignore="ImageContrastCheck" />
 
                 <ImageView
                     android:id="@+id/background7"
+                    android:layout_width="32dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="4dp"
+                    android:background="@drawable/bkg_button_wallpaper"
+                    android:padding="0dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/bg_px_purple"
+                    tools:ignore="ImageContrastCheck" />
+
+                <ImageView
+                    android:id="@+id/background8"
                     android:layout_width="32dp"
                     android:layout_height="match_parent"
                     android:layout_marginStart="4dp"

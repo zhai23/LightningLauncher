@@ -36,7 +36,7 @@ public class CompatHelper {
                 Log.e("CompatibilityUpdate Error", "Previous version greater than current!");
             // If updated
             for (int version = 0; version <= CompatHelper.CURRENT_COMPATIBILITY_VERSION; version++) {
-                if (SettingsManager.VERSIONS_WITH_BACKGROUND_CHANGES.contains(version)) {
+                if (SettingsManager.getVersionsWithBackgroundChanges().contains(version)) {
                     int backgroundIndex = sharedPreferences.getInt(SettingsManager.KEY_BACKGROUND, SettingsManager.DEFAULT_BACKGROUND);
                     if (backgroundIndex >= 0 && backgroundIndex < SettingsManager.BACKGROUND_DARK.length) {
                         sharedPreferenceEditor.putBoolean(SettingsManager.KEY_DARK_MODE, SettingsManager.BACKGROUND_DARK[backgroundIndex]);
@@ -72,6 +72,8 @@ public class CompatHelper {
 
                 }
                 if (version == 1) {
+                    int bg = sharedPreferences.getInt(SettingsManager.KEY_BACKGROUND, SettingsManager.DEFAULT_BACKGROUND);
+                    if (bg > 2) sharedPreferenceEditor.putInt(SettingsManager.KEY_BACKGROUND, bg+1);
                     recheckSupported(mainActivity);
                 }
             }
