@@ -259,7 +259,7 @@ public class MainActivity extends Activity {
     @Override
     public void onBackPressed() {
         if (resetOpenAnim()) return;
-        if (!settingsPageOpen) showSettings();
+        if (!settingsPageOpen) setEditMode(!editMode);
     }
     public static final String FINISH_ACTION = "com.threethan.launcher.FINISH";
     // Stuff to finish the activity when it's in the background;

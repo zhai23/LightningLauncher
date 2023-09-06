@@ -7,7 +7,7 @@
     <string name="app_details">App Details</string>
     <string name="apps_hidden">- Hidden</string>
 
-    <string name="edit_mode">Enable Edit Mode</string>
+    <string name="edit_mode">Edit Mode</string>
     <string name="edit_mode_stop">Stop Editing</string>
 
     <string name="icons_size">Icon Size</string>
