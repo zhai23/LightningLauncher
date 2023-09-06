@@ -63,7 +63,7 @@
 
         <FrameLayout
             android:id="@+id/cancel"
-            android:layout_width="150dp"
+            android:layout_width="125dp"
             android:layout_height="match_parent"
             android:layout_marginEnd="10dp"
             android:background="@drawable/bkg_button">
@@ -82,10 +82,11 @@
             android:background="@drawable/bkg_button">
 
             <TextView
+                android:id="@+id/add_text"
                 style="@style/SettingButtonLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="@string/confirm" />
+                android:text="@string/add_website_group" />
         </FrameLayout>
 
     </LinearLayout>

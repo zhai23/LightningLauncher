@@ -34,8 +34,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class AbstractPlatform {
 
-    protected static final HashMap<String, Drawable> cachedIcons = new HashMap<>();
-    protected static final HashSet<String> excludedIconPackages = new HashSet<>();
+    public static final HashMap<String, Drawable> cachedIcons = new HashMap<>();
+    public static final HashSet<String> excludedIconPackages = new HashSet<>();
     private static final String[] ICON_URLS = {
             "https://raw.githubusercontent.com/basti564/LauncherIcons/main/oculus_square/%s.jpg",
             "https://raw.githubusercontent.com/basti564/LauncherIcons/main/pico_square/%s.jpg",
@@ -212,9 +212,7 @@ public abstract class AbstractPlatform {
             sharedPreferences.getStringSet(SettingsManager.KEY_SUPPORTED_SET, setSupported);
             sharedPreferences.getStringSet(SettingsManager.KEY_UNSUPPORTED_SET, setUnsupported);
             setUnsupported.add(mainActivity.getPackageName());
-            for (String url:sharedPreferences.getStringSet(SettingsManager.KEY_WEBSITE_LIST, Collections.emptySet())) {
-                setSupported.add(url);
-            }
+            setSupported.addAll(sharedPreferences.getStringSet(SettingsManager.KEY_WEBSITE_LIST, Collections.emptySet()));
         }
 
         if (setSupported.contains(appInfo.packageName)) return true;
@@ -264,9 +262,8 @@ public abstract class AbstractPlatform {
 
         PackageManager packageManager = activity.getPackageManager();
 
-        Drawable appIcon = null;
+        Drawable appIcon;
 
-        final boolean isWide = isWideApp(appInfo, activity);
         final File iconFile = iconFileForPackage(activity, appInfo.packageName);
 
         if (iconFile.exists()) {
@@ -290,18 +287,10 @@ public abstract class AbstractPlatform {
     }
 
     public void reloadIcon(MainActivity activity, ApplicationInfo appInfo, ImageView[] imageViews) {
-        final boolean isWide = isWideApp(appInfo, activity);
         final File iconFile = iconFileForPackage(activity, appInfo.packageName);
-        iconFile.delete();
+        final boolean ignored = iconFile.delete();
         imageViews[0].setImageDrawable(loadIcon(activity, appInfo, imageViews));
         downloadIcon(activity, appInfo, () -> updateIcon(iconFile, appInfo.packageName, imageViews));
-    }
-    public static void clearIconCache(MainActivity mainActivity) {
-        excludedIconPackages.clear();
-        cachedIcons.clear();
-        LibHelper.delete(mainActivity.getApplicationInfo().dataDir);
-        mainActivity.sharedPreferences.edit().putBoolean(SettingsManager.NEEDS_META_DATA, true).apply();
-        mainActivity.reloadPackages();
     }
 
     private final ConcurrentHashMap<String, Object> locks = new ConcurrentHashMap<>();

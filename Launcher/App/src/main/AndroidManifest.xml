@@ -29,7 +29,6 @@
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
             android:exported="true"
             android:launchMode="singleInstance"
-            android:excludeFromRecents="true"
             android:resizeableActivity="true"
             android:finishOnTaskLaunch="true"
             android:clearTaskOnLaunch="true"

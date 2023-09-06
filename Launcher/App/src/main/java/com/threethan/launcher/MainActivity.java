@@ -1,7 +1,5 @@
 package com.threethan.launcher;
 
-import android.animation.Animator;
-import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -42,7 +40,7 @@ import android.widget.TextView;
 
 import com.esafirm.imagepicker.features.ImagePicker;
 import com.esafirm.imagepicker.model.Image;
-import com.threethan.launcher.helpers.CompatibilityHelper;
+import com.threethan.launcher.helpers.CompatHelper;
 import com.threethan.launcher.helpers.LibHelper;
 import com.threethan.launcher.helpers.SettingsManager;
 import com.threethan.launcher.helpers.Updater;
@@ -159,7 +157,7 @@ public class MainActivity extends Activity {
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         settingsManager = SettingsManager.getInstance(this);
-        CompatibilityHelper.checkCompatibilityUpdate(this);
+        CompatHelper.checkCompatibilityUpdate(this);
 
         Log.v("LauncherStartup", "1C. Get UI Instances");
 
@@ -230,9 +228,7 @@ public class MainActivity extends Activity {
         View addWebsiteButton = findViewById(R.id.addWebsite);
         addWebsiteButton.setOnClickListener(view -> addWebsite());
         View stopEditingButton = findViewById(R.id.stopEditing);
-        stopEditingButton.setOnClickListener(view -> {
-            setEditMode(false);
-        });
+        stopEditingButton.setOnClickListener(view -> setEditMode(false));
 
         // Register the broadcast receiver
         IntentFilter filter = new IntentFilter(FINISH_ACTION);
@@ -293,12 +289,7 @@ public class MainActivity extends Activity {
     public void reloadPackages() {
         boolean needsMeta = sharedPreferences.getBoolean(SettingsManager.NEEDS_META_DATA, true);
         // Load sets & check that they're not empty (Sometimes string sets are emptied on reinstall but not booleans)
-        Set<String> setAll = new HashSet<>();
-        setAll = sharedPreferences.getStringSet(SettingsManager.KEY_VR_SET, Collections.emptySet());
-        Set<String> set2d = new HashSet<>();
-        set2d = sharedPreferences.getStringSet(SettingsManager.KEY_2D_SET, Collections.emptySet());
-        setAll = new HashSet<>(setAll);
-        setAll.addAll(set2d);
+        HashSet<String> setAll = SettingsManager.getAllPackages();
         // Check if we need metadata and load accordingly
         needsMeta = setAll.isEmpty() || needsMeta;
         Log.i("LightningLauncher", needsMeta ? "(Re)Loading app list with meta data" : "Loading saved package list (no meta data)");
@@ -418,7 +409,11 @@ public class MainActivity extends Activity {
         new BackgroundTask().execute(this);
     }
     public void refreshInterface() {
-        mainView.post(this::refreshInterfaceInternal);
+        try {
+            mainView.post(this::refreshInterfaceInternal);
+        } catch (Exception ignored) {
+            Log.w("LauncherStartup", "Failed to post refresh refreshInterfaceInternal. Called by something else?");
+        }
     }
     private void refreshInterfaceInternal() {
         Log.v("LauncherStartup","2A. Refreshing Interface");
@@ -433,13 +428,13 @@ public class MainActivity extends Activity {
 
         ArrayList<String> selectedGroups;
         // Switch off of hidden if we just exited edit mode
-        mainView.ObjectAnimator an = android.animation.ObjectAnimator.ofFloat(mainView, "android:alpha", 1f);
-        an.start();
+//        mainView.ObjectAnimator an = android.animation.ObjectAnimator.ofFloat(mainView, "android:alpha", 1f);
+//        an.start();
 
         selectedGroups = settingsManager.getAppGroupsSorted(groupsEnabled);
         if (!editMode && selectedGroups.contains(GroupsAdapter.HIDDEN_GROUP)) {
             final ArrayList<String> validGroups = settingsManager.getAppGroupsSorted(false);
-            validGroups.remove(GroupsAdapter.HIDDEN_GROUP);//VERY TODO
+            validGroups.remove(GroupsAdapter.HIDDEN_GROUP);
             settingsManager.setSelectedGroups(new HashSet<>(validGroups));
         }
 
@@ -570,30 +565,6 @@ public class MainActivity extends Activity {
             editor.apply();
             refreshInterface();
         });
-        @SuppressLint("UseSwitchCompatOrMaterialCode") Switch groups = dialog.findViewById(R.id.switch_group_mode);
-        groups.setChecked(sharedPreferences.getBoolean(SettingsManager.KEY_GROUPS_ENABLED, SettingsManager.DEFAULT_GROUPS_ENABLED));
-        groups.setOnCheckedChangeListener((sw, value) -> {
-            if (!sharedPreferences.getBoolean(SettingsManager.KEY_SEEN_HIDDEN_GROUPS_POPUP, false) && value != SettingsManager.DEFAULT_GROUPS_ENABLED) {
-                groups.setChecked(SettingsManager.DEFAULT_GROUPS_ENABLED); // Revert switch
-                AlertDialog subDialog = DialogHelper.build(this, R.layout.dialog_hide_groups_info);
-                subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
-                    final Boolean newValue = !SettingsManager.DEFAULT_GROUPS_ENABLED;
-                    sharedPreferences.edit().putBoolean(SettingsManager.KEY_SEEN_HIDDEN_GROUPS_POPUP, true)
-                                            .putBoolean(SettingsManager.KEY_GROUPS_ENABLED, newValue).apply();
-                    refreshInterface();
-                    subDialog.dismiss();
-                    groups.setChecked(SettingsManager.DEFAULT_GROUPS_ENABLED); // Revert switch
-
-                });
-                subDialog.findViewById(R.id.cancel).setOnClickListener(view -> {
-                    subDialog.dismiss(); // Dismiss without setting
-                });
-            } else {
-                sharedPreferences.edit().putBoolean(SettingsManager.KEY_GROUPS_ENABLED, value).apply();
-                refreshInterface();
-            }
-            dialog.findViewById(R.id.clear_icon_cache).setOnClickListener((view) -> AbstractPlatform.clearIconCache(this));
-        });
         ImageView[] views = {
                 dialog.findViewById(R.id.background0),
                 dialog.findViewById(R.id.background1),
@@ -697,14 +668,39 @@ public class MainActivity extends Activity {
         margin.setMax(59);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) margin.setMin(5);
 
+        @SuppressLint("UseSwitchCompatOrMaterialCode") Switch groups = dialog.findViewById(R.id.switch_group_mode);
+        groups.setChecked(sharedPreferences.getBoolean(SettingsManager.KEY_GROUPS_ENABLED, SettingsManager.DEFAULT_GROUPS_ENABLED));
+        groups.setOnCheckedChangeListener((sw, value) -> {
+            if (!sharedPreferences.getBoolean(SettingsManager.KEY_SEEN_HIDDEN_GROUPS_POPUP, false) && value != SettingsManager.DEFAULT_GROUPS_ENABLED) {
+                groups.setChecked(SettingsManager.DEFAULT_GROUPS_ENABLED); // Revert switch
+                AlertDialog subDialog = DialogHelper.build(this, R.layout.dialog_hide_groups_info);
+                subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
+                    final boolean newValue = !SettingsManager.DEFAULT_GROUPS_ENABLED;
+                    sharedPreferences.edit().putBoolean(SettingsManager.KEY_SEEN_HIDDEN_GROUPS_POPUP, true)
+                            .putBoolean(SettingsManager.KEY_GROUPS_ENABLED, newValue).apply();
+                    groups.setChecked(!SettingsManager.DEFAULT_GROUPS_ENABLED);
+                    refreshInterface();
+                    subDialog.dismiss();
 
+                });
+                subDialog.findViewById(R.id.cancel).setOnClickListener(view -> {
+                    subDialog.dismiss(); // Dismiss without setting
+                });
+            } else {
+                sharedPreferences.edit().putBoolean(SettingsManager.KEY_GROUPS_ENABLED, value).apply();
+                refreshInterface();
+            }
+        });
+        dialog.findViewById(R.id.clear_icons ).setOnClickListener(view -> CompatHelper.clearIcons (this));
+        dialog.findViewById(R.id.clear_labels).setOnClickListener(view -> CompatHelper.clearLabels(this));
+        dialog.findViewById(R.id.clear_sort  ).setOnClickListener(view -> CompatHelper.clearSort  (this));
 
         // Wide display
         @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch wideVR = dialog.findViewById(R.id.switch_wide_vr);
         wideVR.setChecked(sharedPreferences.getBoolean(SettingsManager.KEY_WIDE_VR, SettingsManager.DEFAULT_WIDE_VR));
         wideVR.setOnCheckedChangeListener((compoundButton, value) -> {
-            AbstractPlatform.clearIconCache(this);
+            CompatHelper.clearIconCache(this);
             sharedPreferences.edit().putBoolean(SettingsManager.KEY_WIDE_VR, value).apply();
             updateAppLists();
             refreshInterface();
@@ -721,7 +717,7 @@ public class MainActivity extends Activity {
         Switch wideWEB = dialog.findViewById(R.id.switch_wide_web);
         wideWEB.setChecked(sharedPreferences.getBoolean(SettingsManager.KEY_WIDE_WEB, SettingsManager.DEFAULT_WIDE_WEB));
         wideWEB.setOnCheckedChangeListener((compoundButton, value) -> {
-            AbstractPlatform.clearIconCache(this);
+            CompatHelper.clearIcons(this);
             sharedPreferences.edit().putBoolean(SettingsManager.KEY_WIDE_WEB, value).apply();
             updateAppLists();
             refreshInterface();
@@ -798,7 +794,9 @@ public class MainActivity extends Activity {
 
     void addWebsite() {
         AlertDialog dialog = DialogHelper.build(this, R.layout.dialog_new_website);
+
         dialog.findViewById(R.id.cancel).setOnClickListener(view -> dialog.cancel());
+        ((TextView) dialog.findViewById(R.id.add_text)).setText(getString(R.string.add_website_group, SettingsManager.getDefaultGroup(false, true)));
         dialog.findViewById(R.id.confirm).setOnClickListener(view -> {
             String url  = ((EditText) dialog.findViewById(R.id.app_url )).getText().toString().toLowerCase();
             if (!Patterns.WEB_URL.matcher(url).matches() || !url.contains(".")) {
@@ -806,15 +804,12 @@ public class MainActivity extends Activity {
                 return;
             }
             if (!url.contains("//")) url = "https://" + url;
-            String name = url.split("//")[1].split("\\.")[0];
-            name = LibHelper.toTitleCase(name);
 
             Set<String> webApps = sharedPreferences.getStringSet(SettingsManager.KEY_WEBSITE_LIST, Collections.emptySet());
             webApps = new HashSet<>(webApps); // Copy since we're not supposed to modify directly
             webApps.add(url);
 
             sharedPreferences.edit()
-                    .putString(url, name) // set display name
                     .putStringSet(SettingsManager.KEY_WEBSITE_LIST, webApps)
                     .apply();
             dialog.cancel();

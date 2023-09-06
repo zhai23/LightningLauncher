@@ -33,6 +33,8 @@
     <string name="dark_mode">Light Label &amp; Text Dark Group Bar</string>
     <string name="group_mode">Always Show Group Bar</string>
     <string name="clear_cache">Reset All Icons</string>
+    <string name="clear_labels">Reset All Labels</string>
+    <string name="clear_sort">Move All to Selected Default Groups</string>
 
     <string name="service_desc">When this service is enabled, Lightning Launcher will open automatically when you hover
         the cursor over the App Library icon on the right of dock for about half a second.\n(This may make it difficult to access the default launcher)\n
@@ -52,6 +54,7 @@
     <string name="add_website">Add Website</string>
     <string name="add_website_url_label">Website URL</string>
     <string name="add_website_bad_url">Enter a valid URL and try again</string>
+    <string name="add_website_group">Add to %s</string>
 
     <string name="service_title">Launcher Shortcuts</string>
     <string name="service_subtitle">Easily Access Lightning Launcher</string>

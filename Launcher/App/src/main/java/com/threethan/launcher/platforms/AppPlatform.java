@@ -16,7 +16,7 @@ public class AppPlatform extends AbstractPlatform {
     public boolean runApp(MainActivity mainActivity, ApplicationInfo appInfo) {
         Intent launchIntent = mainActivity.getPackageManager().getLaunchIntentForPackage(appInfo.packageName);
 
-        if (SettingsManager.getAppLaunchOut(appInfo.packageName) || AbstractPlatform.isVirtualRealityApp(appInfo, (MainActivity) mainActivity)) {
+        if (SettingsManager.getAppLaunchOut(appInfo.packageName) || AbstractPlatform.isVirtualRealityApp(appInfo, mainActivity)) {
             mainActivity.finish();
             mainActivity.overridePendingTransition(0, 0); // Cancel closing animation. Doesn't work on quest, but doesn't hurt
             assert launchIntent != null;

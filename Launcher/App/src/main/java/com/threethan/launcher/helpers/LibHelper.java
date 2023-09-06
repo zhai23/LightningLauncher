@@ -6,6 +6,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
 import java.io.File;
+import java.util.Objects;
 
 
 // Contains functions which are not application-specific
@@ -27,10 +28,10 @@ public class LibHelper {
     }
     public static void delete(File fileOrDirectory) {
         if (fileOrDirectory.isDirectory())
-            for (File child : fileOrDirectory.listFiles())
+            for (File child : Objects.requireNonNull(fileOrDirectory.listFiles()))
                 delete(child);
 
-        fileOrDirectory.delete();
+        final boolean ignored = fileOrDirectory.delete();
     }
     public static String toTitleCase(String string) {
         if (string == null) return null;

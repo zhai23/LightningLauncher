@@ -105,7 +105,7 @@ public class GroupsAdapter extends BaseAdapter {
         holder.menu.getContext().getDrawable(R.drawable.ic_info);
         holder.menu.setOnClickListener(view -> {
 
-            final Map<String, String> apps = settingsManager.getAppGroupMap();
+            final Map<String, String> apps = SettingsManager.getAppGroupMap();
             final Set<String> appGroupsList = settingsManager.getAppGroups();
             final String groupName = settingsManager.getAppGroupsSorted(false).get(position);
 
@@ -120,18 +120,23 @@ public class GroupsAdapter extends BaseAdapter {
             Switch switch_vr = dialog.findViewById(R.id.switch_default_vr);
             @SuppressLint("UseSwitchCompatOrMaterialCode")
             Switch switch_web = dialog.findViewById(R.id.switch_default_web);
-            switch_2d.setChecked(mainActivity.settingsManager.getDefaultGroup(false, false).equals(groupName));
-            switch_vr.setChecked(mainActivity.settingsManager.getDefaultGroup(true, false).equals(groupName));
-            switch_web.setChecked(mainActivity.settingsManager.getDefaultGroup(true, true).equals(groupName));
-            switch_2d.setOnCheckedChangeListener((switchView, value) -> {
+            switch_2d .setChecked(SettingsManager.getDefaultGroup(false, false).equals(groupName));
+            switch_vr .setChecked(SettingsManager.getDefaultGroup(true, false) .equals(groupName));
+            switch_web.setChecked(SettingsManager.getDefaultGroup(false, true) .equals(groupName));
+            switch_2d .setOnCheckedChangeListener((switchView, value) -> {
                 String newDefault = value ? groupName : SettingsManager.DEFAULT_GROUP_2D;
                 if ((!value && groupName.equals(newDefault)) || !appGroups.contains(newDefault)) newDefault = null;
-                mainActivity.sharedPreferences.edit().putString(SettingsManager.KEY_GROUP_2D, newDefault).apply();
+                mainActivity.sharedPreferences.edit().putString(SettingsManager.KEY_GROUP_2D , newDefault).apply();
             });
-            switch_vr.setOnCheckedChangeListener((switchView, value) -> {
+            switch_vr .setOnCheckedChangeListener((switchView, value) -> {
                 String newDefault = value ? groupName : SettingsManager.DEFAULT_GROUP_VR;
                 if ((!value && groupName.equals(newDefault)) || !appGroups.contains(newDefault)) newDefault = null;
-                mainActivity.sharedPreferences.edit().putString(SettingsManager.KEY_GROUP_VR, newDefault).apply();
+                mainActivity.sharedPreferences.edit().putString(SettingsManager.KEY_GROUP_VR , newDefault).apply();
+            });
+            switch_web .setOnCheckedChangeListener((switchView, value) -> {
+                String newDefault = value ? groupName : SettingsManager.DEFAULT_GROUP_VR;
+                if ((!value && groupName.equals(newDefault)) || !appGroups.contains(newDefault)) newDefault = null;
+                mainActivity.sharedPreferences.edit().putString(SettingsManager.KEY_GROUP_WEB, newDefault).apply();
             });
 
             dialog.findViewById(R.id.confirm).setOnClickListener(view1 -> {
@@ -139,13 +144,12 @@ public class GroupsAdapter extends BaseAdapter {
                 if (newGroupName.equals(UNSUPPORTED_GROUP)) newGroupName = "UNSUPPORTED"; // Prevent permanently hiding apps
 
                 // Move the default group when we rename
-                if (settingsManager.getDefaultGroup(false, false).equals(groupName))
+                if (SettingsManager.getDefaultGroup(false, false).equals(groupName))
                     mainActivity.sharedPreferences.edit().putString(SettingsManager.KEY_GROUP_2D, newGroupName).apply();
-                if (settingsManager.getDefaultGroup(true, false).equals(groupName))
-                    mainActivity.sharedPreferences.edit().putString(SettingsManager.KEY_GROUP_VR,
-                            newGroupName).apply();
-                if (settingsManager.getDefaultGroup(false, true).equals(groupName))
-                    mainActivity.sharedPreferences.edit().putString(SettingsManager.KEY_GROUP_WEB, newGroupName).apply();
+                if (SettingsManager.getDefaultGroup(true, false).equals(groupName))
+                    mainActivity.sharedPreferences.edit().putString(SettingsManager.KEY_GROUP_VR, newGroupName).apply();
+                if (SettingsManager.getDefaultGroup(false, true).equals(groupName))
+                    mainActivity.sharedPreferences.edit().putString(SettingsManager.KEY_GROUP_WEB,newGroupName).apply();
 
 
                 if (newGroupName.length() > 0) {
@@ -168,7 +172,7 @@ public class GroupsAdapter extends BaseAdapter {
                     selectedGroup.add(newGroupName);
                     settingsManager.setSelectedGroups(selectedGroup);
                     settingsManager.setAppGroups(appGroupsList);
-                    settingsManager.setAppGroupMap(updatedAppGroupMap);
+                    SettingsManager.setAppGroupMap(updatedAppGroupMap);
                     mainActivity.refreshInterface();
                 }
                 dialog.cancel();
@@ -183,7 +187,7 @@ public class GroupsAdapter extends BaseAdapter {
                         appGroupMap.put(packageName, apps.get(packageName));
                     }
                 }
-                settingsManager.setAppGroupMap(appGroupMap);
+                SettingsManager.setAppGroupMap(appGroupMap);
 
                 appGroupsList.remove(groupName);
 
@@ -213,10 +217,10 @@ public class GroupsAdapter extends BaseAdapter {
     }
 
     public void setGroup(String packageName, String groupName) {
-        Map<String, String> appGroupMap = settingsManager.getAppGroupMap();
+        Map<String, String> appGroupMap = SettingsManager.getAppGroupMap();
         appGroupMap.remove(packageName);
         appGroupMap.put(packageName, groupName);
-        settingsManager.setAppGroupMap(appGroupMap);
+        SettingsManager.setAppGroupMap(appGroupMap);
     }
 
     private void setLook(int position, View itemView, View menu) {

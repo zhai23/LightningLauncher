@@ -25,6 +25,7 @@ import android.widget.TextView;
 
 import com.threethan.launcher.MainActivity;
 import com.threethan.launcher.R;
+import com.threethan.launcher.helpers.CompatHelper;
 import com.threethan.launcher.helpers.SettingsManager;
 import com.threethan.launcher.platforms.AbstractPlatform;
 
@@ -64,13 +65,12 @@ public class AppsAdapter extends BaseAdapter{
     private final List<ApplicationInfo> appList;
     private final boolean isEditMode;
     private final boolean showTextLabels;
-    private final SettingsManager settingsManager;
 
     public AppsAdapter(MainActivity context, boolean editMode, boolean names, List<ApplicationInfo> myApps) {
         mainActivity = context;
         isEditMode = editMode;
         showTextLabels = names;
-        settingsManager = SettingsManager.getInstance(mainActivity);
+        SettingsManager settingsManager = SettingsManager.getInstance(mainActivity);
 
         ArrayList<String> sortedGroups = settingsManager.getAppGroupsSorted(false);
         ArrayList<String> sortedSelectedGroups = settingsManager.getAppGroupsSorted(true);
@@ -130,7 +130,7 @@ public class AppsAdapter extends BaseAdapter{
         }
 
         // set value into textview
-        String name = SettingsManager.getAppDisplayName(mainActivity, currentApp);
+        String name = SettingsManager.getAppLabel(mainActivity, currentApp);
         holder.textView.setVisibility(showTextLabels ? View.VISIBLE : View.GONE);
         if (showTextLabels) {
             holder.textView.setText(name);
@@ -176,7 +176,7 @@ public class AppsAdapter extends BaseAdapter{
     }
 
     public void onImageSelected(String path, ImageView selectedImageView) {
-        AbstractPlatform.clearIconCache(mainActivity);
+        CompatHelper.clearIcons(mainActivity);
         if (path != null) {
             Bitmap bitmap = ImageUtils.getResizedBitmap(BitmapFactory.decodeFile(path), 450);
             ImageUtils.saveBitmap(bitmap, iconFile);
@@ -219,7 +219,6 @@ public class AppsAdapter extends BaseAdapter{
             iconDrawable = currentApp.loadIcon(packageManager);
             packageName = currentApp.packageName;
 
-            final boolean isWide = AbstractPlatform.isWideApp(currentApp, mainActivity);
             iconFile = AbstractPlatform.iconFileForPackage(mainActivity, currentApp.packageName);
             if (iconFile.exists()) {
                 //noinspection ResultOfMethodCallIgnored
@@ -262,11 +261,11 @@ public class AppsAdapter extends BaseAdapter{
         }
 
         // set name
-        String name = SettingsManager.getAppDisplayName(mainActivity, currentApp);
+        String name = SettingsManager.getAppLabel(mainActivity, currentApp);
         final EditText appNameEditText = dialog.findViewById(R.id.app_name);
         appNameEditText.setText(name);
         dialog.findViewById(R.id.confirm).setOnClickListener(view -> {
-            settingsManager.setAppDisplayName(mainActivity, currentApp, appNameEditText.getText().toString());
+            SettingsManager.setAppLabel(mainActivity, currentApp, appNameEditText.getText().toString());
             dialog.dismiss();
             mainActivity.refreshInterface();
         });

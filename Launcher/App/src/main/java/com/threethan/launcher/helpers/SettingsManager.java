@@ -53,8 +53,8 @@ public class SettingsManager {
     public static final boolean DEFAULT_SHOW_NAMES_WIDE = true;
 
     private static SettingsManager instance;
-    private static final String KEY_APP_GROUPS = "prefAppGroups";
-    private static final String KEY_APP_LIST = "prefAppList";
+    public static final String KEY_APP_GROUPS = "prefAppGroups";
+    public static final String KEY_GROUP_APP_LIST = "prefAppList";
     private static final String KEY_LAUNCH_OUT = "prefLaunchOutList";
     private static final String KEY_SELECTED_GROUPS = "prefSelectedGroups";
     public static final String KEY_WEBSITE_LIST = "prefWebAppNames";
@@ -120,33 +120,33 @@ public class SettingsManager {
     }
 
     public static synchronized SettingsManager getInstance(Context context) {
-        if (SettingsManager.instance == null) {
-
-            SettingsManager.instance = new SettingsManager(context);
-        }
+        if (SettingsManager.instance == null) SettingsManager.instance = new SettingsManager(context);
         return SettingsManager.instance;
     }
 
-    public static HashMap<ApplicationInfo, String> appNameMap = new HashMap<>();
-    public static String getAppDisplayName(Context context, ApplicationInfo appInfo) {
-        if (appNameMap.containsKey(appInfo)) return appNameMap.get(appInfo);
-        String name = getAppDisplayNameInternal(context, appInfo);
-//        appNameMap.put(appInfo, name);
-        setAppDisplayName(context, appInfo, name);
+    public static HashMap<ApplicationInfo, String> appLabelCache = new HashMap<>();
+    public static String getAppLabel(Context context, ApplicationInfo appInfo) {
+        if (appLabelCache.containsKey(appInfo)) return appLabelCache.get(appInfo);
+        String name = checkAppLabel(context, appInfo);
+        setAppLabel(context, appInfo, name);
         return name;
     }
-        private static String getAppDisplayNameInternal(Context context, ApplicationInfo appInfo) {
+    private static String checkAppLabel(Context context, ApplicationInfo appInfo) {
         String name = PreferenceManager.getDefaultSharedPreferences(context).getString(appInfo.packageName, "");
         if (!name.isEmpty()) return name;
-
+        if (AbstractPlatform.isWebsite(appInfo)) {
+            name = appInfo.packageName.split("//")[1].split("\\.")[0];
+            name = LibHelper.toTitleCase(name);
+            if (!name.isEmpty()) return name;
+        }
         try {
             String label = appInfo.loadLabel(context.getPackageManager()).toString();
             if (!label.isEmpty()) return label;
         } catch (Exception ignored) {}
         return appInfo.packageName;
     }
-    public static void setAppDisplayName(Context context, ApplicationInfo appInfo, String newName) {
-        appNameMap.put(appInfo, newName);
+    public static void setAppLabel(Context context, ApplicationInfo appInfo, String newName) {
+        appLabelCache.put(appInfo, newName);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         preferences.edit().putString(appInfo.packageName, newName).apply();
     }
@@ -223,7 +223,7 @@ public class SettingsManager {
         ArrayList<ApplicationInfo> sortedApps = new ArrayList<>(appMap.values());
         // Compare on app name (fast)
         //Log.v("LauncherStartup", "X5 - Start Sort");
-        sortedApps.sort(Comparator.comparing(a -> getAppDisplayName(mainActivity, a).toLowerCase()));
+        sortedApps.sort(Comparator.comparing(a -> getAppLabel(mainActivity, a).toLowerCase()));
         //Log.v("LauncherStartup", "X6 - Finish Sort");
 
 
@@ -276,22 +276,32 @@ public class SettingsManager {
     public void resetGroups(){
         SharedPreferences.Editor editor = sharedPreferences.edit();
         for (String group : appGroupsSet) {
-            editor.remove(KEY_APP_LIST + group);
+            editor.remove(KEY_GROUP_APP_LIST + group);
         }
         editor.remove(KEY_APP_GROUPS);
         editor.remove(KEY_SELECTED_GROUPS);
-        editor.remove(KEY_APP_LIST);
+        editor.remove(KEY_GROUP_APP_LIST);
         editor.remove(KEY_GROUP_2D);
         editor.remove(KEY_GROUP_VR);
         editor.apply();
     }
 
     public static String getDefaultGroup(boolean vr, boolean web) {
-        final String key = web ? KEY_GROUP_WEB : vr ? KEY_GROUP_2D : KEY_GROUP_VR;
+        final String key = web ? KEY_GROUP_WEB : (vr ? KEY_GROUP_VR : KEY_GROUP_2D);
         final String def = web ? DEFAULT_GROUP_WEB : (vr ? DEFAULT_GROUP_VR : DEFAULT_GROUP_2D);
         final String group = sharedPreferences.getString(key, def);
-        if (!appGroupsSet.contains(group) && !group.equals(GroupsAdapter.UNSUPPORTED_GROUP)) return GroupsAdapter.HIDDEN_GROUP;
+        if (!appGroupsSet.contains(group)) return GroupsAdapter.HIDDEN_GROUP;
         return group;
+    }
+
+    public static HashSet<String> getAllPackages() {
+        Set<String> setAll = new HashSet<>();
+        setAll = sharedPreferences.getStringSet(SettingsManager.KEY_VR_SET, Collections.emptySet());
+        Set<String> set2d = new HashSet<>();
+        set2d = sharedPreferences.getStringSet(SettingsManager.KEY_2D_SET, Collections.emptySet());
+        setAll = new HashSet<>(setAll);
+        setAll.addAll(set2d);
+        return (HashSet<String>) setAll;
     }
 
     public synchronized static void readValues() {
@@ -309,22 +319,16 @@ public class SettingsManager {
             appGroupsSet.add(GroupsAdapter.UNSUPPORTED_GROUP);
             for (String group : appGroupsSet) {
                 Set<String> appListSet = new HashSet<>();
-                appListSet = sharedPreferences.getStringSet(KEY_APP_LIST+group, appListSet);
-
-                for (String app : appListSet) {
-                    appGroupMap.put(app, group);
-                }
+                appListSet = sharedPreferences.getStringSet(KEY_GROUP_APP_LIST +group, appListSet);
+                for (String app : appListSet) appGroupMap.put(app, group);
             }
-
             appsToLaunchOut = sharedPreferences.getStringSet(KEY_LAUNCH_OUT, defaultGroupsSet);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
-    private synchronized static void storeValues() {
+    public synchronized static void storeValues() {
         try {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putStringSet(KEY_APP_GROUPS, appGroupsSet);
@@ -332,9 +336,7 @@ public class SettingsManager {
             editor.putStringSet(KEY_LAUNCH_OUT, appsToLaunchOut);
 
             Map<String, Set<String>> appListSetMap = new HashMap<>();
-            for (String group : appGroupsSet) {
-                appListSetMap.put(group, new HashSet<>());
-            }
+            for (String group : appGroupsSet) appListSetMap.put(group, new HashSet<>());
             for (String pkg : appGroupMap.keySet()) {
                 Set<String> group = appListSetMap.get(appGroupMap.get(pkg));
                 if (group == null) {
@@ -348,7 +350,7 @@ public class SettingsManager {
                 group.add(pkg);
             }
             for (String group : appGroupsSet) {
-                editor.putStringSet(KEY_APP_LIST + group, appListSetMap.get(group));
+                editor.putStringSet(KEY_GROUP_APP_LIST + group, appListSetMap.get(group));
             }
             editor.apply();
         } catch (Exception e) {
