@@ -1,5 +1,7 @@
 package com.threethan.launcher;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -431,12 +433,13 @@ public class MainActivity extends Activity {
 
         ArrayList<String> selectedGroups;
         // Switch off of hidden if we just exited edit mode
-        settingsManager.readValues();
+        mainView.ObjectAnimator an = android.animation.ObjectAnimator.ofFloat(mainView, "android:alpha", 1f);
+        an.start();
 
         selectedGroups = settingsManager.getAppGroupsSorted(groupsEnabled);
         if (!editMode && selectedGroups.contains(GroupsAdapter.HIDDEN_GROUP)) {
             final ArrayList<String> validGroups = settingsManager.getAppGroupsSorted(false);
-            validGroups.remove(GroupsAdapter.HIDDEN_GROUP);
+            validGroups.remove(GroupsAdapter.HIDDEN_GROUP);//VERY TODO
             settingsManager.setSelectedGroups(new HashSet<>(validGroups));
         }
 

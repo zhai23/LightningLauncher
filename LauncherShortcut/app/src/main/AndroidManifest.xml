@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-feature android:name="android.hardware.vr.headtracking" android:required="false" android:version="1"/>
+    <uses-feature android:name="oculus.software.handtracking" android:required="false"/>
+    <uses-permission android:name="com.oculus.permission.HAND_TRACKING"/>
+
     <queries>
         <package android:name="com.threethan.launcher" />
         <package android:name="com.basti564.dreamgrid" />
@@ -15,6 +20,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MessengerRedirect"
         tools:targetApi="31">
+
+        <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
+        <meta-data android:name="com.oculus.vrshell.free_resizing_limits" android:value="300,2000,500,1000"/>
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -22,12 +31,18 @@
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
             android:label="@string/app_name"
             android:theme="@style/Theme.MessengerRedirect">
+
+            <layout android:defaultWidth="706dp"
+                android:defaultHeight="442dp"
+                android:gravity="top|end" />
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>
