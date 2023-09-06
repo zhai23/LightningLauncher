@@ -11,8 +11,8 @@ android {
         applicationId "com.facebook.orca"
         minSdk 24
         targetSdk 33
-        versionCode 999999999
-        versionName "1.0"
+        versionCode 1000000410
+        versionName "4.1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
