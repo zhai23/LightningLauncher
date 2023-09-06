@@ -76,7 +76,7 @@
                 tools:ignore="NestedWeights,RtlSymmetry" />
 
             <Switch
-                android:id="@+id/switch_default_web"
+                android:id="@+id/switch_default_vr"
                 android:layout_width="wrap_content"
                 android:thumb="@drawable/switch_thumb_custom"
                 android:track="@drawable/switch_track_custom"
@@ -138,7 +138,7 @@
                 tools:ignore="NestedWeights,RtlSymmetry" />
 
             <Switch
-                android:id="@+id/switch_default_vr"
+                android:id="@+id/switch_default_web"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:thumb="@drawable/switch_thumb_custom"

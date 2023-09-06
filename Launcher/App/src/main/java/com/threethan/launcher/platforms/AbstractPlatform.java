@@ -1,7 +1,5 @@
 package com.threethan.launcher.platforms;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -30,12 +28,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-
+//TODO: Fix vr icons not loading
 public abstract class AbstractPlatform {
 
     public static final HashMap<String, Drawable> cachedIcons = new HashMap<>();
     public static final HashSet<String> excludedIconPackages = new HashSet<>();
+    public static Set<String> dontDownloadIconPackages = new HashSet<>();
     private static final String[] ICON_URLS = {
             "https://raw.githubusercontent.com/basti564/LauncherIcons/main/oculus_square/%s.jpg",
             "https://raw.githubusercontent.com/basti564/LauncherIcons/main/pico_square/%s.jpg",
@@ -74,11 +74,13 @@ public abstract class AbstractPlatform {
         return new AppPlatform();
     }
 
-    public static File iconFileForPackage(Context context, String packageName) {
-        packageName = packageName.replace("//","");
-        return new File(context.getApplicationInfo().dataDir, packageName + ".webp");
+    public static File iconFileForPackage(MainActivity mainActivity, String packageName) {
+        packageName = packageName.replace("/","");
+        ApplicationInfo tempApp = new ApplicationInfo();
+        tempApp.packageName = packageName;
+        final boolean wide = isWideApp(tempApp, mainActivity);
+        return new File(mainActivity.getApplicationInfo().dataDir, packageName + (wide?"-wide":"") + ".webp");
     }
-
     public static void updateIcon(File file, String packageName, ImageView[] imageViews) {
         try {
             Drawable newIconDrawable = Drawable.createFromPath(file.getAbsolutePath());
@@ -142,7 +144,7 @@ public abstract class AbstractPlatform {
             return false;
         }
     }
-    protected static void saveIconDrawable(Activity activity, Drawable icon, String packageName) {
+    protected static void saveIconDrawable(MainActivity mainActivity, Drawable icon, String packageName) {
         try {
             Bitmap bitmap = LibHelper.bitmapFromDrawable(icon);
             if (bitmap == null) {
@@ -158,7 +160,8 @@ public abstract class AbstractPlatform {
                     bitmap = Bitmap.createScaledBitmap(bitmap, width, height, false);
                 }
                 try {
-                    FileOutputStream fileOutputStream = new FileOutputStream(iconFileForPackage(activity, packageName).getAbsolutePath());
+                    FileOutputStream fileOutputStream =
+                            new FileOutputStream(iconFileForPackage(mainActivity, packageName).getAbsolutePath());
                     bitmap.compress(Bitmap.CompressFormat.WEBP, 90, fileOutputStream);
                     fileOutputStream.close();
                 } catch (Exception e) {
@@ -171,28 +174,44 @@ public abstract class AbstractPlatform {
             e.printStackTrace();
         }
     }
-    static HashSet<String> setVr = new HashSet<>();
-    static HashSet<String> set2d = new HashSet<>();
+    static Set<String> setVr = new HashSet<>();
+    static Set<String> set2d = new HashSet<>();
+
+    public static void clearPackageLists() {
+        set2d.clear();
+        setVr.clear();
+    }
+    public static HashSet<String> getAllPackages(MainActivity mainActivity) {
+        final SharedPreferences sharedPreferences = mainActivity.sharedPreferences;
+        if (setVr.isEmpty()) {
+            setVr = sharedPreferences.getStringSet(SettingsManager.KEY_VR_SET, setVr);
+            set2d = sharedPreferences.getStringSet(SettingsManager.KEY_2D_SET, set2d);
+        }
+        HashSet<String> setAll = new HashSet<>(set2d);
+        setAll.addAll(setVr);
+        return setAll;
+    }
 
     public static boolean isVirtualRealityApp(ApplicationInfo applicationInfo, MainActivity mainActivity) {
         final SharedPreferences sharedPreferences = mainActivity.sharedPreferences;
         if (setVr.isEmpty()) {
-            sharedPreferences.getStringSet(SettingsManager.KEY_VR_SET, setVr);
-            sharedPreferences.getStringSet(SettingsManager.KEY_2D_SET, set2d);
+            setVr = sharedPreferences.getStringSet(SettingsManager.KEY_VR_SET, setVr);
+            set2d = sharedPreferences.getStringSet(SettingsManager.KEY_2D_SET, set2d);
         }
         if (setVr.contains(applicationInfo.packageName)) return true;
         if (set2d.contains(applicationInfo.packageName)) return false;
 
-        if (checkVirtualRealityApp(applicationInfo)) {
+        if (
+            checkVirtualRealityApp(applicationInfo)) {
             setVr.add(applicationInfo.packageName);
-            sharedPreferences.edit().putStringSet(SettingsManager.KEY_VR_SET, setVr).apply();
+            mainActivity.mainView.post(() -> {sharedPreferences.edit().putStringSet(SettingsManager.KEY_VR_SET, setVr).apply();});
+
             return true;
         } else {
             set2d.add(applicationInfo.packageName);
-            sharedPreferences.edit().putStringSet(SettingsManager.KEY_2D_SET, set2d).apply();
+            mainActivity.mainView.post(() -> {sharedPreferences.edit().putStringSet(SettingsManager.KEY_2D_SET, set2d).apply();});
             return false;
         }
-
     }
     private static boolean checkVirtualRealityApp(ApplicationInfo applicationInfo) {
         if (applicationInfo.metaData == null) return false;
@@ -257,15 +276,22 @@ public abstract class AbstractPlatform {
         return (applicationInfo.packageName.contains("//"));
     }
 
+    private boolean shouldDownloadIcon(MainActivity activity, ApplicationInfo appInfo) {
+        if (!(isVirtualRealityApp(appInfo, activity) || isWebsite(appInfo))) return false;
+        if (dontDownloadIconPackages.isEmpty())
+            dontDownloadIconPackages = activity.sharedPreferences.getStringSet(SettingsManager.DONT_DOWNLOAD_ICONS, dontDownloadIconPackages);
+        return !dontDownloadIconPackages.contains(appInfo.packageName);
+    }
     public Drawable loadIcon(MainActivity activity, ApplicationInfo appInfo, ImageView[] imageViews) {
+        final File iconFile = iconFileForPackage(activity, appInfo.packageName);
+        if (shouldDownloadIcon(activity, appInfo))
+            downloadIcon(activity, appInfo, () -> updateIcon(iconFile, appInfo.packageName, imageViews));
+
         if (cachedIcons.containsKey(appInfo.packageName)) return cachedIcons.get(appInfo.packageName);
 
         PackageManager packageManager = activity.getPackageManager();
 
         Drawable appIcon;
-
-        final File iconFile = iconFileForPackage(activity, appInfo.packageName);
-
         if (iconFile.exists()) {
             AbstractPlatform.updateIcon(iconFile, appInfo.packageName, null);
             return Drawable.createFromPath(iconFile.getAbsolutePath());
@@ -280,9 +306,6 @@ public abstract class AbstractPlatform {
             return appIcon;
         } catch (Exception ignored) {} // Fails on web apps
 
-        if (isVirtualRealityApp(appInfo, activity) || isWebsite(appInfo)) {
-            downloadIcon(activity, appInfo, () -> updateIcon(iconFile, appInfo.packageName, imageViews));
-        }
         return null;
     }
 
@@ -310,19 +333,26 @@ public abstract class AbstractPlatform {
             }
             synchronized (Objects.requireNonNull(lock)) {
                 try {
-                    for (String url: isWebsite(appInfo) ? ICON_URLS_WEB : (isWide ? ICON_URLS_WIDE : ICON_URLS)) {
-                        Log.v("AbstractPlatform", "Checking URL "+String.format(url, pkgName));
+                    for (final String url: isWebsite(appInfo) ? ICON_URLS_WEB : (isWide ? ICON_URLS_WIDE : ICON_URLS)) {
+                        final String urlName = isWebsite(appInfo) ?
+                                pkgName.split("//")[0]+"//"+pkgName.split("/")[2] : pkgName;
 
-                        if (downloadIconFromUrl(String.format(url, pkgName), iconFile)) {
+                        Log.v("DOWNLOADNAME", urlName);
+                        Log.v("AbstractPlatform", "Checking URL "+String.format(url, urlName));
+
+                        Log.v("DOWNLOADNAME", urlName);
+                        if (downloadIconFromUrl(String.format(url, urlName), iconFile)) {
                             activity.runOnUiThread(callback);
                             return;
                         }
                     }
                     Log.v("AbstractPlatform", "Failed to find icon at any URL for " + pkgName);
                     // If we get here, it failed to fetch. That's fine though.
-//                } catch (Exception e) {
-//                    e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 } finally {
+                    dontDownloadIconPackages.add(pkgName);
+                    activity.sharedPreferences.edit().putStringSet(SettingsManager.DONT_DOWNLOAD_ICONS, dontDownloadIconPackages).apply();
                     locks.remove(pkgName);
                 }
             }
@@ -334,9 +364,7 @@ public abstract class AbstractPlatform {
     boolean downloadIconFromUrl(String url, File iconFile) {
         try (InputStream inputStream = new URL(url).openStream()) {
             if (saveStream(inputStream, iconFile)) return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException ignored) {}
         return false;
     }
 }

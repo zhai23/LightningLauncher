@@ -50,7 +50,6 @@ public class GroupsAdapter extends BaseAdapter {
             appGroups.add("+ " + mainActivity.getString(R.string.add_group));
         }
 
-
         selectedGroups = settings.getSelectedGroups();
     }
 

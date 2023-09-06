@@ -28,7 +28,6 @@ public class SettingsManager {
     public static final String KEY_MARGIN = "KEY_CUSTOM_MARGIN";
     public static final int DEFAULT_SCALE = 112;
     public static final int DEFAULT_MARGIN = 32;
-
     public static final String KEY_EDIT_MODE = "KEY_EDIT_MODE";
     public static final String KEY_SEEN_LAUNCH_OUT_POPUP = "KEY_SEEN_LAUNCH_OUT_POPUP";
     public static final String KEY_SEEN_HIDDEN_GROUPS_POPUP = "KEY_SEEN_HIDDEN_GROUPS_POPUP";
@@ -45,6 +44,7 @@ public class SettingsManager {
     public static final boolean DEFAULT_WIDE_VR = true;
     public static final boolean DEFAULT_WIDE_2D = false;
     public static final boolean DEFAULT_WIDE_WEB = false;
+    public static final String DONT_DOWNLOAD_ICONS = "DONT_DOWNLOAD_ICONS";
 
     // show names by display type
     public static final String KEY_SHOW_NAMES_ICON = "KEY_CUSTOM_NAMES";
@@ -169,12 +169,25 @@ public class SettingsManager {
         storeValues();
     }
 
-    public List<ApplicationInfo> getInstalledApps(MainActivity mainActivity, List<String> selected, boolean first, List<ApplicationInfo> myApps) {
+    public List<ApplicationInfo> getInstalledApps(MainActivity mainActivity, List<String> selected, List<ApplicationInfo> myApps) {
 
         // Get list of installed apps
         Map<String, String> apps = getAppGroupMap();
 
-        //Log.v("LauncherStartup", "X1 - Start Groups");
+        // If we need meta data, fetch everything now
+        if (mainActivity.sharedPreferences.getBoolean(SettingsManager.NEEDS_META_DATA, true)) {
+            // Sort into groups
+            for (ApplicationInfo app : myApps) {
+                if (!AbstractPlatform.isSupportedApp(app, mainActivity)) appGroupMap.put(app.packageName, GroupsAdapter.UNSUPPORTED_GROUP);
+                else {
+                    final boolean isVr = AbstractPlatform.isVirtualRealityApp(app, mainActivity);
+                    final boolean isWeb = AbstractPlatform.isWebsite(app);
+                    appGroupMap.put(app.packageName, getDefaultGroup(isVr, isWeb));
+                }
+            }
+        }
+
+
 
         // Sort into groups
         for (ApplicationInfo app : myApps) {
@@ -188,11 +201,6 @@ public class SettingsManager {
             }
         }
 
-        //Log.v("LauncherStartup", "X2 - End Groups");
-
-        // Since this goes over all apps & checks if they're vr, we can safely decide we don't need meta data for them on subsequent launchers
-        if (mainActivity.sharedPreferences.getBoolean(SettingsManager.NEEDS_META_DATA, true))
-            mainActivity.sharedPreferences.edit().putBoolean(SettingsManager.NEEDS_META_DATA, false).apply();
 
         // Save changes to app list
         setAppGroupMap(appGroupMap);
@@ -294,15 +302,6 @@ public class SettingsManager {
         return group;
     }
 
-    public static HashSet<String> getAllPackages() {
-        Set<String> setAll = new HashSet<>();
-        setAll = sharedPreferences.getStringSet(SettingsManager.KEY_VR_SET, Collections.emptySet());
-        Set<String> set2d = new HashSet<>();
-        set2d = sharedPreferences.getStringSet(SettingsManager.KEY_2D_SET, Collections.emptySet());
-        setAll = new HashSet<>(setAll);
-        setAll.addAll(set2d);
-        return (HashSet<String>) setAll;
-    }
 
     public synchronized static void readValues() {
         try {
@@ -373,9 +372,14 @@ public class SettingsManager {
         return newGroupName;
     }
 
-    public void selectGroup(String name) {
+    public boolean selectGroup(String name) {
+        Set<String> selectedGroups = getSelectedGroups();
+        if (selectedGroups.size() == 1 && selectedGroups.contains(name)) return false; // Cancel if clicking same group
+        Log.i("SG", selectedGroups.toString());
+
         Set<String> selectFirst = new HashSet<>();
         selectFirst.add(name);
         setSelectedGroups(selectFirst);
+        return true;
     }
 }

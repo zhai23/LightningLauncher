@@ -29,6 +29,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.Adapter;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.GridView;
@@ -41,7 +42,6 @@ import android.widget.TextView;
 import com.esafirm.imagepicker.features.ImagePicker;
 import com.esafirm.imagepicker.model.Image;
 import com.threethan.launcher.helpers.CompatHelper;
-import com.threethan.launcher.helpers.LibHelper;
 import com.threethan.launcher.helpers.SettingsManager;
 import com.threethan.launcher.helpers.Updater;
 import com.threethan.launcher.platforms.AbstractPlatform;
@@ -142,6 +142,7 @@ public class MainActivity extends Activity {
     private boolean loaded = false;
     boolean ready  = false;
     public View mainView;
+    public View fadeView;
     private int prevViewWidth;
 
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
@@ -163,20 +164,24 @@ public class MainActivity extends Activity {
 
         mainView = findViewById(R.id.mainLayout);
         mainView.addOnLayoutChangeListener((view, i, i1, i2, i3, i4, i5, i6, i7) -> updateGridViewHeights());
-        appGridViewIcon = findViewById(R.id.appsView);
+        appGridViewIcon = findViewById(R.id.appsViewIcon);
         appGridViewWide = findViewById(R.id.appsViewWide);
         scrollView = findViewById(R.id.mainScrollView);
+        fadeView = scrollView;
         backgroundImageView = findViewById(R.id.background);
         groupPanelGridView = findViewById(R.id.groupsView);
 
         // Handle group click listener
         groupPanelGridView.setOnItemClickListener((parent, view, position, id) -> {
             List<String> groups = settingsManager.getAppGroupsSorted(false);
+
             // If the new group button was selected, create and select a new group
             if (position == groups.size()) {
                 final String newName = settingsManager.addGroup();
                 groups = settingsManager.getAppGroupsSorted(false);
                 position = groups.indexOf(newName);
+                refreshInterface();
+
             }
             // Move apps if any are selected
             if (!currentSelectedApps.isEmpty()) {
@@ -189,9 +194,9 @@ public class MainActivity extends Activity {
                 );
                 selectionHint.postDelayed(() -> selectionHint.setText(R.string.selection_hint_none), 2500);
                 currentSelectedApps.clear();
-            } else settingsManager.selectGroup(groups.get(position));
-
-            refreshInterface();
+                refreshInterface();
+            } else if (settingsManager.selectGroup(groups.get(position))) refreshInterface();
+            else recheckPackages(); // If clicking on the same single group, check if there are any new packages
         });
 
         // Multiple group selection
@@ -289,11 +294,16 @@ public class MainActivity extends Activity {
     public void reloadPackages() {
         boolean needsMeta = sharedPreferences.getBoolean(SettingsManager.NEEDS_META_DATA, true);
         // Load sets & check that they're not empty (Sometimes string sets are emptied on reinstall but not booleans)
-        HashSet<String> setAll = SettingsManager.getAllPackages();
+        HashSet<String> setAll = AbstractPlatform.getAllPackages(this);
         // Check if we need metadata and load accordingly
         needsMeta = setAll.isEmpty() || needsMeta;
         Log.i("LightningLauncher", needsMeta ? "(Re)Loading app list with meta data" : "Loading saved package list (no meta data)");
         if (needsMeta) {
+            sharedPreferences.edit()
+                    .remove(SettingsManager.KEY_VR_SET)
+                    .remove(SettingsManager.KEY_2D_SET)
+                    .apply();
+            AbstractPlatform.clearPackageLists();
             PackageManager packageManager = getPackageManager();
             installedApps = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);
         } else {
@@ -310,7 +320,11 @@ public class MainActivity extends Activity {
     }
     @SuppressWarnings("unchecked")
     public void recheckPackages() {
-        new RecheckPackagesTask().execute(this);
+        try {
+            new RecheckPackagesTask().execute(this);
+        } catch (Exception ignore) {
+            Log.w("LightningLauncher", "Exception while starting recheck package task");
+        }
     }
     public void setSelectedImageView(ImageView imageView) {
         selectedImageView = imageView;
@@ -350,6 +364,7 @@ public class MainActivity extends Activity {
         if (!groupsEnabled) {
             blurView0.setVisibility(View.GONE);
             blurView1.setVisibility(View.GONE);
+            animateIn();
             return;
         }
         blurView0.setVisibility(View.VISIBLE);
@@ -390,11 +405,19 @@ public class MainActivity extends Activity {
         blurView1.setActivated(true);
         blurView1.setActivated(false);
 
+        animateIn();
     }
-
+    boolean fullyLoaded = false;
+    private void animateIn() {
+        // Animate opacity
+        ValueAnimator an = android.animation.ObjectAnimator.ofFloat(fadeView, "alpha", 1f);
+        an.setDuration(fullyLoaded ? 120 : 300);
+        fadeView.post(an::start);
+        fullyLoaded = true;
+    }
     List<ApplicationInfo> installedApps;
     List<ApplicationInfo> wideApps;
-    List<ApplicationInfo> squareApps;
+    List<ApplicationInfo> iconApps;
 
     public void refreshBackground() {
         // Set initial color, execute background task
@@ -417,6 +440,7 @@ public class MainActivity extends Activity {
     }
     private void refreshInterfaceInternal() {
         Log.v("LauncherStartup","2A. Refreshing Interface");
+        fadeView.setAlpha(0); // Set opacity for animation
 
         darkMode = sharedPreferences.getBoolean(SettingsManager.KEY_DARK_MODE, SettingsManager.DEFAULT_DARK_MODE);
         editMode = sharedPreferences.getBoolean(SettingsManager.KEY_EDIT_MODE, false);
@@ -427,9 +451,6 @@ public class MainActivity extends Activity {
         }
 
         ArrayList<String> selectedGroups;
-        // Switch off of hidden if we just exited edit mode
-//        mainView.ObjectAnimator an = android.animation.ObjectAnimator.ofFloat(mainView, "android:alpha", 1f);
-//        an.start();
 
         selectedGroups = settingsManager.getAppGroupsSorted(groupsEnabled);
         if (!editMode && selectedGroups.contains(GroupsAdapter.HIDDEN_GROUP)) {
@@ -438,6 +459,27 @@ public class MainActivity extends Activity {
             settingsManager.setSelectedGroups(new HashSet<>(validGroups));
         }
 
+        if (editMode) { // Edit bar theming
+            findViewById(R.id.editFooter).setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(darkMode ? "#60000000" : "#70bebebe")));
+            TextView selectionHint = findViewById(R.id.selectionHint);
+            for (TextView textView: new TextView[]{selectionHint, findViewById(R.id.addWebsite), findViewById(R.id.stopEditing)}) {
+                textView.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(darkMode ? "#3a3a3c" : "#FFFFFF")));
+                textView.setTextColor(Color.parseColor(darkMode ? "#FFFFFF" : "#000000"));
+            }
+            selectionHint.setOnClickListener((view) -> {
+                if (currentSelectedApps.isEmpty()) {
+                    final Adapter appAdapterIcon = ((GridView) findViewById(R.id.appsViewIcon)).getAdapter();
+                    for (int i=0; i<appAdapterIcon.getCount(); i++) selectApp(((ApplicationInfo) appAdapterIcon.getItem(i)).packageName);
+                    final Adapter appsAdapterWide = ((GridView) findViewById(R.id.appsViewWide)).getAdapter();
+                    for (int i=0; i<appsAdapterWide.getCount(); i++) selectApp(((ApplicationInfo) appsAdapterWide.getItem(i)).packageName);
+                    selectionHint.setText(R.string.selection_hint_all);
+                } else {
+                    currentSelectedApps.clear();
+                    selectionHint.setText(R.string.selection_hint_cleared);
+                }
+                selectionHint.postDelayed(this::updateSelectionHint, 2000);
+            });
+        }
         findViewById(R.id.editFooter).setVisibility(editMode ? View.VISIBLE : View.GONE);
 
         // Set adapters
@@ -465,10 +507,13 @@ public class MainActivity extends Activity {
         findViewById(R.id.mainScrollInterior).setLayoutParams(lp);
 
         Log.v("LauncherStartup","2B. Set Adapter");
-        appGridViewIcon.setAdapter(new AppsAdapter(this, editMode, names, squareApps));
+        appGridViewIcon.setAdapter(new AppsAdapter(this, editMode, names, iconApps));
 
         Log.v("LauncherStartup","2C. Set AdapterWide");
         appGridViewWide.setAdapter(new AppsAdapter(this, editMode, namesWide, wideApps));
+
+        if (sharedPreferences.getBoolean(SettingsManager.NEEDS_META_DATA, true))
+            sharedPreferences.edit().putBoolean(SettingsManager.NEEDS_META_DATA, false).apply();
 
         Log.v("LauncherStartup","2D. Reset Scroll");
 
@@ -488,6 +533,7 @@ public class MainActivity extends Activity {
 
         mainView.post(this::updateTopBar);
 
+
     }
     public void runUpdater() {
         new Updater(this).checkForUpdate();
@@ -503,11 +549,11 @@ public class MainActivity extends Activity {
             final int group_columns = Math.min(groupPanelGridView.getAdapter().getCount(), prevViewWidth / 400);
             groupPanelGridView.setNumColumns(group_columns);
             final int groupRows = (int) Math.ceil((double) groupPanelGridView.getAdapter().getCount() / group_columns);
-            scrollInterior.setPadding(0, dp(23 + 22) + dp(40) * groupRows, 0, editMode?dp(50):0);
+            scrollInterior.setPadding(0, dp(23 + 22) + dp(40) * groupRows, 0, editMode?dp(60):0);
             scrollView.setFadingEdgeLength(dp(23 + 22) + dp(40) * groupRows);
         } else {
             int marginPx = dp(sharedPreferences.getInt(SettingsManager.KEY_MARGIN, SettingsManager.DEFAULT_MARGIN));
-            scrollInterior.setPadding(0, 0, 0, marginPx+(editMode?dp(50):0));
+            scrollInterior.setPadding(0, 0, 0, marginPx+(editMode?dp(60):0));
             FadingTopScrollView scrollView = findViewById(R.id.mainScrollView);
             scrollView.setFadingEdgeLength(0);
         }
@@ -778,9 +824,11 @@ public class MainActivity extends Activity {
         } else {
             currentSelectedApps.add(app);
             updateSelectionHint();
-
             return true;
         }
+    }
+    public boolean isSelected(String app) {
+        return currentSelectedApps.contains(app);
     }
 
     void updateSelectionHint() {
@@ -819,16 +867,16 @@ public class MainActivity extends Activity {
     }
     public void updateAppLists() {
         wideApps = new ArrayList<>();
-        squareApps = new ArrayList<>();
+        iconApps = new ArrayList<>();
         for (ApplicationInfo app: installedApps) {
             if (AbstractPlatform.isWideApp(app, this)) wideApps.add(app);
-            else squareApps.add(app);
+            else iconApps.add(app);
         }
         Set<String> webApps = sharedPreferences.getStringSet(SettingsManager.KEY_WEBSITE_LIST, Collections.emptySet());
         for (String url:webApps) {
             ApplicationInfo applicationInfo = new ApplicationInfo();
             applicationInfo.packageName = url;
-            (sharedPreferences.getBoolean(SettingsManager.KEY_WIDE_WEB, SettingsManager.DEFAULT_WIDE_WEB) ? wideApps : squareApps)
+            (sharedPreferences.getBoolean(SettingsManager.KEY_WIDE_WEB, SettingsManager.DEFAULT_WIDE_WEB) ? wideApps : iconApps)
                     .add(applicationInfo);
         }
     }

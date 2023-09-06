@@ -108,13 +108,17 @@ public class CompatHelper {
     public static void clearIconCache(MainActivity mainActivity) {
         AbstractPlatform.excludedIconPackages.clear();
         AbstractPlatform.cachedIcons.clear();
-        mainActivity.sharedPreferences.edit().putBoolean(SettingsManager.NEEDS_META_DATA, true).apply();
+        AbstractPlatform.dontDownloadIconPackages.clear();
+        mainActivity.sharedPreferences.edit()
+                .remove(SettingsManager.NEEDS_META_DATA)
+                .remove(SettingsManager.DONT_DOWNLOAD_ICONS)
+                .apply();
         storeAndReload(mainActivity);
     }
 
     public static void clearLabels(MainActivity mainActivity) {
         SettingsManager.appLabelCache.clear();
-        HashSet<String> setAll = SettingsManager.getAllPackages();
+        HashSet<String> setAll = AbstractPlatform.getAllPackages(mainActivity);
         SharedPreferences.Editor editor = mainActivity.sharedPreferences.edit();
         for (String packageName : setAll) editor.remove(packageName);
         editor.putBoolean(SettingsManager.NEEDS_META_DATA, true);

@@ -47,8 +47,9 @@
 
     <string name="launch_message">Launching 2D apps in a separate window allows for easier multitasking on Quest devices,
         but will cause certain apps to not always launch.\n\nIf you have any issues, disable this option!</string>
-    <string name="hidden_groups_message">Hiding groups will cause all non-hidden apps to be shown together when not in edit mode.\n
-    \nThe settings icon will also be hidden. You will only be able to open settings with the back button on the top of the window, or B on your controller.
+    <string name="hidden_groups_message">Turning this option off will hide the top bar when not in Edit Mode. \n
+        \nThe settings button will also be hidden when not in Edit Mode.\n
+        \nTo turn on Edit Mode, press the back button on the top of the window, or B on your controller.
     </string>
 
     <string name="add_website">Add Website</string>
@@ -82,6 +83,8 @@
     <string name="selection_hint_multiple">%d apps selected, short press a group to move them</string>
     <string name="selection_moved_single">Moved an app to %s</string>
     <string name="selection_moved_multiple">Moved %d apps to %s</string>
+    <string name="selection_hint_cleared">Cleared selection</string>
+    <string name="selection_hint_all">Selected all visible apps</string>
 
     <!--  Updater  -->
     <string name="update_title">An update is available!</string>

@@ -1,6 +1,7 @@
 package com.threethan.launcher.ui;
 
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -74,8 +75,7 @@ public class AppsAdapter extends BaseAdapter{
 
         ArrayList<String> sortedGroups = settingsManager.getAppGroupsSorted(false);
         ArrayList<String> sortedSelectedGroups = settingsManager.getAppGroupsSorted(true);
-        boolean isFirstGroupSelected = !sortedSelectedGroups.isEmpty() && !sortedGroups.isEmpty() && sortedSelectedGroups.get(0).compareTo(sortedGroups.get(0)) == 0;
-        appList = settingsManager.getInstalledApps(context, sortedSelectedGroups, isFirstGroupSelected, myApps);
+        appList = settingsManager.getInstalledApps(context, sortedSelectedGroups, myApps);
     }
 
     private static class ViewHolder {
@@ -141,7 +141,13 @@ public class AppsAdapter extends BaseAdapter{
         if (isEditMode) {
             holder.layout.setOnClickListener(view -> {
                 boolean selected = mainActivity.selectApp(currentApp.packageName);
-                holder.layout.setAlpha(selected? 0.5F : 1.0F);
+                ValueAnimator an = android.animation.ObjectAnimator.ofFloat(holder.layout, "alpha", selected? 0.5F : 1.0F);
+                an.setDuration(150);
+                an.start();
+            });
+            holder.layout.setOnLongClickListener(view -> {
+                showAppDetails(currentApp);
+                return true;
             });
 
         } else {
@@ -155,14 +161,15 @@ public class AppsAdapter extends BaseAdapter{
                 return true;
             });
         }
-        holder.layout.setOnLongClickListener(view -> {
-            showAppDetails(currentApp);
-            return true;
-        });
+
         Runnable checkHover = new Runnable() {
             @Override
             public void run() {
                 holder.moreButton.setVisibility(holder.layout.isHovered() || holder.moreButton.isHovered() ? View.VISIBLE : View.INVISIBLE);
+                boolean selected = mainActivity.isSelected(currentApp.packageName);
+                ValueAnimator an = android.animation.ObjectAnimator.ofFloat(holder.layout, "alpha", selected? 0.5F : 1.0F);
+                an.setDuration(150);
+                an.start();
                 holder.layout.postDelayed(this, 250);
             }
         };
@@ -179,6 +186,7 @@ public class AppsAdapter extends BaseAdapter{
         CompatHelper.clearIcons(mainActivity);
         if (path != null) {
             Bitmap bitmap = ImageUtils.getResizedBitmap(BitmapFactory.decodeFile(path), 450);
+
             ImageUtils.saveBitmap(bitmap, iconFile);
             selectedImageView.setImageBitmap(bitmap);
         } else {
