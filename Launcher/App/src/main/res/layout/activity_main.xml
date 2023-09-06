@@ -59,15 +59,16 @@
         android:layout_marginEnd="75dp"
         android:layout_marginBottom="11dp"
         android:background="@drawable/blur_view_background"
-        android:visibility="invisible"
-        app:blurOverlayColor="#46000000"
-        tools:visibility="visible">
+        android:minHeight="40dp"
+        android:visibility="visible"
+        app:blurOverlayColor="#46000000">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:baselineAligned="false"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            tools:visibility="gone">
 
             <GridView
                 android:id="@+id/groupsView"

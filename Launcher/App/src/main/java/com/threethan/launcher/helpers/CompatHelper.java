@@ -64,12 +64,11 @@ public class CompatHelper {
                             updatedAppList.put(packageName, apps.get(packageName));
                         }
                     }
-                    HashSet<String> selectedGroup = new HashSet<>();
-                    selectedGroup.add(newGroupName);
-                    settingsManager.setSelectedGroups(selectedGroup);
+                    HashSet<String> selectedGroups = new HashSet<>();
+                    selectedGroups.add(newGroupName);
+                    settingsManager.setSelectedGroups(selectedGroups);
                     settingsManager.setAppGroups(appGroupsList);
                     SettingsManager.setAppGroupMap(updatedAppList);
-
                 }
                 if (version == 1) {
                     int bg = sharedPreferences.getInt(SettingsManager.KEY_BACKGROUND, SettingsManager.DEFAULT_BACKGROUND);

@@ -191,19 +191,21 @@ public class MainActivity extends Activity {
                 refreshInterface();
 
             }
+            final String group = groups.get(position);
             // Move apps if any are selected
             if (!currentSelectedApps.isEmpty()) {
                 GroupsAdapter groupsAdapter = (GroupsAdapter) groupPanelGridView.getAdapter();
-                for (String app : currentSelectedApps) groupsAdapter.setGroup(app, groups.get(position));
+                for (String app : currentSelectedApps) groupsAdapter.setGroup(app, group);
                 TextView selectionHint = findViewById(R.id.selectionHint);
                 selectionHint.setText( currentSelectedApps.size()==1 ?
-                    getString(R.string.selection_moved_single, groups.get(position)) :
-                    getString(R.string.selection_moved_multiple, currentSelectedApps.size(), groups.get(position))
+                    getString(R.string.selection_moved_single, group) :
+                    getString(R.string.selection_moved_multiple, currentSelectedApps.size(), group)
                 );
                 selectionHint.postDelayed(this::updateSelectionHint, 2000);
                 currentSelectedApps.clear();
+                settingsManager.setSelectedGroups(Collections.singleton(group));
                 refreshInterface();
-            } else if (settingsManager.selectGroup(groups.get(position))) refreshInterface();
+            } else if (settingsManager.selectGroup(group)) refreshInterface();
             else recheckPackages(); // If clicking on the same single group, check if there are any new packages
         });
 

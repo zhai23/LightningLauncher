@@ -22,21 +22,17 @@ public class AppPlatform extends AbstractPlatform {
             assert launchIntent != null;
             launchIntent.setFlags(
                 Intent.FLAG_ACTIVITY_NEW_TASK |
-                Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                Intent.FLAG_ACTIVITY_CLEAR_TASK |
-                Intent.FLAG_ACTIVITY_SINGLE_TOP |
-                Intent.FLAG_ACTIVITY_NO_HISTORY |
-                Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
+                Intent.FLAG_ACTIVITY_NO_ANIMATION
             );
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
                     try {
                         // Try to run a main intent, if it exists. This fixes oculus browser, possibly others
-                        Intent browserIntent = new Intent(Intent.ACTION_MAIN);
-                        browserIntent.setPackage(launchIntent.getPackage());
-                        browserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        mainActivity.startActivity(browserIntent);
+                        Intent mainIntent = new Intent(Intent.ACTION_MAIN);
+                        mainIntent.setPackage(launchIntent.getPackage());
+                        mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        mainActivity.startActivity(mainIntent);
                     } catch (Exception e) {
                         mainActivity.startActivity(launchIntent);
                     }
