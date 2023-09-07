@@ -84,18 +84,52 @@
             tools:text=".com/app" />
 
         <ImageButton
-            android:id="@+id/forward2"
+            android:id="@+id/lightMode"
             android:layout_width="39dp"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:layout_weight="1"
             android:background="@drawable/bkg_button_web"
-            android:src="@drawable/web_forward"
-            android:visibility="gone"
-            tools:visibility="visible" />
+            android:src="@drawable/web_light"
+            android:visibility="gone" />
+
+        <ImageButton
+            android:id="@+id/darkMode"
+            android:layout_width="39dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/bkg_button_web"
+            android:src="@drawable/web_dark"
+            android:visibility="gone" />
+
+        <ImageButton
+            android:id="@+id/zoomOut"
+            android:layout_width="39dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/bkg_button_web"
+            android:src="@drawable/web_zoom_out"
+            android:visibility="gone" />
+
+        <ImageButton
+            android:id="@+id/zoomIn"
+            android:layout_width="39dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/bkg_button_web"
+            android:src="@drawable/web_zoom_in"
+            android:visibility="gone" />
 
         <ImageButton
             android:id="@+id/exit"

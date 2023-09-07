@@ -8,11 +8,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -32,8 +36,17 @@ public class WebViewActivity extends Activity {
     String baseUrl = null;
     View back;
     View forward;
+    View zoomIn;
+    View zoomOut;
+    View dark;
+    View light;
+    View background;
+    public SharedPreferences sharedPreferences;
+    // Keys
+    public static final String KEY_WEBSITE_ZOOM = "KEY_WEBSITE_ZOOM-";
+    public static final String KEY_WEBSITE_DARK = "KEY_WEBSITE_DARK-";
 
-    // User agent of oculus browser v23. May cause issues with openXR apps which won't work
+    // finishReceiver
     private final BroadcastReceiver finishReceiver = new BroadcastReceiver() {
         @Override public void onReceive(Context context, Intent intent) { finish();}
     };
@@ -41,6 +54,7 @@ public class WebViewActivity extends Activity {
     @SuppressLint({"UnspecifiedRegisterReceiverFlag", "SetJavaScriptEnabled"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
 
         IntentFilter filter = new IntentFilter(FINISH_ACTION);
@@ -50,6 +64,10 @@ public class WebViewActivity extends Activity {
 
         setContentView(R.layout.activity_webview);
         getWindow().setStatusBarColor(Color.parseColor("#11181f"));
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+
+        background = findViewById(R.id.container);
 
         urlPre = findViewById(R.id.urlPre);
         urlMid = findViewById(R.id.urlMid);
@@ -61,6 +79,12 @@ public class WebViewActivity extends Activity {
 
         back = findViewById(R.id.back);
         forward = findViewById(R.id.forward);
+
+        zoomIn = findViewById(R.id.zoomIn);
+        zoomOut = findViewById(R.id.zoomOut);
+
+        dark  = findViewById(R.id.darkMode);
+        light = findViewById(R.id.lightMode);
 
         back.setOnClickListener((view) -> {
             if (w.history.isEmpty()) { updateButtons(); return; }
@@ -104,15 +128,48 @@ public class WebViewActivity extends Activity {
             return true;
         }));
 
+
         View refresh = findViewById(R.id.refresh);
         refresh.setOnClickListener((view) -> reload());
 
         View exit = findViewById(R.id.exit);
         exit.setOnClickListener((View) -> finish());
+
+        zoomIn.setOnClickListener(view -> w.zoomIn());
+        zoomOut.setOnClickListener(view -> w.zoomOut());
+
+        dark .setOnClickListener(view -> updateDark(true ));
+        light.setOnClickListener(view -> updateDark(false));
+
+        boolean isDark = sharedPreferences.getBoolean(WebViewActivity.KEY_WEBSITE_DARK+baseUrl, true);
+        updateDark(isDark);
     }
     private void updateButtons() {
-        back   .setVisibility(w.history.isEmpty() ? View.GONE : View.VISIBLE);
-        forward.setVisibility(w.future .isEmpty() ? View.GONE : View.VISIBLE);
+        try {
+            back.setVisibility(w.history.isEmpty() ? View.GONE : View.VISIBLE);
+            forward.setVisibility(w.future.isEmpty() ? View.GONE : View.VISIBLE);
+        } catch (Exception ignored) {}
+    }
+    private void updateZoom(int scale) {
+        try {
+            zoomIn .setVisibility(scale > 150 ? View.GONE : View.VISIBLE);
+            zoomOut.setVisibility(scale < 50 ? View.GONE : View.VISIBLE);
+            sharedPreferences.edit().putInt(KEY_WEBSITE_ZOOM+baseUrl, scale).apply();
+            w.setInitialScale(scale);
+        } catch (Exception ignored) {}
+    }
+    private void updateDark(boolean newDark) {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                dark .setVisibility(newDark  ? View.GONE : View.VISIBLE);
+                light.setVisibility(!newDark ? View.GONE : View.VISIBLE);
+                sharedPreferences.edit().putBoolean(KEY_WEBSITE_DARK+baseUrl, newDark).apply();
+
+                if (w != null) w.getSettings().setForceDark(newDark ? WebSettings.FORCE_DARK_ON : WebSettings.FORCE_DARK_OFF);
+
+                background.setBackgroundResource(newDark ? R.drawable.bg_meta : R.drawable.bg_px_grey);
+            }
+        } catch (Exception ignored) {}
     }
     private void loadUrl(String url) {
         if (url == null) return;
@@ -178,14 +235,28 @@ public class WebViewActivity extends Activity {
                 updateUrl(newUrl);
                 if (w.current != null) {
                     w.history.add(w.current);
-                    findViewById(R.id.back).setVisibility(View.VISIBLE);
+                    w.future.clear();
+                    updateButtons();
                 }
                 w.current = newUrl;
                 return false;
             }
+
+            @Override
+            public void onScaleChanged(WebView view, float oldScale, float newScale) {
+                super.onScaleChanged(view, oldScale, newScale);
+                updateZoom((int) newScale * 100);
+            }
         });
-        w.setBackgroundColor(Color.parseColor("#70000000"));
+        w.setBackgroundColor(Color.parseColor("#10000000"));
         updateUrl(w.getUrl());
+
+        updateButtons();
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+            boolean isDark = w.getSettings().getForceDark() == WebSettings.FORCE_DARK_ON;
+            (isDark ? light : dark).setVisibility(View.VISIBLE);
+        }
     }
 
 

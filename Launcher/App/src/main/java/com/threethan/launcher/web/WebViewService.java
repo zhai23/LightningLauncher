@@ -65,17 +65,20 @@ public class WebViewService extends Service {
             webViewsByBaseUrl.put(url, webView);
             activityByBaseUrl.put(url, activity);
 
-            webView.setInitialScale(50); // TODO: Make option
+            webView.setInitialScale(activity.sharedPreferences
+                    .getInt(WebViewActivity.KEY_WEBSITE_ZOOM+activity.baseUrl, 75));
 
             webView.loadUrl(url);
 
             final WebSettings ws = webView.getSettings();
             ws.setLoadWithOverviewMode(true);
-//            ws.setUseWideViewPort(true);
             ws.setJavaScriptEnabled(true);
             ws.setAllowFileAccess(true);
             ws.setUserAgentString(UA);
-            if (android.os.Build.VERSION.SDK_INT >= 29) ws.setForceDark(WebSettings.FORCE_DARK_ON); // TODO: Make option
+            if (android.os.Build.VERSION.SDK_INT >= 29)
+                ws.setForceDark(activity.sharedPreferences
+                .getBoolean(WebViewActivity.KEY_WEBSITE_DARK+activity.baseUrl, true)
+                ? WebSettings.FORCE_DARK_ON : WebSettings.FORCE_DARK_OFF);
         }
         return webView;
 

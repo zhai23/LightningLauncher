@@ -3,7 +3,9 @@ package com.threethan.launcher.platforms;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.transition.Slide;
 import android.util.Log;
+import android.view.Window;
 
 import com.threethan.launcher.MainActivity;
 import com.threethan.launcher.web.WebViewActivity;
@@ -45,9 +47,7 @@ public class AppPlatform extends AbstractPlatform {
                 mainActivity.sendBroadcast(finishIntent);
             }
 
-            intent.setFlags(
-                Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION // Also doesn't do anything on quest, but fine to include
-            );
+            intent.setFlags( Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION );
 
             final Intent finalIntent = intent;
             new Timer().schedule(new TimerTask() {
@@ -59,6 +59,9 @@ public class AppPlatform extends AbstractPlatform {
             return false;
 
         } else {
+            mainActivity.getWindow().setExitTransition(new Slide());
+            mainActivity.getWindow().setEnterTransition(new Slide());
+
             mainActivity.startActivity(intent);
             return true;
         }
