@@ -10,6 +10,10 @@
     <uses-feature android:name="oculus.software.handtracking" android:required="false"/>
     <uses-permission android:name="com.oculus.permission.HAND_TRACKING"/>
 
+    <!-- Allows the app to black audio in background, which is used for the WebView activity -->
+    <uses-permission android:name="com.oculus.permission.PLAY_AUDIO_BACKGROUND"/>
+    <uses-permission android:name="com.oculus.permission.RECORD_AUDIO_BACKGROUND"/>
+
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"
         tools:ignore="QueryAllPackagesPermission" />
 
@@ -52,6 +56,24 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".web.WebViewActivity"
+            android:screenOrientation="unspecified"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
+            android:exported="true"
+            android:resizeableActivity="true">
+
+            <layout android:defaultWidth="706dp"
+                android:defaultHeight="442dp"
+                android:gravity="top|end" />
+
+            <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
+            <meta-data android:name="com.oculus.vrshell.free_resizing_limits" android:value="300,2000,500,1000"/>
+
+            <intent-filter>
+                <action android:name="com.threethan.launcher.FINISH_WEB" />
+            </intent-filter>
+        </activity>
+
         <service
             android:name=".helpers.LauncherAccessibilityService"
             android:label="@string/app_name"
@@ -63,6 +85,11 @@
             <meta-data
                 android:name="android.accessibilityservice"
                 android:resource="@xml/accessibility_service_config" />
+        </service>
+
+        <service
+            android:name=".web.WebViewService"
+            android:exported="true">
         </service>
 
     </application>

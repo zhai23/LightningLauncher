@@ -2,10 +2,11 @@ package com.threethan.launcher.platforms;
 
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
-import android.net.Uri;
+import android.content.pm.PackageManager;
 import android.util.Log;
 
 import com.threethan.launcher.MainActivity;
+import com.threethan.launcher.web.WebViewActivity;
 import com.threethan.launcher.helpers.SettingsManager;
 
 import java.util.Timer;
@@ -14,46 +15,52 @@ import java.util.TimerTask;
 public class AppPlatform extends AbstractPlatform {
     @Override
     public boolean runApp(MainActivity mainActivity, ApplicationInfo appInfo) {
-        Intent launchIntent = mainActivity.getPackageManager().getLaunchIntentForPackage(appInfo.packageName);
+        Intent intent;
+
+        if (isWebsite(appInfo)) {
+            intent = new Intent(mainActivity, WebViewActivity.class);
+            intent.putExtra("url", appInfo.packageName);
+        } else {
+            PackageManager pm = mainActivity.getPackageManager();
+
+            intent = new Intent(Intent.ACTION_MAIN);
+            intent.setPackage(appInfo.packageName);
+
+            if (intent.resolveActivity(pm) == null)
+                intent = pm.getLaunchIntentForPackage(appInfo.packageName);
+        }
+
+        if (intent == null) {
+            Log.w("AppPlatform", "Package could not be launched, may have been uninstalled already? " +appInfo.packageName);
+            mainActivity.recheckPackages();
+            return false;
+        }
 
         if (SettingsManager.getAppLaunchOut(appInfo.packageName) || AbstractPlatform.isVirtualRealityApp(appInfo, mainActivity)) {
             mainActivity.finish();
             mainActivity.overridePendingTransition(0, 0); // Cancel closing animation. Doesn't work on quest, but doesn't hurt
-            assert launchIntent != null;
-            launchIntent.setFlags(
-                Intent.FLAG_ACTIVITY_NEW_TASK |
-                Intent.FLAG_ACTIVITY_NO_ANIMATION
+
+            if (isWebsite(appInfo)) {
+                Intent finishIntent = new Intent(WebViewActivity.FINISH_ACTION);
+                mainActivity.sendBroadcast(finishIntent);
+            }
+
+            intent.setFlags(
+                Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION // Also doesn't do anything on quest, but fine to include
             );
+
+            final Intent finalIntent = intent;
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    try {
-                        // Try to run a main intent, if it exists. This fixes oculus browser, possibly others
-                        Intent mainIntent = new Intent(Intent.ACTION_MAIN);
-                        mainIntent.setPackage(launchIntent.getPackage());
-                        mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                        mainActivity.startActivity(mainIntent);
-                    } catch (Exception e) {
-                        mainActivity.startActivity(launchIntent);
-                    }
+                    mainActivity.startActivity(finalIntent);
                 }
             }, 650);
             return false;
+
         } else {
-            if (isWebsite(appInfo)) {
-                String url = appInfo.packageName;
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(url));
-                mainActivity.startActivity(i);
-                return true;
-            } else if (launchIntent != null ){
-                mainActivity.startActivity(launchIntent);
-                return true;
-            } else {
-                Log.w("AppPlatform", "Package could not be launched, may have been uninstalled " +appInfo.packageName);
-                mainActivity.recheckPackages();
-                return false;
-            }
+            mainActivity.startActivity(intent);
+            return true;
         }
     }
 }

@@ -476,7 +476,7 @@ public class MainActivity extends Activity {
 
         final View editFooter = findViewById(R.id.editFooter);
         if (editMode) { // Edit bar theming
-            editFooter.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(darkMode ? "#60000000" : "#70bebebe")));
+            editFooter.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(darkMode ? "#60000000" : "#70BeBeBe")));
             TextView selectionHint = findViewById(R.id.selectionHint);
             for (TextView textView: new TextView[]{selectionHint, findViewById(R.id.addWebsite), findViewById(R.id.stopEditing)}) {
                 textView.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(darkMode ? "#3a3a3c" : "#FFFFFF")));

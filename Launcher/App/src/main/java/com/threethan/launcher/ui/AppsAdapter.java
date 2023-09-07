@@ -237,7 +237,8 @@ public class AppsAdapter extends BaseAdapter{
         });
 
         dialog.findViewById(R.id.info).setVisibility(isWeb ? View.GONE : View.VISIBLE);
-        if (isVr || isWeb) { //VR apps MUST launch out, so just hide the option
+        if (isVr) {
+            //VR apps MUST launch out, so just hide the option and replace it with another
             launchModeSection.setVisibility(View.GONE);
             refreshIconButton.setVisibility(View.VISIBLE);
 

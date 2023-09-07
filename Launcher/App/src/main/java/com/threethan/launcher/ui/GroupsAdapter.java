@@ -231,13 +231,13 @@ public class GroupsAdapter extends BaseAdapter {
 
             int shapeResourceId;
             if (isLeft && isRight) {
-                shapeResourceId = R.drawable.tab;
+                shapeResourceId = R.drawable.tab_selected;
             } else if (isLeft) {
-                shapeResourceId = R.drawable.tab_left;
+                shapeResourceId = R.drawable.tab_selected_left;
             } else if (isRight) {
-                shapeResourceId = R.drawable.tab_right;
+                shapeResourceId = R.drawable.tab_selected_right;
             } else {
-                shapeResourceId = R.drawable.tab_middle;
+                shapeResourceId = R.drawable.tab_selected_middle;
             }
             itemView.setBackgroundResource(shapeResourceId);
             itemView.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(mainActivity.darkMode ? "#50000000" : "#FFFFFF")));

@@ -30,7 +30,6 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-//TODO: Fix vr icons not loading
 public abstract class AbstractPlatform {
 
     public static final HashMap<String, Drawable> cachedIcons = new HashMap<>();
@@ -205,12 +204,12 @@ public abstract class AbstractPlatform {
         if (
             checkVirtualRealityApp(applicationInfo)) {
             setVr.add(applicationInfo.packageName);
-            mainActivity.mainView.post(() -> {sharedPreferenceEditor.putStringSet(SettingsManager.KEY_VR_SET, setVr);});
+            mainActivity.mainView.post(() -> sharedPreferenceEditor.putStringSet(SettingsManager.KEY_VR_SET, setVr));
 
             return true;
         } else {
             set2d.add(applicationInfo.packageName);
-            mainActivity.mainView.post(() -> {sharedPreferenceEditor.putStringSet(SettingsManager.KEY_2D_SET, set2d);});
+            mainActivity.mainView.post(() -> sharedPreferenceEditor.putStringSet(SettingsManager.KEY_2D_SET, set2d));
             return false;
         }
     }
@@ -302,9 +301,13 @@ public abstract class AbstractPlatform {
         try {
             Resources resources = packageManager.getResourcesForApplication(appInfo.packageName);
             int iconId = appInfo.icon;
-            if (iconId == 0) iconId = android.R.drawable.sym_def_app_icon;
-            appIcon = ResourcesCompat.getDrawableForDensity(resources, iconId, DisplayMetrics.DENSITY_XXXHIGH, null);
-            saveIconDrawable(activity, appIcon, appInfo.packageName);
+            if (iconId == 0) {
+                iconId = android.R.drawable.sym_def_app_icon;
+                appIcon = ResourcesCompat.getDrawableForDensity(resources, iconId, DisplayMetrics.DENSITY_XXXHIGH, null);
+            } else {
+                appIcon = ResourcesCompat.getDrawableForDensity(resources, iconId, DisplayMetrics.DENSITY_XXXHIGH, null);
+                saveIconDrawable(activity, appIcon, appInfo.packageName);
+            }
             return appIcon;
         } catch (Exception ignored) {} // Fails on web apps
 
