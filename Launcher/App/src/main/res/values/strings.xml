@@ -115,6 +115,10 @@
     <string name="web_exit">Return to Launcher</string>
     <string name="web_dark">Set Dark Mode</string>
     <string name="web_light">Set Light Mode</string>
+    <string name="web_add_home">Add to Launcher</string>
+    <string name="web_cancel">Cancel</string>
+    <string name="web_confirm">Confirm &amp; Go</string>
+
 
     <string name="app_settings">App Settings</string>
     <string name="group_settings">Group Settings</string>
@@ -127,6 +131,7 @@
     <string name="select_all">Select/Deselect All Visible Apps</string>
 
     <string name="uninstall">Uninstall / Remove</string>
+    <string name="uninstall_bulk">Uninstall / Remove All Selected</string>
     <string name="info">Android App Info</string>
     <string name="change_icon">Change Icon</string>
 

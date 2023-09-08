@@ -227,7 +227,7 @@ public class AppsAdapter extends BaseAdapter{
         ((TextView) dialog.findViewById(R.id.packageName)).setText(currentApp.packageName);
         // info action
         dialog.findViewById(R.id.info).setOnClickListener(view -> mainActivity.openAppDetails(currentApp));
-        dialog.findViewById(R.id.uninstall).setOnClickListener(view -> {mainActivity.uninstallApp(currentApp); dialog.dismiss();});
+        dialog.findViewById(R.id.uninstall).setOnClickListener(view -> {mainActivity.uninstallApp(currentApp.packageName); dialog.dismiss();});
 
         // toggle launch mode
         final boolean[] launchOut = {SettingsManager.getAppLaunchOut(currentApp.packageName)};

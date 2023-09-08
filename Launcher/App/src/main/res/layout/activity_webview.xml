@@ -8,6 +8,54 @@
     android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/topBarEdit"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="#2A000000"
+        android:orientation="horizontal"
+        android:paddingLeft="7dp"
+        android:paddingRight="7dp"
+        android:visibility="gone">
+
+
+        <EditText
+            android:id="@+id/urlEdit"
+            style="@style/SettingButtonLabel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:ems="10"
+            android:inputType="textUri"
+            android:singleLine="true"
+            tools:text="discord.com/app" />
+
+        <ImageButton
+            android:id="@+id/cancel"
+            android:layout_width="39dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/bkg_button_web"
+            android:src="@drawable/web_close"
+            android:tooltipText="@string/web_cancel" />
+
+        <ImageButton
+            android:id="@+id/confirm"
+            android:layout_width="39dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="8dp"
+            android:background="@drawable/bkg_button_web"
+            android:src="@drawable/web_confirm"
+            android:tooltipText="@string/web_confirm" />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/topBar"
         android:layout_width="match_parent"
         android:layout_height="40dp"
@@ -54,38 +102,61 @@
             android:src="@drawable/web_refresh"
             android:tooltipText="@string/web_reload" />
 
-        <TextView
-            android:id="@+id/urlPre"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:alpha="0.7"
-            android:singleLine="true"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            tools:text="www." />
-
-        <TextView
-            android:id="@+id/urlMid"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:singleLine="true"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            tools:text="url" />
-
-        <TextView
-            android:id="@+id/urlEnd"
+        <LinearLayout
+            android:id="@+id/urlLayout"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:alpha="0.7"
-            android:singleLine="true"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            tools:text=".com/app" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/urlPre"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:alpha="0.7"
+                android:singleLine="true"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                tools:text="www." />
+
+            <TextView
+                android:id="@+id/urlMid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:singleLine="true"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                tools:text="url" />
+
+            <TextView
+                android:id="@+id/urlEnd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="25dp"
+                android:alpha="0.7"
+                android:singleLine="true"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                tools:text=".com/app/longstringidk" />
+
+            <ImageButton
+                android:id="@+id/addHome"
+                android:layout_width="25dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="-25dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/web_add_home"
+                android:tooltipText="@string/web_add_home"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+        </LinearLayout>
 
         <ImageButton
             android:id="@+id/lightMode"

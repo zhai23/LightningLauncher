@@ -49,7 +49,8 @@
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:layout_marginEnd="-10dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:baselineAligned="false">
 
         <FrameLayout
             android:id="@+id/presetGoogle"
@@ -129,7 +130,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:src="@drawable/tidal_svgrepo_com" />
+                android:src="@drawable/web_preset_tidal" />
         </FrameLayout>
 
     </LinearLayout>
@@ -142,7 +143,7 @@
         android:layout_marginTop="10dp"
         android:autofillHints="text"
         android:background="@drawable/bkg_name_app"
-        android:inputType="text"
+        android:inputType="textUri"
         android:selectAllOnFocus="true"
         android:singleLine="true"
         android:textAlignment="gravity"
@@ -153,7 +154,8 @@
         style="@style/SettingButtonLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="2dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginEnd="2dp"
         android:text="@string/add_website_url_label" />
 
     <TextView

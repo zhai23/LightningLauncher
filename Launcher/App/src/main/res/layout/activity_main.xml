@@ -122,10 +122,10 @@
         android:visibility="gone"
         tools:visibility="visible">
 
-        <TextView
+        <LinearLayout
             android:id="@+id/selectionHint"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="start"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="5dp"
@@ -134,13 +134,34 @@
             android:gravity="center"
             android:paddingStart="15dp"
             android:paddingTop="10dp"
-            android:paddingEnd="15dp"
-            android:paddingBottom="10dp"
-            android:singleLine="true"
-            android:text="@string/selection_hint_none"
-            android:textColor="@color/ef_colorTextPrimary"
-            android:textSize="16sp"
-            android:tooltipText="@string/select_all" />
+            android:paddingEnd="10dp"
+            android:paddingBottom="10dp">
+
+            <TextView
+                android:id="@+id/selectionHintText"
+
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:singleLine="true"
+                android:text="@string/selection_hint_none"
+                android:textColor="@color/ef_colorTextPrimary"
+                android:textSize="16sp"
+                android:tooltipText="@string/select_all"
+                tools:ignore="NestedWeights" />
+
+            <ImageView
+                android:id="@+id/uninstall_bulk"
+                android:layout_width="20dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/ic_uninstall"
+                android:tooltipText="@string/uninstall_bulk"
+                android:visibility="gone" />
+
+
+        </LinearLayout>
+
+
 
         <TextView
             android:id="@+id/addWebsite"

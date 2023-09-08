@@ -202,12 +202,14 @@ public class MainActivity extends Activity {
             if (!currentSelectedApps.isEmpty()) {
                 GroupsAdapter groupsAdapter = (GroupsAdapter) groupPanelGridView.getAdapter();
                 for (String app : currentSelectedApps) groupsAdapter.setGroup(app, group);
-                TextView selectionHint = findViewById(R.id.selectionHint);
-                selectionHint.setText( currentSelectedApps.size()==1 ?
+                TextView selectionHintText = findViewById(R.id.selectionHintText);
+                selectionHintText.setText( currentSelectedApps.size()==1 ?
                     getString(R.string.selection_moved_single, group) :
                     getString(R.string.selection_moved_multiple, currentSelectedApps.size(), group)
                 );
-                selectionHint.postDelayed(this::updateSelectionHint, 2000);
+                selectionHintText.postDelayed(this::updateSelectionHint, 2000);
+                findViewById(R.id.uninstall_bulk).setVisibility(View.GONE);
+
                 currentSelectedApps.clear();
                 settingsManager.setSelectedGroups(Collections.singleton(group));
                 refreshInterface();
@@ -485,24 +487,52 @@ public class MainActivity extends Activity {
         final View editFooter = findViewById(R.id.editFooter);
         if (editMode) { // Edit bar theming
             editFooter.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(darkMode ? "#60000000" : "#70BeBeBe")));
-            TextView selectionHint = findViewById(R.id.selectionHint);
-            for (TextView textView: new TextView[]{selectionHint, findViewById(R.id.addWebsite), findViewById(R.id.stopEditing)}) {
+
+            final View selectionHint = findViewById(R.id.selectionHint);
+            final TextView selectionHintText = findViewById(R.id.selectionHintText);
+            final View uninstallButton = findViewById(R.id.uninstall_bulk);
+
+            for (TextView textView: new TextView[]{selectionHintText, findViewById(R.id.addWebsite), findViewById(R.id.stopEditing)}) {
                 textView.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(darkMode ? "#3a3a3c" : "#FFFFFF")));
                 textView.setTextColor(Color.parseColor(darkMode ? "#FFFFFF" : "#000000"));
             }
+            selectionHint  .setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(darkMode ? "#3a3a3c" : "#FFFFFF")));
+            uninstallButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(darkMode ? "#FFFFFF" : "#3a3a3c")));
+
             selectionHint.setOnClickListener((view) -> {
                 if (currentSelectedApps.isEmpty()) {
                     final Adapter appAdapterIcon = ((GridView) findViewById(R.id.appsViewIcon)).getAdapter();
                     for (int i=0; i<appAdapterIcon.getCount(); i++) currentSelectedApps.add(((ApplicationInfo) appAdapterIcon.getItem(i)).packageName);
                     final Adapter appsAdapterWide = ((GridView) findViewById(R.id.appsViewWide)).getAdapter();
                     for (int i=0; i<appsAdapterWide.getCount(); i++) currentSelectedApps.add(((ApplicationInfo) appsAdapterWide.getItem(i)).packageName);
-                    selectionHint.setText(R.string.selection_hint_all);
+                    selectionHintText.setText(R.string.selection_hint_all);
                 } else {
                     currentSelectedApps.clear();
-                    selectionHint.setText(R.string.selection_hint_cleared);
+                    selectionHintText.setText(R.string.selection_hint_cleared);
                 }
                 selectionHint.postDelayed(this::updateSelectionHint, 2000);
+                findViewById(R.id.uninstall_bulk).setVisibility(View.GONE);
             });
+            selectionHintText.setOnClickListener((view) -> {
+                if (currentSelectedApps.isEmpty()) {
+                    final Adapter appAdapterIcon = ((GridView) findViewById(R.id.appsViewIcon)).getAdapter();
+                    for (int i=0; i<appAdapterIcon.getCount(); i++) currentSelectedApps.add(((ApplicationInfo) appAdapterIcon.getItem(i)).packageName);
+                    final Adapter appsAdapterWide = ((GridView) findViewById(R.id.appsViewWide)).getAdapter();
+                    for (int i=0; i<appsAdapterWide.getCount(); i++) currentSelectedApps.add(((ApplicationInfo) appsAdapterWide.getItem(i)).packageName);
+                    selectionHintText.setText(R.string.selection_hint_all);
+                } else {
+                    currentSelectedApps.clear();
+                    selectionHintText.setText(R.string.selection_hint_cleared);
+                }
+                selectionHint.postDelayed(this::updateSelectionHint, 2000);
+                findViewById(R.id.uninstall_bulk).setVisibility(View.GONE);
+            });
+            uninstallButton.setOnClickListener(view -> {
+                for (String currentSelectedApp : currentSelectedApps) {
+                    uninstallApp(currentSelectedApp);
+                }
+            });
+
         }
         editFooter.setVisibility(editMode ? View.VISIBLE : View.GONE);
 
@@ -813,19 +843,20 @@ public class MainActivity extends Activity {
         intent.setData(Uri.parse("package:" + app.packageName));
         startActivity(intent);
     }
-    public void uninstallApp(ApplicationInfo app) {
-        if (AbstractPlatform.isWebsite(app)) {
+    public void uninstallApp(String packageName) {
+        if (AbstractPlatform.isWebsite(packageName)) {
             Set<String> webApps = sharedPreferences.getStringSet(SettingsManager.KEY_WEBSITE_LIST, Collections.emptySet());
             webApps = new HashSet<>(webApps); // Copy since we're not supposed to modify directly
-            webApps.remove(app.packageName);
+            wService.killWebView(packageName); // Kill webview if running
+            webApps.remove(packageName);
             sharedPreferenceEditor
-                    .putString(app.packageName, null) // set display name
+                    .putString(packageName, null) // set display name
                     .putStringSet(SettingsManager.KEY_WEBSITE_LIST, webApps);
             updateAppLists();
             refreshInterface();
         } else {
             Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
-            intent.setData(Uri.parse("package:" + app.packageName));
+            intent.setData(Uri.parse("package:" + packageName));
             startActivity(intent);
             onPause();
         }
@@ -849,12 +880,14 @@ public class MainActivity extends Activity {
     }
 
     void updateSelectionHint() {
-        TextView selectionHint = findViewById(R.id.selectionHint);
+        TextView selectionHintText = findViewById(R.id.selectionHintText);
+        final View uninstallButton = findViewById(R.id.uninstall_bulk);
+        uninstallButton.setVisibility(currentSelectedApps.isEmpty() ? View.GONE : View.VISIBLE);
 
         final int size = currentSelectedApps.size();
-        if (size == 0)      selectionHint.setText(R.string.selection_hint_none);
-        else if (size == 1) selectionHint.setText(R.string.selection_hint_single);
-        else selectionHint.setText(getString(R.string.selection_hint_multiple, size));
+        if (size == 0)      selectionHintText.setText(R.string.selection_hint_none);
+        else if (size == 1) selectionHintText.setText(R.string.selection_hint_single);
+        else selectionHintText.setText(getString(R.string.selection_hint_multiple, size));
     }
     void showWebsiteInfo() {
         AlertDialog subDialog = DialogHelper.build(this, R.layout.dialog_website_info);
@@ -879,13 +912,7 @@ public class MainActivity extends Activity {
                 dialog.findViewById(R.id.badUrl).setVisibility(View.VISIBLE);
                 return;
             }
-            if (!url.contains("//")) url = "https://" + url;
-
-            Set<String> webApps = sharedPreferences.getStringSet(SettingsManager.KEY_WEBSITE_LIST, Collections.emptySet());
-            webApps = new HashSet<>(webApps); // Copy since we're not supposed to modify directly
-            webApps.add(url);
-
-            sharedPreferenceEditor.putStringSet(SettingsManager.KEY_WEBSITE_LIST, webApps);
+            AbstractPlatform.addWebApp(sharedPreferences, url);
             dialog.cancel();
             updateAppLists();
             refreshInterface();

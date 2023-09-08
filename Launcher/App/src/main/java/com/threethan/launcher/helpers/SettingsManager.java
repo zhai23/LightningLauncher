@@ -149,9 +149,23 @@ public class SettingsManager {
         String name = sharedPreferences.getString(appInfo.packageName, "");
         if (!name.isEmpty()) return name;
         if (AbstractPlatform.isWebsite(appInfo)) {
-            name = appInfo.packageName.split("//")[1].split("\\.")[0];
-            name = LibHelper.toTitleCase(name);
-            if (!name.isEmpty()) return name;
+            name = appInfo.packageName.split("//")[1];
+            String[] split = name.split("\\.");
+            if      (split.length <= 1) name = appInfo.packageName;
+            else if (split.length == 2) name = split[0];
+            else                        name = split[1];
+
+            if (!name.isEmpty()) {
+                String baseName = name;
+                int i = 0;
+                if (!appLabelCache.containsValue(name)) return name;
+
+                Log.v(name, name);
+                if (split.length > 2) name = split[1] + " " + split[0];
+                else while (appLabelCache.containsValue(name)) { i = i+1; name = baseName + i; }
+                name = LibHelper.toTitleCase(name);
+                return name;
+            }
         }
         try {
             String label = appInfo.loadLabel(mainActivity.getPackageManager()).toString();
@@ -339,8 +353,7 @@ public class SettingsManager {
         }
     }
     private static void queueStoreValues() {
-        if (mainActivity.mainView == null) return;
-        else mainActivity.post(SettingsManager::storeValues);
+        if (mainActivity.mainView != null) mainActivity.post(SettingsManager::storeValues);
     }
     public synchronized static void storeValues() {
         try {

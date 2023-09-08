@@ -370,4 +370,14 @@ public abstract class AbstractPlatform {
         } catch (IOException ignored) {}
         return false;
     }
+
+    public static void addWebApp (SharedPreferences sharedPreferences, String url) {
+        if (!url.contains("//")) url = "https://" + url;
+
+        Set<String> webApps = sharedPreferences.getStringSet(SettingsManager.KEY_WEBSITE_LIST, Collections.emptySet());
+        webApps = new HashSet<>(webApps); // Copy since we're not supposed to modify directly
+        webApps.add(url);
+
+        sharedPreferences.edit().putStringSet(SettingsManager.KEY_WEBSITE_LIST, webApps).apply();
+    }
 }

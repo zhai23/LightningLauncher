@@ -20,13 +20,18 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.threethan.launcher.MainActivity;
 import com.threethan.launcher.R;
+import com.threethan.launcher.helpers.SettingsManager;
+import com.threethan.launcher.platforms.AbstractPlatform;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 public class WebViewActivity extends Activity {
     CustomWebView w;
@@ -41,6 +46,7 @@ public class WebViewActivity extends Activity {
     View dark;
     View light;
     View background;
+    View addHome;
     public SharedPreferences sharedPreferences;
     // Keys
     public static final String KEY_WEBSITE_ZOOM = "KEY_WEBSITE_ZOOM-";
@@ -146,6 +152,33 @@ public class WebViewActivity extends Activity {
 
         boolean isDark = sharedPreferences.getBoolean(WebViewActivity.KEY_WEBSITE_DARK+baseUrl, true);
         updateDark(isDark);
+
+        // Edit URL
+        View urlLayout = findViewById(R.id.urlLayout);
+        EditText urlEdit = findViewById(R.id.urlEdit);
+        View topBar = findViewById(R.id.topBar);
+        View topBarEdit = findViewById(R.id.topBarEdit);
+        urlLayout.setOnClickListener((view) -> {
+            topBar    .setVisibility(View.GONE);
+            topBarEdit.setVisibility(View.VISIBLE);
+            urlEdit.setText(currentUrl);
+            urlEdit.requestFocus(View.LAYOUT_DIRECTION_RTL);
+        });
+        topBarEdit.findViewById(R.id.confirm).setOnClickListener((view) -> {
+            loadUrl(urlEdit.getText().toString());
+            topBar.setVisibility(View.VISIBLE);
+            topBarEdit.setVisibility(View.GONE);
+        });
+        topBarEdit.findViewById(R.id.cancel).setOnClickListener((view) -> {
+            topBar.setVisibility(View.VISIBLE);
+            topBarEdit.setVisibility(View.GONE);
+        });
+
+        addHome = findViewById(R.id.addHome);
+        addHome.setOnClickListener(view -> {
+            AbstractPlatform.addWebApp(sharedPreferences, currentUrl);
+            addHome.setVisibility(View.GONE);
+        });
     }
     private void updateButtons() {
         try {
@@ -185,15 +218,42 @@ public class WebViewActivity extends Activity {
     private void reload() {
         w.reload();
     }
+    private String currentUrl = "";
+    @SuppressLint("SetTextI18n")
     private void updateUrl(String url) {
         url = url.replace("https://","");
-        String pre = url.split("\\.")[0]+".";
-        String mid = url.split("\\.")[1];
-        urlPre.setText(pre);
-        urlMid.setText(mid);
-        urlEnd.setText(url.replace(pre+mid,""));
-    }
+        String[] split = url.split("\\.");
 
+        if (split.length <= 1) {
+            urlPre.setText("");
+            urlMid.setText(url);
+            urlEnd.setText("");
+        } else if (split.length == 2) {
+            urlPre.setText("");
+            urlMid.setText(split[0]);
+            urlEnd.setText(url.replace(split[0], ""));
+        } else {
+            urlPre.setText(split[0] + ".");
+            urlMid.setText(split[1]);
+            urlEnd.setText(url.replace(split[0]+"."+split[1], ""));
+        }
+        currentUrl = url;
+        boolean isDefault = url.replace("/","").equals(
+        baseUrl.replace("https://","").replace("/",""));
+        if (isDefault) addHome.setVisibility(View.GONE);
+        else {
+            Set<String> webList = sharedPreferences.getStringSet(SettingsManager.KEY_WEBSITE_LIST, new HashSet<>());
+            for (String webUrl : webList) {
+                if (url.replace("/", "")
+                        .equals(webUrl.replace("https://", "").replace("/", ""))) {
+                    addHome.setVisibility(View.GONE);
+                    return;
+                }
+            }
+            if (webList.contains(url) || webList.contains((url+" ").replace("/ ",""))) addHome.setVisibility(View.GONE);
+            else addHome.setVisibility(View.VISIBLE);
+        }
+    }
 
     WebViewService wService;
     boolean wBound = false;
