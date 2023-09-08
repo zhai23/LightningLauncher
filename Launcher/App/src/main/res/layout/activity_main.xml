@@ -106,6 +106,7 @@
             android:padding="8dp"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_config"
+            android:tooltipText="@string/settings_main"
             tools:ignore="ImageContrastCheck" />
     </eightbitlab.com.blurview.BlurView>
 
@@ -138,7 +139,8 @@
             android:singleLine="true"
             android:text="@string/selection_hint_none"
             android:textColor="@color/ef_colorTextPrimary"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:tooltipText="@string/select_all" />
 
         <TextView
             android:id="@+id/addWebsite"
@@ -155,7 +157,8 @@
             android:paddingBottom="10dp"
             android:text="@string/add_website"
             android:textColor="@color/ef_colorTextPrimary"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:tooltipText="@string/add_website" />
 
         <TextView
             android:id="@+id/stopEditing"
@@ -171,7 +174,8 @@
             android:paddingBottom="10dp"
             android:text="@string/edit_mode_stop"
             android:textColor="@color/ef_colorTextPrimary"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:tooltipText="@string/stop_editing" />
     </LinearLayout>
 
     <FrameLayout

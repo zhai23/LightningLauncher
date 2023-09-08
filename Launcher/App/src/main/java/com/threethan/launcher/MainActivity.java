@@ -21,7 +21,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -855,14 +854,21 @@ public class MainActivity extends Activity {
         else if (size == 1) selectionHint.setText(R.string.selection_hint_single);
         else selectionHint.setText(getString(R.string.selection_hint_multiple, size));
     }
-
+    void showWebsiteInfo() {
+        AlertDialog subDialog = DialogHelper.build(this, R.layout.dialog_website_info);
+        subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
+            sharedPreferenceEditor.putBoolean(SettingsManager.KEY_SEEN_WEBSITE_POPUP, true).apply();
+            addWebsite();
+            subDialog.dismiss();
+        });
+    }
     void addWebsite() {
         sharedPreferenceEditor.apply();
 
         AlertDialog dialog = DialogHelper.build(this, R.layout.dialog_new_website);
 
         dialog.findViewById(R.id.cancel).setOnClickListener(view -> dialog.cancel());
-        ((TextView) dialog.findViewById(R.id.add_text)).setText(getString(R.string.add_website_group, SettingsManager.getDefaultGroup(false, true)));
+        ((TextView) dialog.findViewById(R.id.addText)).setText(getString(R.string.add_website_group, SettingsManager.getDefaultGroup(false, true)));
         dialog.findViewById(R.id.confirm).setOnClickListener(view -> {
             String url  = ((EditText) dialog.findViewById(R.id.app_url )).getText().toString().toLowerCase();
             if (!Patterns.WEB_URL.matcher(url).matches() || !url.contains(".")) {
@@ -880,6 +886,11 @@ public class MainActivity extends Activity {
             updateAppLists();
             refreshInterface();
         });
+        dialog.findViewById(R.id.info).setOnClickListener(view -> {
+            dialog.dismiss();
+            showWebsiteInfo();
+        });
+
     }
     public void updateAppLists() {
         sharedPreferenceEditor.apply();

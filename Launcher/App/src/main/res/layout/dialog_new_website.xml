@@ -11,11 +11,32 @@
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        style="@style/SettingTitle"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/add_website" />
+        android:layout_height="match_parent">
+
+        <TextView
+            style="@style/SettingTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="@string/add_website"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/info"
+            style="@android:style/DeviceDefault.ButtonBar"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/ic_info"
+            android:backgroundTint="#FFFFFF"
+            android:textColor="@android:color/white"
+            android:tooltipText="@string/info_website"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <View
         android:id="@+id/sizer"
@@ -83,7 +104,7 @@
             android:tooltipText="@string/website_group">
 
             <TextView
-                android:id="@+id/add_text"
+                android:id="@+id/addText"
                 style="@style/SettingButtonLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"

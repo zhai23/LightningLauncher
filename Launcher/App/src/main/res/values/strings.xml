@@ -52,13 +52,18 @@
         \nTo turn on Edit Mode, press the back button on the top of the window, or B on your controller.
     </string>
 
-    <string name="website_title">Websites in LightningLauncher</string>
-    <string name="website_message">Websites will open in a pop-up browser in the launcher for easy access.\n
-    \nThis is not the same as the default Quest browser, so VR websites will not work.\n
-    \nThe web page will continue running in background when closed, and will be able to play audio in the background.\n
-    \n(This feature is experimental, please report any issues on GitHub)</string>
+    <string name="website_title">Websites in Lightning Launcher</string>
+    <string name="website_subtitle1">Easily Access Web Pages &amp; Apps</string>
+    <string name="website_info1">
+        Websites will appear as apps on your home screen, and will open in a custom browser in the same window. Any 2D website works.\n
+        \nZoom and dark mode preferences are saved for each website.</string>
+    <string name="website_subtitle2">Audio in the Background</string>
+    <string name="website_info2">
+        After being closed, websites will continue running, playing and recording audio in the background.\n
+        \nAn indicator will be shown on the icon of any running website;\nPress it to fully stop that website.
+    </string>
 
-    <string name="add_website">Add Website</string>
+    <string name="add_website">Add a Website</string>
     <string name="add_website_url_label">Website URL</string>
     <string name="add_website_bad_url">Enter a valid URL and try again</string>
     <string name="add_website_group">Add to %s</string>
@@ -111,8 +116,15 @@
     <string name="web_dark">Set Dark Mode</string>
     <string name="web_light">Set Light Mode</string>
 
+    <string name="app_settings">App Settings</string>
+    <string name="group_settings">Group Settings</string>
     <string name="kill_process">Stop Running in the Background</string>
-    <string name="website_group">This is set as the default group for websites</string>
+
+    <string name="website_group">This group is currently set as the default for new websites</string>
+    <string name="info_website">About Adding Websites</string>
+
+    <string name="stop_editing">Turn Off Edit Mode</string>
+    <string name="select_all">Select/Deselect All Visible Apps</string>
 
     <string name="uninstall">Uninstall / Remove</string>
     <string name="info">Android App Info</string>

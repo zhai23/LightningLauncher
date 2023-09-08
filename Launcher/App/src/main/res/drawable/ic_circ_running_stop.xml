@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@drawable/bkg_button_circ"/>
+    <item android:drawable="@drawable/bkg_button_circle_default"/>
     <item android:drawable="@drawable/ic_running_stop"/>
 </layer-list>

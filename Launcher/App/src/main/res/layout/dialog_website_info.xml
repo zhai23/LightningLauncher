@@ -11,48 +11,49 @@
         android:padding="20dp">
 
         <View
-            android:layout_width="370dp"
+            android:layout_width="406sp"
             android:layout_height="0dp" />
 
         <TextView
             style="@style/SettingTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/service_title" />
+            android:text="@string/website_title" />
 
         <TextView
             style="@style/SettingSubtitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="0dp"
-            android:paddingLeft="0dp"
-            android:text="@string/service_subtitle" />
+            android:paddingStart="0dp"
+            android:paddingEnd="0dp"
+            android:text="@string/website_subtitle1" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:autofillHints="text"
             android:backgroundTint="@android:color/white"
-            android:minHeight="125sp"
-            android:text="@string/service_info"
+            android:minHeight="80sp"
+            android:text="@string/website_info1"
             android:textColor="@android:color/white" />
 
         <TextView
             style="@style/SettingSubtitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
             android:paddingStart="0dp"
             android:paddingEnd="0dp"
-            android:text="@string/service_instructions" />
+            android:text="@string/website_subtitle2" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
             android:autofillHints="text"
             android:backgroundTint="@android:color/white"
-            android:minHeight="70sp"
-            android:text="@string/service_message"
+            android:minHeight="83dp"
+            android:text="@string/website_info2"
             android:textColor="@android:color/white" />
 
         <FrameLayout
@@ -65,7 +66,7 @@
                 style="@style/SettingButtonLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/service_next" />
+                android:text="@string/understood" />
         </FrameLayout>
 
     </LinearLayout>
