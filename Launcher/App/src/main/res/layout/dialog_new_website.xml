@@ -40,14 +40,106 @@
 
     <View
         android:id="@+id/sizer"
+        style="@style/SettingButtonLabel"
         android:layout_width="350dp"
         android:layout_height="0dp" />
 
+    <LinearLayout
+        android:id="@+id/presets"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginEnd="-10dp"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:id="@+id/presetGoogle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/bkg_button"
+            android:padding="5dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/web_preset_google" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/presetYoutube"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/bkg_button"
+            android:padding="4.5dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/web_preset_youtube" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/presetDiscord"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/bkg_button"
+            android:padding="4dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/web_preset_discord" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/presetSpotify"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/bkg_button"
+            android:padding="5dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/web_preset_spotify" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/presetTidal"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/bkg_button"
+            android:padding="4dp">
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/tidal_svgrepo_com" />
+        </FrameLayout>
+
+    </LinearLayout>
+
     <EditText
-        android:id="@+id/app_url"
+        android:id="@+id/appUrl"
         android:layout_width="match_parent"
         android:layout_height="40sp"
         android:layout_gravity="bottom"
+        android:layout_marginTop="10dp"
         android:autofillHints="text"
         android:background="@drawable/bkg_name_app"
         android:inputType="text"
@@ -65,7 +157,7 @@
         android:text="@string/add_website_url_label" />
 
     <TextView
-        android:id="@+id/bad_url"
+        android:id="@+id/badUrl"
         style="@style/SettingButtonLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -32,12 +32,14 @@ import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Adapter;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -869,10 +871,12 @@ public class MainActivity extends Activity {
 
         dialog.findViewById(R.id.cancel).setOnClickListener(view -> dialog.cancel());
         ((TextView) dialog.findViewById(R.id.addText)).setText(getString(R.string.add_website_group, SettingsManager.getDefaultGroup(false, true)));
+        EditText urlEdit = dialog.findViewById(R.id.appUrl);
+
         dialog.findViewById(R.id.confirm).setOnClickListener(view -> {
-            String url  = ((EditText) dialog.findViewById(R.id.app_url )).getText().toString().toLowerCase();
+            String url  = urlEdit.getText().toString().toLowerCase();
             if (!Patterns.WEB_URL.matcher(url).matches() || !url.contains(".")) {
-                dialog.findViewById(R.id.bad_url).setVisibility(View.VISIBLE);
+                dialog.findViewById(R.id.badUrl).setVisibility(View.VISIBLE);
                 return;
             }
             if (!url.contains("//")) url = "https://" + url;
@@ -891,6 +895,12 @@ public class MainActivity extends Activity {
             showWebsiteInfo();
         });
 
+        // Presets
+        dialog.findViewById(R.id.presetGoogle).setOnClickListener(view -> urlEdit.setText(R.string.preset_google));
+        dialog.findViewById(R.id.presetYoutube).setOnClickListener(view -> urlEdit.setText(R.string.preset_youtube));
+        dialog.findViewById(R.id.presetDiscord).setOnClickListener(view -> urlEdit.setText(R.string.preset_discord));
+        dialog.findViewById(R.id.presetSpotify).setOnClickListener(view -> urlEdit.setText(R.string.preset_spotify));
+        dialog.findViewById(R.id.presetTidal).setOnClickListener(view -> urlEdit.setText(R.string.preset_tidal));
     }
     public void updateAppLists() {
         sharedPreferenceEditor.apply();
