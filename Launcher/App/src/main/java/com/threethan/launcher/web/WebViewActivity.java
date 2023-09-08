@@ -16,7 +16,6 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -24,6 +23,7 @@ import android.webkit.WebViewClient;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.threethan.launcher.MainActivity;
 import com.threethan.launcher.R;
 
 import java.util.Objects;
@@ -58,13 +58,16 @@ public class WebViewActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         IntentFilter filter = new IntentFilter(FINISH_ACTION);
+        IntentFilter filter2= new IntentFilter(MainActivity.FINISH_ACTION);
         registerReceiver(finishReceiver, filter);
+        registerReceiver(finishReceiver, filter2);
 
         Log.v("WebsiteLauncher", "Starting WebView Activity");
 
         setContentView(R.layout.activity_webview);
         getWindow().setStatusBarColor(Color.parseColor("#11181f"));
 
+        //noinspection deprecation
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
         background = findViewById(R.id.container);
@@ -167,7 +170,7 @@ public class WebViewActivity extends Activity {
 
                 if (w != null) w.getSettings().setForceDark(newDark ? WebSettings.FORCE_DARK_ON : WebSettings.FORCE_DARK_OFF);
 
-                background.setBackgroundResource(newDark ? R.drawable.bg_meta : R.drawable.bg_px_grey);
+                background.setBackgroundResource(newDark ? R.drawable.bg_meta_dark : R.drawable.bg_meta_light);
             }
         } catch (Exception ignored) {}
     }
@@ -278,5 +281,10 @@ public class WebViewActivity extends Activity {
         }
     };
 
+
+    public static void killInstances(Context context) {
+        Intent finishIntent = new Intent(WebViewActivity.FINISH_ACTION);
+        context.sendBroadcast(finishIntent);
+    }
 
 }

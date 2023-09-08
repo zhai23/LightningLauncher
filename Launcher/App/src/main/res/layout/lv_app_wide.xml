@@ -15,10 +15,22 @@
         android:background="@drawable/bkg_app">
 
         <Button
+            android:id="@+id/killButton"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_margin="3dp"
+            android:background="@drawable/ic_running"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/imageLabel"
+            app:layout_constraintEnd_toEndOf="@id/imageLabel"
+            tools:visibility="visible" />
+
+        <Button
             android:id="@+id/moreButton"
             android:layout_width="26dp"
             android:layout_height="26dp"
-            android:background="@drawable/more_shadow"
+            android:layout_margin="3dp"
+            android:background="@drawable/ic_circ_more"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

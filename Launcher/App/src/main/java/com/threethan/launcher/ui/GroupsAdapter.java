@@ -158,7 +158,7 @@ public class GroupsAdapter extends BaseAdapter {
                     // Move apps when we rename
                     Map<String, String> updatedAppGroupMap = new HashMap<>();
                     for (String packageName : apps.keySet()) {
-                        if (Objects.requireNonNull(apps.get(packageName)).compareTo(groupName) == 0) {
+                        if (apps.get(packageName) != null && apps.get(packageName).compareTo(groupName) == 0) {
                             updatedAppGroupMap.put(packageName, newGroupName);
                         } else {
                             updatedAppGroupMap.put(packageName, apps.get(packageName));
@@ -245,7 +245,7 @@ public class GroupsAdapter extends BaseAdapter {
             textView.setTextColor(Color.parseColor(mainActivity.darkMode ? "#FFFFFFFF" : "#FF000000")); // set selected tab text color
             if (isEditMode && (position < getCount() - 2)) {
                 menu.setVisibility(View.VISIBLE);
-                menu.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(mainActivity.darkMode ? "#FFFFFFFF" : "#FF000000"))); // set selected tab text color
+//                menu.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(mainActivity.darkMode ? "#FFFFFFFF" : "#FF000000"))); // set selected tab text color
 
             } else {
                 menu.setVisibility(View.GONE);

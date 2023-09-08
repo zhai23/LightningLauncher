@@ -68,7 +68,6 @@ public abstract class AbstractPlatform {
 
         return success;
     }
-
     public static AbstractPlatform getPlatform(ApplicationInfo ignoredApplicationInfo) {
         return new AppPlatform();
     }
@@ -204,12 +203,12 @@ public abstract class AbstractPlatform {
         if (
             checkVirtualRealityApp(applicationInfo)) {
             setVr.add(applicationInfo.packageName);
-            mainActivity.mainView.post(() -> sharedPreferenceEditor.putStringSet(SettingsManager.KEY_VR_SET, setVr));
+            mainActivity.post(() -> sharedPreferenceEditor.putStringSet(SettingsManager.KEY_VR_SET, setVr));
 
             return true;
         } else {
             set2d.add(applicationInfo.packageName);
-            mainActivity.mainView.post(() -> sharedPreferenceEditor.putStringSet(SettingsManager.KEY_2D_SET, set2d));
+            mainActivity.post(() -> sharedPreferenceEditor.putStringSet(SettingsManager.KEY_2D_SET, set2d));
             return false;
         }
     }
@@ -274,7 +273,10 @@ public abstract class AbstractPlatform {
         else       return sharedPreferences.getBoolean(SettingsManager.KEY_WIDE_2D , SettingsManager.DEFAULT_WIDE_2D );
     }
     public static boolean isWebsite(ApplicationInfo applicationInfo) {
-        return (applicationInfo.packageName.contains("//"));
+        return (isWebsite(applicationInfo.packageName));
+    }
+    public static boolean isWebsite(String packageName) {
+        return (packageName.contains("//"));
     }
 
     private boolean shouldDownloadIcon(MainActivity activity, ApplicationInfo appInfo) {
@@ -342,10 +344,6 @@ public abstract class AbstractPlatform {
                         final String urlName = isWebsite(appInfo) ?
                                 pkgName.split("//")[0]+"//"+pkgName.split("/")[2] : pkgName;
 
-                        Log.v("DOWNLOADNAME", urlName);
-                        Log.v("AbstractPlatform", "Checking URL "+String.format(url, urlName));
-
-                        Log.v("DOWNLOADNAME", urlName);
                         if (downloadIconFromUrl(String.format(url, urlName), iconFile)) {
                             activity.runOnUiThread(callback);
                             return;
@@ -356,7 +354,7 @@ public abstract class AbstractPlatform {
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
-                    dontDownloadIconPackages.add(pkgName);
+                    if (!isWebsite(appInfo)) dontDownloadIconPackages.add(pkgName);
                     activity.sharedPreferenceEditor.putStringSet(SettingsManager.DONT_DOWNLOAD_ICONS, dontDownloadIconPackages);
                     locks.remove(pkgName);
                 }
@@ -364,7 +362,7 @@ public abstract class AbstractPlatform {
         }).start();
     }
 
-    public abstract boolean runApp(MainActivity mainActivity, ApplicationInfo applicationInfo);
+    public abstract boolean launchApp(MainActivity mainActivity, ApplicationInfo applicationInfo);
 
     boolean downloadIconFromUrl(String url, File iconFile) {
         try (InputStream inputStream = new URL(url).openStream()) {

@@ -1,10 +1,9 @@
 package com.threethan.launcher.helpers;
 
-import android.content.Context;
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.graphics.Color;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.threethan.launcher.MainActivity;
@@ -13,7 +12,6 @@ import com.threethan.launcher.platforms.AbstractPlatform;
 import com.threethan.launcher.ui.GroupsAdapter;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/** @noinspection deprecation*/
 public class SettingsManager {
     public static final String KEY_SCALE = "KEY_CUSTOM_SCALE";
     public static final String KEY_MARGIN = "KEY_CUSTOM_MARGIN";
@@ -84,7 +81,8 @@ public class SettingsManager {
             R.drawable.bg_px_orange,
             R.drawable.bg_px_green,
             R.drawable.bg_px_purple,
-            R.drawable.bg_meta,
+            R.drawable.bg_meta_dark,
+            R.drawable.bg_meta_light,
     };
     public static final int[] BACKGROUND_COLORS = {
             Color.parseColor("#25374f"),
@@ -96,6 +94,7 @@ public class SettingsManager {
             Color.parseColor("#e4eac8"),
             Color.parseColor("#74575c"),
             Color.parseColor("#202a36"),
+            Color.parseColor("#c6d1df"),
     };
     public static final boolean[] BACKGROUND_DARK = {
             true,
@@ -107,10 +106,11 @@ public class SettingsManager {
             false,
             true,
             true,
+            false,
     };
 
     public static List<Integer> getVersionsWithBackgroundChanges() {
-        List<Integer> out = Collections.EMPTY_LIST;
+        List<Integer> out = new ArrayList<>();
         out.add(1);
         out.add(2);
         return out;
@@ -119,6 +119,7 @@ public class SettingsManager {
     //storage
     private static SharedPreferences sharedPreferences = null;
     private static SharedPreferences.Editor sharedPreferenceEditor = null;
+    @SuppressLint("StaticFieldLeak")
     private static MainActivity mainActivity = null;
     private static Map<String, String> appGroupMap = new HashMap<>();
     private static Set<String> appGroupsSet = new HashSet<>();
@@ -337,7 +338,8 @@ public class SettingsManager {
         }
     }
     private static void queueStoreValues() {
-        mainActivity.mainView.post(SettingsManager::storeValues);
+        if (mainActivity.mainView == null) return;
+        else mainActivity.post(SettingsManager::storeValues);
     }
     public synchronized static void storeValues() {
         try {
@@ -392,4 +394,18 @@ public class SettingsManager {
         setSelectedGroups(selectFirst);
         return true;
     }
-}
+
+    public static boolean getRunning(String pkgName) {
+        if (!AbstractPlatform.isWebsite(pkgName)) return false;
+        try {
+            return mainActivity.wService.hasWebView(pkgName);
+        } catch (Exception ignored) {
+            return false;
+        }
+    }
+    public static void stopRunning (String pkgName) {
+        try {
+            mainActivity.wService.killWebView(pkgName);
+        } catch (Exception ignored) {}
+    }
+ }

@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import androidx.annotation.Nullable;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 public class WebViewService extends Service {
     private final IBinder binder = new LocalBinder();
@@ -29,7 +30,7 @@ public class WebViewService extends Service {
     }
 
     public class LocalBinder extends Binder {
-        WebViewService getService() {
+        public WebViewService getService() {
             // Return this instance of LocalService so clients can call public methods.
             return WebViewService.this;
         }
@@ -44,7 +45,7 @@ public class WebViewService extends Service {
     public CustomWebView getWebView(WebViewActivity activity) {
         CustomWebView webView;
         final String url = activity.baseUrl;
-        if (webViewsByBaseUrl.containsKey(url)) {
+        if (hasWebView(url)) {
             webView = webViewsByBaseUrl.get(url);
 
             assert webView != null;
@@ -52,7 +53,7 @@ public class WebViewService extends Service {
             if (parent != null) parent.removeView(webView);
 
             try {
-                activityByBaseUrl.get(url).finish();
+                Objects.requireNonNull(activityByBaseUrl.get(url)).finish();
                 activityByBaseUrl.remove(url);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -82,5 +83,23 @@ public class WebViewService extends Service {
         }
         return webView;
 
+    }
+
+    public boolean hasWebView(String url) {
+        return webViewsByBaseUrl.containsKey(url);
+    }
+    public void killWebView(String url) {
+        if (!hasWebView(url)) return;
+        CustomWebView webView = webViewsByBaseUrl.get(url);
+        if (webView == null) return;
+        webView.destroy();
+        webViewsByBaseUrl.remove(url);
+        try {
+            Objects.requireNonNull(activityByBaseUrl.get(url)).finish();
+            activityByBaseUrl.remove(url);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.gc();
     }
 }

@@ -5,9 +5,11 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -21,6 +23,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.Patterns;
@@ -28,7 +31,6 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
-import android.view.Window;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Adapter;
 import android.widget.EditText;
@@ -52,6 +54,8 @@ import com.threethan.launcher.ui.DynamicHeightGridView;
 import com.threethan.launcher.ui.FadingTopScrollView;
 import com.threethan.launcher.ui.GroupsAdapter;
 import com.threethan.launcher.ui.ImageUtils;
+import com.threethan.launcher.web.WebViewActivity;
+import com.threethan.launcher.web.WebViewService;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -86,7 +90,7 @@ class BackgroundTask extends AsyncTask<Object, Void, Object> {
 
     @Override
     protected void onPostExecute(Object _n) {
-        owner.mainView.post(() -> {
+        owner.post(() -> {
             owner.backgroundImageView.setImageDrawable(backgroundThemeDrawable);
             owner.ready = true;
         });
@@ -172,11 +176,11 @@ public class MainActivity extends Activity {
         fadeView = scrollView;
         backgroundImageView = findViewById(R.id.background);
         groupPanelGridView = findViewById(R.id.groupsView);
-        mainView.post(new Runnable() {
+        post(new Runnable() {
             @Override
             public void run() {
                 sharedPreferenceEditor.apply();
-                mainView.post(this);
+                post(this);
             }
         });
 
@@ -261,20 +265,11 @@ public class MainActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(finishReceiver);
-    }
-
-    private boolean resetOpenAnim() {
-        final boolean rv = (findViewById(R.id.openAnim).getVisibility() == View.VISIBLE);
-        findViewById(R.id.openAnim).setVisibility(View.INVISIBLE);
-        findViewById(R.id.openAnim).setScaleX(1);
-        findViewById(R.id.openAnim).setScaleY(1);
-        findViewById(R.id.openIcon).setAlpha(1.0f);
-        findViewById(R.id.openProgress).setVisibility(View.INVISIBLE);
-        return rv;
+        unbindWebViewService();
     }
     @Override
     public void onBackPressed() {
-        if (resetOpenAnim()) return;
+        if (AppsAdapter.animateClose(this)) return;
         if (!settingsPageOpen) setEditMode(!editMode);
     }
     public static final String FINISH_ACTION = "com.threethan.launcher.FINISH";
@@ -286,12 +281,13 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onResume() {
-        resetOpenAnim();
+        AppsAdapter.animateClose(this);
 
         super.onResume();
 
         if (!loaded) {
             // Load Packages
+            reloadPackages();
             reloadPackages();
             // Reload UI
             mainView.postDelayed(this::runUpdater, 1000);
@@ -300,8 +296,16 @@ public class MainActivity extends Activity {
             loaded = true;
         } else {
             recheckPackages();
+            bindWebViewService();
         }
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unbindWebViewService();
+    }
+
     public void reloadPackages() {
         sharedPreferenceEditor.apply();
         boolean needsMeta = sharedPreferences.getBoolean(SettingsManager.NEEDS_META_DATA, true);
@@ -372,6 +376,8 @@ public class MainActivity extends Activity {
 
         BlurView blurView0 = findViewById(R.id.blurView0);
         BlurView blurView1 = findViewById(R.id.blurView1);
+
+        bindWebViewService();
 
         if (!groupsEnabled) {
             blurView0.setVisibility(View.GONE);
@@ -447,7 +453,7 @@ public class MainActivity extends Activity {
     }
     public void refreshInterface() {
         try {
-            mainView.post(this::refreshInterfaceInternal);
+            post(this::refreshInterfaceInternal);
         } catch (Exception ignored) {
             Log.w("LauncherStartup", "Failed to post refresh refreshInterfaceInternal. Called by something else?");
         }
@@ -502,7 +508,7 @@ public class MainActivity extends Activity {
         // Set adapters
         Log.v("LauncherStartup","2B. Post Next Step");
 
-        mainView.post(this::setAdapters);
+        post(this::setAdapters);
         if (!editMode) {
             currentSelectedApps.clear();
             updateSelectionHint();
@@ -548,7 +554,7 @@ public class MainActivity extends Activity {
 
         Log.v("LauncherStartup","2G. Post Next Step");
 
-        mainView.post(this::updateTopBar);
+        post(this::updateTopBar);
 
 
     }
@@ -636,6 +642,7 @@ public class MainActivity extends Activity {
                 dialog.findViewById(R.id.background6),
                 dialog.findViewById(R.id.background7),
                 dialog.findViewById(R.id.background8),
+                dialog.findViewById(R.id.background9),
                 dialog.findViewById(R.id.background_custom)
         };
         int background = sharedPreferences.getInt(SettingsManager.KEY_BACKGROUND, SettingsManager.DEFAULT_BACKGROUND);
@@ -687,6 +694,7 @@ public class MainActivity extends Activity {
 
         // Icons & Layout
         SeekBar scale = dialog.findViewById(R.id.bar_scale);
+
         scale.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int value, boolean b) {
@@ -702,9 +710,10 @@ public class MainActivity extends Activity {
                 refreshInterface();
             }
         });
+        scale.setMax(200);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) scale.setMin(80);
         scale.setProgress(sharedPreferences.getInt(SettingsManager.KEY_SCALE, SettingsManager.DEFAULT_SCALE));
-        scale.setMax(174);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) scale.setMin(50);
+
 
         SeekBar margin = dialog.findViewById(R.id.bar_margin);
         margin.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -735,11 +744,11 @@ public class MainActivity extends Activity {
                 subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
                     final boolean newValue = !SettingsManager.DEFAULT_GROUPS_ENABLED;
                     sharedPreferenceEditor.putBoolean(SettingsManager.KEY_SEEN_HIDDEN_GROUPS_POPUP, true)
-                            .putBoolean(SettingsManager.KEY_GROUPS_ENABLED, newValue);
+                            .putBoolean(SettingsManager.KEY_GROUPS_ENABLED, newValue)
+                            .apply();
                     groups.setChecked(!SettingsManager.DEFAULT_GROUPS_ENABLED);
                     refreshInterface();
                     subDialog.dismiss();
-
                 });
                 subDialog.findViewById(R.id.cancel).setOnClickListener(view -> {
                     subDialog.dismiss(); // Dismiss without setting
@@ -891,5 +900,49 @@ public class MainActivity extends Activity {
     }
     public int dp(float dip) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, getResources().getDisplayMetrics());
+    }
+
+    public void post(Runnable action) {
+        if (mainView == null) action.run();
+        else mainView.post(action);
+    }
+
+    // Get web states
+    public WebViewService wService;
+    boolean wBound = false;
+
+    /** Defines callbacks for service binding, passed to bindService(). */
+    private final ServiceConnection connection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className,
+                                       IBinder service) {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance.
+            WebViewService.LocalBinder binder = (WebViewService.LocalBinder) service;
+            wService = binder.getService();
+            wBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            wBound = false;
+        }
+    };
+
+    private void bindWebViewService() {
+        // Bind to web service
+        Intent intent = new Intent(this, WebViewService.class);
+
+        try {
+            bindService(intent, connection, Context.BIND_AUTO_CREATE);
+        } catch (Exception ignored) {
+            WebViewActivity.killInstances(this);
+            bindService(intent, connection, Context.BIND_AUTO_CREATE);
+        }
+    }
+    private void unbindWebViewService() {
+        try {
+            unbindService(connection);
+        } catch (Exception ignored) {}
     }
 }

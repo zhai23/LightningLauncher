@@ -5,18 +5,18 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.transition.Slide;
 import android.util.Log;
-import android.view.Window;
 
 import com.threethan.launcher.MainActivity;
 import com.threethan.launcher.web.WebViewActivity;
 import com.threethan.launcher.helpers.SettingsManager;
 
+import java.time.temporal.WeekFields;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class AppPlatform extends AbstractPlatform {
     @Override
-    public boolean runApp(MainActivity mainActivity, ApplicationInfo appInfo) {
+    public boolean launchApp(MainActivity mainActivity, ApplicationInfo appInfo) {
         Intent intent;
 
         if (isWebsite(appInfo)) {
@@ -43,8 +43,7 @@ public class AppPlatform extends AbstractPlatform {
             mainActivity.overridePendingTransition(0, 0); // Cancel closing animation. Doesn't work on quest, but doesn't hurt
 
             if (isWebsite(appInfo)) {
-                Intent finishIntent = new Intent(WebViewActivity.FINISH_ACTION);
-                mainActivity.sendBroadcast(finishIntent);
+                WebViewActivity.killInstances(mainActivity);
             }
 
             intent.setFlags( Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION );
@@ -56,6 +55,12 @@ public class AppPlatform extends AbstractPlatform {
                     mainActivity.startActivity(finalIntent);
                 }
             }, 650);
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    mainActivity.startActivity(finalIntent);
+                }
+            }, 800);
             return false;
 
         } else {

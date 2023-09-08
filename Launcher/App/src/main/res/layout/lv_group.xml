@@ -20,15 +20,15 @@
 
     <View
         android:id="@+id/menu"
-        android:layout_width="28dp"
-        android:layout_height="28dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:layout_marginStart="2dp"
+        android:layout_marginStart="4dp"
         android:layout_marginTop="2dp"
-        android:layout_marginEnd="2dp"
+        android:layout_marginEnd="4dp"
         android:layout_marginBottom="2dp"
-        android:background="@drawable/ic_more"
+        android:background="@drawable/ic_circ_more"
         android:visibility="gone"
         tools:visibility="visible" />
 

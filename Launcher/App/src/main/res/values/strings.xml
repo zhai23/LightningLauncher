@@ -45,17 +45,25 @@
     <string name="launch_switch">Separate Window</string>
     <string name="reload_icon">Refresh Icon / Banner</string>
 
-    <string name="launch_message">Launching 2D apps in a separate window allows for easier multitasking on Quest devices,
+    <string name="launch_message">Launching 2D apps or websites in a separate window allows for easier multitasking on Quest devices,
         but will cause certain apps to not always launch.\n\nIf you have any issues, disable this option!</string>
     <string name="hidden_groups_message">Turning this option off will hide the top bar when not in Edit Mode. \n
         \nThe settings button will also be hidden when not in Edit Mode.\n
         \nTo turn on Edit Mode, press the back button on the top of the window, or B on your controller.
     </string>
 
+    <string name="website_title">Websites in LightningLauncher</string>
+    <string name="website_message">Websites will open in a pop-up browser in the launcher for easy access.\n
+    \nThis is not the same as the default Quest browser, so VR websites will not work.\n
+    \nThe web page will continue running in background when closed, and will be able to play audio in the background.\n
+    \n(This feature is experimental, please report any issues on GitHub)</string>
+
     <string name="add_website">Add Website</string>
     <string name="add_website_url_label">Website URL</string>
     <string name="add_website_bad_url">Enter a valid URL and try again</string>
     <string name="add_website_group">Add to %s</string>
+
+    <string name="website_running">Running…</string>
 
     <string name="service_title">Launcher Shortcuts</string>
     <string name="service_subtitle">Easily Access Lightning Launcher</string>

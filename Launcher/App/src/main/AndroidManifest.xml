@@ -60,6 +60,7 @@
             android:screenOrientation="unspecified"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
             android:exported="true"
+            android:launchMode="singleInstancePerTask"
             android:resizeableActivity="true">
 
             <layout android:defaultWidth="706dp"

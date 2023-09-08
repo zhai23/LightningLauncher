@@ -20,7 +20,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -66,24 +65,24 @@ public class AppsAdapter extends BaseAdapter{
     private final List<ApplicationInfo> appList;
     private final boolean isEditMode;
     private final boolean showTextLabels;
-
     public AppsAdapter(MainActivity context, boolean editMode, boolean names, List<ApplicationInfo> myApps) {
         mainActivity = context;
         isEditMode = editMode;
         showTextLabels = names;
         SettingsManager settingsManager = SettingsManager.getInstance(mainActivity);
 
-        ArrayList<String> sortedGroups = settingsManager.getAppGroupsSorted(false);
         ArrayList<String> sortedSelectedGroups = settingsManager.getAppGroupsSorted(true);
         appList = settingsManager.getInstalledApps(context, sortedSelectedGroups, myApps);
     }
 
     private static class ViewHolder {
-        LinearLayout layout;
+        View view;
         ImageView imageView;
         ImageView imageViewBg;
         TextView textView;
         Button moreButton;
+        Button killButton;
+        ApplicationInfo app;
     }
 
     public int getCount() { return appList.size(); }
@@ -99,21 +98,26 @@ public class AppsAdapter extends BaseAdapter{
     /** @noinspection deprecation*/
     @SuppressWarnings("unchecked")
     public View getView(int position, View convertView, ViewGroup parent) {
+
         ViewHolder holder;
 
         final ApplicationInfo currentApp = appList.get(position);
         LayoutInflater layoutInflater = (LayoutInflater) mainActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         if (convertView == null) {
-            // Create a new ViewHolder and inflate the layout
+            // Create a new ViewHolder and inflate the view
             int layout = AbstractPlatform.isWideApp(currentApp, mainActivity) ? R.layout.lv_app_wide : R.layout.lv_app_icon;
 
             convertView = layoutInflater.inflate(layout, parent, false);
+            if (currentApp.packageName == null) return convertView;
+
             holder = new ViewHolder();
-            holder.layout = convertView.findViewById(R.id.layout);
+            holder.view = convertView;//.findViewById(R.id.view);
             holder.imageView = convertView.findViewById(R.id.imageLabel);
             holder.textView = convertView.findViewById(R.id.textLabel);
             holder.moreButton = convertView.findViewById(R.id.moreButton);
+            holder.killButton = convertView.findViewById(R.id.killButton);
+            holder.app = currentApp;
 
             // Set clipToOutline to true on imageView
             convertView.findViewById(R.id.clip).setClipToOutline(true);
@@ -138,48 +142,69 @@ public class AppsAdapter extends BaseAdapter{
             holder.textView.setShadowLayer(6, 0, 0, Color.parseColor(mainActivity.darkMode ? "#000000" : "#20FFFFFF"));
         }
 
+
+        new IconTask().execute(this, currentApp, mainActivity, holder.imageView, holder.imageViewBg);
+        holder.view.post(() -> updateView(holder));
+
+        return convertView;
+    }
+
+    private void updateView(ViewHolder holder) {
         if (isEditMode) {
-            holder.layout.setOnClickListener(view -> {
-                boolean selected = mainActivity.selectApp(currentApp.packageName);
-                ValueAnimator an = android.animation.ObjectAnimator.ofFloat(holder.layout, "alpha", selected? 0.5F : 1.0F);
+            holder.view.setOnClickListener(view -> {
+                boolean selected = mainActivity.selectApp(holder.app.packageName);
+                ValueAnimator an = android.animation.ObjectAnimator.ofFloat(holder.view, "alpha", selected? 0.5F : 1.0F);
                 an.setDuration(150);
                 an.start();
             });
-            holder.layout.setOnLongClickListener(view -> {
-                showAppDetails(currentApp);
+            holder.view.setOnLongClickListener(view -> {
+                showAppDetails(holder.app);
                 return true;
             });
 
         } else {
-            holder.layout.setOnClickListener(view -> {
-                AbstractPlatform platform = AbstractPlatform.getPlatform(currentApp);
-                if (platform.runApp(mainActivity, currentApp)) animateOpen(holder);
+            holder.view.setOnClickListener(view -> {
+                AbstractPlatform platform = AbstractPlatform.getPlatform(holder.app);
+                if (platform.launchApp(mainActivity, holder.app)) animateOpen(holder);
+
+                boolean isWeb = AbstractPlatform.isWebsite(holder.app);
+                if (isWeb) holder.killButton.setVisibility(View.VISIBLE);
+                shouldAnimateClose = isWeb;
             });
-            holder.layout.setOnLongClickListener(view -> {
+            holder.view.setOnLongClickListener(view -> {
                 mainActivity.setEditMode(true);
-                mainActivity.selectApp(currentApp.packageName);
+                mainActivity.selectApp(holder.app.packageName);
                 return true;
             });
         }
 
-        Runnable checkHover = new Runnable() {
+        Runnable periodicUpdate = new Runnable() {
             @Override
             public void run() {
-                holder.moreButton.setVisibility(holder.layout.isHovered() || holder.moreButton.isHovered() ? View.VISIBLE : View.INVISIBLE);
-                boolean selected = mainActivity.isSelected(currentApp.packageName);
-                ValueAnimator an = android.animation.ObjectAnimator.ofFloat(holder.layout, "alpha", selected? 0.5F : 1.0F);
-                an.setDuration(150);
-                an.start();
-                holder.layout.postDelayed(this, 250);
+                holder.moreButton.setVisibility(holder.view.isHovered() || holder.moreButton.isHovered() ? View.VISIBLE : View.INVISIBLE);
+                boolean selected = mainActivity.isSelected(holder.app.packageName);
+                if (selected != holder.view.getAlpha() < 0.9) {
+                    ValueAnimator an = android.animation.ObjectAnimator.ofFloat(holder.view, "alpha", selected ? 0.5F : 1.0F);
+                    an.setDuration(150);
+                    an.start();
+                }
+
+                boolean hovered = holder.view.isHovered() || holder.moreButton.isHovered() || holder.killButton.isHovered();
+                holder.moreButton.setVisibility(hovered ? View.VISIBLE : View.INVISIBLE);
+                holder.killButton.setBackgroundResource(hovered ? R.drawable.ic_circ_running_stop : R.drawable.ic_running);
+
+                holder.view.postDelayed(this, 250);
             }
         };
-        checkHover.run();
+        periodicUpdate.run();
 
-        holder.moreButton.setOnClickListener(view -> showAppDetails(currentApp));
+        holder.moreButton.setOnClickListener(view -> showAppDetails(holder.app));
 
-        new IconTask().execute(this, currentApp, mainActivity, holder.imageView, holder.imageViewBg);
-
-        return convertView;
+        holder.killButton.setVisibility(SettingsManager.getRunning(holder.app.packageName) ? View.VISIBLE : View.GONE);
+        holder.killButton.setOnClickListener(view -> {
+            SettingsManager.stopRunning(holder.app.packageName);
+            view.setVisibility(View.GONE);
+        });
     }
 
     public void onImageSelected(String path, ImageView selectedImageView) {
@@ -196,7 +221,7 @@ public class AppsAdapter extends BaseAdapter{
         }
     }
     private void showAppDetails(ApplicationInfo currentApp) {
-        // set layout
+        // set view
         AlertDialog dialog = DialogHelper.build(mainActivity, R.layout.dialog_app_details);
         // package name
         ((TextView) dialog.findViewById(R.id.packageName)).setText(currentApp.packageName);
@@ -237,8 +262,9 @@ public class AppsAdapter extends BaseAdapter{
         });
 
         dialog.findViewById(R.id.info).setVisibility(isWeb ? View.GONE : View.VISIBLE);
-        if (isVr) {
-            //VR apps MUST launch out, so just hide the option and replace it with another
+        if (isVr || isWeb) {
+            // VR apps MUST launch out, so just hide the option and replace it with another
+            // Websites could theoretically support this option, but it is currently way too buggy
             launchModeSection.setVisibility(View.GONE);
             refreshIconButton.setVisibility(View.VISIBLE);
 
@@ -253,7 +279,9 @@ public class AppsAdapter extends BaseAdapter{
                     launchModeSwitch.setChecked(false); // Revert switch
                     AlertDialog subDialog = DialogHelper.build(mainActivity, R.layout.dialog_launch_out_info);
                     subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
-                        mainActivity.sharedPreferenceEditor.putBoolean(SettingsManager.KEY_SEEN_LAUNCH_OUT_POPUP, true);
+                        mainActivity.sharedPreferenceEditor
+                                .putBoolean(SettingsManager.KEY_SEEN_LAUNCH_OUT_POPUP, true)
+                                .apply();
                         subDialog.dismiss();
                         SettingsManager.setAppLaunchOut(currentApp.packageName, true);
                         launchOut[0] = SettingsManager.getAppLaunchOut(currentApp.packageName);
@@ -280,10 +308,13 @@ public class AppsAdapter extends BaseAdapter{
         });
     }
 
+
+    // Animation
+
     private void animateOpen(ViewHolder holder) {
 
         int[] l = new int[2];
-        View clip = holder.layout.findViewById(R.id.clip);
+        View clip = holder.view.findViewById(R.id.clip);
         clip.getLocationInWindow(l);
         int w = clip.getWidth();
         int h = clip.getHeight();
@@ -298,11 +329,12 @@ public class AppsAdapter extends BaseAdapter{
 
         openAnim.setClipToOutline(true);
 
-
         ImageView animIcon = openAnim.findViewById(R.id.openIcon);
         ImageView animIconBg = openAnim.findViewById(R.id.openIconBg);
         animIcon.setImageDrawable(holder.imageView.getDrawable());
         animIconBg.setImageDrawable(holder.imageView.getDrawable());
+
+        animIconBg.setAlpha(1f);
 
         View openProgress = mainActivity.findViewById(R.id.openProgress);
         openProgress.setVisibility(View.VISIBLE);
@@ -320,5 +352,45 @@ public class AppsAdapter extends BaseAdapter{
         aY.start();
         aA.start();
         aP.start();
+    }
+    public static boolean shouldAnimateClose = false;
+    public static boolean animateClose(MainActivity mainActivity) {
+        View openAnim = mainActivity.findViewById(R.id.openAnim);
+        ImageView animIcon = openAnim.findViewById(R.id.openIcon);
+
+        final boolean rv = (openAnim.getVisibility() == View.VISIBLE);
+        if (!AppsAdapter.shouldAnimateClose) {
+            openAnim.setVisibility(View.INVISIBLE);
+            openAnim.setScaleX(1);
+            openAnim.setScaleY(1);
+            animIcon.setAlpha(1.0f);
+            openAnim.setVisibility(View.INVISIBLE);
+        } else {
+            ImageView animIconBg = openAnim.findViewById(R.id.openIconBg);
+
+            // Assuming task already animated open
+            View openProgress = mainActivity.findViewById(R.id.openProgress);
+            openProgress.setVisibility(View.INVISIBLE);
+
+            openAnim.setScaleX(3f);
+            openAnim.setScaleY(3f);
+            animIcon.setAlpha(1f);
+
+            ObjectAnimator aX = ObjectAnimator.ofFloat(openAnim, "ScaleX", 1f);
+            ObjectAnimator aY = ObjectAnimator.ofFloat(openAnim, "ScaleY", 1f);
+            ObjectAnimator aA = ObjectAnimator.ofFloat(animIconBg, "Alpha", 0f);
+
+            aX.setDuration(100);
+            aY.setDuration(100);
+            aA.setDuration(50);
+            aA.setStartDelay(50);
+            aA.start();
+            aX.start();
+            aY.start();
+
+            openAnim.postDelayed(() -> openAnim.setVisibility(View.INVISIBLE), 100);
+            shouldAnimateClose = false;
+        }
+        return rv;
     }
 }

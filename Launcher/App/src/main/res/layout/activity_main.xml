@@ -58,7 +58,7 @@
         android:layout_marginTop="22dp"
         android:layout_marginEnd="75dp"
         android:layout_marginBottom="11dp"
-        android:background="@drawable/blur_view_background"
+        android:background="@drawable/bkg_blur_view"
         android:minHeight="40dp"
         android:visibility="visible"
         app:blurOverlayColor="#46000000">
@@ -92,7 +92,7 @@
         android:layout_marginTop="22dp"
         android:layout_marginRight="20dp"
         android:layout_marginBottom="30dp"
-        android:background="@drawable/blur_view_background"
+        android:background="@drawable/bkg_blur_view"
         android:visibility="invisible"
         app:blurOverlayColor="#4A000000"
         tools:visibility="visible">
@@ -105,7 +105,8 @@
             android:background="@android:color/transparent"
             android:padding="8dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_config" />
+            android:src="@drawable/ic_config"
+            tools:ignore="ImageContrastCheck" />
     </eightbitlab.com.blurview.BlurView>
 
     <LinearLayout
