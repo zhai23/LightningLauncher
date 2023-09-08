@@ -711,7 +711,7 @@ public class MainActivity extends Activity {
             }
         });
         scale.setMax(200);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) scale.setMin(80);
+        scale.setMin(80);
         scale.setProgress(sharedPreferences.getInt(SettingsManager.KEY_SCALE, SettingsManager.DEFAULT_SCALE));
 
 
@@ -733,7 +733,7 @@ public class MainActivity extends Activity {
         });
         margin.setProgress(sharedPreferences.getInt(SettingsManager.KEY_MARGIN, SettingsManager.DEFAULT_MARGIN));
         margin.setMax(59);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) margin.setMin(5);
+        margin.setMin(5);
 
         @SuppressLint("UseSwitchCompatOrMaterialCode") Switch groups = dialog.findViewById(R.id.switch_group_mode);
         groups.setChecked(sharedPreferences.getBoolean(SettingsManager.KEY_GROUPS_ENABLED, SettingsManager.DEFAULT_GROUPS_ENABLED));

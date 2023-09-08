@@ -11,16 +11,16 @@
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent">
 
-    <View
-        android:id="@+id/sizer"
-        android:layout_width="350dp"
-        android:layout_height="0dp" />
-
     <TextView
         style="@style/SettingTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/add_website" />
+
+    <View
+        android:id="@+id/sizer"
+        android:layout_width="350dp"
+        android:layout_height="0dp" />
 
     <EditText
         android:id="@+id/app_url"
@@ -79,7 +79,8 @@
             android:id="@+id/confirm"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/bkg_button">
+            android:background="@drawable/bkg_button"
+            android:tooltipText="@string/website_group">
 
             <TextView
                 android:id="@+id/add_text"

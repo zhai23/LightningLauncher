@@ -31,7 +31,8 @@
             android:layout_marginStart="3dp"
             android:background="@drawable/ic_info"
             android:backgroundTint="#FFFFFF"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            android:tooltipText="@string/info" />
 
         <Button
             android:id="@+id/uninstall"
@@ -41,7 +42,8 @@
             android:layout_marginStart="3dp"
             android:background="@drawable/ic_uninstall"
             android:backgroundTint="#FFFFFF"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            android:tooltipText="@string/uninstall" />
 
     </LinearLayout>
 
@@ -61,7 +63,8 @@
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="3dp"
             android:background="@drawable/bkg_app"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            android:tooltipText="@string/change_icon" />
 
         <LinearLayout
             android:layout_width="match_parent"
