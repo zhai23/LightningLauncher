@@ -130,7 +130,7 @@
             android:layout_marginStart="10dp"
             android:layout_marginEnd="5dp"
             android:layout_weight="1"
-            android:background="@drawable/bkg_button_footer"
+            android:background="@drawable/bkg_button"
             android:gravity="center"
             android:paddingStart="15dp"
             android:paddingTop="10dp"
@@ -149,7 +149,7 @@
             android:layout_gravity="bottom|center_horizontal|end"
             android:layout_marginStart="5dp"
             android:layout_marginEnd="10dp"
-            android:background="@drawable/bkg_button_footer"
+            android:background="@drawable/bkg_button"
             android:gravity="center"
             android:paddingStart="15dp"
             android:paddingTop="10dp"
@@ -157,8 +157,7 @@
             android:paddingBottom="10dp"
             android:text="@string/add_website"
             android:textColor="@color/ef_colorTextPrimary"
-            android:textSize="16sp"
-            android:tooltipText="@string/add_website" />
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/stopEditing"
@@ -166,7 +165,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center_horizontal|end"
             android:layout_marginEnd="10dp"
-            android:background="@drawable/bkg_button_footer"
+            android:background="@drawable/bkg_button"
             android:gravity="center"
             android:paddingStart="15dp"
             android:paddingTop="10dp"
