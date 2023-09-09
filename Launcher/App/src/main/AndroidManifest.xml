@@ -32,7 +32,7 @@
             android:screenOrientation="unspecified"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
             android:exported="true"
-            android:launchMode="singleTask"
+            android:launchMode="singleInstancePerTask"
             android:resizeableActivity="true">
 
             <layout android:defaultWidth="706dp"
@@ -48,9 +48,22 @@
                 <category android:name="android.intent.category.HOME"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
                 <category android:name="android.intent.category.DEFAULT"/>
-
-                <action android:name="com.threethan.launcher.FINISH" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".launcher.LauncherActivityAlternate"
+            android:screenOrientation="unspecified"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
+            android:exported="true"
+            android:resizeableActivity="true"
+            android:launchMode="singleInstancePerTask">
+
+            <layout android:defaultWidth="706dp"
+                android:defaultHeight="442dp"
+                android:gravity="top|end" />
+
+            <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
+            <meta-data android:name="com.oculus.vrshell.free_resizing_limits" android:value="300,2000,500,1000"/>
         </activity>
 
         <activity android:name=".browser.BrowserActivity"
@@ -66,10 +79,20 @@
 
             <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
             <meta-data android:name="com.oculus.vrshell.free_resizing_limits" android:value="300,2000,500,1000"/>
+        </activity>
+        <activity android:name=".browser.BrowserActivitySeparate"
+            android:screenOrientation="unspecified"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
+            android:exported="true"
+            android:launchMode="singleInstancePerTask"
+            android:resizeableActivity="true">
 
-            <intent-filter>
-                <action android:name="com.threethan.launcher.FINISH_WEB" />
-            </intent-filter>
+            <layout android:defaultWidth="706dp"
+                android:defaultHeight="442dp"
+                android:gravity="top|end" />
+
+            <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
+            <meta-data android:name="com.oculus.vrshell.free_resizing_limits" android:value="300,2000,500,1000"/>
         </activity>
 
         <service

@@ -56,7 +56,6 @@ public class BrowserService extends Service {
                 activityByBaseUrl.remove(url);
             }
         } else {
-
             webView = new BrowserWebView(getApplicationContext());
             webView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
@@ -79,7 +78,6 @@ public class BrowserService extends Service {
                 ? WebSettings.FORCE_DARK_ON : WebSettings.FORCE_DARK_OFF);
         }
         return webView;
-
     }
 
     public boolean hasWebView(String url) {
@@ -98,5 +96,13 @@ public class BrowserService extends Service {
             e.printStackTrace();
         }
         System.gc();
+    }
+    public void killActivities() {
+        for (String key : activityByBaseUrl.keySet()) {
+            try {
+                Objects.requireNonNull(activityByBaseUrl.get(key)).finish();
+                activityByBaseUrl.remove(key);
+            } catch (Exception ignored) {}
+        }
     }
 }

@@ -213,6 +213,7 @@ public class AppsAdapter extends BaseAdapter{
         // toggle launch mode
         final boolean[] launchOut = {SettingsManager.getAppLaunchOut(currentApp.packageName)};
         final Switch launchModeSwitch = dialog.findViewById(R.id.launchModeSwitch);
+        final View launchOutButton = dialog.findViewById(R.id.launchOut);
         final View launchModeSection = dialog.findViewById(R.id.launchModeSection);
         final View refreshIconButton = dialog.findViewById(R.id.refreshIconButton);
         final boolean isVr = App.isVirtualReality(currentApp, launcherActivity);
@@ -242,17 +243,24 @@ public class AppsAdapter extends BaseAdapter{
         });
 
         dialog.findViewById(R.id.info).setVisibility(isWeb ? View.GONE : View.VISIBLE);
-        if (isVr || isWeb) {
+        if (isVr) {
             // VR apps MUST launch out, so just hide the option and replace it with another
             // Websites could theoretically support this option, but it is currently way too buggy
             launchModeSection.setVisibility(View.GONE);
             refreshIconButton.setVisibility(View.VISIBLE);
+            launchOutButton.setVisibility(View.GONE);
 
             refreshIconButton.setOnClickListener(view -> Icon.reloadIcon(launcherActivity, currentApp, new ImageView[]{iconImage}));
         } else {
             launchModeSection.setVisibility(View.VISIBLE);
             refreshIconButton.setVisibility(View.GONE);
             launchModeSwitch.setChecked(launchOut[0]);
+            launchOutButton.setVisibility(View.VISIBLE);
+            launchOutButton.setOnClickListener((view) -> {
+                SettingsManager.setAppLaunchOut(currentApp.packageName, true);
+                Launch.launchApp(launcherActivity, currentApp);
+                SettingsManager.setAppLaunchOut(currentApp.packageName, launchOut[0]);
+            });
 
             launchModeSwitch.setOnCheckedChangeListener((sw, value) -> {
                 if (!launcherActivity.sharedPreferences.getBoolean(Settings.KEY_SEEN_LAUNCH_OUT_POPUP, false) && value) {

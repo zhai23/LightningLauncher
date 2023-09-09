@@ -28,10 +28,6 @@ public class BrowserWebView extends WebView {
         super(context, attrs, defStyleAttr);
     }
 
-    public BrowserWebView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-    }
-
     @Override
     protected void onWindowVisibilityChanged(int visibility) {
         if (visibility != View.GONE) super.onWindowVisibilityChanged(View.VISIBLE);

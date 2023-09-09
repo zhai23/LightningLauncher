@@ -6,8 +6,6 @@ import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.threethan.launcher.support.SettingsManager;
-
 import java.util.List;
 
 /** @noinspection deprecation */

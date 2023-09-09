@@ -6,28 +6,20 @@ import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 
 import com.threethan.launcher.R;
-import com.threethan.launcher.launcher.LauncherActivity;
-import com.threethan.launcher.launcher.LauncherActivityEditable;
+import com.threethan.launcher.launcher.LauncherActivityAlternate;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class ShortcutAccessibilityService extends AccessibilityService
-{
-    public void onAccessibilityEvent(AccessibilityEvent event)
-    {
-
+public class ShortcutAccessibilityService extends AccessibilityService {
+    public void onAccessibilityEvent(AccessibilityEvent event) {
         if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
             String eventText = event.getText().toString();
             String exploreAccessibilityEventName = getResources().getString(R.string.accessibility_event_name);
             if (exploreAccessibilityEventName.compareTo(eventText) == 0) {
-                Intent finishIntent = new Intent(LauncherActivity.FINISH_ACTION);
-                sendBroadcast(finishIntent);
+                Intent launchIntent = new Intent(this, LauncherActivityAlternate.class);
 
-                Intent launchIntent = new Intent(this, LauncherActivityEditable.class);
-
-                launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-
+                launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
                 Log.i("LightningLauncherService", "Opening launcher activity from accessibility event");
                 startActivity(launchIntent);

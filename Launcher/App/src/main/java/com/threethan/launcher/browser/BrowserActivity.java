@@ -2,11 +2,9 @@ package com.threethan.launcher.browser;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -24,10 +22,9 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.R;
 import com.threethan.launcher.helper.Platform;
-import com.threethan.launcher.launcher.LauncherActivity;
+import com.threethan.launcher.helper.Settings;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -52,21 +49,11 @@ public class BrowserActivity extends Activity {
     public static final String KEY_WEBSITE_ZOOM = "KEY_WEBSITE_ZOOM-";
     public static final String KEY_WEBSITE_DARK = "KEY_WEBSITE_DARK-";
 
-    // finishReceiver
-    private final BroadcastReceiver finishReceiver = new BroadcastReceiver() {
-        @Override public void onReceive(Context context, Intent intent) { finish();}
-    };
-    public static final String FINISH_ACTION = "com.threethan.launcher.FINISH_WEB";
-    @SuppressLint({"UnspecifiedRegisterReceiverFlag", "SetJavaScriptEnabled"})
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
-        IntentFilter filter = new IntentFilter(FINISH_ACTION);
-        IntentFilter filter2= new IntentFilter(LauncherActivity.FINISH_ACTION);
-        registerReceiver(finishReceiver, filter);
-        registerReceiver(finishReceiver, filter2);
 
         Log.v("LightningLauncher", "Starting Browser Activity");
 
@@ -283,7 +270,6 @@ public class BrowserActivity extends Activity {
     @Override
     protected void onDestroy() {
         unbindService(connection);
-        unregisterReceiver(finishReceiver);
         super.onDestroy();
     }
 
@@ -340,11 +326,4 @@ public class BrowserActivity extends Activity {
             wBound = false;
         }
     };
-
-
-    public static void killInstances(Context context) {
-        Intent finishIntent = new Intent(BrowserActivity.FINISH_ACTION);
-        context.sendBroadcast(finishIntent);
-    }
-
 }

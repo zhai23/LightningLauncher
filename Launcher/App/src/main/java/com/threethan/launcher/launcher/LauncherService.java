@@ -7,7 +7,6 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
 
@@ -36,7 +35,7 @@ public class LauncherService extends Service {
     }
     public View getView(LauncherActivity activity) {
         View view;
-        final String id = activity.id;
+        final String id = activity.getId();
         if (hasView(id)) {
             view = viewById.get(id);
 

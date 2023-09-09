@@ -6,8 +6,9 @@ import android.content.pm.PackageManager;
 import android.transition.Slide;
 import android.util.Log;
 
-import com.threethan.launcher.launcher.LauncherActivity;
 import com.threethan.launcher.browser.BrowserActivity;
+import com.threethan.launcher.browser.BrowserActivitySeparate;
+import com.threethan.launcher.launcher.LauncherActivity;
 import com.threethan.launcher.support.SettingsManager;
 
 import java.util.Timer;
@@ -18,7 +19,7 @@ public abstract class Launch {
         Intent intent;
 
         if (App.isWebsite(appInfo)) {
-            intent = new Intent(launcherActivity, BrowserActivity.class);
+            intent = new Intent(launcherActivity, (SettingsManager.getAppLaunchOut(appInfo.packageName) ? BrowserActivitySeparate.class : BrowserActivity.class));
             intent.putExtra("url", appInfo.packageName);
         } else {
             PackageManager pm = launcherActivity.getPackageManager();
@@ -42,7 +43,9 @@ public abstract class Launch {
             launcherActivity.overridePendingTransition(0, 0); // Cancel closing animation. Doesn't work on quest, but doesn't hurt
 
             if (App.isWebsite(appInfo)) {
-                BrowserActivity.killInstances(launcherActivity);
+                try {
+                    launcherActivity.wService.killActivities();
+                } catch (Exception ignored) {}
             }
 
             intent.setFlags( Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION );

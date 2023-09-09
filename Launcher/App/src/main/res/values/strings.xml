@@ -43,10 +43,11 @@
     </string>
     <string name="accessibility_event_name">[App Library]</string>
 
-    <string name="launch_switch">Separate Window</string>
+    <string name="launch_switch">Runs in Own Window</string>
+    <string name="launch_tip">Launch in Own Window Once</string>
     <string name="reload_icon">Refresh Icon / Banner</string>
 
-    <string name="launch_message">Launching 2D apps or websites in a separate window allows for easier multitasking on Quest devices,
+    <string name="launch_message">Launching 2D apps or websites in their own window allows for easier multitasking on Quest devices,
         but will cause certain apps to not always launch.\n\nIf you have any issues, disable this option!</string>
     <string name="hidden_groups_message">Turning this option off will hide the top bar when not in Edit Mode. \n
         \nThe settings button will also be hidden when not in Edit Mode.\n

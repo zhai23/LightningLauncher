@@ -24,6 +24,19 @@
         app:layout_constraintTop_toTopOf="@id/sizer">
 
         <Button
+            android:id="@+id/launchOut"
+            style="@android:style/DeviceDefault.ButtonBar"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="3dp"
+            android:background="@drawable/ic_launch_out"
+            android:backgroundTint="#FFFFFF"
+            android:textColor="@android:color/white"
+            android:tooltipText="@string/launch_tip"
+            android:visibility="visible"
+            tools:visibility="visible" />
+
+        <Button
             android:id="@+id/info"
             style="@android:style/DeviceDefault.ButtonBar"
             android:layout_width="30dp"

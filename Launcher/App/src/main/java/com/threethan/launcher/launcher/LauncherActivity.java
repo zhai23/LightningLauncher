@@ -3,11 +3,9 @@ package com.threethan.launcher.launcher;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
@@ -28,7 +26,6 @@ import android.view.ViewOutlineProvider;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
 import com.esafirm.imagepicker.features.ImagePicker;
@@ -45,7 +42,6 @@ import com.threethan.launcher.support.SettingsManager;
 import com.threethan.launcher.support.Updater;
 import com.threethan.launcher.view.DynamicHeightGridView;
 import com.threethan.launcher.view.FadingTopScrollView;
-import com.threethan.launcher.browser.BrowserActivity;
 import com.threethan.launcher.browser.BrowserService;
 
 import java.io.File;
@@ -60,7 +56,6 @@ import eightbitlab.com.blurview.RenderScriptBlur;
 
 /** @noinspection deprecation*/
 public class LauncherActivity extends Activity {
-    public String id = "default";
     public boolean darkMode = true;
     public boolean groupsEnabled = true;
     DynamicHeightGridView appGridViewSquare;
@@ -111,20 +106,14 @@ public class LauncherActivity extends Activity {
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
-
-        IntentFilter filter = new IntentFilter(FINISH_ACTION);
-        registerReceiver(finishReceiver, filter);
-
         Log.v("LightningLauncher", "Starting Launcher Activity");
-
         setContentView(R.layout.activity_container);
     }
 
     public View m;
     private void justBound() {
-        final boolean firstStart = !mService.hasView(id);
+        final boolean firstStart = !mService.hasView(getId());
 
         m = mService.getView(this);
         ViewGroup container = findViewById(R.id.container);
@@ -212,23 +201,14 @@ public class LauncherActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(finishReceiver);
         unbindWebViewService();
-
         unbindService(mConnection);
-
     }
     @Override
     public void onBackPressed() {
         if (AppsAdapter.animateClose(this)) return;
         if (!settingsPage.visible) settingsPage.showSettings();
     }
-    public static final String FINISH_ACTION = "com.threethan.launcher.FINISH";
-    // Stuff to finish the activity when it's in the background;
-    // More straightforward methods don't work on Quest.
-    private final BroadcastReceiver finishReceiver = new BroadcastReceiver() {
-        @Override public void onReceive(Context context, Intent intent) { finish();}
-    };
 
     @Override
     protected void onResume() {
@@ -261,8 +241,6 @@ public class LauncherActivity extends Activity {
     }
     public void reloadPackagesWithMeta() {
         sharedPreferenceEditor.apply();
-        // Load sets & check that they're not empty (Sometimes string sets are emptied on reinstall but not booleans)
-        HashSet<String> setAll = Platform.getAllPackages(this);
         // Check if we need metadata and load accordingly
         Log.i("LightningLauncher", "(Re)Loading app list with meta data");
         sharedPreferenceEditor
@@ -547,7 +525,6 @@ public class LauncherActivity extends Activity {
         try {
             bindService(intent, wConnection, Context.BIND_AUTO_CREATE);
         } catch (Exception ignored) {
-            BrowserActivity.killInstances(this);
             bindService(intent, wConnection, Context.BIND_AUTO_CREATE);
         }
     }
@@ -570,4 +547,6 @@ public class LauncherActivity extends Activity {
     }
     public boolean isEditing() { return false; }
     public boolean canEdit() { return false; }
+
+    public String getId() { return "default"; }
 }
