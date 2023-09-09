@@ -151,7 +151,7 @@
                 tools:ignore="NestedWeights" />
 
             <ImageView
-                android:id="@+id/uninstall_bulk"
+                android:id="@+id/uninstallBulk"
                 android:layout_width="20dp"
                 android:layout_height="match_parent"
                 android:background="@drawable/ic_uninstall"

@@ -156,17 +156,7 @@ public class SettingsManager {
             else if (split.length == 2) name = split[0];
             else                        name = split[1];
 
-            if (!name.isEmpty()) {
-                String baseName = name;
-                int i = 0;
-                if (!appLabelCache.containsValue(name)) return name;
-
-                Log.v(name, name);
-                if (split.length > 2) name = split[1] + " " + split[0];
-                else while (appLabelCache.containsValue(name)) { i = i+1; name = baseName + i; }
-                name = LibHelper.toTitleCase(name);
-                return name;
-            }
+            if (!name.isEmpty()) return LibHelper.toTitleCase(name);
         }
         try {
             PackageManager pm = mainActivity.getPackageManager();

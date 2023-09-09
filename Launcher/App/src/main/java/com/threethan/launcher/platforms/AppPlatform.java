@@ -25,11 +25,12 @@ public class AppPlatform extends AbstractPlatform {
         } else {
             PackageManager pm = mainActivity.getPackageManager();
 
-            intent = new Intent(Intent.ACTION_MAIN);
-            intent.setPackage(appInfo.packageName);
+            if (isVirtualRealityApp(appInfo, mainActivity)) {
+                intent = new Intent(Intent.ACTION_MAIN);
+                intent.setPackage(appInfo.packageName);
+                if (intent.resolveActivity(pm) == null) intent = pm.getLaunchIntentForPackage(appInfo.packageName);
+            } else intent = pm.getLaunchIntentForPackage(appInfo.packageName);
 
-            if (intent.resolveActivity(pm) == null)
-                intent = pm.getLaunchIntentForPackage(appInfo.packageName);
         }
 
         if (intent == null) {

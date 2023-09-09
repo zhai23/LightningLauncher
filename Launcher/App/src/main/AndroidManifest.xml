@@ -32,7 +32,7 @@
             android:screenOrientation="unspecified"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
             android:exported="true"
-            android:launchMode="singleInstance"
+            android:launchMode="singleTask"
             android:resizeableActivity="true"
             android:finishOnTaskLaunch="true"
             android:clearTaskOnLaunch="true"

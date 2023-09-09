@@ -32,14 +32,12 @@ import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Adapter;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
-import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -208,7 +206,7 @@ public class MainActivity extends Activity {
                     getString(R.string.selection_moved_multiple, currentSelectedApps.size(), group)
                 );
                 selectionHintText.postDelayed(this::updateSelectionHint, 2000);
-                findViewById(R.id.uninstall_bulk).setVisibility(View.GONE);
+                findViewById(R.id.uninstallBulk).setVisibility(View.GONE);
 
                 currentSelectedApps.clear();
                 settingsManager.setSelectedGroups(Collections.singleton(group));
@@ -489,7 +487,7 @@ public class MainActivity extends Activity {
 
             final View selectionHint = findViewById(R.id.selectionHint);
             final TextView selectionHintText = findViewById(R.id.selectionHintText);
-            final View uninstallButton = findViewById(R.id.uninstall_bulk);
+            final View uninstallButton = findViewById(R.id.uninstallBulk);
 
             for (TextView textView: new TextView[]{selectionHintText, findViewById(R.id.addWebsite), findViewById(R.id.stopEditing)}) {
                 textView.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(darkMode ? "#3a3a3c" : "#FFFFFF")));
@@ -510,7 +508,7 @@ public class MainActivity extends Activity {
                     selectionHintText.setText(R.string.selection_hint_cleared);
                 }
                 selectionHint.postDelayed(this::updateSelectionHint, 2000);
-                findViewById(R.id.uninstall_bulk).setVisibility(View.GONE);
+                findViewById(R.id.uninstallBulk).setVisibility(View.GONE);
             });
             selectionHintText.setOnClickListener((view) -> {
                 if (currentSelectedApps.isEmpty()) {
@@ -524,11 +522,13 @@ public class MainActivity extends Activity {
                     selectionHintText.setText(R.string.selection_hint_cleared);
                 }
                 selectionHint.postDelayed(this::updateSelectionHint, 2000);
-                findViewById(R.id.uninstall_bulk).setVisibility(View.GONE);
+                findViewById(R.id.uninstallBulk).setVisibility(View.GONE);
             });
             uninstallButton.setOnClickListener(view -> {
+                int delay = 0;
                 for (String currentSelectedApp : currentSelectedApps) {
-                    uninstallApp(currentSelectedApp);
+                    mainView.postDelayed(() -> uninstallApp(currentSelectedApp), delay);
+                    if (!AbstractPlatform.isWebsite(currentSelectedApp)) delay += 1000;
                 }
             });
 
@@ -880,7 +880,7 @@ public class MainActivity extends Activity {
 
     void updateSelectionHint() {
         TextView selectionHintText = findViewById(R.id.selectionHintText);
-        final View uninstallButton = findViewById(R.id.uninstall_bulk);
+        final View uninstallButton = findViewById(R.id.uninstallBulk);
         uninstallButton.setVisibility(currentSelectedApps.isEmpty() ? View.GONE : View.VISIBLE);
 
         final int size = currentSelectedApps.size();
