@@ -3,6 +3,7 @@ package com.threethan.launcher.helpers;
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.util.Log;
 
@@ -168,7 +169,11 @@ public class SettingsManager {
             }
         }
         try {
-            String label = appInfo.loadLabel(mainActivity.getPackageManager()).toString();
+            PackageManager pm = mainActivity.getPackageManager();
+            String label = appInfo.loadLabel(pm).toString();
+            if (!label.isEmpty()) return label;
+            // Try to load this app's real app info
+            label = (String) pm.getApplicationInfo(appInfo.packageName, 0).loadLabel(pm);
             if (!label.isEmpty()) return label;
         } catch (Exception ignored) {}
         return appInfo.packageName;

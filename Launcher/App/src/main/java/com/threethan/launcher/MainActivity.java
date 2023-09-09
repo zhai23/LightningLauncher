@@ -311,7 +311,7 @@ public class MainActivity extends Activity {
 
     public void reloadPackages() {
         sharedPreferenceEditor.apply();
-        boolean needsMeta = sharedPreferences.getBoolean(SettingsManager.NEEDS_META_DATA, true);
+        boolean needsMeta = sharedPreferences.getBoolean(SettingsManager.NEEDS_META_DATA, true) || !loaded;
         // Load sets & check that they're not empty (Sometimes string sets are emptied on reinstall but not booleans)
         HashSet<String> setAll = AbstractPlatform.getAllPackages(this);
         // Check if we need metadata and load accordingly
@@ -320,8 +320,7 @@ public class MainActivity extends Activity {
         if (needsMeta) {
             sharedPreferenceEditor
                     .remove(SettingsManager.KEY_VR_SET)
-                    .remove(SettingsManager.KEY_2D_SET)
-                    ;
+                    .remove(SettingsManager.KEY_2D_SET);
             AbstractPlatform.clearPackageLists();
             PackageManager packageManager = getPackageManager();
             installedApps = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);
