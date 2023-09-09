@@ -1,16 +1,16 @@
-package com.threethan.launcher.helpers;
+package com.threethan.launcher.support;
 
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.util.Log;
 
-import com.threethan.launcher.MainActivity;
-import com.threethan.launcher.R;
-import com.threethan.launcher.platforms.AbstractPlatform;
-import com.threethan.launcher.ui.GroupsAdapter;
+import com.threethan.launcher.helper.App;
+import com.threethan.launcher.helper.Settings;
+import com.threethan.launcher.launcher.LauncherActivity;
+import com.threethan.launcher.lib.FileLib;
+import com.threethan.launcher.adapter.GroupsAdapter;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -21,96 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class SettingsManager {
-    public static final String KEY_SCALE = "KEY_CUSTOM_SCALE";
-    public static final String KEY_MARGIN = "KEY_CUSTOM_MARGIN";
-    public static final int DEFAULT_SCALE = 112;
-    public static final int DEFAULT_MARGIN = 32;
-    public static final String KEY_EDIT_MODE = "KEY_EDIT_MODE";
-    public static final String KEY_SEEN_LAUNCH_OUT_POPUP = "KEY_SEEN_LAUNCH_OUT_POPUP";
-    public static final String KEY_SEEN_HIDDEN_GROUPS_POPUP = "KEY_SEEN_HIDDEN_GROUPS_POPUP";
-    public static final String KEY_SEEN_WEBSITE_POPUP = "KEY_SEEN_WEBSITE_POPUP";
-    public static final String NEEDS_META_DATA = "NEEDS_META_DATA";
-    public static final String KEY_VR_SET = "KEY_VR_SET";
-    public static final String KEY_2D_SET = "KEY_2D_SET";
-    public static final String KEY_SUPPORTED_SET = "KEY_SUPPORTED_SET";
-    public static final String KEY_UNSUPPORTED_SET = "KEY_UNSUPPORTED_SET";
-
-    // banner-style display by app type
-    public static final String KEY_WIDE_VR = "KEY_WIDE_VR";
-    public static final String KEY_WIDE_2D = "KEY_WIDE_2D";
-    public static final String KEY_WIDE_WEB = "KEY_WIDE_WEB";
-    public static final boolean DEFAULT_WIDE_VR = true;
-    public static final boolean DEFAULT_WIDE_2D = false;
-    public static final boolean DEFAULT_WIDE_WEB = false;
-    public static final String DONT_DOWNLOAD_ICONS = "DONT_DOWNLOAD_ICONS";
-
-    // show names by display type
-    public static final String KEY_SHOW_NAMES_ICON = "KEY_CUSTOM_NAMES";
-    public static final String KEY_SHOW_NAMES_WIDE = "KEY_CUSTOM_NAMES_WIDE";
-    public static final boolean DEFAULT_SHOW_NAMES_ICON = true;
-    public static final boolean DEFAULT_SHOW_NAMES_WIDE = true;
-
-    private static SettingsManager instance;
-    public static final String KEY_APP_GROUPS = "prefAppGroups";
-    public static final String KEY_GROUP_APP_LIST = "prefAppList";
-    private static final String KEY_LAUNCH_OUT = "prefLaunchOutList";
-    private static final String KEY_SELECTED_GROUPS = "prefSelectedGroups";
-    public static final String KEY_WEBSITE_LIST = "prefWebAppNames";
-
-    // group
-    public static final String KEY_GROUP_2D = "KEY_DEFAULT_GROUP_2D";
-    public static final String KEY_GROUP_VR = "KEY_DEFAULT_GROUP_VR";
-    public static final String KEY_GROUP_WEB = "KEY_DEFAULT_GROUP_WEB";
-    public static final String DEFAULT_GROUP_2D = "Apps";
-    public static final String DEFAULT_GROUP_VR = "Games";
-    public static final String DEFAULT_GROUP_WEB = "Apps";
-
-    // theme
-    public static final String KEY_BACKGROUND = "KEY_CUSTOM_THEME";
-    public static final String KEY_DARK_MODE = "KEY_DARK_MODE";
-    public static final String KEY_GROUPS_ENABLED = "KEY_GROUPS_ENABLED";
-    public static final int DEFAULT_BACKGROUND = 0;
-    public static final boolean DEFAULT_DARK_MODE = true;
-    public static final boolean DEFAULT_GROUPS_ENABLED = true;
-
-    public static final int[] BACKGROUND_DRAWABLES = {
-            R.drawable.bg_px_blue,
-            R.drawable.bg_px_grey,
-            R.drawable.bg_px_red,
-            R.drawable.bg_px_yellow,
-            R.drawable.bg_px_white,
-            R.drawable.bg_px_orange,
-            R.drawable.bg_px_green,
-            R.drawable.bg_px_purple,
-            R.drawable.bg_meta_dark,
-            R.drawable.bg_meta_light,
-    };
-    public static final int[] BACKGROUND_COLORS = {
-            Color.parseColor("#25374f"),
-            Color.parseColor("#eaebea"),
-            Color.parseColor("#f89b94"),
-            Color.parseColor("#f2eac9"),
-            Color.parseColor("#d9d4da"),
-            Color.parseColor("#f9ce9b"),
-            Color.parseColor("#e4eac8"),
-            Color.parseColor("#74575c"),
-            Color.parseColor("#202a36"),
-            Color.parseColor("#c6d1df"),
-    };
-    public static final boolean[] BACKGROUND_DARK = {
-            true,
-            false,
-            false,
-            false,
-            false,
-            false,
-            false,
-            true,
-            true,
-            false,
-    };
-
+public class SettingsManager extends Settings {
     public static List<Integer> getVersionsWithBackgroundChanges() {
         List<Integer> out = new ArrayList<>();
         out.add(1);
@@ -122,19 +33,21 @@ public class SettingsManager {
     private static SharedPreferences sharedPreferences = null;
     private static SharedPreferences.Editor sharedPreferenceEditor = null;
     @SuppressLint("StaticFieldLeak")
-    private static MainActivity mainActivity = null;
+    private static LauncherActivity launcherActivity = null;
     private static Map<String, String> appGroupMap = new HashMap<>();
     private static Set<String> appGroupsSet = new HashSet<>();
     private static Set<String> selectedGroupsSet = new HashSet<>();
     private static Set<String> appsToLaunchOut = new HashSet<>();
 
-    private SettingsManager(MainActivity activity) {
-        mainActivity = activity;
-        sharedPreferences = mainActivity.sharedPreferences;
-        sharedPreferenceEditor = mainActivity.sharedPreferenceEditor;
+    private static SettingsManager instance;
+
+    private SettingsManager(LauncherActivity activity) {
+        launcherActivity = activity;
+        sharedPreferences = launcherActivity.sharedPreferences;
+        sharedPreferenceEditor = launcherActivity.sharedPreferenceEditor;
     }
 
-    public static synchronized SettingsManager getInstance(MainActivity context) {
+    public static synchronized SettingsManager getInstance(LauncherActivity context) {
         if (SettingsManager.instance == null) SettingsManager.instance = new SettingsManager(context);
         return SettingsManager.instance;
     }
@@ -149,17 +62,17 @@ public class SettingsManager {
     private static String checkAppLabel(ApplicationInfo appInfo) {
         String name = sharedPreferences.getString(appInfo.packageName, "");
         if (!name.isEmpty()) return name;
-        if (AbstractPlatform.isWebsite(appInfo)) {
+        if (App.isWebsite(appInfo)) {
             name = appInfo.packageName.split("//")[1];
             String[] split = name.split("\\.");
             if      (split.length <= 1) name = appInfo.packageName;
             else if (split.length == 2) name = split[0];
             else                        name = split[1];
 
-            if (!name.isEmpty()) return LibHelper.toTitleCase(name);
+            if (!name.isEmpty()) return FileLib.toTitleCase(name);
         }
         try {
-            PackageManager pm = mainActivity.getPackageManager();
+            PackageManager pm = launcherActivity.getPackageManager();
             String label = appInfo.loadLabel(pm).toString();
             if (!label.isEmpty()) return label;
             // Try to load this app's real app info
@@ -191,33 +104,31 @@ public class SettingsManager {
         queueStoreValues();
     }
 
-    public List<ApplicationInfo> getInstalledApps(MainActivity mainActivity, List<String> selected, List<ApplicationInfo> myApps) {
+    public List<ApplicationInfo> getInstalledApps(LauncherActivity launcherActivity, List<String> selected, List<ApplicationInfo> myApps) {
 
         // Get list of installed apps
         Map<String, String> apps = getAppGroupMap();
 
         // If we need meta data, fetch everything now
-        if (mainActivity.sharedPreferences.getBoolean(SettingsManager.NEEDS_META_DATA, true)) {
+        if (launcherActivity.sharedPreferences.getBoolean(SettingsManager.NEEDS_META_DATA, true)) {
             // Sort into groups
             for (ApplicationInfo app : myApps) {
-                if (!AbstractPlatform.isSupportedApp(app, mainActivity)) appGroupMap.put(app.packageName, GroupsAdapter.UNSUPPORTED_GROUP);
+                if (!App.isSupported(app, launcherActivity)) appGroupMap.put(app.packageName, GroupsAdapter.UNSUPPORTED_GROUP);
                 else {
-                    final boolean isVr = AbstractPlatform.isVirtualRealityApp(app, mainActivity);
-                    final boolean isWeb = AbstractPlatform.isWebsite(app);
+                    final boolean isVr = App.isVirtualReality(app, launcherActivity);
+                    final boolean isWeb = App.isWebsite(app);
                     appGroupMap.put(app.packageName, getDefaultGroup(isVr, isWeb));
                 }
             }
         }
 
-
-
         // Sort into groups
         for (ApplicationInfo app : myApps) {
             if (!appGroupMap.containsKey(app.packageName)) {
-                if (!AbstractPlatform.isSupportedApp(app, mainActivity)) appGroupMap.put(app.packageName, GroupsAdapter.UNSUPPORTED_GROUP);
+                if (!App.isSupported(app, launcherActivity)) appGroupMap.put(app.packageName, GroupsAdapter.UNSUPPORTED_GROUP);
                 else {
-                    final boolean isVr = AbstractPlatform.isVirtualRealityApp(app, mainActivity);
-                    final boolean isWeb = AbstractPlatform.isWebsite(app);
+                    final boolean isVr = App.isVirtualReality(app, launcherActivity);
+                    final boolean isWeb = App.isWebsite(app);
                     appGroupMap.put(app.packageName, getDefaultGroup(isVr, isWeb));
                 }
             }
@@ -308,7 +219,7 @@ public class SettingsManager {
         for (String group : appGroupsSet) {
             editor.remove(KEY_GROUP_APP_LIST + group);
         }
-        editor.remove(KEY_APP_GROUPS);
+        editor.remove(KEY_GROUPS);
         editor.remove(KEY_SELECTED_GROUPS);
         editor.remove(KEY_GROUP_APP_LIST);
         editor.remove(KEY_GROUP_2D);
@@ -329,7 +240,7 @@ public class SettingsManager {
             Set<String> defaultGroupsSet = new HashSet<>();
             defaultGroupsSet.add(DEFAULT_GROUP_VR);
             defaultGroupsSet.add(DEFAULT_GROUP_2D);
-            appGroupsSet = sharedPreferences.getStringSet(KEY_APP_GROUPS, defaultGroupsSet);
+            appGroupsSet = sharedPreferences.getStringSet(KEY_GROUPS, defaultGroupsSet);
             selectedGroupsSet = sharedPreferences.getStringSet(KEY_SELECTED_GROUPS, defaultGroupsSet);
             appsToLaunchOut = sharedPreferences.getStringSet(KEY_LAUNCH_OUT, defaultGroupsSet);
 
@@ -348,12 +259,12 @@ public class SettingsManager {
         }
     }
     private static void queueStoreValues() {
-        if (mainActivity.mainView != null) mainActivity.post(SettingsManager::storeValues);
+        if (launcherActivity.mainView != null) launcherActivity.post(SettingsManager::storeValues);
     }
     public synchronized static void storeValues() {
         try {
             SharedPreferences.Editor editor = sharedPreferenceEditor;
-            editor.putStringSet(KEY_APP_GROUPS, appGroupsSet);
+            editor.putStringSet(KEY_GROUPS, appGroupsSet);
             editor.putStringSet(KEY_SELECTED_GROUPS, selectedGroupsSet);
             editor.putStringSet(KEY_LAUNCH_OUT, appsToLaunchOut);
 
@@ -362,7 +273,7 @@ public class SettingsManager {
             for (String pkg : appGroupMap.keySet()) {
                 Set<String> group = appListSetMap.get(appGroupMap.get(pkg));
                 if (group == null) {
-                    Log.v("Missing group! Maybe in transit?", pkg);
+                    Log.i("Missing group! Maybe in transit?", pkg);
                     group = appListSetMap.get(getDefaultGroup(false, false));
                 }
                 if (group == null) {
@@ -405,16 +316,16 @@ public class SettingsManager {
     }
 
     public static boolean getRunning(String pkgName) {
-        if (!AbstractPlatform.isWebsite(pkgName)) return false;
+        if (!App.isWebsite(pkgName)) return false;
         try {
-            return mainActivity.wService.hasWebView(pkgName);
+            return launcherActivity.wService.hasWebView(pkgName);
         } catch (Exception ignored) {
             return false;
         }
     }
     public static void stopRunning (String pkgName) {
         try {
-            mainActivity.wService.killWebView(pkgName);
+            launcherActivity.wService.killWebView(pkgName);
         } catch (Exception ignored) {}
     }
  }

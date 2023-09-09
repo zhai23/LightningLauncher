@@ -8,6 +8,7 @@
     <string name="apps_hidden">- Hidden</string>
 
     <string name="edit_mode">Edit Mode</string>
+    <string name="edit_mode_disabled">Only main window can edit</string>
     <string name="edit_mode_stop">Stop Editing</string>
 
     <string name="icons_size">Icon Size</string>

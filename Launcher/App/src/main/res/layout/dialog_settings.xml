@@ -43,6 +43,7 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/editModeText"
                     style="@style/SettingButtonLabel"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -52,7 +53,7 @@
                     tools:ignore="NestedWeights" />
 
                 <Switch
-                    android:id="@+id/edit_mode"
+                    android:id="@+id/editModeSwitch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:thumb="@drawable/switch_thumb_custom"
@@ -62,7 +63,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/shortcut_service"
+                android:id="@+id/shortcutServiceButton"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="5dp"
@@ -254,7 +255,7 @@
                 tools:ignore="NestedWeights" />
 
             <Switch
-                android:id="@+id/switch_dark_mode"
+                android:id="@+id/darkModeSwitch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:showText="false"
@@ -297,7 +298,7 @@
                     tools:ignore="NestedWeights" />
 
                 <SeekBar
-                    android:id="@+id/bar_scale"
+                    android:id="@+id/scaleSeekBar"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -328,7 +329,7 @@
                     tools:ignore="NestedWeights" />
 
                 <SeekBar
-                    android:id="@+id/bar_margin"
+                    android:id="@+id/marginSeekBar"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -369,7 +370,7 @@
                     tools:ignore="NestedWeights" />
 
                 <Switch
-                    android:id="@+id/switch_group_mode"
+                    android:id="@+id/groupSwitch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:thumb="@drawable/switch_thumb_custom"
@@ -379,7 +380,7 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/clear_icons"
+                android:id="@+id/clearIconButton"
                 style="@style/SettingButtonLabel"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -405,7 +406,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/clear_sort"
+                android:id="@+id/clearSortButton"
                 style="@style/SettingButtonLabel"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -423,7 +424,7 @@
             </TextView>
 
             <TextView
-                android:id="@+id/clear_labels"
+                android:id="@+id/clearLabelButton"
                 style="@style/SettingButtonLabel"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -477,7 +478,7 @@
                     android:text="@string/apps_vr" />
 
                 <Switch
-                    android:id="@+id/switch_wide_vr"
+                    android:id="@+id/bannerVrSwitch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:thumb="@drawable/switch_thumb_custom"
@@ -505,7 +506,7 @@
                     android:text="@string/apps_2d" />
 
                 <Switch
-                    android:id="@+id/switch_wide_2d"
+                    android:id="@+id/banner2dSwitch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:thumb="@drawable/switch_thumb_custom"
@@ -533,7 +534,7 @@
                     android:text="@string/apps_web" />
 
                 <Switch
-                    android:id="@+id/switch_wide_web"
+                    android:id="@+id/bannerWebSwitch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:thumb="@drawable/switch_thumb_custom"
@@ -544,7 +545,6 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/textView3"
             style="@style/SettingSubtitle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -575,7 +575,7 @@
                     tools:ignore="NestedWeights" />
 
                 <Switch
-                    android:id="@+id/switch_names"
+                    android:id="@+id/nameSquareSwitch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:thumb="@drawable/switch_thumb_custom"
@@ -602,7 +602,7 @@
                     tools:ignore="NestedWeights" />
 
                 <Switch
-                    android:id="@+id/switch_names_wide"
+                    android:id="@+id/nameBannerSwitch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:thumb="@drawable/switch_thumb_custom"

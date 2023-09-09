@@ -1,4 +1,4 @@
-package com.threethan.launcher.web;
+package com.threethan.launcher.browser;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -8,7 +8,6 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
-import android.webkit.WebView;
 import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
@@ -16,12 +15,12 @@ import androidx.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Objects;
 
-public class WebViewService extends Service {
+public class BrowserService extends Service {
     private final IBinder binder = new LocalBinder();
-    private final HashMap<String, CustomWebView> webViewsByBaseUrl = new HashMap<>();
+    private final HashMap<String, BrowserWebView> webViewByBaseUrl = new HashMap<>();
     private final HashMap<String, Activity> activityByBaseUrl = new HashMap<>();
 
-    // Spoof chrome 116 sans OS
+    // Spoof chrome 116 without an OS. May flag bot detection
     String UA = "Mozilla/5.0 (x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36";
 
     @Override
@@ -30,9 +29,8 @@ public class WebViewService extends Service {
     }
 
     public class LocalBinder extends Binder {
-        public WebViewService getService() {
-            // Return this instance of LocalService so clients can call public methods.
-            return WebViewService.this;
+        public BrowserService getService() {
+            return BrowserService.this;
         }
     }
 
@@ -42,32 +40,31 @@ public class WebViewService extends Service {
         return binder;
     }
     @SuppressLint("SetJavaScriptEnabled")
-    public CustomWebView getWebView(WebViewActivity activity) {
-        CustomWebView webView;
+    public BrowserWebView getWebView(BrowserActivity activity) {
+        BrowserWebView webView;
         final String url = activity.baseUrl;
         if (hasWebView(url)) {
-            webView = webViewsByBaseUrl.get(url);
+            webView = webViewByBaseUrl.get(url);
 
             assert webView != null;
             LinearLayout parent = (LinearLayout) webView.getParent();
             if (parent != null) parent.removeView(webView);
 
-            try {
-                Objects.requireNonNull(activityByBaseUrl.get(url)).finish();
+            Activity owner = activityByBaseUrl.get(url);
+            if (owner != null && owner != activity) {
+                owner.finish();
                 activityByBaseUrl.remove(url);
-            } catch (Exception e) {
-                e.printStackTrace();
             }
         } else {
 
-            webView = new CustomWebView(getApplicationContext());
+            webView = new BrowserWebView(getApplicationContext());
             webView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
-            webViewsByBaseUrl.put(url, webView);
+            webViewByBaseUrl.put(url, webView);
             activityByBaseUrl.put(url, activity);
 
             webView.setInitialScale(activity.sharedPreferences
-                    .getInt(WebViewActivity.KEY_WEBSITE_ZOOM+activity.baseUrl, 75));
+                    .getInt(BrowserActivity.KEY_WEBSITE_ZOOM+activity.baseUrl, 75));
 
             webView.loadUrl(url);
 
@@ -78,7 +75,7 @@ public class WebViewService extends Service {
             ws.setUserAgentString(UA);
             if (android.os.Build.VERSION.SDK_INT >= 29)
                 ws.setForceDark(activity.sharedPreferences
-                .getBoolean(WebViewActivity.KEY_WEBSITE_DARK+activity.baseUrl, true)
+                .getBoolean(BrowserActivity.KEY_WEBSITE_DARK+activity.baseUrl, true)
                 ? WebSettings.FORCE_DARK_ON : WebSettings.FORCE_DARK_OFF);
         }
         return webView;
@@ -86,14 +83,14 @@ public class WebViewService extends Service {
     }
 
     public boolean hasWebView(String url) {
-        return webViewsByBaseUrl.containsKey(url);
+        return webViewByBaseUrl.containsKey(url);
     }
     public void killWebView(String url) {
         if (!hasWebView(url)) return;
-        CustomWebView webView = webViewsByBaseUrl.get(url);
+        BrowserWebView webView = webViewByBaseUrl.get(url);
         if (webView == null) return;
         webView.destroy();
-        webViewsByBaseUrl.remove(url);
+        webViewByBaseUrl.remove(url);
         try {
             Objects.requireNonNull(activityByBaseUrl.get(url)).finish();
             activityByBaseUrl.remove(url);

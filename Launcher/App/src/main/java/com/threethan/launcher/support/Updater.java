@@ -1,4 +1,4 @@
-package com.threethan.launcher.helpers;
+package com.threethan.launcher.support;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -19,8 +19,8 @@ import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.threethan.launcher.MainActivity;
 import com.threethan.launcher.R;
+import com.threethan.launcher.launcher.LauncherActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,10 +35,10 @@ public class Updater {
     private static final String TAG = "LightningLauncher Updater";
     private final RequestQueue requestQueue;
     private final PackageManager packageManager;
-    private final MainActivity mainActivity;
+    private final LauncherActivity launcherActivity;
 
-    public Updater(MainActivity appContext) {
-        this.mainActivity = appContext;
+    public Updater(LauncherActivity appContext) {
+        this.launcherActivity = appContext;
         this.requestQueue = Volley.newRequestQueue(appContext);
         this.packageManager = appContext.getPackageManager();
     }
@@ -56,7 +56,7 @@ public class Updater {
             JSONObject latestReleaseJson = new JSONObject(response);
             String tagName = latestReleaseJson.getString("tag_name");
             PackageInfo packageInfo = packageManager.getPackageInfo(
-                    mainActivity.getPackageName(), PackageManager.GET_ACTIVITIES);
+                    launcherActivity.getPackageName(), PackageManager.GET_ACTIVITIES);
 
             if (!("v" + packageInfo.versionName).contains(tagName)) {
                 Log.v(TAG, "New version available!");
@@ -77,9 +77,9 @@ public class Updater {
 
     private void showUpdateDialog(String curName, String newName) {
         try {
-            AlertDialog.Builder updateDialogBuilder = new AlertDialog.Builder(mainActivity);
+            AlertDialog.Builder updateDialogBuilder = new AlertDialog.Builder(launcherActivity);
             updateDialogBuilder.setTitle(R.string.update_title);
-            updateDialogBuilder.setMessage(mainActivity.getString(R.string.update_content, curName, newName));
+            updateDialogBuilder.setMessage(launcherActivity.getString(R.string.update_content, curName, newName));
             updateDialogBuilder.setPositiveButton(R.string.update_button, (dialog, which) -> downloadUpdate(newName));
             AlertDialog updateAlertDialog = updateDialogBuilder.create();
             updateAlertDialog.show();
@@ -92,12 +92,12 @@ public class Updater {
         request1.setDescription("Downloading Update");   //appears the same in Notification bar while downloading
         request1.setTitle("LightningLauncher Auto-Updater");
 
-        request1.setDestinationInExternalFilesDir(mainActivity, "/Content", "update"+versionTag+".apk");
+        request1.setDestinationInExternalFilesDir(launcherActivity, "/Content", "update"+versionTag+".apk");
 
-        DownloadManager manager1 = (DownloadManager) mainActivity.getSystemService(Context.DOWNLOAD_SERVICE);
+        DownloadManager manager1 = (DownloadManager) launcherActivity.getSystemService(Context.DOWNLOAD_SERVICE);
         Objects.requireNonNull(manager1).enqueue(request1);
 
-        AlertDialog.Builder updateDialogBuilder = new AlertDialog.Builder(mainActivity);
+        AlertDialog.Builder updateDialogBuilder = new AlertDialog.Builder(launcherActivity);
         updateDialogBuilder.setTitle(R.string.update_downloading_title);
         updateDialogBuilder.setMessage(R.string.update_downloading_content);
         updateDialogBuilder.setNegativeButton(R.string.update_dismiss_button, (dialog, which) -> dialog.cancel());
@@ -105,7 +105,7 @@ public class Updater {
         updateAlertDialog.show();
 
         latestTag = versionTag;
-        mainActivity.registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+        launcherActivity.registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
     }
     String latestTag;
     AlertDialog updateAlertDialog;
@@ -119,7 +119,7 @@ public class Updater {
     };
 
     public void installUpdate(String versionTag) {
-        File p = mainActivity.getApplicationContext().getExternalFilesDir("/Content");
+        File p = launcherActivity.getApplicationContext().getExternalFilesDir("/Content");
         File f = new File(p, "update"+versionTag+".apk");
         if (!f.exists()) {
             Log.w(TAG, "Failed to download APK! Will keep trying...");
@@ -127,7 +127,7 @@ public class Updater {
             return;
         }
         // provider is already included in the imagepicker lib
-        Uri apkURI = FileProvider.getUriForFile(mainActivity, mainActivity.getApplicationContext().getPackageName() + ".imagepicker.provider", f);
+        Uri apkURI = FileProvider.getUriForFile(launcherActivity, launcherActivity.getApplicationContext().getPackageName() + ".imagepicker.provider", f);
         Intent intent = new Intent(Intent.ACTION_VIEW);
 
         intent.setDataAndType(apkURI, "application/vnd.android.package-archive");
@@ -135,6 +135,6 @@ public class Updater {
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         intent.putExtra(Intent.EXTRA_NOT_UNKNOWN_SOURCE, true);
 
-        mainActivity.startActivity(intent);
+        launcherActivity.startActivity(intent);
     }
 }

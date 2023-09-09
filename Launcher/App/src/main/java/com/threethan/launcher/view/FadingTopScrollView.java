@@ -1,4 +1,4 @@
-package com.threethan.launcher.ui;
+package com.threethan.launcher.view;
 
 import android.content.Context;
 import android.util.AttributeSet;

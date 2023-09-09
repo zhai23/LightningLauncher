@@ -57,7 +57,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/app_icon"
+            android:id="@+id/appIcon"
             android:layout_width="83dp"
             android:layout_height="83dp"
             android:layout_marginEnd="10dp"
@@ -73,7 +73,7 @@
             android:orientation="vertical">
 
             <EditText
-                android:id="@+id/app_name"
+                android:id="@+id/appLabel"
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
                 android:layout_gravity="bottom"
@@ -101,7 +101,6 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout3"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="end"
@@ -112,7 +111,7 @@
         app:layout_constraintTop_toBottomOf="@+id/sizer">
 
         <LinearLayout
-            android:id="@+id/refresh_icon_button"
+            android:id="@+id/refreshIconButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
@@ -128,7 +127,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/launch_mode_section"
+            android:id="@+id/launchModeSection"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
@@ -142,7 +141,7 @@
                 android:text="@string/launch_switch" />
 
             <Switch
-                android:id="@+id/launch_mode_switch"
+                android:id="@+id/launchModeSwitch"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

@@ -1,14 +1,17 @@
-package com.threethan.launcher.ui;
+package com.threethan.launcher.lib;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 
 import com.esafirm.imagepicker.features.ImagePicker;
 
 import java.io.File;
 import java.io.FileOutputStream;
 
-public class ImageUtils {
+public class ImageLib {
 
     public static Bitmap getResizedBitmap(Bitmap originalBitmap, int maxSize) {
         int width = originalBitmap.getWidth();
@@ -41,5 +44,18 @@ public class ImageUtils {
         imagePicker.showCamera(false);
         imagePicker.folderMode(true);
         imagePicker.start(requestCode);
+    }
+
+    public static Bitmap bitmapFromDrawable (Drawable drawable) {
+        if (drawable instanceof BitmapDrawable) {
+            return ((BitmapDrawable)drawable).getBitmap();
+        }
+
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+
+        return bitmap;
     }
 }

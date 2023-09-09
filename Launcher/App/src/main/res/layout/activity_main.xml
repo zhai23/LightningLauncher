@@ -14,7 +14,7 @@
         android:scaleType="centerCrop"
         android:visibility="visible" />
 
-    <com.threethan.launcher.ui.FadingTopScrollView
+    <com.threethan.launcher.view.FadingTopScrollView
         android:id="@+id/mainScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.threethan.launcher.ui.DynamicHeightGridView
+            <com.threethan.launcher.view.DynamicHeightGridView
                 android:id="@+id/appsViewWide"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -38,7 +38,7 @@
                 android:stretchMode="columnWidth"
                 android:verticalSpacing="15dp" />
 
-            <com.threethan.launcher.ui.DynamicHeightGridView
+            <com.threethan.launcher.view.DynamicHeightGridView
                 android:id="@+id/appsViewIcon"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -48,7 +48,7 @@
                 android:stretchMode="columnWidth"
                 android:verticalSpacing="15dp" />
         </LinearLayout>
-    </com.threethan.launcher.ui.FadingTopScrollView>
+    </com.threethan.launcher.view.FadingTopScrollView>
 
     <eightbitlab.com.blurview.BlurView
         android:id="@+id/blurView0"

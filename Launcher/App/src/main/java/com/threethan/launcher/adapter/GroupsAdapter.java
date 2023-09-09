@@ -1,4 +1,4 @@
-package com.threethan.launcher.ui;
+package com.threethan.launcher.adapter;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -12,9 +12,11 @@ import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.threethan.launcher.MainActivity;
+import com.threethan.launcher.helper.Dialog;
+import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.R;
-import com.threethan.launcher.helpers.SettingsManager;
+import com.threethan.launcher.launcher.LauncherActivity;
+import com.threethan.launcher.support.SettingsManager;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,7 +29,7 @@ public class GroupsAdapter extends BaseAdapter {
     public static final int MAX_GROUPS = 12;
     public static final String HIDDEN_GROUP = "HIDDEN!";
     public static final String UNSUPPORTED_GROUP = "UNSUPPORTED!";
-    private final MainActivity mainActivity;
+    private final LauncherActivity launcherActivity;
     private final List<String> appGroups;
     private final Set<String> selectedGroups;
     private final SettingsManager settingsManager;
@@ -36,18 +38,18 @@ public class GroupsAdapter extends BaseAdapter {
     /**
      * Create new adapter
      */
-    public GroupsAdapter(MainActivity activity, boolean editMode) {
-        mainActivity = activity;
+    public GroupsAdapter(LauncherActivity activity, boolean editMode) {
+        launcherActivity = activity;
         isEditMode = editMode;
         settingsManager = SettingsManager.getInstance(activity);
 
-        SettingsManager settings = SettingsManager.getInstance(mainActivity);
+        SettingsManager settings = SettingsManager.getInstance(launcherActivity);
         appGroups = settings.getAppGroupsSorted(false);
         if (!editMode) {
             appGroups.remove(GroupsAdapter.HIDDEN_GROUP);
         }
         if (editMode && appGroups.size() < MAX_GROUPS) {
-            appGroups.add("+ " + mainActivity.getString(R.string.add_group));
+            appGroups.add("+ " + launcherActivity.getString(R.string.add_group));
         }
 
         selectedGroups = settings.getSelectedGroups();
@@ -77,7 +79,7 @@ public class GroupsAdapter extends BaseAdapter {
 
     private void setTextViewValue(TextView textView, String value) {
         if (HIDDEN_GROUP.equals(value)) {
-            textView.setText(mainActivity.getString(R.string.apps_hidden));
+            textView.setText(launcherActivity.getString(R.string.apps_hidden));
         } else {
             textView.setText(value);
         }
@@ -108,34 +110,34 @@ public class GroupsAdapter extends BaseAdapter {
             final Set<String> appGroupsList = settingsManager.getAppGroups();
             final String groupName = settingsManager.getAppGroupsSorted(false).get(position);
 
-            AlertDialog dialog = DialogHelper.build(mainActivity, R.layout.dialog_group_details);
+            AlertDialog dialog = Dialog.build(launcherActivity, R.layout.dialog_group_details);
 
-            final EditText groupNameInput = dialog.findViewById(R.id.group_name);
+            final EditText groupNameInput = dialog.findViewById(R.id.groupName);
             groupNameInput.setText(groupName);
 
             @SuppressLint("UseSwitchCompatOrMaterialCode")
-            Switch switch_2d = dialog.findViewById(R.id.switch_default_2d);
+            Switch switch_2d = dialog.findViewById(R.id.default2dSwitch);
             @SuppressLint("UseSwitchCompatOrMaterialCode")
-            Switch switch_vr = dialog.findViewById(R.id.switch_default_vr);
+            Switch switch_vr = dialog.findViewById(R.id.defaultVrSwitch);
             @SuppressLint("UseSwitchCompatOrMaterialCode")
-            Switch switch_web = dialog.findViewById(R.id.switch_default_web);
+            Switch switch_web = dialog.findViewById(R.id.defaultWebSwitch);
             switch_2d .setChecked(SettingsManager.getDefaultGroup(false, false).equals(groupName));
             switch_vr .setChecked(SettingsManager.getDefaultGroup(true, false) .equals(groupName));
             switch_web.setChecked(SettingsManager.getDefaultGroup(false, true) .equals(groupName));
             switch_2d .setOnCheckedChangeListener((switchView, value) -> {
-                String newDefault = value ? groupName : SettingsManager.DEFAULT_GROUP_2D;
+                String newDefault = value ? groupName : Settings.DEFAULT_GROUP_2D;
                 if ((!value && groupName.equals(newDefault)) || !appGroups.contains(newDefault)) newDefault = null;
-                mainActivity.sharedPreferenceEditor.putString(SettingsManager.KEY_GROUP_2D , newDefault);
+                launcherActivity.sharedPreferenceEditor.putString(Settings.KEY_GROUP_2D , newDefault);
             });
             switch_vr .setOnCheckedChangeListener((switchView, value) -> {
-                String newDefault = value ? groupName : SettingsManager.DEFAULT_GROUP_VR;
+                String newDefault = value ? groupName : Settings.DEFAULT_GROUP_VR;
                 if ((!value && groupName.equals(newDefault)) || !appGroups.contains(newDefault)) newDefault = null;
-                mainActivity.sharedPreferenceEditor.putString(SettingsManager.KEY_GROUP_VR , newDefault);
+                launcherActivity.sharedPreferenceEditor.putString(Settings.KEY_GROUP_VR , newDefault);
             });
             switch_web .setOnCheckedChangeListener((switchView, value) -> {
-                String newDefault = value ? groupName : SettingsManager.DEFAULT_GROUP_VR;
+                String newDefault = value ? groupName : Settings.DEFAULT_GROUP_VR;
                 if ((!value && groupName.equals(newDefault)) || !appGroups.contains(newDefault)) newDefault = null;
-                mainActivity.sharedPreferenceEditor.putString(SettingsManager.KEY_GROUP_WEB, newDefault);
+                launcherActivity.sharedPreferenceEditor.putString(Settings.KEY_GROUP_WEB, newDefault);
             });
 
             dialog.findViewById(R.id.confirm).setOnClickListener(view1 -> {
@@ -144,11 +146,11 @@ public class GroupsAdapter extends BaseAdapter {
 
                 // Move the default group when we rename
                 if (SettingsManager.getDefaultGroup(false, false).equals(groupName))
-                    mainActivity.sharedPreferenceEditor.putString(SettingsManager.KEY_GROUP_2D, newGroupName);
+                    launcherActivity.sharedPreferenceEditor.putString(Settings.KEY_GROUP_2D, newGroupName);
                 if (SettingsManager.getDefaultGroup(true, false).equals(groupName))
-                    mainActivity.sharedPreferenceEditor.putString(SettingsManager.KEY_GROUP_VR, newGroupName);
+                    launcherActivity.sharedPreferenceEditor.putString(Settings.KEY_GROUP_VR, newGroupName);
                 if (SettingsManager.getDefaultGroup(false, true).equals(groupName))
-                    mainActivity.sharedPreferenceEditor.putString(SettingsManager.KEY_GROUP_WEB,newGroupName);
+                    launcherActivity.sharedPreferenceEditor.putString(Settings.KEY_GROUP_WEB,newGroupName);
 
 
                 if (newGroupName.length() > 0) {
@@ -158,26 +160,26 @@ public class GroupsAdapter extends BaseAdapter {
                     // Move apps when we rename
                     Map<String, String> updatedAppGroupMap = new HashMap<>();
                     for (String packageName : apps.keySet()) {
-                        if (apps.get(packageName) != null && apps.get(packageName).compareTo(groupName) == 0) {
-                            updatedAppGroupMap.put(packageName, newGroupName);
-                        } else {
-                            updatedAppGroupMap.put(packageName, apps.get(packageName));
+                        if (apps.get(packageName) != null) {
+                            if (Objects.requireNonNull(apps.get(packageName)).compareTo(groupName) == 0) {
+                                updatedAppGroupMap.put(packageName, newGroupName);
+                            } else {
+                                updatedAppGroupMap.put(packageName, apps.get(packageName));
+                            }
                         }
                     }
-
-
 
                     HashSet<String> selectedGroup = new HashSet<>();
                     selectedGroup.add(newGroupName);
                     settingsManager.setSelectedGroups(selectedGroup);
                     settingsManager.setAppGroups(appGroupsList);
                     SettingsManager.setAppGroupMap(updatedAppGroupMap);
-                    mainActivity.refreshInterface();
+                    launcherActivity.refresh();
                 }
                 dialog.cancel();
             });
 
-            dialog.findViewById(R.id.group_delete).setOnClickListener(view2 -> {
+            dialog.findViewById(R.id.deleteGroupButton).setOnClickListener(view2 -> {
                 HashMap<String, String> appGroupMap = new HashMap<>();
                 for (String packageName : apps.keySet()) {
                     if (groupName.equals(apps.get(packageName))) {
@@ -202,7 +204,7 @@ public class GroupsAdapter extends BaseAdapter {
                 }
                 dialog.dismiss();
 
-                mainActivity.refreshInterface();
+                launcherActivity.refresh();
             });
         });
 
@@ -240,9 +242,9 @@ public class GroupsAdapter extends BaseAdapter {
                 shapeResourceId = R.drawable.tab_selected_middle;
             }
             itemView.setBackgroundResource(shapeResourceId);
-            itemView.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(mainActivity.darkMode ? "#50000000" : "#FFFFFF")));
+            itemView.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(launcherActivity.darkMode ? "#50000000" : "#FFFFFF")));
             TextView textView = itemView.findViewById(R.id.textLabel);
-            textView.setTextColor(Color.parseColor(mainActivity.darkMode ? "#FFFFFFFF" : "#FF000000")); // set selected tab text color
+            textView.setTextColor(Color.parseColor(launcherActivity.darkMode ? "#FFFFFFFF" : "#FF000000")); // set selected tab text color
             if (isEditMode && (position < getCount() - 2)) {
                 menu.setVisibility(View.VISIBLE);
 //                menu.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(mainActivity.darkMode ? "#FFFFFFFF" : "#FF000000"))); // set selected tab text color
@@ -253,7 +255,7 @@ public class GroupsAdapter extends BaseAdapter {
         } else {
             itemView.setBackgroundColor(Color.TRANSPARENT);
             TextView textView = itemView.findViewById(R.id.textLabel);
-            textView.setTextColor(Color.parseColor(mainActivity.darkMode ? "#98FFFFFF" : "#98000000")); // set unselected tab text color
+            textView.setTextColor(Color.parseColor(launcherActivity.darkMode ? "#98FFFFFF" : "#98000000")); // set unselected tab text color
             menu.setVisibility(View.GONE);
         }
     }

@@ -1,4 +1,4 @@
-package com.threethan.launcher.platforms;
+package com.threethan.launcher.helper;
 
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -6,26 +6,24 @@ import android.content.pm.PackageManager;
 import android.transition.Slide;
 import android.util.Log;
 
-import com.threethan.launcher.MainActivity;
-import com.threethan.launcher.web.WebViewActivity;
-import com.threethan.launcher.helpers.SettingsManager;
+import com.threethan.launcher.launcher.LauncherActivity;
+import com.threethan.launcher.browser.BrowserActivity;
+import com.threethan.launcher.support.SettingsManager;
 
-import java.time.temporal.WeekFields;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class AppPlatform extends AbstractPlatform {
-    @Override
-    public boolean launchApp(MainActivity mainActivity, ApplicationInfo appInfo) {
+public abstract class Launch {
+    public static boolean launchApp(LauncherActivity launcherActivity, ApplicationInfo appInfo) {
         Intent intent;
 
-        if (isWebsite(appInfo)) {
-            intent = new Intent(mainActivity, WebViewActivity.class);
+        if (App.isWebsite(appInfo)) {
+            intent = new Intent(launcherActivity, BrowserActivity.class);
             intent.putExtra("url", appInfo.packageName);
         } else {
-            PackageManager pm = mainActivity.getPackageManager();
+            PackageManager pm = launcherActivity.getPackageManager();
 
-            if (isVirtualRealityApp(appInfo, mainActivity)) {
+            if (App.isVirtualReality(appInfo, launcherActivity)) {
                 intent = new Intent(Intent.ACTION_MAIN);
                 intent.setPackage(appInfo.packageName);
                 if (intent.resolveActivity(pm) == null) intent = pm.getLaunchIntentForPackage(appInfo.packageName);
@@ -35,16 +33,16 @@ public class AppPlatform extends AbstractPlatform {
 
         if (intent == null) {
             Log.w("AppPlatform", "Package could not be launched, may have been uninstalled already? " +appInfo.packageName);
-            mainActivity.recheckPackages();
+            launcherActivity.recheckPackages();
             return false;
         }
 
-        if (SettingsManager.getAppLaunchOut(appInfo.packageName) || AbstractPlatform.isVirtualRealityApp(appInfo, mainActivity)) {
-            mainActivity.finish();
-            mainActivity.overridePendingTransition(0, 0); // Cancel closing animation. Doesn't work on quest, but doesn't hurt
+        if (SettingsManager.getAppLaunchOut(appInfo.packageName) || App.isVirtualReality(appInfo, launcherActivity)) {
+            launcherActivity.finish();
+            launcherActivity.overridePendingTransition(0, 0); // Cancel closing animation. Doesn't work on quest, but doesn't hurt
 
-            if (isWebsite(appInfo)) {
-                WebViewActivity.killInstances(mainActivity);
+            if (App.isWebsite(appInfo)) {
+                BrowserActivity.killInstances(launcherActivity);
             }
 
             intent.setFlags( Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION );
@@ -53,22 +51,22 @@ public class AppPlatform extends AbstractPlatform {
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    mainActivity.startActivity(finalIntent);
+                    launcherActivity.startActivity(finalIntent);
                 }
             }, 650);
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    mainActivity.startActivity(finalIntent);
+                    launcherActivity.startActivity(finalIntent);
                 }
             }, 800);
             return false;
 
         } else {
-            mainActivity.getWindow().setExitTransition(new Slide());
-            mainActivity.getWindow().setEnterTransition(new Slide());
+            launcherActivity.getWindow().setExitTransition(new Slide());
+            launcherActivity.getWindow().setEnterTransition(new Slide());
 
-            mainActivity.startActivity(intent);
+            launcherActivity.startActivity(intent);
             return true;
         }
     }

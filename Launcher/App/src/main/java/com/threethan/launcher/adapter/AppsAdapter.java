@@ -1,4 +1,4 @@
-package com.threethan.launcher.ui;
+package com.threethan.launcher.adapter;
 
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
@@ -11,7 +11,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,53 +22,35 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.threethan.launcher.MainActivity;
+import com.threethan.launcher.helper.App;
+import com.threethan.launcher.helper.Dialog;
+import com.threethan.launcher.helper.Icon;
+import com.threethan.launcher.helper.Launch;
+import com.threethan.launcher.helper.Settings;
+import com.threethan.launcher.launcher.LauncherActivity;
+import com.threethan.launcher.lib.ImageLib;
 import com.threethan.launcher.R;
-import com.threethan.launcher.helpers.CompatHelper;
-import com.threethan.launcher.helpers.SettingsManager;
-import com.threethan.launcher.platforms.AbstractPlatform;
+import com.threethan.launcher.helper.Compat;
+import com.threethan.launcher.support.SettingsManager;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-/** @noinspection deprecation, rawtypes */
-class IconTask extends AsyncTask {
-    @SuppressLint("StaticFieldLeak")
-    private ImageView imageView;
-    private Drawable appIcon;
-
-    @Override
-    protected Object doInBackground(Object[] objects) {
-        final ApplicationInfo currentApp = (ApplicationInfo) objects[1];
-        final MainActivity mainActivityContext = (MainActivity) objects[2];
-        final AbstractPlatform appPlatform = AbstractPlatform.getPlatform(currentApp);
-        imageView = (ImageView) objects[3];
-
-        ImageView[] imageViews = {imageView};
-        appIcon = appPlatform.loadIcon(mainActivityContext, currentApp, imageViews);
-
-        return null;
-    }
-    @Override
-    protected void onPostExecute(Object _n) {
-        imageView.setImageDrawable(appIcon);
-    }
-}
 @SuppressLint("UseSwitchCompatOrMaterialCode")
 public class AppsAdapter extends BaseAdapter{
     private static Drawable iconDrawable;
     private static File iconFile;
     private static String packageName;
-    private final MainActivity mainActivity;
+    private final LauncherActivity launcherActivity;
     private final List<ApplicationInfo> appList;
     private final boolean isEditMode;
     private final boolean showTextLabels;
-    public AppsAdapter(MainActivity context, boolean editMode, boolean names, List<ApplicationInfo> myApps) {
-        mainActivity = context;
+    public AppsAdapter(LauncherActivity context, boolean editMode, boolean names, List<ApplicationInfo> myApps) {
+        launcherActivity = context;
         isEditMode = editMode;
         showTextLabels = names;
-        SettingsManager settingsManager = SettingsManager.getInstance(mainActivity);
+        SettingsManager settingsManager = SettingsManager.getInstance(launcherActivity);
 
         ArrayList<String> sortedSelectedGroups = settingsManager.getAppGroupsSorted(true);
         appList = settingsManager.getInstalledApps(context, sortedSelectedGroups, myApps);
@@ -102,11 +83,11 @@ public class AppsAdapter extends BaseAdapter{
         ViewHolder holder;
 
         final ApplicationInfo currentApp = appList.get(position);
-        LayoutInflater layoutInflater = (LayoutInflater) mainActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater layoutInflater = (LayoutInflater) launcherActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         if (convertView == null) {
             // Create a new ViewHolder and inflate the view
-            int layout = AbstractPlatform.isWideApp(currentApp, mainActivity) ? R.layout.lv_app_wide : R.layout.lv_app_icon;
+            int layout = App.isBanner(currentApp, launcherActivity) ? R.layout.lv_app_wide : R.layout.lv_app_icon;
 
             convertView = layoutInflater.inflate(layout, parent, false);
             if (currentApp.packageName == null) return convertView;
@@ -125,7 +106,7 @@ public class AppsAdapter extends BaseAdapter{
             convertView.setTag(holder);
 
             if (position == 0) {
-                mainActivity.updateGridViewHeights();
+                launcherActivity.updateGridViewHeights();
             }
 
         } else {
@@ -138,12 +119,12 @@ public class AppsAdapter extends BaseAdapter{
         holder.textView.setVisibility(showTextLabels ? View.VISIBLE : View.INVISIBLE);
         if (showTextLabels) {
             holder.textView.setText(name);
-            holder.textView.setTextColor(Color.parseColor(mainActivity.darkMode ? "#FFFFFF" : "#000000"));
-            holder.textView.setShadowLayer(6, 0, 0, Color.parseColor(mainActivity.darkMode ? "#000000" : "#20FFFFFF"));
+            holder.textView.setTextColor(Color.parseColor(launcherActivity.darkMode ? "#FFFFFF" : "#000000"));
+            holder.textView.setShadowLayer(6, 0, 0, Color.parseColor(launcherActivity.darkMode ? "#000000" : "#20FFFFFF"));
         }
 
 
-        new IconTask().execute(this, currentApp, mainActivity, holder.imageView, holder.imageViewBg);
+        new LoadIconTask().execute(this, currentApp, launcherActivity, holder.imageView, holder.imageViewBg);
         holder.view.post(() -> updateView(holder));
 
         return convertView;
@@ -152,7 +133,7 @@ public class AppsAdapter extends BaseAdapter{
     private void updateView(ViewHolder holder) {
         if (isEditMode) {
             holder.view.setOnClickListener(view -> {
-                boolean selected = mainActivity.selectApp(holder.app.packageName);
+                boolean selected = launcherActivity.selectApp(holder.app.packageName);
                 ValueAnimator an = android.animation.ObjectAnimator.ofFloat(holder.view, "alpha", selected? 0.5F : 1.0F);
                 an.setDuration(150);
                 an.start();
@@ -164,16 +145,15 @@ public class AppsAdapter extends BaseAdapter{
 
         } else {
             holder.view.setOnClickListener(view -> {
-                AbstractPlatform platform = AbstractPlatform.getPlatform(holder.app);
-                if (platform.launchApp(mainActivity, holder.app)) animateOpen(holder);
+                if (Launch.launchApp(launcherActivity, holder.app)) animateOpen(holder);
 
-                boolean isWeb = AbstractPlatform.isWebsite(holder.app);
+                boolean isWeb = App.isWebsite(holder.app);
                 if (isWeb) holder.killButton.setVisibility(View.VISIBLE);
                 shouldAnimateClose = isWeb;
             });
             holder.view.setOnLongClickListener(view -> {
-                mainActivity.setEditMode(true);
-                mainActivity.selectApp(holder.app.packageName);
+                launcherActivity.setEditMode(true);
+                launcherActivity.selectApp(holder.app.packageName);
                 return true;
             });
         }
@@ -182,7 +162,7 @@ public class AppsAdapter extends BaseAdapter{
             @Override
             public void run() {
                 holder.moreButton.setVisibility(holder.view.isHovered() || holder.moreButton.isHovered() ? View.VISIBLE : View.INVISIBLE);
-                boolean selected = mainActivity.isSelected(holder.app.packageName);
+                boolean selected = launcherActivity.isSelected(holder.app.packageName);
                 if (selected != holder.view.getAlpha() < 0.9) {
                     ValueAnimator an = android.animation.ObjectAnimator.ofFloat(holder.view, "alpha", selected ? 0.5F : 1.0F);
                     an.setDuration(150);
@@ -208,57 +188,57 @@ public class AppsAdapter extends BaseAdapter{
     }
 
     public void onImageSelected(String path, ImageView selectedImageView) {
-        CompatHelper.clearIcons(mainActivity);
+        Compat.clearIcons(launcherActivity);
         if (path != null) {
-            Bitmap bitmap = ImageUtils.getResizedBitmap(BitmapFactory.decodeFile(path), 450);
+            Bitmap bitmap = ImageLib.getResizedBitmap(BitmapFactory.decodeFile(path), 450);
 
-            ImageUtils.saveBitmap(bitmap, iconFile);
+            ImageLib.saveBitmap(bitmap, iconFile);
             selectedImageView.setImageBitmap(bitmap);
         } else {
             selectedImageView.setImageDrawable(iconDrawable);
-            AbstractPlatform.updateIcon(iconFile, packageName, null);
+            Icon.updateIcon(iconFile, packageName, null);
             //No longer sets icon here but that should be fine
         }
     }
     private void showAppDetails(ApplicationInfo currentApp) {
         // set view
-        AlertDialog dialog = DialogHelper.build(mainActivity, R.layout.dialog_app_details);
+        AlertDialog dialog = Dialog.build(launcherActivity, R.layout.dialog_app_details);
         // package name
         ((TextView) dialog.findViewById(R.id.packageName)).setText(currentApp.packageName);
         // info action
-        dialog.findViewById(R.id.info).setOnClickListener(view -> mainActivity.openAppDetails(currentApp));
-        dialog.findViewById(R.id.uninstall).setOnClickListener(view -> {mainActivity.uninstallApp(currentApp.packageName); dialog.dismiss();});
+        dialog.findViewById(R.id.info).setOnClickListener(view -> App.openInfo(launcherActivity, currentApp.packageName));
+        dialog.findViewById(R.id.uninstall).setOnClickListener(view -> {
+            App.uninstall(launcherActivity, currentApp.packageName); dialog.dismiss();});
 
         // toggle launch mode
         final boolean[] launchOut = {SettingsManager.getAppLaunchOut(currentApp.packageName)};
-        final Switch launchModeSwitch = dialog.findViewById(R.id.launch_mode_switch);
-        final View launchModeSection = dialog.findViewById(R.id.launch_mode_section);
-        final View refreshIconButton = dialog.findViewById(R.id.refresh_icon_button);
-        final boolean isVr = AbstractPlatform.isVirtualRealityApp(currentApp, mainActivity);
-        final boolean isWeb = AbstractPlatform.isWebsite(currentApp);
+        final Switch launchModeSwitch = dialog.findViewById(R.id.launchModeSwitch);
+        final View launchModeSection = dialog.findViewById(R.id.launchModeSection);
+        final View refreshIconButton = dialog.findViewById(R.id.refreshIconButton);
+        final boolean isVr = App.isVirtualReality(currentApp, launcherActivity);
+        final boolean isWeb = App.isWebsite(currentApp);
 
         // load icon
-        PackageManager packageManager = mainActivity.getPackageManager();
+        PackageManager packageManager = launcherActivity.getPackageManager();
 
-        ImageView iconImage = dialog.findViewById(R.id.app_icon);
-        AbstractPlatform appPlatform = AbstractPlatform.getPlatform(currentApp);
+        ImageView iconImage = dialog.findViewById(R.id.appIcon);
 
-        iconImage.setImageDrawable(appPlatform.loadIcon(mainActivity, currentApp, null));
+        iconImage.setImageDrawable(Icon.loadIcon(launcherActivity, currentApp, null));
 
         iconImage.setClipToOutline(true);
-        if (AbstractPlatform.isWideApp(currentApp, mainActivity)) iconImage.getLayoutParams().width = mainActivity.dp(150);
+        if (App.isBanner(currentApp, launcherActivity)) iconImage.getLayoutParams().width = launcherActivity.dp(150);
 
         iconImage.setOnClickListener(iconPickerView -> {
             iconDrawable = currentApp.loadIcon(packageManager);
             packageName = currentApp.packageName;
 
-            iconFile = AbstractPlatform.iconFileForPackage(mainActivity, currentApp.packageName);
+            iconFile = Icon.iconFileForPackage(launcherActivity, currentApp.packageName);
             if (iconFile.exists()) {
                 //noinspection ResultOfMethodCallIgnored
                 iconFile.delete();
             }
-            mainActivity.setSelectedImageView(iconImage);
-            ImageUtils.showImagePicker(mainActivity, MainActivity.PICK_ICON_CODE);
+            launcherActivity.setSelectedImageView(iconImage);
+            ImageLib.showImagePicker(launcherActivity, Settings.PICK_ICON_CODE);
         });
 
         dialog.findViewById(R.id.info).setVisibility(isWeb ? View.GONE : View.VISIBLE);
@@ -268,19 +248,19 @@ public class AppsAdapter extends BaseAdapter{
             launchModeSection.setVisibility(View.GONE);
             refreshIconButton.setVisibility(View.VISIBLE);
 
-            refreshIconButton.setOnClickListener(view -> appPlatform.reloadIcon(mainActivity, currentApp, new ImageView[]{iconImage}));
+            refreshIconButton.setOnClickListener(view -> Icon.reloadIcon(launcherActivity, currentApp, new ImageView[]{iconImage}));
         } else {
             launchModeSection.setVisibility(View.VISIBLE);
             refreshIconButton.setVisibility(View.GONE);
             launchModeSwitch.setChecked(launchOut[0]);
 
             launchModeSwitch.setOnCheckedChangeListener((sw, value) -> {
-                if (!mainActivity.sharedPreferences.getBoolean(SettingsManager.KEY_SEEN_LAUNCH_OUT_POPUP, false) && value) {
+                if (!launcherActivity.sharedPreferences.getBoolean(Settings.KEY_SEEN_LAUNCH_OUT_POPUP, false) && value) {
                     launchModeSwitch.setChecked(false); // Revert switch
-                    AlertDialog subDialog = DialogHelper.build(mainActivity, R.layout.dialog_launch_out_info);
+                    AlertDialog subDialog = Dialog.build(launcherActivity, R.layout.dialog_launch_out_info);
                     subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
-                        mainActivity.sharedPreferenceEditor
-                                .putBoolean(SettingsManager.KEY_SEEN_LAUNCH_OUT_POPUP, true)
+                        launcherActivity.sharedPreferenceEditor
+                                .putBoolean(Settings.KEY_SEEN_LAUNCH_OUT_POPUP, true)
                                 .apply();
                         subDialog.dismiss();
                         SettingsManager.setAppLaunchOut(currentApp.packageName, true);
@@ -299,12 +279,12 @@ public class AppsAdapter extends BaseAdapter{
 
         // set name
         String name = SettingsManager.getAppLabel(currentApp);
-        final EditText appNameEditText = dialog.findViewById(R.id.app_name);
+        final EditText appNameEditText = dialog.findViewById(R.id.appLabel);
         appNameEditText.setText(name);
         dialog.findViewById(R.id.confirm).setOnClickListener(view -> {
             SettingsManager.setAppLabel(currentApp, appNameEditText.getText().toString());
             dialog.dismiss();
-            mainActivity.refreshInterface();
+            launcherActivity.refresh();
         });
     }
 
@@ -319,7 +299,7 @@ public class AppsAdapter extends BaseAdapter{
         int w = clip.getWidth();
         int h = clip.getHeight();
 
-        View openAnim = mainActivity.findViewById(R.id.openAnim);
+        View openAnim = launcherActivity.m.findViewById(R.id.openAnim);
         openAnim.setX(l[0]);
         openAnim.setY(l[1]);
         ViewGroup.LayoutParams layoutParams = new FrameLayout.LayoutParams(w, h);
@@ -333,11 +313,11 @@ public class AppsAdapter extends BaseAdapter{
         ImageView animIconBg = openAnim.findViewById(R.id.openIconBg);
         animIcon.setImageDrawable(holder.imageView.getDrawable());
         animIconBg.setImageDrawable(holder.imageView.getDrawable());
-
         animIconBg.setAlpha(1f);
 
-        View openProgress = mainActivity.findViewById(R.id.openProgress);
+        View openProgress = launcherActivity.m.findViewById(R.id.openProgress);
         openProgress.setVisibility(View.VISIBLE);
+        openProgress.setAlpha(0f);
 
         ObjectAnimator aX = ObjectAnimator.ofFloat(openAnim, "ScaleX", 100f);
         ObjectAnimator aY = ObjectAnimator.ofFloat(openAnim, "ScaleY", 100f);
@@ -354,11 +334,11 @@ public class AppsAdapter extends BaseAdapter{
         aP.start();
     }
     public static boolean shouldAnimateClose = false;
-    public static boolean animateClose(MainActivity mainActivity) {
-        View openAnim = mainActivity.findViewById(R.id.openAnim);
+    public static boolean animateClose(LauncherActivity launcherActivity) {
+        View openAnim = launcherActivity.m.findViewById(R.id.openAnim);
         ImageView animIcon = openAnim.findViewById(R.id.openIcon);
 
-        View openProgress = mainActivity.findViewById(R.id.openProgress);
+        View openProgress = launcherActivity.m.findViewById(R.id.openProgress);
         openProgress.setVisibility(View.INVISIBLE);
 
         final boolean rv = (openAnim.getVisibility() == View.VISIBLE);

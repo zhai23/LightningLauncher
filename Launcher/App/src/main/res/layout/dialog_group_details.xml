@@ -19,7 +19,7 @@
         android:orientation="horizontal">
 
         <EditText
-            android:id="@+id/group_name"
+            android:id="@+id/groupName"
             android:layout_width="0dp"
             android:layout_height="60dp"
             android:layout_margin="2dp"
@@ -32,7 +32,7 @@
             android:textSize="28sp" />
 
         <ImageView
-            android:id="@+id/group_delete"
+            android:id="@+id/deleteGroupButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -76,7 +76,7 @@
                 tools:ignore="NestedWeights,RtlSymmetry" />
 
             <Switch
-                android:id="@+id/switch_default_vr"
+                android:id="@+id/defaultVrSwitch"
                 android:layout_width="wrap_content"
                 android:thumb="@drawable/switch_thumb_custom"
                 android:track="@drawable/switch_track_custom"
@@ -108,7 +108,7 @@
                 tools:ignore="NestedWeights,RtlSymmetry" />
 
             <Switch
-                android:id="@+id/switch_default_2d"
+                android:id="@+id/default2dSwitch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:thumb="@drawable/switch_thumb_custom"
@@ -138,7 +138,7 @@
                 tools:ignore="NestedWeights,RtlSymmetry" />
 
             <Switch
-                android:id="@+id/switch_default_web"
+                android:id="@+id/defaultWebSwitch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:thumb="@drawable/switch_thumb_custom"
@@ -148,13 +148,12 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:baselineAligned="false"
         android:gravity="end"
-        android:orientation="horizontal"
-        android:baselineAligned="false">
+        android:orientation="horizontal">
 
         <FrameLayout
             android:id="@+id/confirm"

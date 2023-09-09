@@ -1,4 +1,4 @@
-package com.threethan.launcher.web;
+package com.threethan.launcher.browser;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -24,17 +24,17 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.threethan.launcher.MainActivity;
+import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.R;
-import com.threethan.launcher.helpers.SettingsManager;
-import com.threethan.launcher.platforms.AbstractPlatform;
+import com.threethan.launcher.helper.Platform;
+import com.threethan.launcher.launcher.LauncherActivity;
 
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-public class WebViewActivity extends Activity {
-    CustomWebView w;
+public class BrowserActivity extends Activity {
+    BrowserWebView w;
     TextView urlPre;
     TextView urlMid;
     TextView urlEnd;
@@ -64,13 +64,13 @@ public class WebViewActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         IntentFilter filter = new IntentFilter(FINISH_ACTION);
-        IntentFilter filter2= new IntentFilter(MainActivity.FINISH_ACTION);
+        IntentFilter filter2= new IntentFilter(LauncherActivity.FINISH_ACTION);
         registerReceiver(finishReceiver, filter);
         registerReceiver(finishReceiver, filter2);
 
-        Log.v("WebsiteLauncher", "Starting WebView Activity");
+        Log.v("LightningLauncher", "Starting Browser Activity");
 
-        setContentView(R.layout.activity_webview);
+        setContentView(R.layout.activity_browser);
         getWindow().setStatusBarColor(Color.parseColor("#11181f"));
 
         //noinspection deprecation
@@ -150,7 +150,7 @@ public class WebViewActivity extends Activity {
         dark .setOnClickListener(view -> updateDark(true ));
         light.setOnClickListener(view -> updateDark(false));
 
-        boolean isDark = sharedPreferences.getBoolean(WebViewActivity.KEY_WEBSITE_DARK+baseUrl, true);
+        boolean isDark = sharedPreferences.getBoolean(BrowserActivity.KEY_WEBSITE_DARK+baseUrl, true);
         updateDark(isDark);
 
         // Edit URL
@@ -176,7 +176,7 @@ public class WebViewActivity extends Activity {
 
         addHome = findViewById(R.id.addHome);
         addHome.setOnClickListener(view -> {
-            AbstractPlatform.addWebApp(sharedPreferences, currentUrl);
+            Platform.addWebsite(sharedPreferences, currentUrl);
             addHome.setVisibility(View.GONE);
         });
     }
@@ -242,7 +242,7 @@ public class WebViewActivity extends Activity {
         baseUrl.replace("https://","").replace("/",""));
         if (isDefault) addHome.setVisibility(View.GONE);
         else {
-            Set<String> webList = sharedPreferences.getStringSet(SettingsManager.KEY_WEBSITE_LIST, new HashSet<>());
+            Set<String> webList = sharedPreferences.getStringSet(Settings.KEY_WEBSITE_LIST, new HashSet<>());
             for (String webUrl : webList) {
                 if (url.replace("/", "")
                         .equals(webUrl.replace("https://", "").replace("/", ""))) {
@@ -255,14 +255,14 @@ public class WebViewActivity extends Activity {
         }
     }
 
-    WebViewService wService;
+    BrowserService wService;
     boolean wBound = false;
 
     @Override
     protected void onStart() {
         super.onStart();
         // Bind to LocalService.
-        Intent intent = new Intent(this, WebViewService.class);
+        Intent intent = new Intent(this, BrowserService.class);
         bindService(intent, connection, Context.BIND_AUTO_CREATE);
 
         LinearLayout container = findViewById(R.id.container);
@@ -330,7 +330,7 @@ public class WebViewActivity extends Activity {
         public void onServiceConnected(ComponentName className,
                                        IBinder service) {
             // We've bound to LocalService, cast the IBinder and get LocalService instance.
-            WebViewService.LocalBinder binder = (WebViewService.LocalBinder) service;
+            BrowserService.LocalBinder binder = (BrowserService.LocalBinder) service;
             wService = binder.getService();
             wBound = true;
         }
@@ -343,7 +343,7 @@ public class WebViewActivity extends Activity {
 
 
     public static void killInstances(Context context) {
-        Intent finishIntent = new Intent(WebViewActivity.FINISH_ACTION);
+        Intent finishIntent = new Intent(BrowserActivity.FINISH_ACTION);
         context.sendBroadcast(finishIntent);
     }
 

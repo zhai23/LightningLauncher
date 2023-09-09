@@ -1,4 +1,4 @@
-package com.threethan.launcher.web;
+package com.threethan.launcher.browser;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -10,25 +10,25 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
-public class CustomWebView extends WebView {
+public class BrowserWebView extends WebView {
 
     public ArrayList<String> history = new ArrayList<>();
     public ArrayList<String> future = new ArrayList<>();
     String current = null;
 
-    public CustomWebView(@NonNull Context context) {
+    public BrowserWebView(@NonNull Context context) {
         super(context);
     }
 
-    public CustomWebView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public BrowserWebView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public CustomWebView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public BrowserWebView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    public CustomWebView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public BrowserWebView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
