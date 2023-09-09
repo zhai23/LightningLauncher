@@ -358,6 +358,9 @@ public class AppsAdapter extends BaseAdapter{
         View openAnim = mainActivity.findViewById(R.id.openAnim);
         ImageView animIcon = openAnim.findViewById(R.id.openIcon);
 
+        View openProgress = mainActivity.findViewById(R.id.openProgress);
+        openProgress.setVisibility(View.INVISIBLE);
+
         final boolean rv = (openAnim.getVisibility() == View.VISIBLE);
         if (!AppsAdapter.shouldAnimateClose) {
             openAnim.setVisibility(View.INVISIBLE);
@@ -369,8 +372,6 @@ public class AppsAdapter extends BaseAdapter{
             ImageView animIconBg = openAnim.findViewById(R.id.openIconBg);
 
             // Assuming task already animated open
-            View openProgress = mainActivity.findViewById(R.id.openProgress);
-            openProgress.setVisibility(View.INVISIBLE);
 
             openAnim.setScaleX(3f);
             openAnim.setScaleY(3f);

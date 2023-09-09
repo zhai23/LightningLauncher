@@ -61,7 +61,7 @@
         android:shadowRadius="5"
         android:singleLine="true"
         android:textColor="@android:color/white"
-        android:textSize="18sp"
+        android:textSize="17sp"
         app:strokeColor="#80000000"
         app:strokeWidth="1.5dp"
         tools:text="App Name Here" />
