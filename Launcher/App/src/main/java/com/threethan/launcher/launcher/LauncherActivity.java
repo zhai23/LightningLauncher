@@ -124,10 +124,11 @@ public class LauncherActivity extends Activity {
             // Load Packages
             reloadPackagesWithMeta();
             // Reload UI
-            mainView.postDelayed(this::runUpdater, 1000);
             refreshBackground();
             refresh();
         }
+
+        mainView.postDelayed(this::runUpdater, 1000);
     }
 
     protected void initView() {
