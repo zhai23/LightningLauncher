@@ -1,14 +1,22 @@
 package com.threethan.launcher.lib;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.util.Log;
+
+import androidx.annotation.Nullable;
 
 import com.esafirm.imagepicker.features.ImagePicker;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
 public class ImageLib {
@@ -57,5 +65,28 @@ public class ImageLib {
         drawable.draw(canvas);
 
         return bitmap;
+    }
+
+    @Nullable
+    public static Bitmap bitmapFromFile (Context context, File file) {
+        try {
+            return BitmapFactory.decodeStream(context.getContentResolver().openInputStream(Uri.fromFile(file)));
+        } catch (FileNotFoundException e) {
+            Log.w("FileLib", "Failed to get bitmap from file "+file.getAbsolutePath());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    @Nullable
+    public static Bitmap bitmapFromFile (Context context, File file, BitmapFactory.Options options) {
+        try {
+            return BitmapFactory.decodeStream(context.getContentResolver().openInputStream(Uri.fromFile(file)), new Rect(), options);
+        } catch (FileNotFoundException e) {
+            Log.w("FileLib", "Failed to get bitmap from file "+file.getAbsolutePath());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

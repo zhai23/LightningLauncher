@@ -2,12 +2,12 @@ package com.threethan.launcher.launcher;
 
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 
 import com.threethan.launcher.helper.Settings;
+import com.threethan.launcher.lib.ImageLib;
 import com.threethan.launcher.support.SettingsManager;
 
 import java.io.File;
@@ -28,7 +28,7 @@ class BackgroundTask extends AsyncTask<Object, Void, Object> {
         } else {
             File file = new File(owner.getApplicationInfo().dataDir, Settings.CUSTOM_BACKGROUND_PATH);
             try {
-                Bitmap backgroundBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+                Bitmap backgroundBitmap = ImageLib.bitmapFromFile(owner, file);
                 backgroundThemeDrawable = new BitmapDrawable(owner.getResources(), backgroundBitmap);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -39,9 +39,7 @@ class BackgroundTask extends AsyncTask<Object, Void, Object> {
 
     @Override
     protected void onPostExecute(Object _n) {
-        owner.post(() -> {
-            owner.backgroundImageView.setImageDrawable(backgroundThemeDrawable);
-        });
+        owner.post(() -> owner.backgroundImageView.setImageDrawable(backgroundThemeDrawable));
     }
 
 }

@@ -1,11 +1,13 @@
 package com.threethan.launcher.helper;
 
+import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import com.threethan.launcher.launcher.LauncherActivity;
+import com.threethan.launcher.lib.ImageLib;
 import com.threethan.launcher.support.SettingsManager;
 
 import java.io.DataInputStream;
@@ -65,7 +67,7 @@ public abstract class IconRepo {
                     for (final String url : App.isWebsite(app) ? ICON_URLS_WEB : (isWide ? ICON_URLS_WIDE : ICON_URLS)) {
                         final String urlName = App.isWebsite(app) ?
                                 pkgName.split("//")[0] + "//" + pkgName.split("/")[2] : pkgName;
-                        if (downloadIconFromUrl(String.format(url, urlName), iconFile)) {
+                        if (downloadIconFromUrl(activity, String.format(url, urlName), iconFile)) {
                             activity.runOnUiThread(callback);
                             break;
                         }
@@ -83,14 +85,14 @@ public abstract class IconRepo {
         }).start();
     }
 
-    private static boolean downloadIconFromUrl(String url, File iconFile) {
+    private static boolean downloadIconFromUrl(Context context, String url, File iconFile) {
         try (InputStream inputStream = new URL(url).openStream()) {
-            if (saveStream(inputStream, iconFile)) return true;
+            if (saveStream(context, inputStream, iconFile)) return true;
         } catch (IOException ignored) {}
         return false;
     }
 
-    private static boolean saveStream(InputStream inputStream, File outputFile) {
+    private static boolean saveStream(Context context, InputStream inputStream, File outputFile) {
         try {
             DataInputStream dataInputStream = new DataInputStream(inputStream);
 
@@ -103,15 +105,12 @@ public abstract class IconRepo {
             fileOutputStream.flush();
             fileOutputStream.close();
 
-            if (!isImageFileComplete(outputFile)) {
+            if (!isImageFileComplete(context, outputFile)) {
                 Log.i("IconRepo", "Image file not complete" + outputFile.getAbsolutePath());
                 return false;
             }
 
-            Bitmap bitmap = null;
-            try {
-                bitmap = BitmapFactory.decodeFile(outputFile.getAbsolutePath());
-            } catch (Exception e) { Log.i("IconRepo", "Failed to get bitmap from "+outputFile.getAbsolutePath());}
+            Bitmap bitmap = ImageLib.bitmapFromFile(context, outputFile);
             if (bitmap == null) Log.i("IconRepo", "Failed to get bitmap from "+outputFile.getAbsolutePath());
 
             if (bitmap != null) {
@@ -143,14 +142,14 @@ public abstract class IconRepo {
         }
     }
 
-    private static boolean isImageFileComplete(File imageFile) {
+    private static boolean isImageFileComplete(Context context, File imageFile) {
         boolean success = false;
         try {
             if (imageFile.length() > 0) {
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inJustDecodeBounds = true;
-                if (BitmapFactory.decodeFile(imageFile.getAbsolutePath(), options) == null) {
-                    Log.i("AbstractPlatform", "Failed to get bitmap from "+imageFile.getAbsolutePath());
+                if (ImageLib.bitmapFromFile(context, imageFile, options) == null) {
+                    Log.i("IconRepo", "Failed to get bitmap from "+imageFile.getAbsolutePath());
                 }
                 success = (options.outWidth > 0 && options.outHeight > 0);
             }

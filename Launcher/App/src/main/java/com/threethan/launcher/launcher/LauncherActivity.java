@@ -257,8 +257,10 @@ public class LauncherActivity extends Activity {
             if (resultCode == RESULT_OK) {
                 for (Image image : ImagePicker.getImages(data)) {
                     try {
-                        Bitmap backgroundBitmap = ImageLib.getResizedBitmap(BitmapFactory.decodeFile(image.getPath()), 1280);
-                        ImageLib.saveBitmap(backgroundBitmap, new File(getApplicationInfo().dataDir, Settings.CUSTOM_BACKGROUND_PATH));
+                        Bitmap bitmap = ImageLib.bitmapFromFile(this, new File(image.getPath()));
+                        if (bitmap == null) return;
+                        bitmap = ImageLib.getResizedBitmap(bitmap, 1280);
+                        ImageLib.saveBitmap(bitmap, new File(getApplicationInfo().dataDir, Settings.CUSTOM_BACKGROUND_PATH));
                         setBackground(SettingsManager.BACKGROUND_DRAWABLES.length);
                         break;
                     } catch (Exception e) {e.printStackTrace();}

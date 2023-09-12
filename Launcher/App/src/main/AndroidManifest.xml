@@ -105,15 +105,17 @@
                 android:name="android.accessibilityservice"
                 android:resource="@xml/accessibility_service_config" />
         </service>
-        <!-- Service that provides/manages WebViews -->
-        <service
-            android:name=".browser.BrowserService"
-            android:exported="true">
-        </service>
         <!-- Service that provides/manages Launcher views -->
         <service
             android:name=".launcher.LauncherService"
-            android:exported="true">
+            android:exported="true"
+            android:permission="com.threethan.launcher.start">
+        </service>
+        <!-- Service that provides/manages WebViews -->
+        <service
+            android:name=".browser.BrowserService"
+            android:exported="true"
+            android:permission="com.threethan.launcher.start_browser">
         </service>
     </application>
 

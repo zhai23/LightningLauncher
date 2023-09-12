@@ -8,9 +8,7 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,15 +21,15 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.threethan.launcher.R;
 import com.threethan.launcher.helper.App;
+import com.threethan.launcher.helper.Compat;
 import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.helper.Icon;
 import com.threethan.launcher.helper.Launch;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.launcher.LauncherActivity;
 import com.threethan.launcher.lib.ImageLib;
-import com.threethan.launcher.R;
-import com.threethan.launcher.helper.Compat;
 import com.threethan.launcher.support.SettingsManager;
 
 import java.io.File;
@@ -184,13 +182,11 @@ public class AppsAdapter extends BaseAdapter{
     public void onImageSelected(String path, ImageView selectedImageView) {
         Compat.clearIcons(launcherActivity);
         if (path != null) {
-            try {
-                Bitmap bitmap = ImageLib.getResizedBitmap(BitmapFactory.decodeFile(path), 450);
-                ImageLib.saveBitmap(bitmap, iconFile);
-                selectedImageView.setImageBitmap(bitmap);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            Bitmap bitmap = ImageLib.bitmapFromFile(launcherActivity, new File(path));
+            if (bitmap == null) return;
+            bitmap = ImageLib.getResizedBitmap(bitmap, 450);
+            ImageLib.saveBitmap(bitmap, iconFile);
+            selectedImageView.setImageBitmap(bitmap);
         } else {
             selectedImageView.setImageDrawable(iconDrawable);
             Icon.updateIcon(iconFile, packageName, null);
