@@ -334,7 +334,7 @@ public class LauncherActivity extends Activity {
         try {
             post(this::refreshInternal);
         } catch (Exception ignored) {
-            Log.w("LauncherStartup", "Failed to post refresh refreshInterfaceInternal. Called by something else?");
+            Log.w("LightningLauncher", "Failed to post refresh refreshInterfaceInternal. Called by something else?");
         }
     }
     protected void refreshInternal() {
