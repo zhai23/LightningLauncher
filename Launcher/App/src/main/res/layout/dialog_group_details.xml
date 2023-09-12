@@ -36,7 +36,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginStart="8dp"
             android:src="@drawable/ic_uninstall" />
     </LinearLayout>
 
@@ -139,7 +138,7 @@
 
             <Switch
                 android:id="@+id/defaultWebSwitch"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:thumb="@drawable/switch_thumb_custom"
                 android:track="@drawable/switch_track_custom"
@@ -147,29 +146,15 @@
         </LinearLayout>
     </LinearLayout>
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/confirm"
+        style="@style/SettingButtonLabel"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:baselineAligned="false"
-        android:gravity="end"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/bkg_button"
+        android:gravity="center"
+        android:text="@string/confirm" />
 
-        <FrameLayout
-            android:id="@+id/confirm"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="5dp"
-            android:layout_weight="1"
-            android:background="@drawable/bkg_button">
-
-            <TextView
-                style="@style/SettingButtonLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:text="@string/confirm" />
-        </FrameLayout>
-
-    </LinearLayout>
 </LinearLayout>

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +13,9 @@ import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.threethan.launcher.R;
 import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.helper.Settings;
-import com.threethan.launcher.R;
 import com.threethan.launcher.launcher.LauncherActivity;
 import com.threethan.launcher.support.SettingsManager;
 
@@ -45,12 +46,9 @@ public class GroupsAdapter extends BaseAdapter {
 
         SettingsManager settings = SettingsManager.getInstance(launcherActivity);
         appGroups = settings.getAppGroupsSorted(false);
-        if (!editMode) {
-            appGroups.remove(GroupsAdapter.HIDDEN_GROUP);
-        }
-        if (editMode && appGroups.size() < MAX_GROUPS) {
-            appGroups.add("+ " + launcherActivity.getString(R.string.add_group));
-        }
+
+        if (!editMode) appGroups.remove(GroupsAdapter.HIDDEN_GROUP);
+        if (editMode && appGroups.size() < MAX_GROUPS) appGroups.add("+ " + launcherActivity.getString(R.string.add_group));
 
         selectedGroups = settings.getSelectedGroups();
     }
@@ -78,11 +76,8 @@ public class GroupsAdapter extends BaseAdapter {
     }
 
     private void setTextViewValue(TextView textView, String value) {
-        if (HIDDEN_GROUP.equals(value)) {
-            textView.setText(launcherActivity.getString(R.string.apps_hidden));
-        } else {
-            textView.setText(value);
-        }
+        if (HIDDEN_GROUP.equals(value)) textView.setText(launcherActivity.getString(R.string.apps_hidden));
+        else textView.setText(value);
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -96,9 +91,7 @@ public class GroupsAdapter extends BaseAdapter {
 
             holder = new ViewHolder(convertView);
             convertView.setTag(holder);
-        } else {
-            holder = (ViewHolder) convertView.getTag();
-        }
+        } else holder = (ViewHolder) convertView.getTag();
 
         setTextViewValue(holder.textView, getItem(position));
 
@@ -107,7 +100,7 @@ public class GroupsAdapter extends BaseAdapter {
         holder.menu.setOnClickListener(view -> {
 
             final Map<String, String> apps = SettingsManager.getAppGroupMap();
-            final Set<String> appGroupsList = settingsManager.getAppGroups();
+            final Set<String> appGroupsSet = settingsManager.getAppGroups();
             final String groupName = settingsManager.getAppGroupsSorted(false).get(position);
 
             AlertDialog dialog = Dialog.build(launcherActivity, R.layout.dialog_group_details);
@@ -121,9 +114,9 @@ public class GroupsAdapter extends BaseAdapter {
             Switch switch_vr = dialog.findViewById(R.id.defaultVrSwitch);
             @SuppressLint("UseSwitchCompatOrMaterialCode")
             Switch switch_web = dialog.findViewById(R.id.defaultWebSwitch);
-            switch_2d .setChecked(SettingsManager.getDefaultGroup(false, false).equals(groupName));
-            switch_vr .setChecked(SettingsManager.getDefaultGroup(true, false) .equals(groupName));
-            switch_web.setChecked(SettingsManager.getDefaultGroup(false, true) .equals(groupName));
+            switch_2d .setChecked(SettingsManager.getDefaultGroup(false,false).equals(groupName));
+            switch_vr .setChecked(SettingsManager.getDefaultGroup(true ,false).equals(groupName));
+            switch_web.setChecked(SettingsManager.getDefaultGroup(false,true ).equals(groupName));
             switch_2d .setOnCheckedChangeListener((switchView, value) -> {
                 String newDefault = value ? groupName : Settings.DEFAULT_GROUP_2D;
                 if ((!value && groupName.equals(newDefault)) || !appGroups.contains(newDefault)) newDefault = null;
@@ -154,50 +147,48 @@ public class GroupsAdapter extends BaseAdapter {
 
 
                 if (newGroupName.length() > 0) {
-                    appGroupsList.remove(groupName);
-                    appGroupsList.add(newGroupName);
+                    appGroupsSet.remove(groupName);
+                    appGroupsSet.add(newGroupName);
 
                     // Move apps when we rename
                     Map<String, String> updatedAppGroupMap = new HashMap<>();
                     for (String packageName : apps.keySet()) {
                         if (apps.get(packageName) != null) {
-                            if (Objects.requireNonNull(apps.get(packageName)).compareTo(groupName) == 0) {
+                            if (Objects.requireNonNull(apps.get(packageName)).compareTo(groupName) == 0)
                                 updatedAppGroupMap.put(packageName, newGroupName);
-                            } else {
+                            else
                                 updatedAppGroupMap.put(packageName, apps.get(packageName));
-                            }
                         }
                     }
-
                     HashSet<String> selectedGroup = new HashSet<>();
                     selectedGroup.add(newGroupName);
                     settingsManager.setSelectedGroups(selectedGroup);
-                    settingsManager.setAppGroups(appGroupsList);
+                    settingsManager.setAppGroups(appGroupsSet);
                     SettingsManager.setAppGroupMap(updatedAppGroupMap);
                     launcherActivity.refresh();
                 }
                 dialog.cancel();
             });
 
-            dialog.findViewById(R.id.deleteGroupButton).setOnClickListener(view2 -> {
+            dialog.findViewById(R.id.deleteGroupButton).setOnClickListener(view1 -> {
                 HashMap<String, String> appGroupMap = new HashMap<>();
-                for (String packageName : apps.keySet()) {
-                    if (groupName.equals(apps.get(packageName))) {
-                        appGroupMap.put(packageName, null);
-                    } else {
-                        appGroupMap.put(packageName, apps.get(packageName));
-                    }
-                }
+                for (String packageName : apps.keySet())
+                    if (groupName.equals(apps.get(packageName))) appGroupMap.put(packageName, null);
+                    else appGroupMap.put(packageName, apps.get(packageName));
+
                 SettingsManager.setAppGroupMap(appGroupMap);
+                appGroupsSet.remove(groupName);
 
-                appGroupsList.remove(groupName);
-
-                if (appGroupsList.size() <= 1) {
+                boolean hasNormalGroup = false;
+                for (String groupNameIterator : appGroupsSet) {
+                    if (groupNameIterator.equals(HIDDEN_GROUP)) continue;
+                    if (groupNameIterator.equals(UNSUPPORTED_GROUP)) continue;
+                    hasNormalGroup = true; break;
+                }
+                if (!hasNormalGroup) {
                     settingsManager.resetGroups();
                 } else {
-
-                    settingsManager.setAppGroups(appGroupsList);
-
+                    settingsManager.setAppGroups(appGroupsSet);
                     Set<String> firstSelectedGroup = new HashSet<>();
                     firstSelectedGroup.add(settingsManager.getAppGroupsSorted(false).get(0));
                     settingsManager.setSelectedGroups(firstSelectedGroup);
@@ -208,9 +199,7 @@ public class GroupsAdapter extends BaseAdapter {
             });
         });
 
-        // set the look
         setLook(position, convertView, holder.menu);
-
         TextView textView = convertView.findViewById(R.id.textLabel);
         setTextViewValue(textView, appGroups.get(position));
 

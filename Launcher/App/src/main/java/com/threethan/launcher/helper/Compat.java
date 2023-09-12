@@ -102,13 +102,12 @@ public abstract class Compat {
 
     public static void clearIcons(LauncherActivity launcherActivity) {
         FileLib.delete(launcherActivity.getApplicationInfo().dataDir);
+        launcherActivity.sharedPreferenceEditor.remove(SettingsManager.DONT_DOWNLOAD_ICONS); 
         clearIconCache(launcherActivity);
     }
     public static void clearIconCache(LauncherActivity launcherActivity) {
         IconRepo.downloadFinishedPackages.clear();
-
         Icon.cachedIcons.clear();
-        launcherActivity.sharedPreferenceEditor.remove(SettingsManager.DONT_DOWNLOAD_ICONS);
         storeAndReload(launcherActivity);
     }
 

@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Switch;
@@ -19,20 +18,21 @@ import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.lib.ImageLib;
 import com.threethan.launcher.support.SettingsManager;
+import com.threethan.launcher.support.Updater;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-public class SettingsPage {
+public class SettingsDialog {
     private final LauncherActivity a;
-    public SettingsPage(LauncherActivity launcherActivity) {
+    public SettingsDialog(LauncherActivity launcherActivity) {
         a = launcherActivity;
     }
     public boolean visible = false;
-    private boolean clearedLabel = false;
-    private boolean clearedIcon  = false;
-    private boolean clearedSort  = false;
+    private boolean clearedLabel;
+    private boolean clearedIcon;
+    private boolean clearedSort;
     @SuppressLint("UseCompatLoadingForDrawables")
     public void showSettings() {
         visible = true;
@@ -66,6 +66,12 @@ public class SettingsPage {
         } else editSwitch.setVisibility(View.GONE);
         TextView editModeText = dialog.findViewById(R.id.editModeText);
         editModeText.setText(a.canEdit() ? R.string.edit_mode : R.string.edit_mode_disabled);
+        // Update button
+        if (Updater.isUpdateAvailable(a)) {
+            View skippedUpdateButton = dialog.findViewById(R.id.skippedUpdateButton);
+            skippedUpdateButton.setVisibility(View.VISIBLE);
+            skippedUpdateButton.setOnClickListener((view) -> new Updater(a).updateEvenIfSkipped());
+        }
 
         // Wallpaper and style
         @SuppressLint("UseSwitchCompatOrMaterialCode") Switch dark = dialog.findViewById(R.id.darkModeSwitch);
@@ -201,7 +207,10 @@ public class SettingsPage {
         });
 
         // Clear buttons (limited to one use to prevent bugs due to spamming)
-        Button clearLabel = dialog.findViewById(R.id.clearLabelButton);
+        clearedLabel= false;
+        clearedSort = false;
+        clearedIcon = false;
+        View clearLabel = dialog.findViewById(R.id.clearLabelButton);
         clearLabel.setOnClickListener(view -> {
             if (!clearedLabel) {
                 Compat.clearLabels(a);
@@ -209,20 +218,20 @@ public class SettingsPage {
                 clearedLabel = true;
             }
         });
-        Button clearSort = dialog.findViewById(R.id.clearSortButton);
+        View clearIcon = dialog.findViewById(R.id.clearIconButton);
+        clearIcon.setOnClickListener(view -> {
+            if (!clearedIcon) {
+                Compat.clearIcons(a);
+                clearIcon.setAlpha(0.5f);
+                clearedIcon = true;
+            }
+        });
+        View clearSort = dialog.findViewById(R.id.clearSortButton);
         clearSort.setOnClickListener(view -> {
             if (!clearedSort) {
                 Compat.clearSort(a);
                 clearSort.setAlpha(0.5f);
                 clearedSort = true;
-            }
-        });
-        Button clearIcon = dialog.findViewById(R.id.clearIconButton);
-        clearSort.setOnClickListener(view -> {
-            if (!clearedIcon) {
-                Compat.clearIcons(a);
-                clearIcon.setAlpha(0.5f);
-                clearedIcon = true;
             }
         });
 
@@ -233,7 +242,7 @@ public class SettingsPage {
         bannerVr.setOnCheckedChangeListener((compoundButton, value) -> {
             Compat.clearIconCache(a);
             a.sharedPreferenceEditor.putBoolean(Settings.KEY_WIDE_VR, value);
-            a.refreshApps();
+            a.refreshAppDisplayLists();
             a.refresh();
         });
         @SuppressLint("UseSwitchCompatOrMaterialCode")
@@ -241,16 +250,16 @@ public class SettingsPage {
         banner2d.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_WIDE_2D, Settings.DEFAULT_WIDE_2D));
         banner2d.setOnCheckedChangeListener((compoundButton, value) -> {
             a.sharedPreferenceEditor.putBoolean(Settings.KEY_WIDE_2D, value);
-            a.refreshApps();
+            a.refreshAppDisplayLists();
             a.refresh();
         });
         @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch bannerWeb = dialog.findViewById(R.id.bannerWebSwitch);
         bannerWeb.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_WIDE_WEB, Settings.DEFAULT_WIDE_WEB));
         bannerWeb.setOnCheckedChangeListener((compoundButton, value) -> {
-            Compat.clearIcons(a);
+            Compat.clearIconCache(a);
             a.sharedPreferenceEditor.putBoolean(Settings.KEY_WIDE_WEB, value);
-            a.refreshApps();
+            a.refreshAppDisplayLists();
             a.refresh();
         });
 

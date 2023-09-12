@@ -20,7 +20,6 @@ import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.support.SettingsManager;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -119,14 +118,16 @@ public class LauncherActivityEditable extends LauncherActivity {
     @Override
     protected void changeGroup(int position) {
         final List<String> groupsSorted = settingsManager.getAppGroupsSorted(false);
-        final String group = groupsSorted.get(position);
 
         // If the new group button was selected, create and select a new group
-        if (position == groupsSorted.size()-1) {
+        if (position >= groupsSorted.size()) {
             final String newName = settingsManager.addGroup();
             settingsManager.selectGroup(newName);
             refresh();
+            return;
         }
+        final String group = groupsSorted.get(position);
+
         // Move apps if any are selected
         if (!currentSelectedApps.isEmpty()) {
             GroupsAdapter groupsAdapter = (GroupsAdapter) groupPanelGridView.getAdapter();
@@ -136,13 +137,15 @@ public class LauncherActivityEditable extends LauncherActivity {
                     getString(R.string.selection_moved_single, group) :
                     getString(R.string.selection_moved_multiple, currentSelectedApps.size(), group)
             );
-            selectionHintText.postDelayed(this::updateSelectionHint, 2000);
             m.findViewById(R.id.uninstallBulk).setVisibility(View.GONE);
+            selectionHintText.postDelayed(this::updateSelectionHint, 2000);
 
             currentSelectedApps.clear();
-            settingsManager.setSelectedGroups(Collections.singleton(group));
+
+            SettingsManager.storeValues();
             refresh();
-        } else if (settingsManager.selectGroup(group)) refresh();
+        }
+        else if (settingsManager.selectGroup(group)) refresh();
         else recheckPackages(); // If clicking on the same single group, check if there are any new packages
     }
 
@@ -204,7 +207,7 @@ public class LauncherActivityEditable extends LauncherActivity {
             }
             Platform.addWebsite(sharedPreferences, url);
             dialog.cancel();
-            refreshApps();
+            refreshAppDisplayLists();
             refresh();
         });
         dialog.findViewById(R.id.info).setOnClickListener(view -> {

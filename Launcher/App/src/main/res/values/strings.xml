@@ -24,6 +24,7 @@
     <string name="settings_main">Launcher Settings</string>
     <string name="settings_appearance">Customize Appearance</string>
     <string name="settings_service">Library Shortcut</string>
+    <string name="settings_update">Download &amp; Install Latest Update</string>
 
     <string name="behavior_header">Behavior</string>
     <string name="background_header">Wallpaper &amp; Style</string>
@@ -103,10 +104,19 @@
     <string name="update_title">An update is available!</string>
     <string name="update_content">Update from version %1$s to %2$s, without taking off your headset!</string>
     <string name="update_button">Continue</string>
+    <string name="update_skip_button">Skip this Update</string>
 
     <string name="update_downloading_title">Downloading Update</string>
     <string name="update_downloading_content">You should get a prompt to install in a few seconds</string>
-    <string name="update_dismiss_button">Hide</string>
+    <string name="update_hide_button">Hide</string>
+
+    <string name="update_skip_title">Skip updating to version %1$s?</string>
+    <string name="update_skip_content">You will not be notified about this update again.\n
+        \nKeep in mind that updates are highly recommended and may include important fixes.\n
+        \nIf you are avoiding this update because it causes issues, report your issues at github.com/threethan/LightningLauncher\n
+        \nYOU CAN UPDATE LATER FROM THE SETTINGS!</string>
+    <string name="update_skip_confirm_button">I Understand, Skip It</string>
+    <string name="update_skip_cancel_button">Just Dismiss</string>
 
     <!--  Tooltips  -->
     <string name="web_back">Navigate Back</string>
@@ -121,13 +131,12 @@
     <string name="web_cancel">Cancel</string>
     <string name="web_confirm">Confirm &amp; Go</string>
 
-
     <string name="app_settings">App Settings</string>
     <string name="group_settings">Group Settings</string>
     <string name="kill_process">Stop Running in the Background</string>
 
     <string name="website_group">This group is currently set as the default for new websites</string>
-    <string name="info_website">About Adding Websites</string>
+    <string name="info_website">About Adding Websites</string>git
 
     <string name="stop_editing">Turn Off Edit Mode</string>
     <string name="select_all">Select/Deselect All Visible Apps</string>

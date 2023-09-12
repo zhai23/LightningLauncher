@@ -27,8 +27,12 @@ class BackgroundTask extends AsyncTask<Object, Void, Object> {
             backgroundThemeDrawable = owner.getDrawable(SettingsManager.BACKGROUND_DRAWABLES[background]);
         } else {
             File file = new File(owner.getApplicationInfo().dataDir, Settings.CUSTOM_BACKGROUND_PATH);
-            Bitmap backgroundBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
-            backgroundThemeDrawable = new BitmapDrawable(owner.getResources(), backgroundBitmap);
+            try {
+                Bitmap backgroundBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+                backgroundThemeDrawable = new BitmapDrawable(owner.getResources(), backgroundBitmap);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return null;
     }

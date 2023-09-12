@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -93,7 +94,7 @@ public class AppsAdapter extends BaseAdapter{
             if (currentApp.packageName == null) return convertView;
 
             holder = new ViewHolder();
-            holder.view = convertView;//.findViewById(R.id.view);
+            holder.view = convertView;
             holder.imageView = convertView.findViewById(R.id.imageLabel);
             holder.textView = convertView.findViewById(R.id.textLabel);
             holder.moreButton = convertView.findViewById(R.id.moreButton);
@@ -102,17 +103,10 @@ public class AppsAdapter extends BaseAdapter{
 
             // Set clipToOutline to true on imageView
             convertView.findViewById(R.id.clip).setClipToOutline(true);
-
             convertView.setTag(holder);
+            if (position == 0) launcherActivity.updateGridViewHeights();
 
-            if (position == 0) {
-                launcherActivity.updateGridViewHeights();
-            }
-
-        } else {
-            // ViewHolder already exists, reuse it
-            holder = (ViewHolder) convertView.getTag();
-        }
+        } else holder = (ViewHolder) convertView.getTag();
 
         // set value into textview
         String name = SettingsManager.getAppLabel(currentApp);
@@ -190,10 +184,13 @@ public class AppsAdapter extends BaseAdapter{
     public void onImageSelected(String path, ImageView selectedImageView) {
         Compat.clearIcons(launcherActivity);
         if (path != null) {
-            Bitmap bitmap = ImageLib.getResizedBitmap(BitmapFactory.decodeFile(path), 450);
-
-            ImageLib.saveBitmap(bitmap, iconFile);
-            selectedImageView.setImageBitmap(bitmap);
+            try {
+                Bitmap bitmap = ImageLib.getResizedBitmap(BitmapFactory.decodeFile(path), 450);
+                ImageLib.saveBitmap(bitmap, iconFile);
+                selectedImageView.setImageBitmap(bitmap);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } else {
             selectedImageView.setImageDrawable(iconDrawable);
             Icon.updateIcon(iconFile, packageName, null);
@@ -221,9 +218,7 @@ public class AppsAdapter extends BaseAdapter{
 
         // load icon
         PackageManager packageManager = launcherActivity.getPackageManager();
-
         ImageView iconImageView = dialog.findViewById(R.id.appIcon);
-
         iconImageView.setImageDrawable(Icon.loadIcon(launcherActivity, currentApp, null));
 
         iconImageView.setClipToOutline(true);
@@ -268,8 +263,7 @@ public class AppsAdapter extends BaseAdapter{
                     AlertDialog subDialog = Dialog.build(launcherActivity, R.layout.dialog_launch_out_info);
                     subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
                         launcherActivity.sharedPreferenceEditor
-                                .putBoolean(Settings.KEY_SEEN_LAUNCH_OUT_POPUP, true)
-                                .apply();
+                                .putBoolean(Settings.KEY_SEEN_LAUNCH_OUT_POPUP, true);
                         subDialog.dismiss();
                         SettingsManager.setAppLaunchOut(currentApp.packageName, true);
                         launchOut[0] = SettingsManager.getAppLaunchOut(currentApp.packageName);
@@ -314,7 +308,6 @@ public class AppsAdapter extends BaseAdapter{
         openAnim.setLayoutParams(layoutParams);
 
         openAnim.setVisibility(View.VISIBLE);
-
         openAnim.setClipToOutline(true);
 
         ImageView animIcon = openAnim.findViewById(R.id.openIcon);
@@ -357,9 +350,8 @@ public class AppsAdapter extends BaseAdapter{
             animIcon.setAlpha(1.0f);
             openAnim.setVisibility(View.INVISIBLE);
         } else {
+            // This animation assumes the app already animated open, and therefore does not set icon
             ImageView animIconBg = openAnim.findViewById(R.id.openIconBg);
-
-            // Assuming task already animated open
 
             openAnim.setScaleX(3f);
             openAnim.setScaleY(3f);

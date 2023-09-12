@@ -71,10 +71,7 @@ public class LauncherActivity extends Activity {
 
     // Settings
     public SettingsManager settingsManager;
-    public SettingsPage settingsPage;
-
-
-
+    public SettingsDialog settingsPage;
     LauncherService mService;
     boolean mBound = false;
 
@@ -133,7 +130,7 @@ public class LauncherActivity extends Activity {
         sharedPreferenceEditor = sharedPreferences.edit();
 
         settingsManager = SettingsManager.getInstance(this);
-        settingsPage = new SettingsPage(this);
+        settingsPage = new SettingsDialog(this);
         Compat.checkCompatibilityUpdate(this);
 
         mainView = m.findViewById(R.id.mainLayout);
@@ -144,15 +141,6 @@ public class LauncherActivity extends Activity {
         fadeView = scrollView;
         backgroundImageView = m.findViewById(R.id.background);
         groupPanelGridView = m.findViewById(R.id.groupsView);
-
-        // Runs every frame
-        post(new Runnable() {
-            @Override
-            public void run() {
-                sharedPreferenceEditor.apply();
-                post(this);
-            }
-        });
 
         // Handle group click listener
         groupPanelGridView.setOnItemClickListener((parent, view, position, id) -> changeGroup(position));
@@ -213,7 +201,6 @@ public class LauncherActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-
         if (!mBound) return;
 
         AppsAdapter.animateClose(this);
@@ -240,7 +227,7 @@ public class LauncherActivity extends Activity {
         Platform.clearPackageLists();
         PackageManager packageManager = getPackageManager();
         installedApps = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);
-        refreshApps();
+        refreshAppDisplayLists();
     }
 
     public void recheckPackages() {
@@ -268,12 +255,13 @@ public class LauncherActivity extends Activity {
             }
         } else if (requestCode == Settings.PICK_THEME_CODE) {
             if (resultCode == RESULT_OK) {
-
                 for (Image image : ImagePicker.getImages(data)) {
-                    Bitmap backgroundBitmap = ImageLib.getResizedBitmap(BitmapFactory.decodeFile(image.getPath()), 1280);
-                    ImageLib.saveBitmap(backgroundBitmap, new File(getApplicationInfo().dataDir, Settings.CUSTOM_BACKGROUND_PATH));
-                    setBackground(SettingsManager.BACKGROUND_DRAWABLES.length);
-                    break;
+                    try {
+                        Bitmap backgroundBitmap = ImageLib.getResizedBitmap(BitmapFactory.decodeFile(image.getPath()), 1280);
+                        ImageLib.saveBitmap(backgroundBitmap, new File(getApplicationInfo().dataDir, Settings.CUSTOM_BACKGROUND_PATH));
+                        setBackground(SettingsManager.BACKGROUND_DRAWABLES.length);
+                        break;
+                    } catch (Exception e) {e.printStackTrace();}
                 }
             }
         }
@@ -342,6 +330,7 @@ public class LauncherActivity extends Activity {
     List<ApplicationInfo> appListSquare;
 
     public void refresh() {
+        if (sharedPreferenceEditor != null) sharedPreferenceEditor.apply();
         try {
             post(this::refreshInternal);
         } catch (Exception ignored) {
@@ -439,7 +428,7 @@ public class LauncherActivity extends Activity {
         new BackgroundTask().execute(this);
     }
 
-    public void refreshApps() {
+    public void refreshAppDisplayLists() {
         sharedPreferenceEditor.apply();
 
         appListBanner = new ArrayList<>();

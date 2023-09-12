@@ -107,10 +107,12 @@ public abstract class IconRepo {
                 return false;
             }
 
-            Bitmap bitmap = BitmapFactory.decodeFile(outputFile.getAbsolutePath());
-            if (bitmap == null) {
-                Log.i("IconRepo", "Failed to get bitmap from "+outputFile.getAbsolutePath());
-            }
+            Bitmap bitmap = null;
+            try {
+                bitmap = BitmapFactory.decodeFile(outputFile.getAbsolutePath());
+            } catch (Exception e) { Log.i("IconRepo", "Failed to get bitmap from "+outputFile.getAbsolutePath());}
+            if (bitmap == null) Log.i("IconRepo", "Failed to get bitmap from "+outputFile.getAbsolutePath());
+
             if (bitmap != null) {
                 int width = bitmap.getWidth();
                 int height = bitmap.getHeight();
@@ -128,9 +130,11 @@ public abstract class IconRepo {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }
 
-            return true;
+                return true;
+            }
+            return false;
+
         } catch (Exception e) {
             Log.i("AbstractPlatform", "Exception while converting file " + outputFile.getAbsolutePath());
             e.printStackTrace();

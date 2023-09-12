@@ -215,14 +215,19 @@ public class SettingsManager extends Settings {
 
     public void resetGroups(){
         SharedPreferences.Editor editor = sharedPreferenceEditor;
-        for (String group : appGroupsSet) {
-            editor.remove(KEY_GROUP_APP_LIST + group);
-        }
+        for (String group : appGroupsSet) editor.remove(KEY_GROUP_APP_LIST + group);
+        appGroupsSet.clear();
+        appGroupMap.clear();
         editor.remove(KEY_GROUPS);
         editor.remove(KEY_SELECTED_GROUPS);
-        editor.remove(KEY_GROUP_APP_LIST);
         editor.remove(KEY_GROUP_2D);
         editor.remove(KEY_GROUP_VR);
+        editor.remove(KEY_GROUP_WEB);
+        editor.remove(KEY_VR_SET);
+        editor.remove(KEY_2D_SET);
+        editor.apply();
+        readValues();
+        Log.i("Groups (SettingsManager)", "Groups have been reset");
     }
 
     public static String getDefaultGroup(boolean vr, boolean web) {
@@ -253,12 +258,15 @@ public class SettingsManager extends Settings {
                 for (String app : appListSet) appGroupMap.put(app, group);
             }
             appsToLaunchOut = sharedPreferences.getStringSet(KEY_LAUNCH_OUT, defaultGroupsSet);
+
+            Log.i("LOADED GROUPS", appGroupMap.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
     private static void queueStoreValues() {
         if (launcherActivity.mainView != null) launcherActivity.post(SettingsManager::storeValues);
+        else storeValues();
     }
     public synchronized static void storeValues() {
         try {
@@ -284,6 +292,7 @@ public class SettingsManager extends Settings {
             for (String group : appGroupsSet) {
                 editor.putStringSet(KEY_GROUP_APP_LIST + group, appListSetMap.get(group));
             }
+            editor.apply();
         } catch (Exception e) {
             e.printStackTrace();
         }

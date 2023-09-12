@@ -9,10 +9,8 @@ import android.widget.ImageView;
 import com.threethan.launcher.helper.Icon;
 import com.threethan.launcher.launcher.LauncherActivity;
 
-/**
- * @noinspection deprecation, rawtypes
- */
-class LoadIconTask extends AsyncTask {
+/** @noinspection deprecation*/
+class LoadIconTask extends AsyncTask <Object, Void, Object> {
     @SuppressLint("StaticFieldLeak")
     private ImageView iconImageView;
     private Drawable appIcon;
