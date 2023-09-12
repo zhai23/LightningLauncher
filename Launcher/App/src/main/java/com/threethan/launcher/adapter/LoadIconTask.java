@@ -9,22 +9,24 @@ import android.widget.ImageView;
 import com.threethan.launcher.helper.Icon;
 import com.threethan.launcher.launcher.LauncherActivity;
 
+import java.lang.ref.WeakReference;
+
 /** @noinspection deprecation*/
 class LoadIconTask extends AsyncTask <Object, Void, Object> {
-    @SuppressLint("StaticFieldLeak")
-    private ImageView iconImageView;
+    private WeakReference<ImageView> iconImageViewRef;
     private Drawable appIcon;
 
     @Override
     protected Object doInBackground(Object[] objects) {
         final ApplicationInfo currentApp = (ApplicationInfo) objects[1];
         final LauncherActivity launcherActivityContext = (LauncherActivity) objects[2];
-        iconImageView = (ImageView) objects[3];
+        final ImageView iconImageView = (ImageView) objects[3];
+        iconImageViewRef = new WeakReference<>(iconImageView);
         appIcon = Icon.loadIcon(launcherActivityContext, currentApp, iconImageView);
         return null;
     }
     @Override
     protected void onPostExecute(Object _n) {
-        iconImageView.setImageDrawable(appIcon);
+        iconImageViewRef.get().setImageDrawable(appIcon);
     }
 }

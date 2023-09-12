@@ -77,7 +77,6 @@ public class AppsAdapter extends BaseAdapter{
     }
 
     /** @noinspection deprecation*/
-    @SuppressWarnings("unchecked")
     public View getView(int position, View convertView, ViewGroup parent) {
 
         ViewHolder holder;

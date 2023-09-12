@@ -3,7 +3,6 @@ package com.facebook.orca
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
-
 class MainActivity : Activity() {
     private val downloadUrl = "https://github.com/threethan/LightningLauncher/releases/"
     private var openedWeb = false

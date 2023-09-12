@@ -1,7 +1,6 @@
 package com.threethan.launcher.launcher;
 
 import android.animation.ValueAnimator;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -16,6 +15,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.TypedValue;
@@ -39,7 +39,6 @@ import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.lib.ImageLib;
 import com.threethan.launcher.support.SettingsManager;
-import com.threethan.launcher.support.Updater;
 import com.threethan.launcher.view.DynamicHeightGridView;
 import com.threethan.launcher.view.FadingTopScrollView;
 
@@ -99,9 +98,16 @@ public class LauncherActivity extends Activity {
         container.setBackgroundColor(backgroundColor);
     }
 
-    @SuppressLint("UnspecifiedRegisterReceiverFlag")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //TODO DEBUG
+
+        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+                .detectLeakedClosableObjects()
+                .penaltyLog()
+                .build());
+
+
         super.onCreate(savedInstanceState);
         Log.v("LightningLauncher", "Starting Launcher Activity");
         setContentView(R.layout.activity_container);
@@ -137,7 +143,8 @@ public class LauncherActivity extends Activity {
         Compat.checkCompatibilityUpdate(this);
 
         mainView = m.findViewById(R.id.mainLayout);
-        mainView.addOnLayoutChangeListener((view, i, i1, i2, i3, i4, i5, i6, i7) -> updateGridViewHeights());
+        mainView.addOnLayoutChangeListener((view, i, i1, i2, i3, i4, i5, i6, i7)
+                -> post(this::updateGridViewHeights));
         appGridViewSquare = m.findViewById(R.id.appsViewIcon);
         appGridViewBanner = m.findViewById(R.id.appsViewWide);
         scrollView = m.findViewById(R.id.mainScrollView);
@@ -383,7 +390,7 @@ public class LauncherActivity extends Activity {
         post(this::updateTopBar);
     }
     public void runUpdater() {
-        new Updater(this).checkForUpdate();
+//        new Updater(this).checkForUpdate();
     }
 
     public void updateGridViewHeights() {

@@ -1,6 +1,5 @@
 package com.threethan.launcher.support;
 
-import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -10,10 +9,10 @@ import android.util.Log;
 import com.threethan.launcher.helper.App;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.launcher.LauncherActivity;
-import com.threethan.launcher.lib.FileLib;
 import com.threethan.launcher.adapter.GroupsAdapter;
 import com.threethan.launcher.lib.StringLib;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -21,6 +20,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 public class SettingsManager extends Settings {
@@ -34,8 +34,7 @@ public class SettingsManager extends Settings {
     //storage
     private static SharedPreferences sharedPreferences = null;
     private static SharedPreferences.Editor sharedPreferenceEditor = null;
-    @SuppressLint("StaticFieldLeak")
-    private static LauncherActivity launcherActivity = null;
+    private static WeakReference<LauncherActivity> launcherActivityRef = null;
     private static Map<String, String> appGroupMap = new HashMap<>();
     private static Set<String> appGroupsSet = new HashSet<>();
     private static Set<String> selectedGroupsSet = new HashSet<>();
@@ -43,9 +42,9 @@ public class SettingsManager extends Settings {
     private static SettingsManager instance;
 
     private SettingsManager(LauncherActivity activity) {
-        launcherActivity = activity;
-        sharedPreferences = launcherActivity.sharedPreferences;
-        sharedPreferenceEditor = launcherActivity.sharedPreferenceEditor;
+        launcherActivityRef = new WeakReference<>(activity);
+        sharedPreferences = activity.sharedPreferences;
+        sharedPreferenceEditor = activity.sharedPreferenceEditor;
     }
 
     public static synchronized SettingsManager getInstance(LauncherActivity context) {
@@ -75,7 +74,7 @@ public class SettingsManager extends Settings {
             } catch (Exception ignored) {}
         }
         try {
-            PackageManager pm = launcherActivity.getPackageManager();
+            PackageManager pm = launcherActivityRef.get().getPackageManager();
             String label = app.loadLabel(pm).toString();
             if (!label.isEmpty()) return label;
             // Try to load this app's real app info
@@ -126,7 +125,7 @@ public class SettingsManager extends Settings {
             if (!App.isSupported(app, launcherActivity))
                 appGroupMap.put(app.packageName, GroupsAdapter.UNSUPPORTED_GROUP);
             else if (!appGroupMap.containsKey(app.packageName) ||
-                    appGroupMap.get(app.packageName) == GroupsAdapter.UNSUPPORTED_GROUP){
+                    Objects.equals(appGroupMap.get(app.packageName), GroupsAdapter.UNSUPPORTED_GROUP)){
                 final boolean isVr = App.isVirtualReality(app, launcherActivity);
                 final boolean isWeb = App.isWebsite(app);
                 appGroupMap.put(app.packageName, getDefaultGroup(isVr, isWeb));
@@ -267,7 +266,7 @@ public class SettingsManager extends Settings {
         }
     }
     private static void queueStoreValues() {
-        if (launcherActivity.mainView != null) launcherActivity.post(SettingsManager::storeValues);
+        if (launcherActivityRef.get().mainView != null) launcherActivityRef.get().post(SettingsManager::storeValues);
         else storeValues();
     }
     public synchronized static void storeValues() {
@@ -328,14 +327,14 @@ public class SettingsManager extends Settings {
     public static boolean getRunning(String pkgName) {
         if (!App.isWebsite(pkgName)) return false;
         try {
-            return launcherActivity.wService.hasWebView(pkgName);
+            return launcherActivityRef.get().wService.hasWebView(pkgName);
         } catch (Exception ignored) {
             return false;
         }
     }
     public static void stopRunning (String pkgName) {
         try {
-            launcherActivity.wService.killWebView(pkgName);
+            launcherActivityRef.get().wService.killWebView(pkgName);
         } catch (Exception ignored) {}
     }
  }

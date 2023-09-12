@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -114,7 +115,7 @@ public class Updater {
         AlertDialog skipAlertDialog = skipDialogBuilder.create();
         skipAlertDialog.show();
     }
-    @SuppressLint("UnspecifiedRegisterReceiverFlag")
+    @SuppressLint("UnspecifiedRegisterReceiverFlag") // Warning is only on old APIs, not actually applicable
     public void downloadUpdate(String versionTag) {
         DownloadManager.Request request1 = new DownloadManager.Request(Uri.parse(String.format(TEMPLATE_URL, versionTag)));
         request1.setDescription("Downloading Update");   //appears the same in Notification bar while downloading
@@ -133,7 +134,10 @@ public class Updater {
         updateAlertDialog.show();
 
         latestTag = versionTag;
-        activity.registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+            activity.registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE), Context.RECEIVER_NOT_EXPORTED);
+        else
+            activity.registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
     }
     String latestTag;
     AlertDialog updateAlertDialog;

@@ -28,8 +28,7 @@
         android:label="@string/app_name"
         android:theme="@style/ThemeOverlay.Material"
         android:requestLegacyExternalStorage="true"
-        android:usesCleartextTraffic="true"
-        android:allowBackup="true">
+        android:usesCleartextTraffic="true">
 
         <meta-data android:name="com.oculus.supportedDevices" android:value="all"/>
 
@@ -37,7 +36,7 @@
         <activity
             android:name=".launcher.LauncherActivityEditable"
             android:screenOrientation="unspecified"
-            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
+            android:configChanges="density|keyboard|keyboardHidden|navigation|orientation|screenLayout|screenSize|uiMode"
             android:exported="true"
             android:launchMode="singleInstance"
             android:resizeableActivity="true"

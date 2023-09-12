@@ -81,7 +81,6 @@ public class GroupsAdapter extends BaseAdapter {
         else textView.setText(value);
     }
 
-    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
@@ -97,7 +96,6 @@ public class GroupsAdapter extends BaseAdapter {
         setTextViewValue(holder.textView, getItem(position));
 
         // set menu action
-        holder.menu.getContext().getDrawable(R.drawable.ic_info);
         holder.menu.setOnClickListener(view -> {
 
             final Map<String, String> apps = SettingsManager.getAppGroupMap();
@@ -105,6 +103,7 @@ public class GroupsAdapter extends BaseAdapter {
             final String groupName = settingsManager.getAppGroupsSorted(false).get(position);
 
             AlertDialog dialog = Dialog.build(launcherActivity, R.layout.dialog_group_details);
+            if (dialog == null) return;
 
             final EditText groupNameInput = dialog.findViewById(R.id.groupName);
             groupNameInput.setText(StringLib.withoutStar(groupName));

@@ -87,7 +87,10 @@ public abstract class IconRepo {
 
     private static boolean downloadIconFromUrl(Context context, String url, File iconFile) {
         try (InputStream inputStream = new URL(url).openStream()) {
-            if (saveStream(context, inputStream, iconFile)) return true;
+            if (saveStream(context, inputStream, iconFile)) {
+                inputStream.close();
+                return true;
+            } else inputStream.close();
         } catch (IOException ignored) {}
         return false;
     }
@@ -139,6 +142,12 @@ public abstract class IconRepo {
             Log.i("AbstractPlatform", "Exception while converting file " + outputFile.getAbsolutePath());
             e.printStackTrace();
             return false;
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException ignored) {}
+            }
         }
     }
 

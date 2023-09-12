@@ -18,6 +18,7 @@ import com.esafirm.imagepicker.features.ImagePicker;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 
 public class ImageLib {
 
@@ -70,7 +71,10 @@ public class ImageLib {
     @Nullable
     public static Bitmap bitmapFromFile (Context context, File file) {
         try {
-            return BitmapFactory.decodeStream(context.getContentResolver().openInputStream(Uri.fromFile(file)));
+            final InputStream stream = context.getContentResolver().openInputStream(Uri.fromFile(file));
+            final Bitmap bitmap = BitmapFactory.decodeStream(stream);
+            if (stream != null) stream.close();
+            return bitmap;
         } catch (FileNotFoundException e) {
             Log.w("FileLib", "Failed to get bitmap from file "+file.getAbsolutePath());
         } catch (Exception e) {
@@ -81,7 +85,10 @@ public class ImageLib {
     @Nullable
     public static Bitmap bitmapFromFile (Context context, File file, BitmapFactory.Options options) {
         try {
-            return BitmapFactory.decodeStream(context.getContentResolver().openInputStream(Uri.fromFile(file)), new Rect(), options);
+            final InputStream stream = context.getContentResolver().openInputStream(Uri.fromFile(file));
+            final Bitmap bitmap = BitmapFactory.decodeStream(stream, new Rect(), options);
+            if (stream != null) stream.close();
+            return bitmap;
         } catch (FileNotFoundException e) {
             Log.w("FileLib", "Failed to get bitmap from file "+file.getAbsolutePath());
         } catch (Exception e) {

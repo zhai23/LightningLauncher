@@ -156,6 +156,7 @@ public class LauncherActivityEditable extends LauncherActivity {
     @Override
     public void setEditMode(boolean value) {
         editMode = value;
+        if (sharedPreferenceEditor == null) return;
         sharedPreferenceEditor.putBoolean(Settings.KEY_EDIT_MODE, editMode);
         refresh();
     }

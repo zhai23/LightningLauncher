@@ -3,7 +3,6 @@ package com.threethan.launcher.helper;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.transition.Slide;
 import android.util.Log;
 
 import com.threethan.launcher.browser.BrowserActivity;
@@ -66,9 +65,6 @@ public abstract class Launch {
             return false;
 
         } else {
-            launcherActivity.getWindow().setExitTransition(new Slide());
-            launcherActivity.getWindow().setEnterTransition(new Slide());
-
             launcherActivity.startActivity(intent);
             return true;
         }

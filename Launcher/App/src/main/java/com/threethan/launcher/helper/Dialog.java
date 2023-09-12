@@ -12,14 +12,15 @@ import java.util.Objects;
 public abstract class Dialog {
     @Nullable
     public static AlertDialog build(Context context, int resource) {
-        try {
-            AlertDialog dialog = new AlertDialog.Builder(context, R.style.dialog).setView(resource).create();
-            Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawableResource(R.drawable.bkg_dialog);
-            dialog.getWindow().setDimAmount(0.15f);
+        AlertDialog dialog = new AlertDialog.Builder(context, R.style.dialog).setView(resource).create();
 
-            dialog.show();
-            return dialog;
-        } catch (Exception ignored) {}
-        return null;
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(R.drawable.bkg_dialog);
+            dialog.getWindow().setDimAmount(0.15f);
+        }
+
+        dialog.show();
+        return dialog;
+
     }
 }
