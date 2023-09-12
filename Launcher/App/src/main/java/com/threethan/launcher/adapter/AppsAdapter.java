@@ -198,6 +198,7 @@ public class AppsAdapter extends BaseAdapter{
     private void showAppDetails(ApplicationInfo currentApp) {
         // Set View
         AlertDialog dialog = Dialog.build(launcherActivity, R.layout.dialog_app_details);
+        if (dialog == null) return;
         // Package Name
         ((TextView) dialog.findViewById(R.id.packageName)).setText(currentApp.packageName);
         // Info Action
@@ -259,6 +260,7 @@ public class AppsAdapter extends BaseAdapter{
                 if (!launcherActivity.sharedPreferences.getBoolean(Settings.KEY_SEEN_LAUNCH_OUT_POPUP, false) && value) {
                     launchModeSwitch.setChecked(false); // Revert switch
                     AlertDialog subDialog = Dialog.build(launcherActivity, R.layout.dialog_launch_out_info);
+                    if (subDialog == null) return;
                     subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
                         launcherActivity.sharedPreferenceEditor
                                 .putBoolean(Settings.KEY_SEEN_LAUNCH_OUT_POPUP, true);

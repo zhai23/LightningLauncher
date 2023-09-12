@@ -5,8 +5,10 @@ import android.app.Activity;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
+import android.os.Build;
 import android.os.IBinder;
 import android.view.ViewGroup;
+import android.webkit.CookieManager;
 import android.webkit.WebSettings;
 import android.widget.LinearLayout;
 
@@ -17,11 +19,11 @@ import java.util.Objects;
 
 public class BrowserService extends Service {
     private final IBinder binder = new LocalBinder();
-    private final HashMap<String, BrowserWebView> webViewByBaseUrl = new HashMap<>();
-    private final HashMap<String, Activity> activityByBaseUrl = new HashMap<>();
+    private final static HashMap<String, BrowserWebView> webViewByBaseUrl = new HashMap<>();
+    private final static HashMap<String, Activity> activityByBaseUrl = new HashMap<>();
 
-    // Spoof chrome 116 without an OS. May flag bot detection
-    String UA = "Mozilla/5.0 (x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36";
+    // Spoof chrome 116 on linux
+    String UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36";
 
     @Override
     public void onCreate() {
@@ -62,8 +64,7 @@ public class BrowserService extends Service {
             webViewByBaseUrl.put(url, webView);
             activityByBaseUrl.put(url, activity);
 
-            webView.setInitialScale(activity.sharedPreferences
-                    .getInt(BrowserActivity.KEY_WEBSITE_ZOOM+activity.baseUrl, 75));
+            webView.setInitialScale(100);
 
             webView.loadUrl(url);
 
@@ -72,11 +73,24 @@ public class BrowserService extends Service {
             ws.setJavaScriptEnabled(true);
             ws.setAllowFileAccess(true);
             ws.setUserAgentString(UA);
-            if (android.os.Build.VERSION.SDK_INT >= 29)
+            // Fail-safes (they do make a difference!)
+            ws.setDomStorageEnabled(true);
+            ws.setLoadWithOverviewMode(true);
+            ws.setBuiltInZoomControls(true);
+            ws.setDisplayZoomControls(false);
+            ws.setSupportZoom(true);
+            ws.setDefaultTextEncodingName("utf-8");
+            // Cookies
+            CookieManager.getInstance().setAcceptCookie(true);
+            CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true);
+
+            // Dark Theme
+            if (Build.VERSION.SDK_INT >= 29)
                 ws.setForceDark(activity.sharedPreferences
                 .getBoolean(BrowserActivity.KEY_WEBSITE_DARK+activity.baseUrl, true)
                 ? WebSettings.FORCE_DARK_ON : WebSettings.FORCE_DARK_OFF);
         }
+        webView.setActivity(activity);
         return webView;
     }
 

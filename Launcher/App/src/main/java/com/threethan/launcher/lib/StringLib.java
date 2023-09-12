@@ -1,5 +1,7 @@
 package com.threethan.launcher.lib;
 
+import android.util.Patterns;
+
 public class StringLib {
     private static final String STAR = "★";
     public static String toggleStar(String in) {
@@ -20,6 +22,24 @@ public class StringLib {
         in = in.trim();
         if (hasStar(in) != starred) return toggleStar(in);
         else return in;
+    }
+    public static String fixUrl(String url) {
+        if (!url.contains("//")) url = "https://" + url;
+        return url;
+    }
+    public static boolean compareUrl(String url1, String url2) {
+        return stripUrl(url1).compareTo(stripUrl(url2)) == 0;
+    }
+    private static String stripUrl(String url) {
+        return url.replace("/","").replace("http:","")
+                .replace("https:","").replace("www.","");
+    }
+    public static boolean isInvalidUrl(String url) {
+        return (!Patterns.WEB_URL.matcher(url).matches() || !url.contains("."));
+    }
+    public static String toValidFilename(String string) {
+        return string.replace("/","").replace("&","")
+                .replace("=","").replace(":","");
     }
     public static String toTitleCase(String string) {
         if (string == null) return null;

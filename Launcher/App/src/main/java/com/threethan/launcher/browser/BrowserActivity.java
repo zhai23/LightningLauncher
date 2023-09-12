@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
@@ -25,7 +26,7 @@ import android.widget.TextView;
 import com.threethan.launcher.R;
 import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
-import com.threethan.launcher.support.SettingsManager;
+import com.threethan.launcher.lib.StringLib;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -47,7 +48,6 @@ public class BrowserActivity extends Activity {
     View addHome;
     public SharedPreferences sharedPreferences;
     // Keys
-    public static final String KEY_WEBSITE_ZOOM = "KEY_WEBSITE_ZOOM-";
     public static final String KEY_WEBSITE_DARK = "KEY_WEBSITE_DARK-";
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -84,50 +84,51 @@ public class BrowserActivity extends Activity {
         light = findViewById(R.id.lightMode);
 
         back.setOnClickListener((view) -> {
-            if (w.history.isEmpty()) { updateButtons(); return; }
-
-            w.future.add(w.current);
-
-            final int i = w.history.size()-1;
-            loadUrl(w.history.get(i));
-
-            updateButtons();
+            try {
+                w.historyIndex--;
+                loadUrl(w.history.get(w.historyIndex - 1));
+                updateButtons();
+                Log.v("Browser History", w.history.toString());
+                Log.v("Browser History Index", String.valueOf(w.historyIndex));
+            } catch (Exception ignored) {}
         });
         forward.setOnClickListener((view) -> {
-            if (w.future.isEmpty()) { updateButtons(); return; }
+            try {
+                w.historyIndex ++;
+                loadUrl(w.history.get(w.historyIndex-1));
+                updateButtons();
+                Log.v("Browser History" ,w.history.toString());
 
-            w.history.add(w.current);
-
-            final int i = w.future.size()-1;
-            loadUrl(w.future.get(i));
-
-            updateButtons();
+                Log.v("Browser History Index" , String.valueOf(w.historyIndex));
+            } catch (Exception ignored) {}
         });
 
         findViewById(R.id.back).setOnLongClickListener((view -> {
-            w.future.addAll(w.history);
-            w.future.add(w.current);
-
-            loadUrl(w.history.get(0));
-            w.history.clear();
-
-            updateButtons();
+            try {
+                w.historyIndex = 1;
+                loadUrl(w.history.get(0));
+                updateButtons();
+            } catch (Exception ignored) {}
             return true;
         }));
         findViewById(R.id.forward).setOnLongClickListener((view -> {
-            w.history.add(w.current);
-            w.history.addAll(w.future);
-
-            loadUrl(w.future.get(w.future.size()-1));
-            w.future.clear();
-
-            updateButtons();
+            try {
+                w.historyIndex = w.history.size();
+                loadUrl(w.history.get(w.historyIndex-1));
+                updateButtons();
+            } catch (Exception ignored) {}
             return true;
         }));
 
 
         View refresh = findViewById(R.id.refresh);
         refresh.setOnClickListener((view) -> reload());
+        refresh.setOnLongClickListener((view) -> {
+            w.history.clear();
+            w.historyIndex = 0;
+            loadUrl(baseUrl);
+            return true;
+        });
 
         View exit = findViewById(R.id.exit);
         exit.setOnClickListener((View) -> finish());
@@ -152,6 +153,14 @@ public class BrowserActivity extends Activity {
             urlEdit.setText(currentUrl);
             urlEdit.requestFocus(View.LAYOUT_DIRECTION_RTL);
         });
+        urlEdit.setOnKeyListener((v, keyCode, event) -> {
+            if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                // Perform action on Enter key press
+                topBarEdit.findViewById(R.id.confirm).callOnClick();
+                return true;
+            }
+            return false;
+        });
         topBarEdit.findViewById(R.id.confirm).setOnClickListener((view) -> {
             loadUrl(urlEdit.getText().toString());
             topBar.setVisibility(View.VISIBLE);
@@ -164,22 +173,21 @@ public class BrowserActivity extends Activity {
 
         addHome = findViewById(R.id.addHome);
         addHome.setOnClickListener(view -> {
-            Platform.addWebsite(sharedPreferences, currentUrl, SettingsManager.getDefaultGroup(false, true));
+            Platform.addWebsite(sharedPreferences, currentUrl);
             addHome.setVisibility(View.GONE);
         });
     }
     private void updateButtons() {
         try {
-            back.setVisibility(w.history.isEmpty() ? View.GONE : View.VISIBLE);
-            forward.setVisibility(w.future.isEmpty() ? View.GONE : View.VISIBLE);
+            back.setVisibility(w.historyIndex > 1 ? View.VISIBLE : View.GONE);
+            forward.setVisibility(w.historyIndex < w.history.size() ? View.VISIBLE : View.GONE);
         } catch (Exception ignored) {}
     }
-    private void updateZoom(int scale) {
+    private void updateZoom(float scale) {
         try {
-            zoomIn .setVisibility(scale > 150 ? View.GONE : View.VISIBLE);
-            zoomOut.setVisibility(scale < 50 ? View.GONE : View.VISIBLE);
-            sharedPreferences.edit().putInt(KEY_WEBSITE_ZOOM+baseUrl, scale).apply();
-            w.setInitialScale(scale);
+            zoomIn .setVisibility(scale < 2.00 ? View.VISIBLE : View.GONE);
+            zoomOut.setVisibility(scale > 1.01 ? View.VISIBLE : View.GONE);
+            Log.i("SCALE", String.valueOf(scale));
         } catch (Exception ignored) {}
     }
     private void updateDark(boolean newDark) {
@@ -196,10 +204,7 @@ public class BrowserActivity extends Activity {
         } catch (Exception ignored) {}
     }
     private void loadUrl(String url) {
-        if (url == null) return;
-        w.current = null;
-        w.history.remove(url);
-        w.future .remove(url);
+        Log.v("Browser url", url);
         w.loadUrl(url);
         updateUrl(url);
     }
@@ -226,20 +231,18 @@ public class BrowserActivity extends Activity {
             urlEnd.setText(url.replace(split[0]+"."+split[1], ""));
         }
         currentUrl = url;
-        boolean isDefault = url.replace("/","").equals(
-        baseUrl.replace("https://","").replace("/",""));
-        if (isDefault) addHome.setVisibility(View.GONE);
+
+        addHome.setVisibility(View.VISIBLE);
+        if (StringLib.isInvalidUrl(url)) addHome.setVisibility(View.GONE);
+        else if (StringLib.compareUrl(baseUrl, url)) addHome.setVisibility(View.GONE);
         else {
             Set<String> webList = sharedPreferences.getStringSet(Settings.KEY_WEBSITE_LIST, new HashSet<>());
             for (String webUrl : webList) {
-                if (url.replace("/", "")
-                        .equals(webUrl.replace("https://", "").replace("/", ""))) {
+                if (StringLib.compareUrl(webUrl, url)) {
                     addHome.setVisibility(View.GONE);
                     return;
                 }
             }
-            if (webList.contains(url) || webList.contains((url+" ").replace("/ ",""))) addHome.setVisibility(View.GONE);
-            else addHome.setVisibility(View.VISIBLE);
         }
     }
 
@@ -283,19 +286,28 @@ public class BrowserActivity extends Activity {
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 final String newUrl = String.valueOf(request.getUrl());
                 updateUrl(newUrl);
-                if (w.current != null) {
-                    w.history.add(w.current);
-                    w.future.clear();
-                    updateButtons();
-                }
-                w.current = newUrl;
+                w.history = w.history.subList(0, w.historyIndex);
+                w.history.add(newUrl);
+                w.historyIndex++;
+                Log.v("Browser History" ,w.history.toString());
+                updateButtons();
                 return false;
             }
 
             @Override
             public void onScaleChanged(WebView view, float oldScale, float newScale) {
                 super.onScaleChanged(view, oldScale, newScale);
-                updateZoom((int) newScale * 100);
+                updateZoom(newScale);
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                // Remove blue highlights via basic javascript injection
+                // this makes things feel a lot more native
+                view.loadUrl("javascript:(function() { " +
+                        "document.body.style.webkitTapHighlightColor = 'rgba(0,0,0,0)'; " +
+                        "})()");
             }
         });
         w.setBackgroundColor(Color.parseColor("#10000000"));

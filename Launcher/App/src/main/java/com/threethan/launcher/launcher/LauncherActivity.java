@@ -12,7 +12,6 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -47,6 +46,7 @@ import com.threethan.launcher.view.FadingTopScrollView;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -116,6 +116,7 @@ public class LauncherActivity extends Activity {
         container.addView(m);
 
         if (firstStart) {
+            Log.w("LauncherStartup", "No existing activity found for ID "+getId());
             // Load Packages
             initView();
             recheckPackages();
@@ -216,6 +217,8 @@ public class LauncherActivity extends Activity {
     }
 
     public void reloadPackages() {
+        if (sharedPreferenceEditor == null) return;
+
         sharedPreferenceEditor.apply();
         // Load packages with metadata
         // This is a bit slower than skipping metadata, but only needs to run on first run
@@ -464,6 +467,12 @@ public class LauncherActivity extends Activity {
 
     public int dp(float dip) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, getResources().getDisplayMetrics());
+    }
+
+    public HashSet<String> getAllPackages() {
+        HashSet<String> setAll = new HashSet<>();
+        for (ApplicationInfo app : installedApps) setAll.add(app.packageName);
+        return setAll;
     }
 
     // Services

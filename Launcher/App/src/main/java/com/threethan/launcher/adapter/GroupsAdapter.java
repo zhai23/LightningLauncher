@@ -128,17 +128,20 @@ public class GroupsAdapter extends BaseAdapter {
             switch_2d .setOnCheckedChangeListener((switchView, value) -> {
                 String newDefault = value ? groupName : Settings.DEFAULT_GROUP_2D;
                 if ((!value && groupName.equals(newDefault)) || !appGroups.contains(newDefault)) newDefault = null;
-                launcherActivity.sharedPreferenceEditor.putString(Settings.KEY_GROUP_2D , newDefault);
+                launcherActivity.sharedPreferenceEditor.putString(Settings.KEY_GROUP_2D , newDefault).apply();
+                switch_2d .setChecked(SettingsManager.getDefaultGroup(false,false).equals(groupName));
             });
             switch_vr .setOnCheckedChangeListener((switchView, value) -> {
                 String newDefault = value ? groupName : Settings.DEFAULT_GROUP_VR;
                 if ((!value && groupName.equals(newDefault)) || !appGroups.contains(newDefault)) newDefault = null;
-                launcherActivity.sharedPreferenceEditor.putString(Settings.KEY_GROUP_VR , newDefault);
+                launcherActivity.sharedPreferenceEditor.putString(Settings.KEY_GROUP_VR , newDefault).apply();
+                switch_vr .setChecked(SettingsManager.getDefaultGroup(true ,false).equals(groupName));
             });
             switch_web .setOnCheckedChangeListener((switchView, value) -> {
                 String newDefault = value ? groupName : Settings.DEFAULT_GROUP_VR;
                 if ((!value && groupName.equals(newDefault)) || !appGroups.contains(newDefault)) newDefault = null;
-                launcherActivity.sharedPreferenceEditor.putString(Settings.KEY_GROUP_WEB, newDefault);
+                launcherActivity.sharedPreferenceEditor.putString(Settings.KEY_GROUP_WEB, newDefault).apply();
+                switch_web.setChecked(SettingsManager.getDefaultGroup(false,true ).equals(groupName));
             });
 
             dialog.findViewById(R.id.confirm).setOnClickListener(view1 -> {

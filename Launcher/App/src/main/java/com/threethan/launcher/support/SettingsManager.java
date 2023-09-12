@@ -40,7 +40,6 @@ public class SettingsManager extends Settings {
     private static Set<String> appGroupsSet = new HashSet<>();
     private static Set<String> selectedGroupsSet = new HashSet<>();
     private static Set<String> appsToLaunchOut = new HashSet<>();
-
     private static SettingsManager instance;
 
     private SettingsManager(LauncherActivity activity) {
@@ -65,13 +64,15 @@ public class SettingsManager extends Settings {
         String name = sharedPreferences.getString(app.packageName, "");
         if (!name.isEmpty()) return name;
         if (App.isWebsite(app)) {
-            name = app.packageName.split("//")[1];
-            String[] split = name.split("\\.");
-            if      (split.length <= 1) name = app.packageName;
-            else if (split.length == 2) name = split[0];
-            else                        name = split[1];
+            try {
+                name = app.packageName.split("//")[1];
+                String[] split = name.split("\\.");
+                if (split.length <= 1) name = app.packageName;
+                else if (split.length == 2) name = split[0];
+                else name = split[1];
 
-            if (!name.isEmpty()) return StringLib.toTitleCase(name);
+                if (!name.isEmpty()) return StringLib.toTitleCase(name);
+            } catch (Exception ignored) {}
         }
         try {
             PackageManager pm = launcherActivity.getPackageManager();
@@ -99,6 +100,11 @@ public class SettingsManager extends Settings {
     public static Map<String, String> getAppGroupMap() {
         if (appGroupMap.isEmpty()) readValues();
         return appGroupMap;
+    }
+    public void setAppGroup(String packageName, String group) {
+        getAppGroupMap();
+        appGroupMap.put(packageName, group);
+        queueStoreValues();
     }
 
     public static void setAppGroupMap(Map<String, String> value) {
@@ -275,10 +281,7 @@ public class SettingsManager extends Settings {
             for (String group : appGroupsSet) appListSetMap.put(group, new HashSet<>());
             for (String pkg : appGroupMap.keySet()) {
                 Set<String> group = appListSetMap.get(appGroupMap.get(pkg));
-                if (group == null) {
-                    Log.i("Missing group! Maybe in transit?", pkg);
-                    group = appListSetMap.get(getDefaultGroup(false, false));
-                }
+                if (group == null) group = appListSetMap.get(getDefaultGroup(false, false));
                 if (group == null) {
                     Log.e("Group was null", pkg);
                     return;

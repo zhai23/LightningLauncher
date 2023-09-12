@@ -14,6 +14,7 @@ import androidx.core.content.res.ResourcesCompat;
 
 import com.threethan.launcher.launcher.LauncherActivity;
 import com.threethan.launcher.lib.ImageLib;
+import com.threethan.launcher.lib.StringLib;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -22,7 +23,7 @@ import java.util.HashMap;
 public abstract class Icon {
     public static final HashMap<String, Drawable> cachedIcons = new HashMap<>();
     public static File iconFileForPackage(LauncherActivity launcherActivity, String packageName) {
-        packageName = packageName.replace("/","");
+        packageName = StringLib.toValidFilename(packageName);
         ApplicationInfo tempApp = new ApplicationInfo();
         tempApp.packageName = packageName;
         final boolean wide = App.isBanner(tempApp, launcherActivity);

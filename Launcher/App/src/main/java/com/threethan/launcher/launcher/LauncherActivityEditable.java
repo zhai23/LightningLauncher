@@ -1,10 +1,10 @@
 package com.threethan.launcher.launcher;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.util.Patterns;
 import android.view.View;
 import android.widget.Adapter;
 import android.widget.EditText;
@@ -18,9 +18,11 @@ import com.threethan.launcher.helper.App;
 import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
+import com.threethan.launcher.lib.StringLib;
 import com.threethan.launcher.support.SettingsManager;
 
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -32,7 +34,7 @@ public class LauncherActivityEditable extends LauncherActivity {
     @Override
     public void onBackPressed() {
         if (AppsAdapter.animateClose(this)) return;
-        if (!settingsPage.visible) setEditMode(!editMode);
+        if (settingsPage == null || !settingsPage.visible) setEditMode(!editMode);
     }
 
     // Startup
@@ -40,7 +42,7 @@ public class LauncherActivityEditable extends LauncherActivity {
     protected void initView() {
         super.initView();
         View addWebsiteButton = m.findViewById(R.id.addWebsite);
-        addWebsiteButton.setOnClickListener(view -> addWebsite());
+        addWebsiteButton.setOnClickListener(view -> addWebsite(this));
         View stopEditingButton = m.findViewById(R.id.stopEditing);
         stopEditingButton.setOnClickListener(view -> setEditMode(false));
     }
@@ -179,6 +181,21 @@ public class LauncherActivityEditable extends LauncherActivity {
     @Override
     public boolean canEdit() { return true; }
 
+    @Override
+    public void refreshAppDisplayLists() {
+        super.refreshAppDisplayLists();
+
+        Set<String> webApps = sharedPreferences.getStringSet(Settings.KEY_WEBSITE_LIST, new HashSet<>());
+        Set<String> packages = getAllPackages();
+
+        try {
+            for (String appPackage : currentSelectedApps)
+                if (!packages.contains(appPackage) && !webApps.contains(appPackage))
+                    currentSelectedApps.remove(appPackage);
+        } catch (ConcurrentModificationException ignored) {}
+        updateSelectionHint();
+    }
+
     // Utility functions
     void updateSelectionHint() {
         TextView selectionHintText = m.findViewById(R.id.selectionHintText);
@@ -191,9 +208,10 @@ public class LauncherActivityEditable extends LauncherActivity {
         else selectionHintText.setText(getString(R.string.selection_hint_multiple, size));
     }
 
-    void addWebsite() {
+    void addWebsite(Context context) {
         sharedPreferenceEditor.apply();
         AlertDialog dialog = Dialog.build(this, R.layout.dialog_new_website);
+        if (dialog == null) return;
 
         // Set group to (one of) selected
         String group;
@@ -206,13 +224,25 @@ public class LauncherActivityEditable extends LauncherActivity {
         ((TextView) dialog.findViewById(R.id.addText)).setText(getString(R.string.add_website_group, group));
         EditText urlEdit = dialog.findViewById(R.id.appUrl);
 
+        TextView badUrl  = dialog.findViewById(R.id.badUrl);
+        TextView usedUrl = dialog.findViewById(R.id.usedUrl);
+
         dialog.findViewById(R.id.confirm).setOnClickListener(view -> {
             String url  = urlEdit.getText().toString().toLowerCase();
-            if (!Patterns.WEB_URL.matcher(url).matches() || !url.contains(".")) {
-                dialog.findViewById(R.id.badUrl).setVisibility(View.VISIBLE);
+            if (StringLib.isInvalidUrl(url)) {
+                badUrl .setVisibility(View.VISIBLE);
+                usedUrl.setVisibility(View.GONE);
                 return;
             }
-            Platform.addWebsite(sharedPreferences, url, group);
+            String foundGroup = Platform.findWebsite(sharedPreferences, url);
+            if (foundGroup != null) {
+                badUrl .setVisibility(View.GONE);
+                usedUrl.setVisibility(View.VISIBLE);
+                usedUrl.setText(context.getString(R.string.add_website_used_url, foundGroup));
+                return;
+            }
+            Platform.addWebsite(sharedPreferences, url);
+            settingsManager.setAppGroup(StringLib.fixUrl(url), group);
             dialog.cancel();
             refreshAppDisplayLists();
             refresh();
@@ -232,9 +262,10 @@ public class LauncherActivityEditable extends LauncherActivity {
 
     void showWebsiteInfo() {
         AlertDialog subDialog = Dialog.build(this, R.layout.dialog_website_info);
+        if (subDialog == null) return;
         subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
             sharedPreferenceEditor.putBoolean(Settings.KEY_SEEN_WEBSITE_POPUP, true).apply();
-            addWebsite();
+            addWebsite(this);
             subDialog.dismiss();
         });
     }

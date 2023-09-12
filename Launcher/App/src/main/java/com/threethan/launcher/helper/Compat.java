@@ -60,7 +60,6 @@ public abstract class Compat {
                 if (version == 2) {
                     String from = sharedPreferences.getString(Settings.KEY_GROUP_VR, Settings.DEFAULT_GROUP_VR);
                     String to = StringLib.setStarred(from, true);
-                    // Star VR group to move it to the front
                     renameGroup(launcherActivity, from, to);
                 }
             }
@@ -122,7 +121,7 @@ public abstract class Compat {
 
     public static void clearLabels(LauncherActivity launcherActivity) {
         SettingsManager.appLabelCache.clear();
-        HashSet<String> setAll = Platform.getAllPackages(launcherActivity);
+        HashSet<String> setAll = launcherActivity.getAllPackages();
         SharedPreferences.Editor editor = launcherActivity.sharedPreferenceEditor;
         for (String packageName : setAll) editor.remove(packageName);
         storeAndReload(launcherActivity);

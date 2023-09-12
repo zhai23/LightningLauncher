@@ -16,8 +16,8 @@ import java.util.HashMap;
 
 public class LauncherService extends Service {
     private final IBinder binder = new LocalBinder();
-    private final HashMap<String, View> viewById = new HashMap<>();
-    private final HashMap<String, Activity> activityById = new HashMap<>();
+    private final static HashMap<String, View> viewById = new HashMap<>();
+    private final static  HashMap<String, Activity> activityById = new HashMap<>();
     @Override
     public void onCreate() {
         super.onCreate();

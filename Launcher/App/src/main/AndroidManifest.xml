@@ -12,9 +12,12 @@
     <uses-feature android:name="oculus.software.handtracking" android:required="false"/>
     <uses-permission android:name="com.oculus.permission.HAND_TRACKING"/>
 
-    <!-- Allows the app to black audio in background, which is used for the WebView activity -->
+
+    <!-- Allows the app to play/record audio in background, which is used for the WebView activity -->
     <uses-permission android:name="com.oculus.permission.PLAY_AUDIO_BACKGROUND"/>
     <uses-permission android:name="com.oculus.permission.RECORD_AUDIO_BACKGROUND"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"
         tools:ignore="QueryAllPackagesPermission" />

@@ -13,7 +13,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="48sp"
+        android:layout_height="46sp"
         android:layout_marginBottom="7dp">
 
         <TextView
@@ -29,7 +29,7 @@
             style="@style/SettingButtonLabel"
             android:layout_width="0dp"
             android:layout_height="20sp"
-            android:layout_marginStart="22sp"
+            android:layout_marginStart="20sp"
             android:text="@string/add_website_audio_info"
             android:textColor="#A0FFFFFF"
             android:visibility="visible"
@@ -41,7 +41,7 @@
             android:layout_width="17sp"
             android:layout_height="17sp"
             android:layout_marginStart="5dp"
-            android:layout_marginBottom="2sp"
+            android:layout_marginBottom="1sp"
             android:src="@drawable/ic_music_hint"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -187,6 +187,17 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="@string/add_website_bad_url"
+        android:textColor="#C36161"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/usedUrl"
+        style="@style/SettingButtonLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/add_website_used_url"
         android:textColor="#C36161"
         android:visibility="gone"
         tools:visibility="visible" />

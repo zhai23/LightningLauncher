@@ -35,14 +35,15 @@ public class SettingsDialog {
     private boolean clearedSort;
     @SuppressLint("UseCompatLoadingForDrawables")
     public void showSettings() {
-        visible = true;
         AlertDialog dialog = Dialog.build(a, R.layout.dialog_settings);
+        if (dialog == null) return;
+        visible = true;
         dialog.setOnDismissListener(dialogInterface -> visible = false);
 
         // Functional
         dialog.findViewById(R.id.shortcutServiceButton).setOnClickListener(view -> {
             AlertDialog subDialog = Dialog.build(a, R.layout.dialog_service_info);
-
+            if (subDialog == null) return;
             subDialog.findViewById(R.id.confirm).setOnClickListener(view1 -> {
                 // Navigate to accessibility settings
                 Intent localIntent = new Intent("android.settings.ACCESSIBILITY_SETTINGS");
@@ -187,6 +188,7 @@ public class SettingsDialog {
             if (!a.sharedPreferences.getBoolean(Settings.KEY_SEEN_HIDDEN_GROUPS_POPUP, false) && value != Settings.DEFAULT_GROUPS_ENABLED) {
                 groups.setChecked(Settings.DEFAULT_GROUPS_ENABLED); // Revert switch
                 AlertDialog subDialog = Dialog.build(a, R.layout.dialog_hide_groups_info);
+                if (subDialog == null) return;
                 subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
                     final boolean newValue = !Settings.DEFAULT_GROUPS_ENABLED;
                     a.sharedPreferenceEditor.putBoolean(Settings.KEY_SEEN_HIDDEN_GROUPS_POPUP, true)
