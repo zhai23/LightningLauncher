@@ -23,13 +23,21 @@ public abstract class Platform {
         setAll.addAll(App.setVr);
         return setAll;
     }
-    public static void addWebsite(SharedPreferences sharedPreferences, String url) {
+    public static void addWebsite(SharedPreferences sharedPreferences, String url, String group) {
         if (!url.contains("//")) url = "https://" + url;
 
         Set<String> webApps = sharedPreferences.getStringSet(Settings.KEY_WEBSITE_LIST, Collections.emptySet());
         webApps = new HashSet<>(webApps); // Copy since we're not supposed to modify directly
         webApps.add(url);
 
-        sharedPreferences.edit().putStringSet(Settings.KEY_WEBSITE_LIST, webApps).apply();
+        Set<String> groupApps = sharedPreferences.getStringSet(Settings.KEY_GROUP_APP_LIST+group, Collections.emptySet());
+        groupApps = new HashSet<>(groupApps); // Copy since we're not supposed to modify directly
+        groupApps.add(url);
+
+        sharedPreferences.edit()
+                .putStringSet(Settings.KEY_WEBSITE_LIST, webApps)
+                .putStringSet(Settings.KEY_GROUP_APP_LIST+group, groupApps)
+                .apply();
+
     }
 }

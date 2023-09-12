@@ -192,11 +192,16 @@ public class LauncherActivityEditable extends LauncherActivity {
 
     void addWebsite() {
         sharedPreferenceEditor.apply();
-
         AlertDialog dialog = Dialog.build(this, R.layout.dialog_new_website);
 
+        // Set group to (one of) selected
+        String group;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N)
+            group = settingsManager.getSelectedGroups().stream().sorted().findFirst().orElse(SettingsManager.getDefaultGroup(false, true));
+        else group = SettingsManager.getDefaultGroup(false, true);
+
         dialog.findViewById(R.id.cancel).setOnClickListener(view -> dialog.cancel());
-        ((TextView) dialog.findViewById(R.id.addText)).setText(getString(R.string.add_website_group, SettingsManager.getDefaultGroup(false, true)));
+        ((TextView) dialog.findViewById(R.id.addText)).setText(getString(R.string.add_website_group, group));
         EditText urlEdit = dialog.findViewById(R.id.appUrl);
 
         dialog.findViewById(R.id.confirm).setOnClickListener(view -> {
@@ -205,7 +210,7 @@ public class LauncherActivityEditable extends LauncherActivity {
                 dialog.findViewById(R.id.badUrl).setVisibility(View.VISIBLE);
                 return;
             }
-            Platform.addWebsite(sharedPreferences, url);
+            Platform.addWebsite(sharedPreferences, url, group);
             dialog.cancel();
             refreshAppDisplayLists();
             refresh();

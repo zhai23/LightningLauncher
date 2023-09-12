@@ -25,6 +25,7 @@ import android.widget.TextView;
 import com.threethan.launcher.R;
 import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
+import com.threethan.launcher.support.SettingsManager;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -163,7 +164,7 @@ public class BrowserActivity extends Activity {
 
         addHome = findViewById(R.id.addHome);
         addHome.setOnClickListener(view -> {
-            Platform.addWebsite(sharedPreferences, currentUrl);
+            Platform.addWebsite(sharedPreferences, currentUrl, SettingsManager.getDefaultGroup(false, true));
             addHome.setVisibility(View.GONE);
         });
     }
