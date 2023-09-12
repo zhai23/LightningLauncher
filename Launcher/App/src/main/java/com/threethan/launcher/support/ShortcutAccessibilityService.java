@@ -6,7 +6,7 @@ import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 
 import com.threethan.launcher.R;
-import com.threethan.launcher.launcher.LauncherActivityAlternate;
+import com.threethan.launcher.launcher.LauncherActivityShortcutService;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -17,7 +17,7 @@ public class ShortcutAccessibilityService extends AccessibilityService {
             String eventText = event.getText().toString();
             String exploreAccessibilityEventName = getResources().getString(R.string.accessibility_event_name);
             if (exploreAccessibilityEventName.compareTo(eventText) == 0) {
-                Intent launchIntent = new Intent(this, LauncherActivityAlternate.class);
+                Intent launchIntent = new Intent(this, LauncherActivityShortcutService.class);
                 launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
                 Log.i("LightningLauncherService", "Opening launcher activity from accessibility event");
@@ -25,14 +25,12 @@ public class ShortcutAccessibilityService extends AccessibilityService {
                 new Timer().schedule(new TimerTask() {
                     @Override
                     public void run() {
-                        Log.i("LightningLauncherService", "Opening launcher activity from accessibility event (delayed 650ms)");
                         startActivity(launchIntent);
                     }
                 }, 650);
                 new Timer().schedule(new TimerTask() {
                     @Override
                     public void run() {
-                        Log.i("LightningLauncherService", "Opening launcher activity from accessibility event (delayed 800ms)");
                         startActivity(launchIntent);
                     }
                 }, 800);

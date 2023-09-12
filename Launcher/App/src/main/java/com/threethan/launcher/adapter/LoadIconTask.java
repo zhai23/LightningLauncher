@@ -1,6 +1,5 @@
 package com.threethan.launcher.adapter;
 
-import android.annotation.SuppressLint;
 import android.content.pm.ApplicationInfo;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -15,7 +14,6 @@ import java.lang.ref.WeakReference;
 class LoadIconTask extends AsyncTask <Object, Void, Object> {
     private WeakReference<ImageView> iconImageViewRef;
     private Drawable appIcon;
-
     @Override
     protected Object doInBackground(Object[] objects) {
         final ApplicationInfo currentApp = (ApplicationInfo) objects[1];

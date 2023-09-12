@@ -82,6 +82,7 @@ public class GroupsAdapter extends BaseAdapter {
     }
 
     @Override
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
 
@@ -103,7 +104,6 @@ public class GroupsAdapter extends BaseAdapter {
             final String groupName = settingsManager.getAppGroupsSorted(false).get(position);
 
             AlertDialog dialog = Dialog.build(launcherActivity, R.layout.dialog_group_details);
-            if (dialog == null) return;
 
             final EditText groupNameInput = dialog.findViewById(R.id.groupName);
             groupNameInput.setText(StringLib.withoutStar(groupName));
@@ -116,11 +116,8 @@ public class GroupsAdapter extends BaseAdapter {
                     starButton.setImageResource(starred[0] ? R.drawable.ic_star_on : R.drawable.ic_star_off);
             });
 
-            @SuppressLint("UseSwitchCompatOrMaterialCode")
             Switch switch_2d = dialog.findViewById(R.id.default2dSwitch);
-            @SuppressLint("UseSwitchCompatOrMaterialCode")
             Switch switch_vr = dialog.findViewById(R.id.defaultVrSwitch);
-            @SuppressLint("UseSwitchCompatOrMaterialCode")
             Switch switch_web = dialog.findViewById(R.id.defaultWebSwitch);
             switch_2d .setChecked(SettingsManager.getDefaultGroup(false,false).equals(groupName));
             switch_vr .setChecked(SettingsManager.getDefaultGroup(true ,false).equals(groupName));

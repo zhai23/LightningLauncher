@@ -259,8 +259,6 @@ public class SettingsManager extends Settings {
                 for (String app : appListSet) appGroupMap.put(app, group);
             }
             appsToLaunchOut = sharedPreferences.getStringSet(KEY_LAUNCH_OUT, defaultGroupsSet);
-
-            Log.i("LOADED GROUPS", appGroupMap.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -114,7 +114,7 @@ public abstract class IconRepo {
             }
 
             Bitmap bitmap = ImageLib.bitmapFromFile(context, outputFile);
-            if (bitmap == null) Log.i("IconRepo", "Failed to get bitmap from "+outputFile.getAbsolutePath());
+//            if (bitmap == null) Log.i("IconRepo", "Failed to get bitmap from "+outputFile.getAbsolutePath());
 
             if (bitmap != null) {
                 int width = bitmap.getWidth();
@@ -158,7 +158,7 @@ public abstract class IconRepo {
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inJustDecodeBounds = true;
                 if (ImageLib.bitmapFromFile(context, imageFile, options) == null) {
-                    Log.i("IconRepo", "Failed to get bitmap from "+imageFile.getAbsolutePath());
+                    Log.i("IconRepo", "Failed to get valid bitmap from "+imageFile.getAbsolutePath());
                 }
                 success = (options.outWidth > 0 && options.outHeight > 0);
             }

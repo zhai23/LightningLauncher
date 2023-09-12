@@ -96,7 +96,7 @@ public class Updater {
         } catch (Exception ignored) {}
     }
     private SharedPreferences getSharedPreferences() {
-        //noinspection deprecation
+        // noinspection deprecation
         return PreferenceManager.getDefaultSharedPreferences(activity);
     }
     public static boolean isUpdateAvailable(Context context) {
@@ -115,7 +115,7 @@ public class Updater {
         AlertDialog skipAlertDialog = skipDialogBuilder.create();
         skipAlertDialog.show();
     }
-    @SuppressLint("UnspecifiedRegisterReceiverFlag") // Warning is only on old APIs, not actually applicable
+    @SuppressLint("UnspecifiedRegisterReceiverFlag") // Warning is only applies to old API fallback
     public void downloadUpdate(String versionTag) {
         DownloadManager.Request request1 = new DownloadManager.Request(Uri.parse(String.format(TEMPLATE_URL, versionTag)));
         request1.setDescription("Downloading Update");   //appears the same in Notification bar while downloading

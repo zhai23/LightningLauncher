@@ -1,6 +1,5 @@
 package com.threethan.launcher.launcher;
 
-import android.app.Activity;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
@@ -17,11 +16,6 @@ import java.util.HashMap;
 public class LauncherService extends Service {
     private final IBinder binder = new LocalBinder();
     private final static HashMap<String, View> viewById = new HashMap<>();
-    private final static  HashMap<String, Activity> activityById = new HashMap<>();
-    @Override
-    public void onCreate() {
-        super.onCreate();
-    }
 
     public class LocalBinder extends Binder {
         public LauncherService getService() {
@@ -42,16 +36,9 @@ public class LauncherService extends Service {
             assert view != null;
             ViewGroup parent = (ViewGroup) view.getParent();
             if (parent != null) parent.removeView(view);
-
-            Activity owner = activityById.get(id);
-            if (owner != null && owner != activity) {
-                owner.finish();
-                activityById.remove(id);
-            }
         } else {
             view = View.inflate(activity, R.layout.activity_main, null);
             viewById.put(id, view);
-            activityById.put(id, activity);
         }
         return view;
     }

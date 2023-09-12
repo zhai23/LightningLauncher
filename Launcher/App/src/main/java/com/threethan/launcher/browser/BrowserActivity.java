@@ -3,8 +3,6 @@ package com.threethan.launcher.browser;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -50,7 +48,6 @@ public class BrowserActivity extends Activity {
     // Keys
     public static final String KEY_WEBSITE_DARK = "KEY_WEBSITE_DARK-";
 
-    @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -212,7 +209,7 @@ public class BrowserActivity extends Activity {
         w.reload();
     }
     private String currentUrl = "";
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n") // Literally just adding a dot
     private void updateUrl(String url) {
         url = url.replace("https://","");
         String[] split = url.split("\\.");
@@ -247,22 +244,11 @@ public class BrowserActivity extends Activity {
     }
 
     BrowserService wService;
-    boolean wBound = false;
-
     @Override
     protected void onStart() {
         super.onStart();
         // Bind to LocalService.
         BrowserService.bind(this, connection);
-
-        LinearLayout container = findViewById(R.id.container);
-        container.post(new Runnable() {
-            @Override
-            public void run() {
-                if (wBound) justBound();
-                else container.post(this);
-            }
-        });
     }
 
     @Override
@@ -330,12 +316,10 @@ public class BrowserActivity extends Activity {
             // We've bound to LocalService, cast the IBinder and get LocalService instance.
             BrowserService.LocalBinder binder = (BrowserService.LocalBinder) service;
             wService = binder.getService();
-            wBound = true;
+            justBound();
         }
 
         @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-            wBound = false;
-        }
+        public void onServiceDisconnected(ComponentName arg0) {}
     };
 }

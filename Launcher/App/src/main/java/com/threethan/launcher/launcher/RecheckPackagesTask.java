@@ -1,6 +1,5 @@
 package com.threethan.launcher.launcher;
 
-import android.annotation.SuppressLint;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;

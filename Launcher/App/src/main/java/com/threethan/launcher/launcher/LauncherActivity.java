@@ -15,7 +15,6 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.TypedValue;
@@ -39,6 +38,7 @@ import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.lib.ImageLib;
 import com.threethan.launcher.support.SettingsManager;
+import com.threethan.launcher.support.Updater;
 import com.threethan.launcher.view.DynamicHeightGridView;
 import com.threethan.launcher.view.FadingTopScrollView;
 
@@ -73,24 +73,18 @@ public class LauncherActivity extends Activity {
     public SettingsDialog settingsPage;
     LauncherService mService;
     boolean mBound = false;
+    boolean mBinding = false;
 
     @Override
     protected void onStart() {
         super.onStart();
         // Bind to LocalService.
         Intent intent = new Intent(this, LauncherService.class);
-        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+        bindService(intent, launcherServiceConnection, Context.BIND_AUTO_CREATE);
+        mBinding = true;
 
         ViewGroup container = findViewById(R.id.container);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-
-        container.post(new Runnable() {
-            @Override
-            public void run() {
-                if (mBound) justBound();
-                else container.post(this);
-            }
-        });
 
         int background = sharedPreferences.getInt(Settings.KEY_BACKGROUND, Settings.DEFAULT_BACKGROUND);
         boolean custom = background < 0 || background > SettingsManager.BACKGROUND_COLORS.length;
@@ -100,39 +94,34 @@ public class LauncherActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //TODO DEBUG
-
-        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
-                .detectLeakedClosableObjects()
-                .penaltyLog()
-                .build());
-
-
         super.onCreate(savedInstanceState);
-        Log.v("LightningLauncher", "Starting Launcher Activity");
         setContentView(R.layout.activity_container);
     }
-
     public View m;
     private void justBound() {
         final boolean firstStart = !mService.hasView(getId());
 
-        m = mService.getView(this);
-        ViewGroup container = findViewById(R.id.container);
-        container.addView(m);
-
         if (firstStart) {
-            Log.w("LauncherStartup", "No existing activity found for ID "+getId());
+            Log.v("LauncherStartup", "No existing activity found for ID "+getId());
+            m = mService.getView(this);
+            ViewGroup container = findViewById(R.id.container);
+            container.addView(m);
             // Load Packages
             initView();
             recheckPackages();
-            // Reload UI
+            // Load Interface
             refreshBackground();
             refresh();
+
+            AppsAdapter.shouldAnimateClose = false;
+            AppsAdapter.animateClose(this);
+        } else {
+            Log.v("LauncherStartup", "Using existing activity for ID "+getId());
+            m = mService.getView(this);
+            ViewGroup container = findViewById(R.id.container);
+            container.addView(m);
         }
-        AppsAdapter.shouldAnimateClose = false;
-        AppsAdapter.animateClose(this);
-        postDelayed(this::runUpdater, 1000);
+        postDelayed(() -> new Updater(this).checkForUpdate(), 1000);
     }
 
     protected void initView() {
@@ -181,9 +170,7 @@ public class LauncherActivity extends Activity {
         // Set logo button
         ImageView settingsImageView = m.findViewById(R.id.settingsIcon);
         settingsImageView.setOnClickListener(view -> {
-            if (!settingsPage.visible) {
-                settingsPage.showSettings();
-            }
+            if (!settingsPage.visible) settingsPage.showSettings();
         });
     }
 
@@ -198,31 +185,23 @@ public class LauncherActivity extends Activity {
 
     @Override
     protected void onDestroy() {
+        Log.v("LauncherActivity", "Activity is being destroyed, possibly temporary");
+        try {unbindService(browserServiceConnection);} catch (Exception ignored) {}
         super.onDestroy();
-        unbindWebViewService();
-        unbindService(mConnection);
     }
     @Override
     public void onBackPressed() {
         if (AppsAdapter.animateClose(this)) return;
         if (!settingsPage.visible) settingsPage.showSettings();
     }
-
     @Override
     protected void onResume() {
         super.onResume();
-
         if (!mBound) return;
+
         AppsAdapter.animateClose(this);
-
         recheckPackages();
-        bindWebViewService();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        unbindWebViewService();
+        BrowserService.bind(this, browserServiceConnection);
     }
 
     public void reloadPackages() {
@@ -285,7 +264,7 @@ public class LauncherActivity extends Activity {
         BlurView blurView0 = m.findViewById(R.id.blurView0);
         BlurView blurView1 = m.findViewById(R.id.blurView1);
 
-        bindWebViewService();
+        BrowserService.bind(this, browserServiceConnection);
 
         if (!groupsEnabled) {
             blurView0.setVisibility(View.GONE);
@@ -308,7 +287,6 @@ public class LauncherActivity extends Activity {
         ViewGroup rootViewGroup = windowDecorView.findViewById(android.R.id.content);
 
         Drawable windowBackground = windowDecorView.getBackground();
-
         blurView0.setupWith(rootViewGroup, new RenderScriptBlur(getApplicationContext())) // or RenderEffectBlur
                 .setFrameClearDrawable(windowBackground) // Optional
                 .setBlurRadius(blurRadiusDp);
@@ -388,9 +366,6 @@ public class LauncherActivity extends Activity {
         updateGridViewHeights();
 
         post(this::updateTopBar);
-    }
-    public void runUpdater() {
-//        new Updater(this).checkForUpdate();
     }
 
     public void updateGridViewHeights() {
@@ -486,10 +461,9 @@ public class LauncherActivity extends Activity {
 
     // Services
     public BrowserService wService;
-    boolean wBound = false;
 
     /** Defines callbacks for service binding, passed to bindService(). */
-    private final ServiceConnection mConnection = new ServiceConnection() {
+    private final ServiceConnection launcherServiceConnection = new ServiceConnection() {
 
         @Override
         public void onServiceConnected(ComponentName className,
@@ -497,40 +471,23 @@ public class LauncherActivity extends Activity {
             // We've bound to LocalService, cast the IBinder and get LocalService instance.
             LauncherService.LocalBinder binder = (LauncherService.LocalBinder) service;
             mService = binder.getService();
-            mBound = true;
+            justBound();
         }
 
         @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-            mBound = false;
-        }
+        public void onServiceDisconnected(ComponentName arg0) {}
     };
-    private final ServiceConnection wConnection = new ServiceConnection() {
-
+    private final ServiceConnection browserServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName className,
                                        IBinder service) {
             // We've bound to LocalService, cast the IBinder and get LocalService instance.
             BrowserService.LocalBinder binder = (BrowserService.LocalBinder) service;
             wService = binder.getService();
-            wBound = true;
         }
-
         @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-            wBound = false;
-        }
+        public void onServiceDisconnected(ComponentName arg0) {}
     };
-
-    private void bindWebViewService() {
-        // Bind to web service
-        BrowserService.bind(this, wConnection);
-    }
-    private void unbindWebViewService() {
-        try {
-            unbindService(wConnection);
-        } catch (Exception ignored) {}
-    }
 
     // Edit mode stubs, to be overridden by child
     public void setEditMode(boolean b) {

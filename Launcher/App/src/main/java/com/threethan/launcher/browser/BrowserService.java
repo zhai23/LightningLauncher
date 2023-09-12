@@ -53,7 +53,7 @@ public class BrowserService extends Service {
     public IBinder onBind(Intent intent) {
         return binder;
     }
-    @SuppressLint("SetJavaScriptEnabled")
+    @SuppressLint("SetJavaScriptEnabled") // Javascript is important
     public BrowserWebView getWebView(BrowserActivity activity) {
         BrowserWebView webView;
         final String url = activity.baseUrl;

@@ -33,17 +33,15 @@ public class SettingsDialog {
     private boolean clearedLabel;
     private boolean clearedIcon;
     private boolean clearedSort;
-    @SuppressLint("UseCompatLoadingForDrawables")
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
     public void showSettings() {
         AlertDialog dialog = Dialog.build(a, R.layout.dialog_settings);
-        if (dialog == null) return;
         visible = true;
         dialog.setOnDismissListener(dialogInterface -> visible = false);
 
         // Functional
         dialog.findViewById(R.id.shortcutServiceButton).setOnClickListener(view -> {
             AlertDialog subDialog = Dialog.build(a, R.layout.dialog_service_info);
-            if (subDialog == null) return;
             subDialog.findViewById(R.id.confirm).setOnClickListener(view1 -> {
                 // Navigate to accessibility settings
                 Intent localIntent = new Intent("android.settings.ACCESSIBILITY_SETTINGS");
@@ -51,7 +49,6 @@ public class SettingsDialog {
                 a.startActivity(localIntent);
             });
         });
-        @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch editSwitch = dialog.findViewById(R.id.editModeSwitch);
         if (a.canEdit()) {
             editSwitch.setChecked(a.isEditing());
@@ -75,7 +72,7 @@ public class SettingsDialog {
         }
 
         // Wallpaper and style
-        @SuppressLint("UseSwitchCompatOrMaterialCode") Switch dark = dialog.findViewById(R.id.darkModeSwitch);
+        Switch dark = dialog.findViewById(R.id.darkModeSwitch);
         dark.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE));
         dark.setOnCheckedChangeListener((compoundButton, value) -> {
             a.sharedPreferenceEditor.putBoolean(Settings.KEY_DARK_MODE, value);
@@ -148,15 +145,10 @@ public class SettingsDialog {
             public void onProgressChanged(SeekBar seekBar, int value, boolean b) {
                 a.sharedPreferenceEditor.putInt(Settings.KEY_SCALE, value);
             }
-
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
-
+            public void onStartTrackingTouch(SeekBar seekBar) {}
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                a.refresh();
-            }
+            public void onStopTrackingTouch(SeekBar seekBar) { a.refresh(); }
         });
         scale.setMax(200);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) scale.setMin(80);
@@ -168,27 +160,21 @@ public class SettingsDialog {
             public void onProgressChanged(SeekBar seekBar, int value, boolean b) {
                 a.sharedPreferenceEditor.putInt(Settings.KEY_MARGIN, value);
             }
-
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
-
+            public void onStartTrackingTouch(SeekBar seekBar) {}
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                a.refresh();
-            }
+            public void onStopTrackingTouch(SeekBar seekBar) { a.refresh(); }
         });
         margin.setProgress(a.sharedPreferences.getInt(Settings.KEY_MARGIN, Settings.DEFAULT_MARGIN));
         margin.setMax(59);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) margin.setMin(5);
 
-        @SuppressLint("UseSwitchCompatOrMaterialCode") Switch groups = dialog.findViewById(R.id.groupSwitch);
+        Switch groups = dialog.findViewById(R.id.groupSwitch);
         groups.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_GROUPS_ENABLED, Settings.DEFAULT_GROUPS_ENABLED));
         groups.setOnCheckedChangeListener((sw, value) -> {
             if (!a.sharedPreferences.getBoolean(Settings.KEY_SEEN_HIDDEN_GROUPS_POPUP, false) && value != Settings.DEFAULT_GROUPS_ENABLED) {
                 groups.setChecked(Settings.DEFAULT_GROUPS_ENABLED); // Revert switch
                 AlertDialog subDialog = Dialog.build(a, R.layout.dialog_hide_groups_info);
-                if (subDialog == null) return;
                 subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
                     final boolean newValue = !Settings.DEFAULT_GROUPS_ENABLED;
                     a.sharedPreferenceEditor.putBoolean(Settings.KEY_SEEN_HIDDEN_GROUPS_POPUP, true)
@@ -198,9 +184,7 @@ public class SettingsDialog {
                     a.refresh();
                     subDialog.dismiss();
                 });
-                subDialog.findViewById(R.id.cancel).setOnClickListener(view -> {
-                    subDialog.dismiss(); // Dismiss without setting
-                });
+                subDialog.findViewById(R.id.cancel).setOnClickListener(view -> subDialog.dismiss());
             } else {
                 a.sharedPreferenceEditor.putBoolean(Settings.KEY_GROUPS_ENABLED, value);
                 a.refresh();
@@ -237,7 +221,6 @@ public class SettingsDialog {
         });
 
         // Wide display
-        @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch bannerVr = dialog.findViewById(R.id.bannerVrSwitch);
         bannerVr.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_WIDE_VR, Settings.DEFAULT_WIDE_VR));
         bannerVr.setOnCheckedChangeListener((compoundButton, value) -> {
@@ -246,7 +229,6 @@ public class SettingsDialog {
             a.refreshAppDisplayLists();
             a.refresh();
         });
-        @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch banner2d = dialog.findViewById(R.id.banner2dSwitch);
         banner2d.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_WIDE_2D, Settings.DEFAULT_WIDE_2D));
         banner2d.setOnCheckedChangeListener((compoundButton, value) -> {
@@ -254,7 +236,6 @@ public class SettingsDialog {
             a.refreshAppDisplayLists();
             a.refresh();
         });
-        @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch bannerWeb = dialog.findViewById(R.id.bannerWebSwitch);
         bannerWeb.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_WIDE_WEB, Settings.DEFAULT_WIDE_WEB));
         bannerWeb.setOnCheckedChangeListener((compoundButton, value) -> {
@@ -265,14 +246,12 @@ public class SettingsDialog {
         });
 
         // Names
-        @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch names = dialog.findViewById(R.id.nameSquareSwitch);
         names.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_SHOW_NAMES_SQUARE, Settings.DEFAULT_SHOW_NAMES_SQUARE));
         names.setOnCheckedChangeListener((compoundButton, value) -> {
             a.sharedPreferenceEditor.putBoolean(Settings.KEY_SHOW_NAMES_SQUARE, value);
             a.refresh();
         });
-        @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch wideNames = dialog.findViewById(R.id.nameBannerSwitch);
         wideNames.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_SHOW_NAMES_BANNER, Settings.DEFAULT_SHOW_NAMES_BANNER));
         wideNames.setOnCheckedChangeListener((compoundButton, value) -> {

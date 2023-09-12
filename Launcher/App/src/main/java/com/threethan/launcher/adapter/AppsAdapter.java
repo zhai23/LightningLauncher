@@ -37,7 +37,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressLint("UseSwitchCompatOrMaterialCode")
 public class AppsAdapter extends BaseAdapter{
     private static Drawable iconDrawable;
     private static File iconFile;
@@ -193,11 +192,9 @@ public class AppsAdapter extends BaseAdapter{
             //No longer sets icon here but that should be fine
         }
     }
-    @SuppressLint("SetTextI18n")
     private void showAppDetails(ApplicationInfo currentApp) {
         // Set View
         AlertDialog dialog = Dialog.build(launcherActivity, R.layout.dialog_app_details);
-        if (dialog == null) return;
         // Package Name
         ((TextView) dialog.findViewById(R.id.packageName)).setText(currentApp.packageName);
         // Info Action
@@ -207,6 +204,7 @@ public class AppsAdapter extends BaseAdapter{
 
         // Launch Mode Toggle
         final boolean[] launchOut = {SettingsManager.getAppLaunchOut(currentApp.packageName)};
+        @SuppressLint("UseSwitchCompatOrMaterialCode")
         final Switch launchModeSwitch = dialog.findViewById(R.id.launchModeSwitch);
         final View launchOutButton = dialog.findViewById(R.id.launchOut);
         final View launchModeSection = dialog.findViewById(R.id.launchModeSection);
@@ -259,7 +257,6 @@ public class AppsAdapter extends BaseAdapter{
                 if (!launcherActivity.sharedPreferences.getBoolean(Settings.KEY_SEEN_LAUNCH_OUT_POPUP, false) && value) {
                     launchModeSwitch.setChecked(false); // Revert switch
                     AlertDialog subDialog = Dialog.build(launcherActivity, R.layout.dialog_launch_out_info);
-                    if (subDialog == null) return;
                     subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
                         launcherActivity.sharedPreferenceEditor
                                 .putBoolean(Settings.KEY_SEEN_LAUNCH_OUT_POPUP, true);
