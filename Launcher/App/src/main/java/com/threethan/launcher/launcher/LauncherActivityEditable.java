@@ -20,6 +20,7 @@ import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.support.SettingsManager;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -196,8 +197,9 @@ public class LauncherActivityEditable extends LauncherActivity {
 
         // Set group to (one of) selected
         String group;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N)
-            group = settingsManager.getSelectedGroups().stream().sorted().findFirst().orElse(SettingsManager.getDefaultGroup(false, true));
+        final ArrayList<String> appGroupsSorted = settingsManager.getAppGroupsSorted(true);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N && !appGroupsSorted.isEmpty())
+            group = appGroupsSorted.get(0);
         else group = SettingsManager.getDefaultGroup(false, true);
 
         dialog.findViewById(R.id.cancel).setOnClickListener(view -> dialog.cancel());

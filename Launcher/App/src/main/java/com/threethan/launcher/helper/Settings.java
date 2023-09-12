@@ -3,6 +3,7 @@ package com.threethan.launcher.helper;
 import android.graphics.Color;
 
 import com.threethan.launcher.R;
+import com.threethan.launcher.lib.StringLib;
 
 public abstract class Settings {
     // Backgrounds
@@ -94,7 +95,7 @@ public abstract class Settings {
     public static final String KEY_GROUP_VR = "KEY_DEFAULT_GROUP_VR";
     public static final String KEY_GROUP_WEB = "KEY_DEFAULT_GROUP_WEB";
     public static final String DEFAULT_GROUP_2D = "Apps";
-    public static final String DEFAULT_GROUP_VR = "Games";
+    public static final String DEFAULT_GROUP_VR = StringLib.setStarred("Games", true);
     public static final String DEFAULT_GROUP_WEB = "Apps";
 
 }

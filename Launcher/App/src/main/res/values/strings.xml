@@ -70,6 +70,7 @@
     <string name="add_website_tip">Add a Website to the Launcher</string>
     <string name="add_website_url_label">Enter Any Website URL</string>
     <string name="add_website_bad_url">Enter a valid URL and try again</string>
+    <string name="add_website_audio_info">Added websites can play audio in-game</string>
     <string name="add_website_group">Add to %s</string>
 
     <string name="service_title">Launcher Shortcuts</string>
@@ -136,7 +137,6 @@
     <string name="group_settings">Group Settings</string>
     <string name="kill_process">Stop Running in the Background</string>
 
-    <string name="website_group">This group is currently set as the default for new websites</string>
     <string name="info_website">About Adding Websites</string>git
 
     <string name="stop_editing">Turn Off Edit Mode</string>

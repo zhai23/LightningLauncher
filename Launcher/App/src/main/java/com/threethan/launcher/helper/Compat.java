@@ -8,6 +8,7 @@ import android.util.Log;
 import com.threethan.launcher.launcher.LauncherActivity;
 import com.threethan.launcher.lib.FileLib;
 import com.threethan.launcher.adapter.GroupsAdapter;
+import com.threethan.launcher.lib.StringLib;
 import com.threethan.launcher.support.SettingsManager;
 
 import java.util.HashMap;
@@ -18,7 +19,7 @@ import java.util.Objects;
 import java.util.Set;
 public abstract class Compat {
     public static final String KEY_COMPATIBILITY_VERSION = "KEY_COMPATIBILITY_VERSION";
-    public static final int CURRENT_COMPATIBILITY_VERSION = 2;
+    public static final int CURRENT_COMPATIBILITY_VERSION = 3;
     public static final boolean DEBUG_COMPATIBILITY = false;
     public static synchronized void checkCompatibilityUpdate(LauncherActivity launcherActivity) {
         if (DEBUG_COMPATIBILITY) Log.e("COMPATIBILITY", "CRITICAL WARNING: DEBUG_COMPATIBILITY IS ON");
@@ -46,34 +47,21 @@ public abstract class Compat {
                         sharedPreferenceEditor.putBoolean(Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE);
                 }
                 if (version == 0) {
-                    SettingsManager settingsManager = launcherActivity.settingsManager;
                     if (sharedPreferences.getInt(Settings.KEY_BACKGROUND, Settings.DEFAULT_BACKGROUND) == 6)
                         sharedPreferenceEditor.putInt(Settings.KEY_BACKGROUND, -1);
-
-                    final Map<String, String> apps = SettingsManager.getAppGroupMap();
-                    final Set<String> appGroupsList = settingsManager.getAppGroups();
-                    final String oldGroupName = "Tools";
-                    final String newGroupName = "Apps";
-                    appGroupsList.remove(oldGroupName);
-                    appGroupsList.add(newGroupName);
-                    Map<String, String> updatedAppList = new HashMap<>();
-
-                    for (String packageName : apps.keySet())
-                        if (Objects.requireNonNull(apps.get(packageName)).compareTo(oldGroupName) == 0)
-                            updatedAppList.put(packageName, newGroupName);
-                        else
-                            updatedAppList.put(packageName, apps.get(packageName));
-
-                    HashSet<String> selectedGroups = new HashSet<>();
-                    selectedGroups.add(newGroupName);
-                    settingsManager.setSelectedGroups(selectedGroups);
-                    settingsManager.setAppGroups(appGroupsList);
-                    SettingsManager.setAppGroupMap(updatedAppList);
+                    // Rename group to new default
+                    renameGroup(launcherActivity, "Tools", "Apps");
                 }
                 if (version == 1) {
                     int bg = sharedPreferences.getInt(Settings.KEY_BACKGROUND, Settings.DEFAULT_BACKGROUND);
                     if (bg > 2) sharedPreferenceEditor.putInt(Settings.KEY_BACKGROUND, bg+1);
                     recheckSupported(launcherActivity);
+                }
+                if (version == 2) {
+                    String from = sharedPreferences.getString(Settings.KEY_GROUP_VR, Settings.DEFAULT_GROUP_VR);
+                    String to = StringLib.setStarred(from, true);
+                    // Star VR group to move it to the front
+                    renameGroup(launcherActivity, from, to);
                 }
             }
             Log.i("Settings Updated", String.format("Updated from v%s to v%s (Settings versions are not the same as app versions)",
@@ -89,6 +77,27 @@ public abstract class Compat {
         sharedPreferenceEditor.putInt(Compat.KEY_COMPATIBILITY_VERSION, Compat.CURRENT_COMPATIBILITY_VERSION);
     }
 
+    public static void renameGroup(LauncherActivity launcherActivity, String from, String to) {
+        SettingsManager settingsManager = launcherActivity.settingsManager;
+
+        final Map<String, String> apps = SettingsManager.getAppGroupMap();
+        final Set<String> appGroupsList = settingsManager.getAppGroups();
+        appGroupsList.remove(from);
+        appGroupsList.add(to);
+        Map<String, String> updatedAppList = new HashMap<>();
+
+        for (String packageName : apps.keySet())
+            if (Objects.requireNonNull(apps.get(packageName)).compareTo(from) == 0)
+                updatedAppList.put(packageName, to);
+            else
+                updatedAppList.put(packageName, apps.get(packageName));
+
+        HashSet<String> selectedGroups = new HashSet<>();
+        selectedGroups.add(to);
+        settingsManager.setSelectedGroups(selectedGroups);
+        settingsManager.setAppGroups(appGroupsList);
+        SettingsManager.setAppGroupMap(updatedAppList);
+    }
     public static void recheckSupported(LauncherActivity launcherActivity) {
         final Map<String, String> appGroupMap = SettingsManager.getAppGroupMap();
         List<ApplicationInfo> apps = launcherActivity.getPackageManager().getInstalledApplications(PackageManager.GET_META_DATA);

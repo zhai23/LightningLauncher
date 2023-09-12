@@ -30,6 +30,7 @@ import com.threethan.launcher.helper.Launch;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.launcher.LauncherActivity;
 import com.threethan.launcher.lib.ImageLib;
+import com.threethan.launcher.lib.StringLib;
 import com.threethan.launcher.support.SettingsManager;
 
 import java.io.File;
@@ -193,17 +194,18 @@ public class AppsAdapter extends BaseAdapter{
             //No longer sets icon here but that should be fine
         }
     }
+    @SuppressLint("SetTextI18n")
     private void showAppDetails(ApplicationInfo currentApp) {
-        // set view
+        // Set View
         AlertDialog dialog = Dialog.build(launcherActivity, R.layout.dialog_app_details);
-        // package name
+        // Package Name
         ((TextView) dialog.findViewById(R.id.packageName)).setText(currentApp.packageName);
-        // info action
+        // Info Action
         dialog.findViewById(R.id.info).setOnClickListener(view -> App.openInfo(launcherActivity, currentApp.packageName));
         dialog.findViewById(R.id.uninstall).setOnClickListener(view -> {
             App.uninstall(launcherActivity, currentApp.packageName); dialog.dismiss();});
 
-        // toggle launch mode
+        // Launch Mode Toggle
         final boolean[] launchOut = {SettingsManager.getAppLaunchOut(currentApp.packageName)};
         final Switch launchModeSwitch = dialog.findViewById(R.id.launchModeSwitch);
         final View launchOutButton = dialog.findViewById(R.id.launchOut);
@@ -212,7 +214,7 @@ public class AppsAdapter extends BaseAdapter{
         final boolean isVr = App.isVirtualReality(currentApp, launcherActivity);
         final boolean isWeb = App.isWebsite(currentApp);
 
-        // load icon
+        // Load Icon
         PackageManager packageManager = launcherActivity.getPackageManager();
         ImageView iconImageView = dialog.findViewById(R.id.appIcon);
         iconImageView.setImageDrawable(Icon.loadIcon(launcherActivity, currentApp, null));
@@ -275,12 +277,21 @@ public class AppsAdapter extends BaseAdapter{
             });
         }
 
-        // set name
-        String name = SettingsManager.getAppLabel(currentApp);
+        // Set Label (don't show star)
+        String label = SettingsManager.getAppLabel(currentApp);
         final EditText appNameEditText = dialog.findViewById(R.id.appLabel);
-        appNameEditText.setText(name);
+        appNameEditText.setText(StringLib.withoutStar(label));
+        // Star (actually changes label)
+        final View starButton = dialog.findViewById(R.id.star);
+        final boolean[] isStarred = {StringLib.hasStar(label)};
+        starButton.setBackgroundResource(isStarred[0] ? R.drawable.ic_star_on : R.drawable.ic_star_off);
+        starButton.setOnClickListener((view) -> {
+            isStarred[0] = !isStarred[0];
+            starButton.setBackgroundResource(isStarred[0] ? R.drawable.ic_star_on : R.drawable.ic_star_off);
+        });
+        // Save Label & Reload on Confirm
         dialog.findViewById(R.id.confirm).setOnClickListener(view -> {
-            SettingsManager.setAppLabel(currentApp, appNameEditText.getText().toString());
+            SettingsManager.setAppLabel(currentApp, StringLib.setStarred(appNameEditText.getText().toString(), isStarred[0]));
             dialog.dismiss();
             launcherActivity.refresh();
         });

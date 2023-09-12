@@ -16,51 +16,6 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="-1dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/sizer">
-
-        <Button
-            android:id="@+id/launchOut"
-            style="@android:style/DeviceDefault.ButtonBar"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginStart="3dp"
-            android:background="@drawable/ic_launch_out"
-            android:backgroundTint="#FFFFFF"
-            android:textColor="@android:color/white"
-            android:tooltipText="@string/launch_tip"
-            android:visibility="visible"
-            tools:visibility="visible" />
-
-        <Button
-            android:id="@+id/info"
-            style="@android:style/DeviceDefault.ButtonBar"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginStart="3dp"
-            android:background="@drawable/ic_info"
-            android:backgroundTint="#FFFFFF"
-            android:textColor="@android:color/white"
-            android:tooltipText="@string/info" />
-
-        <Button
-            android:id="@+id/uninstall"
-            style="@android:style/DeviceDefault.ButtonBar"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginStart="3dp"
-            android:background="@drawable/ic_uninstall"
-            android:backgroundTint="#FFFFFF"
-            android:textColor="@android:color/white"
-            android:tooltipText="@string/uninstall" />
-
-    </LinearLayout>
-
-    <LinearLayout
         android:id="@+id/linearLayout2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -77,13 +32,83 @@
             android:layout_marginBottom="3dp"
             android:background="@drawable/bkg_app"
             android:scaleType="centerCrop"
-            android:tooltipText="@string/change_icon" />
+            android:tooltipText="@string/change_icon"
+            tools:ignore="UnusedAttribute" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="bottom"
             android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-1dp"
+                android:orientation="horizontal">
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <Button
+                    android:id="@+id/launchOut"
+                    style="@android:style/DeviceDefault.ButtonBar"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="3dp"
+                    android:background="@drawable/ic_launch_out"
+                    android:backgroundTint="#FFFFFF"
+                    android:textColor="@android:color/white"
+                    android:tooltipText="@string/launch_tip"
+                    android:visibility="visible"
+                    tools:ignore="UnusedAttribute" />
+
+                <Button
+                    android:id="@+id/info"
+                    style="@android:style/DeviceDefault.ButtonBar"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="3dp"
+                    android:background="@drawable/ic_info"
+                    android:backgroundTint="#FFFFFF"
+                    android:textColor="@android:color/white"
+                    android:tooltipText="@string/info"
+                    tools:ignore="UnusedAttribute" />
+
+                <Button
+                    android:id="@+id/uninstall"
+                    style="@android:style/DeviceDefault.ButtonBar"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="3dp"
+                    android:background="@drawable/ic_uninstall"
+                    android:backgroundTint="#FFFFFF"
+                    android:textColor="@android:color/white"
+                    android:tooltipText="@string/uninstall"
+                    tools:ignore="UnusedAttribute" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/star"
+                style="@android:style/DeviceDefault.ButtonBar"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="3dp"
+                android:layout_marginBottom="-28.5dp"
+                android:background="@drawable/ic_star_off"
+                android:backgroundTint="#FFFFFF"
+                android:textColor="@android:color/white"
+                android:tooltipText="@string/launch_tip"
+                android:visibility="visible"
+                tools:ignore="UnusedAttribute" />
 
             <EditText
                 android:id="@+id/appLabel"
@@ -93,11 +118,13 @@
                 android:autofillHints="text"
                 android:background="@drawable/bkg_name_app"
                 android:inputType="text"
+                android:paddingStart="28dp"
                 android:selectAllOnFocus="true"
                 android:singleLine="true"
                 android:textAlignment="gravity"
                 android:textColor="@android:color/white"
-                android:textSize="24sp" />
+                android:textSize="24sp"
+                tools:ignore="RtlSymmetry" />
 
             <TextView
                 android:id="@+id/packageName"

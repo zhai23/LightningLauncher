@@ -13,7 +13,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="48sp"
+        android:layout_marginBottom="7dp">
 
         <TextView
             style="@style/SettingTitle"
@@ -21,9 +22,29 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:text="@string/add_website"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            style="@style/SettingButtonLabel"
+            android:layout_width="0dp"
+            android:layout_height="20sp"
+            android:layout_marginStart="22sp"
+            android:text="@string/add_website_audio_info"
+            android:textColor="#A0FFFFFF"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:layout_width="17sp"
+            android:layout_height="17sp"
+            android:layout_marginStart="5dp"
+            android:layout_marginBottom="2sp"
+            android:src="@drawable/ic_music_hint"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <Button
             android:id="@+id/info"
@@ -36,6 +57,7 @@
             android:tooltipText="@string/info_website"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <View
@@ -194,8 +216,7 @@
             android:id="@+id/confirm"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/bkg_button"
-            android:tooltipText="@string/website_group">
+            android:background="@drawable/bkg_button">
 
             <TextView
                 android:id="@+id/addText"

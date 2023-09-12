@@ -16,6 +16,7 @@ import com.threethan.launcher.R;
 import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.launcher.LauncherActivity;
+import com.threethan.launcher.lib.StringLib;
 import com.threethan.launcher.support.SettingsManager;
 
 import java.util.HashMap;
@@ -105,7 +106,15 @@ public class GroupsAdapter extends BaseAdapter {
             AlertDialog dialog = Dialog.build(launcherActivity, R.layout.dialog_group_details);
 
             final EditText groupNameInput = dialog.findViewById(R.id.groupName);
-            groupNameInput.setText(groupName);
+            groupNameInput.setText(StringLib.withoutStar(groupName));
+
+            final boolean[] starred = {StringLib.hasStar(groupName)};
+            View starButton = dialog.findViewById(R.id.starGroupButton);
+            starButton.setBackgroundResource(starred[0] ? R.drawable.ic_star_on : R.drawable.ic_star_off);
+            starButton.setOnClickListener(view1 -> {
+                    starred[0] = !starred[0];
+                    starButton.setBackgroundResource(starred[0] ? R.drawable.ic_star_on : R.drawable.ic_star_off);
+            });
 
             @SuppressLint("UseSwitchCompatOrMaterialCode")
             Switch switch_2d = dialog.findViewById(R.id.default2dSwitch);
@@ -133,7 +142,7 @@ public class GroupsAdapter extends BaseAdapter {
             });
 
             dialog.findViewById(R.id.confirm).setOnClickListener(view1 -> {
-                String newGroupName = groupNameInput.getText().toString();
+                String newGroupName = StringLib.setStarred(groupNameInput.getText().toString(), starred[0]);
                 if (newGroupName.equals(UNSUPPORTED_GROUP)) newGroupName = "UNSUPPORTED"; // Prevent permanently hiding apps
 
                 // Move the default group when we rename

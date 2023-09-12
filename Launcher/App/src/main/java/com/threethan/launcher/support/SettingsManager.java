@@ -12,6 +12,7 @@ import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.launcher.LauncherActivity;
 import com.threethan.launcher.lib.FileLib;
 import com.threethan.launcher.adapter.GroupsAdapter;
+import com.threethan.launcher.lib.StringLib;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -70,7 +71,7 @@ public class SettingsManager extends Settings {
             else if (split.length == 2) name = split[0];
             else                        name = split[1];
 
-            if (!name.isEmpty()) return FileLib.toTitleCase(name);
+            if (!name.isEmpty()) return StringLib.toTitleCase(name);
         }
         try {
             PackageManager pm = launcherActivity.getPackageManager();
@@ -159,7 +160,7 @@ public class SettingsManager extends Settings {
         ArrayList<ApplicationInfo> sortedApps = new ArrayList<>(appMap.values());
         // Compare on app label
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-            sortedApps.sort(Comparator.comparing(a -> getAppLabel(a).toLowerCase()));
+            sortedApps.sort(Comparator.comparing(a -> StringLib.forSort(getAppLabel(a))));
         else
             Log.w("OLD API", "Your android version is too old so apps will not be sorted.");
 
@@ -192,17 +193,11 @@ public class SettingsManager extends Settings {
         ArrayList<String> sortedGroupMap = new ArrayList<>(selected ? selectedGroupsSet : appGroupsSet);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-            sortedGroupMap.sort(Comparator.comparing(String::toUpperCase));
+            sortedGroupMap.sort(Comparator.comparing(StringLib::forSort));
         else
             Log.e("OLD API", "Your android version is too old so groups can not be sorted," +
                     "which may cause serious issues!");
 
-        // Move vr group to start
-        final String vrGroup = getDefaultGroup(true, false);
-        if (sortedGroupMap.contains(vrGroup)) {
-            sortedGroupMap.remove(vrGroup);
-            sortedGroupMap.add(0, vrGroup);
-        }
         // Move hidden group to end
         if (sortedGroupMap.contains(GroupsAdapter.HIDDEN_GROUP)) {
             sortedGroupMap.remove(GroupsAdapter.HIDDEN_GROUP);
@@ -302,8 +297,11 @@ public class SettingsManager extends Settings {
     public String addGroup() {
         String newGroupName = "New";
         List<String> existingGroups = getAppGroupsSorted(false);
-        if (existingGroups.contains(newGroupName)) {
-            int index = 1;
+        if (
+               existingGroups.contains(StringLib.setStarred(newGroupName, false)) ||
+               existingGroups.contains(StringLib.setStarred(newGroupName, true))
+        ) {
+            int index = 2;
             while (existingGroups.contains(newGroupName + " " + index)) {
                 index++;
             }
