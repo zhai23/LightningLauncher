@@ -253,8 +253,7 @@ public class BrowserActivity extends Activity {
     protected void onStart() {
         super.onStart();
         // Bind to LocalService.
-        Intent intent = new Intent(this, BrowserService.class);
-        bindService(intent, connection, Context.BIND_AUTO_CREATE);
+        BrowserService.bind(this, connection);
 
         LinearLayout container = findViewById(R.id.container);
         container.post(new Runnable() {

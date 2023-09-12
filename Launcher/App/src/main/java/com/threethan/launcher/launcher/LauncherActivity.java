@@ -124,6 +124,8 @@ public class LauncherActivity extends Activity {
             refreshBackground();
             refresh();
         }
+        AppsAdapter.shouldAnimateClose = false;
+        AppsAdapter.animateClose(this);
         postDelayed(this::runUpdater, 1000);
     }
 
@@ -202,8 +204,8 @@ public class LauncherActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (!mBound) return;
 
+        if (!mBound) return;
         AppsAdapter.animateClose(this);
 
         recheckPackages();
@@ -515,13 +517,7 @@ public class LauncherActivity extends Activity {
 
     private void bindWebViewService() {
         // Bind to web service
-        Intent intent = new Intent(this, BrowserService.class);
-
-        try {
-            bindService(intent, wConnection, Context.BIND_AUTO_CREATE);
-        } catch (Exception ignored) {
-            bindService(intent, wConnection, Context.BIND_AUTO_CREATE);
-        }
+        BrowserService.bind(this, wConnection);
     }
     private void unbindWebViewService() {
         try {

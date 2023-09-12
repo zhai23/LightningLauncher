@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -109,11 +110,11 @@ public class GroupsAdapter extends BaseAdapter {
             groupNameInput.setText(StringLib.withoutStar(groupName));
 
             final boolean[] starred = {StringLib.hasStar(groupName)};
-            View starButton = dialog.findViewById(R.id.starGroupButton);
-            starButton.setBackgroundResource(starred[0] ? R.drawable.ic_star_on : R.drawable.ic_star_off);
+            ImageView starButton = dialog.findViewById(R.id.starGroupButton);
+            starButton.setImageResource(starred[0] ? R.drawable.ic_star_on : R.drawable.ic_star_off);
             starButton.setOnClickListener(view1 -> {
                     starred[0] = !starred[0];
-                    starButton.setBackgroundResource(starred[0] ? R.drawable.ic_star_on : R.drawable.ic_star_off);
+                    starButton.setImageResource(starred[0] ? R.drawable.ic_star_on : R.drawable.ic_star_off);
             });
 
             @SuppressLint("UseSwitchCompatOrMaterialCode")

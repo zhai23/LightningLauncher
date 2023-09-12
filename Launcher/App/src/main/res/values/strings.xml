@@ -130,7 +130,7 @@
     <string name="web_exit">Return to Launcher</string>
     <string name="web_dark">Set Dark Mode</string>
     <string name="web_light">Set Light Mode</string>
-    <string name="web_add_home">Add to Launcher</string>
+    <string name="web_add_home">Add Page to Launcher</string>
     <string name="web_cancel">Cancel</string>
     <string name="web_confirm">Confirm &amp; Go</string>
 
@@ -155,4 +155,7 @@
     <string name="preset_spotify">open.spotify.com</string>
     <string name="preset_tidal">listen.tidal.com</string>
 
+    <string name="notification_title_s">LightningLauncher: Running a Website</string>
+    <string name="notification_title_p">LightningLauncher: Running %1$d Websites</string>
+    <string name="notification_content">This notification keeps your websites\' background audio running smoothly.</string>
 </resources>

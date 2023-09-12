@@ -10,7 +10,7 @@
 
     <View
         android:id="@+id/sizer"
-        android:layout_width="360dp"
+        android:layout_width="375dp"
         android:layout_height="94dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -52,40 +52,35 @@
                     android:layout_height="0dp"
                     android:layout_weight="1" />
 
-                <Button
+                <ImageView
                     android:id="@+id/launchOut"
-                    style="@android:style/DeviceDefault.ButtonBar"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_marginStart="3dp"
-                    android:background="@drawable/ic_launch_out"
-                    android:backgroundTint="#FFFFFF"
-                    android:textColor="@android:color/white"
+                    android:background="@drawable/bkg_hover_button"
+                    android:padding="1dp"
+                    android:src="@drawable/ic_launch_out"
                     android:tooltipText="@string/launch_tip"
-                    android:visibility="visible"
                     tools:ignore="UnusedAttribute" />
 
-                <Button
+                <ImageView
                     android:id="@+id/info"
-                    style="@android:style/DeviceDefault.ButtonBar"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_marginStart="3dp"
-                    android:background="@drawable/ic_info"
-                    android:backgroundTint="#FFFFFF"
-                    android:textColor="@android:color/white"
+                    android:background="@drawable/bkg_hover_button"
+                    android:padding="1dp"
+                    android:src="@drawable/ic_info"
                     android:tooltipText="@string/info"
                     tools:ignore="UnusedAttribute" />
 
-                <Button
+                <ImageView
                     android:id="@+id/uninstall"
-                    style="@android:style/DeviceDefault.ButtonBar"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_marginStart="3dp"
-                    android:background="@drawable/ic_uninstall"
-                    android:backgroundTint="#FFFFFF"
-                    android:textColor="@android:color/white"
+                    android:background="@drawable/bkg_hover_button"
+                    android:src="@drawable/ic_uninstall"
                     android:tooltipText="@string/uninstall"
                     tools:ignore="UnusedAttribute" />
 
@@ -95,20 +90,6 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="1" />
-
-            <Button
-                android:id="@+id/star"
-                style="@android:style/DeviceDefault.ButtonBar"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginStart="3dp"
-                android:layout_marginBottom="-28.5dp"
-                android:background="@drawable/ic_star_off"
-                android:backgroundTint="#FFFFFF"
-                android:textColor="@android:color/white"
-                android:tooltipText="@string/launch_tip"
-                android:visibility="visible"
-                tools:ignore="UnusedAttribute" />
 
             <EditText
                 android:id="@+id/appLabel"
@@ -136,6 +117,18 @@
                 android:singleLine="true"
                 android:textColor="#79FFFFFF"
                 tools:text="com.package.name" />
+
+            <ImageView
+                android:id="@+id/star"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="2dp"
+                android:layout_marginTop="-46dp"
+                android:background="@drawable/bkg_hover_button"
+                android:src="@drawable/ic_star_off"
+                android:tooltipText="@string/launch_tip"
+                android:visibility="visible"
+                tools:ignore="UnusedAttribute" />
         </LinearLayout>
 
     </LinearLayout>

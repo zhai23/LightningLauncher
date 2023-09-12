@@ -2,8 +2,14 @@ package com.threethan.launcher.browser;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
@@ -13,6 +19,10 @@ import android.webkit.WebSettings;
 import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+
+import com.threethan.launcher.R;
+import com.threethan.launcher.launcher.LauncherActivity;
 
 import java.util.HashMap;
 import java.util.Objects;
@@ -21,6 +31,8 @@ public class BrowserService extends Service {
     private final IBinder binder = new LocalBinder();
     private final static HashMap<String, BrowserWebView> webViewByBaseUrl = new HashMap<>();
     private final static HashMap<String, Activity> activityByBaseUrl = new HashMap<>();
+
+    private final static int NOTIFICATION_ID = 42;
 
     // Spoof chrome 116 on linux
     String UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36";
@@ -91,6 +103,7 @@ public class BrowserService extends Service {
                 ? WebSettings.FORCE_DARK_ON : WebSettings.FORCE_DARK_OFF);
         }
         webView.setActivity(activity);
+        updateStatus();
         return webView;
     }
 
@@ -110,6 +123,7 @@ public class BrowserService extends Service {
             e.printStackTrace();
         }
         System.gc();
+        updateStatus();
     }
     public void killActivities() {
         for (String key : activityByBaseUrl.keySet()) {
@@ -118,5 +132,56 @@ public class BrowserService extends Service {
                 activityByBaseUrl.remove(key);
             } catch (Exception ignored) {}
         }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        startForeground(NOTIFICATION_ID, getNotification());
+        return super.onStartCommand(intent, flags, startId);
+
+    }
+
+    public static void bind(Activity activity, ServiceConnection connection){
+        Intent intent = new Intent(activity, BrowserService.class);
+        if (amRunning(activity)) {
+            activity.bindService(intent, connection, 0);
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                activity.startForegroundService(intent);
+                activity.bindService(intent, connection, 0);
+            } else activity.bindService(intent, connection, BIND_AUTO_CREATE);
+        }
+    }
+
+    private static boolean amRunning(Activity activity) {
+        ActivityManager manager = (ActivityManager) activity.getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (BrowserService.class.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void updateStatus() {
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(NOTIFICATION_ID, getNotification());
+
+        if (webViewByBaseUrl.isEmpty()) stopSelf();
+    }
+
+    private Notification getNotification() {
+        Intent notificationIntent = new Intent(this, LauncherActivity.class);
+        PendingIntent pendingIntent =
+                PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_MUTABLE);
+        final int n = webViewByBaseUrl.size();
+        return new Notification.Builder(this)
+                .setContentTitle( n == 1 ? getString(R.string.notification_title_s) :
+                        getString(R.string.notification_title_p, n) )
+                .setContentText(getText(R.string.notification_content))
+                .setSmallIcon(R.drawable.ic_shortcut)
+                .setContentIntent(pendingIntent)
+                .build();
     }
 }

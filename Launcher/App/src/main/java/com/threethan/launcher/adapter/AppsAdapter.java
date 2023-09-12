@@ -284,12 +284,12 @@ public class AppsAdapter extends BaseAdapter{
         final EditText appNameEditText = dialog.findViewById(R.id.appLabel);
         appNameEditText.setText(StringLib.withoutStar(label));
         // Star (actually changes label)
-        final View starButton = dialog.findViewById(R.id.star);
+        final ImageView starButton = dialog.findViewById(R.id.star);
         final boolean[] isStarred = {StringLib.hasStar(label)};
-        starButton.setBackgroundResource(isStarred[0] ? R.drawable.ic_star_on : R.drawable.ic_star_off);
+        starButton.setImageResource(isStarred[0] ? R.drawable.ic_star_on : R.drawable.ic_star_off);
         starButton.setOnClickListener((view) -> {
             isStarred[0] = !isStarred[0];
-            starButton.setBackgroundResource(isStarred[0] ? R.drawable.ic_star_on : R.drawable.ic_star_off);
+            starButton.setImageResource(isStarred[0] ? R.drawable.ic_star_on : R.drawable.ic_star_off);
         });
         // Save Label & Reload on Confirm
         dialog.findViewById(R.id.confirm).setOnClickListener(view -> {
