@@ -15,38 +15,38 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public abstract class Launch {
-    public static boolean launchApp(LauncherActivity launcherActivity, ApplicationInfo appInfo) {
+    public static boolean launchApp(LauncherActivity launcherActivity, ApplicationInfo app) {
         Intent intent;
 
-        if (App.isWebsite(appInfo)) {
-            intent = new Intent(launcherActivity, (SettingsManager.getAppLaunchOut(appInfo.packageName) ? BrowserActivitySeparate.class : BrowserActivity.class));
-            intent.putExtra("url", appInfo.packageName);
+        if (App.isWebsite(app)) {
+            intent = new Intent(launcherActivity, (SettingsManager.getAppLaunchOut(app.packageName)
+                    ? BrowserActivitySeparate.class : BrowserActivity.class));
+            intent.putExtra("url", app.packageName);
         } else {
             PackageManager pm = launcherActivity.getPackageManager();
 
-            if (App.isVirtualReality(appInfo, launcherActivity)) {
+            // Getting the main intent instead of default launch intent fixes oculus browser
+            if (App.isVirtualReality(app, launcherActivity)) {
                 intent = new Intent(Intent.ACTION_MAIN);
-                intent.setPackage(appInfo.packageName);
-                if (intent.resolveActivity(pm) == null) intent = pm.getLaunchIntentForPackage(appInfo.packageName);
-            } else intent = pm.getLaunchIntentForPackage(appInfo.packageName);
+                intent.setPackage(app.packageName);
+                if (intent.resolveActivity(pm) == null) intent = pm.getLaunchIntentForPackage(app.packageName);
+            } else intent = pm.getLaunchIntentForPackage(app.packageName);
 
         }
 
         if (intent == null) {
-            Log.w("AppPlatform", "Package could not be launched, may have been uninstalled already? " +appInfo.packageName);
+            Log.w("AppPlatform", "Package could not be launched (Uninstalled?): " +app.packageName);
             launcherActivity.recheckPackages();
             return false;
         }
 
-        if (SettingsManager.getAppLaunchOut(appInfo.packageName) || App.isVirtualReality(appInfo, launcherActivity)) {
+        if (SettingsManager.getAppLaunchOut(app.packageName) || App.isVirtualReality(app, launcherActivity)) {
             launcherActivity.finish();
-            launcherActivity.overridePendingTransition(0, 0); // Cancel closing animation. Doesn't work on quest, but doesn't hurt
 
-            if (App.isWebsite(appInfo)) {
+            if (App.isWebsite(app))
                 try {
                     launcherActivity.wService.killActivities();
                 } catch (Exception ignored) {}
-            }
 
             intent.setFlags( Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION );
 

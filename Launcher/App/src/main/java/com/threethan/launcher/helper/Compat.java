@@ -21,7 +21,7 @@ public abstract class Compat {
     public static final int CURRENT_COMPATIBILITY_VERSION = 2;
     public static final boolean DEBUG_COMPATIBILITY = false;
     public static synchronized void checkCompatibilityUpdate(LauncherActivity launcherActivity) {
-        Log.w("COMPATIBILITY", "DEBUG_COMPATIBILITY IS ON");
+        if (DEBUG_COMPATIBILITY) Log.e("COMPATIBILITY", "CRITICAL WARNING: DEBUG_COMPATIBILITY IS ON");
         SharedPreferences sharedPreferences = launcherActivity.sharedPreferences;
         SharedPreferences.Editor sharedPreferenceEditor = launcherActivity.sharedPreferenceEditor;
         int storedVersion = DEBUG_COMPATIBILITY ? 0 : sharedPreferences.getInt(Compat.KEY_COMPATIBILITY_VERSION, -1);
@@ -39,18 +39,17 @@ public abstract class Compat {
             for (int version = 0; version <= Compat.CURRENT_COMPATIBILITY_VERSION; version++) {
                 if (SettingsManager.getVersionsWithBackgroundChanges().contains(version)) {
                     int backgroundIndex = sharedPreferences.getInt(Settings.KEY_BACKGROUND, Settings.DEFAULT_BACKGROUND);
-                    if (backgroundIndex >= 0 && backgroundIndex < SettingsManager.BACKGROUND_DARK.length) {
+
+                    if (backgroundIndex >= 0 && backgroundIndex < SettingsManager.BACKGROUND_DARK.length)
                         sharedPreferenceEditor.putBoolean(Settings.KEY_DARK_MODE, SettingsManager.BACKGROUND_DARK[backgroundIndex]);
-                    } else if (storedVersion == 0) {
+                    else if (storedVersion == 0)
                         sharedPreferenceEditor.putBoolean(Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE);
-                    }
-                    // updates may reference the specific version in the future
                 }
                 if (version == 0) {
                     SettingsManager settingsManager = launcherActivity.settingsManager;
-                    if (sharedPreferences.getInt(Settings.KEY_BACKGROUND, Settings.DEFAULT_BACKGROUND) == 6) {
+                    if (sharedPreferences.getInt(Settings.KEY_BACKGROUND, Settings.DEFAULT_BACKGROUND) == 6)
                         sharedPreferenceEditor.putInt(Settings.KEY_BACKGROUND, -1);
-                    }
+
                     final Map<String, String> apps = SettingsManager.getAppGroupMap();
                     final Set<String> appGroupsList = settingsManager.getAppGroups();
                     final String oldGroupName = "Tools";
@@ -58,13 +57,13 @@ public abstract class Compat {
                     appGroupsList.remove(oldGroupName);
                     appGroupsList.add(newGroupName);
                     Map<String, String> updatedAppList = new HashMap<>();
-                    for (String packageName : apps.keySet()) {
-                        if (Objects.requireNonNull(apps.get(packageName)).compareTo(oldGroupName) == 0) {
+
+                    for (String packageName : apps.keySet())
+                        if (Objects.requireNonNull(apps.get(packageName)).compareTo(oldGroupName) == 0)
                             updatedAppList.put(packageName, newGroupName);
-                        } else {
+                        else
                             updatedAppList.put(packageName, apps.get(packageName));
-                        }
-                    }
+
                     HashSet<String> selectedGroups = new HashSet<>();
                     selectedGroups.add(newGroupName);
                     settingsManager.setSelectedGroups(selectedGroups);
@@ -87,10 +86,7 @@ public abstract class Compat {
 
         Compat.clearIconCache(launcherActivity);
         // Store the updated version
-        sharedPreferenceEditor
-                .putInt(Compat.KEY_COMPATIBILITY_VERSION, Compat.CURRENT_COMPATIBILITY_VERSION)
-                .putBoolean(SettingsManager.NEEDS_META_DATA, true)
-                ;
+        sharedPreferenceEditor.putInt(Compat.KEY_COMPATIBILITY_VERSION, Compat.CURRENT_COMPATIBILITY_VERSION);
     }
 
     public static void recheckSupported(LauncherActivity launcherActivity) {
@@ -109,14 +105,10 @@ public abstract class Compat {
         clearIconCache(launcherActivity);
     }
     public static void clearIconCache(LauncherActivity launcherActivity) {
-        IconRepo.excludedIconPackages.clear();
-        IconRepo.dontDownloadIconPackages.clear();
+        IconRepo.downloadFinishedPackages.clear();
 
         Icon.cachedIcons.clear();
-        launcherActivity.sharedPreferenceEditor
-                .remove(SettingsManager.NEEDS_META_DATA)
-                .remove(SettingsManager.DONT_DOWNLOAD_ICONS)
-                ;
+        launcherActivity.sharedPreferenceEditor.remove(SettingsManager.DONT_DOWNLOAD_ICONS);
         storeAndReload(launcherActivity);
     }
 
@@ -125,7 +117,6 @@ public abstract class Compat {
         HashSet<String> setAll = Platform.getAllPackages(launcherActivity);
         SharedPreferences.Editor editor = launcherActivity.sharedPreferenceEditor;
         for (String packageName : setAll) editor.remove(packageName);
-        editor.putBoolean(SettingsManager.NEEDS_META_DATA, true);
         storeAndReload(launcherActivity);
     }
     public static void clearSort(LauncherActivity launcherActivity) {
@@ -133,8 +124,7 @@ public abstract class Compat {
         Set<String> appGroupsSet = launcherActivity.sharedPreferences.getStringSet(Settings.KEY_GROUPS, null);
         if (appGroupsSet == null) return;
         SharedPreferences.Editor editor = launcherActivity.sharedPreferenceEditor;
-        for (String groupName : appGroupsSet) editor.remove(Settings.KEY_GROUP_APP_LIST +groupName);
-        editor.putBoolean(SettingsManager.NEEDS_META_DATA, true);
+        for (String groupName : appGroupsSet) editor.remove(Settings.KEY_GROUP_APP_LIST+groupName);
         storeAndReload(launcherActivity);
     }
 

@@ -30,11 +30,12 @@ public abstract class App {
                 checkVirtualReality(applicationInfo)) {
             setVr.add(applicationInfo.packageName);
             launcherActivity.post(() -> sharedPreferenceEditor.putStringSet(Settings.KEY_VR_SET, setVr));
-
+            launcherActivity.postSharedPreferenceApply();
             return true;
         } else {
             set2d.add(applicationInfo.packageName);
             launcherActivity.post(() -> sharedPreferenceEditor.putStringSet(Settings.KEY_2D_SET, set2d));
+            launcherActivity.postSharedPreferenceApply();
             return false;
         }
     }
@@ -50,7 +51,7 @@ public abstract class App {
 
     static HashSet<String> setSupported = new HashSet<>();
     static HashSet<String> setUnsupported = new HashSet<>();
-    public static boolean isSupported(ApplicationInfo appInfo, LauncherActivity launcherActivity) {
+    public static boolean isSupported(ApplicationInfo app, LauncherActivity launcherActivity) {
         final SharedPreferences sharedPreferences = launcherActivity.sharedPreferences;
         final SharedPreferences.Editor sharedPreferenceEditor = launcherActivity.sharedPreferenceEditor;
         if (setSupported.isEmpty()) {
@@ -60,15 +61,15 @@ public abstract class App {
             setSupported.addAll(sharedPreferences.getStringSet(Settings.KEY_WEBSITE_LIST, Collections.emptySet()));
         }
 
-        if (setSupported.contains(appInfo.packageName)) return true;
-        if (setUnsupported.contains(appInfo.packageName)) return false;
+        if (setSupported.contains(app.packageName)) return true;
+        if (setUnsupported.contains(app.packageName)) return false;
 
-        if (checkSupported(appInfo, launcherActivity)) {
-            setSupported.add(appInfo.packageName);
+        if (checkSupported(app, launcherActivity)) {
+            setSupported.add(app.packageName);
             sharedPreferenceEditor.putStringSet(Settings.KEY_SUPPORTED_SET, setSupported);
             return true;
         } else {
-            setUnsupported.add(appInfo.packageName);
+            setUnsupported.add(app.packageName);
             sharedPreferenceEditor.putStringSet(Settings.KEY_UNSUPPORTED_SET, setUnsupported);
             return false;
         }

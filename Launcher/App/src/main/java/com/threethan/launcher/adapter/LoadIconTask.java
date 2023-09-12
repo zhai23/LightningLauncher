@@ -14,23 +14,19 @@ import com.threethan.launcher.launcher.LauncherActivity;
  */
 class LoadIconTask extends AsyncTask {
     @SuppressLint("StaticFieldLeak")
-    private ImageView imageView;
+    private ImageView iconImageView;
     private Drawable appIcon;
 
     @Override
     protected Object doInBackground(Object[] objects) {
         final ApplicationInfo currentApp = (ApplicationInfo) objects[1];
         final LauncherActivity launcherActivityContext = (LauncherActivity) objects[2];
-        imageView = (ImageView) objects[3];
-
-        ImageView[] imageViews = {imageView};
-        appIcon = Icon.loadIcon(launcherActivityContext, currentApp, imageViews);
-
+        iconImageView = (ImageView) objects[3];
+        appIcon = Icon.loadIcon(launcherActivityContext, currentApp, iconImageView);
         return null;
     }
-
     @Override
     protected void onPostExecute(Object _n) {
-        imageView.setImageDrawable(appIcon);
+        iconImageView.setImageDrawable(appIcon);
     }
 }

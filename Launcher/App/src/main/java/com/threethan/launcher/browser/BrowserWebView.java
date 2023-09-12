@@ -32,5 +32,4 @@ public class BrowserWebView extends WebView {
     protected void onWindowVisibilityChanged(int visibility) {
         if (visibility != View.GONE) super.onWindowVisibilityChanged(View.VISIBLE);
     }
-
 }

@@ -10,7 +10,6 @@ import java.util.List;
 
 /** @noinspection deprecation */
 class RecheckPackagesTask extends AsyncTask<Object, Void, Object> {
-
     List<ApplicationInfo> foundApps;
     @SuppressLint("StaticFieldLeak")
     LauncherActivity owner;
@@ -29,7 +28,7 @@ class RecheckPackagesTask extends AsyncTask<Object, Void, Object> {
     protected void onPostExecute(Object _n) {
         if (changeFound) {
             Log.i("PackageCheck", "Package change detected!");
-            owner.reloadPackagesWithMeta();
+            owner.reloadPackages();
             owner.refresh();
         }
     }

@@ -4,8 +4,10 @@ import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.os.Build;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Switch;
@@ -28,6 +30,9 @@ public class SettingsPage {
         a = launcherActivity;
     }
     public boolean visible = false;
+    private boolean clearedLabel = false;
+    private boolean clearedIcon  = false;
+    private boolean clearedSort  = false;
     @SuppressLint("UseCompatLoadingForDrawables")
     public void showSettings() {
         visible = true;
@@ -148,9 +153,8 @@ public class SettingsPage {
             }
         });
         scale.setMax(200);
-        scale.setMin(80);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) scale.setMin(80);
         scale.setProgress(a.sharedPreferences.getInt(Settings.KEY_SCALE, Settings.DEFAULT_SCALE));
-
 
         SeekBar margin = dialog.findViewById(R.id.marginSeekBar);
         margin.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -170,7 +174,7 @@ public class SettingsPage {
         });
         margin.setProgress(a.sharedPreferences.getInt(Settings.KEY_MARGIN, Settings.DEFAULT_MARGIN));
         margin.setMax(59);
-        margin.setMin(5);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) margin.setMin(5);
 
         @SuppressLint("UseSwitchCompatOrMaterialCode") Switch groups = dialog.findViewById(R.id.groupSwitch);
         groups.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_GROUPS_ENABLED, Settings.DEFAULT_GROUPS_ENABLED));
@@ -195,32 +199,55 @@ public class SettingsPage {
                 a.refresh();
             }
         });
-        dialog.findViewById(R.id.clearIconButton).setOnClickListener(view -> Compat.clearIcons (a));
-        dialog.findViewById(R.id.clearLabelButton).setOnClickListener(view -> Compat.clearLabels(a));
-        dialog.findViewById(R.id.clearSortButton).setOnClickListener(view -> Compat.clearSort  (a));
+
+        // Clear buttons (limited to one use to prevent bugs due to spamming)
+        Button clearLabel = dialog.findViewById(R.id.clearLabelButton);
+        clearLabel.setOnClickListener(view -> {
+            if (!clearedLabel) {
+                Compat.clearLabels(a);
+                clearLabel.setAlpha(0.5f);
+                clearedLabel = true;
+            }
+        });
+        Button clearSort = dialog.findViewById(R.id.clearSortButton);
+        clearSort.setOnClickListener(view -> {
+            if (!clearedSort) {
+                Compat.clearSort(a);
+                clearSort.setAlpha(0.5f);
+                clearedSort = true;
+            }
+        });
+        Button clearIcon = dialog.findViewById(R.id.clearIconButton);
+        clearSort.setOnClickListener(view -> {
+            if (!clearedIcon) {
+                Compat.clearIcons(a);
+                clearIcon.setAlpha(0.5f);
+                clearedIcon = true;
+            }
+        });
 
         // Wide display
         @SuppressLint("UseSwitchCompatOrMaterialCode")
-        Switch wideVR = dialog.findViewById(R.id.bannerVrSwitch);
-        wideVR.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_WIDE_VR, Settings.DEFAULT_WIDE_VR));
-        wideVR.setOnCheckedChangeListener((compoundButton, value) -> {
+        Switch bannerVr = dialog.findViewById(R.id.bannerVrSwitch);
+        bannerVr.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_WIDE_VR, Settings.DEFAULT_WIDE_VR));
+        bannerVr.setOnCheckedChangeListener((compoundButton, value) -> {
             Compat.clearIconCache(a);
             a.sharedPreferenceEditor.putBoolean(Settings.KEY_WIDE_VR, value);
             a.refreshApps();
             a.refresh();
         });
         @SuppressLint("UseSwitchCompatOrMaterialCode")
-        Switch wide2D = dialog.findViewById(R.id.banner2dSwitch);
-        wide2D.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_WIDE_2D, Settings.DEFAULT_WIDE_2D));
-        wide2D.setOnCheckedChangeListener((compoundButton, value) -> {
+        Switch banner2d = dialog.findViewById(R.id.banner2dSwitch);
+        banner2d.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_WIDE_2D, Settings.DEFAULT_WIDE_2D));
+        banner2d.setOnCheckedChangeListener((compoundButton, value) -> {
             a.sharedPreferenceEditor.putBoolean(Settings.KEY_WIDE_2D, value);
             a.refreshApps();
             a.refresh();
         });
         @SuppressLint("UseSwitchCompatOrMaterialCode")
-        Switch wideWEB = dialog.findViewById(R.id.bannerWebSwitch);
-        wideWEB.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_WIDE_WEB, Settings.DEFAULT_WIDE_WEB));
-        wideWEB.setOnCheckedChangeListener((compoundButton, value) -> {
+        Switch bannerWeb = dialog.findViewById(R.id.bannerWebSwitch);
+        bannerWeb.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_WIDE_WEB, Settings.DEFAULT_WIDE_WEB));
+        bannerWeb.setOnCheckedChangeListener((compoundButton, value) -> {
             Compat.clearIcons(a);
             a.sharedPreferenceEditor.putBoolean(Settings.KEY_WIDE_WEB, value);
             a.refreshApps();

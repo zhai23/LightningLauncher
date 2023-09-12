@@ -33,6 +33,7 @@ import com.esafirm.imagepicker.model.Image;
 import com.threethan.launcher.R;
 import com.threethan.launcher.adapter.AppsAdapter;
 import com.threethan.launcher.adapter.GroupsAdapter;
+import com.threethan.launcher.browser.BrowserService;
 import com.threethan.launcher.helper.App;
 import com.threethan.launcher.helper.Compat;
 import com.threethan.launcher.helper.Platform;
@@ -42,12 +43,10 @@ import com.threethan.launcher.support.SettingsManager;
 import com.threethan.launcher.support.Updater;
 import com.threethan.launcher.view.DynamicHeightGridView;
 import com.threethan.launcher.view.FadingTopScrollView;
-import com.threethan.launcher.browser.BrowserService;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -120,19 +119,17 @@ public class LauncherActivity extends Activity {
         container.addView(m);
 
         if (firstStart) {
-            initView();
             // Load Packages
-            reloadPackagesWithMeta();
+            initView();
+            recheckPackages();
             // Reload UI
             refreshBackground();
             refresh();
         }
-
-        mainView.postDelayed(this::runUpdater, 1000);
+        postDelayed(this::runUpdater, 1000);
     }
 
     protected void initView() {
-
         sharedPreferenceEditor = sharedPreferences.edit();
 
         settingsManager = SettingsManager.getInstance(this);
@@ -147,6 +144,8 @@ public class LauncherActivity extends Activity {
         fadeView = scrollView;
         backgroundImageView = m.findViewById(R.id.background);
         groupPanelGridView = m.findViewById(R.id.groupsView);
+
+        // Runs every frame
         post(new Runnable() {
             @Override
             public void run() {
@@ -230,19 +229,10 @@ public class LauncherActivity extends Activity {
     }
 
     public void reloadPackages() {
-        // If we don't need metadata, just use package names.
-        installedApps = new ArrayList<>();
-        HashSet<String> setAll = Platform.getAllPackages(this);
-        for (String packageName : setAll) {
-            ApplicationInfo applicationInfo = new ApplicationInfo();
-            applicationInfo.packageName = packageName;
-            installedApps.add(applicationInfo);
-        }
-        refreshApps();
-    }
-    public void reloadPackagesWithMeta() {
         sharedPreferenceEditor.apply();
-        // Check if we need metadata and load accordingly
+        // Load packages with metadata
+        // This is a bit slower than skipping metadata, but only needs to run on first run
+        // or when a new package is detected
         Log.i("LightningLauncher", "(Re)Loading app list with meta data");
         sharedPreferenceEditor
                 .remove(Settings.KEY_VR_SET)
@@ -388,9 +378,6 @@ public class LauncherActivity extends Activity {
 
         groupPanelGridView.setAdapter(new GroupsAdapter(this, isEditing()));
 
-        if (sharedPreferences.getBoolean(SettingsManager.NEEDS_META_DATA, true))
-            sharedPreferenceEditor.putBoolean(SettingsManager.NEEDS_META_DATA, false);
-
         scrollView.scrollTo(0,0); // Reset scroll
         scrollView.smoothScrollTo(0,0); // Cancel inertia
 
@@ -475,6 +462,13 @@ public class LauncherActivity extends Activity {
     public void post(Runnable action) {
         if (mainView == null) action.run();
         else mainView.post(action);
+    }
+    public void postDelayed(Runnable action, int ms) {
+        if (mainView == null) action.run();
+        else mainView.postDelayed(action, ms);
+    }
+    public void postSharedPreferenceApply() {
+        post(() -> sharedPreferenceEditor.apply());
     }
 
     public int dp(float dip) {

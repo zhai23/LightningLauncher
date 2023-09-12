@@ -222,14 +222,14 @@ public class AppsAdapter extends BaseAdapter{
         // load icon
         PackageManager packageManager = launcherActivity.getPackageManager();
 
-        ImageView iconImage = dialog.findViewById(R.id.appIcon);
+        ImageView iconImageView = dialog.findViewById(R.id.appIcon);
 
-        iconImage.setImageDrawable(Icon.loadIcon(launcherActivity, currentApp, null));
+        iconImageView.setImageDrawable(Icon.loadIcon(launcherActivity, currentApp, null));
 
-        iconImage.setClipToOutline(true);
-        if (App.isBanner(currentApp, launcherActivity)) iconImage.getLayoutParams().width = launcherActivity.dp(150);
+        iconImageView.setClipToOutline(true);
+        if (App.isBanner(currentApp, launcherActivity)) iconImageView.getLayoutParams().width = launcherActivity.dp(150);
 
-        iconImage.setOnClickListener(iconPickerView -> {
+        iconImageView.setOnClickListener(iconPickerView -> {
             iconDrawable = currentApp.loadIcon(packageManager);
             packageName = currentApp.packageName;
 
@@ -238,7 +238,7 @@ public class AppsAdapter extends BaseAdapter{
                 //noinspection ResultOfMethodCallIgnored
                 iconFile.delete();
             }
-            launcherActivity.setSelectedImageView(iconImage);
+            launcherActivity.setSelectedImageView(iconImageView);
             ImageLib.showImagePicker(launcherActivity, Settings.PICK_ICON_CODE);
         });
 
@@ -250,7 +250,7 @@ public class AppsAdapter extends BaseAdapter{
             refreshIconButton.setVisibility(View.VISIBLE);
             launchOutButton.setVisibility(View.GONE);
 
-            refreshIconButton.setOnClickListener(view -> Icon.reloadIcon(launcherActivity, currentApp, new ImageView[]{iconImage}));
+            refreshIconButton.setOnClickListener(view -> Icon.reloadIcon(launcherActivity, currentApp, iconImageView));
         } else {
             launchModeSection.setVisibility(View.VISIBLE);
             refreshIconButton.setVisibility(View.GONE);

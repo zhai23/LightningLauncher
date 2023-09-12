@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.util.Log;
 
 import com.threethan.launcher.helper.App;
@@ -53,19 +54,19 @@ public class SettingsManager extends Settings {
     }
 
     public static HashMap<ApplicationInfo, String> appLabelCache = new HashMap<>();
-    public static String getAppLabel(ApplicationInfo appInfo) {
-        if (appLabelCache.containsKey(appInfo)) return appLabelCache.get(appInfo);
-        String name = checkAppLabel(appInfo);
-        setAppLabel(appInfo, name);
+    public static String getAppLabel(ApplicationInfo app) {
+        if (appLabelCache.containsKey(app)) return appLabelCache.get(app);
+        String name = checkAppLabel(app);
+        setAppLabel(app, name);
         return name;
     }
-    private static String checkAppLabel(ApplicationInfo appInfo) {
-        String name = sharedPreferences.getString(appInfo.packageName, "");
+    private static String checkAppLabel(ApplicationInfo app) {
+        String name = sharedPreferences.getString(app.packageName, "");
         if (!name.isEmpty()) return name;
-        if (App.isWebsite(appInfo)) {
-            name = appInfo.packageName.split("//")[1];
+        if (App.isWebsite(app)) {
+            name = app.packageName.split("//")[1];
             String[] split = name.split("\\.");
-            if      (split.length <= 1) name = appInfo.packageName;
+            if      (split.length <= 1) name = app.packageName;
             else if (split.length == 2) name = split[0];
             else                        name = split[1];
 
@@ -73,17 +74,17 @@ public class SettingsManager extends Settings {
         }
         try {
             PackageManager pm = launcherActivity.getPackageManager();
-            String label = appInfo.loadLabel(pm).toString();
+            String label = app.loadLabel(pm).toString();
             if (!label.isEmpty()) return label;
             // Try to load this app's real app info
-            label = (String) pm.getApplicationInfo(appInfo.packageName, 0).loadLabel(pm);
+            label = (String) pm.getApplicationInfo(app.packageName, 0).loadLabel(pm);
             if (!label.isEmpty()) return label;
         } catch (Exception ignored) {}
-        return appInfo.packageName;
+        return app.packageName;
     }
-    public static void setAppLabel(ApplicationInfo appInfo, String newName) {
-        appLabelCache.put(appInfo, newName);
-        sharedPreferenceEditor.putString(appInfo.packageName, newName);
+    public static void setAppLabel(ApplicationInfo app, String newName) {
+        appLabelCache.put(app, newName);
+        sharedPreferenceEditor.putString(app.packageName, newName);
     }
     public static boolean getAppLaunchOut(String pkg) {
         return (appsToLaunchOut.contains(pkg));
@@ -109,16 +110,17 @@ public class SettingsManager extends Settings {
         // Get list of installed apps
         Map<String, String> apps = getAppGroupMap();
 
-        // If we need meta data, fetch everything now
-        if (launcherActivity.sharedPreferences.getBoolean(SettingsManager.NEEDS_META_DATA, true)) {
-            // Sort into groups
-            for (ApplicationInfo app : myApps) {
-                if (!App.isSupported(app, launcherActivity)) appGroupMap.put(app.packageName, GroupsAdapter.UNSUPPORTED_GROUP);
-                else {
-                    final boolean isVr = App.isVirtualReality(app, launcherActivity);
-                    final boolean isWeb = App.isWebsite(app);
-                    appGroupMap.put(app.packageName, getDefaultGroup(isVr, isWeb));
-                }
+        if (myApps == null) {
+            Log.e("LightningLauncher", "Got null app list");
+            return new ArrayList<>();
+        }
+        // Sort into groups
+        for (ApplicationInfo app : myApps) {
+            if (!App.isSupported(app, launcherActivity)) appGroupMap.put(app.packageName, GroupsAdapter.UNSUPPORTED_GROUP);
+            else {
+                final boolean isVr = App.isVirtualReality(app, launcherActivity);
+                final boolean isWeb = App.isWebsite(app);
+                appGroupMap.put(app.packageName, getDefaultGroup(isVr, isWeb));
             }
         }
 
@@ -138,8 +140,6 @@ public class SettingsManager extends Settings {
         // Save changes to app list
         setAppGroupMap(appGroupMap);
 
-        //Log.v("LauncherStartup", "X3 - Map Packages");
-
         // Map Packages
         Map<String, ApplicationInfo> appMap = new LinkedHashMap<>();
         for (ApplicationInfo applicationInfo : myApps) {
@@ -154,19 +154,13 @@ public class SettingsManager extends Settings {
             }
         }
 
-
-        //Log.v("LauncherStartup", "X4 - Mapped Packages");
-
-
-        // Sort by Package Name
-
         // Create new list of apps
         ArrayList<ApplicationInfo> sortedApps = new ArrayList<>(appMap.values());
-        // Compare on app name (fast)
-        //Log.v("LauncherStartup", "X5 - Start Sort");
-        sortedApps.sort(Comparator.comparing(a -> getAppLabel(a).toLowerCase()));
-        //Log.v("LauncherStartup", "X6 - Finish Sort");
-
+        // Compare on app label
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+            sortedApps.sort(Comparator.comparing(a -> getAppLabel(a).toLowerCase()));
+        else
+            Log.w("OLD API", "Your android version is too old so apps will not be sorted.");
 
         // Sort Done!
         return sortedApps;
@@ -194,24 +188,29 @@ public class SettingsManager extends Settings {
 
     public ArrayList<String> getAppGroupsSorted(boolean selected) {
         if ((selected ? selectedGroupsSet : appGroupsSet).isEmpty()) readValues();
-        ArrayList<String> sortedAppGroupMap = new ArrayList<>(selected ? selectedGroupsSet : appGroupsSet);
-        sortedAppGroupMap.sort(Comparator.comparing(String::toUpperCase));
+        ArrayList<String> sortedGroupMap = new ArrayList<>(selected ? selectedGroupsSet : appGroupsSet);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+            sortedGroupMap.sort(Comparator.comparing(String::toUpperCase));
+        else
+            Log.e("OLD API", "Your android version is too old so groups can not be sorted," +
+                    "which may cause serious issues!");
 
         // Move vr group to start
         final String vrGroup = getDefaultGroup(true, false);
-        if (sortedAppGroupMap.contains(vrGroup)) {
-            sortedAppGroupMap.remove(vrGroup);
-            sortedAppGroupMap.add(0, vrGroup);
+        if (sortedGroupMap.contains(vrGroup)) {
+            sortedGroupMap.remove(vrGroup);
+            sortedGroupMap.add(0, vrGroup);
         }
         // Move hidden group to end
-        if (sortedAppGroupMap.contains(GroupsAdapter.HIDDEN_GROUP)) {
-            sortedAppGroupMap.remove(GroupsAdapter.HIDDEN_GROUP);
-            sortedAppGroupMap.add(GroupsAdapter.HIDDEN_GROUP);
+        if (sortedGroupMap.contains(GroupsAdapter.HIDDEN_GROUP)) {
+            sortedGroupMap.remove(GroupsAdapter.HIDDEN_GROUP);
+            sortedGroupMap.add(GroupsAdapter.HIDDEN_GROUP);
         }
 
-        sortedAppGroupMap.remove(GroupsAdapter.UNSUPPORTED_GROUP);
+        sortedGroupMap.remove(GroupsAdapter.UNSUPPORTED_GROUP);
 
-        return sortedAppGroupMap;
+        return sortedGroupMap;
     }
 
     public void resetGroups(){

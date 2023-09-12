@@ -18,7 +18,6 @@ public class ShortcutAccessibilityService extends AccessibilityService {
             String exploreAccessibilityEventName = getResources().getString(R.string.accessibility_event_name);
             if (exploreAccessibilityEventName.compareTo(eventText) == 0) {
                 Intent launchIntent = new Intent(this, LauncherActivityAlternate.class);
-
                 launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
                 Log.i("LightningLauncherService", "Opening launcher activity from accessibility event");
@@ -26,7 +25,7 @@ public class ShortcutAccessibilityService extends AccessibilityService {
                 new Timer().schedule(new TimerTask() {
                     @Override
                     public void run() {
-                        Log.i("LightningLauncherService", "Opening launcher activity from accessibility event (delayed 100ms)");
+                        Log.i("LightningLauncherService", "Opening launcher activity from accessibility event (delayed 650ms)");
                         startActivity(launchIntent);
                     }
                 }, 650);

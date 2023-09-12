@@ -34,26 +34,25 @@ public abstract class IconRepo {
             "https://logo.clearbit.com/google.com/%s",
             "%s/favicon.ico",
     };
-    public static final HashSet<String> excludedIconPackages = new HashSet<>();
-    public static Set<String> dontDownloadIconPackages = new HashSet<>();
-
+    public static Set<String> downloadFinishedPackages = new HashSet<>();
     private static final ConcurrentHashMap<String, Object> locks = new ConcurrentHashMap<>();
 
-    public static void check(final LauncherActivity activity, ApplicationInfo appInfo, final Runnable callback) {
-        if (shouldDownload(activity, appInfo)) download(activity, appInfo, callback);
+    public static void check(final LauncherActivity activity, ApplicationInfo app, final Runnable callback) {
+        if (shouldDownload(activity, app)) download(activity, app, callback);
     }
-    private static boolean shouldDownload(LauncherActivity activity, ApplicationInfo appInfo) {
-        if (!(App.isVirtualReality(appInfo, activity) || App.isWebsite(appInfo))) return false;
-        if (dontDownloadIconPackages.isEmpty())
-            dontDownloadIconPackages = activity.sharedPreferences.getStringSet(SettingsManager.DONT_DOWNLOAD_ICONS, dontDownloadIconPackages);
-        return !dontDownloadIconPackages.contains(appInfo.packageName);
-    }
-    public static void download(final LauncherActivity activity, ApplicationInfo appInfo, final Runnable callback) {
-        final String pkgName = appInfo.packageName;
-        if (excludedIconPackages.contains(pkgName)) return;
-        else excludedIconPackages.add(pkgName);
 
-        final boolean isWide = App.isBanner(appInfo, activity);
+    public static boolean shouldDownload(LauncherActivity activity, ApplicationInfo app) {
+        if (!(App.isVirtualReality(app, activity) || App.isWebsite(app))) return false;
+        if (downloadFinishedPackages.isEmpty())
+            downloadFinishedPackages = activity.sharedPreferences
+                    .getStringSet(SettingsManager.DONT_DOWNLOAD_ICONS, downloadFinishedPackages);
+        return !downloadFinishedPackages.contains(app.packageName);
+    }
+
+    public static void download(final LauncherActivity activity, ApplicationInfo app, final Runnable callback) {
+        final String pkgName = app.packageName;
+
+        final boolean isWide = App.isBanner(app, activity);
         final File iconFile = Icon.iconFileForPackage(activity, pkgName);
 
         new Thread(() -> {
@@ -63,22 +62,20 @@ public abstract class IconRepo {
             }
             synchronized (Objects.requireNonNull(lock)) {
                 try {
-                    for (final String url: App.isWebsite(appInfo) ? ICON_URLS_WEB : (isWide ? ICON_URLS_WIDE : ICON_URLS)) {
-                        final String urlName = App.isWebsite(appInfo) ?
-                                pkgName.split("//")[0]+"//"+pkgName.split("/")[2] : pkgName;
-
+                    for (final String url : App.isWebsite(app) ? ICON_URLS_WEB : (isWide ? ICON_URLS_WIDE : ICON_URLS)) {
+                        final String urlName = App.isWebsite(app) ?
+                                pkgName.split("//")[0] + "//" + pkgName.split("/")[2] : pkgName;
                         if (downloadIconFromUrl(String.format(url, urlName), iconFile)) {
                             activity.runOnUiThread(callback);
-                            return;
                         }
                     }
-                    Log.v("AbstractPlatform", "Failed to find icon at any URL for " + pkgName);
-                    // If we get here, it failed to fetch. That's fine though.
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
-                    if (!App.isWebsite(appInfo)) dontDownloadIconPackages.add(pkgName);
-                    activity.sharedPreferenceEditor.putStringSet(SettingsManager.DONT_DOWNLOAD_ICONS, dontDownloadIconPackages);
+                    // Set the icon to now download if we either successfully downloaded it, or the download tried and failed
+                    if (!App.isWebsite(app)) downloadFinishedPackages.add(pkgName);
+                    activity.sharedPreferenceEditor
+                            .putStringSet(SettingsManager.DONT_DOWNLOAD_ICONS, downloadFinishedPackages);
                     locks.remove(pkgName);
                 }
             }
@@ -106,13 +103,13 @@ public abstract class IconRepo {
             fileOutputStream.close();
 
             if (!isImageFileComplete(outputFile)) {
-                Log.i("AbstractPlatform", "Image file not complete" + outputFile.getAbsolutePath());
+                Log.i("IconRepo", "Image file not complete" + outputFile.getAbsolutePath());
                 return false;
             }
 
             Bitmap bitmap = BitmapFactory.decodeFile(outputFile.getAbsolutePath());
             if (bitmap == null) {
-                Log.i("AbstractPlatform", "Failed to get bitmap from "+outputFile.getAbsolutePath());
+                Log.i("IconRepo", "Failed to get bitmap from "+outputFile.getAbsolutePath());
             }
             if (bitmap != null) {
                 int width = bitmap.getWidth();
@@ -154,9 +151,7 @@ public abstract class IconRepo {
             }
         } catch (Exception ignored) {}
 
-        if (!success) {
-            Log.e("AbstractPlatform", "Failed to validate image file: " + imageFile);
-        }
+        if (!success) Log.e("AbstractPlatform", "Failed to validate image file: " + imageFile);
 
         return success;
     }

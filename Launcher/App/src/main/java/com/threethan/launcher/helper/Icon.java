@@ -9,6 +9,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.ImageView;
 
+import androidx.annotation.Nullable;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.threethan.launcher.launcher.LauncherActivity;
@@ -25,66 +26,68 @@ public abstract class Icon {
         ApplicationInfo tempApp = new ApplicationInfo();
         tempApp.packageName = packageName;
         final boolean wide = App.isBanner(tempApp, launcherActivity);
-        return new File(launcherActivity.getApplicationInfo().dataDir, packageName + (wide?"-wide":"") + ".webp");
+        return new File(launcherActivity.getApplicationInfo().dataDir,
+                packageName + (wide?"-wide":"") + ".webp");
     }
-    public static void updateIcon(File file, String packageName, ImageView[] imageViews) {
+    public static void updateIcon(File iconFile, String packageName, ImageView imageView) {
         try {
-            Drawable newIconDrawable = Drawable.createFromPath(file.getAbsolutePath());
+            Drawable newIconDrawable = Drawable.createFromPath(iconFile.getAbsolutePath());
             if (newIconDrawable != null) {
                 cachedIcons.put(packageName, newIconDrawable); // Success
-                if (imageViews != null) {
-                    for(ImageView imageView : imageViews) {
-                        imageView.setImageDrawable(newIconDrawable);
-                    }
-                }
+                if (imageView != null) imageView.setImageDrawable(newIconDrawable);
             }
-
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+            Log.w("Icon", "Error when loading icon drawable from path "+iconFile.getAbsolutePath());
+        }
     }
-    public static Drawable loadIcon(LauncherActivity activity, ApplicationInfo appInfo, ImageView[] imageViews) {
-        final File iconFile = iconFileForPackage(activity, appInfo.packageName);
-        IconRepo.check(activity, appInfo, () -> updateIcon(iconFile, appInfo.packageName, imageViews));
-
-        if (cachedIcons.containsKey(appInfo.packageName)) return cachedIcons.get(appInfo.packageName);
-
-        PackageManager packageManager = activity.getPackageManager();
-
-        Drawable appIcon;
-        if (iconFile.exists()) {
-            updateIcon(iconFile, appInfo.packageName, null);
+    @Nullable
+    public static Drawable loadIcon(LauncherActivity activity, ApplicationInfo app, ImageView imageView) {
+        // Try to load from memory
+        if (cachedIcons.containsKey(app.packageName)) return cachedIcons.get(app.packageName);
+        // Try to load from file
+        final File iconFile = iconFileForPackage(activity, app.packageName);
+        if (iconFile.exists() && !IconRepo.shouldDownload(activity, app)) {
+            updateIcon(iconFile, app.packageName, null);
             return Drawable.createFromPath(iconFile.getAbsolutePath());
         }
-        if (cachedIcons.containsKey(appInfo.packageName)) return cachedIcons.get(appInfo.packageName);
+
+        // Try to load from package manager
+        Drawable appIcon = null;
+        if (cachedIcons.containsKey(app.packageName)) return cachedIcons.get(app.packageName);
         try {
-            Resources resources = packageManager.getResourcesForApplication(appInfo.packageName);
-            int iconId = appInfo.icon;
-            if (iconId == 0) {
-                iconId = android.R.drawable.sym_def_app_icon;
-                appIcon = ResourcesCompat.getDrawableForDensity(resources, iconId, DisplayMetrics.DENSITY_XXXHIGH, null);
-            } else {
-                appIcon = ResourcesCompat.getDrawableForDensity(resources, iconId, DisplayMetrics.DENSITY_XXXHIGH, null);
-                saveIconDrawable(activity, appIcon, appInfo.packageName);
-            }
-            return appIcon;
-        } catch (Exception ignored) {} // Fails on web apps
+            PackageManager packageManager = activity.getPackageManager();
+            Resources resources = packageManager.getResourcesForApplication(app.packageName);
 
-        return null;
+            int iconId = app.icon;
+            if (iconId == 0) iconId = android.R.drawable.sym_def_app_icon;
+            appIcon = ResourcesCompat.getDrawableForDensity(resources, iconId,
+                    DisplayMetrics.DENSITY_XXXHIGH, null);
+
+            // Saves the drawable to a webp,
+            // which is faster to load than trying to get the drawable every time
+            saveIconDrawable(activity, appIcon, app.packageName);
+        } catch (Exception ignored) {} // Fails on web apps, possibly also on invalid packages
+
+        // Download icon AFTER saving the drawable version
+        // (this prevents a race condition)
+        IconRepo.check(activity, app, () -> updateIcon(iconFile, app.packageName, imageView));
+
+        return appIcon; // May rarely be null
     }
 
-    public static void reloadIcon(LauncherActivity activity, ApplicationInfo appInfo, ImageView[] imageViews) {
-        final File iconFile = iconFileForPackage(activity, appInfo.packageName);
+    public static void reloadIcon(LauncherActivity activity, ApplicationInfo app, ImageView downloadImageView) {
+        final File iconFile = iconFileForPackage(activity, app.packageName);
         final boolean ignored = iconFile.delete();
-        imageViews[0].setImageDrawable(loadIcon(activity, appInfo, imageViews));
-        IconRepo.download(activity, appInfo, () -> updateIcon(iconFile, appInfo.packageName, imageViews));
+        downloadImageView.setImageDrawable(loadIcon(activity, app, downloadImageView));
+        IconRepo.download(activity, app, () -> updateIcon(iconFile, app.packageName, downloadImageView));
     }
 
-    protected static void saveIconDrawable(LauncherActivity launcherActivity, Drawable icon, String packageName) {
+    protected static void saveIconDrawable(LauncherActivity activity, Drawable icon, String packageName) {
         try {
             Bitmap bitmap = ImageLib.bitmapFromDrawable(icon);
-            if (bitmap == null) {
-                Log.i("AbstractPlatform", "Failed to load drawable bitmap for "+packageName);
-            }
-            if (bitmap != null) {
+            if (bitmap == null)
+                Log.i("Icon", "Failed to load drawable bitmap for "+packageName);
+            else {
                 int width = bitmap.getWidth();
                 int height = bitmap.getHeight();
                 float aspectRatio = (float) width / height;
@@ -95,14 +98,14 @@ public abstract class Icon {
                 }
                 try {
                     FileOutputStream fileOutputStream =
-                            new FileOutputStream(iconFileForPackage(launcherActivity, packageName).getAbsolutePath());
+                            new FileOutputStream(iconFileForPackage(activity, packageName)
+                                    .getAbsolutePath());
                     bitmap.compress(Bitmap.CompressFormat.WEBP, 90, fileOutputStream);
                     fileOutputStream.close();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-
         } catch (Exception e) {
             Log.i("AbstractPlatform", "Exception while converting file " + packageName);
             e.printStackTrace();

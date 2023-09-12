@@ -245,13 +245,9 @@ public class GroupsAdapter extends BaseAdapter {
             itemView.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(launcherActivity.darkMode ? "#50000000" : "#FFFFFF")));
             TextView textView = itemView.findViewById(R.id.textLabel);
             textView.setTextColor(Color.parseColor(launcherActivity.darkMode ? "#FFFFFFFF" : "#FF000000")); // set selected tab text color
-            if (isEditMode && (position < getCount() - 2)) {
-                menu.setVisibility(View.VISIBLE);
-//                menu.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(mainActivity.darkMode ? "#FFFFFFFF" : "#FF000000"))); // set selected tab text color
 
-            } else {
-                menu.setVisibility(View.GONE);
-            }
+            if (isEditMode && (position < getCount() - 2)) menu.setVisibility(View.VISIBLE);
+            else                                           menu.setVisibility(View.GONE);
         } else {
             itemView.setBackgroundColor(Color.TRANSPARENT);
             TextView textView = itemView.findViewById(R.id.textLabel);

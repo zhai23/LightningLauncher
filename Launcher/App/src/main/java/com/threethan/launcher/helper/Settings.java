@@ -63,7 +63,6 @@ public abstract class Settings {
     public static final String KEY_SEEN_LAUNCH_OUT_POPUP = "KEY_SEEN_LAUNCH_OUT_POPUP";
     public static final String KEY_SEEN_HIDDEN_GROUPS_POPUP = "KEY_SEEN_HIDDEN_GROUPS_POPUP";
     public static final String KEY_SEEN_WEBSITE_POPUP = "KEY_SEEN_WEBSITE_POPUP";
-    public static final String NEEDS_META_DATA = "NEEDS_META_DATA";
     public static final String KEY_VR_SET = "KEY_VR_SET";
     public static final String KEY_2D_SET = "KEY_2D_SET";
     public static final String KEY_SUPPORTED_SET = "KEY_SUPPORTED_SET";
