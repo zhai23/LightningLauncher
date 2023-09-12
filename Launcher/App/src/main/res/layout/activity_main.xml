@@ -143,6 +143,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:gravity="center"
+                android:maxLines="2"
                 android:singleLine="true"
                 android:text="@string/selection_hint_none"
                 android:textColor="@color/ef_colorTextPrimary"
@@ -153,7 +155,8 @@
             <ImageView
                 android:id="@+id/uninstallBulk"
                 android:layout_width="20dp"
-                android:layout_height="match_parent"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
                 android:background="@drawable/ic_uninstall"
                 android:tooltipText="@string/uninstall_bulk"
                 android:visibility="gone" />
@@ -162,32 +165,39 @@
         </LinearLayout>
 
 
-
         <TextView
             android:id="@+id/addWebsite"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_gravity="bottom|center_horizontal|end"
             android:layout_marginStart="5dp"
             android:layout_marginEnd="10dp"
+            android:layout_weight="0.3"
             android:background="@drawable/bkg_button"
+            android:ellipsize="end"
             android:gravity="center"
+            android:maxLines="2"
             android:paddingStart="15dp"
             android:paddingTop="10dp"
             android:paddingEnd="15dp"
             android:paddingBottom="10dp"
+            android:singleLine="false"
             android:text="@string/add_website"
             android:textColor="@color/ef_colorTextPrimary"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:tooltipText="@string/add_website_tip" />
 
         <TextView
             android:id="@+id/stopEditing"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_gravity="bottom|center_horizontal|end"
             android:layout_marginEnd="10dp"
+            android:layout_weight="0.3"
             android:background="@drawable/bkg_button"
+            android:ellipsize="end"
             android:gravity="center"
+            android:maxLines="2"
             android:paddingStart="15dp"
             android:paddingTop="10dp"
             android:paddingEnd="15dp"

@@ -67,6 +67,7 @@ public abstract class IconRepo {
                                 pkgName.split("//")[0] + "//" + pkgName.split("/")[2] : pkgName;
                         if (downloadIconFromUrl(String.format(url, urlName), iconFile)) {
                             activity.runOnUiThread(callback);
+                            break;
                         }
                     }
                 } catch (Exception e) {

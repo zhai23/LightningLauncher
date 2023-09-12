@@ -116,8 +116,10 @@ public class SettingsManager extends Settings {
         }
         // Sort into groups
         for (ApplicationInfo app : myApps) {
-            if (!App.isSupported(app, launcherActivity)) appGroupMap.put(app.packageName, GroupsAdapter.UNSUPPORTED_GROUP);
-            else {
+            if (!App.isSupported(app, launcherActivity))
+                appGroupMap.put(app.packageName, GroupsAdapter.UNSUPPORTED_GROUP);
+            else if (!appGroupMap.containsKey(app.packageName) ||
+                    appGroupMap.get(app.packageName) == GroupsAdapter.UNSUPPORTED_GROUP){
                 final boolean isVr = App.isVirtualReality(app, launcherActivity);
                 final boolean isWeb = App.isWebsite(app);
                 appGroupMap.put(app.packageName, getDefaultGroup(isVr, isWeb));
@@ -135,7 +137,6 @@ public class SettingsManager extends Settings {
                 }
             }
         }
-
 
         // Save changes to app list
         setAppGroupMap(appGroupMap);
