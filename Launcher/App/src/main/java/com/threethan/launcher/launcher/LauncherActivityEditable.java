@@ -34,16 +34,16 @@ public class LauncherActivityEditable extends LauncherActivity {
     @Override
     public void onBackPressed() {
         if (AppsAdapter.animateClose(this)) return;
-        if (settingsPage == null || !settingsPage.visible) setEditMode(!editMode);
+        if (!settingsVisible) setEditMode(!editMode);
     }
 
     // Startup
     @Override
-    protected void initView() {
-        super.initView();
-        View addWebsiteButton = m.findViewById(R.id.addWebsite);
+    protected void init() {
+        super.init();
+        View addWebsiteButton = rootView.findViewById(R.id.addWebsite);
         addWebsiteButton.setOnClickListener(view -> addWebsite(this));
-        View stopEditingButton = m.findViewById(R.id.stopEditing);
+        View stopEditingButton = rootView.findViewById(R.id.stopEditing);
         stopEditingButton.setOnClickListener(view -> setEditMode(false));
     }
 
@@ -58,16 +58,16 @@ public class LauncherActivityEditable extends LauncherActivity {
             updateTopBar();
         }
 
-        final View editFooter = m.findViewById(R.id.editFooter);
+        final View editFooter = rootView.findViewById(R.id.editFooter);
         if (editMode) {
             // Edit bar theming and actions
             editFooter.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(darkMode ? "#60000000" : "#70BeBeBe")));
 
-            final View selectionHint = m.findViewById(R.id.selectionHint);
-            final TextView selectionHintText = m.findViewById(R.id.selectionHintText);
-            final View uninstallButton = m.findViewById(R.id.uninstallBulk);
+            final View selectionHint = rootView.findViewById(R.id.selectionHint);
+            final TextView selectionHintText = rootView.findViewById(R.id.selectionHintText);
+            final View uninstallButton = rootView.findViewById(R.id.uninstallBulk);
 
-            for (TextView textView: new TextView[]{selectionHintText, m.findViewById(R.id.addWebsite), m.findViewById(R.id.stopEditing)}) {
+            for (TextView textView: new TextView[]{selectionHintText, rootView.findViewById(R.id.addWebsite), rootView.findViewById(R.id.stopEditing)}) {
                 textView.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(darkMode ? "#3a3a3c" : "#FFFFFF")));
                 textView.setTextColor(Color.parseColor(darkMode ? "#FFFFFF" : "#000000"));
             }
@@ -76,9 +76,9 @@ public class LauncherActivityEditable extends LauncherActivity {
 
             selectionHint.setOnClickListener((view) -> {
                 if (currentSelectedApps.isEmpty()) {
-                    final Adapter appAdapterIcon = ((GridView) m.findViewById(R.id.appsViewIcon)).getAdapter();
+                    final Adapter appAdapterIcon = ((GridView) rootView.findViewById(R.id.appsViewIcon)).getAdapter();
                     for (int i=0; i<appAdapterIcon.getCount(); i++) currentSelectedApps.add(((ApplicationInfo) appAdapterIcon.getItem(i)).packageName);
-                    final Adapter appsAdapterWide = ((GridView) m.findViewById(R.id.appsViewWide)).getAdapter();
+                    final Adapter appsAdapterWide = ((GridView) rootView.findViewById(R.id.appsViewWide)).getAdapter();
                     for (int i=0; i<appsAdapterWide.getCount(); i++) currentSelectedApps.add(((ApplicationInfo) appsAdapterWide.getItem(i)).packageName);
                     selectionHintText.setText(R.string.selection_hint_all);
                 } else {
@@ -86,13 +86,13 @@ public class LauncherActivityEditable extends LauncherActivity {
                     selectionHintText.setText(R.string.selection_hint_cleared);
                 }
                 selectionHint.postDelayed(this::updateSelectionHint, 2000);
-                m.findViewById(R.id.uninstallBulk).setVisibility(View.GONE);
+                rootView.findViewById(R.id.uninstallBulk).setVisibility(View.GONE);
             });
             selectionHintText.setOnClickListener((view) -> {
                 if (currentSelectedApps.isEmpty()) {
-                    final Adapter appAdapterIcon = ((GridView) m.findViewById(R.id.appsViewIcon)).getAdapter();
+                    final Adapter appAdapterIcon = ((GridView) rootView.findViewById(R.id.appsViewIcon)).getAdapter();
                     for (int i=0; i<appAdapterIcon.getCount(); i++) currentSelectedApps.add(((ApplicationInfo) appAdapterIcon.getItem(i)).packageName);
-                    final Adapter appsAdapterWide = ((GridView) m.findViewById(R.id.appsViewWide)).getAdapter();
+                    final Adapter appsAdapterWide = ((GridView) rootView.findViewById(R.id.appsViewWide)).getAdapter();
                     for (int i=0; i<appsAdapterWide.getCount(); i++) currentSelectedApps.add(((ApplicationInfo) appsAdapterWide.getItem(i)).packageName);
                     selectionHintText.setText(R.string.selection_hint_all);
                 } else {
@@ -100,7 +100,7 @@ public class LauncherActivityEditable extends LauncherActivity {
                     selectionHintText.setText(R.string.selection_hint_cleared);
                 }
                 selectionHint.postDelayed(this::updateSelectionHint, 2000);
-                m.findViewById(R.id.uninstallBulk).setVisibility(View.GONE);
+                rootView.findViewById(R.id.uninstallBulk).setVisibility(View.GONE);
             });
             uninstallButton.setOnClickListener(view -> {
                 int delay = 0;
@@ -135,12 +135,12 @@ public class LauncherActivityEditable extends LauncherActivity {
         if (!currentSelectedApps.isEmpty()) {
             GroupsAdapter groupsAdapter = (GroupsAdapter) groupPanelGridView.getAdapter();
             for (String app : currentSelectedApps) groupsAdapter.setGroup(app, group);
-            TextView selectionHintText = m.findViewById(R.id.selectionHintText);
+            TextView selectionHintText = rootView.findViewById(R.id.selectionHintText);
             selectionHintText.setText( currentSelectedApps.size()==1 ?
                     getString(R.string.selection_moved_single, group) :
                     getString(R.string.selection_moved_multiple, currentSelectedApps.size(), group)
             );
-            m.findViewById(R.id.uninstallBulk).setVisibility(View.GONE);
+            rootView.findViewById(R.id.uninstallBulk).setVisibility(View.GONE);
             selectionHintText.postDelayed(this::updateSelectionHint, 2000);
 
             currentSelectedApps.clear();
@@ -199,8 +199,8 @@ public class LauncherActivityEditable extends LauncherActivity {
 
     // Utility functions
     void updateSelectionHint() {
-        TextView selectionHintText = m.findViewById(R.id.selectionHintText);
-        final View uninstallButton = m.findViewById(R.id.uninstallBulk);
+        TextView selectionHintText = rootView.findViewById(R.id.selectionHintText);
+        final View uninstallButton = rootView.findViewById(R.id.uninstallBulk);
         uninstallButton.setVisibility(currentSelectedApps.isEmpty() ? View.GONE : View.VISIBLE);
 
         final int size = currentSelectedApps.size();
@@ -212,7 +212,6 @@ public class LauncherActivityEditable extends LauncherActivity {
     void addWebsite(Context context) {
         sharedPreferenceEditor.apply();
         AlertDialog dialog = Dialog.build(this, R.layout.dialog_new_website);
-        if (dialog == null) return;
 
         // Set group to (one of) selected
         String group;
@@ -263,7 +262,6 @@ public class LauncherActivityEditable extends LauncherActivity {
 
     void showWebsiteInfo() {
         AlertDialog subDialog = Dialog.build(this, R.layout.dialog_website_info);
-        if (subDialog == null) return;
         subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
             sharedPreferenceEditor.putBoolean(Settings.KEY_SEEN_WEBSITE_POPUP, true).apply();
             addWebsite(this);

@@ -15,7 +15,7 @@ import java.util.TimerTask;
 
 public abstract class Launch {
     public static boolean launchApp(LauncherActivity launcherActivity, ApplicationInfo app) {
-        Intent intent;
+        Intent intent = null;
 
         if (App.isWebsite(app)) {
             intent = new Intent(launcherActivity, (SettingsManager.getAppLaunchOut(app.packageName)
@@ -28,9 +28,9 @@ public abstract class Launch {
             if (App.isVirtualReality(app, launcherActivity)) {
                 intent = new Intent(Intent.ACTION_MAIN);
                 intent.setPackage(app.packageName);
-                if (intent.resolveActivity(pm) == null) intent = pm.getLaunchIntentForPackage(app.packageName);
-            } else intent = pm.getLaunchIntentForPackage(app.packageName);
-
+                if (intent.resolveActivity(pm) == null)
+                    intent = pm.getLaunchIntentForPackage(app.packageName);
+            }
         }
 
         if (intent == null) {
@@ -40,14 +40,15 @@ public abstract class Launch {
         }
 
         if (SettingsManager.getAppLaunchOut(app.packageName) || App.isVirtualReality(app, launcherActivity)) {
-            launcherActivity.finish();
-
             if (App.isWebsite(app))
                 try {
                     launcherActivity.wService.killActivities();
                 } catch (Exception ignored) {}
 
-            intent.setFlags( Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION );
+            launcherActivity.finish();
+            launcherActivity.finishAffinity();
+
+            intent.setFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
 
             final Intent finalIntent = intent;
             new Timer().schedule(new TimerTask() {

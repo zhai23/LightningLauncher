@@ -70,10 +70,8 @@ public class LauncherActivity extends Activity {
 
     // Settings
     public SettingsManager settingsManager;
-    public SettingsDialog settingsPage;
-    LauncherService mService;
-    boolean mBound = false;
-    boolean mBinding = false;
+    public boolean settingsVisible;
+    LauncherService launcherService;
 
     @Override
     protected void onStart() {
@@ -81,7 +79,6 @@ public class LauncherActivity extends Activity {
         // Bind to LocalService.
         Intent intent = new Intent(this, LauncherService.class);
         bindService(intent, launcherServiceConnection, Context.BIND_AUTO_CREATE);
-        mBinding = true;
 
         ViewGroup container = findViewById(R.id.container);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
@@ -97,49 +94,54 @@ public class LauncherActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_container);
     }
-    public View m;
+    public View rootView;
     private void justBound() {
-        final boolean firstStart = !mService.hasView(getId());
+        final boolean firstStart = !launcherService.hasView(getId());
+
+        ViewGroup containerView = findViewById(R.id.container);
 
         if (firstStart) {
             Log.v("LauncherStartup", "No existing activity found for ID "+getId());
-            m = mService.getView(this);
-            ViewGroup container = findViewById(R.id.container);
-            container.addView(m);
+            rootView = launcherService.getView(this);
+            Compat.checkCompatibilityUpdate(this);
+            containerView.addView(rootView);
             // Load Packages
-            initView();
-            recheckPackages();
+            init();
+            reloadPackages();
             // Load Interface
             refreshBackground();
             refresh();
-
-            AppsAdapter.shouldAnimateClose = false;
-            AppsAdapter.animateClose(this);
         } else {
-            Log.v("LauncherStartup", "Using existing activity for ID "+getId());
-            m = mService.getView(this);
-            ViewGroup container = findViewById(R.id.container);
-            container.addView(m);
+            Log.v("LauncherStartup", "Using existing view for ID "+getId());
+            rootView = launcherService.getView(this);
+            containerView.addView(rootView);
+            init(); // Set callbacks and variables
+            // Take ownership of adapters (which are currently referencing a dead activity)
+            ((AppsAdapter) appGridViewSquare.getAdapter()).setLauncherActivity(this);
+            ((AppsAdapter) appGridViewBanner.getAdapter()).setLauncherActivity(this);
+            ((GroupsAdapter) groupPanelGridView.getAdapter()).setLauncherActivity(this);
+            recheckPackages(); // Just check, don't force it
         }
+        AppsAdapter.shouldAnimateClose = false;
+        AppsAdapter.animateClose(this);
+
         postDelayed(() -> new Updater(this).checkForUpdate(), 1000);
     }
 
-    protected void initView() {
+    protected void init() {
         sharedPreferenceEditor = sharedPreferences.edit();
 
         settingsManager = SettingsManager.getInstance(this);
-        settingsPage = new SettingsDialog(this);
-        Compat.checkCompatibilityUpdate(this);
 
-        mainView = m.findViewById(R.id.mainLayout);
+        mainView = rootView.findViewById(R.id.mainLayout);
         mainView.addOnLayoutChangeListener((view, i, i1, i2, i3, i4, i5, i6, i7)
                 -> post(this::updateGridViewHeights));
-        appGridViewSquare = m.findViewById(R.id.appsViewIcon);
-        appGridViewBanner = m.findViewById(R.id.appsViewWide);
-        scrollView = m.findViewById(R.id.mainScrollView);
+        appGridViewSquare = rootView.findViewById(R.id.appsViewIcon);
+        appGridViewBanner = rootView.findViewById(R.id.appsViewWide);
+        scrollView = rootView.findViewById(R.id.mainScrollView);
         fadeView = scrollView;
-        backgroundImageView = m.findViewById(R.id.background);
-        groupPanelGridView = m.findViewById(R.id.groupsView);
+        backgroundImageView = rootView.findViewById(R.id.background);
+        groupPanelGridView = rootView.findViewById(R.id.groupsView);
 
         // Handle group click listener
         groupPanelGridView.setOnItemClickListener((parent, view, position, id) -> changeGroup(position));
@@ -168,9 +170,9 @@ public class LauncherActivity extends Activity {
         });
 
         // Set logo button
-        ImageView settingsImageView = m.findViewById(R.id.settingsIcon);
+        ImageView settingsImageView = rootView.findViewById(R.id.settingsIcon);
         settingsImageView.setOnClickListener(view -> {
-            if (!settingsPage.visible) settingsPage.showSettings();
+            if (!settingsVisible) SettingsDialog.showSettings(this);
         });
     }
 
@@ -185,33 +187,31 @@ public class LauncherActivity extends Activity {
 
     @Override
     protected void onDestroy() {
-        Log.v("LauncherActivity", "Activity is being destroyed, possibly temporary");
+        Log.v("LauncherActivity", "Activity is being destroyed" + (isFinishing() ? "Finishing" : "Not Finishing"));
+        unbindService(launcherServiceConnection);
         try {unbindService(browserServiceConnection);} catch (Exception ignored) {}
+        // For the GC & easier debugging
+        settingsManager = null;
         super.onDestroy();
     }
     @Override
     public void onBackPressed() {
         if (AppsAdapter.animateClose(this)) return;
-        if (!settingsPage.visible) settingsPage.showSettings();
+        if (!settingsVisible) SettingsDialog.showSettings(this);
     }
     @Override
     protected void onResume() {
         super.onResume();
-        if (!mBound) return;
-
-        AppsAdapter.animateClose(this);
-        recheckPackages();
-        BrowserService.bind(this, browserServiceConnection);
+        try {
+            AppsAdapter.animateClose(this);
+            recheckPackages();
+            BrowserService.bind(this, browserServiceConnection);
+        } catch (Exception ignored) {} // Will fail if service hasn't bound yet
     }
 
     public void reloadPackages() {
         if (sharedPreferenceEditor == null) return;
-
         sharedPreferenceEditor.apply();
-        // Load packages with metadata
-        // This is a bit slower than skipping metadata, but only needs to run on first run
-        // or when a new package is detected
-        Log.i("LightningLauncher", "(Re)Loading app list with meta data");
         sharedPreferenceEditor
                 .remove(Settings.KEY_VR_SET)
                 .remove(Settings.KEY_2D_SET);
@@ -261,8 +261,8 @@ public class LauncherActivity extends Activity {
     }
 
     void updateTopBar() {
-        BlurView blurView0 = m.findViewById(R.id.blurView0);
-        BlurView blurView1 = m.findViewById(R.id.blurView1);
+        BlurView blurView0 = rootView.findViewById(R.id.blurView0);
+        BlurView blurView1 = rootView.findViewById(R.id.blurView1);
 
         BrowserService.bind(this, browserServiceConnection);
 
@@ -278,7 +278,7 @@ public class LauncherActivity extends Activity {
         blurView0.setOverlayColor(Color.parseColor(darkMode ? "#4A000000" : "#50FFFFFF"));
         blurView1.setOverlayColor(Color.parseColor(darkMode ? "#4A000000" : "#50FFFFFF"));
 
-        ImageView settingsIcon = m.findViewById(R.id.settingsIcon);
+        ImageView settingsIcon = rootView.findViewById(R.id.settingsIcon);
         settingsIcon.setImageTintList(ColorStateList.valueOf(Color.parseColor(darkMode ? "#FFFFFF" : "#000000")));
 
         float blurRadiusDp = 15f;
@@ -346,7 +346,7 @@ public class LauncherActivity extends Activity {
 
         final FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         lp.setMargins(marginPx, Math.max(0,marginPx+(groupsEnabled ? dp(-23) : 0)), marginPx, marginPx+dp(20));
-        m.findViewById(R.id.mainScrollInterior).setLayoutParams(lp);
+        rootView.findViewById(R.id.mainScrollInterior).setLayoutParams(lp);
 
         boolean namesSquare = sharedPreferences.getBoolean(Settings.KEY_SHOW_NAMES_SQUARE, Settings.DEFAULT_SHOW_NAMES_SQUARE);
         boolean namesBanner = sharedPreferences.getBoolean(Settings.KEY_SHOW_NAMES_BANNER, Settings.DEFAULT_SHOW_NAMES_BANNER);
@@ -373,7 +373,7 @@ public class LauncherActivity extends Activity {
         prevViewWidth = mainView.getWidth();
 
         // Group rows and relevant values
-        View scrollInterior = m.findViewById(R.id.mainScrollInterior);
+        View scrollInterior = rootView.findViewById(R.id.mainScrollInterior);
         if (groupPanelGridView.getAdapter() != null && groupsEnabled) {
             final int group_columns = Math.min(groupPanelGridView.getAdapter().getCount(), prevViewWidth / 400);
             groupPanelGridView.setNumColumns(group_columns);
@@ -383,7 +383,7 @@ public class LauncherActivity extends Activity {
         } else {
             int marginPx = dp(sharedPreferences.getInt(Settings.KEY_MARGIN, Settings.DEFAULT_MARGIN));
             scrollInterior.setPadding(0, 0, 0, marginPx+getBottomBarHeight());
-            FadingTopScrollView scrollView = m.findViewById(R.id.mainScrollView);
+            FadingTopScrollView scrollView = rootView.findViewById(R.id.mainScrollView);
             scrollView.setFadingEdgeLength(0);
         }
 
@@ -470,7 +470,7 @@ public class LauncherActivity extends Activity {
                                        IBinder service) {
             // We've bound to LocalService, cast the IBinder and get LocalService instance.
             LauncherService.LocalBinder binder = (LauncherService.LocalBinder) service;
-            mService = binder.getService();
+            launcherService = binder.getService();
             justBound();
         }
 

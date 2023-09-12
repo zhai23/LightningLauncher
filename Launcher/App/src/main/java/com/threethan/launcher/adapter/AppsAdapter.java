@@ -41,7 +41,7 @@ public class AppsAdapter extends BaseAdapter{
     private static Drawable iconDrawable;
     private static File iconFile;
     private static String packageName;
-    private final LauncherActivity launcherActivity;
+    private LauncherActivity launcherActivity;
     private final List<ApplicationInfo> appList;
     private final boolean isEditMode;
     private final boolean showTextLabels;
@@ -53,6 +53,9 @@ public class AppsAdapter extends BaseAdapter{
 
         ArrayList<String> sortedSelectedGroups = settingsManager.getAppGroupsSorted(true);
         appList = settingsManager.getInstalledApps(context, sortedSelectedGroups, myApps);
+    }
+    public void setLauncherActivity(LauncherActivity val) {
+        launcherActivity = val;
     }
 
     private static class ViewHolder {
@@ -195,6 +198,7 @@ public class AppsAdapter extends BaseAdapter{
     private void showAppDetails(ApplicationInfo currentApp) {
         // Set View
         AlertDialog dialog = Dialog.build(launcherActivity, R.layout.dialog_app_details);
+        if (dialog == null) return;
         // Package Name
         ((TextView) dialog.findViewById(R.id.packageName)).setText(currentApp.packageName);
         // Info Action
@@ -259,7 +263,7 @@ public class AppsAdapter extends BaseAdapter{
                     AlertDialog subDialog = Dialog.build(launcherActivity, R.layout.dialog_launch_out_info);
                     subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
                         launcherActivity.sharedPreferenceEditor
-                                .putBoolean(Settings.KEY_SEEN_LAUNCH_OUT_POPUP, true);
+                                .putBoolean(Settings.KEY_SEEN_LAUNCH_OUT_POPUP, true).apply();
                         subDialog.dismiss();
                         SettingsManager.setAppLaunchOut(currentApp.packageName, true);
                         launchOut[0] = SettingsManager.getAppLaunchOut(currentApp.packageName);
@@ -306,7 +310,7 @@ public class AppsAdapter extends BaseAdapter{
         int w = clip.getWidth();
         int h = clip.getHeight();
 
-        View openAnim = launcherActivity.m.findViewById(R.id.openAnim);
+        View openAnim = launcherActivity.rootView.findViewById(R.id.openAnim);
         openAnim.setX(l[0]);
         openAnim.setY(l[1]);
         ViewGroup.LayoutParams layoutParams = new FrameLayout.LayoutParams(w, h);
@@ -321,7 +325,7 @@ public class AppsAdapter extends BaseAdapter{
         animIconBg.setImageDrawable(holder.imageView.getDrawable());
         animIconBg.setAlpha(1f);
 
-        View openProgress = launcherActivity.m.findViewById(R.id.openProgress);
+        View openProgress = launcherActivity.rootView.findViewById(R.id.openProgress);
         openProgress.setVisibility(View.VISIBLE);
         openProgress.setAlpha(0f);
 
@@ -341,10 +345,10 @@ public class AppsAdapter extends BaseAdapter{
     }
     public static boolean shouldAnimateClose = false;
     public static boolean animateClose(LauncherActivity launcherActivity) {
-        View openAnim = launcherActivity.m.findViewById(R.id.openAnim);
+        View openAnim = launcherActivity.rootView.findViewById(R.id.openAnim);
         ImageView animIcon = openAnim.findViewById(R.id.openIcon);
 
-        View openProgress = launcherActivity.m.findViewById(R.id.openProgress);
+        View openProgress = launcherActivity.rootView.findViewById(R.id.openProgress);
         openProgress.setVisibility(View.INVISIBLE);
 
         final boolean rv = (openAnim.getVisibility() == View.VISIBLE);

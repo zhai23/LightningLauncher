@@ -24,20 +24,15 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-public class SettingsDialog {
-    private final LauncherActivity a;
-    public SettingsDialog(LauncherActivity launcherActivity) {
-        a = launcherActivity;
-    }
-    public boolean visible = false;
-    private boolean clearedLabel;
-    private boolean clearedIcon;
-    private boolean clearedSort;
+public abstract class SettingsDialog {
+    private static boolean clearedLabel;
+    private static boolean clearedIcon;
+    private static boolean clearedSort;
     @SuppressLint("UseSwitchCompatOrMaterialCode")
-    public void showSettings() {
+    public static void showSettings(LauncherActivity a) {
+        a.settingsVisible = true;
         AlertDialog dialog = Dialog.build(a, R.layout.dialog_settings);
-        visible = true;
-        dialog.setOnDismissListener(dialogInterface -> visible = false);
+        dialog.setOnDismissListener(dialogInterface -> a.settingsVisible = false);
 
         // Functional
         dialog.findViewById(R.id.shortcutServiceButton).setOnClickListener(view -> {
@@ -177,7 +172,8 @@ public class SettingsDialog {
                 AlertDialog subDialog = Dialog.build(a, R.layout.dialog_hide_groups_info);
                 subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
                     final boolean newValue = !Settings.DEFAULT_GROUPS_ENABLED;
-                    a.sharedPreferenceEditor.putBoolean(Settings.KEY_SEEN_HIDDEN_GROUPS_POPUP, true)
+                    a.sharedPreferenceEditor
+                            .putBoolean(Settings.KEY_SEEN_HIDDEN_GROUPS_POPUP, true)
                             .putBoolean(Settings.KEY_GROUPS_ENABLED, newValue)
                             .apply();
                     groups.setChecked(!Settings.DEFAULT_GROUPS_ENABLED);

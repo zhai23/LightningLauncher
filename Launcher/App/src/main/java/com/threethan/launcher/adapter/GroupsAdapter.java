@@ -31,7 +31,7 @@ public class GroupsAdapter extends BaseAdapter {
     public static final int MAX_GROUPS = 12;
     public static final String HIDDEN_GROUP = "HIDDEN!";
     public static final String UNSUPPORTED_GROUP = "UNSUPPORTED!";
-    private final LauncherActivity launcherActivity;
+    private LauncherActivity launcherActivity;
     private final List<String> appGroups;
     private final Set<String> selectedGroups;
     private final SettingsManager settingsManager;
@@ -52,6 +52,9 @@ public class GroupsAdapter extends BaseAdapter {
         if (editMode && appGroups.size() < MAX_GROUPS) appGroups.add("+ " + launcherActivity.getString(R.string.add_group));
 
         selectedGroups = settings.getSelectedGroups();
+    }
+    public void setLauncherActivity(LauncherActivity val) {
+        launcherActivity = val;
     }
 
     public int getCount() {

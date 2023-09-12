@@ -24,7 +24,7 @@ public abstract class Compat {
     public static synchronized void checkCompatibilityUpdate(LauncherActivity launcherActivity) {
         if (DEBUG_COMPATIBILITY) Log.e("COMPATIBILITY", "CRITICAL WARNING: DEBUG_COMPATIBILITY IS ON");
         SharedPreferences sharedPreferences = launcherActivity.sharedPreferences;
-        SharedPreferences.Editor sharedPreferenceEditor = launcherActivity.sharedPreferenceEditor;
+        SharedPreferences.Editor sharedPreferenceEditor = launcherActivity.sharedPreferences.edit();
         int storedVersion = DEBUG_COMPATIBILITY ? 0 : sharedPreferences.getInt(Compat.KEY_COMPATIBILITY_VERSION, -1);
         if (storedVersion == -1) {
             if (sharedPreferences.getInt(Settings.KEY_BACKGROUND, -1) == -1) return; // return if fresh install
@@ -74,6 +74,7 @@ public abstract class Compat {
         Compat.clearIconCache(launcherActivity);
         // Store the updated version
         sharedPreferenceEditor.putInt(Compat.KEY_COMPATIBILITY_VERSION, Compat.CURRENT_COMPATIBILITY_VERSION);
+        sharedPreferenceEditor.apply();
     }
 
     public static void renameGroup(LauncherActivity launcherActivity, String from, String to) {
