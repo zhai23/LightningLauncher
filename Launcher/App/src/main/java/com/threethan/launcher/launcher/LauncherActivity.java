@@ -3,9 +3,11 @@ package com.threethan.launcher.launcher;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
@@ -74,6 +76,14 @@ public class LauncherActivity extends Activity {
     public boolean settingsVisible;
     public LauncherService launcherService;
 
+    public static String FINISH_ACTION = "com.threethan.launcher.FINISH";
+    protected BroadcastReceiver finishReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            finishAndRemoveTask();
+        }
+    };
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -95,6 +105,7 @@ public class LauncherActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_container);
+        registerReceiver(finishReceiver, new IntentFilter(FINISH_ACTION));
     }
     public View rootView;
     private void justBound() {
@@ -195,6 +206,7 @@ public class LauncherActivity extends Activity {
         try {unbindService(browserServiceConnection);} catch (Exception ignored) {}
         // For the GC & easier debugging
         settingsManager = null;
+        unregisterReceiver(finishReceiver);
         super.onDestroy();
     }
     @Override

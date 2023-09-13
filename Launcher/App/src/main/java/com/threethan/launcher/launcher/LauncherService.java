@@ -57,5 +57,7 @@ public class LauncherService extends Service {
             } catch (Exception ignored) {}
         }
         activities.clear();
+        Intent finishIntent = new Intent(LauncherActivity.FINISH_ACTION);
+        sendBroadcast(finishIntent);
     }
 }

@@ -30,7 +30,7 @@ public abstract class Launch {
                 intent.setPackage(app.packageName);
                 if (intent.resolveActivity(pm) == null)
                     intent = pm.getLaunchIntentForPackage(app.packageName);
-            }
+            } else intent = pm.getLaunchIntentForPackage(app.packageName);
         }
 
         if (intent == null) {
