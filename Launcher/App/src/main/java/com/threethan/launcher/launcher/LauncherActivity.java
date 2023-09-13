@@ -1,6 +1,7 @@
 package com.threethan.launcher.launcher;
 
 import android.animation.ValueAnimator;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -71,7 +72,7 @@ public class LauncherActivity extends Activity {
     // Settings
     public SettingsManager settingsManager;
     public boolean settingsVisible;
-    LauncherService launcherService;
+    public LauncherService launcherService;
 
     @Override
     protected void onStart() {
@@ -89,6 +90,7 @@ public class LauncherActivity extends Activity {
         container.setBackgroundColor(backgroundColor);
     }
 
+    @SuppressLint("UnspecifiedRegisterReceiverFlag") // Can't be fixed on this android API
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,12 +117,13 @@ public class LauncherActivity extends Activity {
             Log.v("LauncherStartup", "Using existing view for ID "+getId());
             rootView = launcherService.getView(this);
             containerView.addView(rootView);
-            init(); // Set callbacks and variables
+            init();// Set callbacks and variables
             // Take ownership of adapters (which are currently referencing a dead activity)
             ((AppsAdapter) appGridViewSquare.getAdapter()).setLauncherActivity(this);
             ((AppsAdapter) appGridViewBanner.getAdapter()).setLauncherActivity(this);
             ((GroupsAdapter) groupPanelGridView.getAdapter()).setLauncherActivity(this);
             recheckPackages(); // Just check, don't force it
+            post(this::updateTopBar); // Fix visual bugs with the blur views
         }
         AppsAdapter.shouldAnimateClose = false;
         AppsAdapter.animateClose(this);

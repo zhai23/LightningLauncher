@@ -45,8 +45,12 @@ public abstract class Launch {
                     launcherActivity.wService.killActivities();
                 } catch (Exception ignored) {}
 
-            launcherActivity.finish();
-            launcherActivity.finishAffinity();
+            try {
+                launcherActivity.launcherService.finishAllActivities();
+            } catch (Exception ignored) {}
+            try {
+                launcherActivity.finishAndRemoveTask();
+            } catch (Exception ignored) {}
 
             intent.setFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
 

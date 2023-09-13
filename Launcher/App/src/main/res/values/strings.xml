@@ -155,6 +155,7 @@
     <string name="preset_spotify">open.spotify.com</string>
     <string name="preset_tidal">listen.tidal.com</string>
 
+    <string name="notification_title_n">LightningLauncher: No Websites Running</string>
     <string name="notification_title_s">LightningLauncher: Running a Website</string>
     <string name="notification_title_p">LightningLauncher: Running %1$d Websites</string>
     <string name="notification_content">This notification keeps your websites\' background audio running smoothly.</string>

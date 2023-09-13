@@ -177,8 +177,9 @@ public class BrowserService extends Service {
                 PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_MUTABLE);
         final int n = webViewByBaseUrl.size();
         return new Notification.Builder(this)
-                .setContentTitle( n == 1 ? getString(R.string.notification_title_s) :
-                        getString(R.string.notification_title_p, n) )
+                .setContentTitle( n == 0 ? getString(R.string.notification_title_n) :
+                        (n == 1 ? getString(R.string.notification_title_s) :
+                        getString(R.string.notification_title_p, n) ))
                 .setContentText(getText(R.string.notification_content))
                 .setSmallIcon(R.drawable.ic_shortcut)
                 .setContentIntent(pendingIntent)

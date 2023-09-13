@@ -115,7 +115,7 @@ public class Updater {
         AlertDialog skipAlertDialog = skipDialogBuilder.create();
         skipAlertDialog.show();
     }
-    @SuppressLint("UnspecifiedRegisterReceiverFlag") // Warning is only applies to old API fallback
+    @SuppressLint("UnspecifiedRegisterReceiverFlag") // Can't be fixed on this android API
     public void downloadUpdate(String versionTag) {
         DownloadManager.Request request1 = new DownloadManager.Request(Uri.parse(String.format(TEMPLATE_URL, versionTag)));
         request1.setDescription("Downloading Update");   //appears the same in Notification bar while downloading
@@ -134,10 +134,7 @@ public class Updater {
         updateAlertDialog.show();
 
         latestTag = versionTag;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-            activity.registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE), Context.RECEIVER_NOT_EXPORTED);
-        else
-            activity.registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+        activity.registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
     }
     String latestTag;
     AlertDialog updateAlertDialog;
