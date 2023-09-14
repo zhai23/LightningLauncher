@@ -173,14 +173,14 @@ public class LauncherActivityEditable extends LauncherActivity {
             return true;
         }
     }
+
     @Override
-    public boolean isSelected(String app) { return currentSelectedApps.contains(app); }
-    @Override
-    protected int getBottomBarHeight() { return editMode ? dp(60) : 0; }
-    @Override
-    public boolean isEditing() { return editMode; }
-    @Override
-    public boolean canEdit() { return true; }
+    protected void startWithExistingActivity() {
+        super.startWithExistingActivity();
+        // Load edit things if loading from an existing activity
+        final View editFooter = rootView.findViewById(R.id.editFooter);
+        if (editFooter.getVisibility() == View.VISIBLE) refresh();
+    }
 
     @Override
     public void refreshAppDisplayLists() {
@@ -196,6 +196,15 @@ public class LauncherActivityEditable extends LauncherActivity {
         } catch (ConcurrentModificationException ignored) {}
         updateSelectionHint();
     }
+
+    @Override
+    public boolean isSelected(String app) { return currentSelectedApps.contains(app); }
+    @Override
+    protected int getBottomBarHeight() { return editMode ? dp(60) : 0; }
+    @Override
+    public boolean isEditing() { return editMode; }
+    @Override
+    public boolean canEdit() { return true; }
 
     // Utility functions
     void updateSelectionHint() {

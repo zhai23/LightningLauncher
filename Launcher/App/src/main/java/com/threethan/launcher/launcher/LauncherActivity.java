@@ -109,37 +109,53 @@ public class LauncherActivity extends Activity {
     }
     public View rootView;
     private void onBound() {
-        final boolean firstStart = !launcherService.hasView(getId());
+        final boolean hasView = launcherService.hasView(getId());
+
+        if (hasView) startWithExistingActivity();
+        else         startWithNewActivity();
+
+        AppsAdapter.shouldAnimateClose = false;
+        AppsAdapter.animateClose(this);
+
+        postDelayed(() -> new Updater(this).checkForUpdate(), 1000);
+    }
+    protected void startWithNewActivity() {
+        Log.v("LauncherStartup", "No existing activity found for ID "+getId());
+        rootView = launcherService.getNewView(this);
+        Compat.checkCompatibilityUpdate(this);
 
         ViewGroup containerView = findViewById(R.id.container);
+        containerView.addView(rootView);
 
-        if (firstStart) {
-            Log.v("LauncherStartup", "No existing activity found for ID "+getId());
-            rootView = launcherService.getView(this);
-            Compat.checkCompatibilityUpdate(this);
-            containerView.addView(rootView);
-            // Load Packages
+        init();
+        reloadPackages();
+        // Load Interface
+        refreshBackground();
+        refresh();
+    }
+    protected void startWithExistingActivity() {
+        Log.v("LauncherStartup", "Using existing view for ID "+getId());
+        rootView = launcherService.getExistingView(this);
+
+        ViewGroup containerView = findViewById(R.id.container);
+        containerView.addView(rootView);
+
+        try {
             init();
-            reloadPackages();
-            // Load Interface
-            refreshBackground();
-            refresh();
-        } else {
-            Log.v("LauncherStartup", "Using existing view for ID "+getId());
-            rootView = launcherService.getView(this);
-            containerView.addView(rootView);
-            init();// Set callbacks and variables
             // Take ownership of adapters (which are currently referencing a dead activity)
             ((AppsAdapter) appGridViewSquare.getAdapter()).setLauncherActivity(this);
             ((AppsAdapter) appGridViewBanner.getAdapter()).setLauncherActivity(this);
             ((GroupsAdapter) groupPanelGridView.getAdapter()).setLauncherActivity(this);
             recheckPackages(); // Just check, don't force it
-            post(this::updateTopBar); // Fix visual bugs with the blur views
-        }
-        AppsAdapter.shouldAnimateClose = false;
-        AppsAdapter.animateClose(this);
 
-        postDelayed(() -> new Updater(this).checkForUpdate(), 1000);
+            groupsEnabled = sharedPreferences.getBoolean(Settings.KEY_GROUPS_ENABLED, Settings.DEFAULT_GROUPS_ENABLED);
+            post(this::updateTopBar); // Fix visual bugs with the blur views
+        } catch (Exception e) {
+            // Attempt to work around problems with backgrounded activities
+            Log.e("LauncherStartup", "Crashed due to exception while re-initiating existing activity");
+            e.printStackTrace();
+            Log.e("LauncherStartup", "Attempting to start with a new activity...");
+        }
     }
 
     protected void init() {
@@ -282,7 +298,6 @@ public class LauncherActivity extends Activity {
 
         BrowserService.bind(this, browserServiceConnection);
 
-        groupsEnabled = sharedPreferences.getBoolean(Settings.KEY_GROUPS_ENABLED, Settings.DEFAULT_GROUPS_ENABLED);
         if (!groupsEnabled) {
             blurView0.setVisibility(View.GONE);
             blurView1.setVisibility(View.GONE);

@@ -26,21 +26,21 @@ public class LauncherService extends Service {
     public IBinder onBind(Intent intent) {
         return binder;
     }
-    public View getView(LauncherActivity activity) {
-        View view;
-        final String id = activity.getId();
-        if (hasView(id)) {
-            view = viewById.get(id);
-
-            assert view != null;
-            ViewGroup parent = (ViewGroup) view.getParent();
-            if (parent != null) parent.removeView(view);
-        } else {
-            view = View.inflate(activity, R.layout.activity_main, null);
-            viewById.put(id, view);
-        }
+    public View getNewView(LauncherActivity activity) {
+        View view = View.inflate(activity, R.layout.activity_main, null);
+        viewById.put(activity.getId(), view);
         return view;
     }
+    public View getExistingView(LauncherActivity activity) {
+        View view = viewById.get(activity.getId());
+
+        assert view != null;
+        ViewGroup parent = (ViewGroup) view.getParent();
+        if (parent != null) parent.removeView(view);
+
+        return view;
+    }
+
     public boolean hasView(String id) {
         return viewById.containsKey(id);
     }
