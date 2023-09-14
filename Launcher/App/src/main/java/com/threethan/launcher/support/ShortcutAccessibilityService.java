@@ -18,6 +18,9 @@ public class ShortcutAccessibilityService extends AccessibilityService {
             String eventText = event.getText().toString();
             String exploreAccessibilityEventName = getResources().getString(R.string.accessibility_event_name);
             if (exploreAccessibilityEventName.compareTo(eventText) == 0) {
+                Intent finishIntent = new Intent(LauncherActivityEditable.FINISH_ACTION);
+                sendBroadcast(finishIntent);
+
                 Intent launchIntent = new Intent(this, LauncherActivityEditable.class);
                 launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
 
