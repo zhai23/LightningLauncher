@@ -20,6 +20,7 @@ import com.threethan.launcher.launcher.LauncherActivity;
 import com.threethan.launcher.lib.StringLib;
 import com.threethan.launcher.support.SettingsManager;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -46,7 +47,7 @@ public class GroupsAdapter extends BaseAdapter {
         settingsManager = SettingsManager.getInstance(activity);
 
         SettingsManager settings = SettingsManager.getInstance(launcherActivity);
-        appGroups = settings.getAppGroupsSorted(false);
+        appGroups = Collections.synchronizedList(settings.getAppGroupsSorted(false));
 
         if (!editMode) appGroups.remove(GroupsAdapter.HIDDEN_GROUP);
         if (editMode && appGroups.size() < MAX_GROUPS) appGroups.add("+ " + launcherActivity.getString(R.string.add_group));

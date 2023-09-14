@@ -1,6 +1,5 @@
 package com.threethan.launcher.launcher;
 
-import android.app.Activity;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
@@ -12,14 +11,11 @@ import androidx.annotation.Nullable;
 
 import com.threethan.launcher.R;
 
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class LauncherService extends Service {
     private final IBinder binder = new LocalBinder();
-    private final static HashMap<String, View> viewById = new HashMap<>();
-    private final static HashSet<Activity> activities = new HashSet<>(); // Will include dead activities!
-
+    private final static ConcurrentHashMap<String, View> viewById = new ConcurrentHashMap<>();
     public class LocalBinder extends Binder {
         public LauncherService getService() {
             return LauncherService.this;
@@ -43,7 +39,6 @@ public class LauncherService extends Service {
             view = View.inflate(activity, R.layout.activity_main, null);
             viewById.put(id, view);
         }
-        activities.add(activity);
         return view;
     }
     public boolean hasView(String id) {
@@ -51,12 +46,6 @@ public class LauncherService extends Service {
     }
 
     public void finishAllActivities() {
-        for (Activity activity : activities) {
-            try {
-                activity.finishAndRemoveTask();
-            } catch (Exception ignored) {}
-        }
-        activities.clear();
         Intent finishIntent = new Intent(LauncherActivity.FINISH_ACTION);
         sendBroadcast(finishIntent);
     }

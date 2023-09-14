@@ -14,6 +14,7 @@ import com.threethan.launcher.lib.StringLib;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class SettingsManager extends Settings {
     public static List<Integer> getVersionsWithBackgroundChanges() {
@@ -35,10 +37,10 @@ public class SettingsManager extends Settings {
     private static SharedPreferences sharedPreferences = null;
     private static SharedPreferences.Editor sharedPreferenceEditor = null;
     private static WeakReference<LauncherActivity> launcherActivityRef = null;
-    private static Map<String, String> appGroupMap = new HashMap<>();
-    private static Set<String> appGroupsSet = new HashSet<>();
-    private static Set<String> selectedGroupsSet = new HashSet<>();
-    private static Set<String> appsToLaunchOut = new HashSet<>();
+    private static ConcurrentHashMap<String, String> appGroupMap = new ConcurrentHashMap<>();
+    private static Set<String> appGroupsSet = Collections.synchronizedSet(new HashSet<>());
+    private static Set<String> selectedGroupsSet = Collections.synchronizedSet(new HashSet<>());
+    private static Set<String> appsToLaunchOut = Collections.synchronizedSet(new HashSet<>());
     private static SettingsManager instance;
 
     private SettingsManager(LauncherActivity activity) {
@@ -107,7 +109,7 @@ public class SettingsManager extends Settings {
     }
 
     public static void setAppGroupMap(Map<String, String> value) {
-        appGroupMap = value;
+        appGroupMap = new ConcurrentHashMap<>(value);
         queueStoreValues();
     }
 
@@ -179,7 +181,7 @@ public class SettingsManager extends Settings {
     }
 
     public void setAppGroups(Set<String> appGroups) {
-        appGroupsSet = appGroups;
+        appGroupsSet = Collections.synchronizedSet(appGroups);
         queueStoreValues();
     }
 
@@ -189,7 +191,7 @@ public class SettingsManager extends Settings {
     }
 
     public void setSelectedGroups(Set<String> appGroups) {
-        selectedGroupsSet = appGroups;
+        selectedGroupsSet = Collections.synchronizedSet(appGroups);
         queueStoreValues();
     }
 
@@ -245,9 +247,12 @@ public class SettingsManager extends Settings {
             Set<String> defaultGroupsSet = new HashSet<>();
             defaultGroupsSet.add(DEFAULT_GROUP_VR);
             defaultGroupsSet.add(DEFAULT_GROUP_2D);
-            appGroupsSet = sharedPreferences.getStringSet(KEY_GROUPS, defaultGroupsSet);
-            selectedGroupsSet = sharedPreferences.getStringSet(KEY_SELECTED_GROUPS, defaultGroupsSet);
-            appsToLaunchOut = sharedPreferences.getStringSet(KEY_LAUNCH_OUT, defaultGroupsSet);
+            appGroupsSet.clear();
+            appGroupsSet.addAll(sharedPreferences.getStringSet(KEY_GROUPS, defaultGroupsSet));
+            selectedGroupsSet.clear();
+            selectedGroupsSet.addAll(sharedPreferences.getStringSet(KEY_SELECTED_GROUPS, defaultGroupsSet));
+            appsToLaunchOut.clear();
+            appsToLaunchOut.addAll(sharedPreferences.getStringSet(KEY_LAUNCH_OUT, defaultGroupsSet));
 
             appGroupMap.clear();
 

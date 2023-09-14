@@ -10,10 +10,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class BrowserWebView extends WebView {
-    public List<String> history = new ArrayList<>();
+    public List<String> history = Collections.synchronizedList(new ArrayList<>());
     public int historyIndex = 0;
     protected BrowserWebChromeClient myClient;
     public BrowserWebView(@NonNull Context context) {

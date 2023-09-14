@@ -14,14 +14,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 public abstract class App {
-    static Set<String> setVr = new HashSet<>();
-    static Set<String> set2d = new HashSet<>();
+    static Set<String> setVr = Collections.synchronizedSet(new HashSet<>());
+    static Set<String> set2d = Collections.synchronizedSet(new HashSet<>());
     public static boolean isVirtualReality(ApplicationInfo applicationInfo, LauncherActivity launcherActivity) {
         final SharedPreferences sharedPreferences = launcherActivity.sharedPreferences;
         final SharedPreferences.Editor sharedPreferenceEditor = launcherActivity.sharedPreferenceEditor;
         if (setVr.isEmpty()) {
-            setVr = sharedPreferences.getStringSet(Settings.KEY_VR_SET, setVr);
-            set2d = sharedPreferences.getStringSet(Settings.KEY_2D_SET, set2d);
+            setVr.addAll(sharedPreferences.getStringSet(Settings.KEY_VR_SET, new HashSet<>()));
+            set2d.addAll(sharedPreferences.getStringSet(Settings.KEY_2D_SET, new HashSet<>()));
         }
         if (setVr.contains(applicationInfo.packageName)) return true;
         if (set2d.contains(applicationInfo.packageName)) return false;
@@ -49,14 +49,14 @@ public abstract class App {
         return false;
     }
 
-    static HashSet<String> setSupported = new HashSet<>();
-    static HashSet<String> setUnsupported = new HashSet<>();
+    static Set<String> setSupported = Collections.synchronizedSet(new HashSet<>());
+    static Set<String> setUnsupported = Collections.synchronizedSet(new HashSet<>());
     public static boolean isSupported(ApplicationInfo app, LauncherActivity launcherActivity) {
         final SharedPreferences sharedPreferences = launcherActivity.sharedPreferences;
         final SharedPreferences.Editor sharedPreferenceEditor = launcherActivity.sharedPreferenceEditor;
         if (setSupported.isEmpty()) {
-            sharedPreferences.getStringSet(Settings.KEY_SUPPORTED_SET, setSupported);
-            sharedPreferences.getStringSet(Settings.KEY_UNSUPPORTED_SET, setUnsupported);
+            setSupported.addAll(sharedPreferences.getStringSet(Settings.KEY_SUPPORTED_SET, new HashSet<>()));
+            setUnsupported.addAll(sharedPreferences.getStringSet(Settings.KEY_UNSUPPORTED_SET, new HashSet<>()));
             setUnsupported.add(launcherActivity.getPackageName());
             setSupported.addAll(sharedPreferences.getStringSet(Settings.KEY_WEBSITE_LIST, Collections.emptySet()));
         }

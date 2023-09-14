@@ -35,6 +35,7 @@ import com.threethan.launcher.support.SettingsManager;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class AppsAdapter extends BaseAdapter{
@@ -52,7 +53,7 @@ public class AppsAdapter extends BaseAdapter{
         SettingsManager settingsManager = SettingsManager.getInstance(launcherActivity);
 
         ArrayList<String> sortedSelectedGroups = settingsManager.getAppGroupsSorted(true);
-        appList = settingsManager.getInstalledApps(context, sortedSelectedGroups, myApps);
+        appList = Collections.synchronizedList(settingsManager.getInstalledApps(context, sortedSelectedGroups, myApps));
     }
     public void setLauncherActivity(LauncherActivity val) {
         launcherActivity = val;

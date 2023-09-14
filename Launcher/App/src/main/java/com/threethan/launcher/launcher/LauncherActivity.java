@@ -108,7 +108,7 @@ public class LauncherActivity extends Activity {
         registerReceiver(finishReceiver, new IntentFilter(FINISH_ACTION));
     }
     public View rootView;
-    private void justBound() {
+    private void onBound() {
         final boolean firstStart = !launcherService.hasView(getId());
 
         ViewGroup containerView = findViewById(R.id.container);
@@ -233,6 +233,7 @@ public class LauncherActivity extends Activity {
         Platform.clearPackageLists();
         PackageManager packageManager = getPackageManager();
         installedApps = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);
+        installedApps = Collections.synchronizedList(installedApps);
         refreshAppDisplayLists();
     }
 
@@ -435,8 +436,8 @@ public class LauncherActivity extends Activity {
     public void refreshAppDisplayLists() {
         sharedPreferenceEditor.apply();
 
-        appListBanner = new ArrayList<>();
-        appListSquare = new ArrayList<>();
+        appListBanner = Collections.synchronizedList(new ArrayList<>());
+        appListSquare = Collections.synchronizedList(new ArrayList<>());
 
         for (ApplicationInfo app: installedApps) {
             if (App.isBanner(app, this)) appListBanner.add(app);
@@ -486,7 +487,7 @@ public class LauncherActivity extends Activity {
             // We've bound to LocalService, cast the IBinder and get LocalService instance.
             LauncherService.LocalBinder binder = (LauncherService.LocalBinder) service;
             launcherService = binder.getService();
-            justBound();
+            onBound();
         }
 
         @Override
