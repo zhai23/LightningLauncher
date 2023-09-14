@@ -33,12 +33,12 @@ public class LauncherService extends Service {
     }
     public View getNewView(LauncherActivity activity) {
         View view = View.inflate(activity, R.layout.activity_main, null);
-        viewByIndex.put(activities.size()-1, view);
+        viewByIndex.put(0, view);
         activities.add(activity);
         return view;
     }
-    public View getExistingView(LauncherActivity activity) {
-        View view = viewByIndex.get(activities.size()-1);
+    public View getExistingView(LauncherActivity activity) {-m
+        View view = viewByIndex.get(0);
 
         assert view != null;
         ViewGroup parent = (ViewGroup) view.getParent();
