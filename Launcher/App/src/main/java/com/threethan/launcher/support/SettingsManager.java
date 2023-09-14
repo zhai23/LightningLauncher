@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.provider.ContactsContract;
 import android.util.Log;
 
 import com.threethan.launcher.helper.App;
@@ -187,7 +188,13 @@ public class SettingsManager extends Settings {
 
     public Set<String> getSelectedGroups() {
         if (selectedGroupsSet.isEmpty()) readValues();
-        return selectedGroupsSet;
+        if (launcherActivityRef.get().groupsEnabled || launcherActivityRef.get().isEditing())
+            return selectedGroupsSet;
+        else {
+            Set<String> retSet = new HashSet<>(appGroupsSet);
+            retSet.remove(GroupsAdapter.HIDDEN_GROUP);
+            return retSet;
+        }
     }
 
     public void setSelectedGroups(Set<String> appGroups) {
@@ -197,7 +204,7 @@ public class SettingsManager extends Settings {
 
     public ArrayList<String> getAppGroupsSorted(boolean selected) {
         if ((selected ? selectedGroupsSet : appGroupsSet).isEmpty()) readValues();
-        ArrayList<String> sortedGroupMap = new ArrayList<>(selected ? selectedGroupsSet : appGroupsSet);
+        ArrayList<String> sortedGroupMap = new ArrayList<>(selected ? getSelectedGroups() : getAppGroups());
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
             sortedGroupMap.sort(Comparator.comparing(StringLib::forSort));
@@ -264,6 +271,7 @@ public class SettingsManager extends Settings {
                 for (String app : appListSet) appGroupMap.put(app, group);
             }
             appsToLaunchOut = sharedPreferences.getStringSet(KEY_LAUNCH_OUT, defaultGroupsSet);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -276,8 +284,8 @@ public class SettingsManager extends Settings {
         try {
             SharedPreferences.Editor editor = sharedPreferenceEditor;
             editor.putStringSet(KEY_GROUPS, appGroupsSet);
-            editor.putStringSet(KEY_SELECTED_GROUPS, selectedGroupsSet);
             editor.putStringSet(KEY_LAUNCH_OUT, appsToLaunchOut);
+            editor.putStringSet(KEY_SELECTED_GROUPS, selectedGroupsSet);
 
             Map<String, Set<String>> appListSetMap = new HashMap<>();
             for (String group : appGroupsSet) appListSetMap.put(group, new HashSet<>());
