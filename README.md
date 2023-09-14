@@ -55,7 +55,7 @@ Now you can use the Messenger icon on the dock to open LightningLauncher from an
 
 ## Similar Projects
 
-[PiLauncherNG]([https://github.com/Veticia/PiLauncherNext](https://github.com/ValentineShilov/PiLauncherNG) is a more faithful fork of the original PiLauncher
+[PiLauncherNG](https://github.com/ValentineShilov/PiLauncherNG) is a more faithful fork of the original PiLauncher
 
 [DreamGrid](https://github.com/basti564/DreamGrid) no longer works properly on Oculus devices, but may be better for PicoVR
 
