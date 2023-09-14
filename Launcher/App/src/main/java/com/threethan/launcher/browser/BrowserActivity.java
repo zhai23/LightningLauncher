@@ -262,7 +262,7 @@ public class BrowserActivity extends Activity {
         super.onDestroy();
     }
 
-    private void justBound() {
+    private void onBound() {
         w = wService.getWebView(this);
         LinearLayout container = findViewById(R.id.container);
         container.addView(w);
@@ -316,7 +316,7 @@ public class BrowserActivity extends Activity {
             // We've bound to LocalService, cast the IBinder and get LocalService instance.
             BrowserService.LocalBinder binder = (BrowserService.LocalBinder) service;
             wService = binder.getService();
-            justBound();
+            onBound();
         }
 
         @Override

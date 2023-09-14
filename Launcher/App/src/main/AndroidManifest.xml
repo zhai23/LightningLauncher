@@ -35,11 +35,10 @@
 
         <!-- Main activity, called by the launcher & shortcut apk -->
         <activity
-            android:name=".launcher.LauncherActivityDefault"
+            android:name=".launcher.LauncherActivityEditable"
             android:screenOrientation="unspecified"
             android:configChanges="density|keyboard|keyboardHidden|navigation|orientation|screenLayout|screenSize|uiMode"
             android:exported="true"
-            android:launchMode="singleInstance"
             android:resizeableActivity="true">
 
             <layout android:defaultWidth="706dp" android:defaultHeight="442dp" android:gravity="top|end" />
@@ -80,7 +79,6 @@
             <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
             <meta-data android:name="com.oculus.vrshell.free_resizing_limits" android:value="300,2000,500,1000"/>
         </activity>
-
         <!-- Library Shortcut Accessibility Service -->
         <service
             android:name=".support.ShortcutAccessibilityService"

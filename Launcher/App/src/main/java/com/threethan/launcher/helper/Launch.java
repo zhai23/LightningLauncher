@@ -15,8 +15,7 @@ import java.util.TimerTask;
 
 public abstract class Launch {
     public static boolean launchApp(LauncherActivity launcherActivity, ApplicationInfo app) {
-        Intent intent = null;
-
+        Intent intent;
         if (App.isWebsite(app)) {
             intent = new Intent(launcherActivity, (SettingsManager.getAppLaunchOut(app.packageName)
                     ? BrowserActivitySeparate.class : BrowserActivity.class));
@@ -34,25 +33,31 @@ public abstract class Launch {
         }
 
         if (intent == null) {
-            Log.w("AppPlatform", "Package could not be launched (Uninstalled?): " +app.packageName);
+            Log.w("AppPlatform", "Package could not be launched (Uninstalled?): "
+                    +app.packageName);
             launcherActivity.recheckPackages();
             return false;
         }
 
-        if (SettingsManager.getAppLaunchOut(app.packageName) || App.isVirtualReality(app, launcherActivity)) {
+        if (SettingsManager.getAppLaunchOut(app.packageName) || App.isVirtualReality(app,
+                launcherActivity)) {
+            // Launch in own window properly
             if (App.isWebsite(app))
                 try {
                     launcherActivity.wService.killActivities();
-                } catch (Exception ignored) {}
+                } catch (Exception ignored) {
+                }
 
             try {
                 launcherActivity.launcherService.finishAllActivities();
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
             try {
                 launcherActivity.finishAndRemoveTask();
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
 
-            intent.setFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
             final Intent finalIntent = intent;
             new Timer().schedule(new TimerTask() {
@@ -68,7 +73,6 @@ public abstract class Launch {
                 }
             }, 800);
             return false;
-
         } else {
             launcherActivity.startActivity(intent);
             return true;

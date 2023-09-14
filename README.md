@@ -8,8 +8,8 @@ It can run on any Android device, but has been tailored for the lastest updates 
 
 ## Features
 - Simple, sleek interface
-- Loads in 1-2 seconds
-- Up to date, high res icons from [custom respositories](https://github.com/basti564/LauncherIcons), thanks to [basti564](https://github.com/basti564/)
+- Loads in seconds
+- High res icons from [custom respositories](https://github.com/basti564/LauncherIcons), thanks to [basti564](https://github.com/basti564/)
 - Automatic grouping of VR & 2D apps  (Into the default "Apps" and "Tools" groups, as long as they're not renamed)
 - Flexible manual grouping & hiding
 - Convenient & reliable Shortcut Service OR Shortcut Icon to add to your dock

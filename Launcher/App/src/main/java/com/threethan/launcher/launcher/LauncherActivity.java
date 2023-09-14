@@ -122,12 +122,13 @@ public class LauncherActivity extends Activity {
     protected void startWithNewActivity() {
         Log.v("LauncherStartup", "No existing activity found for ID "+getId());
         rootView = launcherService.getNewView(this);
-        Compat.checkCompatibilityUpdate(this);
 
         ViewGroup containerView = findViewById(R.id.container);
         containerView.addView(rootView);
 
         init();
+        Compat.checkCompatibilityUpdate(this);
+
         reloadPackages();
         // Load Interface
         refreshBackground();
@@ -160,7 +161,6 @@ public class LauncherActivity extends Activity {
 
     protected void init() {
         sharedPreferenceEditor = sharedPreferences.edit();
-
         settingsManager = SettingsManager.getInstance(this);
 
         mainView = rootView.findViewById(R.id.mainLayout);
@@ -218,6 +218,7 @@ public class LauncherActivity extends Activity {
     @Override
     protected void onDestroy() {
         Log.v("LauncherActivity", "Activity is being destroyed" + (isFinishing() ? "Finishing" : "Not Finishing"));
+        launcherService.destroyed(this);
         unbindService(launcherServiceConnection);
         try {unbindService(browserServiceConnection);} catch (Exception ignored) {}
         // For the GC & easier debugging
