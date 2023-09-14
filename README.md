@@ -55,8 +55,10 @@ Now you can use the Messenger icon on the dock to open LightningLauncher from an
 
 ## Similar Projects
 
-[PiLauncherNG]([https://github.com/Veticia/PiLauncherNext](https://github.com/ValentineShilov/PiLauncherNG)), a more faithful fork of the original PiLauncher
+[PiLauncherNG]([https://github.com/Veticia/PiLauncherNext](https://github.com/ValentineShilov/PiLauncherNG) is a more faithful fork of the original PiLauncher
 
-[DreamGrid](https://github.com/basti564/DreamGrid), the basis of this app *(No longer works properly on Oculus devices but may be better for PicoVR)*
+[DreamGrid](https://github.com/basti564/DreamGrid) no longer works properly on Oculus devices, but may be better for PicoVR
 
 [Oculess](https://github.com/basti564/Oculess) can provide background audio for all apps if configured as your device's owner *(Advanced)*
+
+[QuestHiddenSettings](https://github.com/threethan/QuestHiddenSettings) helps you set up system-wide adblock which works in LightningLauncher's browser
