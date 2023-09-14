@@ -282,6 +282,7 @@ public class LauncherActivity extends Activity {
 
         BrowserService.bind(this, browserServiceConnection);
 
+        groupsEnabled = sharedPreferences.getBoolean(Settings.KEY_GROUPS_ENABLED, Settings.DEFAULT_GROUPS_ENABLED);
         if (!groupsEnabled) {
             blurView0.setVisibility(View.GONE);
             blurView1.setVisibility(View.GONE);

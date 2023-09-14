@@ -54,23 +54,6 @@
                 <action android:name="com.threethan.launcher.FINISH" />
             </intent-filter>
         </activity>
-        <!-- Activity called by accessibility service -->
-        <activity
-            android:name=".launcher.LauncherActivityShortcutService"
-            android:screenOrientation="unspecified"
-            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
-            android:exported="true"
-            android:launchMode="singleInstance"
-            android:resizeableActivity="true">
-
-            <layout android:defaultWidth="706dp" android:defaultHeight="442dp" android:gravity="top|end" />
-            <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
-            <meta-data android:name="com.oculus.vrshell.free_resizing_limits" android:value="300,2000,500,1000"/>
-
-            <intent-filter>
-                <action android:name="com.threethan.launcher.FINISH" />
-            </intent-filter>
-        </activity>
         <!-- Activity for browsers which open within the main window -->
         <activity android:name=".browser.BrowserActivity"
             android:screenOrientation="unspecified"
