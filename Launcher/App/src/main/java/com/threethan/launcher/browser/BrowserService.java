@@ -91,6 +91,7 @@ public class BrowserService extends Service {
             ws.setBuiltInZoomControls(true);
             ws.setDisplayZoomControls(false);
             ws.setSupportZoom(true);
+            ws.setMediaPlaybackRequiresUserGesture(false);
             ws.setDefaultTextEncodingName("utf-8");
             // Cookies
             CookieManager.getInstance().setAcceptCookie(true);
