@@ -41,7 +41,7 @@ class BackgroundTask extends AsyncTask<Object, Void, Object> {
     @Override
     protected void onPostExecute(Object _n) {
         LauncherActivity owner = ownerRef.get();
-        owner.post(() -> owner.backgroundImageView.setImageDrawable(backgroundThemeDrawable));
+        if (owner != null) owner.post(() -> owner.backgroundImageView.setImageDrawable(backgroundThemeDrawable));
     }
 
 }

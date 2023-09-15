@@ -28,7 +28,7 @@ class RecheckPackagesTask extends AsyncTask<Object, Void, Object> {
     }
     @Override
     protected void onPostExecute(Object _n) {
-        if (changeFound) {
+        if (changeFound && ownerRef.get() != null) {
             ownerRef.get().reloadPackages();
         }
     }

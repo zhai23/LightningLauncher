@@ -5,6 +5,8 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+
 import com.threethan.launcher.browser.BrowserActivity;
 import com.threethan.launcher.browser.BrowserActivitySeparate;
 import com.threethan.launcher.launcher.LauncherActivity;
@@ -15,22 +17,7 @@ import java.util.TimerTask;
 
 public abstract class Launch {
     public static boolean launchApp(LauncherActivity launcherActivity, ApplicationInfo app) {
-        Intent intent;
-        if (App.isWebsite(app)) {
-            intent = new Intent(launcherActivity, (SettingsManager.getAppLaunchOut(app.packageName)
-                    ? BrowserActivitySeparate.class : BrowserActivity.class));
-            intent.putExtra("url", app.packageName);
-        } else {
-            PackageManager pm = launcherActivity.getPackageManager();
-
-            // Getting the main intent instead of default launch intent fixes oculus browser
-            if (App.isVirtualReality(app, launcherActivity)) {
-                intent = new Intent(Intent.ACTION_MAIN);
-                intent.setPackage(app.packageName);
-                if (intent.resolveActivity(pm) == null)
-                    intent = pm.getLaunchIntentForPackage(app.packageName);
-            } else intent = pm.getLaunchIntentForPackage(app.packageName);
-        }
+        Intent intent = getLaunchIntent(launcherActivity, app);
 
         if (intent == null) {
             Log.w("AppPlatform", "Package could not be launched (Uninstalled?): "
@@ -77,5 +64,41 @@ public abstract class Launch {
             launcherActivity.startActivity(intent);
             return true;
         }
+    }
+    @Nullable
+    public static Intent getLaunchIntent(LauncherActivity activity, ApplicationInfo app) {
+        if (App.isWebsite(app)) {
+            Intent intent = new Intent(activity, (SettingsManager.getAppLaunchOut(app.packageName)
+                    ? BrowserActivitySeparate.class : BrowserActivity.class));
+            intent.putExtra("url", app.packageName);
+            return intent;
+        }
+
+        // Get pm
+        PackageManager pm = activity.getPackageManager();
+
+        // TODO: Why no work?
+//        Intent questIntent = new Intent("com.oculus.vrshell.SHELL_MAIN");
+//        questIntent.setPackage(app.packageName);
+//        if (questIntent.resolveActivity(pm) != null) {
+//            Log.v("QUEST INTENT FOUND FOR PKG", app.packageName);
+//            return questIntent;
+//        }
+
+        if (App.isVirtualReality(app, activity)) {
+            // Get main intent
+            Intent mainIntent = new Intent(Intent.ACTION_MAIN);
+            mainIntent.setPackage(app.packageName);
+            if (mainIntent.resolveActivity(pm) == null) return mainIntent;
+        }
+
+        // Get launch intent
+        Intent launchIntent = pm.getLaunchIntentForPackage(app.packageName);
+        if (launchIntent != null) return launchIntent;
+
+
+//
+
+        return null;
     }
 }

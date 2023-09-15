@@ -25,6 +25,7 @@ class LoadIconTask extends AsyncTask <Object, Void, Object> {
     }
     @Override
     protected void onPostExecute(Object _n) {
-        iconImageViewRef.get().setImageDrawable(appIcon);
+        if (iconImageViewRef.get() != null)
+            iconImageViewRef.get().setImageDrawable(appIcon);
     }
 }

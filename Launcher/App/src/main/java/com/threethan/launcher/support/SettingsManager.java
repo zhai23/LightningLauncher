@@ -1,5 +1,6 @@
 package com.threethan.launcher.support;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -43,6 +44,7 @@ public class SettingsManager extends Settings {
     private static Set<String> selectedGroupsSet = Collections.synchronizedSet(new HashSet<>());
     private static Set<String> appsToLaunchOut = Collections.synchronizedSet(new HashSet<>());
     private static SettingsManager instance;
+    private static Context instanceContext;
 
     private SettingsManager(LauncherActivity activity) {
         launcherActivityRef = new WeakReference<>(activity);
@@ -51,8 +53,10 @@ public class SettingsManager extends Settings {
     }
 
     public static synchronized SettingsManager getInstance(LauncherActivity context) {
-        if (SettingsManager.instance == null) SettingsManager.instance = new SettingsManager(context);
-        return SettingsManager.instance;
+        if (instance != null && instanceContext == context) return SettingsManager.instance;
+        instance = new SettingsManager(context);
+        instanceContext = context;
+        return instance;
     }
 
     public static HashMap<ApplicationInfo, String> appLabelCache = new HashMap<>();
@@ -188,7 +192,8 @@ public class SettingsManager extends Settings {
 
     public Set<String> getSelectedGroups() {
         if (selectedGroupsSet.isEmpty()) readValues();
-        if (launcherActivityRef.get().groupsEnabled || launcherActivityRef.get().isEditing())
+        if (launcherActivityRef.get() != null &&
+                launcherActivityRef.get().groupsEnabled || launcherActivityRef.get().isEditing())
             return selectedGroupsSet;
         else {
             Set<String> retSet = new HashSet<>(appGroupsSet);
@@ -277,7 +282,7 @@ public class SettingsManager extends Settings {
         }
     }
     private static void queueStoreValues() {
-        if (launcherActivityRef.get().mainView != null) launcherActivityRef.get().post(SettingsManager::storeValues);
+        if (launcherActivityRef.get() != null && launcherActivityRef.get().mainView != null) launcherActivityRef.get().post(SettingsManager::storeValues);
         else storeValues();
     }
     public synchronized static void storeValues() {

@@ -62,6 +62,9 @@ public abstract class Compat {
                     String to = StringLib.setStarred(from, true);
                     renameGroup(launcherActivity, from, to);
                 }
+                if (version == 3) {
+                    recheckSupported(launcherActivity);
+                }
             }
             Log.i("Settings Updated", String.format("Updated from v%s to v%s (Settings versions are not the same as app versions)",
                     storedVersion, Compat.CURRENT_COMPATIBILITY_VERSION));
@@ -101,6 +104,7 @@ public abstract class Compat {
     public static void recheckSupported(LauncherActivity launcherActivity) {
         final Map<String, String> appGroupMap = SettingsManager.getAppGroupMap();
         List<ApplicationInfo> apps = launcherActivity.getPackageManager().getInstalledApplications(PackageManager.GET_META_DATA);
+        App.invalidateCaches(launcherActivity);
         for (ApplicationInfo app: apps) {
             final boolean supported = App.isSupported(app, launcherActivity) || App.isWebsite(app);
             if(!supported) appGroupMap.put(app.packageName, GroupsAdapter.UNSUPPORTED_GROUP);

@@ -37,7 +37,7 @@ public class LauncherService extends Service {
         activities.add(activity);
         return view;
     }
-    public View getExistingView(LauncherActivity activity) {-m
+    public View getExistingView(LauncherActivity activity) {
         View view = viewByIndex.get(0);
 
         assert view != null;

@@ -87,7 +87,8 @@ public class LauncherActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
-        // Bind to LocalService.
+        
+        // Bind to Launcher Service
         Intent intent = new Intent(this, LauncherService.class);
         bindService(intent, launcherServiceConnection, Context.BIND_AUTO_CREATE);
 

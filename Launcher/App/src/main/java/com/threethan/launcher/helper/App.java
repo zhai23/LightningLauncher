@@ -75,18 +75,19 @@ public abstract class App {
         }
     }
     private static String[] unsupportedPrefixes;
-    private static boolean checkSupported(ApplicationInfo applicationInfo, LauncherActivity launcherActivity) {
-        if (unsupportedPrefixes == null) unsupportedPrefixes = launcherActivity.getResources().getStringArray(R.array.unsupported_app_prefixes);
+    private static boolean checkSupported(ApplicationInfo app, LauncherActivity launcherActivity) {
 
-        if (applicationInfo.metaData != null) {
-            boolean isVr = isVirtualReality(applicationInfo, launcherActivity);
-            if (!isVr && applicationInfo.metaData.keySet().contains("com.oculus.environmentVersion")) return false;
+        if (isWebsite(app)) return true;
+
+        if (app.metaData != null) {
+            boolean isVr = isVirtualReality(app, launcherActivity);
+            if (!isVr && app.metaData.keySet().contains("com.oculus.environmentVersion")) return false;
         }
-        if (launcherActivity.getPackageManager().getLaunchIntentForPackage(applicationInfo.packageName) == null)
-            return isWebsite(applicationInfo);
+        if (Launch.getLaunchIntent(launcherActivity, app) == null) return false;
 
+        if (unsupportedPrefixes == null) unsupportedPrefixes = launcherActivity.getResources().getStringArray(R.array.unsupported_app_prefixes);
         for (String prefix : unsupportedPrefixes)
-            if (applicationInfo.packageName.startsWith(prefix))
+            if (app.packageName.startsWith(prefix))
                 return false;
         return true;
     }
@@ -127,5 +128,18 @@ public abstract class App {
             intent.setData(Uri.parse("package:" + packageName));
             launcher.startActivity(intent);
         }
+    }
+    public static void invalidateCaches(LauncherActivity launcherActivity) {
+        setVr.clear();
+        set2d.clear();
+        setSupported.clear();
+        setUnsupported.clear();
+
+        launcherActivity.sharedPreferenceEditor
+                .remove(Settings.KEY_2D_SET)
+                .remove(Settings.KEY_VR_SET)
+                .remove(Settings.KEY_SUPPORTED_SET)
+                .remove(Settings.KEY_UNSUPPORTED_SET)
+                .apply();
     }
 }
