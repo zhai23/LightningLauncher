@@ -63,7 +63,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/shortcutServiceButton"
+                android:id="@+id/addonsButton"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="5dp"
@@ -78,7 +78,7 @@
                     android:layout_gravity="center"
                     android:layout_marginEnd="35dp"
                     android:singleLine="true"
-                    android:text="@string/settings_service"
+                    android:text="@string/settings_addons"
                     tools:ignore="NestedWeights,RtlSymmetry" />
 
                 <ImageView
@@ -93,7 +93,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/skippedUpdateButton"
+            android:id="@+id/removeButton"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="10dp"

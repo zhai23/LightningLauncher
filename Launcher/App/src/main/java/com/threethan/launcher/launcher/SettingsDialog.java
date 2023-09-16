@@ -35,14 +35,15 @@ public abstract class SettingsDialog {
         dialog.setOnDismissListener(dialogInterface -> a.settingsVisible = false);
 
         // Functional
-        dialog.findViewById(R.id.shortcutServiceButton).setOnClickListener(view -> {
-            AlertDialog subDialog = Dialog.build(a, R.layout.dialog_service_info);
-            subDialog.findViewById(R.id.confirm).setOnClickListener(view1 -> {
-                // Navigate to accessibility settings
-                Intent localIntent = new Intent("android.settings.ACCESSIBILITY_SETTINGS");
-                localIntent.setPackage("com.android.settings");
-                a.startActivity(localIntent);
-            });
+        dialog.findViewById(R.id.addonsButton).setOnClickListener(view -> {
+            AddonDialog.showAddons(a);
+//            AlertDialog subDialog = Dialog.build(a, R.layout.dialog_service_info);
+//            subDialog.findViewById(R.id.confirm).setOnClickListener(view1 -> {
+//                // Navigate to accessibility settings
+//                Intent localIntent = new Intent("android.settings.ACCESSIBILITY_SETTINGS");
+//                localIntent.setPackage("com.android.settings");
+//                a.startActivity(localIntent);
+//            });
         });
         Switch editSwitch = dialog.findViewById(R.id.editModeSwitch);
         if (a.canEdit()) {
@@ -61,9 +62,9 @@ public abstract class SettingsDialog {
         editModeText.setText(a.canEdit() ? R.string.edit_mode : R.string.edit_mode_disabled);
         // Update button
         if (Updater.isUpdateAvailable(a)) {
-            View skippedUpdateButton = dialog.findViewById(R.id.skippedUpdateButton);
+            View skippedUpdateButton = dialog.findViewById(R.id.removeButton);
             skippedUpdateButton.setVisibility(View.VISIBLE);
-            skippedUpdateButton.setOnClickListener((view) -> new Updater(a).updateEvenIfSkipped());
+            skippedUpdateButton.setOnClickListener((view) -> new Updater(a).updateAppEvenIfSkipped());
         }
 
         // Wallpaper and style

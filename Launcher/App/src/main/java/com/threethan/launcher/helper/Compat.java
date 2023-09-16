@@ -62,9 +62,6 @@ public abstract class Compat {
                     String to = StringLib.setStarred(from, true);
                     renameGroup(launcherActivity, from, to);
                 }
-                if (version == 3) {
-                    recheckSupported(launcherActivity);
-                }
             }
             Log.i("Settings Updated", String.format("Updated from v%s to v%s (Settings versions are not the same as app versions)",
                     storedVersion, Compat.CURRENT_COMPATIBILITY_VERSION));

@@ -23,7 +23,7 @@
 
     <string name="settings_main">Launcher Settings</string>
     <string name="settings_appearance">Customize Appearance</string>
-    <string name="settings_service">Library Shortcut</string>
+    <string name="settings_addons">Shortcuts &amp; Addons</string>
     <string name="settings_update">Download &amp; Install Latest Update</string>
 
     <string name="behavior_header">Behavior</string>
@@ -105,13 +105,16 @@
 
     <!--  Updater  -->
     <string name="update_title">An update is available!</string>
-    <string name="update_content">Update from version %1$s to %2$s, without taking off your headset!</string>
+    <string name="update_content">You can update from version %1$s to %2$s without taking off your headset!</string>
     <string name="update_button">Continue</string>
     <string name="update_skip_button">Skip this Update</string>
 
-    <string name="update_downloading_title">Downloading Update</string>
+    <string name="update_downloading_title">Downloading Latest Version…</string>
     <string name="update_downloading_content">You should get a prompt to install in a few seconds</string>
     <string name="update_hide_button">Hide</string>
+
+    <string name="update_failed_title">Failed to download package!</string>
+    <string name="update_failed_content">Make sure you have a good internet connection and try again later</string>
 
     <string name="update_skip_title">Skip updating to version %1$s?</string>
     <string name="update_skip_content">You will not be notified about this update again.\n
@@ -159,4 +162,25 @@
     <string name="notification_title_s">LightningLauncher: Running a Website</string>
     <string name="notification_title_p">LightningLauncher: Running %1$d Websites</string>
     <string name="notification_content">This notification keeps your websites\' background audio running smoothly.</string>
+
+    <!-- Addons -->
+    <string name="addons_main">Install Add-Ons</string>
+    <string name="addons_exit">Return to Settings</string>
+
+    <string name="addons_messenger">Messenger App Shortcut</string>
+    <string name="addons_messenger_desc">Adds an icon, which you can pin to the dock,that looks like Facebook Messenger, but will actually be a shortcut to the launcher.
+        \n(This won\'t install if the real Messenger app is installed)</string>
+
+    <string name="addons_explore">Explore Shortcut Service</string>
+    <string name="addons_explore_desc">Install, and then turn on in accessibility, to open LightningLauncher whenever you hover over the &quot;Explore&quot; button.
+        \n(You may also want to disable the explore app)</string>
+
+    <string name="addons_library">Library Shortcut Service</string>
+    <string name="addons_library_desc">Install, and then turn on in accessibility, to open LightningLauncher whenever you hover over the &quot;App Library&quot; button.
+        \n(This makes it hard to open the quest\'s app library)</string>
+
+    <string name="addons_install">Install</string>
+    <string name="addons_update">Update</string>
+    <string name="addons_uninstall">Remove</string>
+
 </resources>

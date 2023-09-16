@@ -118,7 +118,7 @@ public class LauncherActivity extends Activity {
         AppsAdapter.shouldAnimateClose = false;
         AppsAdapter.animateClose(this);
 
-        postDelayed(() -> new Updater(this).checkForUpdate(), 1000);
+        postDelayed(() -> new Updater(this).checkForAppUpdate(), 1000);
     }
     protected void startWithNewActivity() {
         Log.v("LauncherStartup", "No existing activity found for ID "+getId());

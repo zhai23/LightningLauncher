@@ -26,8 +26,8 @@ public abstract class Launch {
             return false;
         }
 
-        if (SettingsManager.getAppLaunchOut(app.packageName) || App.isVirtualReality(app,
-                launcherActivity)) {
+        if (SettingsManager.getAppLaunchOut(app.packageName) ||
+                App.isVirtualReality(app, launcherActivity)) {
             // Launch in own window properly
             if (App.isWebsite(app))
                 try {
@@ -37,34 +37,37 @@ public abstract class Launch {
 
             try {
                 launcherActivity.launcherService.finishAllActivities();
-            } catch (Exception ignored) {
-            }
+            } catch (Exception ignored) {}
             try {
                 launcherActivity.finishAndRemoveTask();
-            } catch (Exception ignored) {
-            }
+            } catch (Exception ignored) {}
 
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-            final Intent finalIntent = intent;
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    launcherActivity.startActivity(finalIntent);
+                    startIntent(launcherActivity, intent);
                 }
             }, 650);
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    launcherActivity.startActivity(finalIntent);
+                    startIntent(launcherActivity, intent);
                 }
             }, 800);
             return false;
         } else {
-            launcherActivity.startActivity(intent);
+            startIntent(launcherActivity, intent);
             return true;
         }
     }
+
+    private static void startIntent(LauncherActivity launcherActivity, Intent intent) {
+        launcherActivity.startActivity(intent);
+    }
+
+
     @Nullable
     public static Intent getLaunchIntent(LauncherActivity activity, ApplicationInfo app) {
         if (App.isWebsite(app)) {
@@ -74,31 +77,14 @@ public abstract class Launch {
             return intent;
         }
 
-        // Get pm
         PackageManager pm = activity.getPackageManager();
 
-        // TODO: Why no work?
-//        Intent questIntent = new Intent("com.oculus.vrshell.SHELL_MAIN");
-//        questIntent.setPackage(app.packageName);
-//        if (questIntent.resolveActivity(pm) != null) {
-//            Log.v("QUEST INTENT FOUND FOR PKG", app.packageName);
-//            return questIntent;
-//        }
-
-        if (App.isVirtualReality(app, activity)) {
-            // Get main intent
-            Intent mainIntent = new Intent(Intent.ACTION_MAIN);
-            mainIntent.setPackage(app.packageName);
-            if (mainIntent.resolveActivity(pm) == null) return mainIntent;
-        }
+        Intent questIntent = new Intent();
+        questIntent.setAction("com.oculus.vrshell.SHELL_MAIN");
+        questIntent.setPackage(app.packageName);
+        if (questIntent.resolveActivity(pm) != null) return questIntent;
 
         // Get launch intent
-        Intent launchIntent = pm.getLaunchIntentForPackage(app.packageName);
-        if (launchIntent != null) return launchIntent;
-
-
-//
-
-        return null;
+        return pm.getLaunchIntentForPackage(app.packageName);
     }
 }
