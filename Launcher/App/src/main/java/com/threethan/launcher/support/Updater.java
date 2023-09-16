@@ -74,16 +74,18 @@ public class Updater {
         this.packageManager = activity.getPackageManager();
 
         // Clear update files if just updated
-        String savedVersion = activity.sharedPreferences.getString(KEY_SAVED_VERSION_CODE, null);
         try {
+            String savedVersion = activity.sharedPreferences.getString(KEY_SAVED_VERSION_CODE, null);
             PackageInfo packageInfo = packageManager.getPackageInfo(
                     activity.getPackageName(), PackageManager.GET_ACTIVITIES);
-            if (!savedVersion.equals(packageInfo.packageName)) {
+            if (!packageInfo.versionName.equals(savedVersion)) {
+                Log.i(TAG, String.format("Update was detected! Old update files will be cleared..." +
+                        " (%s)->(%s)", packageInfo.versionName, savedVersion));
                 FileLib.delete(UPDATE_DIR);
-                activity.sharedPreferenceEditor.putString(KEY_SAVED_VERSION_CODE, packageInfo.versionName);
+                activity.sharedPreferenceEditor.putString(KEY_SAVED_VERSION_CODE, packageInfo.versionName).apply();
             }
         } catch (PackageManager.NameNotFoundException e) {
-            return;
+            e.printStackTrace();
         }
     }
     public void checkForAppUpdate() {

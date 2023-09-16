@@ -183,7 +183,7 @@ public class AppsAdapter extends BaseAdapter{
     }
 
     public void onImageSelected(String path, ImageView selectedImageView) {
-        Compat.clearIcons(launcherActivity);
+        Compat.clearIconCache(launcherActivity);
         if (path != null) {
             Bitmap bitmap = ImageLib.bitmapFromFile(launcherActivity, new File(path));
             if (bitmap == null) return;

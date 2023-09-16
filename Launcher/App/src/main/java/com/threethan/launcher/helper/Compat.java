@@ -21,8 +21,9 @@ public abstract class Compat {
     public static final String KEY_COMPATIBILITY_VERSION = "KEY_COMPATIBILITY_VERSION";
     public static final int CURRENT_COMPATIBILITY_VERSION = 3;
     public static final boolean DEBUG_COMPATIBILITY = false;
+    private static final String TAG = "Compatibility";
     public static synchronized void checkCompatibilityUpdate(LauncherActivity launcherActivity) {
-        if (DEBUG_COMPATIBILITY) Log.e("COMPATIBILITY", "CRITICAL WARNING: DEBUG_COMPATIBILITY IS ON");
+        if (DEBUG_COMPATIBILITY) Log.e(TAG, "CRITICAL WARNING: DEBUG_COMPATIBILITY IS ON");
         SharedPreferences sharedPreferences = launcherActivity.sharedPreferences;
         SharedPreferences.Editor sharedPreferenceEditor = launcherActivity.sharedPreferences.edit();
         int storedVersion = DEBUG_COMPATIBILITY ? 0 : sharedPreferences.getInt(Compat.KEY_COMPATIBILITY_VERSION, -1);
@@ -35,7 +36,7 @@ public abstract class Compat {
 
         try {
             if (storedVersion > Compat.CURRENT_COMPATIBILITY_VERSION)
-                Log.e("CompatibilityUpdate Error", "Previous version greater than current!");
+                Log.e(TAG, "Previous version greater than current!");
             // If updated
             for (int version = 0; version <= Compat.CURRENT_COMPATIBILITY_VERSION; version++) {
                 if (SettingsManager.getVersionsWithBackgroundChanges().contains(version)) {
@@ -63,11 +64,11 @@ public abstract class Compat {
                     renameGroup(launcherActivity, from, to);
                 }
             }
-            Log.i("Settings Updated", String.format("Updated from v%s to v%s (Settings versions are not the same as app versions)",
+            Log.i(TAG, String.format("Settings Updated from v%s to v%s (Settings versions are not the same as app versions)",
                     storedVersion, Compat.CURRENT_COMPATIBILITY_VERSION));
         } catch (Exception e) {
             // This *shouldn't* fail, but if it does we should not crash
-            Log.e("CompatibilityUpdate Error", "An exception occurred when attempting to perform the compatibility update!");
+            Log.e(TAG, "An exception occurred when attempting to perform the compatibility update!");
             e.printStackTrace();
         }
 
@@ -111,17 +112,20 @@ public abstract class Compat {
     }
 
     public static void clearIcons(LauncherActivity launcherActivity) {
+        Log.i(TAG, "Icons are being cleared");
         FileLib.delete(launcherActivity.getApplicationInfo().dataDir);
         launcherActivity.sharedPreferenceEditor.remove(SettingsManager.DONT_DOWNLOAD_ICONS); 
         clearIconCache(launcherActivity);
     }
     public static void clearIconCache(LauncherActivity launcherActivity) {
+        Log.i(TAG, "Icons cache is being cleared");
         IconRepo.downloadFinishedPackages.clear();
         Icon.cachedIcons.clear();
         storeAndReload(launcherActivity);
     }
 
     public static void clearLabels(LauncherActivity launcherActivity) {
+        Log.i(TAG, "Labels are being cleared");
         SettingsManager.appLabelCache.clear();
         HashSet<String> setAll = launcherActivity.getAllPackages();
         SharedPreferences.Editor editor = launcherActivity.sharedPreferenceEditor;
@@ -129,6 +133,7 @@ public abstract class Compat {
         storeAndReload(launcherActivity);
     }
     public static void clearSort(LauncherActivity launcherActivity) {
+        Log.i(TAG, "App sort is being cleared");
         SettingsManager.getAppGroupMap().clear();
         Set<String> appGroupsSet = launcherActivity.sharedPreferences.getStringSet(Settings.KEY_GROUPS, null);
         if (appGroupsSet == null) return;
