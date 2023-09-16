@@ -37,6 +37,7 @@ import com.threethan.launcher.adapter.GroupsAdapter;
 import com.threethan.launcher.browser.BrowserService;
 import com.threethan.launcher.helper.App;
 import com.threethan.launcher.helper.Compat;
+import com.threethan.launcher.helper.IconRepo;
 import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.lib.ImageLib;
@@ -66,7 +67,6 @@ public class LauncherActivity extends Activity {
     GridView groupPanelGridView;
     public SharedPreferences sharedPreferences;
     public SharedPreferences.Editor sharedPreferenceEditor;
-    private ImageView selectedImageView;
     public View mainView;
     public View fadeView;
     private int prevViewWidth;
@@ -262,8 +262,11 @@ public class LauncherActivity extends Activity {
             Log.w("LightningLauncher", "Exception while starting recheck package task");
         }
     }
-    public void setSelectedImageView(ImageView imageView) {
+    private ImageView selectedImageView;
+    private String selectedPackageName;
+    public void setSelectedIconImage(ImageView imageView, String packageName) {
         selectedImageView = imageView;
+        selectedPackageName = packageName;
     }
 
     @Override
@@ -272,6 +275,7 @@ public class LauncherActivity extends Activity {
         if (requestCode == Settings.PICK_ICON_CODE) {
             if (resultCode == RESULT_OK) {
                 for (Image image : ImagePicker.getImages(data)) {
+                    IconRepo.dontDownloadIconFor(this, selectedPackageName);
                     ((AppsAdapter) appGridViewSquare.getAdapter()).onImageSelected(image.getPath(), selectedImageView);
                     break;
                 }

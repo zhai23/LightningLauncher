@@ -1,5 +1,6 @@
 package com.threethan.launcher.support;
 
+import android.accessibilityservice.AccessibilityServiceInfo;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -11,9 +12,11 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ServiceInfo;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.accessibility.AccessibilityManager;
 
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
@@ -25,7 +28,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.threethan.launcher.R;
-import com.threethan.launcher.helper.Compat;
 import com.threethan.launcher.launcher.LauncherActivity;
 import com.threethan.launcher.lib.FileLib;
 
@@ -33,6 +35,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.List;
 
 // Credit to Basti for update checking code
 public class Updater {
@@ -44,13 +47,10 @@ public class Updater {
     public static final String TAG_LIBRARY_SHORTCUT = "TAG_LIBRARY_SHORTCUT";
     public static final String TAG_EXPLORE_SHORTCUT = "TAG_EXPLORE_SHORTCUT";
     public static final String UPDATE_DIR = "/Content/Updates/";
-
-    // TODO: separate addons release
-    // TODO: shortcut service apks
     public static final Addon[] addons = {
-            new Addon(TAG_MESSENGER_SHORTCUT, "Optional_MessengerShortcut", "com.facebook.orca", "5.0.0"),
-            new Addon(TAG_LIBRARY_SHORTCUT, "Optional_LibraryShortcut", "com.threethan.launcher.service.library", "5.1.0"),
-            new Addon(TAG_EXPLORE_SHORTCUT, "Optional_ExploreShortcut", "com.threethan.launcher.service.explore", "5.1.0"),
+            new Addon(TAG_MESSENGER_SHORTCUT, "Optional_MessengerShortcut", "com.facebook.orca", "5.0.0", false),
+            new Addon(TAG_LIBRARY_SHORTCUT, "Optional_LibraryShortcut", "com.threethan.launcher.service.library", "5.1.0", true),
+            new Addon(TAG_EXPLORE_SHORTCUT, "Optional_ExploreShortcut", "com.threethan.launcher.service.explore", "5.1.0", true),
     };
     private static final String TAG = "LightningLauncher Updater";
     private final RequestQueue requestQueue;
@@ -59,8 +59,9 @@ public class Updater {
     private static final String KEY_IGNORED_UPDATE_VERSION = "UPDATER_IGNORED_UPDATE_VERSION";
     private static final String KEY_UPDATE_AVAILABLE = "UPDATER_UPDATE_AVAILABLE";
     public static final int STATE_NOT_INSTALLED = 0;
-    public static final int STATE_INSTALLED = 1;
+    public static final int STATE_ACTIVE = 1;
     public static final int STATE_HAS_UPDATE = 2;
+    public static final int STATE_INACTIVE = 3;
     String latestVersionTag;
 
     public Updater(Activity activity) {
@@ -108,7 +109,18 @@ public class Updater {
         } catch (PackageManager.NameNotFoundException e) {
             return STATE_NOT_INSTALLED;
         }
-        return packageInfo.versionName.equals(addon.latestVersion) ? STATE_INSTALLED : STATE_HAS_UPDATE;
+        if (!packageInfo.versionName.equals(addon.latestVersion)) return STATE_HAS_UPDATE;
+        if (addon.accessibilityService) {
+            AccessibilityManager am = (AccessibilityManager) activity.getSystemService(Context.ACCESSIBILITY_SERVICE);
+            List<AccessibilityServiceInfo> enabledServices = am.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_ALL_MASK);
+
+            for (AccessibilityServiceInfo enabledService : enabledServices) {
+                ServiceInfo enabledServiceInfo = enabledService.getResolveInfo().serviceInfo;
+                if (enabledServiceInfo.packageName.equals(addon.packageName))
+                    return STATE_ACTIVE;
+            }
+            return STATE_INACTIVE;
+        } else return STATE_ACTIVE;
     }
     public void uninstallAddon(Activity activity, String tag) {
         Addon addon = getAddon(tag);
@@ -121,12 +133,14 @@ public class Updater {
         Addon addon = getAddon(tag);
         if (addon == null) return;
         Log.v(TAG, "Attempting to install addon "+tag);
+        attempts = 3;
         downloadUpdate(addon.downloadName);
     }
 
     public void updateAppEvenIfSkipped() {
         getSharedPreferences().edit().remove(KEY_IGNORED_UPDATE_VERSION).apply();
-        checkForAppUpdate();
+        attempts = 6;
+        downloadUpdate(NAME_MAIN);
     }
     protected void storeLatestVersionAndPrompt(String tagName) {
         PackageInfo packageInfo;
@@ -160,7 +174,6 @@ public class Updater {
         requestQueue.start();
     }
 
-
     private void handleUpdateResponse(String response, @Nullable Response.Listener<String> callback) {
         try {
             JSONObject latestReleaseJson = new JSONObject(response);
@@ -177,6 +190,7 @@ public class Updater {
 
     private void showAppUpdateDialog(String curName, String newName) {
         try {
+            attempts = 4;
             AlertDialog.Builder updateDialogBuilder = new AlertDialog.Builder(activity);
             updateDialogBuilder.setTitle(R.string.update_title);
             updateDialogBuilder.setMessage(activity.getString(R.string.update_content, curName, newName));
@@ -208,11 +222,15 @@ public class Updater {
     }
     @SuppressLint("UnspecifiedRegisterReceiverFlag") // Can't be fixed on this android API
     public void downloadUpdate(String apkName) {
+        downloadSucceeded = false;
         if (latestVersionTag == null) {
             Log.w(TAG, "Latest version tag was null!" +
                     "ill try to get it again, but this download will probably fail");
             checkLatestVersion(response -> handleUpdateResponse(response, null));
         }
+        downloadingTag = latestVersionTag;
+        downloadingName = apkName;
+
         String url = String.format(TEMPLATE_URL, latestVersionTag, apkName);
         Log.v(TAG, "Downloading from url "+url);
         DownloadManager.Request request1 = new DownloadManager.Request(Uri.parse(url));
@@ -230,14 +248,13 @@ public class Updater {
         updateAlertDialog = updateDialogBuilder.create();
         updateAlertDialog.show();
 
-        downloadingTag = latestVersionTag;
-        downloadingName = apkName;
         activity.registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
         manager1.enqueue(request1);
     }
     String downloadingTag;
     String downloadingName;
+    boolean downloadSucceeded;
     AlertDialog updateAlertDialog;
     BroadcastReceiver onComplete=new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
@@ -252,7 +269,20 @@ public class Updater {
     public void installUpdate(String apkName) {
         File p = activity.getApplicationContext().getExternalFilesDir(UPDATE_DIR);
         File f = new File(p, apkName+latestVersionTag+".apk");
-        if (!f.exists()) {
+        if (downloadSucceeded) return;
+        if (f.exists()) {
+            downloadSucceeded = true;
+            // provider is already included in the imagepicker lib
+            Uri apkURI = FileProvider.getUriForFile(activity, activity.getApplicationContext().getPackageName() + ".imagepicker.provider", f);
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+
+            intent.setDataAndType(apkURI, "application/vnd.android.package-archive");
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.putExtra(Intent.EXTRA_NOT_UNKNOWN_SOURCE, true);
+
+            activity.startActivity(intent);
+        } else {
             if (attempts > 0) {
                 Log.w(TAG, "Failed to download APK! Will keep trying " + attempts + " more times");
                 downloadUpdate(apkName);
@@ -264,17 +294,7 @@ public class Updater {
                 failedDownloadDialogBuilder.setNegativeButton(R.string.update_hide_button, (dialog, which) -> dialog.cancel());
                 failedDownloadDialogBuilder.show();
             }
-            return;
         }
-        // provider is already included in the imagepicker lib
-        Uri apkURI = FileProvider.getUriForFile(activity, activity.getApplicationContext().getPackageName() + ".imagepicker.provider", f);
-        Intent intent = new Intent(Intent.ACTION_VIEW);
 
-        intent.setDataAndType(apkURI, "application/vnd.android.package-archive");
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        intent.putExtra(Intent.EXTRA_NOT_UNKNOWN_SOURCE, true);
-
-        activity.startActivity(intent);
     }
 }

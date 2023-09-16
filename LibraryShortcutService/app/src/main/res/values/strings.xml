@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <string name="app_name">Library Shortcut</string>
+    <string name="accessibility_event_name">[App Library]</string>
+    <string name="service_desc">Enable this service using the switch up top to open Lightning Launcher when you hover over the &quot;App Library&quot; button on the dock</string>
+</resources>

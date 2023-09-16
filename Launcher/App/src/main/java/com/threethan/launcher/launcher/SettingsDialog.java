@@ -34,17 +34,20 @@ public abstract class SettingsDialog {
         AlertDialog dialog = Dialog.build(a, R.layout.dialog_settings);
         dialog.setOnDismissListener(dialogInterface -> a.settingsVisible = false);
 
-        // Functional
-        dialog.findViewById(R.id.addonsButton).setOnClickListener(view -> {
-            AddonDialog.showAddons(a);
-//            AlertDialog subDialog = Dialog.build(a, R.layout.dialog_service_info);
-//            subDialog.findViewById(R.id.confirm).setOnClickListener(view1 -> {
-//                // Navigate to accessibility settings
-//                Intent localIntent = new Intent("android.settings.ACCESSIBILITY_SETTINGS");
-//                localIntent.setPackage("com.android.settings");
-//                a.startActivity(localIntent);
-//            });
-        });
+        // Addons
+        View addonsButton = dialog.findViewById(R.id.addonsButton);
+        addonsButton.setOnClickListener(view -> AddonDialog.showAddons(a));
+        if (!a.sharedPreferences.getBoolean(Settings.KEY_SEEN_ADDONS, false)) {
+            View addonsButtonAttract = dialog.findViewById(R.id.addonsButtonAttract);
+            addonsButtonAttract.setVisibility(View.VISIBLE);
+            addonsButton.setVisibility(View.GONE);
+            addonsButtonAttract.setOnClickListener(view -> {
+                a.sharedPreferenceEditor.putBoolean(Settings.KEY_SEEN_ADDONS, true).apply();
+                AddonDialog.showAddons(a);
+            });
+        }
+
+        // Edit
         Switch editSwitch = dialog.findViewById(R.id.editModeSwitch);
         if (a.canEdit()) {
             editSwitch.setChecked(a.isEditing());

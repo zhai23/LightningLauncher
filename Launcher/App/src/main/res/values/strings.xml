@@ -23,7 +23,8 @@
 
     <string name="settings_main">Launcher Settings</string>
     <string name="settings_appearance">Customize Appearance</string>
-    <string name="settings_addons">Shortcuts &amp; Addons</string>
+    <string name="settings_addons_attract">Set Up Shortcuts</string>
+    <string name="settings_addons">Shortcut Settings</string>
     <string name="settings_update">Download &amp; Install Latest Update</string>
 
     <string name="behavior_header">Behavior</string>
@@ -42,7 +43,6 @@
         the cursor over the App Library icon on the right of dock for about half a second.\n(This may make it difficult to access the default launcher)\n
         \nMake sure to enable the \"Use Lightning Launcher\" switch - the \"Lightning Launcher Shortcut\" switch won\'t do anything on the Quest!
     </string>
-    <string name="accessibility_event_name">[App Library]</string>
 
     <string name="launch_switch">Runs in Own Window</string>
     <string name="launch_tip">Launch in Own Window Once</string>
@@ -74,16 +74,15 @@
     <string name="add_website_audio_info">Added websites can play audio in-game</string>
     <string name="add_website_group">Add to %s</string>
 
-    <string name="service_title">Launcher Shortcuts</string>
+    <string name="service_title">Shortcuts Services</string>
     <string name="service_subtitle">Easily Access Lightning Launcher</string>
-    <string name="service_info">By enabling the shortcut service, Lighting Launcher will open when you hover over the App Library icon on the right of the dock,
-    essentially replacing the default launcher.\n\nAlternatively,
-        you can use the LauncherShortcut apk provided on the GitHub. (Make sure to carefully read the instructions in the README if you choose this option)</string>
+    <string name="service_info">By enabling the shortcut service, Lighting Launcher will open when you hover over the chosen icon on the dock, basically replacing that app.</string>
     <string name="service_instructions">Enabling the Shortcut Service</string>
     <string name="service_message">1. Use the button to open Android\'s accessibility settings\n2.
-        Tap on \"Lightning Launcher\"\n3.
-        Switch the service on (or off) at the top of the page\n4.
-        Tap \"Allow\" on the prompt</string>
+        Select the service you wish to enable\n3.
+        Switch the service on at the top of the page\n4.
+        Tap \"Allow\" on the prompt\n5.
+        \'X\' out of the window and enjoy!</string>
     <string name="service_next">Continue to Accessibility Settings</string>
 
     <string name="warning">Important Info</string>
@@ -164,23 +163,27 @@
     <string name="notification_content">This notification keeps your websites\' background audio running smoothly.</string>
 
     <!-- Addons -->
-    <string name="addons_main">Install Add-Ons</string>
+    <string name="addons_main">Install Shortcuts</string>
+    <string name="addons_info">Shortcuts make it easier to open the launcher.
+        \nIt\'s highly recommended you install at least one.</string>
     <string name="addons_exit">Return to Settings</string>
 
     <string name="addons_messenger">Messenger App Shortcut</string>
-    <string name="addons_messenger_desc">Adds an icon, which you can pin to the dock,that looks like Facebook Messenger, but will actually be a shortcut to the launcher.
+    <string name="addons_messenger_desc">Adds an icon, which you can pin to the dock, that looks like Facebook Messenger, but will actually open the launcher.
         \n(This won\'t install if the real Messenger app is installed)</string>
 
     <string name="addons_explore">Explore Shortcut Service</string>
-    <string name="addons_explore_desc">Install, and then turn on in accessibility, to open LightningLauncher whenever you hover over the &quot;Explore&quot; button.
-        \n(You may also want to disable the explore app)</string>
+    <string name="addons_explore_desc">Install then activate to open LightningLauncher whenever you hover over the &quot;Explore&quot; button.
+        \n(Faster if the Explore app is disabled)</string>
+    <string name="addons_explore_disable">Disable/Enable the Explore app</string>
 
     <string name="addons_library">Library Shortcut Service</string>
-    <string name="addons_library_desc">Install, and then turn on in accessibility, to open LightningLauncher whenever you hover over the &quot;App Library&quot; button.
+    <string name="addons_library_desc">Install then activate to open LightningLauncher whenever you hover over the &quot;App Library&quot; button.
         \n(This makes it hard to open the quest\'s app library)</string>
 
     <string name="addons_install">Install</string>
     <string name="addons_update">Update</string>
+    <string name="addons_activate">Activate</string>
     <string name="addons_uninstall">Remove</string>
 
 </resources>

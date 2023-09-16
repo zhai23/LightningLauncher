@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:autofillHints="text"
             android:backgroundTint="@android:color/white"
-            android:minHeight="125sp"
+            android:minHeight="45sp"
             android:text="@string/service_info"
             android:textColor="@android:color/white" />
 

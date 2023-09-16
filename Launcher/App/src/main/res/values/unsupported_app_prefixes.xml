@@ -12,8 +12,10 @@
         <item>com.oculus.os.clearactivity</item>
         <item>com.oculus.integrity</item>
         <item>com.oculus.assistant</item>
-        <!-- Messenger Redirect -->
+        <!-- Shortcuts -->
         <item>com.facebook.orca</item>
+        <item>com.threethan.launcher.service.explore</item>
+        <item>com.threethan.launcher.service.library</item>
         <!-- Fb just doesn't work for some reason -->
         <item>com.facebook.facebookvr</item>
         <!-- Nor does this -->

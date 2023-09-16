@@ -60,4 +60,6 @@ public class LauncherService extends Service {
         Intent finishIntent = new Intent(LauncherActivity.FINISH_ACTION);
         sendBroadcast(finishIntent);
     }
+
+    //TODO Make multitasking work properly
 }

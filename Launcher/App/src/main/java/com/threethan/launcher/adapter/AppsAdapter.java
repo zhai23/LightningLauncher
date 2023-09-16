@@ -193,13 +193,12 @@ public class AppsAdapter extends BaseAdapter{
         } else {
             selectedImageView.setImageDrawable(iconDrawable);
             Icon.updateIcon(iconFile, packageName, null);
-            //No longer sets icon here but that should be fine
+            // No longer sets icon here but that should be fine
         }
     }
     private void showAppDetails(ApplicationInfo currentApp) {
         // Set View
         AlertDialog dialog = Dialog.build(launcherActivity, R.layout.dialog_app_details);
-        if (dialog == null) return;
         // Package Name
         ((TextView) dialog.findViewById(R.id.packageName)).setText(currentApp.packageName);
         // Info Action
@@ -234,7 +233,7 @@ public class AppsAdapter extends BaseAdapter{
                 //noinspection ResultOfMethodCallIgnored
                 iconFile.delete();
             }
-            launcherActivity.setSelectedImageView(iconImageView);
+            launcherActivity.setSelectedIconImage(iconImageView, currentApp.packageName);
             ImageLib.showImagePicker(launcherActivity, Settings.PICK_ICON_CODE);
         });
 

@@ -36,7 +36,7 @@ public abstract class IconRepo {
             "https://logo.clearbit.com/google.com/%s",
             "%s/favicon.ico",
     };
-    public static Set<String> downloadFinishedPackages = new HashSet<>();
+    protected static Set<String> downloadFinishedPackages = new HashSet<>();
     private static final ConcurrentHashMap<String, Object> locks = new ConcurrentHashMap<>();
 
     public static void check(final LauncherActivity activity, ApplicationInfo app, final Runnable callback) {
@@ -83,6 +83,14 @@ public abstract class IconRepo {
                 }
             }
         }).start();
+    }
+    public static void dontDownloadIconFor(LauncherActivity activity, String packageName) {
+        if (downloadFinishedPackages.isEmpty())
+            downloadFinishedPackages = activity.sharedPreferences
+                    .getStringSet(SettingsManager.DONT_DOWNLOAD_ICONS, downloadFinishedPackages);
+        downloadFinishedPackages.add(packageName);
+        activity.sharedPreferenceEditor
+                .putStringSet(SettingsManager.DONT_DOWNLOAD_ICONS, downloadFinishedPackages);
     }
 
     private static boolean downloadIconFromUrl(Context context, String url, File iconFile) {
