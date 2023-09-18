@@ -117,7 +117,7 @@ public class SettingsManager extends Settings {
         queueStoreValuesStatic();
     }
 
-    public List<ApplicationInfo> getInstalledApps(LauncherActivity launcherActivity, List<String> selected, List<ApplicationInfo> myApps) {
+    public List<ApplicationInfo> getInstalledApps(LauncherActivity launcherActivity, List<String> selectedGroups, List<ApplicationInfo> myApps) {
 
         // Get list of installed apps
         Map<String, String> apps = getAppGroupMap();
@@ -157,7 +157,7 @@ public class SettingsManager extends Settings {
         Map<String, ApplicationInfo> appMap = new LinkedHashMap<>();
         for (ApplicationInfo applicationInfo : myApps) {
             String pkg = applicationInfo.packageName;
-            if (apps.containsKey(pkg) && selected.contains(apps.get(pkg))) {
+            if (apps.containsKey(pkg) && selectedGroups.contains(apps.get(pkg))) {
                 try {
                     appMap.put(pkg, applicationInfo);
                 }
