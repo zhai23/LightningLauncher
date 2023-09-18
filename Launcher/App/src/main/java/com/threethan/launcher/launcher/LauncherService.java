@@ -22,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class LauncherService extends Service {
     private final IBinder binder = new LocalBinder();
     private final static ConcurrentHashMap<Integer, View> viewByIndex = new ConcurrentHashMap<>();
-    private static final String TAG = "LauncherService";
+
     public class LocalBinder extends Binder {
         public LauncherService getService() {
             return LauncherService.this;
@@ -54,12 +54,12 @@ public class LauncherService extends Service {
         return view;
     }
     public boolean checkForExistingView() {
-        clearViewsWithoutActiveActivities();
         return viewByIndex.containsKey(getNewActivityIndex());
     }
     protected int getNewActivityIndex() {
         int i = 0;
         while(activityByIndex.containsValue(i)) i++;
+        Log.v("NEW ACTIVITY INDEX", String.valueOf(i));
         return i;
     }
     public void destroyed(LauncherActivity activity) {

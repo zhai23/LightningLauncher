@@ -16,8 +16,6 @@ import com.threethan.launcher.helper.Compat;
 import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.launcher.LauncherActivity;
-import com.threethan.launcher.lib.ImageLib;
-import com.threethan.launcher.lib.AddonDialog;
 import com.threethan.launcher.support.SettingsManager;
 import com.threethan.launcher.support.Updater;
 

@@ -5,10 +5,9 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
-import com.threethan.launcher.adapter.AppsAdapter;
+import com.threethan.launcher.adapter.GroupsAdapter;
 import com.threethan.launcher.launcher.LauncherActivity;
 import com.threethan.launcher.lib.DataLib;
-import com.threethan.launcher.adapter.GroupsAdapter;
 import com.threethan.launcher.lib.StringLib;
 import com.threethan.launcher.support.SettingsManager;
 

@@ -27,6 +27,8 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 
+import androidx.annotation.Nullable;
+
 import com.esafirm.imagepicker.features.ImagePicker;
 import com.esafirm.imagepicker.model.Image;
 import com.threethan.launcher.R;
@@ -51,6 +53,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import eightbitlab.com.blurview.BlurView;
@@ -64,7 +67,7 @@ public class LauncherActivity extends Activity {
     DynamicHeightGridView appGridViewBanner;
     ScrollView scrollView;
     ImageView backgroundImageView;
-    GridView groupPanelGridView;
+    GridView groupGridView;
     public SharedPreferences sharedPreferences;
     public SharedPreferences.Editor sharedPreferenceEditor;
     public View mainView;
@@ -146,20 +149,23 @@ public class LauncherActivity extends Activity {
 
         try {
             init();
+
             // Take ownership of adapters (which are currently referencing a dead activity)
-            ((AppsAdapter) appGridViewSquare.getAdapter()).setLauncherActivity(this);
-            ((AppsAdapter) appGridViewBanner.getAdapter()).setLauncherActivity(this);
-            ((GroupsAdapter) groupPanelGridView.getAdapter()).setLauncherActivity(this);
+            Objects.requireNonNull(getAdapterSquare()).setLauncherActivity(this);
+            Objects.requireNonNull(getAdapterBanner()).setLauncherActivity(this);
+            Objects.requireNonNull(getAdapterGroups()).setLauncherActivity(this);
             recheckPackages(); // Just check, don't force it
 
             groupsEnabled = sharedPreferences.getBoolean(Settings.KEY_GROUPS_ENABLED, Settings.DEFAULT_GROUPS_ENABLED);
             post(this::updateToolBars); // Fix visual bugs with the blur views
+
         } catch (Exception e) {
             // Attempt to work around problems with backgrounded activities
             Log.e(TAG, "Crashed due to exception while re-initiating existing activity");
             e.printStackTrace();
             Log.e(TAG, "Attempting to start with a new activity...");
         }
+
     }
 
     protected void init() {
@@ -169,24 +175,30 @@ public class LauncherActivity extends Activity {
         mainView = rootView.findViewById(R.id.mainLayout);
         mainView.addOnLayoutChangeListener((view, i, i1, i2, i3, i4, i5, i6, i7)
                 -> post(this::updateGridViewHeights));
-        appGridViewSquare = rootView.findViewById(R.id.appsViewIcon);
-        appGridViewBanner = rootView.findViewById(R.id.appsViewWide);
+        appGridViewSquare = rootView.findViewById(R.id.appsViewSquare);
+        appGridViewBanner = rootView.findViewById(R.id.appsViewBanner);
         scrollView = rootView.findViewById(R.id.mainScrollView);
         fadeView = scrollView;
         backgroundImageView = rootView.findViewById(R.id.background);
-        groupPanelGridView = rootView.findViewById(R.id.groupsView);
+        groupGridView = rootView.findViewById(R.id.groupsView);
 
         // Handle group click listener
-        groupPanelGridView.setOnItemClickListener((parent, view, position, id) -> clickGroup(position));
+        groupGridView.setOnItemClickListener((parent, view, position, id) -> clickGroup(position));
 
         // Multiple group selection
-        groupPanelGridView.setOnItemLongClickListener((parent, view, position, id) -> longClickGroup(view, position));
+        groupGridView.setOnItemLongClickListener((parent, view, position, id) -> longClickGroup(view, position));
 
         // Set logo button
         ImageView settingsImageView = rootView.findViewById(R.id.settingsIcon);
         settingsImageView.setOnClickListener(view -> {
             if (!settingsVisible) SettingsDialog.showSettings(this);
         });
+
+        // Animate & reduce flicker
+        fadeView.setAlpha(0f);
+        ValueAnimator an = android.animation.ObjectAnimator.ofFloat(fadeView, "alpha", 1f);
+        an.setDuration(150);
+        fadeView.post(an::start);
     }
 
     protected void clickGroup(int position) {
@@ -253,8 +265,8 @@ public class LauncherActivity extends Activity {
                 .remove(Settings.KEY_2D_SET);
         Platform.clearPackageLists();
         PackageManager packageManager = getPackageManager();
-        installedApps = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);
-        installedApps = Collections.synchronizedList(installedApps);
+        Platform.installedApps = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);
+        Platform.installedApps = Collections.synchronizedList(Platform.installedApps);
         refreshAppDisplayListsWithoutInterface();
     }
 
@@ -277,15 +289,14 @@ public class LauncherActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == Settings.PICK_ICON_CODE) {
+            if (getAdapterSquare() == null) return;
             if (resultCode == RESULT_OK) {
                 for (Image image : ImagePicker.getImages(data)) {
                     IconRepo.dontDownloadIconFor(this, selectedPackageName);
-                    ((AppsAdapter) appGridViewSquare.getAdapter()).onImageSelected(image.getPath(), selectedImageView);
+                    getAdapterSquare().onImageSelected(image.getPath(), selectedImageView);
                     break;
                 }
-            } else {
-                ((AppsAdapter) appGridViewSquare.getAdapter()).onImageSelected(null, selectedImageView);
-            }
+            } else getAdapterSquare().onImageSelected(null, selectedImageView);
         } else if (requestCode == Settings.PICK_THEME_CODE) {
             if (resultCode == RESULT_OK) {
                 for (Image image : ImagePicker.getImages(data)) {
@@ -317,65 +328,42 @@ public class LauncherActivity extends Activity {
     void updateToolBars() {
         BrowserService.bind(this, browserServiceConnection);
 
-        BlurView blurView0 = rootView.findViewById(R.id.blurView0);
-        BlurView blurView1 = rootView.findViewById(R.id.blurView1);
+        BlurView[] blurViews = new BlurView[]{
+                rootView.findViewById(R.id.blurViewGroups),
+                rootView.findViewById(R.id.blurViewSettingsIcon),
+                rootView.findViewById(R.id.blurViewSearchIcon),
+        };
 
         if (!groupsEnabled) {
-            blurView0.setVisibility(View.GONE);
-            blurView1.setVisibility(View.GONE);
-            animateIn();
+            for (BlurView blurView: blurViews) blurView.setVisibility(View.GONE);
             return;
         }
-        blurView0.setVisibility(View.VISIBLE);
-        blurView1.setVisibility(View.VISIBLE);
-
-        blurView0.setOverlayColor(Color.parseColor(darkMode ? "#4A000000" : "#50FFFFFF"));
-        blurView1.setOverlayColor(Color.parseColor(darkMode ? "#4A000000" : "#50FFFFFF"));
-
-        ImageView settingsIcon = rootView.findViewById(R.id.settingsIcon);
-        settingsIcon.setImageTintList(ColorStateList.valueOf(Color.parseColor(darkMode ? "#FFFFFF" : "#000000")));
 
         float blurRadiusDp = 15f;
 
         View windowDecorView = getWindow().getDecorView();
         ViewGroup rootViewGroup = windowDecorView.findViewById(android.R.id.content);
-
         Drawable windowBackground = windowDecorView.getBackground();
-        blurView0.setupWith(rootViewGroup, new RenderScriptBlur(getApplicationContext())) // or RenderEffectBlur
-                .setFrameClearDrawable(windowBackground) // Optional
-                .setBlurRadius(blurRadiusDp);
-        blurView1.setupWith(rootViewGroup, new RenderScriptBlur(getApplicationContext())) // or RenderEffectBlur
-                .setFrameClearDrawable(windowBackground) // Optional
-                .setBlurRadius(blurRadiusDp);
 
-        blurView0.setOutlineProvider(ViewOutlineProvider.BACKGROUND);
-        blurView0.setClipToOutline(true);
-        blurView1.setOutlineProvider(ViewOutlineProvider.BACKGROUND);
-        blurView1.setClipToOutline(true);
+        for (BlurView blurView: blurViews) {
+            blurView.setVisibility(View.VISIBLE);
+            blurView.setOverlayColor(Color.parseColor(darkMode ? "#4A000000" : "#50FFFFFF"));
+            blurView.setupWith(rootViewGroup, new RenderScriptBlur(getApplicationContext())) // or RenderEffectBlur
+                    .setFrameClearDrawable(windowBackground) // Optional
+                    .setBlurRadius(blurRadiusDp);
+            blurView.setOutlineProvider(ViewOutlineProvider.BACKGROUND);
+            blurView.setClipToOutline(true);
+            blurView.setActivated(false);
+            blurView.setActivated(true);
+            blurView.setActivated(false);
+        }
 
-        // Update then deactivate bv
-        blurView0.setActivated(false);
-        blurView0.setActivated(true);
-        blurView0.setActivated(false);
-
-        // Update then deactivate bv
-        blurView1.setActivated(false);
-        blurView1.setActivated(true);
-        blurView1.setActivated(false);
-
-        animateIn();
-    }
-    private void animateIn() {
-        // Animate opacity
-        ValueAnimator an = android.animation.ObjectAnimator.ofFloat(fadeView, "alpha", 1f);
-        an.setDuration(200);
-        fadeView.post(an::start);
+        ImageView settingsIcon = rootView.findViewById(R.id.settingsIcon);
+        settingsIcon.setImageTintList(ColorStateList.valueOf(Color.parseColor(darkMode ? "#FFFFFF" : "#000000")));
+        ImageView searchIcon   = rootView.findViewById(R.id.searchIcon);
+        searchIcon  .setImageTintList(ColorStateList.valueOf(Color.parseColor(darkMode ? "#FFFFFF" : "#000000")));
     }
 
-    // Static as these should always match between instances
-    static List<ApplicationInfo> installedApps;
-    static List<ApplicationInfo> appListBanner;
-    static List<ApplicationInfo> appListSquare;
 
     public void refreshInterfaceAll() {
         isKillable = false;
@@ -396,8 +384,6 @@ public class LauncherActivity extends Activity {
     }
     protected void refreshInternal() {
         sharedPreferenceEditor.apply();
-
-        fadeView.setAlpha(0); // Set opacity for animation
 
         darkMode = sharedPreferences.getBoolean(Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE);
         groupsEnabled = sharedPreferences.getBoolean(Settings.KEY_GROUPS_ENABLED, Settings.DEFAULT_GROUPS_ENABLED);
@@ -422,7 +408,7 @@ public class LauncherActivity extends Activity {
 
         setAdapters(namesSquare, namesBanner);
 
-        groupPanelGridView.setAdapter(new GroupsAdapter(this, isEditing()));
+        groupGridView.setAdapter(new GroupsAdapter(this, isEditing()));
 
         scrollView.scrollTo(0,0); // Reset scroll
         scrollView.smoothScrollTo(0,0); // Cancel inertia
@@ -433,16 +419,18 @@ public class LauncherActivity extends Activity {
         post(this::updateToolBars);
     }
     protected void setAdapters(boolean namesSquare, boolean namesBanner) {
-        if (appGridViewSquare.getAdapter() == null)
-            appGridViewSquare.setAdapter(new AppsAdapter(this, isEditing(), namesSquare, appListSquare));
+        if (getAdapterSquare() == null)
+            appGridViewSquare.setAdapter(
+                    new AppsAdapter(this, namesSquare, Platform.appListSquare));
         else {
-            ((AppsAdapter) appGridViewSquare.getAdapter()).updateAppList(this);
+            getAdapterSquare().updateAppList(this);
             appGridViewSquare.setAdapter(appGridViewSquare.getAdapter());
         }
-        if (appGridViewBanner.getAdapter() == null)
-            appGridViewBanner.setAdapter(new AppsAdapter(this, isEditing(), namesBanner, appListBanner));
+        if (getAdapterBanner() == null)
+            appGridViewBanner.setAdapter(
+                    new AppsAdapter(this, namesBanner, Platform.appListBanner));
         else {
-            ((AppsAdapter) appGridViewBanner.getAdapter()).updateAppList(this);
+            getAdapterBanner().updateAppList(this);
             appGridViewBanner.setAdapter(appGridViewBanner.getAdapter());
         }
     }
@@ -453,10 +441,10 @@ public class LauncherActivity extends Activity {
 
         // Group rows and relevant values
         View scrollInterior = rootView.findViewById(R.id.mainScrollInterior);
-        if (groupPanelGridView.getAdapter() != null && groupsEnabled) {
-            final int group_columns = Math.min(groupPanelGridView.getAdapter().getCount(), prevViewWidth / 400);
-            groupPanelGridView.setNumColumns(group_columns);
-            final int groupRows = (int) Math.ceil((double) groupPanelGridView.getAdapter().getCount() / group_columns);
+        if (getAdapterGroups() != null && groupsEnabled) {
+            final int group_columns = Math.min(getAdapterGroups().getCount(), prevViewWidth / 400);
+            groupGridView.setNumColumns(group_columns);
+            final int groupRows = (int) Math.ceil((double) getAdapterGroups().getCount() / group_columns);
             scrollInterior.setPadding(0, dp(23 + 22) + dp(40) * groupRows, 0, getBottomBarHeight());
             scrollView.setFadingEdgeLength(dp(23 + 22) + dp(40) * groupRows);
         } else {
@@ -470,6 +458,7 @@ public class LauncherActivity extends Activity {
         int estimatedWidth = prevViewWidth;
         appGridViewSquare.setNumColumns((int) Math.round((double) estimatedWidth/targetSizePx));
         appGridViewBanner.setNumColumns((int) Math.round((double) estimatedWidth/targetSizePx/2));
+        groupGridView.post(() -> groupGridView.setVisibility(View.VISIBLE));
     }
     protected int getBottomBarHeight() {
         return 0; // To be overridden by child
@@ -503,18 +492,19 @@ public class LauncherActivity extends Activity {
     protected void refreshAppDisplayListsWithoutInterface() {
         sharedPreferenceEditor.apply();
 
-        appListBanner = Collections.synchronizedList(new ArrayList<>());
-        appListSquare = Collections.synchronizedList(new ArrayList<>());
+        Platform.appListBanner = Collections.synchronizedList(new ArrayList<>());
+        Platform.appListSquare = Collections.synchronizedList(new ArrayList<>());
 
-        for (ApplicationInfo app: installedApps) {
-            if (App.isBanner(app, this)) appListBanner.add(app);
-            else appListSquare.add(app);
+        for (ApplicationInfo app: Platform.installedApps) {
+            if (App.isBanner(app, this)) Platform.appListBanner.add(app);
+            else Platform.appListSquare.add(app);
         }
         Set<String> webApps = sharedPreferences.getStringSet(Settings.KEY_WEBSITE_LIST, Collections.emptySet());
         for (String url:webApps) {
             ApplicationInfo applicationInfo = new ApplicationInfo();
             applicationInfo.packageName = url;
-            (sharedPreferences.getBoolean(Settings.KEY_WIDE_WEB, Settings.DEFAULT_WIDE_WEB) ? appListBanner : appListSquare)
+            (sharedPreferences.getBoolean(Settings.KEY_WIDE_WEB, Settings.DEFAULT_WIDE_WEB) ?
+                    Platform.appListBanner : Platform.appListSquare)
                     .add(applicationInfo);
         }
     }
@@ -536,9 +526,19 @@ public class LauncherActivity extends Activity {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, getResources().getDisplayMetrics());
     }
 
+    public @Nullable AppsAdapter getAdapterSquare() {
+        return (AppsAdapter) appGridViewSquare.getAdapter();
+    }
+    public @Nullable AppsAdapter getAdapterBanner() {
+        return (AppsAdapter) appGridViewBanner.getAdapter();
+    }
+    public @Nullable GroupsAdapter getAdapterGroups() {
+        return (GroupsAdapter) groupGridView.getAdapter();
+    }
+
     public HashSet<String> getAllPackages() {
         HashSet<String> setAll = new HashSet<>();
-        for (ApplicationInfo app : installedApps) setAll.add(app.packageName);
+        for (ApplicationInfo app : Platform.installedApps) setAll.add(app.packageName);
         return setAll;
     }
 
@@ -573,8 +573,8 @@ public class LauncherActivity extends Activity {
     };
 
     public void clearAdapterCaches() {
-        ((AppsAdapter) appGridViewSquare.getAdapter()).clearViewCache();
-        ((AppsAdapter) appGridViewBanner.getAdapter()).clearViewCache();
+        if (getAdapterSquare() != null) getAdapterSquare().clearViewCache();
+        if (getAdapterBanner() != null) getAdapterBanner().clearViewCache();
     }
 
     // Edit mode stubs, to be overridden by child

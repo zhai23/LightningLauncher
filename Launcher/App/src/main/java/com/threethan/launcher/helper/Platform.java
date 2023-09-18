@@ -1,14 +1,20 @@
 package com.threethan.launcher.helper;
 
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
+
 import com.threethan.launcher.lib.StringLib;
 import com.threethan.launcher.support.SettingsManager;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public abstract class Platform {
+    public static List<ApplicationInfo> installedApps;
+    public static List<ApplicationInfo> appListBanner;
+    public static List<ApplicationInfo> appListSquare;
     public static void clearPackageLists() {
         App.set2d.clear();
         App.setVr.clear();

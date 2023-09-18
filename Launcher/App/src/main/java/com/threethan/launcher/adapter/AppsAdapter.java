@@ -1,7 +1,6 @@
 package com.threethan.launcher.adapter;
 
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -45,16 +44,16 @@ public class AppsAdapter extends BaseAdapter{
     private static String packageName;
     private LauncherActivity launcherActivity;
     private List<ApplicationInfo> currentAppList;
-    private List<ApplicationInfo> fullAppList;
-    private final boolean isEditMode;
+    private final List<ApplicationInfo> fullAppList;
+    private boolean getEditMode() {
+        return launcherActivity.isEditing();
+    }
     private final boolean showTextLabels;
-    public AppsAdapter(LauncherActivity activity, boolean editMode, boolean names, List<ApplicationInfo> myApps) {
+    public AppsAdapter(LauncherActivity activity, boolean names, List<ApplicationInfo> myApps) {
         launcherActivity = activity;
-        isEditMode = editMode;
         showTextLabels = names;
         SettingsManager settingsManager = SettingsManager.getInstance(launcherActivity);
 
-//        ArrayList<String> sortedSelectedGroups = settingsManager.getAppGroupsSorted(true);
         currentAppList = Collections.synchronizedList(settingsManager
                 .getInstalledApps(activity, settingsManager.getAppGroupsSorted(false), myApps));
         fullAppList = myApps;
@@ -65,7 +64,16 @@ public class AppsAdapter extends BaseAdapter{
         SettingsManager settingsManager = SettingsManager.getInstance(activity);
         currentAppList = Collections.synchronizedList(settingsManager
                 .getInstalledApps(activity, settingsManager.getAppGroupsSorted(true), fullAppList));
+    }
+    public synchronized void filterBy(String text) {
+        SettingsManager settingsManager = SettingsManager.getInstance(launcherActivity);
+        final List<ApplicationInfo> tempAppList =
+                settingsManager.getInstalledApps(launcherActivity, settingsManager.getAppGroupsSorted(false), fullAppList);
 
+        currentAppList.clear();
+        for (final ApplicationInfo app : tempAppList)
+            if (StringLib.forSort(SettingsManager.getAppLabel(app)).contains(StringLib.forSort(text)))
+                currentAppList.add(app);
     }
     public void setLauncherActivity(LauncherActivity val) {
         launcherActivity = val;
@@ -145,32 +153,29 @@ public class AppsAdapter extends BaseAdapter{
     }
 
     private void updateView(ViewHolder holder) {
-        if (isEditMode) {
-            holder.view.setOnClickListener(view -> {
+        holder.view.setOnClickListener(view -> {
+            if (getEditMode()) {
                 boolean selected = launcherActivity.selectApp(holder.app.packageName);
-                ValueAnimator an = android.animation.ObjectAnimator.ofFloat(holder.view, "alpha", selected? 0.5F : 1.0F);
+                ObjectAnimator an = ObjectAnimator.ofFloat(holder.view, "alpha", selected ? 0.5F : 1.0F);
                 an.setDuration(150);
                 an.start();
-            });
-            holder.view.setOnLongClickListener(view -> {
-                showAppDetails(holder.app);
-                return true;
-            });
-
-        } else {
-            holder.view.setOnClickListener(view -> {
+            } else {
                 if (Launch.launchApp(launcherActivity, holder.app)) animateOpen(holder);
 
                 boolean isWeb = App.isWebsite(holder.app);
                 if (isWeb) holder.killButton.setVisibility(View.VISIBLE);
                 shouldAnimateClose = isWeb;
-            });
-            holder.view.setOnLongClickListener(view -> {
+            }
+        });
+        holder.view.setOnLongClickListener(view -> {
+            if (getEditMode()) {
+                showAppDetails(holder.app);
+            } else {
                 launcherActivity.setEditMode(true);
                 launcherActivity.selectApp(holder.app.packageName);
-                return true;
-            });
-        }
+            }
+            return true;
+        });
 
         Runnable periodicUpdate = new Runnable() {
             @Override
@@ -178,7 +183,7 @@ public class AppsAdapter extends BaseAdapter{
                 holder.moreButton.setVisibility(holder.view.isHovered() || holder.moreButton.isHovered() ? View.VISIBLE : View.INVISIBLE);
                 boolean selected = launcherActivity.isSelected(holder.app.packageName);
                 if (selected != holder.view.getAlpha() < 0.9) {
-                    ValueAnimator an = android.animation.ObjectAnimator.ofFloat(holder.view, "alpha", selected ? 0.5F : 1.0F);
+                    ObjectAnimator an = ObjectAnimator.ofFloat(holder.view, "alpha", selected ? 0.5F : 1.0F);
                     an.setDuration(150);
                     an.start();
                 }

@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -80,10 +79,14 @@ public class LauncherActivityEditable extends LauncherActivity {
 
             selectionHint.setOnClickListener((view) -> {
                 if (currentSelectedApps.isEmpty()) {
-                    final Adapter appAdapterIcon = ((GridView) rootView.findViewById(R.id.appsViewIcon)).getAdapter();
-                    for (int i=0; i<appAdapterIcon.getCount(); i++) currentSelectedApps.add(((ApplicationInfo) appAdapterIcon.getItem(i)).packageName);
-                    final Adapter appsAdapterWide = ((GridView) rootView.findViewById(R.id.appsViewWide)).getAdapter();
-                    for (int i=0; i<appsAdapterWide.getCount(); i++) currentSelectedApps.add(((ApplicationInfo) appsAdapterWide.getItem(i)).packageName);
+                    final Adapter adapterSquare = getAdapterSquare();
+                    if (adapterSquare != null)
+                        for (int i=0; i<adapterSquare.getCount(); i++)
+                            currentSelectedApps.add(((ApplicationInfo) adapterSquare.getItem(i)).packageName);
+                    final Adapter adapterBanner = getAdapterBanner();
+                    if (adapterBanner != null)
+                        for (int i=0; i<adapterBanner.getCount(); i++)
+                            currentSelectedApps.add(((ApplicationInfo) adapterBanner.getItem(i)).packageName);
                     selectionHintText.setText(R.string.selection_hint_all);
                 } else {
                     currentSelectedApps.clear();
@@ -94,10 +97,14 @@ public class LauncherActivityEditable extends LauncherActivity {
             });
             selectionHintText.setOnClickListener((view) -> {
                 if (currentSelectedApps.isEmpty()) {
-                    final Adapter appAdapterIcon = ((GridView) rootView.findViewById(R.id.appsViewIcon)).getAdapter();
-                    for (int i=0; i<appAdapterIcon.getCount(); i++) currentSelectedApps.add(((ApplicationInfo) appAdapterIcon.getItem(i)).packageName);
-                    final Adapter appsAdapterWide = ((GridView) rootView.findViewById(R.id.appsViewWide)).getAdapter();
-                    for (int i=0; i<appsAdapterWide.getCount(); i++) currentSelectedApps.add(((ApplicationInfo) appsAdapterWide.getItem(i)).packageName);
+                    final Adapter adapterSquare = getAdapterSquare();
+                    if (adapterSquare != null)
+                        for (int i=0; i<adapterSquare.getCount(); i++)
+                            currentSelectedApps.add(((ApplicationInfo) adapterSquare.getItem(i)).packageName);
+                    final Adapter adapterBanner = getAdapterBanner();
+                    if (adapterBanner != null)
+                        for (int i=0; i<adapterBanner.getCount(); i++)
+                            currentSelectedApps.add(((ApplicationInfo) adapterBanner.getItem(i)).packageName);
                     selectionHintText.setText(R.string.selection_hint_all);
                 } else {
                     currentSelectedApps.clear();
@@ -146,8 +153,11 @@ public class LauncherActivityEditable extends LauncherActivity {
 
         // Move apps if any are selected
         if (!currentSelectedApps.isEmpty()) {
-            GroupsAdapter groupsAdapter = (GroupsAdapter) groupPanelGridView.getAdapter();
-            for (String app : currentSelectedApps) groupsAdapter.setGroup(app, group);
+            GroupsAdapter groupsAdapter = getAdapterGroups();
+            if (groupsAdapter != null)
+                for (String app : currentSelectedApps)
+                    groupsAdapter.setGroup(app, group);
+
             TextView selectionHintText = rootView.findViewById(R.id.selectionHintText);
             selectionHintText.setText( currentSelectedApps.size()==1 ?
                     getString(R.string.selection_moved_single, group) :
@@ -302,6 +312,7 @@ public class LauncherActivityEditable extends LauncherActivity {
         ViewGroup rootViewGroup = windowDecorView.findViewById(android.R.id.content);
 
         Drawable windowBackground = windowDecorView.getBackground();
+        //noinspection deprecation
         blurViewE.setupWith(rootViewGroup, new RenderScriptBlur(getApplicationContext())) // or RenderEffectBlur
                 .setFrameClearDrawable(windowBackground) // Optional
                 .setBlurRadius(blurRadiusDp);

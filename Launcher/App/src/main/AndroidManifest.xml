@@ -35,7 +35,7 @@
 
         <!-- Main activity, called by the launcher & shortcut apk -->
         <activity
-            android:name=".launcher.LauncherActivityEditable"
+            android:name=".launcher.LauncherActivitySearchable"
             android:screenOrientation="unspecified"
             android:configChanges="density|keyboard|keyboardHidden|navigation|orientation|screenLayout|screenSize|uiMode"
             android:exported="true"

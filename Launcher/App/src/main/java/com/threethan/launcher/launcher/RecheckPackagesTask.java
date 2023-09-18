@@ -4,6 +4,8 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 
+import com.threethan.launcher.helper.Platform;
+
 import java.lang.ref.WeakReference;
 import java.util.List;
 
@@ -20,7 +22,8 @@ class RecheckPackagesTask extends AsyncTask<Object, Void, Object> {
         PackageManager packageManager = owner.getPackageManager();
         foundApps = packageManager.getInstalledApplications(0);
 
-        changeFound = owner.installedApps == null || owner.installedApps.size() != foundApps.size();
+        changeFound = Platform.installedApps == null ||
+                Platform.installedApps.size() != foundApps.size();
 
         ownerRef = new WeakReference<>(owner);
         return null;

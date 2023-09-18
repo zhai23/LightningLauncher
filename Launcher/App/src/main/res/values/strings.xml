@@ -33,8 +33,8 @@
     <string name="wide_header">Display as Banner</string>
     <string name="name_header">Show Names</string>
 
-    <string name="dark_mode">Light Label &amp; Text Dark Group Bar</string>
-    <string name="group_mode">Always Show Group Bar</string>
+    <string name="dark_mode">Light Label &amp; Text Dark Top Bar</string>
+    <string name="group_mode">Always Show Top Bar</string>
     <string name="clear_cache">Reset All Icons</string>
     <string name="clear_labels">Reset All Labels</string>
     <string name="clear_sort">Move All to Selected Default Groups</string>
