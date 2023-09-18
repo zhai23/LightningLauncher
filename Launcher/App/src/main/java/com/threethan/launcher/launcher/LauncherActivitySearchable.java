@@ -80,7 +80,7 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
                 ColorStateList.valueOf(Color.parseColor(darkMode ? "#FFFFFF" : "#000000")));
 
         ValueAnimator viewAnimator = ValueAnimator.ofInt(endMargin, 0);
-        viewAnimator.setDuration(300);
+        viewAnimator.setDuration(200);
         viewAnimator.setInterpolator(new DecelerateInterpolator());
         viewAnimator.addUpdateListener(animation -> {
             LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) searchBar.getLayoutParams();

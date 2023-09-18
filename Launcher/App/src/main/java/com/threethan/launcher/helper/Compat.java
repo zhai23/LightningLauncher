@@ -120,6 +120,7 @@ public abstract class Compat {
     public static void clearIconCache(LauncherActivity launcherActivity) {
         Log.i(TAG, "Icons cache is being cleared");
 
+        launcherActivity.isKillable = false;
         launcherActivity.launcherService.clearAdapterCachesAll();
 
         IconRepo.downloadFinishedPackages.clear();

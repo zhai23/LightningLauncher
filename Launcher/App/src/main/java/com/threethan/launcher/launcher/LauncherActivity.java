@@ -468,6 +468,7 @@ public class LauncherActivity extends Activity {
         if (index >= SettingsManager.BACKGROUND_DRAWABLES.length || index < 0) index = -1;
         else sharedPreferenceEditor.putBoolean(Settings.KEY_DARK_MODE, SettingsManager.BACKGROUND_DARK[index]);
         sharedPreferenceEditor.putInt(Settings.KEY_BACKGROUND, index);
+        isKillable = false;
         launcherService.refreshBackgroundAll();
     }
     public void refreshBackground() {
