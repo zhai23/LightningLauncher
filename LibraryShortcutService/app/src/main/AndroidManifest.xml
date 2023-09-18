@@ -24,7 +24,8 @@
             android:exported="true"
             android:screenOrientation="unspecified"
             android:configChanges="density|keyboard|keyboardHidden|navigation|orientation|screenLayout|screenSize|uiMode"
-            android:theme="@style/Theme.Base">
+            android:theme="@style/Theme.Base"
+            android:launchMode="singleInstance">
 
             <!--suppress AndroidElementNotAllowed -->
             <layout android:defaultWidth="706dp"

@@ -10,8 +10,8 @@ android {
     defaultConfig {
         applicationId "com.facebook.orca"
         minSdk 23
-        versionCode 1000000500
-        versionName "5.0.0"
+        versionCode 1000000510 // High version number prevent auto-update with real Messenger
+        versionName "5.1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
