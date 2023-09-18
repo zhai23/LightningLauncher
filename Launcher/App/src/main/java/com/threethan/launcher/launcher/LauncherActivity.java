@@ -37,7 +37,6 @@ import com.threethan.launcher.adapter.GroupsAdapter;
 import com.threethan.launcher.browser.BrowserService;
 import com.threethan.launcher.helper.App;
 import com.threethan.launcher.helper.Compat;
-import com.threethan.launcher.helper.Debug;
 import com.threethan.launcher.helper.IconRepo;
 import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
@@ -207,7 +206,7 @@ public class LauncherActivity extends Activity {
         final String group = groupsSorted.get(position);
 
         if (settingsManager.selectGroup(group)) refreshInterface();
-        else recheckPackages(); // If clicking on the same single group, check if there are any new packages
+        recheckPackages();
     }
     protected boolean longClickGroup(View view, int position) {
         List<String> groups = settingsManager.getAppGroupsSorted(false);
@@ -274,6 +273,7 @@ public class LauncherActivity extends Activity {
         try {
             new RecheckPackagesTask().execute(this);
         } catch (Exception ignore) {
+            reloadPackages();
             Log.w("LightningLauncher", "Exception while starting recheck package task");
         }
     }
@@ -480,8 +480,8 @@ public class LauncherActivity extends Activity {
     protected void refreshAppDisplayListsWithoutInterface() {
         sharedPreferenceEditor.apply();
 
-        Platform.appListBanner = Collections.synchronizedList(new ArrayList<>());
         Platform.appListSquare = Collections.synchronizedList(new ArrayList<>());
+        Platform.appListBanner = Collections.synchronizedList(new ArrayList<>());
 
         for (ApplicationInfo app: Platform.installedApps) {
             if (App.isBanner(app, this)) Platform.appListBanner.add(app);
@@ -495,6 +495,11 @@ public class LauncherActivity extends Activity {
                     Platform.appListBanner : Platform.appListSquare)
                     .add(applicationInfo);
         }
+
+        if (getAdapterSquare() != null)
+            getAdapterSquare().setFullAppList(this, Platform.appListSquare);
+        if (getAdapterBanner() != null)
+            getAdapterBanner().setFullAppList(this, Platform.appListBanner);
     }
 
     // Utility functions

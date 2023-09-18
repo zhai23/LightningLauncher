@@ -32,8 +32,7 @@ public abstract class Launch {
             if (App.isWebsite(app))
                 try {
                     launcherActivity.browserService.killActivities();
-                } catch (Exception ignored) {
-                }
+                } catch (Exception ignored) {}
 
             launcherActivity.launcherService.finishAllActivities();
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

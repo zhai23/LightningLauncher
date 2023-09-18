@@ -44,7 +44,7 @@ public class AppsAdapter extends BaseAdapter{
     private static String packageName;
     private LauncherActivity launcherActivity;
     private List<ApplicationInfo> currentAppList;
-    private final List<ApplicationInfo> fullAppList;
+    private List<ApplicationInfo> fullAppList;
     private boolean getEditMode() {
         return launcherActivity.isEditing();
     }
@@ -56,6 +56,9 @@ public class AppsAdapter extends BaseAdapter{
 
         currentAppList = Collections.synchronizedList(settingsManager
                 .getInstalledApps(activity, settingsManager.getAppGroupsSorted(false), myApps));
+        fullAppList = myApps;
+    }
+    public void setFullAppList(LauncherActivity activity, List<ApplicationInfo> myApps) {
         fullAppList = myApps;
     }
     public void updateAppList(LauncherActivity activity) {
