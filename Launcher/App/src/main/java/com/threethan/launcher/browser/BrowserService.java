@@ -67,7 +67,7 @@ public class BrowserService extends Service {
             Activity owner = activityByBaseUrl.get(url);
             if (owner != null && owner != activity) {
                 owner.finish();
-                activityByBaseUrl.remove(url);
+                activityByBaseUrl.put(url, activity);
             }
         } else {
             webView = new BrowserWebView(getApplicationContext());

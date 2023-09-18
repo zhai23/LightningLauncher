@@ -35,10 +35,12 @@ import com.threethan.launcher.adapter.GroupsAdapter;
 import com.threethan.launcher.browser.BrowserService;
 import com.threethan.launcher.helper.App;
 import com.threethan.launcher.helper.Compat;
+import com.threethan.launcher.helper.Debug;
 import com.threethan.launcher.helper.IconRepo;
 import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.lib.ImageLib;
+import com.threethan.launcher.lib.SettingsDialog;
 import com.threethan.launcher.support.SettingsManager;
 import com.threethan.launcher.support.Updater;
 import com.threethan.launcher.view.DynamicHeightGridView;
@@ -68,17 +70,16 @@ public class LauncherActivity extends Activity {
     public View mainView;
     public View fadeView;
     private int prevViewWidth;
+    public boolean isKillable = false;
 
     // Settings
     public SettingsManager settingsManager;
     public boolean settingsVisible;
     public LauncherService launcherService;
     protected static String TAG = "LightningLauncher";
-    public boolean canBeKilled = false;
     @Override
     protected void onStart() {
         super.onStart();
-        canBeKilled = false;
 
         // Bind to Launcher Service
         Intent intent = new Intent(this, LauncherService.class);
@@ -95,15 +96,8 @@ public class LauncherActivity extends Activity {
 
     @Override
     protected void onStop() {
+        isKillable = true;
         super.onStop();
-        canBeKilled = true;
-        // Check if this activity is somehow not acknowledged by the service
-        // this should only ever happen if something is updated/reinstalled, or killed manually
-        if (launcherService != null && !launcherService.hasRegisteredView(this)) {
-            Log.w(TAG, "Activity was not registered & will be killed." +
-                    "This should only happen when something was reinstalled!");
-            finishAndRemoveTask();
-        }
     }
 
     @SuppressLint("UnspecifiedRegisterReceiverFlag") // Can't be fixed on this android API
@@ -116,8 +110,9 @@ public class LauncherActivity extends Activity {
     private void onBound() {
         final boolean hasView = launcherService.checkForExistingView();
 
-        if (hasView) startWithExistingActivity();
-        else         startWithNewActivity();
+//        if (hasView) startWithExistingActivity();
+//        else         startWithNewActivity();
+        startWithNewActivity();
 
         AppsAdapter.shouldAnimateClose = false;
         AppsAdapter.animateClose(this);
@@ -125,6 +120,7 @@ public class LauncherActivity extends Activity {
         postDelayed(() -> new Updater(this).checkForAppUpdate(), 1000);
     }
     protected void startWithNewActivity() {
+        Log.v(TAG, "Starting with new view");
         rootView = launcherService.getNewView(this);
 
         ViewGroup containerView = findViewById(R.id.container);
@@ -139,7 +135,7 @@ public class LauncherActivity extends Activity {
         refreshInterface();
     }
     protected void startWithExistingActivity() {
-        Log.v(TAG, "Using existing view for ID "+getId());
+        Log.v(TAG, "Starting with existing view");
         rootView = launcherService.getExistingView(this);
 
         ViewGroup containerView = findViewById(R.id.container);
@@ -219,7 +215,8 @@ public class LauncherActivity extends Activity {
 
     @Override
     protected void onDestroy() {
-        Log.v(TAG, "Activity is being destroyed" + (isFinishing() ? "Finishing" : "Not Finishing"));
+        Log.v(TAG, "Activity is being destroyed - "
+                + (isFinishing() ? "Finishing" : "Not Finishing"));
         launcherService.destroyed(this);
         try {
             unbindService(launcherServiceConnection); // Should rarely cause exception
@@ -236,6 +233,7 @@ public class LauncherActivity extends Activity {
     }
     @Override
     protected void onResume() {
+        isKillable = false;
         super.onResume();
         try {
             AppsAdapter.animateClose(this);
@@ -254,7 +252,7 @@ public class LauncherActivity extends Activity {
         PackageManager packageManager = getPackageManager();
         installedApps = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);
         installedApps = Collections.synchronizedList(installedApps);
-        refreshAppDisplayLists();
+        refreshAppDisplayListsWithoutInterface();
     }
 
     public void recheckPackages() {
@@ -298,6 +296,18 @@ public class LauncherActivity extends Activity {
                 }
             }
         }
+    }
+
+    @Override
+    public void finish() {
+        Debug.printStackTrace();
+        super.finish();
+    }
+
+    @Override
+    public void finishAndRemoveTask() {
+        Debug.printStackTrace();
+        super.finishAndRemoveTask();
     }
 
     void updateTopBar() {
@@ -364,6 +374,7 @@ public class LauncherActivity extends Activity {
     static List<ApplicationInfo> appListSquare;
 
     public void refreshInterfaceAll() {
+        isKillable = false;
         if (sharedPreferenceEditor != null) sharedPreferenceEditor.apply();
         try {
             launcherService.refreshInterfaceAll();
@@ -468,6 +479,10 @@ public class LauncherActivity extends Activity {
     }
 
     public void refreshAppDisplayLists() {
+        refreshAppDisplayListsWithoutInterface();
+        refreshInterfaceAll();
+    }
+    protected void refreshAppDisplayListsWithoutInterface() {
         sharedPreferenceEditor.apply();
 
         appListBanner = Collections.synchronizedList(new ArrayList<>());
@@ -484,7 +499,6 @@ public class LauncherActivity extends Activity {
             (sharedPreferences.getBoolean(Settings.KEY_WIDE_WEB, Settings.DEFAULT_WIDE_WEB) ? appListBanner : appListSquare)
                     .add(applicationInfo);
         }
-        refreshInterfaceAll();
     }
 
     // Utility functions
@@ -553,6 +567,4 @@ public class LauncherActivity extends Activity {
     }
     public boolean isEditing() { return false; }
     public boolean canEdit() { return false; }
-
-    public String getId() { return "default"; }
 }

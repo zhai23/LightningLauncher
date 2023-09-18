@@ -6,7 +6,7 @@ import android.content.pm.PackageManager;
 import android.util.Log;
 
 import com.threethan.launcher.launcher.LauncherActivity;
-import com.threethan.launcher.lib.FileLib;
+import com.threethan.launcher.lib.DataLib;
 import com.threethan.launcher.adapter.GroupsAdapter;
 import com.threethan.launcher.lib.StringLib;
 import com.threethan.launcher.support.SettingsManager;
@@ -113,7 +113,7 @@ public abstract class Compat {
 
     public static void clearIcons(LauncherActivity launcherActivity) {
         Log.i(TAG, "Icons are being cleared");
-        FileLib.delete(launcherActivity.getApplicationInfo().dataDir);
+        DataLib.delete(launcherActivity.getApplicationInfo().dataDir);
         launcherActivity.sharedPreferenceEditor.remove(SettingsManager.DONT_DOWNLOAD_ICONS); 
         clearIconCache(launcherActivity);
     }

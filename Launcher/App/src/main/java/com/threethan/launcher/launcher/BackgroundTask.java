@@ -30,9 +30,7 @@ class BackgroundTask extends AsyncTask<Object, Void, Object> {
             try {
                 Bitmap backgroundBitmap = ImageLib.bitmapFromFile(owner, file);
                 backgroundThemeDrawable = new BitmapDrawable(owner.getResources(), backgroundBitmap);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            } catch (Exception e) { e.printStackTrace(); }
         }
         ownerRef = new WeakReference<>(owner);
         return null;

@@ -1,4 +1,4 @@
-package com.threethan.launcher.launcher;
+package com.threethan.launcher.lib;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import com.threethan.launcher.R;
 import com.threethan.launcher.helper.App;
 import com.threethan.launcher.helper.Dialog;
+import com.threethan.launcher.launcher.LauncherActivity;
 import com.threethan.launcher.support.Updater;
 
 import java.lang.ref.WeakReference;
@@ -33,9 +34,7 @@ public abstract class AddonDialog {
         updateAddonButton(a, addonLibrary, Updater.TAG_LIBRARY_SHORTCUT);
 
         dialog.findViewById(R.id.exitButton).setOnClickListener(v -> dialog.dismiss());
-        dialog.findViewById(R.id.disableExplore).setOnClickListener(v -> {
-            App.openInfo(a, EXPLORE_PACKAGE);
-        });
+        dialog.findViewById(R.id.disableExplore).setOnClickListener(v -> App.openInfo(a, EXPLORE_PACKAGE));
     }
     public static void updateAddonButton(final Activity a, final View outerView, final String tag) {
         final View uninstallButton = outerView.findViewById(R.id.addonUninstall);
@@ -70,7 +69,7 @@ public abstract class AddonDialog {
                         activateButton.setVisibility(View.VISIBLE);
                         break;
                 }
-                if (outerView != null) outerView.postDelayed(this, 100);
+                outerView.postDelayed(this, 100);
             }
         };
         outerView.post(updateButtonRunnable);

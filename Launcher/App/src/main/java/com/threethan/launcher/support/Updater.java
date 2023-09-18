@@ -29,7 +29,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.threethan.launcher.R;
 import com.threethan.launcher.launcher.LauncherActivity;
-import com.threethan.launcher.lib.FileLib;
+import com.threethan.launcher.lib.DataLib;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -82,7 +82,7 @@ public class Updater {
             if (!packageInfo.versionName.equals(savedVersion)) {
                 Log.i(TAG, String.format("Update was detected! Old update files will be cleared..." +
                         " (%s)->(%s)", packageInfo.versionName, savedVersion));
-                FileLib.delete(UPDATE_DIR);
+                DataLib.delete(UPDATE_DIR);
                 activity.sharedPreferenceEditor.putString(KEY_SAVED_VERSION_CODE, packageInfo.versionName).apply();
             }
         } catch (PackageManager.NameNotFoundException e) {

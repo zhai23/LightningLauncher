@@ -36,8 +36,6 @@ public abstract class Launch {
                 }
 
             launcherActivity.launcherService.finishAllActivities();
-            if (launcherActivity != null) launcherActivity.finishAndRemoveTask();
-
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
             new Timer().schedule(new TimerTask() {
