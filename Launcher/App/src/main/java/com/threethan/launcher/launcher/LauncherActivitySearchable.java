@@ -143,13 +143,12 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
         searchText.setOnEdited(this::searchFor);
         searchText.setOnKeyListener((v, keyCode, event) -> {
             if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                    // Perform action on Enter key press
-                    if (getAdapterBanner() != null && getAdapterBanner().getCount() == 1)
+                if (event.getAction() == KeyEvent.ACTION_DOWN)
+                    // Launch the first visible icon when enter is pressed
+                    if (getAdapterBanner() != null && getAdapterBanner().getCount() > 0)
                         Launch.launchApp(this, (ApplicationInfo) getAdapterBanner().getItem(0));
-                    else if (getAdapterSquare() != null && getAdapterSquare().getCount() == 1)
+                    else if (getAdapterSquare() != null && getAdapterSquare().getCount() > 0)
                         Launch.launchApp(this, (ApplicationInfo) getAdapterBanner().getItem(0));
-                }
                 return true;
             }
             return false;

@@ -318,6 +318,7 @@ public class AppsAdapter extends BaseAdapter{
         // Save Label & Reload on Confirm
         dialog.findViewById(R.id.confirm).setOnClickListener(view -> {
             SettingsManager.setAppLabel(currentApp, StringLib.setStarred(appNameEditText.getText().toString(), isStarred[0]));
+            clearViewCache();
             dialog.dismiss();
             launcherActivity.refreshInterfaceAll();
         });

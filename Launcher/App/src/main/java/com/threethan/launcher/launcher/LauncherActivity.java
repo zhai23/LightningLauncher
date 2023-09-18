@@ -139,6 +139,11 @@ public class LauncherActivity extends Activity {
         // Load Interface
         refreshBackground();
         refreshInterface();
+
+        // Animate in the apps
+        ValueAnimator an = android.animation.ObjectAnimator.ofFloat(fadeView, "alpha", 1f);
+        an.setDuration(150);
+        fadeView.post(an::start);
     }
     protected void startWithExistingActivity() {
         Log.v(TAG, "Starting with existing view");
@@ -149,6 +154,8 @@ public class LauncherActivity extends Activity {
 
         try {
             init();
+
+            fadeView.setAlpha(1f); // Just in case the app was closed before it faded in
 
             // Take ownership of adapters (which are currently referencing a dead activity)
             Objects.requireNonNull(getAdapterSquare()).setLauncherActivity(this);
@@ -165,7 +172,6 @@ public class LauncherActivity extends Activity {
             e.printStackTrace();
             Log.e(TAG, "Attempting to start with a new activity...");
         }
-
     }
 
     protected void init() {
@@ -193,12 +199,6 @@ public class LauncherActivity extends Activity {
         settingsImageView.setOnClickListener(view -> {
             if (!settingsVisible) SettingsDialog.showSettings(this);
         });
-
-        // Animate & reduce flicker
-        fadeView.setAlpha(0f);
-        ValueAnimator an = android.animation.ObjectAnimator.ofFloat(fadeView, "alpha", 1f);
-        an.setDuration(150);
-        fadeView.post(an::start);
     }
 
     protected void clickGroup(int position) {
