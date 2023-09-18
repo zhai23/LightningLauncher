@@ -1,11 +1,14 @@
 package com.threethan.launcher.launcher;
 
+import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.EditText;
 import android.widget.GridView;
@@ -28,6 +31,9 @@ import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import eightbitlab.com.blurview.BlurView;
+import eightbitlab.com.blurview.RenderScriptBlur;
 
 
 public class LauncherActivityEditable extends LauncherActivity {
@@ -52,15 +58,9 @@ public class LauncherActivityEditable extends LauncherActivity {
 
     @Override
     protected void refreshInternal() {
-        super.refreshInternal();
-
-
         if (editMode == null) editMode = sharedPreferences.getBoolean(Settings.KEY_EDIT_MODE, false);
 
-        if (!groupsEnabled && editMode) {
-            groupsEnabled = true;
-            updateTopBar();
-        }
+        super.refreshInternal();
 
         final View editFooter = rootView.findViewById(R.id.editFooter);
         if (editMode) {
@@ -72,10 +72,10 @@ public class LauncherActivityEditable extends LauncherActivity {
             final View uninstallButton = rootView.findViewById(R.id.uninstallBulk);
 
             for (TextView textView: new TextView[]{selectionHintText, rootView.findViewById(R.id.addWebsite), rootView.findViewById(R.id.stopEditing)}) {
-                textView.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(darkMode ? "#3a3a3c" : "#FFFFFF")));
+                textView.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(darkMode ? "#80000000" : "#FFFFFF")));
                 textView.setTextColor(Color.parseColor(darkMode ? "#FFFFFF" : "#000000"));
             }
-            selectionHint  .setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(darkMode ? "#3a3a3c" : "#FFFFFF")));
+            selectionHint  .setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(darkMode ? "#80000000" : "#FFFFFF")));
             uninstallButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(darkMode ? "#FFFFFF" : "#3a3a3c")));
 
             selectionHint.setOnClickListener((view) -> {
@@ -114,7 +114,16 @@ public class LauncherActivityEditable extends LauncherActivity {
                 }
             });
         }
-        editFooter.setVisibility(editMode ? View.VISIBLE : View.GONE);
+        if (editFooter.getVisibility() == View.GONE && editMode) {
+            editFooter.setTranslationY(100f);
+            editFooter.setVisibility(View.VISIBLE);
+        }
+        ObjectAnimator aF = ObjectAnimator.ofFloat(editFooter, "TranslationY", editMode ?0f:100f);
+        aF.setDuration(200);
+        aF.start();
+        if (!editMode) editFooter.postDelayed(() -> {
+            if (!editMode) editFooter.setVisibility(View.GONE);
+        }, 200);
 
         if (!editMode) {
             currentSelectedApps.clear();
@@ -277,5 +286,29 @@ public class LauncherActivityEditable extends LauncherActivity {
             addWebsite(this);
             subDialog.dismiss();
         });
+    }
+
+    @Override
+    void updateToolBars() {
+        super.updateToolBars();
+        if (!isEditing()) return;
+
+        BlurView blurViewE = rootView.findViewById(R.id.editFooter);
+        blurViewE.setOverlayColor(Color.parseColor(darkMode ? "#4A000000" : "#50FFFFFF"));
+
+        float blurRadiusDp = 15f;
+
+        View windowDecorView = getWindow().getDecorView();
+        ViewGroup rootViewGroup = windowDecorView.findViewById(android.R.id.content);
+
+        Drawable windowBackground = windowDecorView.getBackground();
+        blurViewE.setupWith(rootViewGroup, new RenderScriptBlur(getApplicationContext())) // or RenderEffectBlur
+                .setFrameClearDrawable(windowBackground) // Optional
+                .setBlurRadius(blurRadiusDp);
+
+        // Update then deactivate bv
+        blurViewE.setActivated(false);
+        blurViewE.setActivated(true);
+        blurViewE.setActivated(false);
     }
 }

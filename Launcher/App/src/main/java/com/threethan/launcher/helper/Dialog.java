@@ -10,7 +10,7 @@ public abstract class Dialog {
 
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawableResource(R.drawable.bkg_dialog);
-            dialog.getWindow().setDimAmount(0.15f);
+            dialog.getWindow().setDimAmount(0.2f);
         }
         dialog.show();
         return dialog;

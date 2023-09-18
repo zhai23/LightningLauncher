@@ -185,8 +185,8 @@ public class GroupsAdapter extends BaseAdapter {
             dialog.findViewById(R.id.deleteGroupButton).setOnClickListener(view1 -> {
                 HashMap<String, String> appGroupMap = new HashMap<>();
                 for (String packageName : apps.keySet())
-                    if (groupName.equals(apps.get(packageName))) appGroupMap.put(packageName, null);
-                    else appGroupMap.put(packageName, apps.get(packageName));
+                    if (!groupName.equals(apps.get(packageName)))
+                        appGroupMap.put(packageName, apps.get(packageName));
 
                 SettingsManager.setAppGroupMap(appGroupMap);
                 appGroupsSet.remove(groupName);

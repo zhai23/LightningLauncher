@@ -80,6 +80,7 @@ public class LauncherActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
+        isKillable = false;
 
         // Bind to Launcher Service
         Intent intent = new Intent(this, LauncherService.class);
@@ -107,12 +108,14 @@ public class LauncherActivity extends Activity {
         setContentView(R.layout.activity_container);
     }
     public View rootView;
+
+
     private void onBound() {
+        isKillable = false;
         final boolean hasView = launcherService.checkForExistingView();
 
-//        if (hasView) startWithExistingActivity();
-//        else         startWithNewActivity();
-        startWithNewActivity();
+        if (hasView) startWithExistingActivity();
+        else         startWithNewActivity();
 
         AppsAdapter.shouldAnimateClose = false;
         AppsAdapter.animateClose(this);
@@ -150,7 +153,7 @@ public class LauncherActivity extends Activity {
             recheckPackages(); // Just check, don't force it
 
             groupsEnabled = sharedPreferences.getBoolean(Settings.KEY_GROUPS_ENABLED, Settings.DEFAULT_GROUPS_ENABLED);
-            post(this::updateTopBar); // Fix visual bugs with the blur views
+            post(this::updateToolBars); // Fix visual bugs with the blur views
         } catch (Exception e) {
             // Attempt to work around problems with backgrounded activities
             Log.e(TAG, "Crashed due to exception while re-initiating existing activity");
@@ -262,8 +265,9 @@ public class LauncherActivity extends Activity {
             Log.w("LightningLauncher", "Exception while starting recheck package task");
         }
     }
-    private ImageView selectedImageView;
+
     private String selectedPackageName;
+    private ImageView selectedImageView;
     public void setSelectedIconImage(ImageView imageView, String packageName) {
         selectedImageView = imageView;
         selectedPackageName = packageName;
@@ -310,11 +314,11 @@ public class LauncherActivity extends Activity {
         super.finishAndRemoveTask();
     }
 
-    void updateTopBar() {
+    void updateToolBars() {
+        BrowserService.bind(this, browserServiceConnection);
+
         BlurView blurView0 = rootView.findViewById(R.id.blurView0);
         BlurView blurView1 = rootView.findViewById(R.id.blurView1);
-
-        BrowserService.bind(this, browserServiceConnection);
 
         if (!groupsEnabled) {
             blurView0.setVisibility(View.GONE);
@@ -364,7 +368,7 @@ public class LauncherActivity extends Activity {
     private void animateIn() {
         // Animate opacity
         ValueAnimator an = android.animation.ObjectAnimator.ofFloat(fadeView, "alpha", 1f);
-        an.setDuration(100);
+        an.setDuration(200);
         fadeView.post(an::start);
     }
 
@@ -398,6 +402,7 @@ public class LauncherActivity extends Activity {
         darkMode = sharedPreferences.getBoolean(Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE);
         groupsEnabled = sharedPreferences.getBoolean(Settings.KEY_GROUPS_ENABLED, Settings.DEFAULT_GROUPS_ENABLED);
 
+        if (!groupsEnabled && isEditing()) groupsEnabled = true;
         refreshAdapters();
     }
     public void refreshAdapters() {
@@ -426,7 +431,7 @@ public class LauncherActivity extends Activity {
         prevViewWidth = -1;
         updateGridViewHeights();
 
-        post(this::updateTopBar);
+        post(this::updateToolBars);
     }
 
     public void updateGridViewHeights() {

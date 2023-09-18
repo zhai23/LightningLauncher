@@ -1,6 +1,5 @@
 package com.threethan.launcher.lib;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,6 +13,7 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import com.esafirm.imagepicker.features.ImagePicker;
+import com.threethan.launcher.launcher.LauncherActivity;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -39,7 +39,7 @@ public class ImageLib {
     }
 
     public static void saveBitmap(Bitmap bitmap, File destinationFile) {
-        FileOutputStream fileOutputStream = null;
+        FileOutputStream fileOutputStream;
         try {
             fileOutputStream = new FileOutputStream(destinationFile);
             bitmap.compress(Bitmap.CompressFormat.WEBP, 100, fileOutputStream);
@@ -49,18 +49,16 @@ public class ImageLib {
             throw new RuntimeException(e);
         }
     }
-
-    public static void showImagePicker(Activity activity, int requestCode) {
-        ImagePicker imagePicker = ImagePicker.create(activity).single();
+    public static void showImagePicker(LauncherActivity activity, int requestCode) {
+        ImagePicker imagePicker = ImagePicker.create(activity);
+        imagePicker.single();
         imagePicker.showCamera(false);
         imagePicker.folderMode(true);
         imagePicker.start(requestCode);
     }
 
     public static Bitmap bitmapFromDrawable (Drawable drawable) {
-        if (drawable instanceof BitmapDrawable) {
-            return ((BitmapDrawable)drawable).getBitmap();
-        }
+        if (drawable instanceof BitmapDrawable) return ((BitmapDrawable)drawable).getBitmap();
 
         Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
