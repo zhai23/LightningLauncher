@@ -39,6 +39,7 @@
             android:screenOrientation="unspecified"
             android:configChanges="density|keyboard|keyboardHidden|navigation|orientation|screenLayout|screenSize|uiMode"
             android:exported="true"
+            android:documentLaunchMode="always"
             android:resizeableActivity="true">
 
             <layout android:defaultWidth="706dp" android:defaultHeight="442dp" android:gravity="top|end" />

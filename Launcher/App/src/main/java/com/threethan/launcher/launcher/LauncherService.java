@@ -90,7 +90,7 @@ public class LauncherService extends Service {
                 Log.v("LauncherService", "Removed inactive view at "+index);
             } else {
                 LauncherActivity activity = DataLib.keyByValue(activityByIndex, index);
-                if (activity == null) return;
+                if (activity == null) continue;
                 if (activity.isKillable) activity.finish();
             }
     }

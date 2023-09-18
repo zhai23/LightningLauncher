@@ -312,19 +312,6 @@ public class LauncherActivity extends Activity {
             }
         }
     }
-
-    @Override
-    public void finish() {
-        Debug.printStackTrace();
-        super.finish();
-    }
-
-    @Override
-    public void finishAndRemoveTask() {
-        Debug.printStackTrace();
-        super.finishAndRemoveTask();
-    }
-
     void updateToolBars() {
         BrowserService.bind(this, browserServiceConnection);
 
