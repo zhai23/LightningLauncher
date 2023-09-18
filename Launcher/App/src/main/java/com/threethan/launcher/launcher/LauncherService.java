@@ -49,7 +49,10 @@ public class LauncherService extends Service {
 
         assert view != null;
         ViewGroup parent = (ViewGroup) view.getParent();
-        if (parent != null) parent.removeView(view);
+        if (parent != null) {
+            Log.i("LauncherService", "Removing view from parent "+parent);
+            parent.removeView(view);
+        }
 
         indexByActivity.put(activity, index);
 
@@ -69,7 +72,6 @@ public class LauncherService extends Service {
     protected int getNewActivityIndex() {
         int i = 0;
         while(indexByActivity.containsValue(i)) i++;
-        Log.v("LauncherService", "Queried new index, got "+String.valueOf(i));
         return i;
     }
     public void destroyed(LauncherActivity activity) {
@@ -78,8 +80,6 @@ public class LauncherService extends Service {
 
     public void finishAllActivities() {
         for (Activity activity: indexByActivity.keySet()) activity.finishAndRemoveTask();
-        Intent finishIntent = new Intent(LauncherActivity.FINISH_ACTION);
-        sendBroadcast(finishIntent);
     }
 
     private final Set<View> needsRefresh = Collections.synchronizedSet(new HashSet<>());

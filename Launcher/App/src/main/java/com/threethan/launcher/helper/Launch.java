@@ -31,7 +31,7 @@ public abstract class Launch {
             // Launch in own window properly
             if (App.isWebsite(app))
                 try {
-                    launcherActivity.wService.killActivities();
+                    launcherActivity.browserService.killActivities();
                 } catch (Exception ignored) {
                 }
 

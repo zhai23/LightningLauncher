@@ -3,11 +3,9 @@ package com.threethan.launcher.launcher;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
@@ -76,15 +74,6 @@ public class LauncherActivity extends Activity {
     public boolean settingsVisible;
     public LauncherService launcherService;
     protected static String TAG = "LightningLauncher";
-
-    public static String FINISH_ACTION = "com.threethan.launcher.FINISH";
-    protected BroadcastReceiver finishReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            finishAndRemoveTask();
-        }
-    };
-
     public boolean canBeKilled = false;
     @Override
     protected void onStart() {
@@ -108,7 +97,6 @@ public class LauncherActivity extends Activity {
     protected void onStop() {
         super.onStop();
         canBeKilled = true;
-        Log.v(TAG, "onStop called");
         // Check if this activity is somehow not acknowledged by the service
         // this should only ever happen if something is updated/reinstalled, or killed manually
         if (launcherService != null && !launcherService.hasRegisteredView(this)) {
@@ -123,7 +111,6 @@ public class LauncherActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_container);
-        registerReceiver(finishReceiver, new IntentFilter(FINISH_ACTION));
     }
     public View rootView;
     private void onBound() {
@@ -234,11 +221,12 @@ public class LauncherActivity extends Activity {
     protected void onDestroy() {
         Log.v(TAG, "Activity is being destroyed" + (isFinishing() ? "Finishing" : "Not Finishing"));
         launcherService.destroyed(this);
-        unbindService(launcherServiceConnection);
-        unbindService(browserServiceConnection);
+        try {
+            unbindService(launcherServiceConnection); // Should rarely cause exception
+            unbindService(browserServiceConnection); // Will ofter cause an exception if uncaught
+        } catch (RuntimeException ignored) {} //Runtime exception called when a service is invalid
         // For the GC & easier debugging
         settingsManager = null;
-        unregisterReceiver(finishReceiver);
         super.onDestroy();
     }
     @Override
@@ -248,12 +236,12 @@ public class LauncherActivity extends Activity {
     }
     @Override
     protected void onResume() {
+        super.onResume();
         try {
             AppsAdapter.animateClose(this);
             recheckPackages();
             BrowserService.bind(this, browserServiceConnection);
         } catch (Exception ignored) {} // Will fail if service hasn't bound yet
-        super.onResume();
     }
 
     public void reloadPackages() {
@@ -523,7 +511,7 @@ public class LauncherActivity extends Activity {
     }
 
     // Services
-    public BrowserService wService;
+    public BrowserService browserService;
 
     /** Defines callbacks for service binding, passed to bindService(). */
     private final ServiceConnection launcherServiceConnection = new ServiceConnection() {
@@ -546,7 +534,7 @@ public class LauncherActivity extends Activity {
                                        IBinder service) {
             // We've bound to LocalService, cast the IBinder and get LocalService instance.
             BrowserService.LocalBinder binder = (BrowserService.LocalBinder) service;
-            wService = binder.getService();
+            browserService = binder.getService();
         }
         @Override
         public void onServiceDisconnected(ComponentName arg0) {}

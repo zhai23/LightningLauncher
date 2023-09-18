@@ -116,7 +116,7 @@ public abstract class App {
         if (App.isWebsite(packageName)) {
             Set<String> webApps = launcher.sharedPreferences.getStringSet(Settings.KEY_WEBSITE_LIST, Collections.emptySet());
             webApps = new HashSet<>(webApps); // Copy since we're not supposed to modify directly
-            launcher.wService.killWebView(packageName); // Kill web view if running
+            launcher.browserService.killWebView(packageName); // Kill web view if running
             webApps.remove(packageName);
             launcher.sharedPreferenceEditor
                     .putString(packageName, null) // set display name

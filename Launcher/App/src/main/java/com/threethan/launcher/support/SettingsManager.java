@@ -354,14 +354,14 @@ public class SettingsManager extends Settings {
     public static boolean getRunning(String pkgName) {
         if (!App.isWebsite(pkgName)) return false;
         try {
-            return anyLauncherActivityRef.get().wService.hasWebView(pkgName);
+            return anyLauncherActivityRef.get().browserService.hasWebView(pkgName);
         } catch (NullPointerException ignored) {
             return false;
         }
     }
     public static void stopRunning (String pkgName) {
         try {
-            anyLauncherActivityRef.get().wService.killWebView(pkgName);
+            anyLauncherActivityRef.get().browserService.killWebView(pkgName);
         } catch (NullPointerException ignored) {}
     }
  }

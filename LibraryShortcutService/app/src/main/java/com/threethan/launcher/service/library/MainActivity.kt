@@ -16,7 +16,7 @@ class MainActivity : Activity() {
         return false
     }
     private fun launchIt(launchIntent: Intent): Boolean {
-        launchIntent.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION
+        launchIntent.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION or Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
         finish()
         startActivity(launchIntent)
         return true
