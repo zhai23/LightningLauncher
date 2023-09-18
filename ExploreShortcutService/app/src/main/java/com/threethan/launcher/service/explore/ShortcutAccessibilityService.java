@@ -27,12 +27,6 @@ public class ShortcutAccessibilityService extends AccessibilityService {
                         startActivity(launchIntent);
                     }
                 }, 650);
-                new Timer().schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        startActivity(launchIntent);
-                    }
-                }, 800);
             }
         }
     }
