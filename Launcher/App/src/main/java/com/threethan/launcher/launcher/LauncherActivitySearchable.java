@@ -148,7 +148,7 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
                     if (getAdapterBanner() != null && getAdapterBanner().getCount() > 0)
                         Launch.launchApp(this, (ApplicationInfo) getAdapterBanner().getItem(0));
                     else if (getAdapterSquare() != null && getAdapterSquare().getCount() > 0)
-                        Launch.launchApp(this, (ApplicationInfo) getAdapterBanner().getItem(0));
+                        Launch.launchApp(this, (ApplicationInfo) getAdapterSquare().getItem(0));
                 return true;
             }
             return false;

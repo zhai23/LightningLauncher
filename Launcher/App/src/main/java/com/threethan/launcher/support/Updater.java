@@ -153,7 +153,7 @@ public class Updater {
             return;
         }
 
-        boolean appHasUpdate = !("v" + packageInfo.versionName).equals(tagName);
+        boolean appHasUpdate = !(packageInfo.versionName).equals(tagName);
 
         if (appHasUpdate) {
             Log.v(TAG, "New version available!");
