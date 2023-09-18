@@ -420,8 +420,7 @@ public class LauncherActivity extends Activity {
         appGridViewSquare.setMargin(marginPx, namesSquare);
         appGridViewBanner.setMargin(marginPx, namesBanner);
 
-        appGridViewSquare.setAdapter(new AppsAdapter(this, isEditing(), namesSquare, appListSquare));
-        appGridViewBanner.setAdapter(new AppsAdapter(this, isEditing(), namesBanner, appListBanner));
+        setAdapters(namesSquare, namesBanner);
 
         groupPanelGridView.setAdapter(new GroupsAdapter(this, isEditing()));
 
@@ -432,6 +431,20 @@ public class LauncherActivity extends Activity {
         updateGridViewHeights();
 
         post(this::updateToolBars);
+    }
+    protected void setAdapters(boolean namesSquare, boolean namesBanner) {
+        if (appGridViewSquare.getAdapter() == null)
+            appGridViewSquare.setAdapter(new AppsAdapter(this, isEditing(), namesSquare, appListSquare));
+        else {
+            ((AppsAdapter) appGridViewSquare.getAdapter()).updateAppList(this);
+            appGridViewSquare.setAdapter(appGridViewSquare.getAdapter());
+        }
+        if (appGridViewBanner.getAdapter() == null)
+            appGridViewBanner.setAdapter(new AppsAdapter(this, isEditing(), namesBanner, appListBanner));
+        else {
+            ((AppsAdapter) appGridViewBanner.getAdapter()).updateAppList(this);
+            appGridViewBanner.setAdapter(appGridViewBanner.getAdapter());
+        }
     }
 
     public void updateGridViewHeights() {
@@ -466,7 +479,7 @@ public class LauncherActivity extends Activity {
         if (index >= SettingsManager.BACKGROUND_DRAWABLES.length || index < 0) index = -1;
         else sharedPreferenceEditor.putBoolean(Settings.KEY_DARK_MODE, SettingsManager.BACKGROUND_DARK[index]);
         sharedPreferenceEditor.putInt(Settings.KEY_BACKGROUND, index);
-        launcherService.refreshAllBackground();
+        launcherService.refreshBackgroundAll();
     }
     public void refreshBackground() {
         sharedPreferenceEditor.apply();
@@ -558,6 +571,11 @@ public class LauncherActivity extends Activity {
         @Override
         public void onServiceDisconnected(ComponentName arg0) {}
     };
+
+    public void clearAdapterCaches() {
+        ((AppsAdapter) appGridViewSquare.getAdapter()).clearViewCache();
+        ((AppsAdapter) appGridViewBanner.getAdapter()).clearViewCache();
+    }
 
     // Edit mode stubs, to be overridden by child
     public void setEditMode(boolean b) {

@@ -16,9 +16,7 @@ import com.threethan.launcher.lib.DataLib;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class LauncherService extends Service {
@@ -72,17 +70,19 @@ public class LauncherService extends Service {
         for (Activity activity: activityByIndex.keySet()) activity.finishAndRemoveTask();
     }
 
-    private final Set<View> needsRefresh = Collections.synchronizedSet(new HashSet<>());
     public void refreshInterfaceAll() {
-        needsRefresh.addAll(viewByIndex.values());
         for (LauncherActivity activity: activityByIndex.keySet()) activity.refreshInterface();
         clearViewsWithoutActiveActivities();
     }
-    public void refreshAllBackground() {
-        needsRefresh.addAll(viewByIndex.values());
+    public void refreshBackgroundAll() {
         for (LauncherActivity activity: activityByIndex.keySet()) activity.refreshBackground();
         clearViewsWithoutActiveActivities();
     }
+    public void clearAdapterCachesAll() {
+        for (LauncherActivity activity: activityByIndex.keySet()) activity.clearAdapterCaches();
+        clearViewsWithoutActiveActivities();
+    }
+
     private void clearViewsWithoutActiveActivities() {
         for (int index: viewByIndex.keySet())
             if (!activityByIndex.containsValue(index)) {

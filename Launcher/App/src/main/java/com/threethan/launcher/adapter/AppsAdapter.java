@@ -34,26 +34,38 @@ import com.threethan.launcher.lib.StringLib;
 import com.threethan.launcher.support.SettingsManager;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class AppsAdapter extends BaseAdapter{
     private static Drawable iconDrawable;
     private static File iconFile;
     private static String packageName;
     private LauncherActivity launcherActivity;
-    private final List<ApplicationInfo> appList;
+    private List<ApplicationInfo> currentAppList;
+    private List<ApplicationInfo> fullAppList;
     private final boolean isEditMode;
     private final boolean showTextLabels;
-    public AppsAdapter(LauncherActivity context, boolean editMode, boolean names, List<ApplicationInfo> myApps) {
-        launcherActivity = context;
+    public AppsAdapter(LauncherActivity activity, boolean editMode, boolean names, List<ApplicationInfo> myApps) {
+        launcherActivity = activity;
         isEditMode = editMode;
         showTextLabels = names;
         SettingsManager settingsManager = SettingsManager.getInstance(launcherActivity);
 
-        ArrayList<String> sortedSelectedGroups = settingsManager.getAppGroupsSorted(true);
-        appList = Collections.synchronizedList(settingsManager.getInstalledApps(context, sortedSelectedGroups, myApps));
+//        ArrayList<String> sortedSelectedGroups = settingsManager.getAppGroupsSorted(true);
+        currentAppList = Collections.synchronizedList(settingsManager
+                .getInstalledApps(activity, settingsManager.getAppGroupsSorted(false), myApps));
+        fullAppList = myApps;
+    }
+    public void updateAppList(LauncherActivity activity) {
+        launcherActivity = activity;
+
+        SettingsManager settingsManager = SettingsManager.getInstance(activity);
+        currentAppList = Collections.synchronizedList(settingsManager
+                .getInstalledApps(activity, settingsManager.getAppGroupsSorted(true), fullAppList));
+
     }
     public void setLauncherActivity(LauncherActivity val) {
         launcherActivity = val;
@@ -69,22 +81,26 @@ public class AppsAdapter extends BaseAdapter{
         ApplicationInfo app;
     }
 
-    public int getCount() { return appList.size(); }
+    public int getCount() { return currentAppList.size(); }
 
     public Object getItem(int position) {
-        return appList.get(position);
+        return currentAppList.get(position);
     }
 
     public long getItemId(int position) {
         return position;
     }
 
+    Map<ApplicationInfo, View> viewCache = new ConcurrentHashMap<>();
+
     /** @noinspection deprecation*/
     public View getView(int position, View convertView, ViewGroup parent) {
+        final ApplicationInfo currentApp = currentAppList.get(position);
+
+        if (viewCache.containsKey(currentApp)) return viewCache.get(currentApp);
 
         ViewHolder holder;
 
-        final ApplicationInfo currentApp = appList.get(position);
         LayoutInflater layoutInflater = (LayoutInflater) launcherActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         if (convertView == null) {
@@ -118,11 +134,14 @@ public class AppsAdapter extends BaseAdapter{
             holder.textView.setShadowLayer(6, 0, 0, Color.parseColor(launcherActivity.darkMode ? "#000000" : "#20FFFFFF"));
         }
 
-
         new LoadIconTask().execute(this, currentApp, launcherActivity, holder.imageView, holder.imageViewBg);
         holder.view.post(() -> updateView(holder));
 
+        viewCache.put(currentApp, convertView);
         return convertView;
+    }
+    public void clearViewCache() {
+        viewCache.clear();
     }
 
     private void updateView(ViewHolder holder) {

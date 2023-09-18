@@ -5,6 +5,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
+import com.threethan.launcher.adapter.AppsAdapter;
 import com.threethan.launcher.launcher.LauncherActivity;
 import com.threethan.launcher.lib.DataLib;
 import com.threethan.launcher.adapter.GroupsAdapter;
@@ -119,6 +120,9 @@ public abstract class Compat {
     }
     public static void clearIconCache(LauncherActivity launcherActivity) {
         Log.i(TAG, "Icons cache is being cleared");
+
+        launcherActivity.launcherService.clearAdapterCachesAll();
+
         IconRepo.downloadFinishedPackages.clear();
         Icon.cachedIcons.clear();
         storeAndReload(launcherActivity);

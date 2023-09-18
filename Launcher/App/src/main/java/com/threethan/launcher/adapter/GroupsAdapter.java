@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class GroupsAdapter extends BaseAdapter {
     public static final int MAX_GROUPS = 12;
@@ -84,7 +85,6 @@ public class GroupsAdapter extends BaseAdapter {
         if (HIDDEN_GROUP.equals(value)) textView.setText(launcherActivity.getString(R.string.apps_hidden));
         else textView.setText(value);
     }
-
     @Override
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     public View getView(int position, View convertView, ViewGroup parent) {
