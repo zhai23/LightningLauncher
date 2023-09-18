@@ -292,9 +292,10 @@ public class AppsAdapter extends BaseAdapter{
                         launcherActivity.sharedPreferenceEditor
                                 .putBoolean(Settings.KEY_SEEN_LAUNCH_OUT_POPUP, true).apply();
                         subDialog.dismiss();
-                        SettingsManager.setAppLaunchOut(currentApp.packageName, true);
                         launchOut[0] = SettingsManager.getAppLaunchOut(currentApp.packageName);
                         launchModeSwitch.setChecked(true);
+                        SettingsManager.setAppLaunchOut(currentApp.packageName, true);
+                        launcherActivity.sharedPreferenceEditor.apply();
                     });
                     subDialog.findViewById(R.id.cancel).setOnClickListener(view -> {
                         subDialog.dismiss(); // Dismiss without setting
