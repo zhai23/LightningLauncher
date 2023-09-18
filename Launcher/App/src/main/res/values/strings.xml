@@ -165,7 +165,7 @@
     <!-- Addons -->
     <string name="addons_main">Install Shortcuts</string>
     <string name="addons_info">Shortcuts make it easier to open the launcher.
-        \nIt\'s highly recommended you install at least one.</string>
+        \nIt\'s highly recommended that you set up use at least one.</string>
     <string name="addons_exit">Return to Settings</string>
 
     <string name="addons_messenger">Messenger App Shortcut</string>

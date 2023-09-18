@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:autofillHints="text"
             android:backgroundTint="@android:color/white"
-            android:minHeight="50sp"
+            android:minHeight="56sp"
             android:text="@string/website_info1"
             android:textColor="@android:color/white" />
 
@@ -52,7 +52,7 @@
             android:layout_height="wrap_content"
             android:autofillHints="text"
             android:backgroundTint="@android:color/white"
-            android:minHeight="83dp"
+            android:minHeight="110sp"
             android:text="@string/website_info2"
             android:textColor="@android:color/white" />
 

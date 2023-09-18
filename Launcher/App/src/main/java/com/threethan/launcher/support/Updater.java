@@ -46,11 +46,12 @@ public class Updater {
     public static final String TAG_MESSENGER_SHORTCUT = "TAG_MESSENGER_SHORTCUT";
     public static final String TAG_LIBRARY_SHORTCUT = "TAG_LIBRARY_SHORTCUT";
     public static final String TAG_EXPLORE_SHORTCUT = "TAG_EXPLORE_SHORTCUT";
+    public static final String ADDON_RELEASE_TAG = "addons";
     public static final String UPDATE_DIR = "/Content/Updates/";
     public static final Addon[] addons = {
-            new Addon(TAG_MESSENGER_SHORTCUT, "Optional_MessengerShortcut", "com.facebook.orca", "5.0.0", false),
-            new Addon(TAG_LIBRARY_SHORTCUT, "Optional_LibraryShortcut", "com.threethan.launcher.service.library", "5.1.0", true),
-            new Addon(TAG_EXPLORE_SHORTCUT, "Optional_ExploreShortcut", "com.threethan.launcher.service.explore", "5.1.0", true),
+            new Addon(TAG_MESSENGER_SHORTCUT, "MessengerRedirect", "com.facebook.orca", "5.1.0", false),
+            new Addon(TAG_LIBRARY_SHORTCUT, "LibraryShortcutService", "com.threethan.launcher.service.library", "5.1.0", true),
+            new Addon(TAG_EXPLORE_SHORTCUT, "ExploreShortcutService", "com.threethan.launcher.service.explore", "5.1.0", true),
     };
     private static final String TAG = "LightningLauncher Updater";
     private final RequestQueue requestQueue;
@@ -134,7 +135,7 @@ public class Updater {
         if (addon == null) return;
         Log.v(TAG, "Attempting to install addon "+tag);
         attempts = 3;
-        downloadUpdate(addon.downloadName);
+        downloadUpdate(addon.downloadName, ADDON_RELEASE_TAG);
     }
 
     public void updateAppEvenIfSkipped() {
@@ -228,10 +229,16 @@ public class Updater {
                     "ill try to get it again, but this download will probably fail");
             checkLatestVersion(response -> handleUpdateResponse(response, null));
         }
-        downloadingTag = latestVersionTag;
+        downloadUpdate(apkName, latestVersionTag);
+    }
+    @SuppressLint("UnspecifiedRegisterReceiverFlag") // Can't be fixed on this API version
+    private void downloadUpdate(String apkName, String tagName) {
+        downloadSucceeded = false;
         downloadingName = apkName;
+        downloadingTag = tagName;
 
-        String url = String.format(TEMPLATE_URL, latestVersionTag, apkName);
+
+        String url = String.format(TEMPLATE_URL, downloadingTag, apkName);
         Log.v(TAG, "Downloading from url "+url);
         DownloadManager.Request request1 = new DownloadManager.Request(Uri.parse(url));
         request1.setDescription("Downloading Update");   //appears the same in Notification bar while downloading
