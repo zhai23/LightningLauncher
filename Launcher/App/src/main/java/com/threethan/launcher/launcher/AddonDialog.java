@@ -70,9 +70,7 @@ public abstract class AddonDialog {
                         activateButton.setVisibility(View.VISIBLE);
                         break;
                 }
-                try {
-                    outerView.postDelayed(this, 100);
-                } catch (Exception ignored) {}
+                if (outerView != null) outerView.postDelayed(this, 100);
             }
         };
         outerView.post(updateButtonRunnable);

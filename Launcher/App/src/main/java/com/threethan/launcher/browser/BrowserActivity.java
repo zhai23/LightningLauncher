@@ -81,39 +81,34 @@ public class BrowserActivity extends Activity {
         light = findViewById(R.id.lightMode);
 
         back.setOnClickListener((view) -> {
-            try {
-                w.historyIndex--;
-                loadUrl(w.history.get(w.historyIndex - 1));
-                updateButtons();
-                Log.v("Browser History", w.history.toString());
-                Log.v("Browser History Index", String.valueOf(w.historyIndex));
-            } catch (Exception ignored) {}
+            if (w == null) return;
+            w.historyIndex--;
+            loadUrl(w.history.get(w.historyIndex - 1));
+            updateButtons();
+            Log.v("Browser History", w.history.toString());
+            Log.v("Browser History Index", String.valueOf(w.historyIndex));
         });
         forward.setOnClickListener((view) -> {
-            try {
-                w.historyIndex ++;
-                loadUrl(w.history.get(w.historyIndex-1));
-                updateButtons();
-                Log.v("Browser History" ,w.history.toString());
-
-                Log.v("Browser History Index" , String.valueOf(w.historyIndex));
-            } catch (Exception ignored) {}
+            if (w == null) return;
+            w.historyIndex ++;
+            loadUrl(w.history.get(w.historyIndex-1));
+            updateButtons();
+            Log.v("Browser History" ,w.history.toString());
+            Log.v("Browser History Index" , String.valueOf(w.historyIndex));
         });
 
         findViewById(R.id.back).setOnLongClickListener((view -> {
-            try {
-                w.historyIndex = 1;
-                loadUrl(w.history.get(0));
-                updateButtons();
-            } catch (Exception ignored) {}
+            if (w == null) return false;
+            w.historyIndex = 1;
+            loadUrl(w.history.get(0));
+            updateButtons();
             return true;
         }));
         findViewById(R.id.forward).setOnLongClickListener((view -> {
-            try {
-                w.historyIndex = w.history.size();
-                loadUrl(w.history.get(w.historyIndex-1));
-                updateButtons();
-            } catch (Exception ignored) {}
+            if (w == null) return false;
+            w.historyIndex = w.history.size();
+            loadUrl(w.history.get(w.historyIndex-1));
+            updateButtons();
             return true;
         }));
 
@@ -175,30 +170,23 @@ public class BrowserActivity extends Activity {
         });
     }
     private void updateButtons() {
-        try {
-            back.setVisibility(w.historyIndex > 1 ? View.VISIBLE : View.GONE);
-            forward.setVisibility(w.historyIndex < w.history.size() ? View.VISIBLE : View.GONE);
-        } catch (Exception ignored) {}
+        if (w == null) return;
+        back.setVisibility(w.historyIndex > 1 ? View.VISIBLE : View.GONE);
+        forward.setVisibility(w.historyIndex < w.history.size() ? View.VISIBLE : View.GONE);
     }
     private void updateZoom(float scale) {
-        try {
-            zoomIn .setVisibility(scale < 2.00 ? View.VISIBLE : View.GONE);
-            zoomOut.setVisibility(scale > 1.01 ? View.VISIBLE : View.GONE);
-            Log.i("SCALE", String.valueOf(scale));
-        } catch (Exception ignored) {}
+        zoomIn .setVisibility(scale < 2.00 ? View.VISIBLE : View.GONE);
+        zoomOut.setVisibility(scale > 1.01 ? View.VISIBLE : View.GONE);
     }
     private void updateDark(boolean newDark) {
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                dark .setVisibility(newDark  ? View.GONE : View.VISIBLE);
-                light.setVisibility(!newDark ? View.GONE : View.VISIBLE);
-                sharedPreferences.edit().putBoolean(KEY_WEBSITE_DARK+baseUrl, newDark).apply();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            dark .setVisibility(newDark  ? View.GONE : View.VISIBLE);
+            light.setVisibility(!newDark ? View.GONE : View.VISIBLE);
+            sharedPreferences.edit().putBoolean(KEY_WEBSITE_DARK+baseUrl, newDark).apply();
 
-                if (w != null) w.getSettings().setForceDark(newDark ? WebSettings.FORCE_DARK_ON : WebSettings.FORCE_DARK_OFF);
-
-                background.setBackgroundResource(newDark ? R.drawable.bg_meta_dark : R.drawable.bg_meta_light);
-            }
-        } catch (Exception ignored) {}
+            if (w != null) w.getSettings().setForceDark(newDark ? WebSettings.FORCE_DARK_ON : WebSettings.FORCE_DARK_OFF);
+            background.setBackgroundResource(newDark ? R.drawable.bg_meta_dark : R.drawable.bg_meta_light);
+        }
     }
     private void loadUrl(String url) {
         Log.v("Browser url", url);

@@ -75,6 +75,7 @@ public class LauncherActivity extends Activity {
     public SettingsManager settingsManager;
     public boolean settingsVisible;
     public LauncherService launcherService;
+    protected static String TAG = "LightningLauncher";
 
     public static String FINISH_ACTION = "com.threethan.launcher.FINISH";
     protected BroadcastReceiver finishReceiver = new BroadcastReceiver() {
@@ -84,10 +85,12 @@ public class LauncherActivity extends Activity {
         }
     };
 
+    public boolean canBeKilled = false;
     @Override
     protected void onStart() {
         super.onStart();
-        
+        canBeKilled = false;
+
         // Bind to Launcher Service
         Intent intent = new Intent(this, LauncherService.class);
         bindService(intent, launcherServiceConnection, Context.BIND_AUTO_CREATE);
@@ -101,6 +104,20 @@ public class LauncherActivity extends Activity {
         container.setBackgroundColor(backgroundColor);
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        canBeKilled = true;
+        Log.v(TAG, "onStop called");
+        // Check if this activity is somehow not acknowledged by the service
+        // this should only ever happen if something is updated/reinstalled, or killed manually
+        if (launcherService != null && !launcherService.hasRegisteredView(this)) {
+            Log.w(TAG, "Activity was not registered & will be killed." +
+                    "This should only happen when something was reinstalled!");
+            finishAndRemoveTask();
+        }
+    }
+
     @SuppressLint("UnspecifiedRegisterReceiverFlag") // Can't be fixed on this android API
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,7 +127,7 @@ public class LauncherActivity extends Activity {
     }
     public View rootView;
     private void onBound() {
-        final boolean hasView = launcherService.hasView(getId());
+        final boolean hasView = launcherService.checkForExistingView();
 
         if (hasView) startWithExistingActivity();
         else         startWithNewActivity();
@@ -121,7 +138,6 @@ public class LauncherActivity extends Activity {
         postDelayed(() -> new Updater(this).checkForAppUpdate(), 1000);
     }
     protected void startWithNewActivity() {
-        Log.v("LauncherStartup", "No existing activity found for ID "+getId());
         rootView = launcherService.getNewView(this);
 
         ViewGroup containerView = findViewById(R.id.container);
@@ -133,10 +149,10 @@ public class LauncherActivity extends Activity {
         reloadPackages();
         // Load Interface
         refreshBackground();
-        refresh();
+        refreshInterface();
     }
     protected void startWithExistingActivity() {
-        Log.v("LauncherStartup", "Using existing view for ID "+getId());
+        Log.v(TAG, "Using existing view for ID "+getId());
         rootView = launcherService.getExistingView(this);
 
         ViewGroup containerView = findViewById(R.id.container);
@@ -154,9 +170,9 @@ public class LauncherActivity extends Activity {
             post(this::updateTopBar); // Fix visual bugs with the blur views
         } catch (Exception e) {
             // Attempt to work around problems with backgrounded activities
-            Log.e("LauncherStartup", "Crashed due to exception while re-initiating existing activity");
+            Log.e(TAG, "Crashed due to exception while re-initiating existing activity");
             e.printStackTrace();
-            Log.e("LauncherStartup", "Attempting to start with a new activity...");
+            Log.e(TAG, "Attempting to start with a new activity...");
         }
     }
 
@@ -175,30 +191,10 @@ public class LauncherActivity extends Activity {
         groupPanelGridView = rootView.findViewById(R.id.groupsView);
 
         // Handle group click listener
-        groupPanelGridView.setOnItemClickListener((parent, view, position, id) -> changeGroup(position));
+        groupPanelGridView.setOnItemClickListener((parent, view, position, id) -> clickGroup(position));
 
         // Multiple group selection
-        groupPanelGridView.setOnItemLongClickListener((parent, view, position, id) -> {
-            List<String> groups = settingsManager.getAppGroupsSorted(false);
-            Set<String> selectedGroups = settingsManager.getSelectedGroups();
-
-            if (position >= groups.size() || position < 0) return false;
-
-            String item = groups.get(position);
-            if (selectedGroups.contains(item)) {
-                selectedGroups.remove(item);
-            } else {
-                selectedGroups.add(item);
-            }
-            if (selectedGroups.isEmpty()) {
-                view.findViewById(R.id.menu).callOnClick();
-                selectedGroups.add(item);
-                return true;
-            }
-            settingsManager.setSelectedGroups(selectedGroups);
-            refresh();
-            return true;
-        });
+        groupPanelGridView.setOnItemLongClickListener((parent, view, position, id) -> longClickGroup(view, position));
 
         // Set logo button
         ImageView settingsImageView = rootView.findViewById(R.id.settingsIcon);
@@ -207,21 +203,39 @@ public class LauncherActivity extends Activity {
         });
     }
 
-    protected void changeGroup(int position) {
+    protected void clickGroup(int position) {
         // This method is replaced with a greatly expanded one in the child class
         final List<String> groupsSorted = settingsManager.getAppGroupsSorted(false);
         final String group = groupsSorted.get(position);
 
-        if (settingsManager.selectGroup(group)) refresh();
+        if (settingsManager.selectGroup(group)) refreshInterface();
         else recheckPackages(); // If clicking on the same single group, check if there are any new packages
+    }
+    protected boolean longClickGroup(View view, int position) {
+        List<String> groups = settingsManager.getAppGroupsSorted(false);
+        Set<String> selectedGroups = settingsManager.getSelectedGroups();
+
+        if (position >= groups.size() || position < 0) return false;
+
+        String item = groups.get(position);
+        if (selectedGroups.contains(item)) selectedGroups.remove(item);
+        else selectedGroups.add(item);
+        if (selectedGroups.isEmpty()) {
+            view.findViewById(R.id.menu).callOnClick();
+            selectedGroups.add(item);
+            return true;
+        }
+        settingsManager.setSelectedGroups(selectedGroups);
+        refreshInterface();
+        return true;
     }
 
     @Override
     protected void onDestroy() {
-        Log.v("LauncherActivity", "Activity is being destroyed" + (isFinishing() ? "Finishing" : "Not Finishing"));
+        Log.v(TAG, "Activity is being destroyed" + (isFinishing() ? "Finishing" : "Not Finishing"));
         launcherService.destroyed(this);
         unbindService(launcherServiceConnection);
-        try {unbindService(browserServiceConnection);} catch (Exception ignored) {}
+        unbindService(browserServiceConnection);
         // For the GC & easier debugging
         settingsManager = null;
         unregisterReceiver(finishReceiver);
@@ -234,12 +248,12 @@ public class LauncherActivity extends Activity {
     }
     @Override
     protected void onResume() {
-        super.onResume();
         try {
             AppsAdapter.animateClose(this);
             recheckPackages();
             BrowserService.bind(this, browserServiceConnection);
         } catch (Exception ignored) {} // Will fail if service hasn't bound yet
+        super.onResume();
     }
 
     public void reloadPackages() {
@@ -355,16 +369,26 @@ public class LauncherActivity extends Activity {
         an.setDuration(100);
         fadeView.post(an::start);
     }
-    List<ApplicationInfo> installedApps;
-    List<ApplicationInfo> appListBanner;
-    List<ApplicationInfo> appListSquare;
 
-    public void refresh() {
+    // Static as these should always match between instances
+    static List<ApplicationInfo> installedApps;
+    static List<ApplicationInfo> appListBanner;
+    static List<ApplicationInfo> appListSquare;
+
+    public void refreshInterfaceAll() {
+        if (sharedPreferenceEditor != null) sharedPreferenceEditor.apply();
+        try {
+            launcherService.refreshInterfaceAll();
+        } catch (Exception ignored) {
+            Log.w(TAG, "Failed to call refresh on service!");
+        }
+    }
+    public void refreshInterface() {
         if (sharedPreferenceEditor != null) sharedPreferenceEditor.apply();
         try {
             post(this::refreshInternal);
         } catch (Exception ignored) {
-            Log.w("LightningLauncher", "Failed to post refresh refreshInterfaceInternal. Called by something else?");
+            Log.w(TAG, "Failed to post refreshInternal. Called by something else?");
         }
     }
     protected void refreshInternal() {
@@ -375,7 +399,7 @@ public class LauncherActivity extends Activity {
         darkMode = sharedPreferences.getBoolean(Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE);
         groupsEnabled = sharedPreferences.getBoolean(Settings.KEY_GROUPS_ENABLED, Settings.DEFAULT_GROUPS_ENABLED);
 
-        post(this::refreshAdapters);
+        refreshAdapters();
     }
     public void refreshAdapters() {
 
@@ -438,7 +462,7 @@ public class LauncherActivity extends Activity {
         if (index >= SettingsManager.BACKGROUND_DRAWABLES.length || index < 0) index = -1;
         else sharedPreferenceEditor.putBoolean(Settings.KEY_DARK_MODE, SettingsManager.BACKGROUND_DARK[index]);
         sharedPreferenceEditor.putInt(Settings.KEY_BACKGROUND, index);
-        refreshBackground();
+        launcherService.refreshAllBackground();
     }
     public void refreshBackground() {
         sharedPreferenceEditor.apply();
@@ -472,6 +496,7 @@ public class LauncherActivity extends Activity {
             (sharedPreferences.getBoolean(Settings.KEY_WIDE_WEB, Settings.DEFAULT_WIDE_WEB) ? appListBanner : appListSquare)
                     .add(applicationInfo);
         }
+        refreshInterfaceAll();
     }
 
     // Utility functions
@@ -529,10 +554,10 @@ public class LauncherActivity extends Activity {
 
     // Edit mode stubs, to be overridden by child
     public void setEditMode(boolean b) {
-        Log.w("LauncherActivity", "Tried to set edit mode on an uneditable activity");
+        Log.w(TAG, "Tried to set edit mode on an uneditable activity");
     }
     public boolean selectApp(String packageName) {
-        Log.w("LauncherActivity", "Tried to select app on an uneditable activity");
+        Log.w(TAG, "Tried to select app on an uneditable activity");
         return false;
     }
     public boolean isSelected(String packageName) {

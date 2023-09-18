@@ -177,7 +177,7 @@ public class GroupsAdapter extends BaseAdapter {
                     settingsManager.setSelectedGroups(selectedGroup);
                     settingsManager.setAppGroups(appGroupsSet);
                     SettingsManager.setAppGroupMap(updatedAppGroupMap);
-                    launcherActivity.refresh();
+                    launcherActivity.refreshInterfaceAll();
                 }
                 dialog.cancel();
             });
@@ -207,7 +207,7 @@ public class GroupsAdapter extends BaseAdapter {
                 }
                 dialog.dismiss();
 
-                launcherActivity.refresh();
+                launcherActivity.refreshInterfaceAll();
             });
         });
 

@@ -11,6 +11,8 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+
 import com.threethan.launcher.R;
 import com.threethan.launcher.adapter.AppsAdapter;
 import com.threethan.launcher.adapter.GroupsAdapter;
@@ -29,12 +31,13 @@ import java.util.Set;
 
 
 public class LauncherActivityEditable extends LauncherActivity {
-    boolean editMode = false;
+    @Nullable
+    Boolean editMode = null;
     public Set<String> currentSelectedApps = new HashSet<>();
     @Override
     public void onBackPressed() {
         if (AppsAdapter.animateClose(this)) return;
-        if (!settingsVisible) setEditMode(!editMode);
+        if (!settingsVisible) setEditMode(Boolean.FALSE.equals(editMode));
     }
 
     // Startup
@@ -51,7 +54,8 @@ public class LauncherActivityEditable extends LauncherActivity {
     protected void refreshInternal() {
         super.refreshInternal();
 
-        editMode = sharedPreferences.getBoolean(Settings.KEY_EDIT_MODE, false);
+
+        if (editMode == null) editMode = sharedPreferences.getBoolean(Settings.KEY_EDIT_MODE, false);
 
         if (!groupsEnabled && editMode) {
             groupsEnabled = true;
@@ -119,14 +123,14 @@ public class LauncherActivityEditable extends LauncherActivity {
     }
 
     @Override
-    protected void changeGroup(int position) {
+    protected void clickGroup(int position) {
         final List<String> groupsSorted = settingsManager.getAppGroupsSorted(false);
 
         // If the new group button was selected, create and select a new group
         if (position >= groupsSorted.size()) {
             final String newName = settingsManager.addGroup();
             settingsManager.selectGroup(newName);
-            refresh();
+            refreshInterface();
             return;
         }
         final String group = groupsSorted.get(position);
@@ -146,10 +150,8 @@ public class LauncherActivityEditable extends LauncherActivity {
             currentSelectedApps.clear();
 
             SettingsManager.storeValues();
-            refresh();
-        }
-        else if (settingsManager.selectGroup(group)) refresh();
-        else recheckPackages(); // If clicking on the same single group, check if there are any new packages
+            refreshInterface();
+        } else super.clickGroup(position);
     }
 
     // Function overrides
@@ -158,7 +160,7 @@ public class LauncherActivityEditable extends LauncherActivity {
         editMode = value;
         if (sharedPreferenceEditor == null) return;
         sharedPreferenceEditor.putBoolean(Settings.KEY_EDIT_MODE, editMode);
-        refresh();
+        refreshInterface();
     }
 
     @Override
@@ -179,7 +181,7 @@ public class LauncherActivityEditable extends LauncherActivity {
         super.startWithExistingActivity();
         // Load edit things if loading from an existing activity
         final View editFooter = rootView.findViewById(R.id.editFooter);
-        if (editFooter.getVisibility() == View.VISIBLE) refresh();
+        if (editFooter.getVisibility() == View.VISIBLE) refreshInterfaceAll();
     }
 
     @Override
@@ -200,9 +202,9 @@ public class LauncherActivityEditable extends LauncherActivity {
     @Override
     public boolean isSelected(String app) { return currentSelectedApps.contains(app); }
     @Override
-    protected int getBottomBarHeight() { return editMode ? dp(60) : 0; }
+    protected int getBottomBarHeight() { return Boolean.TRUE.equals(editMode) ? dp(60) : 0; }
     @Override
-    public boolean isEditing() { return editMode; }
+    public boolean isEditing() { return Boolean.TRUE.equals(editMode); }
     @Override
     public boolean canEdit() { return true; }
 
@@ -254,7 +256,6 @@ public class LauncherActivityEditable extends LauncherActivity {
             settingsManager.setAppGroup(StringLib.fixUrl(url), group);
             dialog.cancel();
             refreshAppDisplayLists();
-            refresh();
         });
         dialog.findViewById(R.id.info).setOnClickListener(view -> {
             dialog.dismiss();

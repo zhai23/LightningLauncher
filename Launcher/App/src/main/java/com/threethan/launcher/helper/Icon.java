@@ -67,7 +67,7 @@ public abstract class Icon {
             // Saves the drawable to a webp,
             // which is faster to load than trying to get the drawable every time
             saveIconDrawable(activity, appIcon, app.packageName);
-        } catch (Exception ignored) {} // Fails on web apps, possibly also on invalid packages
+        } catch (PackageManager.NameNotFoundException ignored) {} // Fails on web apps, possibly also on invalid packages
 
         // Download icon AFTER saving the drawable version
         // (this prevents a race condition)
@@ -97,15 +97,11 @@ public abstract class Icon {
                     height = Math.round(width / aspectRatio);
                     bitmap = Bitmap.createScaledBitmap(bitmap, width, height, false);
                 }
-                try {
-                    FileOutputStream fileOutputStream =
-                            new FileOutputStream(iconFileForPackage(activity, packageName)
-                                    .getAbsolutePath());
-                    bitmap.compress(Bitmap.CompressFormat.WEBP, 90, fileOutputStream);
-                    fileOutputStream.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                FileOutputStream fileOutputStream =
+                        new FileOutputStream(iconFileForPackage(activity, packageName)
+                                .getAbsolutePath());
+                bitmap.compress(Bitmap.CompressFormat.WEBP, 90, fileOutputStream);
+                fileOutputStream.close();
             }
         } catch (Exception e) {
             Log.i("AbstractPlatform", "Exception while converting file " + packageName);

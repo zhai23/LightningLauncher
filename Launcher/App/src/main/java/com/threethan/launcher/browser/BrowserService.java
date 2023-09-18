@@ -117,21 +117,19 @@ public class BrowserService extends Service {
         if (webView == null) return;
         webView.destroy();
         webViewByBaseUrl.remove(url);
-        try {
+        if (activityByBaseUrl.get(url) != null) {
             Objects.requireNonNull(activityByBaseUrl.get(url)).finish();
             activityByBaseUrl.remove(url);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
         System.gc();
         updateStatus();
     }
     public void killActivities() {
         for (String key : activityByBaseUrl.keySet()) {
-            try {
-                Objects.requireNonNull(activityByBaseUrl.get(key)).finish();
+            if (activityByBaseUrl.get(key) != null) {
+                activityByBaseUrl.get(key).finish();
                 activityByBaseUrl.remove(key);
-            } catch (Exception ignored) {}
+            }
         }
     }
 

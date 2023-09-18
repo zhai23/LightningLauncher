@@ -3,7 +3,6 @@ package com.threethan.launcher.launcher;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.Intent;
 import android.os.Build;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
@@ -75,7 +74,7 @@ public abstract class SettingsDialog {
         dark.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE));
         dark.setOnCheckedChangeListener((compoundButton, value) -> {
             a.sharedPreferenceEditor.putBoolean(Settings.KEY_DARK_MODE, value);
-            a.refresh();
+            a.refreshInterfaceAll();
         });
         ImageView[] views = {
                 dialog.findViewById(R.id.background0),
@@ -147,7 +146,7 @@ public abstract class SettingsDialog {
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {}
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) { a.refresh(); }
+            public void onStopTrackingTouch(SeekBar seekBar) { a.refreshInterfaceAll(); }
         });
         scale.setMax(200);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) scale.setMin(80);
@@ -162,7 +161,7 @@ public abstract class SettingsDialog {
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {}
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) { a.refresh(); }
+            public void onStopTrackingTouch(SeekBar seekBar) { a.refreshInterfaceAll(); }
         });
         margin.setProgress(a.sharedPreferences.getInt(Settings.KEY_MARGIN, Settings.DEFAULT_MARGIN));
         margin.setMax(59);
@@ -181,13 +180,13 @@ public abstract class SettingsDialog {
                             .putBoolean(Settings.KEY_GROUPS_ENABLED, newValue)
                             .apply();
                     groups.setChecked(!Settings.DEFAULT_GROUPS_ENABLED);
-                    a.refresh();
+                    a.refreshInterfaceAll();
                     subDialog.dismiss();
                 });
                 subDialog.findViewById(R.id.cancel).setOnClickListener(view -> subDialog.dismiss());
             } else {
                 a.sharedPreferenceEditor.putBoolean(Settings.KEY_GROUPS_ENABLED, value);
-                a.refresh();
+                a.refreshInterfaceAll();
             }
         });
 
@@ -227,14 +226,12 @@ public abstract class SettingsDialog {
             Compat.clearIconCache(a);
             a.sharedPreferenceEditor.putBoolean(Settings.KEY_WIDE_VR, value);
             a.refreshAppDisplayLists();
-            a.refresh();
         });
         Switch banner2d = dialog.findViewById(R.id.banner2dSwitch);
         banner2d.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_WIDE_2D, Settings.DEFAULT_WIDE_2D));
         banner2d.setOnCheckedChangeListener((compoundButton, value) -> {
             a.sharedPreferenceEditor.putBoolean(Settings.KEY_WIDE_2D, value);
             a.refreshAppDisplayLists();
-            a.refresh();
         });
         Switch bannerWeb = dialog.findViewById(R.id.bannerWebSwitch);
         bannerWeb.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_WIDE_WEB, Settings.DEFAULT_WIDE_WEB));
@@ -242,7 +239,6 @@ public abstract class SettingsDialog {
             Compat.clearIconCache(a);
             a.sharedPreferenceEditor.putBoolean(Settings.KEY_WIDE_WEB, value);
             a.refreshAppDisplayLists();
-            a.refresh();
         });
 
         // Names
@@ -250,13 +246,13 @@ public abstract class SettingsDialog {
         names.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_SHOW_NAMES_SQUARE, Settings.DEFAULT_SHOW_NAMES_SQUARE));
         names.setOnCheckedChangeListener((compoundButton, value) -> {
             a.sharedPreferenceEditor.putBoolean(Settings.KEY_SHOW_NAMES_SQUARE, value);
-            a.refresh();
+            a.refreshInterfaceAll();
         });
         Switch wideNames = dialog.findViewById(R.id.nameBannerSwitch);
         wideNames.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_SHOW_NAMES_BANNER, Settings.DEFAULT_SHOW_NAMES_BANNER));
         wideNames.setOnCheckedChangeListener((compoundButton, value) -> {
             a.sharedPreferenceEditor.putBoolean(Settings.KEY_SHOW_NAMES_BANNER, value);
-            a.refresh();
+            a.refreshInterfaceAll();
         });
     }
 }

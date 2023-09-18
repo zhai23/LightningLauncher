@@ -18,6 +18,7 @@ import com.esafirm.imagepicker.features.ImagePicker;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
 public class ImageLib {
@@ -38,13 +39,14 @@ public class ImageLib {
     }
 
     public static void saveBitmap(Bitmap bitmap, File destinationFile) {
+        FileOutputStream fileOutputStream = null;
         try {
-            FileOutputStream fileOutputStream = new FileOutputStream(destinationFile);
+            fileOutputStream = new FileOutputStream(destinationFile);
             bitmap.compress(Bitmap.CompressFormat.WEBP, 100, fileOutputStream);
             fileOutputStream.flush();
             fileOutputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

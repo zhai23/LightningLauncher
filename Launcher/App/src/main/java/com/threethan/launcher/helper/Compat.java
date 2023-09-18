@@ -147,7 +147,7 @@ public abstract class Compat {
         Compat.recheckSupported(launcherActivity);
         SettingsManager.storeValues();
         launcherActivity.reloadPackages();
-        launcherActivity.refresh();
+        launcherActivity.refreshInterfaceAll();
         SettingsManager.readValues();
     }
 }

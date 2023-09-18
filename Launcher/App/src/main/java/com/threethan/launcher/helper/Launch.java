@@ -35,12 +35,8 @@ public abstract class Launch {
                 } catch (Exception ignored) {
                 }
 
-            try {
-                launcherActivity.launcherService.finishAllActivities();
-            } catch (Exception ignored) {}
-            try {
-                launcherActivity.finishAndRemoveTask();
-            } catch (Exception ignored) {}
+            launcherActivity.launcherService.finishAllActivities();
+            if (launcherActivity != null) launcherActivity.finishAndRemoveTask();
 
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 

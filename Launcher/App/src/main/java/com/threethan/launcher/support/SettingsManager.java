@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.provider.ContactsContract;
 import android.util.Log;
 
 import com.threethan.launcher.helper.App;
@@ -38,25 +37,25 @@ public class SettingsManager extends Settings {
     //storage
     private static SharedPreferences sharedPreferences = null;
     private static SharedPreferences.Editor sharedPreferenceEditor = null;
-    private static WeakReference<LauncherActivity> launcherActivityRef = null;
+    private final WeakReference<LauncherActivity> myLauncherActivityRef;
+    private static WeakReference<LauncherActivity> anyLauncherActivityRef = null;
     private static ConcurrentHashMap<String, String> appGroupMap = new ConcurrentHashMap<>();
     private static Set<String> appGroupsSet = Collections.synchronizedSet(new HashSet<>());
-    private static Set<String> selectedGroupsSet = Collections.synchronizedSet(new HashSet<>());
+    private Set<String> selectedGroupsSet = Collections.synchronizedSet(new HashSet<>());
     private static Set<String> appsToLaunchOut = Collections.synchronizedSet(new HashSet<>());
-    private static SettingsManager instance;
-    private static Context instanceContext;
+    private static final Map<Context, SettingsManager> instanceByContext = Collections.synchronizedMap(new HashMap<>());
 
     private SettingsManager(LauncherActivity activity) {
-        launcherActivityRef = new WeakReference<>(activity);
+        myLauncherActivityRef = new WeakReference<>(activity);
+        anyLauncherActivityRef = new WeakReference<>(activity);
         sharedPreferences = activity.sharedPreferences;
         sharedPreferenceEditor = activity.sharedPreferenceEditor;
     }
 
     public static synchronized SettingsManager getInstance(LauncherActivity context) {
-        if (instance != null && instanceContext == context) return SettingsManager.instance;
-        instance = new SettingsManager(context);
-        instanceContext = context;
-        return instance;
+        if (instanceByContext.containsKey(context)) return SettingsManager.instanceByContext.get(context);
+        instanceByContext.put(context, new SettingsManager(context));
+        return instanceByContext.get(context);
     }
 
     public static HashMap<ApplicationInfo, String> appLabelCache = new HashMap<>();
@@ -81,13 +80,13 @@ public class SettingsManager extends Settings {
             } catch (Exception ignored) {}
         }
         try {
-            PackageManager pm = launcherActivityRef.get().getPackageManager();
+            PackageManager pm =anyLauncherActivityRef.get().getPackageManager();
             String label = app.loadLabel(pm).toString();
             if (!label.isEmpty()) return label;
             // Try to load this app's real app info
             label = (String) pm.getApplicationInfo(app.packageName, 0).loadLabel(pm);
             if (!label.isEmpty()) return label;
-        } catch (Exception ignored) {}
+        } catch (NullPointerException | PackageManager.NameNotFoundException ignored) {}
         return app.packageName;
     }
     public static void setAppLabel(ApplicationInfo app, String newName) {
@@ -115,7 +114,7 @@ public class SettingsManager extends Settings {
 
     public static void setAppGroupMap(Map<String, String> value) {
         appGroupMap = new ConcurrentHashMap<>(value);
-        queueStoreValues();
+        queueStoreValuesStatic();
     }
 
     public List<ApplicationInfo> getInstalledApps(LauncherActivity launcherActivity, List<String> selected, List<ApplicationInfo> myApps) {
@@ -191,9 +190,14 @@ public class SettingsManager extends Settings {
     }
 
     public Set<String> getSelectedGroups() {
-        if (selectedGroupsSet.isEmpty()) readValues();
-        if (launcherActivityRef.get() != null &&
-                launcherActivityRef.get().groupsEnabled || launcherActivityRef.get().isEditing())
+        if (selectedGroupsSet.isEmpty()) {
+            Set<String> defaultGroupsSet = new HashSet<>();
+            defaultGroupsSet.add(DEFAULT_GROUP_VR);
+            defaultGroupsSet.add(DEFAULT_GROUP_2D);
+            selectedGroupsSet.addAll(sharedPreferences.getStringSet(KEY_SELECTED_GROUPS, defaultGroupsSet));
+        }
+        if (myLauncherActivityRef.get() != null &&
+                myLauncherActivityRef.get().groupsEnabled || myLauncherActivityRef.get().isEditing())
             return selectedGroupsSet;
         else {
             Set<String> retSet = new HashSet<>(appGroupsSet);
@@ -254,15 +258,14 @@ public class SettingsManager extends Settings {
     }
 
 
-    public synchronized static void readValues() {
+    public static synchronized void readValues() {
         try {
             Set<String> defaultGroupsSet = new HashSet<>();
             defaultGroupsSet.add(DEFAULT_GROUP_VR);
             defaultGroupsSet.add(DEFAULT_GROUP_2D);
             appGroupsSet.clear();
             appGroupsSet.addAll(sharedPreferences.getStringSet(KEY_GROUPS, defaultGroupsSet));
-            selectedGroupsSet.clear();
-            selectedGroupsSet.addAll(sharedPreferences.getStringSet(KEY_SELECTED_GROUPS, defaultGroupsSet));
+
             appsToLaunchOut.clear();
             appsToLaunchOut.addAll(sharedPreferences.getStringSet(KEY_LAUNCH_OUT, defaultGroupsSet));
 
@@ -281,8 +284,17 @@ public class SettingsManager extends Settings {
             e.printStackTrace();
         }
     }
-    private static void queueStoreValues() {
-        if (launcherActivityRef.get() != null && launcherActivityRef.get().mainView != null) launcherActivityRef.get().post(SettingsManager::storeValues);
+    private void queueStoreValues() {
+        if (myLauncherActivityRef.get() != null && myLauncherActivityRef.get().mainView != null) {
+            myLauncherActivityRef.get().post(SettingsManager::storeValues);
+            sharedPreferenceEditor.putStringSet(KEY_SELECTED_GROUPS, selectedGroupsSet);
+        }
+        else storeValues();
+    }
+    private static void queueStoreValuesStatic() {
+        if (anyLauncherActivityRef.get() != null && anyLauncherActivityRef.get().mainView != null) {
+            anyLauncherActivityRef.get().post(SettingsManager::storeValues);
+        }
         else storeValues();
     }
     public synchronized static void storeValues() {
@@ -290,7 +302,6 @@ public class SettingsManager extends Settings {
             SharedPreferences.Editor editor = sharedPreferenceEditor;
             editor.putStringSet(KEY_GROUPS, appGroupsSet);
             editor.putStringSet(KEY_LAUNCH_OUT, appsToLaunchOut);
-            editor.putStringSet(KEY_SELECTED_GROUPS, selectedGroupsSet);
 
             Map<String, Set<String>> appListSetMap = new HashMap<>();
             for (String group : appGroupsSet) appListSetMap.put(group, new HashSet<>());
@@ -343,14 +354,14 @@ public class SettingsManager extends Settings {
     public static boolean getRunning(String pkgName) {
         if (!App.isWebsite(pkgName)) return false;
         try {
-            return launcherActivityRef.get().wService.hasWebView(pkgName);
-        } catch (Exception ignored) {
+            return anyLauncherActivityRef.get().wService.hasWebView(pkgName);
+        } catch (NullPointerException ignored) {
             return false;
         }
     }
     public static void stopRunning (String pkgName) {
         try {
-            launcherActivityRef.get().wService.killWebView(pkgName);
-        } catch (Exception ignored) {}
+            anyLauncherActivityRef.get().wService.killWebView(pkgName);
+        } catch (NullPointerException ignored) {}
     }
  }

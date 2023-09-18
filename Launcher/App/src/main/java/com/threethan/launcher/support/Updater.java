@@ -181,7 +181,7 @@ public class Updater {
             if (callback != null) callback.onResponse(tagName);
             latestVersionTag = tagName;
         } catch (JSONException e) {
-            Log.e(TAG, "Received invalid JSON", e);
+            Log.w(TAG, "Received invalid JSON", e);
         }
     }
     private void handleUpdateError(VolleyError error) {
@@ -258,9 +258,7 @@ public class Updater {
     AlertDialog updateAlertDialog;
     BroadcastReceiver onComplete=new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
-            try {
-                updateAlertDialog.dismiss();
-            } catch (Exception ignored) {}
+            if (updateAlertDialog != null) updateAlertDialog.dismiss();
             installUpdate(downloadingName);
         }
     };

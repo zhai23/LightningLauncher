@@ -94,7 +94,8 @@ public abstract class IconRepo {
     }
 
     private static boolean downloadIconFromUrl(Context context, String url, File iconFile) {
-        try (InputStream inputStream = new URL(url).openStream()) {
+        try {
+            InputStream inputStream = new URL(url).openStream();
             if (saveStream(context, inputStream, iconFile)) {
                 inputStream.close();
                 return true;
@@ -161,19 +162,16 @@ public abstract class IconRepo {
 
     private static boolean isImageFileComplete(Context context, File imageFile) {
         boolean success = false;
-        try {
-            if (imageFile.length() > 0) {
-                BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inJustDecodeBounds = true;
-                if (ImageLib.bitmapFromFile(context, imageFile, options) == null) {
-                    Log.i("IconRepo", "Failed to get valid bitmap from "+imageFile.getAbsolutePath());
-                }
-                success = (options.outWidth > 0 && options.outHeight > 0);
+        if (imageFile.length() > 0) {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            if (ImageLib.bitmapFromFile(context, imageFile, options) == null) {
+                Log.i("IconRepo", "Failed to get valid bitmap from "+imageFile.getAbsolutePath());
             }
-        } catch (Exception ignored) {}
+            success = (options.outWidth > 0 && options.outHeight > 0);
+        }
 
         if (!success) Log.e("AbstractPlatform", "Failed to validate image file: " + imageFile);
-
         return success;
     }
 
