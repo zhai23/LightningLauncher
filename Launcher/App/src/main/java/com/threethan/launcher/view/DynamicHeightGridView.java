@@ -2,6 +2,7 @@ package com.threethan.launcher.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.widget.GridView;
 
 public class DynamicHeightGridView extends GridView {
@@ -26,8 +27,10 @@ public class DynamicHeightGridView extends GridView {
         int columns = getNumColumns();
 
         int rows = (int) Math.ceil((double) items / (double)columns);
+        int pad = getPaddingTop()+getPaddingBottom();
 
-        setMeasuredDimension(getMeasuredWidth(), getMeasuredHeight()*rows + getVerticalSpacing()*rows);
+        setMeasuredDimension(getMeasuredWidth(),
+                (getMeasuredHeight()-pad)*rows + getVerticalSpacing()*rows + pad);
     }
     public void setMargin(int margin, boolean names) {
         setVerticalSpacing(names ? margin/2 : margin);

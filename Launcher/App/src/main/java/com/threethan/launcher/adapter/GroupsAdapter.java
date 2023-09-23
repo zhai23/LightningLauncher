@@ -2,9 +2,11 @@ package com.threethan.launcher.adapter;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -54,6 +56,8 @@ public class GroupsAdapter extends BaseAdapter {
         if (editMode && appGroups.size() < MAX_GROUPS) appGroups.add("+ " + launcherActivity.getString(R.string.add_group));
 
         selectedGroups = settings.getSelectedGroups();
+        if (!editMode) selectedGroups.remove(GroupsAdapter.HIDDEN_GROUP);
+        if (selectedGroups.isEmpty()) selectedGroups.addAll(appGroups);
     }
     public void setLauncherActivity(LauncherActivity val) {
         launcherActivity = val;
@@ -86,7 +90,7 @@ public class GroupsAdapter extends BaseAdapter {
         else textView.setText(value);
     }
     @Override
-    @SuppressLint("UseSwitchCompatOrMaterialCode")
+    @SuppressLint({"UseSwitchCompatOrMaterialCode", "UseCompatLoadingForDrawables"})
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
 
@@ -99,6 +103,14 @@ public class GroupsAdapter extends BaseAdapter {
         } else holder = (ViewHolder) convertView.getTag();
 
         setTextViewValue(holder.textView, getItem(position));
+
+        holder.textView.setOnHoverListener((view, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_HOVER_ENTER)
+                holder.textView.setBackgroundResource(R.drawable.bkg_hover_button_editbar_hovered);
+            else if (event.getAction() == MotionEvent.ACTION_HOVER_EXIT)
+                holder.textView.setBackground(null);
+            return false;
+        });
 
         // set menu action
         holder.menu.setOnClickListener(view -> {

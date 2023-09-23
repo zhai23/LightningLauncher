@@ -35,7 +35,9 @@ public abstract class Launch {
                 } catch (Exception ignored) {}
 
             launcherActivity.launcherService.finishAllActivities();
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                    Intent.FLAG_ACTIVITY_NEW_DOCUMENT |
+                    Intent.FLAG_ACTIVITY_MULTIPLE_TASK );
 
             new Timer().schedule(new TimerTask() {
                 @Override

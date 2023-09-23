@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -66,18 +67,17 @@ public class LauncherActivityEditable extends LauncherActivity {
             // Edit bar theming and actions
             editFooter.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(darkMode ? "#60000000" : "#70BeBeBe")));
 
-            final View selectionHint = rootView.findViewById(R.id.selectionHint);
             final TextView selectionHintText = rootView.findViewById(R.id.selectionHintText);
-            final View uninstallButton = rootView.findViewById(R.id.uninstallBulk);
+            final ImageView uninstallButton = rootView.findViewById(R.id.uninstallBulk);
 
             for (TextView textView: new TextView[]{selectionHintText, rootView.findViewById(R.id.addWebsite), rootView.findViewById(R.id.stopEditing)}) {
                 textView.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(darkMode ? "#80000000" : "#FFFFFF")));
                 textView.setTextColor(Color.parseColor(darkMode ? "#FFFFFF" : "#000000"));
             }
-            selectionHint  .setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(darkMode ? "#80000000" : "#FFFFFF")));
-            uninstallButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(darkMode ? "#FFFFFF" : "#3a3a3c")));
+            selectionHintText  .setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(darkMode ? "#80000000" : "#FFFFFF")));
+            uninstallButton.setImageTintList(ColorStateList.valueOf(Color.parseColor(darkMode ? "#FFFFFF" : "#3a3a3c")));
 
-            selectionHint.setOnClickListener((view) -> {
+            selectionHintText.setOnClickListener((view) -> {
                 if (currentSelectedApps.isEmpty()) {
                     final Adapter adapterSquare = getAdapterSquare();
                     if (adapterSquare != null)
@@ -92,7 +92,7 @@ public class LauncherActivityEditable extends LauncherActivity {
                     currentSelectedApps.clear();
                     selectionHintText.setText(R.string.selection_hint_cleared);
                 }
-                selectionHint.postDelayed(this::updateSelectionHint, 2000);
+                selectionHintText.postDelayed(this::updateSelectionHint, 2000);
                 rootView.findViewById(R.id.uninstallBulk).setVisibility(View.GONE);
             });
             selectionHintText.setOnClickListener((view) -> {
@@ -110,7 +110,7 @@ public class LauncherActivityEditable extends LauncherActivity {
                     currentSelectedApps.clear();
                     selectionHintText.setText(R.string.selection_hint_cleared);
                 }
-                selectionHint.postDelayed(this::updateSelectionHint, 2000);
+                selectionHintText.postDelayed(this::updateSelectionHint, 2000);
                 rootView.findViewById(R.id.uninstallBulk).setVisibility(View.GONE);
             });
             uninstallButton.setOnClickListener(view -> {

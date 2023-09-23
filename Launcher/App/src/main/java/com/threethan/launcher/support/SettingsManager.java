@@ -94,13 +94,13 @@ public class SettingsManager extends Settings {
         sharedPreferenceEditor.putString(app.packageName, newName);
     }
     public static boolean getAppLaunchOut(String pkg) {
-        if (appsToLaunchOut.isEmpty()) readValues();
         return (appsToLaunchOut.contains(pkg));
     }
 
     public static void setAppLaunchOut(String pkg, boolean shouldLaunchOut) {
         if (shouldLaunchOut) appsToLaunchOut.add(pkg);
         else appsToLaunchOut.remove(pkg);
+        queueStoreValuesStatic();
     }
 
     public static Map<String, String> getAppGroupMap() {

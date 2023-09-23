@@ -75,6 +75,7 @@ public abstract class SettingsDialog {
         dark.setOnCheckedChangeListener((compoundButton, value) -> {
             a.sharedPreferenceEditor.putBoolean(Settings.KEY_DARK_MODE, value);
             a.refreshInterfaceAll();
+            a.post(a::clearAdapterCaches);
         });
         ImageView[] views = {
                 dialog.findViewById(R.id.background0),
@@ -247,12 +248,14 @@ public abstract class SettingsDialog {
         names.setOnCheckedChangeListener((compoundButton, value) -> {
             a.sharedPreferenceEditor.putBoolean(Settings.KEY_SHOW_NAMES_SQUARE, value);
             a.refreshInterfaceAll();
+            if(a.getAdapterSquare() != null) a.getAdapterSquare().setShowNames(value);
         });
         Switch wideNames = dialog.findViewById(R.id.nameBannerSwitch);
         wideNames.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_SHOW_NAMES_BANNER, Settings.DEFAULT_SHOW_NAMES_BANNER));
         wideNames.setOnCheckedChangeListener((compoundButton, value) -> {
             a.sharedPreferenceEditor.putBoolean(Settings.KEY_SHOW_NAMES_BANNER, value);
             a.refreshInterfaceAll();
+            if(a.getAdapterBanner() != null) a.getAdapterBanner().setShowNames(value);
         });
     }
 }

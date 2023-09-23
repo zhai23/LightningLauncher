@@ -22,7 +22,6 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
-import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ScrollView;
@@ -79,6 +78,8 @@ public class LauncherActivity extends Activity {
     public boolean settingsVisible;
     public LauncherService launcherService;
     protected static String TAG = "LightningLauncher";
+    private int groupRows;
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -379,13 +380,9 @@ public class LauncherActivity extends Activity {
         refreshAdapters();
     }
     public void refreshAdapters() {
+        updatePadding();
 
-        // Get and apply margin
-        int marginPx = dp(sharedPreferences.getInt(Settings.KEY_MARGIN, Settings.DEFAULT_MARGIN));
-
-        final FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        lp.setMargins(marginPx, Math.max(0,marginPx+(groupsEnabled ? dp(-23) : 0)), marginPx, marginPx+dp(20));
-        rootView.findViewById(R.id.mainScrollInterior).setLayoutParams(lp);
+        final int marginPx = dp(sharedPreferences.getInt(Settings.KEY_MARGIN, Settings.DEFAULT_MARGIN));
 
         boolean namesSquare = sharedPreferences.getBoolean(Settings.KEY_SHOW_NAMES_SQUARE, Settings.DEFAULT_SHOW_NAMES_SQUARE);
         boolean namesBanner = sharedPreferences.getBoolean(Settings.KEY_SHOW_NAMES_BANNER, Settings.DEFAULT_SHOW_NAMES_BANNER);
@@ -427,25 +424,39 @@ public class LauncherActivity extends Activity {
         prevViewWidth = mainView.getWidth();
 
         // Group rows and relevant values
-        View scrollInterior = rootView.findViewById(R.id.mainScrollInterior);
         if (getAdapterGroups() != null && groupsEnabled) {
             final int group_columns = Math.min(getAdapterGroups().getCount(), prevViewWidth / 400);
             groupGridView.setNumColumns(group_columns);
-            final int groupRows = (int) Math.ceil((double) getAdapterGroups().getCount() / group_columns);
-            scrollInterior.setPadding(0, dp(23 + 22) + dp(40) * groupRows, 0, getBottomBarHeight());
+            groupRows = (int) Math.ceil((double) getAdapterGroups().getCount() / group_columns);
             scrollView.setFadingEdgeLength(dp(23 + 22) + dp(40) * groupRows);
         } else {
-            int marginPx = dp(sharedPreferences.getInt(Settings.KEY_MARGIN, Settings.DEFAULT_MARGIN));
-            scrollInterior.setPadding(0, 0, 0, marginPx+getBottomBarHeight());
             FadingTopScrollView scrollView = rootView.findViewById(R.id.mainScrollView);
             scrollView.setFadingEdgeLength(0);
         }
+        updatePadding();
 
         int targetSizePx = dp(sharedPreferences.getInt(Settings.KEY_SCALE, Settings.DEFAULT_SCALE));
         int estimatedWidth = prevViewWidth;
         appGridViewSquare.setNumColumns((int) Math.round((double) estimatedWidth/targetSizePx));
         appGridViewBanner.setNumColumns((int) Math.round((double) estimatedWidth/targetSizePx/2));
         groupGridView.post(() -> groupGridView.setVisibility(View.VISIBLE));
+    }
+    protected void updatePadding() {
+        final int marginPx = dp(sharedPreferences.getInt(Settings.KEY_MARGIN, Settings.DEFAULT_MARGIN));
+        final boolean groupsVisible = getAdapterGroups() != null && groupsEnabled;
+        final int topAdd = groupsVisible ? dp(23 + 22) + dp(40) * groupRows : 0;
+        final int bottomAdd = groupsVisible ? getBottomBarHeight() : marginPx/2+getBottomBarHeight();
+
+        appGridViewBanner.setPadding(
+                marginPx,
+                Math.max(0,marginPx+(groupsEnabled ? dp(-23) : 0))+topAdd,
+                marginPx,
+                0);
+        appGridViewSquare.setPadding(
+                marginPx,
+                dp(5), // Margin top is -5dp
+                marginPx,
+                bottomAdd);
     }
     protected int getBottomBarHeight() {
         return 0; // To be overridden by child
@@ -497,9 +508,9 @@ public class LauncherActivity extends Activity {
         }
 
         if (getAdapterSquare() != null)
-            getAdapterSquare().setFullAppList(this, Platform.appListSquare);
+            getAdapterSquare().setFullAppList(Platform.appListSquare);
         if (getAdapterBanner() != null)
-            getAdapterBanner().setFullAppList(this, Platform.appListBanner);
+            getAdapterBanner().setFullAppList(Platform.appListBanner);
     }
 
     // Utility functions

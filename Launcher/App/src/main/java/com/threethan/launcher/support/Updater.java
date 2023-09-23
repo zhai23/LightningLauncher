@@ -192,13 +192,12 @@ public class Updater {
     private void showAppUpdateDialog(String curName, String newName) {
         try {
             attempts = 4;
-            AlertDialog.Builder updateDialogBuilder = new AlertDialog.Builder(activity);
+            AlertDialog.Builder updateDialogBuilder = new AlertDialog.Builder(activity, android.R.style.Theme_DeviceDefault_Dialog_Alert);
             updateDialogBuilder.setTitle(R.string.update_title);
             updateDialogBuilder.setMessage(activity.getString(R.string.update_content, curName, newName));
             updateDialogBuilder.setPositiveButton(R.string.update_button, (dialog, which) -> downloadUpdate(NAME_MAIN));
             updateDialogBuilder.setNegativeButton(R.string.update_skip_button, (dialog, which) -> skipUpdate(newName));
-            AlertDialog updateAlertDialog = updateDialogBuilder.create();
-            updateAlertDialog.show();
+            updateDialogBuilder.show();
         } catch (Exception ignored) {}
     }
     private SharedPreferences getSharedPreferences() {
@@ -210,7 +209,7 @@ public class Updater {
         return PreferenceManager.getDefaultSharedPreferences(context).getBoolean(KEY_UPDATE_AVAILABLE, false);
     }
     public void skipUpdate(String versionTag) {
-        AlertDialog.Builder skipDialogBuilder = new AlertDialog.Builder(activity);
+        AlertDialog.Builder skipDialogBuilder = new AlertDialog.Builder(activity, android.R.style.Theme_DeviceDefault_Dialog_Alert);
         skipDialogBuilder.setTitle(activity.getString(R.string.update_skip_title, versionTag));
         skipDialogBuilder.setMessage(R.string.update_skip_content);
         skipDialogBuilder.setPositiveButton(R.string.update_skip_confirm_button, (dialog, i) -> {
@@ -218,8 +217,7 @@ public class Updater {
             dialog.dismiss();
         });
         skipDialogBuilder.setNegativeButton(R.string.update_skip_cancel_button, ((dialog, i) -> dialog.dismiss()));
-        AlertDialog skipAlertDialog = skipDialogBuilder.create();
-        skipAlertDialog.show();
+        skipDialogBuilder.show();
     }
     @SuppressLint("UnspecifiedRegisterReceiverFlag") // Can't be fixed on this android API
     public void downloadUpdate(String apkName) {
@@ -248,12 +246,11 @@ public class Updater {
 
         DownloadManager manager1 = (DownloadManager) activity.getSystemService(Context.DOWNLOAD_SERVICE);
 
-        AlertDialog.Builder updateDialogBuilder = new AlertDialog.Builder(activity);
+        AlertDialog.Builder updateDialogBuilder = new AlertDialog.Builder(activity, android.R.style.Theme_DeviceDefault_Dialog_Alert);
         updateDialogBuilder.setTitle(R.string.update_downloading_title);
         updateDialogBuilder.setMessage(R.string.update_downloading_content);
         updateDialogBuilder.setNegativeButton(R.string.update_hide_button, (dialog, which) -> dialog.cancel());
-        updateAlertDialog = updateDialogBuilder.create();
-        updateAlertDialog.show();
+        updateDialogBuilder.show();
 
         activity.registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
@@ -293,7 +290,7 @@ public class Updater {
                 downloadUpdate(apkName);
                 attempts --;
             } else {
-                AlertDialog.Builder failedDownloadDialogBuilder = new AlertDialog.Builder(activity);
+                AlertDialog.Builder failedDownloadDialogBuilder = new AlertDialog.Builder(activity, android.R.style.Theme_DeviceDefault_Dialog_Alert);
                 failedDownloadDialogBuilder.setTitle(R.string.update_failed_title);
                 failedDownloadDialogBuilder.setMessage(R.string.update_failed_content);
                 failedDownloadDialogBuilder.setNegativeButton(R.string.update_hide_button, (dialog, which) -> dialog.cancel());

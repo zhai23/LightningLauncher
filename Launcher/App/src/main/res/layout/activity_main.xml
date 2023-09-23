@@ -23,6 +23,7 @@
         android:fadingEdge="vertical"
         android:fadingEdgeLength="65dp"
         android:requiresFadingEdge="vertical"
+        android:scrollbars="none"
         tools:visibility="gone">
 
         <LinearLayout
@@ -35,6 +36,8 @@
                 android:id="@+id/appsViewBanner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:clipChildren="true"
+                android:clipToPadding="false"
                 android:gravity="center"
                 android:horizontalSpacing="15dp"
                 android:numColumns="auto_fit"
@@ -45,6 +48,9 @@
                 android:id="@+id/appsViewSquare"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="-5dp"
+                android:clipChildren="true"
+                android:clipToPadding="false"
                 android:gravity="center"
                 android:horizontalSpacing="15dp"
                 android:numColumns="auto_fit"
@@ -132,7 +138,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:alpha="0.5"
-                android:background="@android:color/transparent"
+                android:background="@drawable/bkg_hover_button_editbtn"
                 android:padding="8dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/ic_config"
@@ -143,7 +149,7 @@
     <LinearLayout
         android:id="@+id/searchBarLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginStart="22dp"
         android:layout_marginTop="22dp"
         android:layout_marginEnd="22dp"
@@ -199,7 +205,7 @@
                         android:id="@+id/searchCancelIcon"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@android:color/transparent"
+                        android:background="@drawable/bkg_hover_button_editbar"
                         android:padding="8dp"
                         android:scaleType="centerCrop"
                         android:src="@drawable/ic_cancel_search"
@@ -226,43 +232,39 @@
             android:layout_height="match_parent"
             android:orientation="horizontal">
 
-            <LinearLayout
-                android:id="@+id/selectionHint"
+            <TextView
+                android:id="@+id/selectionHintText"
+
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="10dp"
-                android:layout_marginEnd="5dp"
                 android:layout_weight="1"
                 android:background="@drawable/bkg_button"
+                android:ellipsize="end"
+                android:foreground="@drawable/bkg_hover_button_editbar"
                 android:gravity="center"
-                android:paddingStart="15dp"
+                android:maxLines="2"
+                android:paddingStart="10dp"
                 android:paddingTop="10dp"
-                android:paddingEnd="10dp"
-                android:paddingBottom="10dp">
+                android:paddingEnd="5dp"
+                android:paddingBottom="10dp"
+                android:text="@string/selection_hint_none"
+                android:textColor="@color/ef_colorTextPrimary"
+                android:textSize="16sp"
+                tools:ignore="NestedWeights" />
 
-                <TextView
-                    android:id="@+id/selectionHintText"
-
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:maxLines="2"
-                    android:singleLine="true"
-                    android:text="@string/selection_hint_none"
-                    android:textColor="@color/ef_colorTextPrimary"
-                    android:textSize="16sp"
-                    tools:ignore="NestedWeights" />
-
-                <ImageView
-                    android:id="@+id/uninstallBulk"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/ic_uninstall"
-                    android:visibility="gone" />
-
-            </LinearLayout>
+            <ImageView
+                android:id="@+id/uninstallBulk"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginStart="-40dp"
+                android:background="@drawable/bkg_hover_button_editbar"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:src="@drawable/ic_uninstall"
+                android:visibility="gone"
+                tools:visibility="visible" />
 
 
             <TextView
@@ -270,11 +272,12 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="bottom|center_horizontal|end"
-                android:layout_marginStart="5dp"
+                android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_weight="0.3"
                 android:background="@drawable/bkg_button"
                 android:ellipsize="end"
+                android:foreground="@drawable/bkg_hover_button_editbar"
                 android:gravity="center"
                 android:maxLines="2"
                 android:paddingStart="15dp"
@@ -295,6 +298,7 @@
                 android:layout_weight="0.3"
                 android:background="@drawable/bkg_button"
                 android:ellipsize="end"
+                android:foreground="@drawable/bkg_hover_button_editbar"
                 android:gravity="center"
                 android:maxLines="2"
                 android:paddingStart="15dp"

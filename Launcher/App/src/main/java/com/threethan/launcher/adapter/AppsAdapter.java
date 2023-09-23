@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -48,7 +49,7 @@ public class AppsAdapter extends BaseAdapter{
     private boolean getEditMode() {
         return launcherActivity.isEditing();
     }
-    private final boolean showTextLabels;
+    private boolean showTextLabels;
     public AppsAdapter(LauncherActivity activity, boolean names, List<ApplicationInfo> myApps) {
         launcherActivity = activity;
         showTextLabels = names;
@@ -58,7 +59,7 @@ public class AppsAdapter extends BaseAdapter{
                 .getInstalledApps(activity, settingsManager.getAppGroupsSorted(false), myApps));
         fullAppList = myApps;
     }
-    public void setFullAppList(LauncherActivity activity, List<ApplicationInfo> myApps) {
+    public void setFullAppList(List<ApplicationInfo> myApps) {
         fullAppList = myApps;
     }
     public void updateAppList(LauncherActivity activity) {
@@ -67,6 +68,10 @@ public class AppsAdapter extends BaseAdapter{
         SettingsManager settingsManager = SettingsManager.getInstance(activity);
         currentAppList = Collections.synchronizedList(settingsManager
                 .getInstalledApps(activity, settingsManager.getAppGroupsSorted(true), fullAppList));
+    }
+    public void setShowNames(boolean names) {
+        showTextLabels = names;
+        clearViewCache();
     }
     public synchronized void filterBy(String text) {
         SettingsManager settingsManager = SettingsManager.getInstance(launcherActivity);
@@ -137,13 +142,13 @@ public class AppsAdapter extends BaseAdapter{
         } else holder = (ViewHolder) convertView.getTag();
 
         // set value into textview
-        String name = SettingsManager.getAppLabel(currentApp);
-        holder.textView.setVisibility(showTextLabels ? View.VISIBLE : View.INVISIBLE);
         if (showTextLabels) {
+            String name = SettingsManager.getAppLabel(currentApp);
+            holder.textView.setVisibility(View.VISIBLE);
             holder.textView.setText(name);
             holder.textView.setTextColor(Color.parseColor(launcherActivity.darkMode ? "#FFFFFF" : "#000000"));
             holder.textView.setShadowLayer(6, 0, 0, Color.parseColor(launcherActivity.darkMode ? "#000000" : "#20FFFFFF"));
-        }
+        } else holder.textView.setVisibility(View.GONE);
 
         new LoadIconTask().execute(this, currentApp, launcherActivity, holder.imageView, holder.imageViewBg);
         holder.view.post(() -> updateView(holder));
@@ -190,15 +195,38 @@ public class AppsAdapter extends BaseAdapter{
                     an.setDuration(150);
                     an.start();
                 }
-
-                boolean hovered = holder.view.isHovered() || holder.moreButton.isHovered() || holder.killButton.isHovered();
-                holder.moreButton.setVisibility(hovered ? View.VISIBLE : View.INVISIBLE);
-                holder.killButton.setBackgroundResource(hovered ? R.drawable.ic_circ_running_stop : R.drawable.ic_running);
-
                 holder.view.postDelayed(this, 250);
             }
         };
         periodicUpdate.run();
+
+        View.OnHoverListener hoverListener = (view, event) -> {
+            boolean hovered;
+            if (event.getAction() == MotionEvent.ACTION_HOVER_ENTER) hovered = true;
+            else if (event.getAction() == MotionEvent.ACTION_HOVER_EXIT) {
+                if ((view != holder.moreButton && holder.moreButton.isHovered())
+                        || (view != holder.killButton && holder.killButton.isHovered())) {
+                    return false;
+                } else hovered = false;
+            } else return false;
+
+            holder.killButton.setBackgroundResource(hovered ? R.drawable.ic_circ_running_stop : R.drawable.ic_running);
+
+            ObjectAnimator aXi = ObjectAnimator.ofFloat(holder.imageView, "scaleX", hovered ? 1.05f : 1.00f);
+            ObjectAnimator aXv = ObjectAnimator.ofFloat(holder.view, "scaleX", hovered ? 1.05f : 1.00f);
+            ObjectAnimator aYi = ObjectAnimator.ofFloat(holder.imageView, "scaleY", hovered ? 1.05f : 1.00f);
+            ObjectAnimator aYv = ObjectAnimator.ofFloat(holder.view, "scaleY", hovered ? 1.05f : 1.00f);
+            ObjectAnimator aAm = ObjectAnimator.ofFloat(holder.moreButton, "alpha", hovered ? 1f : 0f);
+
+            final ObjectAnimator[] animators = new ObjectAnimator[] {aXi, aXv, aYi, aYv, aAm};
+            for (ObjectAnimator animator:animators) animator.setDuration(200);
+            for (ObjectAnimator animator:animators) animator.start();
+
+            return false;
+        };
+        holder.view.setOnHoverListener(hoverListener);
+        holder.moreButton.setOnHoverListener(hoverListener);
+        holder.killButton.setOnHoverListener(hoverListener);
 
         holder.moreButton.setOnClickListener(view -> showAppDetails(holder.app));
 
@@ -234,7 +262,6 @@ public class AppsAdapter extends BaseAdapter{
             App.uninstall(launcherActivity, currentApp.packageName); dialog.dismiss();});
 
         // Launch Mode Toggle
-        final boolean[] launchOut = {SettingsManager.getAppLaunchOut(currentApp.packageName)};
         @SuppressLint("UseSwitchCompatOrMaterialCode")
         final Switch launchModeSwitch = dialog.findViewById(R.id.launchModeSwitch);
         final View launchOutButton = dialog.findViewById(R.id.launchOut);
@@ -276,33 +303,26 @@ public class AppsAdapter extends BaseAdapter{
         } else {
             launchModeSection.setVisibility(View.VISIBLE);
             refreshIconButton.setVisibility(View.GONE);
-            launchModeSwitch.setChecked(launchOut[0]);
+
             launchOutButton.setVisibility(View.VISIBLE);
             launchOutButton.setOnClickListener((view) -> {
+                final boolean prevLaunchOut = SettingsManager.getAppLaunchOut(currentApp.packageName);
                 SettingsManager.setAppLaunchOut(currentApp.packageName, true);
                 Launch.launchApp(launcherActivity, currentApp);
-                SettingsManager.setAppLaunchOut(currentApp.packageName, launchOut[0]);
+                SettingsManager.setAppLaunchOut(currentApp.packageName, prevLaunchOut);
             });
 
+            launchModeSwitch.setChecked(SettingsManager.getAppLaunchOut(currentApp.packageName));
             launchModeSwitch.setOnCheckedChangeListener((sw, value) -> {
-                if (!launcherActivity.sharedPreferences.getBoolean(Settings.KEY_SEEN_LAUNCH_OUT_POPUP, false) && value) {
-                    launchModeSwitch.setChecked(false); // Revert switch
+                SettingsManager.setAppLaunchOut(currentApp.packageName, value);
+
+                if (!launcherActivity.sharedPreferences.getBoolean(Settings.KEY_SEEN_LAUNCH_OUT_POPUP, false)) {
                     AlertDialog subDialog = Dialog.build(launcherActivity, R.layout.dialog_launch_out_info);
                     subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
                         launcherActivity.sharedPreferenceEditor
                                 .putBoolean(Settings.KEY_SEEN_LAUNCH_OUT_POPUP, true).apply();
                         subDialog.dismiss();
-                        launchOut[0] = SettingsManager.getAppLaunchOut(currentApp.packageName);
-                        launchModeSwitch.setChecked(true);
-                        SettingsManager.setAppLaunchOut(currentApp.packageName, true);
-                        launcherActivity.sharedPreferenceEditor.apply();
                     });
-                    subDialog.findViewById(R.id.cancel).setOnClickListener(view -> {
-                        subDialog.dismiss(); // Dismiss without setting
-                    });
-                } else {
-                    SettingsManager.setAppLaunchOut(currentApp.packageName, !launchOut[0]);
-                    launchOut[0] = SettingsManager.getAppLaunchOut(currentApp.packageName);
                 }
             });
         }

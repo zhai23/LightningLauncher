@@ -7,6 +7,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
@@ -127,6 +128,14 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
         searchView.setOnClickListener(view -> {
             if (searching) hideSearchBar();
             else showSearchBar();
+        });
+        View searchIcon = rootView.findViewById(R.id.searchIcon);
+        searchView.setOnHoverListener((view, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_HOVER_ENTER)
+                searchIcon.setBackgroundResource(R.drawable.bkg_hover_button_editbtn_hovered);
+            else if (event.getAction() == MotionEvent.ACTION_HOVER_EXIT)
+                searchIcon.setBackground(null);
+            return false;
         });
         // It seems like the normal method for showing the keyboard doesn't work on quest
         // so we'll put an invisible EditText above the search button and give it a frame

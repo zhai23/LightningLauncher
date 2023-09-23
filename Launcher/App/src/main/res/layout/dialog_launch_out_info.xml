@@ -37,7 +37,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/bkg_button">
+            android:background="@drawable/bkg_button"
+            android:visibility="gone">
 
             <TextView
                 style="@style/SettingButtonLabel"
@@ -51,7 +52,6 @@
             android:id="@+id/confirm"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
             android:layout_weight="1"
             android:background="@drawable/bkg_button">
 

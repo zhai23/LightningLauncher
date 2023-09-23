@@ -20,5 +20,4 @@ public class FadingTopScrollView extends ScrollView {
     @Override public float getTopFadingEdgeStrength() {
         return 1.0f;
     }
-
 }
