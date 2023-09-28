@@ -78,12 +78,14 @@ public abstract class IconRepo {
                     e.printStackTrace();
                 } finally {
                     // Set the icon to now download if we either successfully downloaded it, or the download tried and failed
-                    if (!App.isWebsite(app)) downloadFinishedPackages.add(pkgName);
-                    try {
-                        activity.sharedPreferenceEditor
-                                .putStringSet(SettingsManager.DONT_DOWNLOAD_ICONS, downloadFinishedPackages);
-                    } catch (Exception ignored) {}
                     locks.remove(pkgName);
+                    if (!App.isWebsite(app)) {
+                        synchronized (downloadFinishedPackages) {
+                            downloadFinishedPackages.add(pkgName);
+                            activity.sharedPreferenceEditor
+                                        .putStringSet(SettingsManager.DONT_DOWNLOAD_ICONS, downloadFinishedPackages);
+                        }
+                    }
                 }
             }
         }).start();
