@@ -16,6 +16,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -23,11 +24,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class IconRepo {
     private static final String[] ICON_URLS = {
+            "https://raw.githubusercontent.com/veticia/binaries/main/icons/%s.png",
             "https://raw.githubusercontent.com/basti564/LauncherIcons/main/oculus_square/%s.jpg",
             "https://raw.githubusercontent.com/basti564/LauncherIcons/main/pico_square/%s.jpg",
             "https://raw.githubusercontent.com/basti564/LauncherIcons/main/viveport_square/%s.jpg"
     };
     private static final String[] ICON_URLS_WIDE = {
+            "https://raw.githubusercontent.com/veticia/binaries/main/banners/%s.png",
             "https://raw.githubusercontent.com/basti564/LauncherIcons/main/oculus_landscape/%s.jpg",
             "https://raw.githubusercontent.com/basti564/LauncherIcons/main/pico_landscape/%s.jpg",
             "https://raw.githubusercontent.com/basti564/LauncherIcons/main/viveport_landscape/%s.jpg"
@@ -36,7 +39,7 @@ public abstract class IconRepo {
             "https://logo.clearbit.com/google.com/%s",
             "%s/favicon.ico",
     };
-    protected static Set<String> downloadFinishedPackages = new HashSet<>();
+    protected static Set<String> downloadFinishedPackages = Collections.synchronizedSet(new HashSet<>());
     private static final ConcurrentHashMap<String, Object> locks = new ConcurrentHashMap<>();
 
     public static void check(final LauncherActivity activity, ApplicationInfo app, final Runnable callback) {
@@ -44,7 +47,6 @@ public abstract class IconRepo {
     }
 
     public static boolean shouldDownload(LauncherActivity activity, ApplicationInfo app) {
-        if (!(App.isVirtualReality(app, activity) || App.isWebsite(app))) return false;
         if (downloadFinishedPackages.isEmpty())
             downloadFinishedPackages = activity.sharedPreferences
                     .getStringSet(SettingsManager.DONT_DOWNLOAD_ICONS, downloadFinishedPackages);
@@ -77,8 +79,10 @@ public abstract class IconRepo {
                 } finally {
                     // Set the icon to now download if we either successfully downloaded it, or the download tried and failed
                     if (!App.isWebsite(app)) downloadFinishedPackages.add(pkgName);
-                    activity.sharedPreferenceEditor
-                            .putStringSet(SettingsManager.DONT_DOWNLOAD_ICONS, downloadFinishedPackages);
+                    try {
+                        activity.sharedPreferenceEditor
+                                .putStringSet(SettingsManager.DONT_DOWNLOAD_ICONS, downloadFinishedPackages);
+                    } catch (Exception ignored) {}
                     locks.remove(pkgName);
                 }
             }

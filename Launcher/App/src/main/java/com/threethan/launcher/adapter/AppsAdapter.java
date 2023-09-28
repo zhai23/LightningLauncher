@@ -13,6 +13,9 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.OvershootInterpolator;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,6 +23,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
+
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 
 import com.threethan.launcher.R;
 import com.threethan.launcher.helper.App;
@@ -46,11 +51,12 @@ public class AppsAdapter extends BaseAdapter{
     private LauncherActivity launcherActivity;
     private List<ApplicationInfo> currentAppList;
     private List<ApplicationInfo> fullAppList;
+    private final boolean isBanner;
     private boolean getEditMode() {
         return launcherActivity.isEditing();
     }
     private boolean showTextLabels;
-    public AppsAdapter(LauncherActivity activity, boolean names, List<ApplicationInfo> myApps) {
+    public AppsAdapter(LauncherActivity activity, boolean names, boolean banner, List<ApplicationInfo> myApps) {
         launcherActivity = activity;
         showTextLabels = names;
         SettingsManager settingsManager = SettingsManager.getInstance(launcherActivity);
@@ -58,6 +64,7 @@ public class AppsAdapter extends BaseAdapter{
         currentAppList = Collections.synchronizedList(settingsManager
                 .getInstalledApps(activity, settingsManager.getAppGroupsSorted(false), myApps));
         fullAppList = myApps;
+        isBanner = banner;
     }
     public void setFullAppList(List<ApplicationInfo> myApps) {
         fullAppList = myApps;
@@ -107,13 +114,17 @@ public class AppsAdapter extends BaseAdapter{
         return position;
     }
 
-    Map<ApplicationInfo, View> viewCache = new ConcurrentHashMap<>();
+    Map<ApplicationInfo, View> viewCacheSquare = new ConcurrentHashMap<>();
+    Map<ApplicationInfo, View> viewCacheBanner = new ConcurrentHashMap<>();
+    private Map<ApplicationInfo, View> getViewCache() {
+        return isBanner ? viewCacheBanner : viewCacheSquare;
+    }
 
     /** @noinspection deprecation*/
     public View getView(int position, View convertView, ViewGroup parent) {
         final ApplicationInfo currentApp = currentAppList.get(position);
 
-        if (viewCache.containsKey(currentApp)) return viewCache.get(currentApp);
+        if (getViewCache().containsKey(currentApp)) return getViewCache().get(currentApp);
 
         ViewHolder holder;
 
@@ -153,11 +164,11 @@ public class AppsAdapter extends BaseAdapter{
         new LoadIconTask().execute(this, currentApp, launcherActivity, holder.imageView, holder.imageViewBg);
         holder.view.post(() -> updateView(holder));
 
-        viewCache.put(currentApp, convertView);
+        getViewCache().put(currentApp, convertView);
         return convertView;
     }
     public void clearViewCache() {
-        viewCache.clear();
+        getViewCache().clear();
     }
 
     private void updateView(ViewHolder holder) {
@@ -196,6 +207,7 @@ public class AppsAdapter extends BaseAdapter{
                     an.start();
                 }
                 holder.view.postDelayed(this, 250);
+                holder.killButton.setVisibility(SettingsManager.getRunning(holder.app.packageName) ? View.VISIBLE : View.GONE);
             }
         };
         periodicUpdate.run();
@@ -218,8 +230,10 @@ public class AppsAdapter extends BaseAdapter{
             ObjectAnimator aYv = ObjectAnimator.ofFloat(holder.view, "scaleY", hovered ? 1.05f : 1.00f);
             ObjectAnimator aAm = ObjectAnimator.ofFloat(holder.moreButton, "alpha", hovered ? 1f : 0f);
 
+
             final ObjectAnimator[] animators = new ObjectAnimator[] {aXi, aXv, aYi, aYv, aAm};
-            for (ObjectAnimator animator:animators) animator.setDuration(200);
+            for (ObjectAnimator animator:animators) animator.setInterpolator(new OvershootInterpolator());
+            for (ObjectAnimator animator:animators) animator.setDuration(250);
             for (ObjectAnimator animator:animators) animator.start();
 
             return false;
@@ -230,7 +244,6 @@ public class AppsAdapter extends BaseAdapter{
 
         holder.moreButton.setOnClickListener(view -> showAppDetails(holder.app));
 
-        holder.killButton.setVisibility(SettingsManager.getRunning(holder.app.packageName) ? View.VISIBLE : View.GONE);
         holder.killButton.setOnClickListener(view -> {
             SettingsManager.stopRunning(holder.app.packageName);
             view.setVisibility(View.GONE);
@@ -343,8 +356,8 @@ public class AppsAdapter extends BaseAdapter{
         dialog.findViewById(R.id.confirm).setOnClickListener(view -> {
             SettingsManager.setAppLabel(currentApp, StringLib.setStarred(appNameEditText.getText().toString(), isStarred[0]));
             clearViewCache();
-            dialog.dismiss();
             launcherActivity.refreshInterfaceAll();
+            dialog.dismiss();
         });
     }
 

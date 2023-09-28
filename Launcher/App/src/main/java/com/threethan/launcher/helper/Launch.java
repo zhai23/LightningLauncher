@@ -26,7 +26,8 @@ public abstract class Launch {
             return false;
         }
 
-        if (SettingsManager.getAppLaunchOut(app.packageName) ||
+        if (SettingsManager.
+                getAppLaunchOut(app.packageName) ||
                 App.isVirtualReality(app, launcherActivity)) {
             // Launch in own window properly
             if (App.isWebsite(app))

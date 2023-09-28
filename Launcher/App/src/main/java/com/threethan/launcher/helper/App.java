@@ -121,7 +121,7 @@ public abstract class App {
             launcher.sharedPreferenceEditor
                     .putString(packageName, null) // set display name
                     .putStringSet(Settings.KEY_WEBSITE_LIST, webApps);
-            launcher.refreshAppDisplayLists();
+            launcher.refreshAppDisplayListsAll();
         } else {
             Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
             intent.setData(Uri.parse("package:" + packageName));

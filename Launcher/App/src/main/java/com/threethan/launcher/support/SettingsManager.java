@@ -94,6 +94,7 @@ public class SettingsManager extends Settings {
         sharedPreferenceEditor.putString(app.packageName, newName);
     }
     public static boolean getAppLaunchOut(String pkg) {
+        if (appsToLaunchOut.isEmpty()) appsToLaunchOut = sharedPreferences.getStringSet(KEY_LAUNCH_OUT, Collections.emptySet());
         return (appsToLaunchOut.contains(pkg));
     }
 
@@ -279,7 +280,7 @@ public class SettingsManager extends Settings {
                 appListSet = sharedPreferences.getStringSet(KEY_GROUP_APP_LIST +group, appListSet);
                 for (String app : appListSet) appGroupMap.put(app, group);
             }
-            appsToLaunchOut = sharedPreferences.getStringSet(KEY_LAUNCH_OUT, defaultGroupsSet);
+            appsToLaunchOut = sharedPreferences.getStringSet(KEY_LAUNCH_OUT, Collections.emptySet());
 
         } catch (Exception e) {
             e.printStackTrace();

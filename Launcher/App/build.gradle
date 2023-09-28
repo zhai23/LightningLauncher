@@ -5,8 +5,8 @@ android {
     defaultConfig {
         compileSdk 34
         minSdkVersion 23
-        versionCode 520
-        versionName "5.2.0"
+        versionCode 530
+        versionName "5.3.0"
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

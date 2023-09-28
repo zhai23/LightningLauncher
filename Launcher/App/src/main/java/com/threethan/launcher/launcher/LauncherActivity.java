@@ -362,6 +362,13 @@ public class LauncherActivity extends Activity {
             Log.w(TAG, "Failed to call refresh on service!");
         }
     }
+    public void refreshAppDisplayListsAll() {
+        try {
+            launcherService.refreshAppDisplayListsAll();
+        } catch (Exception ignored) {
+            Log.w(TAG, "Failed to call refresh on service!");
+        }
+    }
     public void refreshInterface() {
         if (sharedPreferenceEditor != null) sharedPreferenceEditor.apply();
         try {
@@ -405,14 +412,14 @@ public class LauncherActivity extends Activity {
     protected void setAdapters(boolean namesSquare, boolean namesBanner) {
         if (getAdapterSquare() == null)
             appGridViewSquare.setAdapter(
-                    new AppsAdapter(this, namesSquare, Platform.appListSquare));
+                    new AppsAdapter(this, namesSquare, false, Platform.appListSquare));
         else {
             getAdapterSquare().updateAppList(this);
             appGridViewSquare.setAdapter(appGridViewSquare.getAdapter());
         }
         if (getAdapterBanner() == null)
             appGridViewBanner.setAdapter(
-                    new AppsAdapter(this, namesBanner, Platform.appListBanner));
+                    new AppsAdapter(this, namesBanner, true, Platform.appListBanner));
         else {
             getAdapterBanner().updateAppList(this);
             appGridViewBanner.setAdapter(appGridViewBanner.getAdapter());
@@ -486,7 +493,7 @@ public class LauncherActivity extends Activity {
 
     public void refreshAppDisplayLists() {
         refreshAppDisplayListsWithoutInterface();
-        refreshInterfaceAll();
+        refreshInterface();
     }
     protected void refreshAppDisplayListsWithoutInterface() {
         sharedPreferenceEditor.apply();

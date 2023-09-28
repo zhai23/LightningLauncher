@@ -226,20 +226,20 @@ public abstract class SettingsDialog {
         bannerVr.setOnCheckedChangeListener((compoundButton, value) -> {
             Compat.clearIconCache(a);
             a.sharedPreferenceEditor.putBoolean(Settings.KEY_WIDE_VR, value);
-            a.refreshAppDisplayLists();
+            a.refreshAppDisplayListsAll();
         });
         Switch banner2d = dialog.findViewById(R.id.banner2dSwitch);
         banner2d.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_WIDE_2D, Settings.DEFAULT_WIDE_2D));
         banner2d.setOnCheckedChangeListener((compoundButton, value) -> {
             a.sharedPreferenceEditor.putBoolean(Settings.KEY_WIDE_2D, value);
-            a.refreshAppDisplayLists();
+            a.refreshAppDisplayListsAll();
         });
         Switch bannerWeb = dialog.findViewById(R.id.bannerWebSwitch);
         bannerWeb.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_WIDE_WEB, Settings.DEFAULT_WIDE_WEB));
         bannerWeb.setOnCheckedChangeListener((compoundButton, value) -> {
             Compat.clearIconCache(a);
             a.sharedPreferenceEditor.putBoolean(Settings.KEY_WIDE_WEB, value);
-            a.refreshAppDisplayLists();
+            a.refreshAppDisplayListsAll();
         });
 
         // Names

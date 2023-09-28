@@ -274,7 +274,7 @@ public class LauncherActivityEditable extends LauncherActivity {
             Platform.addWebsite(sharedPreferences, url);
             settingsManager.setAppGroup(StringLib.fixUrl(url), group);
             dialog.cancel();
-            refreshAppDisplayLists();
+            refreshAppDisplayListsAll();
         });
         dialog.findViewById(R.id.info).setOnClickListener(view -> {
             dialog.dismiss();
