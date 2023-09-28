@@ -17,6 +17,11 @@ import java.util.TimerTask;
 
 public abstract class Launch {
     public static boolean launchApp(LauncherActivity launcherActivity, ApplicationInfo app) {
+        try {
+            // This is unlikely to fail, but it shouldn't stop us from launching if it somehow does
+            launcherActivity.sharedPreferenceEditor.apply();
+        } catch (Exception ignored) {}
+
         Intent intent = getLaunchIntent(launcherActivity, app);
 
         if (intent == null) {
@@ -62,7 +67,6 @@ public abstract class Launch {
     private static void startIntent(LauncherActivity launcherActivity, Intent intent) {
         launcherActivity.startActivity(intent);
     }
-
 
     @Nullable
     public static Intent getLaunchIntent(LauncherActivity activity, ApplicationInfo app) {
