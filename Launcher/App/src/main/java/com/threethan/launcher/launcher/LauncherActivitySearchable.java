@@ -23,6 +23,17 @@ import com.threethan.launcher.view.EditTextWatched;
 import eightbitlab.com.blurview.BlurView;
 import eightbitlab.com.blurview.RenderScriptBlur;
 
+/*
+    LauncherActivitySearchable
+
+    The class handles the additional interface elements and properties related to searching.
+    It sends the current search term to the GroupsAdapter when updated, and open the first app
+    when enter is pressed.
+
+    This is the activity class that will actually be used; though its parent classes should operate
+    fine if called independently.
+ */
+
 public class LauncherActivitySearchable extends LauncherActivityEditable {
     private boolean searching = false;
     protected void searchFor(String text) {

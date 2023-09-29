@@ -4,6 +4,12 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ScrollView;
 
+/*
+    FadingTopScrollView
+
+    A custom version of a Scrollview which always displays a full-strength fading edge on top, and
+    none on the bottom. Used for the main scroll view to fade apps behind the group bar.
+ */
 public class FadingTopScrollView extends ScrollView {
     public FadingTopScrollView(Context context) {
         super(context);

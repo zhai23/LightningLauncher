@@ -13,6 +13,16 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+/*
+    App
+
+    This abstract class is provides info about applications, and helper functions for non-launching
+    intents (info, uninstall).
+
+    Functions prefixed with "check" check a property of an app using its metadata
+    Functions prefixed with "is" are wrappers around "check" functions which cache values
+ */
+
 public abstract class App {
     static Set<String> setVr = Collections.synchronizedSet(new HashSet<>());
     static Set<String> set2d = Collections.synchronizedSet(new HashSet<>());
@@ -107,11 +117,27 @@ public abstract class App {
         return (packageName.contains("//"));
     }
 
+    // Invalidate the values caches for isSomething functions
+    public static void invalidateCaches(LauncherActivity launcherActivity) {
+        setVr.clear();
+        set2d.clear();
+        setSupported.clear();
+        setUnsupported.clear();
+
+        launcherActivity.sharedPreferenceEditor
+                .remove(Settings.KEY_2D_SET)
+                .remove(Settings.KEY_VR_SET)
+                .remove(Settings.KEY_SUPPORTED_SET)
+                .remove(Settings.KEY_UNSUPPORTED_SET)
+                .apply();
+    }
+    // Opens the app info settings pane
     public static void openInfo(Context context, String packageName) {
         Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         intent.setData(Uri.parse("package:" + packageName));
         context.startActivity(intent);
     }
+    // Requests to uninstall the app
     public static void uninstall(LauncherActivity launcher, String packageName) {
         if (App.isWebsite(packageName)) {
             Set<String> webApps = launcher.sharedPreferences.getStringSet(Settings.KEY_WEBSITE_LIST, Collections.emptySet());
@@ -127,18 +153,5 @@ public abstract class App {
             intent.setData(Uri.parse("package:" + packageName));
             launcher.startActivity(intent);
         }
-    }
-    public static void invalidateCaches(LauncherActivity launcherActivity) {
-        setVr.clear();
-        set2d.clear();
-        setSupported.clear();
-        setUnsupported.clear();
-
-        launcherActivity.sharedPreferenceEditor
-                .remove(Settings.KEY_2D_SET)
-                .remove(Settings.KEY_VR_SET)
-                .remove(Settings.KEY_SUPPORTED_SET)
-                .remove(Settings.KEY_UNSUPPORTED_SET)
-                .apply();
     }
 }

@@ -40,7 +40,7 @@ import com.threethan.launcher.helper.IconRepo;
 import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.lib.ImageLib;
-import com.threethan.launcher.lib.SettingsDialog;
+import com.threethan.launcher.support.SettingsDialog;
 import com.threethan.launcher.support.SettingsManager;
 import com.threethan.launcher.support.Updater;
 import com.threethan.launcher.view.DynamicHeightGridView;
@@ -56,6 +56,17 @@ import java.util.Set;
 
 import eightbitlab.com.blurview.BlurView;
 import eightbitlab.com.blurview.RenderScriptBlur;
+
+/*
+    LauncherActivity
+
+    The class handles most of what the launcher does, though it is extended by it's child classes
+
+    It relies on LauncherService to provide it with the main view/layout of the launcher, but all
+    actual usage of that view (mainView) and its children is done here.
+
+    It contains functions for initializing, refreshing, and updating various parts of the interface.
+ */
 
 /** @noinspection deprecation*/
 public class LauncherActivity extends Activity {
@@ -180,7 +191,7 @@ public class LauncherActivity extends Activity {
 
         mainView = rootView.findViewById(R.id.mainLayout);
         mainView.addOnLayoutChangeListener((view, i, i1, i2, i3, i4, i5, i6, i7)
-                -> post(this::updateGridViewHeights));
+                -> post(this::updateGridViews));
         appGridViewSquare = rootView.findViewById(R.id.appsViewSquare);
         appGridViewBanner = rootView.findViewById(R.id.appsViewBanner);
         scrollView = rootView.findViewById(R.id.mainScrollView);
@@ -405,7 +416,7 @@ public class LauncherActivity extends Activity {
         scrollView.smoothScrollTo(0,0); // Cancel inertia
 
         prevViewWidth = -1;
-        updateGridViewHeights();
+        updateGridViews();
 
         post(this::updateToolBars);
     }
@@ -426,7 +437,9 @@ public class LauncherActivity extends Activity {
         }
     }
 
-    public void updateGridViewHeights() {
+    // Updates the heights and layouts of grid views
+    //  group grid view, square app grid view & banner app grid view
+    public void updateGridViews() {
         if (mainView.getWidth() == prevViewWidth) return;
         prevViewWidth = mainView.getWidth();
 
@@ -448,6 +461,10 @@ public class LauncherActivity extends Activity {
         appGridViewBanner.setNumColumns((int) Math.round((double) estimatedWidth/targetSizePx/2));
         groupGridView.post(() -> groupGridView.setVisibility(View.VISIBLE));
     }
+    // Updates padding on the app grid views:
+    // - Top padding to account for the groups bar
+    // - Side padding to account for icon margins (otherwise icons would touch window edges)
+    // - Bottom padding to account for icon margin, as well as the edit mode footer if applicable
     protected void updatePadding() {
         final int marginPx = dp(sharedPreferences.getInt(Settings.KEY_MARGIN, Settings.DEFAULT_MARGIN));
         final boolean groupsVisible = getAdapterGroups() != null && groupsEnabled;
@@ -465,10 +482,11 @@ public class LauncherActivity extends Activity {
                 marginPx,
                 bottomAdd);
     }
+    // Accounts for the height of the edit mode footer when visible, actual function in child class
     protected int getBottomBarHeight() {
-        return 0; // To be overridden by child
+        return 0;
     }
-
+    // Sets the background value in the settings, then refreshes the background for all views
     public void setBackground(int index) {
         if (index >= SettingsManager.BACKGROUND_DRAWABLES.length || index < 0) index = -1;
         else sharedPreferenceEditor.putBoolean(Settings.KEY_DARK_MODE, SettingsManager.BACKGROUND_DARK[index]);
@@ -476,6 +494,8 @@ public class LauncherActivity extends Activity {
         isKillable = false;
         launcherService.refreshBackgroundAll();
     }
+    // Sets a background color based on your chosen background,
+    // then calls an async task to actually load the background
     public void refreshBackground() {
         sharedPreferenceEditor.apply();
 

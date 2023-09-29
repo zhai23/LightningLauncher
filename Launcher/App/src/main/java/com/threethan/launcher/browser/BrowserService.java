@@ -27,14 +27,32 @@ import com.threethan.launcher.launcher.LauncherActivity;
 import java.util.HashMap;
 import java.util.Objects;
 
+/*
+    BrowserService
+
+    Similar to the LauncherService, this service provides views for websites
+    Specifically, it provides the WebView itself. The browser interface (buttons, url bar) is
+    handled by the browser activity.
+
+    WebViews aren't just stored into memory - this service runs as a foreground service,
+    so WebViews it owns are kept running with foreground privileges at all times. This lets them
+    work in the background.
+
+    This lets websites play audio/record in the background through this app.
+    com.oculus.permission.PLAY_AUDIO_BACKGROUND & com.oculus.permission.RECORD_AUDIO_BACKGROUND
+    let the app itself play audio in the background on oculus devices without system tweaks.
+ */
 public class BrowserService extends Service {
     private final IBinder binder = new LocalBinder();
     private final static HashMap<String, BrowserWebView> webViewByBaseUrl = new HashMap<>();
     private final static HashMap<String, Activity> activityByBaseUrl = new HashMap<>();
 
+    // Arbitrary ID for the persistent notification
     private final static int NOTIFICATION_ID = 42;
 
-    // Spoof chrome 116 on linux
+    // User agent string; this is taken from the same version of chromium running as Google Chrome on desktop linux.
+    // Android chrome may be more accurate, but would cause sites to serve mobile pages,
+    // which look too large and often redirect to the play store instead of working in-browser.
     String UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36";
 
     @Override
@@ -80,12 +98,12 @@ public class BrowserService extends Service {
 
             webView.loadUrl(url);
 
+            // Change a number of settings to behave more like a normal browser
             final WebSettings ws = webView.getSettings();
             ws.setLoadWithOverviewMode(true);
             ws.setJavaScriptEnabled(true);
             ws.setAllowFileAccess(true);
             ws.setUserAgentString(UA);
-            // Fail-safes (they do make a difference!)
             ws.setDomStorageEnabled(true);
             ws.setLoadWithOverviewMode(true);
             ws.setBuiltInZoomControls(true);
@@ -93,11 +111,11 @@ public class BrowserService extends Service {
             ws.setSupportZoom(true);
             ws.setMediaPlaybackRequiresUserGesture(false);
             ws.setDefaultTextEncodingName("utf-8");
-            // Cookies
+            // Enable Cookies
             CookieManager.getInstance().setAcceptCookie(true);
             CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true);
 
-            // Dark Theme
+            // Set website's to use chrome's internal dark mode
             if (Build.VERSION.SDK_INT >= 29)
                 ws.setForceDark(activity.sharedPreferences
                 .getBoolean(BrowserActivity.KEY_WEBSITE_DARK+activity.baseUrl, true)
@@ -127,7 +145,7 @@ public class BrowserService extends Service {
     public void killActivities() {
         for (String key : activityByBaseUrl.keySet()) {
             if (activityByBaseUrl.get(key) != null) {
-                activityByBaseUrl.get(key).finish();
+                Objects.requireNonNull(activityByBaseUrl.get(key)).finish();
                 activityByBaseUrl.remove(key);
             }
         }

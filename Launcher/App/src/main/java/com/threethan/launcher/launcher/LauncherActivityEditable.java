@@ -35,6 +35,13 @@ import java.util.Set;
 import eightbitlab.com.blurview.BlurView;
 import eightbitlab.com.blurview.RenderScriptBlur;
 
+/*
+    LauncherActivityEditable
+
+    The class handles the additional interface elements and properties related to edit mode.
+    This includes the bottom bar & dialog for adding websites, but not the dialogs to edit an
+    individual app or group.
+ */
 
 public class LauncherActivityEditable extends LauncherActivity {
     @Nullable

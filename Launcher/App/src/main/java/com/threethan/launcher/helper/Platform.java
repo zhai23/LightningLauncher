@@ -11,6 +11,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/*
+    Platform
+
+    This abstract class stores lists of apps.
+    It also provides a few helper functions for adding websites.
+ */
+
 public abstract class Platform {
     public static List<ApplicationInfo> installedApps;
     public static List<ApplicationInfo> appListBanner;

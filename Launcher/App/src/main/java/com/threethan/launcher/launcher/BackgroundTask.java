@@ -14,6 +14,13 @@ import com.threethan.launcher.support.SettingsManager;
 import java.io.File;
 import java.lang.ref.WeakReference;
 
+/*
+    BackgroundTask
+
+    This task loads an image background asynchronously, then sets it to the specified view when done
+    Used only by LauncherActivity
+ */
+
 /** @noinspection deprecation */
 class BackgroundTask extends AsyncTask<Object, Void, Object> {
 

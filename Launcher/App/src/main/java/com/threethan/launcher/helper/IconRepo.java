@@ -22,26 +22,40 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+/*
+    IconRepo
+
+    This abstract class is dedicated to downloading icons from online repositories.
+
+    It is called by the Icon class. If no downloadable icon is found, the Icon class decides instead
+ */
+
 public abstract class IconRepo {
-    private static final String[] ICON_URLS = {
+    // Repository URLs:
+    // Each URL will be tried in order: the first with a file matching the package name will be used
+    private static final String[] ICON_URLS_SQUARE = {
             "https://raw.githubusercontent.com/veticia/binaries/main/icons/%s.png",
             "https://raw.githubusercontent.com/basti564/LauncherIcons/main/oculus_square/%s.jpg",
             "https://raw.githubusercontent.com/basti564/LauncherIcons/main/pico_square/%s.jpg",
             "https://raw.githubusercontent.com/basti564/LauncherIcons/main/viveport_square/%s.jpg"
     };
-    private static final String[] ICON_URLS_WIDE = {
+    private static final String[] ICON_URLS_BANNER = {
             "https://raw.githubusercontent.com/veticia/binaries/main/banners/%s.png",
             "https://raw.githubusercontent.com/basti564/LauncherIcons/main/oculus_landscape/%s.jpg",
             "https://raw.githubusercontent.com/basti564/LauncherIcons/main/pico_landscape/%s.jpg",
             "https://raw.githubusercontent.com/basti564/LauncherIcons/main/viveport_landscape/%s.jpg"
     };
+    // Instead of matching a package name, websites match their TLD
     private static final String[] ICON_URLS_WEB = {
-            "https://logo.clearbit.com/google.com/%s",
-            "%s/favicon.ico",
+            "https://logo.clearbit.com/google.com/%s", // Provides high-res icons for TLDs
+            "%s/favicon.ico", // The standard directory for an icon to be places
     };
+    // If a download finishes, regardless of whether an icon is found, the app will be added to this
+    // list, and will not be downloaded again unless manually requested.
     protected static Set<String> downloadFinishedPackages = Collections.synchronizedSet(new HashSet<>());
     private static final ConcurrentHashMap<String, Object> locks = new ConcurrentHashMap<>();
 
+    // Helper functions
     public static void check(final LauncherActivity activity, ApplicationInfo app, final Runnable callback) {
         if (shouldDownload(activity, app)) download(activity, app, callback);
     }
@@ -53,6 +67,16 @@ public abstract class IconRepo {
         return !downloadFinishedPackages.contains(app.packageName);
     }
 
+    public static void dontDownloadIconFor(LauncherActivity activity, String packageName) {
+        if (downloadFinishedPackages.isEmpty())
+            downloadFinishedPackages = activity.sharedPreferences
+                    .getStringSet(SettingsManager.DONT_DOWNLOAD_ICONS, downloadFinishedPackages);
+        downloadFinishedPackages.add(packageName);
+        activity.sharedPreferenceEditor
+                .putStringSet(SettingsManager.DONT_DOWNLOAD_ICONS, downloadFinishedPackages);
+    }
+
+    // Starts the download and handles threading
     public static void download(final LauncherActivity activity, ApplicationInfo app, final Runnable callback) {
         final String pkgName = app.packageName;
 
@@ -66,10 +90,10 @@ public abstract class IconRepo {
             }
             synchronized (Objects.requireNonNull(lock)) {
                 try {
-                    for (final String url : App.isWebsite(app) ? ICON_URLS_WEB : (isWide ? ICON_URLS_WIDE : ICON_URLS)) {
-                        final String urlName = App.isWebsite(app) ?
+                    for (final String url : App.isWebsite(app) ? ICON_URLS_WEB : (isWide ? ICON_URLS_BANNER : ICON_URLS_SQUARE)) {
+                        final String urlTLD = App.isWebsite(app) ?
                                 pkgName.split("//")[0] + "//" + pkgName.split("/")[2] : pkgName;
-                        if (downloadIconFromUrl(activity, String.format(url, urlName), iconFile)) {
+                        if (downloadIconFromUrl(activity, String.format(url, urlTLD), iconFile)) {
                             activity.runOnUiThread(callback);
                             break;
                         }
@@ -90,14 +114,6 @@ public abstract class IconRepo {
             }
         }).start();
     }
-    public static void dontDownloadIconFor(LauncherActivity activity, String packageName) {
-        if (downloadFinishedPackages.isEmpty())
-            downloadFinishedPackages = activity.sharedPreferences
-                    .getStringSet(SettingsManager.DONT_DOWNLOAD_ICONS, downloadFinishedPackages);
-        downloadFinishedPackages.add(packageName);
-        activity.sharedPreferenceEditor
-                .putStringSet(SettingsManager.DONT_DOWNLOAD_ICONS, downloadFinishedPackages);
-    }
 
     private static boolean downloadIconFromUrl(Context context, String url, File iconFile) {
         try {
@@ -110,6 +126,7 @@ public abstract class IconRepo {
         return false;
     }
 
+    // Turns the downloaded bitmap into an actual file, and applies webp compression
     private static boolean saveStream(Context context, InputStream inputStream, File outputFile) {
         try {
             DataInputStream dataInputStream = new DataInputStream(inputStream);
@@ -129,7 +146,6 @@ public abstract class IconRepo {
             }
 
             Bitmap bitmap = ImageLib.bitmapFromFile(context, outputFile);
-//            if (bitmap == null) Log.i("IconRepo", "Failed to get bitmap from "+outputFile.getAbsolutePath());
 
             if (bitmap != null) {
                 int width = bitmap.getWidth();
@@ -166,6 +182,7 @@ public abstract class IconRepo {
         }
     }
 
+    // This usually returns true, but may fail if the download was interrupted or corrupt
     private static boolean isImageFileComplete(Context context, File imageFile) {
         boolean success = false;
         if (imageFile.length() > 0) {

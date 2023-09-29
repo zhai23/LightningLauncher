@@ -13,6 +13,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/*
+    BrowserWebView
+
+    A customized version of WebView which keeps media playing in the background.
+    onWindowVisibilityChanged usually pauses media playback when a view is not visible, but this
+    class prevents a super call in that case.
+
+    It also automatically uses the BrowserWebChromeClient instead of the default WebChromeClient.
+ */
 public class BrowserWebView extends WebView {
     public List<String> history = Collections.synchronizedList(new ArrayList<>());
     public int historyIndex = 0;

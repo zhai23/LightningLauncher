@@ -5,7 +5,6 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
-import com.threethan.launcher.adapter.GroupsAdapter;
 import com.threethan.launcher.launcher.LauncherActivity;
 import com.threethan.launcher.lib.DataLib;
 import com.threethan.launcher.lib.StringLib;
@@ -17,9 +16,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+
+/*
+    Compat
+
+    checkCompatibilityUpdate is called by the launcher when it's started, and attempts to update
+    settings and other stored values to be compatible from previous versions
+
+    It also provides helper functions for resetting certain types of data
+ */
+
 public abstract class Compat {
     public static final String KEY_COMPATIBILITY_VERSION = "KEY_COMPATIBILITY_VERSION";
-    public static final int CURRENT_COMPATIBILITY_VERSION = 3;
+    public static final int CURRENT_COMPATIBILITY_VERSION = 4;
     public static final boolean DEBUG_COMPATIBILITY = false;
     private static final String TAG = "Compatibility";
     public static synchronized void checkCompatibilityUpdate(LauncherActivity launcherActivity) {
@@ -47,21 +56,25 @@ public abstract class Compat {
                     else if (storedVersion == 0)
                         sharedPreferenceEditor.putBoolean(Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE);
                 }
-                if (version == 0) {
-                    if (sharedPreferences.getInt(Settings.KEY_BACKGROUND, Settings.DEFAULT_BACKGROUND) == 6)
-                        sharedPreferenceEditor.putInt(Settings.KEY_BACKGROUND, -1);
-                    // Rename group to new default
-                    renameGroup(launcherActivity, "Tools", "Apps");
-                }
-                if (version == 1) {
-                    int bg = sharedPreferences.getInt(Settings.KEY_BACKGROUND, Settings.DEFAULT_BACKGROUND);
-                    if (bg > 2) sharedPreferenceEditor.putInt(Settings.KEY_BACKGROUND, bg+1);
-                    recheckSupported(launcherActivity);
-                }
-                if (version == 2) {
-                    String from = sharedPreferences.getString(Settings.KEY_GROUP_VR, Settings.DEFAULT_GROUP_VR);
-                    String to = StringLib.setStarred(from, true);
-                    renameGroup(launcherActivity, from, to);
+                switch (version) {
+                    case (0):
+                        if (sharedPreferences.getInt(Settings.KEY_BACKGROUND, Settings.DEFAULT_BACKGROUND) == 6)
+                            sharedPreferenceEditor.putInt(Settings.KEY_BACKGROUND, -1);
+                        // Rename group to new default
+                        renameGroup(launcherActivity, "Tools", "Apps");
+                        break;
+                    case (1):
+                        int bg = sharedPreferences.getInt(Settings.KEY_BACKGROUND, Settings.DEFAULT_BACKGROUND);
+                        if (bg > 2) sharedPreferenceEditor.putInt(Settings.KEY_BACKGROUND, bg + 1);
+                        recheckSupported(launcherActivity);
+                        break;
+                    case (2):
+                        String from = sharedPreferences.getString(Settings.KEY_GROUP_VR, Settings.DEFAULT_GROUP_VR);
+                        String to = StringLib.setStarred(from, true);
+                        renameGroup(launcherActivity, from, to);
+                        break;
+                    case (3): // Should just clear icon cache, which is called anyways
+                        break;
                 }
             }
             Log.i(TAG, String.format("Settings Updated from v%s to v%s (Settings versions are not the same as app versions)",
@@ -105,20 +118,22 @@ public abstract class Compat {
         App.invalidateCaches(launcherActivity);
         for (ApplicationInfo app: apps) {
             final boolean supported = App.isSupported(app, launcherActivity) || App.isWebsite(app);
-            if(!supported) appGroupMap.put(app.packageName, GroupsAdapter.UNSUPPORTED_GROUP);
-            if(supported && Objects.equals(appGroupMap.get(app.packageName), GroupsAdapter.HIDDEN_GROUP)) appGroupMap.remove(app.packageName);
+            if(!supported) appGroupMap.put(app.packageName, Settings.UNSUPPORTED_GROUP);
+            if(supported && Objects.equals(appGroupMap.get(app.packageName), Settings.HIDDEN_GROUP)) appGroupMap.remove(app.packageName);
         }
         SettingsManager.setAppGroupMap(appGroupMap);
     }
 
+    // Clears all icons, including custom icons
     public static void clearIcons(LauncherActivity launcherActivity) {
         Log.i(TAG, "Icons are being cleared");
         DataLib.delete(launcherActivity.getApplicationInfo().dataDir);
         launcherActivity.sharedPreferenceEditor.remove(SettingsManager.DONT_DOWNLOAD_ICONS); 
         clearIconCache(launcherActivity);
     }
+    // Clears all icons, except for custom icons, and sets them to be re-downloaded
     public static void clearIconCache(LauncherActivity launcherActivity) {
-        Log.i(TAG, "Icons cache is being cleared");
+        Log.i(TAG, "Icon cache is being cleared");
 
         launcherActivity.isKillable = false;
         launcherActivity.launcherService.clearAdapterCachesAll();
@@ -127,7 +142,7 @@ public abstract class Compat {
         Icon.cachedIcons.clear();
         storeAndReload(launcherActivity);
     }
-
+    // Clears any custom labels assigned to apps, including whether they've been starred
     public static void clearLabels(LauncherActivity launcherActivity) {
         Log.i(TAG, "Labels are being cleared");
         SettingsManager.appLabelCache.clear();
@@ -136,6 +151,7 @@ public abstract class Compat {
         for (String packageName : setAll) editor.remove(packageName);
         storeAndReload(launcherActivity);
     }
+    // Clears the categorization of apps & resets everything to selected default groups
     public static void clearSort(LauncherActivity launcherActivity) {
         Log.i(TAG, "App sort is being cleared");
         SettingsManager.getAppGroupMap().clear();
@@ -145,7 +161,7 @@ public abstract class Compat {
         for (String groupName : appGroupsSet) editor.remove(Settings.KEY_GROUP_APP_LIST+groupName);
         storeAndReload(launcherActivity);
     }
-
+    // Stores any settings which may have been changed then refreshes any extant launcher activities
     private static void storeAndReload(LauncherActivity launcherActivity) {
         launcherActivity.sharedPreferenceEditor.apply();
         Compat.recheckSupported(launcherActivity);

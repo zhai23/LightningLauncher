@@ -1,5 +1,10 @@
 package com.threethan.launcher.support;
 
+/*
+    Addon
+
+    Stores basic information about an addon
+ */
 public class Addon {
     public String downloadName;
     public String packageName;

@@ -15,11 +15,21 @@ import com.threethan.launcher.support.SettingsManager;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/*
+    Launch
+
+    This abstract class is dedicated to actually launching apps.
+
+    The helper function "getAppLaunchIntent" is also used by the App class to determine if an app
+    can possibly be launched.
+ */
+
 public abstract class Launch {
     public static boolean launchApp(LauncherActivity launcherActivity, ApplicationInfo app) {
         try {
-            // This is unlikely to fail, but it shouldn't stop us from launching if it somehow does
+            // Apply any pending preference changes before launching
             launcherActivity.sharedPreferenceEditor.apply();
+            // This is unlikely to fail, but it shouldn't stop us from launching if it somehow does
         } catch (Exception ignored) {}
 
         Intent intent = getLaunchIntent(launcherActivity, app);

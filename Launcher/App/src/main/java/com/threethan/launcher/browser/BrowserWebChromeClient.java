@@ -11,6 +11,15 @@ import androidx.core.app.ActivityCompat;
 
 import java.util.Objects;
 
+/*
+    BrowserWebChromeClient
+
+    A customized version of WebChromeClient which enables audio capture (recording) and DRM audio
+    and video playback.
+
+    It's worth noting that a camera permission can also be granted in a similar manner, but does not
+    work on oculus.
+ */
 class BrowserWebChromeClient extends WebChromeClient {
     private PermissionRequest webkitPermissionRequest = null;
     private Activity activity = null;

@@ -10,6 +10,15 @@ import com.threethan.launcher.launcher.LauncherActivity;
 
 import java.lang.ref.WeakReference;
 
+/*
+    LoadIconTask
+
+    This task asynchronously loads an icon using the Icon class, then sets the icon to the right
+    image view. Just-downloaded icons are also set asynchronously, but that is done by IconRepo.
+
+    This might as well be synchronous, but provides a slight performance uplift on sufficiently
+    large app lists, as loading an icon from a webp file is non-negligible
+ */
 /** @noinspection deprecation*/
 class LoadIconTask extends AsyncTask <Object, Void, Object> {
     private WeakReference<ImageView> iconImageViewRef;

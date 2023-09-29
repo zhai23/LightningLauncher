@@ -5,7 +5,14 @@ import android.view.View;
 
 import com.threethan.launcher.R;
 
-// This class is used by browser activities that run in a separate window
+/*
+    BrowserActivitySeparate
+
+    This activity is the same as BrowserActivity, but it need to be technically different to open
+    in a separate window.
+
+    The only change is that the close button is hidden.
+ */
 public class BrowserActivitySeparate extends BrowserActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {

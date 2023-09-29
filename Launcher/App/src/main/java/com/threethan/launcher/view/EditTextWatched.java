@@ -10,6 +10,12 @@ import androidx.annotation.Nullable;
 
 import com.android.volley.Response;
 
+/*
+    EditTextWatched
+
+    A custom version of an editText which allows a listener to be added for whenever the content
+    is changed. Used for the search bar.
+ */
 @SuppressLint("AppCompatCustomView")
 public class EditTextWatched extends EditText {
     private Response.Listener<String> onEdited;

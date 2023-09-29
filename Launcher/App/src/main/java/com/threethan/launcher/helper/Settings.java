@@ -5,6 +5,19 @@ import android.graphics.Color;
 import com.threethan.launcher.R;
 import com.threethan.launcher.lib.StringLib;
 
+/*
+    Settings
+
+    This abstract class just stores a number of default settings used by other classes;
+    it's a glorified text file.
+
+    Anything that's prefixed with "KEY_" is a string which is used to save/load a given setting
+    to/from sharedPreferences
+
+    It does not contain any code. Actual access of settings occurs in various other classes,
+    primarily SettingsManager
+ */
+
 public abstract class Settings {
     // Backgrounds
     public static final int[] BACKGROUND_DRAWABLES = {
@@ -98,5 +111,9 @@ public abstract class Settings {
     public static final String DEFAULT_GROUP_2D = "Apps";
     public static final String DEFAULT_GROUP_VR = StringLib.setStarred("Games", true);
     public static final String DEFAULT_GROUP_WEB = "Apps";
+
+    public static final int MAX_GROUPS = 12;
+    public static final String HIDDEN_GROUP = "HIDDEN!";
+    public static final String UNSUPPORTED_GROUP = "UNSUPPORTED!";
 
 }

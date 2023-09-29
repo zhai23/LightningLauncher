@@ -1,4 +1,4 @@
-package com.threethan.launcher.lib;
+package com.threethan.launcher.support;
 
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
@@ -16,12 +16,18 @@ import com.threethan.launcher.helper.Compat;
 import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.launcher.LauncherActivity;
-import com.threethan.launcher.support.SettingsManager;
-import com.threethan.launcher.support.Updater;
+import com.threethan.launcher.lib.ImageLib;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+
+/*
+    SettingsDialog
+
+    This class handles the main settings page, including setting/getting preferences, button states,
+    and making sure settings are correctly applied to launcher activities
+ */
 
 public abstract class SettingsDialog {
     private static boolean clearedLabel;

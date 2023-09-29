@@ -2,9 +2,14 @@ package com.threethan.launcher.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.TypedValue;
 import android.widget.GridView;
 
+/*
+    DynamicHeightGridView
+
+    A custom version of a gridview which sets its height to always wrap its content without
+    becoming scrollable. This is used to combine two gridviews in one larger ScrollView.
+ */
 public class DynamicHeightGridView extends GridView {
     public DynamicHeightGridView(Context context) {
         super(context);

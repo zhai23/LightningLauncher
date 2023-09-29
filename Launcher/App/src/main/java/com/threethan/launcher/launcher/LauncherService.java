@@ -19,6 +19,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/*
+    LauncherService
+
+    This class runs as a service, but does not do anything on its own.
+
+    It is used by LauncherActivity to store the view containing the main interface in memory,
+    meaning if the activity is finished and reopened, it may re-use the same preloaded view.
+
+    It also provides a number of helper functions that enable this & help with multitasking
+ */
+
 public class LauncherService extends Service {
     private final IBinder binder = new LocalBinder();
     private final static ConcurrentHashMap<Integer, View> viewByIndex = new ConcurrentHashMap<>();
@@ -59,7 +70,6 @@ public class LauncherService extends Service {
     protected int getNewActivityIndex() {
         int i = 0;
         while(activityByIndex.containsValue(i)) i++;
-        Log.v("NEW ACTIVITY INDEX", String.valueOf(i));
         return i;
     }
     public void destroyed(LauncherActivity activity) {
@@ -70,6 +80,9 @@ public class LauncherService extends Service {
         for (Activity activity: activityByIndex.keySet()) activity.finishAndRemoveTask();
     }
 
+    // ______All functions
+    // calls the specified function on all launcher activities
+    // if a launcher activity is inactive and unable to respond (rare), it will lose it's stored view
     public void refreshInterfaceAll() {
         for (LauncherActivity activity: activityByIndex.keySet()) activity.refreshInterface();
         clearViewsWithoutActiveActivities();
@@ -86,12 +99,13 @@ public class LauncherService extends Service {
         for (LauncherActivity activity: activityByIndex.keySet()) activity.clearAdapterCaches();
         clearViewsWithoutActiveActivities();
     }
-
+    // Clear the views & finish the activities of any activities which are currently inactive
+    // This will force any applicable activities to be restarted with brand new views
     private void clearViewsWithoutActiveActivities() {
         for (int index: viewByIndex.keySet())
             if (!activityByIndex.containsValue(index)) {
                 viewByIndex.remove(index);
-                Log.v("LauncherService", "Removed inactive view at "+index);
+                Log.v("LauncherService", "Removed inactive view with index: "+index);
             } else {
                 LauncherActivity activity = DataLib.keyByValue(activityByIndex, index);
                 if (activity == null) continue;

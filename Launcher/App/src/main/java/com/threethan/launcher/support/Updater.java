@@ -37,7 +37,16 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.List;
 
-// Credit to Basti for update checking code
+/*
+    Updater
+
+    The automatic updater, instanced and called on launch. It handles update checks, downloads, and
+    install intents.
+
+    It also handles downloading/updating/installing addons, though these must be manually checked
+
+    Credit to @Basti for code which checks github for updates
+ */
 public class Updater {
     private static final String UPDATE_URL = "https://api.github.com/repos/threethan/LightningLauncher/releases/latest";
     private static final String TEMPLATE_URL = "https://github.com/threethan/LightningLauncher/releases/download/%s/%s.apk";

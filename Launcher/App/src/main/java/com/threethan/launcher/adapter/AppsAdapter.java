@@ -13,8 +13,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -23,8 +21,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
-
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 
 import com.threethan.launcher.R;
 import com.threethan.launcher.helper.App;
@@ -44,6 +40,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/*
+    AppsAdapter
+
+    The adapter for app grid views. A separate instance is used for square and banner apps, as well
+    as for each activity.
+
+    Only app views matching the current search term or group filter will be shown.
+    When a view is requested for an app, it gets cached, and will be reused if displayed again.
+    This massively speeds up group-switching and makes search possible without immense lag.
+
+    This class also handles clicking and long clicking apps, including the app settings dialog.
+    It also handles displaying/updating the views of an app (hover interactions, background website)
+ */
 public class AppsAdapter extends BaseAdapter{
     private static Drawable iconDrawable;
     private static File iconFile;
@@ -148,7 +157,7 @@ public class AppsAdapter extends BaseAdapter{
             // Set clipToOutline to true on imageView
             convertView.findViewById(R.id.clip).setClipToOutline(true);
             convertView.setTag(holder);
-            if (position == 0) launcherActivity.updateGridViewHeights();
+            if (position == 0) launcherActivity.updateGridViews();
 
         } else holder = (ViewHolder) convertView.getTag();
 
@@ -196,6 +205,8 @@ public class AppsAdapter extends BaseAdapter{
             return true;
         });
 
+        // A list of selected apps and background-running websites is stored in the launcher activity,
+        // then periodically checked by each app's view here.
         Runnable periodicUpdate = new Runnable() {
             @Override
             public void run() {

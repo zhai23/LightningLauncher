@@ -20,6 +20,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.HashMap;
 
+/*
+    Icon
+
+    This abstract class provides helper functions for getting, setting and saving icons.
+    It uses IconRepo in order to request icons from the internet, if applicable
+ */
+
 public abstract class Icon {
     public static final HashMap<String, Drawable> cachedIcons = new HashMap<>();
     public static File iconFileForPackage(LauncherActivity launcherActivity, String packageName) {
@@ -47,6 +54,7 @@ public abstract class Icon {
         if (cachedIcons.containsKey(app.packageName)) return cachedIcons.get(app.packageName);
         // Try to load from file
         final File iconFile = iconFileForPackage(activity, app.packageName);
+
         if (iconFile.exists() && !IconRepo.shouldDownload(activity, app)) {
             updateIcon(iconFile, app.packageName, null);
             return Drawable.createFromPath(iconFile.getAbsolutePath());
@@ -69,8 +77,8 @@ public abstract class Icon {
             saveIconDrawable(activity, appIcon, app.packageName);
         } catch (Exception ignored) {} // Fails on web apps, possibly also on invalid packages
 
-        // Download icon AFTER saving the drawable version
-        // (this prevents a race condition)
+        // Attempt to download the icon for this app from an online repo
+        // Done AFTER saving the drawable version to prevent a race condition)
         IconRepo.check(activity, app, () -> updateIcon(iconFile, app.packageName, imageView));
 
         return appIcon; // May rarely be null

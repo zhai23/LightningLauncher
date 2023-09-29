@@ -1,4 +1,4 @@
-package com.threethan.launcher.lib;
+package com.threethan.launcher.support;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -11,11 +11,16 @@ import com.threethan.launcher.R;
 import com.threethan.launcher.helper.App;
 import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.launcher.LauncherActivity;
-import com.threethan.launcher.support.Updater;
 
 import java.lang.ref.WeakReference;
 import java.util.Objects;
 
+/*
+    AddonDialog
+
+    This class handles the addon manager, AKA shortcut settings
+    It handles related popups, and updates buttons according to the state returned by Addon
+ */
 public abstract class AddonDialog {
     private static WeakReference<Updater> updaterRef;
     private static WeakReference<LauncherActivity> activityRef;

@@ -10,7 +10,6 @@ import android.util.Log;
 import com.threethan.launcher.helper.App;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.launcher.LauncherActivity;
-import com.threethan.launcher.adapter.GroupsAdapter;
 import com.threethan.launcher.lib.StringLib;
 
 import java.lang.ref.WeakReference;
@@ -26,6 +25,17 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+/*
+    SettingsManager
+
+    An instance of this class is tied to each launcher activity, and it is used to get and store
+    most (but not all) preferences. It handles the conversion of data between types that are usable
+    and types which can be stored to shared preferences.
+
+    It handles customizable properties (label, launch mode) as well grouping.
+
+    It also provides a number of static methods which are used by various other classes .
+ */
 public class SettingsManager extends Settings {
     public static List<Integer> getVersionsWithBackgroundChanges() {
         List<Integer> out = new ArrayList<>();
@@ -131,9 +141,9 @@ public class SettingsManager extends Settings {
         // Sort into groups
         for (ApplicationInfo app : myApps) {
             if (!App.isSupported(app, launcherActivity))
-                appGroupMap.put(app.packageName, GroupsAdapter.UNSUPPORTED_GROUP);
+                appGroupMap.put(app.packageName, Settings.UNSUPPORTED_GROUP);
             else if (!appGroupMap.containsKey(app.packageName) ||
-                    Objects.equals(appGroupMap.get(app.packageName), GroupsAdapter.UNSUPPORTED_GROUP)){
+                    Objects.equals(appGroupMap.get(app.packageName), Settings.UNSUPPORTED_GROUP)){
                 final boolean isVr = App.isVirtualReality(app, launcherActivity);
                 final boolean isWeb = App.isWebsite(app);
                 appGroupMap.put(app.packageName, getDefaultGroup(isVr, isWeb));
@@ -143,7 +153,7 @@ public class SettingsManager extends Settings {
         // Sort into groups
         for (ApplicationInfo app : myApps) {
             if (!appGroupMap.containsKey(app.packageName)) {
-                if (!App.isSupported(app, launcherActivity)) appGroupMap.put(app.packageName, GroupsAdapter.UNSUPPORTED_GROUP);
+                if (!App.isSupported(app, launcherActivity)) appGroupMap.put(app.packageName, Settings.UNSUPPORTED_GROUP);
                 else {
                     final boolean isVr = App.isVirtualReality(app, launcherActivity);
                     final boolean isWeb = App.isWebsite(app);
@@ -203,7 +213,7 @@ public class SettingsManager extends Settings {
             return selectedGroupsSet;
         else {
             Set<String> retSet = new HashSet<>(appGroupsSet);
-            retSet.remove(GroupsAdapter.HIDDEN_GROUP);
+            retSet.remove(Settings.HIDDEN_GROUP);
             return retSet;
         }
     }
@@ -224,12 +234,12 @@ public class SettingsManager extends Settings {
                     "which may cause serious issues!");
 
         // Move hidden group to end
-        if (sortedGroupMap.contains(GroupsAdapter.HIDDEN_GROUP)) {
-            sortedGroupMap.remove(GroupsAdapter.HIDDEN_GROUP);
-            sortedGroupMap.add(GroupsAdapter.HIDDEN_GROUP);
+        if (sortedGroupMap.contains(Settings.HIDDEN_GROUP)) {
+            sortedGroupMap.remove(Settings.HIDDEN_GROUP);
+            sortedGroupMap.add(Settings.HIDDEN_GROUP);
         }
 
-        sortedGroupMap.remove(GroupsAdapter.UNSUPPORTED_GROUP);
+        sortedGroupMap.remove(Settings.UNSUPPORTED_GROUP);
 
         return sortedGroupMap;
     }
@@ -255,7 +265,7 @@ public class SettingsManager extends Settings {
         final String key = web ? KEY_GROUP_WEB : (vr ? KEY_GROUP_VR : KEY_GROUP_2D);
         final String def = web ? DEFAULT_GROUP_WEB : (vr ? DEFAULT_GROUP_VR : DEFAULT_GROUP_2D);
         final String group = sharedPreferences.getString(key, def);
-        if (!appGroupsSet.contains(group)) return GroupsAdapter.HIDDEN_GROUP;
+        if (!appGroupsSet.contains(group)) return Settings.HIDDEN_GROUP;
         return group;
     }
 
@@ -273,8 +283,8 @@ public class SettingsManager extends Settings {
 
             appGroupMap.clear();
 
-            appGroupsSet.add(GroupsAdapter.HIDDEN_GROUP);
-            appGroupsSet.add(GroupsAdapter.UNSUPPORTED_GROUP);
+            appGroupsSet.add(Settings.HIDDEN_GROUP);
+            appGroupsSet.add(Settings.UNSUPPORTED_GROUP);
             for (String group : appGroupsSet) {
                 Set<String> appListSet = new HashSet<>();
                 appListSet = sharedPreferences.getStringSet(KEY_GROUP_APP_LIST +group, appListSet);

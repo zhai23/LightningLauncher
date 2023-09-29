@@ -30,6 +30,17 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+/*
+    BrowserActivity
+
+    This activity is the browser used for web apps.
+    It's launched with a 'url' in the extras for it's intent.
+
+    It loads a WebView from the BrowserService based on its url.
+    If the website is running in the background, it will grab that same WebView.
+
+    Other than that, it's just a basic browser interface without tabs.
+ */
 public class BrowserActivity extends Activity {
     BrowserWebView w;
     TextView urlPre;
@@ -71,6 +82,7 @@ public class BrowserActivity extends Activity {
         assert extras != null;
         baseUrl = Objects.requireNonNull(extras.getString("url"));
 
+        // Buttons
         back = findViewById(R.id.back);
         forward = findViewById(R.id.forward);
 
@@ -197,7 +209,9 @@ public class BrowserActivity extends Activity {
         w.reload();
     }
     private String currentUrl = "";
-    @SuppressLint("SetTextI18n") // Literally just adding a dot
+
+    // Splits the URL into parts and updates the URL display
+    @SuppressLint("SetTextI18n") // It wants me to use a string resource to add a dot
     private void updateUrl(String url) {
         url = url.replace("https://","");
         String[] split = url.split("\\.");
@@ -235,10 +249,22 @@ public class BrowserActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
-        // Bind to LocalService.
+        // Bind to BrowserService, which will provide our WebView
         BrowserService.bind(this, connection);
     }
-
+    // Defines callbacks for service binding
+    private final ServiceConnection connection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName className,
+                                       IBinder service) {
+            // We've bound to BrowserService, cast the IBinder and get the BrowserService instance.
+            BrowserService.LocalBinder binder = (BrowserService.LocalBinder) service;
+            wService = binder.getService();
+            onBound();
+        }
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {}
+    };
     @Override
     public void onBackPressed() {
         back.callOnClick();
@@ -250,10 +276,14 @@ public class BrowserActivity extends Activity {
         super.onDestroy();
     }
 
+    // Sets the WebView when the service is bound
     private void onBound() {
         w = wService.getWebView(this);
         LinearLayout container = findViewById(R.id.container);
         container.addView(w);
+
+        // The WebViewClient will be overridden to provide info, incl. when a new page is loaded
+        // Note than WebViewClient != WebChromeClient
         w.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
@@ -293,21 +323,4 @@ public class BrowserActivity extends Activity {
             (isDark ? light : dark).setVisibility(View.VISIBLE);
         }
     }
-
-
-    /** Defines callbacks for service binding, passed to bindService(). */
-    private final ServiceConnection connection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName className,
-                                       IBinder service) {
-            // We've bound to LocalService, cast the IBinder and get LocalService instance.
-            BrowserService.LocalBinder binder = (BrowserService.LocalBinder) service;
-            wService = binder.getService();
-            onBound();
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName arg0) {}
-    };
 }

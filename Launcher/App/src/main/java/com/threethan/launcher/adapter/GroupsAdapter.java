@@ -2,7 +2,6 @@ package com.threethan.launcher.adapter;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -29,21 +28,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
+/*
+    GroupsAdapter
+
+    The adapter for the groups grid view.
+
+    It handles the appearance of groups and the edit group dialog.
+    Notably, it does not handle group selection; that's done in LauncherActivity
+ */
 public class GroupsAdapter extends BaseAdapter {
-    public static final int MAX_GROUPS = 12;
-    public static final String HIDDEN_GROUP = "HIDDEN!";
-    public static final String UNSUPPORTED_GROUP = "UNSUPPORTED!";
     private LauncherActivity launcherActivity;
     private final List<String> appGroups;
     private final Set<String> selectedGroups;
     private final SettingsManager settingsManager;
     private final boolean isEditMode;
 
-    /**
-     * Create new adapter
-     */
     public GroupsAdapter(LauncherActivity activity, boolean editMode) {
         launcherActivity = activity;
         isEditMode = editMode;
@@ -52,11 +52,11 @@ public class GroupsAdapter extends BaseAdapter {
         SettingsManager settings = SettingsManager.getInstance(launcherActivity);
         appGroups = Collections.synchronizedList(settings.getAppGroupsSorted(false));
 
-        if (!editMode) appGroups.remove(GroupsAdapter.HIDDEN_GROUP);
-        if (editMode && appGroups.size() < MAX_GROUPS) appGroups.add("+ " + launcherActivity.getString(R.string.add_group));
+        if (!editMode) appGroups.remove(Settings.HIDDEN_GROUP);
+        if (editMode && appGroups.size() < Settings.MAX_GROUPS) appGroups.add("+ " + launcherActivity.getString(R.string.add_group));
 
         selectedGroups = settings.getSelectedGroups();
-        if (!editMode) selectedGroups.remove(GroupsAdapter.HIDDEN_GROUP);
+        if (!editMode) selectedGroups.remove(Settings.HIDDEN_GROUP);
         if (selectedGroups.isEmpty()) selectedGroups.addAll(appGroups);
     }
     public void setLauncherActivity(LauncherActivity val) {
@@ -86,7 +86,7 @@ public class GroupsAdapter extends BaseAdapter {
     }
 
     private void setTextViewValue(TextView textView, String value) {
-        if (HIDDEN_GROUP.equals(value)) textView.setText(launcherActivity.getString(R.string.apps_hidden));
+        if (Settings.HIDDEN_GROUP.equals(value)) textView.setText(launcherActivity.getString(R.string.apps_hidden));
         else textView.setText(value);
     }
     @Override
@@ -159,7 +159,7 @@ public class GroupsAdapter extends BaseAdapter {
 
             dialog.findViewById(R.id.confirm).setOnClickListener(view1 -> {
                 String newGroupName = StringLib.setStarred(groupNameInput.getText().toString(), starred[0]);
-                if (newGroupName.equals(UNSUPPORTED_GROUP)) newGroupName = "UNSUPPORTED"; // Prevent permanently hiding apps
+                if (newGroupName.equals(Settings.UNSUPPORTED_GROUP)) newGroupName = "UNSUPPORTED"; // Prevent permanently hiding apps
 
                 // Move the default group when we rename
                 if (SettingsManager.getDefaultGroup(false, false).equals(groupName))
@@ -205,8 +205,8 @@ public class GroupsAdapter extends BaseAdapter {
 
                 boolean hasNormalGroup = false;
                 for (String groupNameIterator : appGroupsSet) {
-                    if (groupNameIterator.equals(HIDDEN_GROUP)) continue;
-                    if (groupNameIterator.equals(UNSUPPORTED_GROUP)) continue;
+                    if (groupNameIterator.equals(Settings.HIDDEN_GROUP)) continue;
+                    if (groupNameIterator.equals(Settings.UNSUPPORTED_GROUP)) continue;
                     hasNormalGroup = true; break;
                 }
                 if (!hasNormalGroup) {
