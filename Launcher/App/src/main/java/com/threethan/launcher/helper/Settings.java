@@ -112,7 +112,9 @@ public abstract class Settings {
     public static final String DEFAULT_GROUP_VR = StringLib.setStarred("Games", true);
     public static final String DEFAULT_GROUP_WEB = "Apps";
 
-    public static final int MAX_GROUPS = 12;
+    public static final int MAX_GROUPS = 20;
+    public static final int GROUP_WIDTH_DP = 225;
+
     public static final String HIDDEN_GROUP = "HIDDEN!";
     public static final String UNSUPPORTED_GROUP = "UNSUPPORTED!";
 

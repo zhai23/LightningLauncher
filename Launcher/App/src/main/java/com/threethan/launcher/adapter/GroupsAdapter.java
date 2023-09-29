@@ -53,7 +53,7 @@ public class GroupsAdapter extends BaseAdapter {
         appGroups = Collections.synchronizedList(settings.getAppGroupsSorted(false));
 
         if (!editMode) appGroups.remove(Settings.HIDDEN_GROUP);
-        if (editMode && appGroups.size() < Settings.MAX_GROUPS) appGroups.add("+ " + launcherActivity.getString(R.string.add_group));
+        if (editMode && appGroups.size() <= Settings.MAX_GROUPS) appGroups.add("+ " + launcherActivity.getString(R.string.add_group));
 
         selectedGroups = settings.getSelectedGroups();
         if (!editMode) selectedGroups.remove(Settings.HIDDEN_GROUP);

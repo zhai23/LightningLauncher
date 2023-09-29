@@ -22,6 +22,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
+import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ScrollView;
@@ -89,8 +90,7 @@ public class LauncherActivity extends Activity {
     public boolean settingsVisible;
     public LauncherService launcherService;
     protected static String TAG = "LightningLauncher";
-    private int groupRows;
-
+    private int groupHeight;
     @Override
     protected void onStart() {
         super.onStart();
@@ -438,17 +438,30 @@ public class LauncherActivity extends Activity {
     }
 
     // Updates the heights and layouts of grid views
-    //  group grid view, square app grid view & banner app grid view
+    // group grid view, square app grid view & banner app grid view
     public void updateGridViews() {
         if (mainView.getWidth() == prevViewWidth) return;
         prevViewWidth = mainView.getWidth();
 
         // Group rows and relevant values
         if (getAdapterGroups() != null && groupsEnabled) {
-            final int group_columns = Math.min(getAdapterGroups().getCount(), prevViewWidth / 400);
+            final int group_columns =
+                    Math.min(getAdapterGroups().getCount(), prevViewWidth / dp(Settings.GROUP_WIDTH_DP));
             groupGridView.setNumColumns(group_columns);
-            groupRows = (int) Math.ceil((double) getAdapterGroups().getCount() / group_columns);
-            scrollView.setFadingEdgeLength(dp(23 + 22) + dp(40) * groupRows);
+            final int groupRows = (int) Math.ceil((double) getAdapterGroups().getCount() / group_columns);
+            groupHeight = dp(40) * groupRows;
+
+            if (groupHeight > mainView.getMeasuredHeight() / 3) {
+                // Scroll groups if more than 1/3 the screen
+                groupHeight = mainView.getMeasuredHeight() / 3;
+                groupGridView.setLayoutParams(new FrameLayout.LayoutParams
+                        (ViewGroup.LayoutParams.MATCH_PARENT,groupHeight));
+            } else {
+                // Otherwise don't
+                groupGridView.setLayoutParams(new FrameLayout.LayoutParams
+                        (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            }
+            scrollView.setFadingEdgeLength(dp(23 + 22) + groupHeight);
         } else {
             FadingTopScrollView scrollView = rootView.findViewById(R.id.mainScrollView);
             scrollView.setFadingEdgeLength(0);
@@ -468,7 +481,7 @@ public class LauncherActivity extends Activity {
     protected void updatePadding() {
         final int marginPx = dp(sharedPreferences.getInt(Settings.KEY_MARGIN, Settings.DEFAULT_MARGIN));
         final boolean groupsVisible = getAdapterGroups() != null && groupsEnabled;
-        final int topAdd = groupsVisible ? dp(23 + 22) + dp(40) * groupRows : 0;
+        final int topAdd = groupsVisible ? dp(23 + 22) + groupHeight : 0;
         final int bottomAdd = groupsVisible ? getBottomBarHeight() : marginPx/2+getBottomBarHeight();
 
         appGridViewBanner.setPadding(

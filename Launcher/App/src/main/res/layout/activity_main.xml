@@ -75,20 +75,21 @@
             android:layout_marginEnd="12dp"
             android:layout_weight="1"
             android:background="@drawable/bkg_blur_view"
-            android:minHeight="40dp"
+            android:minHeight="32dp"
             android:visibility="visible"
             app:blurOverlayColor="#46000000">
 
             <GridView
                 android:id="@+id/groupsView"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="-0.1dp"
                 android:divider="#00000000"
                 android:dividerHeight="0dp"
                 android:minWidth="100dp"
                 android:padding="0dp"
-                android:visibility="invisible" />
+                android:stretchMode="columnWidth"
+                android:visibility="gone" />
 
         </eightbitlab.com.blurview.BlurView>
 
