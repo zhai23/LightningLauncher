@@ -8,6 +8,7 @@ import android.os.Build;
 import android.util.Log;
 
 import com.threethan.launcher.helper.App;
+import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.launcher.LauncherActivity;
 import com.threethan.launcher.lib.StringLib;
@@ -59,6 +60,8 @@ public class SettingsManager extends Settings {
         anyLauncherActivityRef = new WeakReference<>(activity);
         sharedPreferences = activity.sharedPreferences;
         sharedPreferenceEditor = activity.sharedPreferenceEditor;
+        // Conditional defaults (hacky)
+        Settings.DEFAULT_DETAILS_LONG_PRESS = Platform.isTv(activity);
     }
 
     public static synchronized SettingsManager getInstance(LauncherActivity context) {

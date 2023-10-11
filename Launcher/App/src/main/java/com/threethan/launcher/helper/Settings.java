@@ -66,7 +66,7 @@ public abstract class Settings {
     public static final int DEFAULT_BACKGROUND = 0;
     public static final boolean DEFAULT_DARK_MODE = true;
     public static final boolean DEFAULT_GROUPS_ENABLED = true;
-    public static final boolean DEFAULT_DETAILS_LONG_PRESS = false;
+    public static boolean DEFAULT_DETAILS_LONG_PRESS = false;
     public static final boolean DEFAULT_AUTO_HIDE_EMPTY = true;
     public static final int PICK_ICON_CODE = 450;
     public static final int PICK_THEME_CODE = 95;

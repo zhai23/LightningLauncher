@@ -22,6 +22,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -264,9 +265,15 @@ public class LauncherActivity extends Activity {
         isKillable = false;
         super.onResume();
         try {
+            // Hide KB
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(mainView.getWindowToken(), 0);
+
+            // Bind service
             AppsAdapter.animateClose(this);
             recheckPackages();
             BrowserService.bind(this, browserServiceConnection);
+
         } catch (Exception ignored) {} // Will fail if service hasn't bound yet
     }
 
@@ -336,10 +343,9 @@ public class LauncherActivity extends Activity {
                 rootView.findViewById(R.id.blurViewSearchBar),
         };
 
-        if (!groupsEnabled) {
-            for (BlurView blurView: blurViews) blurView.setVisibility(View.GONE);
-            return;
-        }
+        final boolean hide = !groupsEnabled && !isEditing();
+        for (BlurView blurView: blurViews) blurView.setVisibility(hide ? View.GONE : View.VISIBLE);
+        if (hide) return;
 
         float blurRadiusDp = 15f;
 
@@ -348,7 +354,6 @@ public class LauncherActivity extends Activity {
         Drawable windowBackground = windowDecorView.getBackground();
 
         for (BlurView blurView: blurViews) {
-//            blurView.setVisibility(View.VISIBLE);
             blurView.setBackgroundTintList(ColorStateList.valueOf(Color.TRANSPARENT));
             blurView.setOverlayColor((Color.parseColor(darkMode ? "#29000000" : "#40FFFFFF")));
             blurView.setupWith(rootViewGroup, new RenderScriptBlur(getApplicationContext())) // or RenderEffectBlur
@@ -593,7 +598,11 @@ public class LauncherActivity extends Activity {
     public @Nullable GroupsAdapter getAdapterGroups() {
         return (GroupsAdapter) groupGridView.getAdapter();
     }
-
+    void showKeyboard() {
+        // Show Soft Keyboard
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+    }
     public HashSet<String> getAllPackages() {
         HashSet<String> setAll = new HashSet<>();
         for (ApplicationInfo app : Platform.installedApps) setAll.add(app.packageName);

@@ -51,68 +51,72 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
     }
 
     void showSearchBar() {
-        searching = true;
+        try {
+            searching = true;
 
-        final int endMargin = 275;
+            final int endMargin = 275;
 
-        BlurView searchBar = rootView.findViewById(R.id.blurViewSearchBar);
-        View topBar = rootView.findViewById(R.id.topBarLayout);
-        ObjectAnimator alphaIn  = ObjectAnimator.ofFloat(searchBar, "alpha", 1f);
-        ObjectAnimator alphaOut = ObjectAnimator.ofFloat(topBar   , "alpha", 0f);
-        alphaIn .setDuration(100);
-        alphaOut.setDuration(300);
-        alphaIn .start();
-        alphaOut.start();
-        topBar.postDelayed(() -> {
-            topBar.setVisibility(View.GONE);
-        }, 300);
-        searchBar.setVisibility(View.VISIBLE);
+            BlurView searchBar = rootView.findViewById(R.id.blurViewSearchBar);
+            View topBar = rootView.findViewById(R.id.topBarLayout);
+            ObjectAnimator alphaIn = ObjectAnimator.ofFloat(searchBar, "alpha", 1f);
+            ObjectAnimator alphaOut = ObjectAnimator.ofFloat(topBar, "alpha", 0f);
+            alphaIn.setDuration(100);
+            alphaOut.setDuration(300);
+            alphaIn.start();
+            alphaOut.start();
+            topBar.postDelayed(() -> {
+                if (searching) topBar.setVisibility(View.GONE);
+                else hideSearchBar();
+            }, 300);
+            searchBar.setVisibility(View.VISIBLE);
 
-        searchBar.setOverlayColor(Color.parseColor(darkMode ? "#4A000000" : "#50FFFFFF"));
+            searchBar.setOverlayColor(Color.parseColor(darkMode ? "#4A000000" : "#50FFFFFF"));
 
-        float blurRadiusDp = 15f;
-        searchBar.setClipToOutline(true);
+            float blurRadiusDp = 15f;
+            searchBar.setClipToOutline(true);
 
-        View windowDecorView = getWindow().getDecorView();
-        ViewGroup rootViewGroup = windowDecorView.findViewById(android.R.id.content);
+            View windowDecorView = getWindow().getDecorView();
+            ViewGroup rootViewGroup = windowDecorView.findViewById(android.R.id.content);
 
-        Drawable windowBackground = windowDecorView.getBackground();
-        //noinspection deprecation
-        searchBar.setupWith(rootViewGroup, new RenderScriptBlur(getApplicationContext())) // or RenderEffectBlur
-                .setFrameClearDrawable(windowBackground) // Optional
-                .setBlurRadius(blurRadiusDp);
+            Drawable windowBackground = windowDecorView.getBackground();
+            //noinspection deprecation
+            searchBar.setupWith(rootViewGroup, new RenderScriptBlur(getApplicationContext())) // or RenderEffectBlur
+                    .setFrameClearDrawable(windowBackground) // Optional
+                    .setBlurRadius(blurRadiusDp);
 
-        // Update then deactivate bv
-        searchBar.setActivated(false);
-        searchBar.setActivated(true);
-        searchBar.setActivated(false);
+            // Update then deactivate bv
+            searchBar.setActivated(false);
+            searchBar.setActivated(true);
+            searchBar.setActivated(false);
 
-        rootView.findViewById(R.id.blurViewSearchBar).setVisibility(View.VISIBLE);
+            rootView.findViewById(R.id.blurViewSearchBar).setVisibility(View.VISIBLE);
 
-        EditTextWatched searchText = findViewById(R.id.searchText);
-        searchText.setTextColor(Color.parseColor(darkMode ? "#FFFFFF" : "#000000"));
-        ((ImageView) findViewById(R.id.searchHintIcon)).setImageTintList(
-                ColorStateList.valueOf(Color.parseColor(darkMode ? "#FFFFFF" : "#000000")));
-        ((ImageView) findViewById(R.id.searchCancelIcon)).setImageTintList(
-                ColorStateList.valueOf(Color.parseColor(darkMode ? "#FFFFFF" : "#000000")));
+            EditTextWatched searchText = findViewById(R.id.searchText);
+            searchText.setTextColor(Color.parseColor(darkMode ? "#FFFFFF" : "#000000"));
+            ((ImageView) findViewById(R.id.searchHintIcon)).setImageTintList(
+                    ColorStateList.valueOf(Color.parseColor(darkMode ? "#FFFFFF" : "#000000")));
+            ((ImageView) findViewById(R.id.searchCancelIcon)).setImageTintList(
+                    ColorStateList.valueOf(Color.parseColor(darkMode ? "#FFFFFF" : "#000000")));
 
-        ValueAnimator viewAnimator = ValueAnimator.ofInt(endMargin, 0);
-        viewAnimator.setDuration(200);
-        viewAnimator.setInterpolator(new DecelerateInterpolator());
-        viewAnimator.addUpdateListener(animation -> {
-            LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) searchBar.getLayoutParams();
-            lp.setMargins((int) animation.getAnimatedValue()+dp(25), 0, (int) animation.getAnimatedValue()+ dp(25), 0);
-            searchBar.setLayoutParams(lp);
-            searchBar.requestLayout();
-        });
-        viewAnimator.start();
-        if (getCurrentFocus() != null) getCurrentFocus().clearFocus();
-        searchText.setText("");
-        searchText.post(searchText::requestFocus);
-        // Show Keyboard
-        InputMethodManager imm = (InputMethodManager)   getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+            ValueAnimator viewAnimator = ValueAnimator.ofInt(endMargin, 0);
+            viewAnimator.setDuration(200);
+            viewAnimator.setInterpolator(new DecelerateInterpolator());
+            viewAnimator.addUpdateListener(animation -> {
+                LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) searchBar.getLayoutParams();
+                lp.setMargins((int) animation.getAnimatedValue() + dp(25), 0, (int) animation.getAnimatedValue() + dp(25), 0);
+                searchBar.setLayoutParams(lp);
+                searchBar.requestLayout();
+            });
+            viewAnimator.start();
+            if (getCurrentFocus() != null) getCurrentFocus().clearFocus();
+            searchText.setText("");
+            searchText.post(searchText::requestFocus);
+            showKeyboard();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
     }
+
     void hideSearchBar() {
         searching = false;
 
@@ -129,7 +133,8 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
         refreshAdapters();
 
         searchBar.postDelayed(() -> {
-            searchBar.setVisibility(View.GONE);
+            if (!searching) searchBar.setVisibility(View.GONE);
+            else hideSearchBar();
         }, 300);
         topBar.setVisibility(View.VISIBLE);
 
@@ -148,13 +153,8 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
     protected void init() {
         super.init();
         // Set logo button
-        View searchView = rootView.findViewById(R.id.searchClickableEditText);
-        searchView.setOnClickListener(view -> {
-            if (searching) hideSearchBar();
-            else showSearchBar();
-        });
         View searchIcon = rootView.findViewById(R.id.searchIcon);
-        searchView.setOnHoverListener((view, event) -> {
+        searchIcon.setOnHoverListener((view, event) -> {
             if (event.getAction() == MotionEvent.ACTION_HOVER_ENTER)
                 searchIcon.setBackgroundResource(R.drawable.bkg_hover_button_bar_hovered);
             else if (event.getAction() == MotionEvent.ACTION_HOVER_EXIT)
@@ -165,7 +165,7 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
         // so we'll put an invisible EditText above the search button and give it a frame
         // to take focus and show the keyboard.
         // Afterwards, focus is moved to the actual search box via showSearchBar()
-        searchView.setOnFocusChangeListener((v, hasFocus) -> searchView.post(() -> {
+        searchIcon.setOnFocusChangeListener((v, hasFocus) -> searchIcon.post(() -> {
             if (hasFocus) {
                 if (searching) hideSearchBar();
                 else showSearchBar();
@@ -190,6 +190,15 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
             }
             return false;
         });
+        searchText.setOnFocusChangeListener((view, hasFocus) -> {
+            if (hasFocus) showKeyboard();
+        });
+
+        // Secret focusable element off the top of the screen to allow search on android tv by pressing up
+        findViewById(R.id.searchShortcutView).setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus && !searching) showSearchBar();
+        });
+
 
         findViewById(R.id.searchCancelIcon).setOnClickListener(v -> hideSearchBar());
     }

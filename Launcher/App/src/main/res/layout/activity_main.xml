@@ -75,6 +75,16 @@
         android:clipChildren="false"
         android:orientation="horizontal">
 
+        <View
+            android:id="@+id/searchShortcutView"
+            android:layout_width="0dp"
+            android:layout_height="10dp"
+            android:layout_marginBottom="10dp"
+            android:focusable="true"
+            app:layout_constraintBottom_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
         <eightbitlab.com.blurview.BlurView
             android:id="@+id/blurViewGroups"
             android:layout_width="0dp"
@@ -143,19 +153,6 @@
                 tools:layout_editor_absoluteX="297dp"
                 tools:layout_editor_absoluteY="22dp" />
 
-            <EditText
-                android:id="@+id/searchClickableEditText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:alpha="0"
-                android:ems="10"
-                android:focusable="false"
-                android:focusableInTouchMode="true"
-                android:inputType="text"
-                tools:layout_conversion_absoluteHeight="40dp"
-                tools:layout_conversion_absoluteWidth="40dp"
-                tools:layout_editor_absoluteX="297dp"
-                tools:layout_editor_absoluteY="22dp" />
         </eightbitlab.com.blurview.BlurView>
 
         <eightbitlab.com.blurview.BlurView

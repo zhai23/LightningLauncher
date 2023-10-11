@@ -37,7 +37,7 @@
 
         <meta-data android:name="com.oculus.supportedDevices" android:value="all"/>
 
-        <!-- Main activity, called by the launcher & shortcut apk -->
+        <!-- Main activity, called by the launcher & shortcut apk (Quest) -->
         <activity
             android:name=".launcher.LauncherActivitySearchable"
             android:screenOrientation="unspecified"
@@ -53,10 +53,28 @@
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.HOME"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
-                <category android:name="android.intent.category.LEANBACK_LAUNCHER"/>
                 <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="com.threethan.launcher.FINISH" />
+            </intent-filter>
+        </activity>
+        <!-- Main activity, called by leanback launcher & launcher manager (Android TV) -->
+        <activity
+            android:name=".launcher.LauncherActivitySingle"
+            android:screenOrientation="unspecified"
+            android:configChanges="density|keyboard|keyboardHidden|navigation|orientation|screenLayout|screenSize|uiMode"
+            android:exported="true"
+            android:launchMode="singleInstance"
+            android:resizeableActivity="true">
+
+            <layout android:defaultWidth="706dp" android:defaultHeight="442dp" android:gravity="top|end" />
+            <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
+            <meta-data android:name="com.oculus.vrshell.free_resizing_limits" android:value="300,2000,500,1000"/>
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.HOME"/>
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER"/>
                 <action android:name="com.threethan.launcher.FINISH" />
             </intent-filter>
         </activity>

@@ -269,8 +269,8 @@ public class LauncherActivityEditable extends LauncherActivity {
         ((TextView) dialog.findViewById(R.id.addText)).setText(getString(R.string.add_website_group, group));
         EditText urlEdit = dialog.findViewById(R.id.appUrl);
         urlEdit.post(urlEdit::requestFocus);
-        InputMethodManager imm = (InputMethodManager)   getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+
+        showKeyboard();
 
         TextView badUrl  = dialog.findViewById(R.id.badUrl);
         TextView usedUrl = dialog.findViewById(R.id.usedUrl);
