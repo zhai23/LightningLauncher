@@ -106,11 +106,9 @@ public class SettingsManager extends Settings {
         return sharedPreferences.getBoolean(Settings.KEY_LAUNCH_OUT_PREFIX+pkg,
                 sharedPreferences.getBoolean(Settings.KEY_DEFAULT_LAUNCH_OUT, DEFAULT_DEFAULT_LAUNCH_OUT));
     }
-
     public static void setAppLaunchOut(String pkg, boolean shouldLaunchOut) {
         sharedPreferenceEditor.putBoolean(Settings.KEY_LAUNCH_OUT_PREFIX+pkg, shouldLaunchOut);
     }
-
     public static Map<String, String> getAppGroupMap() {
         if (appGroupMap.isEmpty()) readValues();
         return appGroupMap;
@@ -281,8 +279,8 @@ public class SettingsManager extends Settings {
     }
 
     public static String getDefaultGroup(boolean vr, boolean tv, boolean web) {
-        final String key = tv ? KEY_GROUP_TV : (web ? KEY_GROUP_WEB : (vr ? KEY_GROUP_VR : KEY_GROUP_2D));
-        final String def = tv ? DEFAULT_GROUP_TV : (web ? DEFAULT_GROUP_WEB : (vr ? DEFAULT_GROUP_VR : DEFAULT_GROUP_2D));
+        final String key = web ? KEY_GROUP_WEB : (tv ? KEY_GROUP_TV : (vr ? KEY_GROUP_VR : KEY_GROUP_2D));
+        final String def = web ? DEFAULT_GROUP_WEB : (tv ? DEFAULT_GROUP_TV : (vr ? DEFAULT_GROUP_VR : DEFAULT_GROUP_2D));
         final String group = sharedPreferences.getString(key, def);
         if (!appGroupsSet.contains(group)) return Settings.HIDDEN_GROUP;
         return group;
@@ -313,7 +311,7 @@ public class SettingsManager extends Settings {
             e.printStackTrace();
         }
     }
-    private void queueStoreValues() {
+    synchronized private void queueStoreValues() {
         if (myLauncherActivityRef.get() != null && myLauncherActivityRef.get().mainView != null) {
             myLauncherActivityRef.get().post(SettingsManager::storeValues);
             sharedPreferenceEditor.putStringSet(KEY_SELECTED_GROUPS, selectedGroupsSet);

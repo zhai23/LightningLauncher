@@ -27,7 +27,7 @@ public abstract class Platform {
     public static List<ApplicationInfo> appListBanner;
     public static List<ApplicationInfo> appListSquare;
     public static void clearPackageLists() {
-        App.set2d.clear();
+        App.setNonVr.clear();
         App.setVr.clear();
     }
     public static String findWebsite(SharedPreferences sharedPreferences, String url) {

@@ -12,6 +12,7 @@ import com.threethan.launcher.browser.BrowserActivitySeparate;
 import com.threethan.launcher.launcher.LauncherActivity;
 import com.threethan.launcher.support.SettingsManager;
 
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -99,6 +100,11 @@ public abstract class Launch {
         tvIntent.setAction(Intent.CATEGORY_LEANBACK_LAUNCHER);
         tvIntent.setPackage(app.packageName);
         if (tvIntent.resolveActivity(pm) != null) return tvIntent;
+
+        // Otherwise android TV settings is not recognized
+        if (Objects.equals(app.packageName, "com.android.tv.settings")) {
+            return new Intent(android.provider.Settings.ACTION_SETTINGS);
+        }
 
         // Get normal launch intent
         return pm.getLaunchIntentForPackage(app.packageName);

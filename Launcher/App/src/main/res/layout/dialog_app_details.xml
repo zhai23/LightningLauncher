@@ -190,6 +190,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:foreground="@drawable/bkg_hover_button"
                 android:thumb="@drawable/switch_thumb_custom"
                 android:track="@drawable/switch_track_custom"
                 tools:ignore="UseSwitchCompatOrMaterialXml" />

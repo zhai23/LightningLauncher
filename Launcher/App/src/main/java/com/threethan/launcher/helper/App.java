@@ -26,28 +26,28 @@ import java.util.Set;
 
 public abstract class App {
     static Set<String> setVr = Collections.synchronizedSet(new HashSet<>());
-    static Set<String> set2d = Collections.synchronizedSet(new HashSet<>());
+    static Set<String> setNonVr = Collections.synchronizedSet(new HashSet<>());
     static Set<String> setTv = Collections.synchronizedSet(new HashSet<>());
     static Set<String> setNonTv = Collections.synchronizedSet(new HashSet<>());
-    public static boolean isVirtualReality(ApplicationInfo applicationInfo, LauncherActivity launcherActivity) {
+    public synchronized static boolean isVirtualReality(ApplicationInfo applicationInfo, LauncherActivity launcherActivity) {
         final SharedPreferences sharedPreferences = launcherActivity.sharedPreferences;
         final SharedPreferences.Editor sharedPreferenceEditor = launcherActivity.sharedPreferenceEditor;
         if (setVr.isEmpty()) {
             setVr.addAll(sharedPreferences.getStringSet(Settings.KEY_VR_SET, new HashSet<>()));
-            set2d.addAll(sharedPreferences.getStringSet(Settings.KEY_2D_SET, new HashSet<>()));
+            setNonVr.addAll(sharedPreferences.getStringSet(Settings.KEY_2D_SET, new HashSet<>()));
         }
         if (setVr.contains(applicationInfo.packageName)) return true;
-        if (set2d.contains(applicationInfo.packageName)) return false;
+        if (setNonVr.contains(applicationInfo.packageName)) return false;
 
         if (
-                checkVirtualReality(applicationInfo)) {
+            checkVirtualReality(applicationInfo)) {
             setVr.add(applicationInfo.packageName);
-            launcherActivity.post(() -> sharedPreferenceEditor.putStringSet(Settings.KEY_VR_SET, setVr));
+            sharedPreferenceEditor.putStringSet(Settings.KEY_VR_SET, setVr);
             launcherActivity.postSharedPreferenceApply();
             return true;
         } else {
-            set2d.add(applicationInfo.packageName);
-            launcherActivity.post(() -> sharedPreferenceEditor.putStringSet(Settings.KEY_2D_SET, set2d));
+            setNonVr.add(applicationInfo.packageName);
+            sharedPreferenceEditor.putStringSet(Settings.KEY_2D_SET, setNonVr);
             launcherActivity.postSharedPreferenceApply();
             return false;
         }
@@ -61,7 +61,7 @@ public abstract class App {
         }
         return false;
     }
-    public static boolean isAndroidTv(ApplicationInfo applicationInfo, LauncherActivity launcherActivity) {
+    public synchronized static boolean isAndroidTv(ApplicationInfo applicationInfo, LauncherActivity launcherActivity) {
         final SharedPreferences sharedPreferences = launcherActivity.sharedPreferences;
         final SharedPreferences.Editor sharedPreferenceEditor = launcherActivity.sharedPreferenceEditor;
         if (setTv.isEmpty()) {
@@ -73,19 +73,21 @@ public abstract class App {
 
         if (checkAndroidTv(applicationInfo, launcherActivity)) {
             setTv.add(applicationInfo.packageName);
-            launcherActivity.post(() -> sharedPreferenceEditor.putStringSet(Settings.KEY_TV_SET, setTv));
+            sharedPreferenceEditor.putStringSet(Settings.KEY_TV_SET, setTv);
             launcherActivity.postSharedPreferenceApply();
             return true;
         } else {
             setNonTv.add(applicationInfo.packageName);
-            launcherActivity.post(() -> sharedPreferenceEditor.putStringSet(Settings.KEY_NON_TV_SET, setNonTv));
+            sharedPreferenceEditor.putStringSet(Settings.KEY_NON_TV_SET, setNonTv);
             launcherActivity.postSharedPreferenceApply();
             return false;
         }
     }
-    public static boolean checkAndroidTv(ApplicationInfo applicationInfo, LauncherActivity launcherActivity) {
+    private static boolean checkAndroidTv(ApplicationInfo applicationInfo, LauncherActivity launcherActivity) {
         PackageManager pm = launcherActivity.getPackageManager();
-
+        // First check for banner
+        if (applicationInfo.banner != 0) return true;
+        // Then check for intent
         Intent tvIntent = new Intent();
         tvIntent.setAction(Intent.CATEGORY_LEANBACK_LAUNCHER);
         tvIntent.setPackage(applicationInfo.packageName);
@@ -94,7 +96,7 @@ public abstract class App {
 
     static Set<String> setSupported = Collections.synchronizedSet(new HashSet<>());
     static Set<String> setUnsupported = Collections.synchronizedSet(new HashSet<>());
-    public static boolean isSupported(ApplicationInfo app, LauncherActivity launcherActivity) {
+    synchronized public static boolean isSupported(ApplicationInfo app, LauncherActivity launcherActivity) {
         final SharedPreferences sharedPreferences = launcherActivity.sharedPreferences;
         final SharedPreferences.Editor sharedPreferenceEditor = launcherActivity.sharedPreferenceEditor;
         if (setSupported.isEmpty()) {
@@ -141,6 +143,8 @@ public abstract class App {
         if (isVr)  return sharedPreferences.getBoolean(Settings.KEY_WIDE_VR , Settings.DEFAULT_WIDE_VR );
         final boolean isWeb = isWebsite(applicationInfo);
         if (isWeb) return sharedPreferences.getBoolean(Settings.KEY_WIDE_WEB, Settings.DEFAULT_WIDE_WEB);
+        final boolean isTv = isAndroidTv(applicationInfo, launcherActivity);
+        if (isTv)  return sharedPreferences.getBoolean(Settings.KEY_WIDE_TV , Settings.DEFAULT_WIDE_TV );
         else       return sharedPreferences.getBoolean(Settings.KEY_WIDE_2D , Settings.DEFAULT_WIDE_2D );
     }
     public static boolean isWebsite(ApplicationInfo applicationInfo) {
@@ -150,10 +154,10 @@ public abstract class App {
         return (packageName.contains("//"));
     }
 
-    // Invalidate the values caches for isSomething functions
+    // Invalidate the values caches for isBlank functions
     public static void invalidateCaches(LauncherActivity launcherActivity) {
         setVr.clear();
-        set2d.clear();
+        setNonVr.clear();
         setSupported.clear();
         setUnsupported.clear();
 

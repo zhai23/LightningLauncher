@@ -1,59 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.threethan.launcher.browser.CursorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_meta_dark"
     android:orientation="vertical">
-
-    <LinearLayout
-        android:id="@+id/topBarEdit"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:background="#2A000000"
-        android:orientation="horizontal"
-        android:paddingLeft="7dp"
-        android:paddingRight="7dp"
-        android:visibility="gone">
-
-
-        <EditText
-            android:id="@+id/urlEdit"
-            style="@style/SettingButtonLabel"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:ems="10"
-            android:inputType="textUri"
-            android:singleLine="true"
-            tools:text="discord.com/app" />
-
-        <ImageButton
-            android:id="@+id/cancel"
-            android:layout_width="39dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/bkg_button_web"
-            android:src="@drawable/web_close"
-            android:tooltipText="@string/web_cancel" />
-
-        <ImageButton
-            android:id="@+id/confirm"
-            android:layout_width="39dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
-            android:layout_margin="8dp"
-            android:background="@drawable/bkg_button_web"
-            android:src="@drawable/web_confirm"
-            android:tooltipText="@string/web_confirm" />
-
-    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/topBar"
@@ -76,6 +28,7 @@
             android:src="@drawable/web_back"
             android:tooltipText="@string/web_back"
             android:visibility="gone"
+            tools:ignore="UnusedAttribute"
             tools:visibility="visible" />
 
         <ImageButton
@@ -90,6 +43,7 @@
             android:src="@drawable/web_forward"
             android:tooltipText="@string/web_forward"
             android:visibility="gone"
+            tools:ignore="UnusedAttribute"
             tools:visibility="visible" />
 
         <ImageButton
@@ -100,72 +54,78 @@
             android:layout_margin="8dp"
             android:background="@drawable/bkg_button_web"
             android:src="@drawable/web_refresh"
-            android:tooltipText="@string/web_reload" />
+            android:tooltipText="@string/web_reload"
+            tools:ignore="UnusedAttribute" />
 
         <LinearLayout
-            android:id="@+id/urlLayout"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/bkg_button_web"
-            android:orientation="horizontal"
-            android:paddingStart="8dp"
-            android:paddingEnd="5dp">
+            android:layout_weight="1"
+            android:layoutDirection="rtl"
+            android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/urlPre"
+            <LinearLayout
+                android:id="@+id/urlLayout"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:alpha="0.7"
-                android:singleLine="true"
-                android:textColor="#FFFFFF"
-                android:textSize="16sp"
-                tools:text="www." />
+                android:layout_height="match_parent"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/bkg_button_web"
+                android:orientation="horizontal"
+                android:paddingStart="8dp"
+                android:paddingEnd="0dp"
+                tools:ignore="UselessParent"
+                tools:nextFocusRight="@id/addHome">
 
-            <TextView
-                android:id="@+id/urlMid"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:singleLine="true"
-                android:textColor="#FFFFFF"
-                android:textSize="16sp"
-                tools:text="url" />
+                <TextView
+                    android:id="@+id/urlPre"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:alpha="0.7"
+                    android:singleLine="true"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    tools:text="www." />
 
-            <TextView
-                android:id="@+id/urlEnd"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginEnd="4dp"
-                android:alpha="0.7"
-                android:singleLine="true"
-                android:textColor="#FFFFFF"
-                android:textSize="16sp"
-                tools:text=".com/app/longstringidk" />
+                <TextView
+                    android:id="@+id/urlMid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:singleLine="true"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    tools:text="url" />
+
+                <TextView
+                    android:id="@+id/urlEnd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:alpha="0.7"
+                    android:paddingEnd="5sp"
+                    android:singleLine="true"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    tools:text=".com/app/longstringidk" />
+
+                <ImageButton
+                    android:id="@+id/addHome"
+                    android:layout_width="25dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/bkg_button_web"
+                    android:nextFocusLeft="@id/urlLayout"
+                    android:src="@drawable/web_add_home"
+                    android:tooltipText="@string/web_add_home"
+                    android:visibility="gone"
+                    tools:ignore="UnusedAttribute"
+                    tools:visibility="visible" />
+
+            </LinearLayout>
 
         </LinearLayout>
-
-        <ImageButton
-            android:id="@+id/addHome"
-            android:layout_width="25dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/bkg_button_web"
-            android:src="@drawable/web_add_home"
-            android:tooltipText="@string/web_add_home"
-            android:visibility="gone"
-            tools:visibility="visible" />
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
 
         <ImageButton
             android:id="@+id/lightMode"
@@ -178,7 +138,8 @@
             android:background="@drawable/bkg_button_web"
             android:src="@drawable/web_light"
             android:tooltipText="@string/web_light"
-            android:visibility="gone" />
+            android:visibility="gone"
+            tools:ignore="UnusedAttribute" />
 
         <ImageButton
             android:id="@+id/darkMode"
@@ -191,7 +152,8 @@
             android:background="@drawable/bkg_button_web"
             android:src="@drawable/web_dark"
             android:tooltipText="@string/web_light"
-            android:visibility="gone" />
+            android:visibility="gone"
+            tools:ignore="UnusedAttribute" />
 
         <ImageButton
             android:id="@+id/zoomOut"
@@ -204,7 +166,8 @@
             android:background="@drawable/bkg_button_web"
             android:src="@drawable/web_zoom_out"
             android:tooltipText="@string/web_zoom_out"
-            android:visibility="gone" />
+            android:visibility="gone"
+            tools:ignore="UnusedAttribute" />
 
         <ImageButton
             android:id="@+id/zoomIn"
@@ -217,7 +180,8 @@
             android:background="@drawable/bkg_button_web"
             android:src="@drawable/web_zoom_in"
             android:tooltipText="@string/web_zoom_in"
-            android:visibility="gone" />
+            android:visibility="gone"
+            tools:ignore="UnusedAttribute" />
 
         <ImageButton
             android:id="@+id/exit"
@@ -227,8 +191,58 @@
             android:layout_margin="8dp"
             android:background="@drawable/bkg_button_web"
             android:src="@drawable/web_close"
-            android:tooltipText="@string/web_exit" />
+            android:tooltipText="@string/web_exit"
+            tools:ignore="UnusedAttribute" />
 
     </LinearLayout>
 
-</LinearLayout>
+    <LinearLayout
+        android:id="@+id/topBarEdit"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="#2A000000"
+        android:orientation="horizontal"
+        android:paddingLeft="7dp"
+        android:paddingRight="7dp"
+        android:visibility="gone">
+
+
+        <EditText
+            android:id="@+id/urlEdit"
+            style="@style/SettingButtonLabel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:ems="10"
+            android:inputType="textUri"
+            android:singleLine="true"
+            tools:text="discord.com/app" />
+
+        <ImageButton
+            android:id="@+id/cancel"
+            android:layout_width="39dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/bkg_button_web"
+            android:src="@drawable/web_close"
+            android:tooltipText="@string/web_cancel"
+            tools:ignore="UnusedAttribute" />
+
+        <ImageButton
+            android:id="@+id/confirm"
+            android:layout_width="39dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="8dp"
+            android:background="@drawable/bkg_button_web"
+            android:src="@drawable/web_confirm"
+            android:tooltipText="@string/web_confirm"
+            tools:ignore="UnusedAttribute" />
+
+    </LinearLayout>
+</com.threethan.launcher.browser.CursorLayout>

@@ -18,7 +18,6 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.threethan.launcher.R;
@@ -283,8 +282,9 @@ public class BrowserActivity extends Activity {
     // Sets the WebView when the service is bound
     private void onBound() {
         w = wService.getWebView(this);
-        LinearLayout container = findViewById(R.id.container);
+        CursorLayout container = findViewById(R.id.container);
         container.addView(w);
+        container.targetView = w;
 
         // The WebViewClient will be overridden to provide info, incl. when a new page is loaded
         // Note than WebViewClient != WebChromeClient

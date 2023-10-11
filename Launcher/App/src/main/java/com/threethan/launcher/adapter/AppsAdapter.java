@@ -429,15 +429,19 @@ public class AppsAdapter extends BaseAdapter{
         ObjectAnimator aY = ObjectAnimator.ofFloat(openAnim, "ScaleY", 100f);
         ObjectAnimator aA = ObjectAnimator.ofFloat(animIcon, "Alpha", 0f);
         ObjectAnimator aP = ObjectAnimator.ofFloat(openProgress, "Alpha", 0.8f);
+        ObjectAnimator aPo = ObjectAnimator.ofFloat(openProgress, "Alpha", 0.0f);
         aX.setDuration(1000);
         aY.setDuration(1000);
         aA.setDuration(500);
         aP.setDuration(500);
+        aPo.setDuration(3000);
         aP.setStartDelay(1000);
+        aPo.setStartDelay(7000);
         aX.start();
         aY.start();
         aA.start();
         aP.start();
+        aPo.start();
     }
     public static boolean shouldAnimateClose = false;
     public static boolean animateClose(LauncherActivity launcherActivity) {

@@ -149,6 +149,7 @@ public abstract class SettingsDialog {
             @Override
             public void onProgressChanged(SeekBar seekBar, int value, boolean b) {
                 a.sharedPreferenceEditor.putInt(Settings.KEY_SCALE, value);
+                a.refreshInterface();
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {}
@@ -164,6 +165,7 @@ public abstract class SettingsDialog {
             @Override
             public void onProgressChanged(SeekBar seekBar, int value, boolean b) {
                 a.sharedPreferenceEditor.putInt(Settings.KEY_MARGIN, value);
+                a.refreshInterface();
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {}
@@ -244,6 +246,7 @@ public abstract class SettingsDialog {
         Switch banner2d = dialog.findViewById(R.id.banner2dSwitch);
         banner2d.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_WIDE_2D, Settings.DEFAULT_WIDE_2D));
         banner2d.setOnCheckedChangeListener((compoundButton, value) -> {
+            Compat.clearIconCache(a);
             a.sharedPreferenceEditor.putBoolean(Settings.KEY_WIDE_2D, value);
             a.refreshAppDisplayListsAll();
         });

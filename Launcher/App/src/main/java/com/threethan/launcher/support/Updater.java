@@ -62,8 +62,8 @@ public class Updater {
             new Addon(TAG_MESSENGER_SHORTCUT, "MessengerRedirect", "com.facebook.orca", "5.1.0", false),
             new Addon(TAG_LIBRARY_SHORTCUT, "LibraryShortcutService", "com.threethan.launcher.service.library", "5.1.0", true),
             new Addon(TAG_EXPLORE_SHORTCUT, "ExploreShortcutService", "com.threethan.launcher.service.explore", "5.1.0", true),
-            new Addon(TAG_ANDROID_TV_SHORTCUT, "Accessibility Manager v1.8", "com.wolf.apm", "1.8", false,
-                    "https://xdaforums.com/attachments/accessibility-manager-v1-8-apk.5149053/"),
+            new Addon(TAG_ANDROID_TV_SHORTCUT, "LM (ATV) - 1.0.4", "com.wolf.google.lm", "1.0.4", false,
+                    "https://xdaforums.com/attachments/lm-atv-1-0-4-apk.5498333/"),
     };
     private static final String TAG = "LightningLauncher Updater";
     private final RequestQueue requestQueue;
