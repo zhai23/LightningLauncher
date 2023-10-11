@@ -349,8 +349,8 @@ public class LauncherActivity extends Activity {
 
         for (BlurView blurView: blurViews) {
 //            blurView.setVisibility(View.VISIBLE);
-            blurView.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(darkMode ? "#00000000" : "#00FFFFFF")));
-            blurView.setOverlayColor((Color.parseColor(darkMode ? "#3A000000" : "#40FFFFFF")));
+            blurView.setBackgroundTintList(ColorStateList.valueOf(Color.TRANSPARENT));
+            blurView.setOverlayColor((Color.parseColor(darkMode ? "#29000000" : "#40FFFFFF")));
             blurView.setupWith(rootViewGroup, new RenderScriptBlur(getApplicationContext())) // or RenderEffectBlur
                     .setFrameClearDrawable(windowBackground) // Optional
                     .setBlurRadius(blurRadiusDp);
@@ -362,9 +362,9 @@ public class LauncherActivity extends Activity {
         }
 
         ImageView settingsIcon = rootView.findViewById(R.id.settingsIcon);
-        settingsIcon.setImageTintList(ColorStateList.valueOf(Color.parseColor(darkMode ? "#FFFFFF" : "#000000")));
+        settingsIcon.setImageTintList(ColorStateList.valueOf(darkMode ? Color.WHITE : Color.BLACK));
         ImageView searchIcon   = rootView.findViewById(R.id.searchIcon);
-        searchIcon  .setImageTintList(ColorStateList.valueOf(Color.parseColor(darkMode ? "#FFFFFF" : "#000000")));
+        searchIcon  .setImageTintList(ColorStateList.valueOf(darkMode ? Color.WHITE : Color.BLACK));
     }
 
 
@@ -419,8 +419,8 @@ public class LauncherActivity extends Activity {
         boolean namesSquare = sharedPreferences.getBoolean(Settings.KEY_SHOW_NAMES_SQUARE, Settings.DEFAULT_SHOW_NAMES_SQUARE);
         boolean namesBanner = sharedPreferences.getBoolean(Settings.KEY_SHOW_NAMES_BANNER, Settings.DEFAULT_SHOW_NAMES_BANNER);
 
-        appGridViewSquare.setMargin(marginPx-dp(20), namesSquare);
-        appGridViewBanner.setMargin(marginPx-dp(20), namesBanner);
+        appGridViewSquare.setMargin(marginPx, namesSquare, dp(22));
+        appGridViewBanner.setMargin(marginPx, namesBanner, dp(22));
 
         setAdapters(namesSquare, namesBanner);
 

@@ -7,13 +7,14 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
+    <!--  For backup  -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <uses-feature android:name="android.hardware.vr.headtracking" android:required="false"/>
     <uses-feature android:name="oculus.software.handtracking" android:required="false"/>
     <uses-permission android:name="com.oculus.permission.HAND_TRACKING"/>
-
 
     <!-- Allows the app to play/record audio in background, which is used for the WebView activity -->
     <uses-permission android:name="com.oculus.permission.PLAY_AUDIO_BACKGROUND"/>

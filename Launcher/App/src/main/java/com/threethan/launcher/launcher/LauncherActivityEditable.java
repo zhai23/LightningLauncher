@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Adapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -267,6 +268,9 @@ public class LauncherActivityEditable extends LauncherActivity {
         dialog.findViewById(R.id.cancel).setOnClickListener(view -> dialog.cancel());
         ((TextView) dialog.findViewById(R.id.addText)).setText(getString(R.string.add_website_group, group));
         EditText urlEdit = dialog.findViewById(R.id.appUrl);
+        urlEdit.post(urlEdit::requestFocus);
+        InputMethodManager imm = (InputMethodManager)   getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
 
         TextView badUrl  = dialog.findViewById(R.id.badUrl);
         TextView usedUrl = dialog.findViewById(R.id.usedUrl);
@@ -318,7 +322,7 @@ public class LauncherActivityEditable extends LauncherActivity {
         if (!isEditing()) return;
 
         BlurView blurViewE = rootView.findViewById(R.id.editFooter);
-        blurViewE.setOverlayColor(Color.parseColor(darkMode ? "#4A000000" : "#50FFFFFF"));
+        blurViewE.setOverlayColor(Color.parseColor(darkMode ? "#2A000000" : "#45FFFFFF"));
 
         float blurRadiusDp = 25f;
 

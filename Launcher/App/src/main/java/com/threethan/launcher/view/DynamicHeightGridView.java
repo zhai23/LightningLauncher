@@ -38,8 +38,8 @@ public class DynamicHeightGridView extends GridView {
         setMeasuredDimension(getMeasuredWidth(),
                 (getMeasuredHeight()-pad)*rows + getVerticalSpacing()*rows + pad + CHEAT_OFFSET);
     }
-    public void setMargin(int margin, boolean names) {
-        setVerticalSpacing(names ? margin/2 : margin);
-        setHorizontalSpacing(margin);
+    public void setMargin(int margin, boolean names, int dpOffset) {
+        setVerticalSpacing((names ? margin/2 : margin)-dpOffset);
+        setHorizontalSpacing(margin-dpOffset);
     }
 }

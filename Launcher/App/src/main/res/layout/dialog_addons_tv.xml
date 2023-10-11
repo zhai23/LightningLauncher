@@ -197,7 +197,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="3dp"
-                android:minHeight="80sp"
+                android:minHeight="160sp"
                 android:text="@string/addons_androidtv_desc" />
         </LinearLayout>
 

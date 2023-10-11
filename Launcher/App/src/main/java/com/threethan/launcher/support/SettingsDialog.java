@@ -158,7 +158,7 @@ public abstract class SettingsDialog {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) { a.refreshInterfaceAll(); }
         });
-        scale.setMax(200);
+        scale.setMax(150);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) scale.setMin(80);
 
         SeekBar margin = dialog.findViewById(R.id.marginSeekBar);
@@ -174,8 +174,8 @@ public abstract class SettingsDialog {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) { a.refreshInterfaceAll(); }
         });
-        margin.setMax(59);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) margin.setMin(5);
+        margin.setMax(40);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) margin.setMin(0);
 
         Switch groups = dialog.findViewById(R.id.groupSwitch);
         groups.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_GROUPS_ENABLED, Settings.DEFAULT_GROUPS_ENABLED));

@@ -2,6 +2,7 @@ package com.threethan.launcher.launcher;
 
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -105,8 +106,12 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
             searchBar.requestLayout();
         });
         viewAnimator.start();
+        if (getCurrentFocus() != null) getCurrentFocus().clearFocus();
         searchText.setText("");
-        searchText.requestFocus();
+        searchText.post(searchText::requestFocus);
+        // Show Keyboard
+        InputMethodManager imm = (InputMethodManager)   getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
     }
     void hideSearchBar() {
         searching = false;
@@ -151,7 +156,7 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
         View searchIcon = rootView.findViewById(R.id.searchIcon);
         searchView.setOnHoverListener((view, event) -> {
             if (event.getAction() == MotionEvent.ACTION_HOVER_ENTER)
-                searchIcon.setBackgroundResource(R.drawable.bkg_hover_button_editbtn_hovered);
+                searchIcon.setBackgroundResource(R.drawable.bkg_hover_button_bar_hovered);
             else if (event.getAction() == MotionEvent.ACTION_HOVER_EXIT)
                 searchIcon.setBackground(null);
             return false;

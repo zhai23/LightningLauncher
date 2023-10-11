@@ -266,10 +266,10 @@ public class AppsAdapter extends BaseAdapter{
     void updateHover(ViewHolder holder, boolean hovered) {
         holder.killButton.setBackgroundResource(hovered ? R.drawable.ic_circ_running_kb : R.drawable.ic_running_ns);
 
-        ObjectAnimator aXi = ObjectAnimator.ofFloat(holder.imageView, "scaleX", hovered ? 1.05f : 1.00f);
-        ObjectAnimator aXv = ObjectAnimator.ofFloat(holder.view, "scaleX", hovered ? 1.05f : 1.00f);
-        ObjectAnimator aYi = ObjectAnimator.ofFloat(holder.imageView, "scaleY", hovered ? 1.05f : 1.00f);
-        ObjectAnimator aYv = ObjectAnimator.ofFloat(holder.view, "scaleY", hovered ? 1.05f : 1.00f);
+        ObjectAnimator aXi = ObjectAnimator.ofFloat(holder.imageView, "scaleX", hovered ? 1.055f : 1.005f);
+        ObjectAnimator aXv = ObjectAnimator.ofFloat(holder.view, "scaleX", hovered ? 1.05f : 1.001f);
+        ObjectAnimator aYi = ObjectAnimator.ofFloat(holder.imageView, "scaleY", hovered ? 1.055f : 1.005f);
+        ObjectAnimator aYv = ObjectAnimator.ofFloat(holder.view, "scaleY", hovered ? 1.055f : 1.005f);
         ObjectAnimator aAm = ObjectAnimator.ofFloat(holder.moreButton, "alpha", hovered ? 1f : 0f);
         ObjectAnimator aAe = ObjectAnimator.ofFloat(holder.clip, "elevation", hovered ? 15f : 3f);
 

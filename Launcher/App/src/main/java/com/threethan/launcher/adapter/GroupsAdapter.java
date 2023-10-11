@@ -115,13 +115,13 @@ public class GroupsAdapter extends BaseAdapter {
 
         holder.textView.setOnHoverListener((view, event) -> {
             if (event.getAction() == MotionEvent.ACTION_HOVER_ENTER)
-                holder.textView.setBackgroundResource(R.drawable.bkg_hover_button_editbar_hovered);
+                holder.textView.setBackgroundResource(R.drawable.bkg_hover_button_bar_hovered);
             else if (event.getAction() == MotionEvent.ACTION_HOVER_EXIT)
                 holder.textView.setBackground(null);
             return false;
         });
         holder.textView.setOnFocusChangeListener((view, hasFocus) -> {
-            if (hasFocus || view.isHovered()) holder.textView.setBackgroundResource(R.drawable.bkg_hover_button_editbar_hovered);
+            if (hasFocus || view.isHovered()) holder.textView.setBackgroundResource(R.drawable.bkg_hover_button_bar_hovered);
             else holder.textView.setBackground(null);
         });
 

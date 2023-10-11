@@ -174,12 +174,14 @@
     <string name="addons_main">Install Shortcuts</string>
     <string name="addons_info">Shortcuts make it easier to open the launcher.
         \nIt\'s highly recommended that you set up use at least one.</string>
-    <string name="addons_tv_info">Unfortunately, Android TV limits the functionality of accessibility services, but there are some ways around it.</string>
+    <string name="addons_tv_info">Unfortunately, Android TV limits the functionality of accessibility services and third-party launchers, but there are some ways around it.</string>
     <string name="addons_exit">Return to Settings</string>
 
     <string name="addons_androidtv">Android TV Launcher Manager</string>
     <string name="addons_androidtv_desc">Install a third-party application which may allow you to change the default home on Android TV.
-    \nThis requires ADB Debugging to be enabled, and may not work on every device.</string>
+    \nThis requires ADB Debugging to be enabled, and may not work on every device.
+    \n
+    \nIf it will not install through here, look up "Android TV Launcher Manager XDA" and manually download &amp; install.</string>
 
     <string name="addons_messenger">Messenger App Shortcut</string>
     <string name="addons_messenger_desc">Adds an icon, which you can pin to the dock, that looks like Facebook Messenger, but will actually open the launcher.
