@@ -272,16 +272,22 @@ public abstract class SettingsDialog {
         });
 
         // Advanced
-        Switch longPressDetails = dialog.findViewById(R.id.longPressDetailSwitch);
-        longPressDetails.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_DETAILS_LONG_PRESS, Settings.DEFAULT_DETAILS_LONG_PRESS));
-        longPressDetails.setOnCheckedChangeListener((compoundButton, value) -> {
-            a.sharedPreferenceEditor.putBoolean(Settings.KEY_DETAILS_LONG_PRESS, value);
+        Switch longPressEdit = dialog.findViewById(R.id.longPressEditSwitch);
+        longPressEdit.setChecked(!a.sharedPreferences.getBoolean(Settings.KEY_DETAILS_LONG_PRESS, Settings.DEFAULT_DETAILS_LONG_PRESS));
+        longPressEdit.setOnCheckedChangeListener((compoundButton, value) -> {
+            a.sharedPreferenceEditor.putBoolean(Settings.KEY_DETAILS_LONG_PRESS, !value);
             a.refreshInterfaceAll();
         });
         Switch hideEmpty = dialog.findViewById(R.id.hideEmptySwitch);
         hideEmpty.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_AUTO_HIDE_EMPTY, Settings.DEFAULT_AUTO_HIDE_EMPTY));
         hideEmpty.setOnCheckedChangeListener((compoundButton, value) -> {
             a.sharedPreferenceEditor.putBoolean(Settings.KEY_AUTO_HIDE_EMPTY, value);
+            a.refreshInterfaceAll();
+        });
+        Switch defaultLaunchOut = dialog.findViewById(R.id.defaultLaunchOutSwitch);
+        defaultLaunchOut.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_DEFAULT_LAUNCH_OUT, Settings.DEFAULT_DEFAULT_LAUNCH_OUT));
+        defaultLaunchOut.setOnCheckedChangeListener((compoundButton, value) -> {
+            a.sharedPreferenceEditor.putBoolean(Settings.KEY_DEFAULT_LAUNCH_OUT, value);
             a.refreshInterfaceAll();
         });
     }

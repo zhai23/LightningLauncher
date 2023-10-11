@@ -33,7 +33,7 @@
     <string name="icon_header">Icons &amp; Layout</string>
     <string name="wide_header">Display as Banner</string>
     <string name="name_header">Show Names</string>
-    <string name="advanced_header">Advanced Behaviour</string>
+    <string name="advanced_header">Advanced Behavior</string>
 
     <string name="dark_mode">Light Label Text &amp; Dark Top Bar</string>
     <string name="group_mode">Always Show Top Bar</string>
@@ -41,8 +41,9 @@
     <string name="clear_labels">Reset All Labels</string>
     <string name="clear_sort">Move All to Selected Default Groups</string>
 
-    <string name="long_press">Always Show Details on Long Press</string>
+    <string name="long_press">Enable Long Press to Edit</string>
     <string name="hide_empty">Hide Empty Groups when not Editing</string>
+    <string name="default_launch_out">Launch Apps in Own Window by Default</string>
 
     <string name="service_desc">When this service is enabled, Lightning Launcher will open automatically when you hover
         the cursor over the App Library icon on the right of dock for about half a second.\n(This may make it difficult to access the default launcher)\n

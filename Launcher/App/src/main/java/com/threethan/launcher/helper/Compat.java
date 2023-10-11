@@ -10,6 +10,7 @@ import com.threethan.launcher.lib.DataLib;
 import com.threethan.launcher.lib.StringLib;
 import com.threethan.launcher.support.SettingsManager;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -28,7 +29,7 @@ import java.util.Set;
 
 public abstract class Compat {
     public static final String KEY_COMPATIBILITY_VERSION = "KEY_COMPATIBILITY_VERSION";
-    public static final int CURRENT_COMPATIBILITY_VERSION = 4;
+    public static final int CURRENT_COMPATIBILITY_VERSION = 5;
     public static final boolean DEBUG_COMPATIBILITY = false;
     private static final String TAG = "Compatibility";
     public static synchronized void checkCompatibilityUpdate(LauncherActivity launcherActivity) {
@@ -75,6 +76,11 @@ public abstract class Compat {
                         break;
                     case (3): // Should just clear icon cache, which is called anyways
                         break;
+                    case (4):
+                        // App launch out conversion, may not work well but isn't really important
+                        final String KEY_OLD_LAUNCH_OUT = "prefLaunchOutList";
+                        final Set<String> launchOutSet = sharedPreferences.getStringSet(KEY_OLD_LAUNCH_OUT, Collections.emptySet());
+                        for (String app : launchOutSet) sharedPreferenceEditor.putBoolean(Settings.KEY_LAUNCH_OUT_PREFIX + app, true);
                 }
             }
             Log.i(TAG, String.format("Settings Updated from v%s to v%s (Settings versions are not the same as app versions)",

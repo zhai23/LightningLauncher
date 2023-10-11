@@ -109,9 +109,12 @@ public abstract class Settings {
 
     public static final String KEY_GROUPS = "prefAppGroups";
     public static final String KEY_GROUP_APP_LIST = "prefAppList";
-    public static final String KEY_LAUNCH_OUT = "prefLaunchOutList";
+    public static final String KEY_LAUNCH_OUT_PREFIX = "prefLaunchOutPackage";
     public static final String KEY_SELECTED_GROUPS = "prefSelectedGroups";
     public static final String KEY_WEBSITE_LIST = "prefWebAppNames";
+
+    public static final String KEY_DEFAULT_LAUNCH_OUT = "KEY_DEFAULT_LAUNCH_OUT";
+    public static final boolean DEFAULT_DEFAULT_LAUNCH_OUT = false;
 
     // group
     public static final String KEY_GROUP_2D = "KEY_DEFAULT_GROUP_2D";

@@ -52,7 +52,6 @@ public class SettingsManager extends Settings {
     private static ConcurrentHashMap<String, String> appGroupMap = new ConcurrentHashMap<>();
     private static Set<String> appGroupsSet = Collections.synchronizedSet(new HashSet<>());
     private Set<String> selectedGroupsSet = Collections.synchronizedSet(new HashSet<>());
-    private static Set<String> appsToLaunchOut = Collections.synchronizedSet(new HashSet<>());
     private static final Map<Context, SettingsManager> instanceByContext = Collections.synchronizedMap(new HashMap<>());
 
     private SettingsManager(LauncherActivity activity) {
@@ -104,14 +103,12 @@ public class SettingsManager extends Settings {
         sharedPreferenceEditor.putString(app.packageName, newName);
     }
     public static boolean getAppLaunchOut(String pkg) {
-        appsToLaunchOut = sharedPreferences.getStringSet(KEY_LAUNCH_OUT, Collections.emptySet());
-        return (appsToLaunchOut.contains(pkg));
+        return sharedPreferences.getBoolean(Settings.KEY_LAUNCH_OUT_PREFIX+pkg,
+                sharedPreferences.getBoolean(Settings.KEY_DEFAULT_LAUNCH_OUT, DEFAULT_DEFAULT_LAUNCH_OUT));
     }
 
     public static void setAppLaunchOut(String pkg, boolean shouldLaunchOut) {
-        if (shouldLaunchOut) appsToLaunchOut.add(pkg);
-        else appsToLaunchOut.remove(pkg);
-        sharedPreferenceEditor.putStringSet(KEY_LAUNCH_OUT, appsToLaunchOut);
+        sharedPreferenceEditor.putBoolean(Settings.KEY_LAUNCH_OUT_PREFIX+pkg, shouldLaunchOut);
     }
 
     public static Map<String, String> getAppGroupMap() {
@@ -302,9 +299,6 @@ public class SettingsManager extends Settings {
             appGroupsSet.clear();
             appGroupsSet.addAll(sharedPreferences.getStringSet(KEY_GROUPS, defaultGroupsSet));
 
-            appsToLaunchOut.clear();
-            appsToLaunchOut.addAll(sharedPreferences.getStringSet(KEY_LAUNCH_OUT, defaultGroupsSet));
-
             appGroupMap.clear();
 
             appGroupsSet.add(Settings.HIDDEN_GROUP);
@@ -314,7 +308,6 @@ public class SettingsManager extends Settings {
                 appListSet = sharedPreferences.getStringSet(KEY_GROUP_APP_LIST +group, appListSet);
                 for (String app : appListSet) appGroupMap.put(app, group);
             }
-            appsToLaunchOut = sharedPreferences.getStringSet(KEY_LAUNCH_OUT, Collections.emptySet());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -337,7 +330,6 @@ public class SettingsManager extends Settings {
         try {
             SharedPreferences.Editor editor = sharedPreferenceEditor;
             editor.putStringSet(KEY_GROUPS, appGroupsSet);
-            editor.putStringSet(KEY_LAUNCH_OUT, appsToLaunchOut);
 
             Map<String, Set<String>> appListSetMap = new HashMap<>();
             for (String group : appGroupsSet) appListSetMap.put(group, new HashSet<>());
