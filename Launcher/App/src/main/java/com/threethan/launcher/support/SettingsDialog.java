@@ -21,6 +21,8 @@ import com.threethan.launcher.lib.ImageLib;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /*
     SettingsDialog
@@ -141,9 +143,9 @@ public abstract class SettingsDialog {
             });
         }
 
-
         // Icons & Layout
         SeekBar scale = dialog.findViewById(R.id.scaleSeekBar);
+        scale.setProgress(a.sharedPreferences.getInt(Settings.KEY_SCALE, Settings.DEFAULT_SCALE));
 
         scale.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -158,9 +160,9 @@ public abstract class SettingsDialog {
         });
         scale.setMax(200);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) scale.setMin(80);
-        scale.setProgress(a.sharedPreferences.getInt(Settings.KEY_SCALE, Settings.DEFAULT_SCALE));
 
         SeekBar margin = dialog.findViewById(R.id.marginSeekBar);
+        margin.setProgress(a.sharedPreferences.getInt(Settings.KEY_MARGIN, Settings.DEFAULT_MARGIN));
         margin.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int value, boolean b) {
@@ -172,7 +174,6 @@ public abstract class SettingsDialog {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) { a.refreshInterfaceAll(); }
         });
-        margin.setProgress(a.sharedPreferences.getInt(Settings.KEY_MARGIN, Settings.DEFAULT_MARGIN));
         margin.setMax(59);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) margin.setMin(5);
 
@@ -293,5 +294,33 @@ public abstract class SettingsDialog {
             a.sharedPreferenceEditor.putBoolean(Settings.KEY_DEFAULT_LAUNCH_OUT, value);
             a.refreshInterfaceAll();
         });
+        View loadSettings = dialog.findViewById(R.id.loadSettingsButton);
+        loadSettings.setAlpha(SettingsSaver.canLoad(a) ? 1F : 0.5F);
+        loadSettings.setOnClickListener((view) -> {
+            if (SettingsSaver.canLoad(a)) {
+                dialog.dismiss();
+                SettingsSaver.load(a);
+                a.finish();
+                new Timer().schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        a.startActivity(a.getIntent());
+                        SettingsSaver.load(a);
+                        a.refreshInterfaceAll();
+                        a.refreshBackground();
+                        a.refreshAppDisplayListsAll();
+                    }
+                }, 1000);
+
+            }
+        });
+
+        View saveSettings = dialog.findViewById(R.id.saveSettingsButton);
+        saveSettings.setOnClickListener((view) -> SettingsSaver.save(a));
+        saveSettings.setOnClickListener((view) -> {
+            SettingsSaver.save(a);
+            loadSettings.setAlpha(1F);
+        });
+
     }
 }

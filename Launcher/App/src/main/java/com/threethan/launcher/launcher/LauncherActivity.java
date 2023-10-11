@@ -41,6 +41,7 @@ import com.threethan.launcher.helper.IconRepo;
 import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.lib.ImageLib;
+import com.threethan.launcher.support.SynchronizedSharedPreferenceEditor;
 import com.threethan.launcher.support.SettingsDialog;
 import com.threethan.launcher.support.SettingsManager;
 import com.threethan.launcher.support.Updater;
@@ -79,7 +80,7 @@ public class LauncherActivity extends Activity {
     ImageView backgroundImageView;
     GridView groupGridView;
     public SharedPreferences sharedPreferences;
-    public SharedPreferences.Editor sharedPreferenceEditor;
+    public SynchronizedSharedPreferenceEditor sharedPreferenceEditor;
     public View mainView;
     public View fadeView;
     private int prevViewWidth;
@@ -186,7 +187,7 @@ public class LauncherActivity extends Activity {
     }
 
     protected void init() {
-        sharedPreferenceEditor = sharedPreferences.edit();
+        sharedPreferenceEditor = new SynchronizedSharedPreferenceEditor(sharedPreferences.edit());
         settingsManager = SettingsManager.getInstance(this);
 
         mainView = rootView.findViewById(R.id.mainLayout);

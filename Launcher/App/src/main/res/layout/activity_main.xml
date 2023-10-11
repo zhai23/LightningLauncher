@@ -130,6 +130,8 @@
                 android:layout_height="wrap_content"
                 android:alpha="0"
                 android:ems="10"
+                android:focusable="false"
+                android:focusableInTouchMode="true"
                 android:inputType="text" />
         </eightbitlab.com.blurview.BlurView>
 

@@ -24,6 +24,8 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 
 // ADAPTED FROM https://gist.github.com/iyashamihsan/1ab5c1cfa47dea735ea46d8943a1bde4
+// Replaces d-pad navigation with an on-screen cursor that behaves like a mouse
+// This is necessary for web browsing to work, as many sites try to hook the dpad
 
 public class CursorLayout extends LinearLayout {
     private static final float CURSOR_ACCEL = 0.01f;

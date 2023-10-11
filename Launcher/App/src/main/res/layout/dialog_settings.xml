@@ -748,30 +748,71 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/bkg_button"
             android:gravity="clip_vertical|center_vertical"
             android:orientation="horizontal">
 
-            <TextView
-                style="@style/SettingButtonLabel"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="5dp"
                 android:layout_weight="1"
-                android:singleLine="true"
-                android:text="@string/long_press"
-                tools:ignore="NestedWeights" />
+                android:background="@drawable/bkg_button"
+                android:gravity="clip_vertical|center_vertical"
+                android:orientation="horizontal">
 
-            <Switch
-                android:id="@+id/longPressEditSwitch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:foreground="@drawable/bkg_hover_button"
-                android:showText="false"
-                android:splitTrack="false"
-                android:thumb="@drawable/switch_thumb_custom"
-                android:track="@drawable/switch_track_custom"
-                tools:ignore="UseSwitchCompatOrMaterialXml" />
+                <TextView
+                    style="@style/SettingButtonLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:singleLine="true"
+                    android:text="@string/long_press"
+                    tools:ignore="NestedWeights" />
 
+                <Switch
+                    android:id="@+id/longPressEditSwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:foreground="@drawable/bkg_hover_button"
+                    android:showText="false"
+                    android:splitTrack="false"
+                    android:thumb="@drawable/switch_thumb_custom"
+                    android:track="@drawable/switch_track_custom"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/bkg_button"
+                android:gravity="clip_vertical|center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/SettingButtonLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:singleLine="true"
+                    android:text="@string/hide_empty"
+                    tools:ignore="NestedWeights" />
+
+                <Switch
+                    android:id="@+id/hideEmptySwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:foreground="@drawable/bkg_hover_button"
+                    android:showText="false"
+                    android:splitTrack="false"
+                    android:thumb="@drawable/switch_thumb_custom"
+                    android:track="@drawable/switch_track_custom"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
@@ -779,29 +820,66 @@
             android:layout_height="match_parent"
             android:layout_marginTop="10dp"
             android:layout_weight="1"
-            android:background="@drawable/bkg_button"
             android:gravity="clip_vertical|center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone"
+            tools:visibility="visible">
 
-            <TextView
-                style="@style/SettingButtonLabel"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+            <LinearLayout
+                android:id="@+id/saveSettingsButton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="5dp"
                 android:layout_weight="1"
-                android:singleLine="true"
-                android:text="@string/hide_empty"
-                tools:ignore="NestedWeights" />
+                android:background="@drawable/bkg_button"
+                android:gravity="clip_vertical|center_vertical"
+                android:orientation="horizontal">
 
-            <Switch
-                android:id="@+id/hideEmptySwitch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:foreground="@drawable/bkg_hover_button"
-                android:showText="false"
-                android:splitTrack="false"
-                android:thumb="@drawable/switch_thumb_custom"
-                android:track="@drawable/switch_track_custom"
-                tools:ignore="UseSwitchCompatOrMaterialXml" />
+                <TextView
+                    style="@style/SettingButtonLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:singleLine="true"
+                    android:text="@string/settings_save"
+                    tools:ignore="NestedWeights" />
+
+                <ImageView
+                    android:layout_width="38dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="-35dp"
+                    android:src="@drawable/ic_upload"
+                    tools:ignore="UseAppTint" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/loadSettingsButton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/bkg_button"
+                android:gravity="clip_vertical|center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/SettingButtonLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:singleLine="true"
+                    android:text="@string/settings_load"
+                    tools:ignore="NestedWeights" />
+
+                <ImageView
+                    android:layout_width="38dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="-35dp"
+                    android:src="@drawable/ic_download"
+                    tools:ignore="UseAppTint" />
+
+            </LinearLayout>
 
         </LinearLayout>
 

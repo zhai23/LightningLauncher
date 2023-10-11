@@ -41,9 +41,11 @@
     <string name="clear_labels">Reset All Labels</string>
     <string name="clear_sort">Move All to Selected Default Groups</string>
 
-    <string name="long_press">Enable Long Press to Edit</string>
-    <string name="hide_empty">Hide Empty Groups when not Editing</string>
+    <string name="long_press">Long Press to Edit</string>
+    <string name="hide_empty">Hide Empty Groups</string>
     <string name="default_launch_out">Launch Apps in Own Window by Default</string>
+    <string name="settings_save">Export Settings</string>
+    <string name="settings_load">Import Settings</string>
 
     <string name="service_desc">When this service is enabled, Lightning Launcher will open automatically when you hover
         the cursor over the App Library icon on the right of dock for about half a second.\n(This may make it difficult to access the default launcher)\n
