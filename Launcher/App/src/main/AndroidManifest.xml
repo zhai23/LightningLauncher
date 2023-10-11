@@ -29,7 +29,8 @@
         android:theme="@style/ThemeOverlay.Material"
         android:requestLegacyExternalStorage="true"
         android:usesCleartextTraffic="true"
-        tools:ignore="UnusedAttribute">
+        tools:ignore="UnusedAttribute"
+        android:banner="@drawable/ic_app_banner">
 
         <meta-data android:name="com.oculus.supportedDevices" android:value="all"/>
 
@@ -40,7 +41,8 @@
             android:configChanges="density|keyboard|keyboardHidden|navigation|orientation|screenLayout|screenSize|uiMode"
             android:exported="true"
             android:documentLaunchMode="always"
-            android:resizeableActivity="true">
+            android:resizeableActivity="true"
+            android:excludeFromRecents="true">
 
             <layout android:defaultWidth="706dp" android:defaultHeight="442dp" android:gravity="top|end" />
             <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
@@ -50,6 +52,7 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.HOME"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <action android:name="com.threethan.launcher.FINISH" />
             </intent-filter>

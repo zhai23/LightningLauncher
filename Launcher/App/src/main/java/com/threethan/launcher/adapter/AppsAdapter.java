@@ -22,6 +22,8 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+
 import com.threethan.launcher.R;
 import com.threethan.launcher.helper.App;
 import com.threethan.launcher.helper.Compat;
@@ -64,12 +66,14 @@ public class AppsAdapter extends BaseAdapter{
     private boolean getEditMode() {
         return launcherActivity.isEditing();
     }
+    public @Nullable View firstView;
     private boolean showTextLabels;
     public AppsAdapter(LauncherActivity activity, boolean names, boolean banner, List<ApplicationInfo> myApps) {
         launcherActivity = activity;
         showTextLabels = names;
         SettingsManager settingsManager = SettingsManager.getInstance(launcherActivity);
 
+        firstView = null;
         currentAppList = Collections.synchronizedList(settingsManager
                 .getInstalledApps(activity, settingsManager.getAppGroupsSorted(false), myApps));
         fullAppList = myApps;
@@ -81,6 +85,7 @@ public class AppsAdapter extends BaseAdapter{
     public void updateAppList(LauncherActivity activity) {
         launcherActivity = activity;
 
+        firstView = null;
         SettingsManager settingsManager = SettingsManager.getInstance(activity);
         currentAppList = Collections.synchronizedList(settingsManager
                 .getInstalledApps(activity, settingsManager.getAppGroupsSorted(true), fullAppList));
@@ -94,6 +99,7 @@ public class AppsAdapter extends BaseAdapter{
         final List<ApplicationInfo> tempAppList =
                 settingsManager.getInstalledApps(launcherActivity, settingsManager.getAppGroupsSorted(false), fullAppList);
 
+        firstView = null;
         currentAppList.clear();
         for (final ApplicationInfo app : tempAppList)
             if (StringLib.forSort(SettingsManager.getAppLabel(app)).contains(StringLib.forSort(text)))
@@ -112,7 +118,6 @@ public class AppsAdapter extends BaseAdapter{
         Button killButton;
         ApplicationInfo app;
     }
-
     public int getCount() { return currentAppList.size(); }
 
     public Object getItem(int position) {
@@ -123,9 +128,9 @@ public class AppsAdapter extends BaseAdapter{
         return position;
     }
 
-    Map<ApplicationInfo, View> viewCacheSquare = new ConcurrentHashMap<>();
-    Map<ApplicationInfo, View> viewCacheBanner = new ConcurrentHashMap<>();
-    private Map<ApplicationInfo, View> getViewCache() {
+    Map<ApplicationInfo, ViewHolder> viewCacheSquare = new ConcurrentHashMap<>();
+    Map<ApplicationInfo, ViewHolder> viewCacheBanner = new ConcurrentHashMap<>();
+    private Map<ApplicationInfo, ViewHolder> getViewCache() {
         return isBanner ? viewCacheBanner : viewCacheSquare;
     }
 
@@ -133,7 +138,13 @@ public class AppsAdapter extends BaseAdapter{
     public View getView(int position, View convertView, ViewGroup parent) {
         final ApplicationInfo currentApp = currentAppList.get(position);
 
-        if (getViewCache().containsKey(currentApp)) return getViewCache().get(currentApp);
+        if (getViewCache().containsKey(currentApp)) {
+            ViewHolder holder = getViewCache().get(currentApp);
+            if (holder != null) {
+                if (firstView == null) firstView = holder.view;
+                return holder.view;
+            }
+        }
 
         ViewHolder holder;
 
@@ -173,7 +184,7 @@ public class AppsAdapter extends BaseAdapter{
         new LoadIconTask().execute(this, currentApp, launcherActivity, holder.imageView, holder.imageViewBg);
         holder.view.post(() -> updateView(holder));
 
-        getViewCache().put(currentApp, convertView);
+        getViewCache().put(currentApp, holder);
         return convertView;
     }
     public void clearViewCache() {
@@ -196,7 +207,8 @@ public class AppsAdapter extends BaseAdapter{
             }
         });
         holder.view.setOnLongClickListener(view -> {
-            if (getEditMode()) {
+            if (getEditMode() || launcherActivity.sharedPreferences
+                    .getBoolean(Settings.KEY_DETAILS_LONG_PRESS, Settings.DEFAULT_DETAILS_LONG_PRESS)) {
                 showAppDetails(holder.app);
             } else {
                 launcherActivity.setEditMode(true);
@@ -210,7 +222,7 @@ public class AppsAdapter extends BaseAdapter{
         Runnable periodicUpdate = new Runnable() {
             @Override
             public void run() {
-                holder.moreButton.setVisibility(holder.view.isHovered() || holder.moreButton.isHovered() ? View.VISIBLE : View.INVISIBLE);
+                holder.moreButton.setVisibility(holder.view.isHovered() || holder.moreButton.isHovered() ? View.VISIBLE : View.GONE);
                 boolean selected = launcherActivity.isSelected(holder.app.packageName);
                 if (selected != holder.view.getAlpha() < 0.9) {
                     ObjectAnimator an = ObjectAnimator.ofFloat(holder.view, "alpha", selected ? 0.5F : 1.0F);
@@ -232,24 +244,13 @@ public class AppsAdapter extends BaseAdapter{
                     return false;
                 } else hovered = false;
             } else return false;
-
-            holder.killButton.setBackgroundResource(hovered ? R.drawable.ic_circ_running_stop : R.drawable.ic_running);
-
-            ObjectAnimator aXi = ObjectAnimator.ofFloat(holder.imageView, "scaleX", hovered ? 1.05f : 1.00f);
-            ObjectAnimator aXv = ObjectAnimator.ofFloat(holder.view, "scaleX", hovered ? 1.05f : 1.00f);
-            ObjectAnimator aYi = ObjectAnimator.ofFloat(holder.imageView, "scaleY", hovered ? 1.05f : 1.00f);
-            ObjectAnimator aYv = ObjectAnimator.ofFloat(holder.view, "scaleY", hovered ? 1.05f : 1.00f);
-            ObjectAnimator aAm = ObjectAnimator.ofFloat(holder.moreButton, "alpha", hovered ? 1f : 0f);
-
-
-            final ObjectAnimator[] animators = new ObjectAnimator[] {aXi, aXv, aYi, aYv, aAm};
-            for (ObjectAnimator animator:animators) animator.setInterpolator(new OvershootInterpolator());
-            for (ObjectAnimator animator:animators) animator.setDuration(250);
-            for (ObjectAnimator animator:animators) animator.start();
-
+            updateHover(holder, hovered);
             return false;
         };
+
         holder.view.setOnHoverListener(hoverListener);
+        holder.view.setOnFocusChangeListener((view, hasFocus) -> updateHover(holder, hasFocus));
+
         holder.moreButton.setOnHoverListener(hoverListener);
         holder.killButton.setOnHoverListener(hoverListener);
 
@@ -259,6 +260,20 @@ public class AppsAdapter extends BaseAdapter{
             SettingsManager.stopRunning(holder.app.packageName);
             view.setVisibility(View.GONE);
         });
+    }
+    void updateHover(ViewHolder holder, boolean hovered) {
+        holder.killButton.setBackgroundResource(hovered ? R.drawable.ic_circ_running_kb : R.drawable.ic_running_ns);
+
+        ObjectAnimator aXi = ObjectAnimator.ofFloat(holder.imageView, "scaleX", hovered ? 1.05f : 1.00f);
+        ObjectAnimator aXv = ObjectAnimator.ofFloat(holder.view, "scaleX", hovered ? 1.05f : 1.00f);
+        ObjectAnimator aYi = ObjectAnimator.ofFloat(holder.imageView, "scaleY", hovered ? 1.05f : 1.00f);
+        ObjectAnimator aYv = ObjectAnimator.ofFloat(holder.view, "scaleY", hovered ? 1.05f : 1.00f);
+        ObjectAnimator aAm = ObjectAnimator.ofFloat(holder.moreButton, "alpha", hovered ? 1f : 0f);
+
+        final ObjectAnimator[] animators = new ObjectAnimator[] {aXi, aXv, aYi, aYv, aAm};
+        for (ObjectAnimator animator:animators) animator.setInterpolator(new OvershootInterpolator());
+        for (ObjectAnimator animator:animators) animator.setDuration(250);
+        for (ObjectAnimator animator:animators) animator.start();
     }
 
     public void onImageSelected(String path, ImageView selectedImageView) {
@@ -284,6 +299,14 @@ public class AppsAdapter extends BaseAdapter{
         dialog.findViewById(R.id.info).setOnClickListener(view -> App.openInfo(launcherActivity, currentApp.packageName));
         dialog.findViewById(R.id.uninstall).setOnClickListener(view -> {
             App.uninstall(launcherActivity, currentApp.packageName); dialog.dismiss();});
+
+
+        dialog.findViewById(R.id.kill).setVisibility(
+                SettingsManager.getRunning(currentApp.packageName) ? View.VISIBLE : View.GONE);
+        dialog.findViewById(R.id.kill).setOnClickListener((view) -> {
+            SettingsManager.stopRunning(currentApp.packageName);
+            view.setVisibility(View.GONE);
+        });
 
         // Launch Mode Toggle
         @SuppressLint("UseSwitchCompatOrMaterialCode")

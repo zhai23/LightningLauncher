@@ -5,7 +5,10 @@
     android:id="@+id/layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:descendantFocusability="beforeDescendants"
+    android:focusable="true"
     android:gravity="center"
+    android:nextFocusDown="@id/killButton"
     android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -19,7 +22,7 @@
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_margin="3dp"
-            android:background="@drawable/ic_running"
+            android:background="@drawable/ic_running_ns"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/imageLabel"
             app:layout_constraintEnd_toEndOf="@id/imageLabel"

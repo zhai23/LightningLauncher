@@ -62,6 +62,10 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
         alphaOut.setDuration(300);
         alphaIn .start();
         alphaOut.start();
+        topBar.postDelayed(() -> {
+            topBar.setVisibility(View.GONE);
+        }, 300);
+        searchBar.setVisibility(View.VISIBLE);
 
         searchBar.setOverlayColor(Color.parseColor(darkMode ? "#4A000000" : "#50FFFFFF"));
 
@@ -120,6 +124,11 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
 
         refreshAdapters();
 
+        searchBar.postDelayed(() -> {
+            searchBar.setVisibility(View.GONE);
+        }, 300);
+        topBar.setVisibility(View.VISIBLE);
+
         // Hide KB
         InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(searchBar.getWindowToken(),0);
@@ -158,6 +167,11 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
                 else showSearchBar();
             }
         }));
+        View searchBg = rootView.findViewById(R.id.blurViewSearchIcon);
+        searchBg.setOnClickListener((v) -> {
+            showSearchBar();
+        });
+
 
         EditTextWatched searchText = findViewById(R.id.searchText);
         searchText.setOnEdited(this::searchFor);

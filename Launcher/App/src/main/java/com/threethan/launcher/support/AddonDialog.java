@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import com.threethan.launcher.R;
 import com.threethan.launcher.helper.App;
 import com.threethan.launcher.helper.Dialog;
+import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.launcher.LauncherActivity;
 
 import java.lang.ref.WeakReference;
@@ -26,20 +27,23 @@ public abstract class AddonDialog {
     private static WeakReference<LauncherActivity> activityRef;
     private static final String EXPLORE_PACKAGE = "com.oculus.explore";
     public static void showAddons(LauncherActivity a) {
-        AlertDialog dialog = Dialog.build(a, R.layout.dialog_addons);
+        AlertDialog dialog = Dialog.build(a, Platform.isVr(a) ? R.layout.dialog_addons_vr : R.layout.dialog_addons_tv);
         activityRef = new WeakReference<>(a);
 
         View addonMessenger = dialog.findViewById(R.id.addonMessenger);
-        updateAddonButton(a, addonMessenger, Updater.TAG_MESSENGER_SHORTCUT);
+        if (addonMessenger!=null) updateAddonButton(a, addonMessenger, Updater.TAG_MESSENGER_SHORTCUT);
 
         View addonExplore = dialog.findViewById(R.id.addonExplore);
-        updateAddonButton(a, addonExplore, Updater.TAG_EXPLORE_SHORTCUT);
+        if (addonExplore!=null) updateAddonButton(a, addonExplore, Updater.TAG_EXPLORE_SHORTCUT);
+        if (addonExplore!=null) dialog.findViewById(R.id.disableExplore).setOnClickListener(v -> App.openInfo(a, EXPLORE_PACKAGE));
 
         View addonLibrary = dialog.findViewById(R.id.addonLibrary);
-        updateAddonButton(a, addonLibrary, Updater.TAG_LIBRARY_SHORTCUT);
+        if (addonLibrary!=null) updateAddonButton(a, addonLibrary, Updater.TAG_LIBRARY_SHORTCUT);
+
+        View addonAndroidTv = dialog.findViewById(R.id.addonAndroidTv);
+        if (addonAndroidTv!=null) updateAddonButton(a, addonAndroidTv, Updater.TAG_ANDROID_TV_SHORTCUT);
 
         dialog.findViewById(R.id.exitButton).setOnClickListener(v -> dialog.dismiss());
-        dialog.findViewById(R.id.disableExplore).setOnClickListener(v -> App.openInfo(a, EXPLORE_PACKAGE));
     }
     public static void updateAddonButton(final Activity a, final View outerView, final String tag) {
         final View uninstallButton = outerView.findViewById(R.id.addonUninstall);
@@ -48,7 +52,7 @@ public abstract class AddonDialog {
         final View activateButton = outerView.findViewById(R.id.addonActivate);
 
         View icon = outerView.findViewById(R.id.icon);
-        icon.setClipToOutline(true);
+        if (icon != null) icon.setClipToOutline(true);
         Runnable updateButtonRunnable = new Runnable() {
             @Override
             public void run() {

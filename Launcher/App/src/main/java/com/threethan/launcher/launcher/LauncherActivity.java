@@ -199,12 +199,6 @@ public class LauncherActivity extends Activity {
         backgroundImageView = rootView.findViewById(R.id.background);
         groupGridView = rootView.findViewById(R.id.groupsView);
 
-        // Handle group click listener
-        groupGridView.setOnItemClickListener((parent, view, position, id) -> clickGroup(position));
-
-        // Multiple group selection
-        groupGridView.setOnItemLongClickListener((parent, view, position, id) -> longClickGroup(view, position));
-
         // Set logo button
         ImageView settingsImageView = rootView.findViewById(R.id.settingsIcon);
         settingsImageView.setOnClickListener(view -> {
@@ -212,15 +206,20 @@ public class LauncherActivity extends Activity {
         });
     }
 
-    protected void clickGroup(int position) {
+    public boolean clickGroup(int position) {
         // This method is replaced with a greatly expanded one in the child class
         final List<String> groupsSorted = settingsManager.getAppGroupsSorted(false);
         final String group = groupsSorted.get(position);
 
-        if (settingsManager.selectGroup(group)) refreshInterface();
-        recheckPackages();
+        if (settingsManager.selectGroup(group)) {
+            refreshInterface();
+            return false;
+        } else {
+            recheckPackages();
+            return isEditing() && !Objects.equals(group, Settings.HIDDEN_GROUP);
+        }
     }
-    protected boolean longClickGroup(View view, int position) {
+    public boolean longClickGroup(int position) {
         List<String> groups = settingsManager.getAppGroupsSorted(false);
         Set<String> selectedGroups = settingsManager.getSelectedGroups();
 
@@ -230,13 +229,12 @@ public class LauncherActivity extends Activity {
         if (selectedGroups.contains(item)) selectedGroups.remove(item);
         else selectedGroups.add(item);
         if (selectedGroups.isEmpty()) {
-            view.findViewById(R.id.menu).callOnClick();
             selectedGroups.add(item);
             return true;
         }
         settingsManager.setSelectedGroups(selectedGroups);
         refreshInterface();
-        return true;
+        return false;
     }
 
     @Override
@@ -266,6 +264,13 @@ public class LauncherActivity extends Activity {
             recheckPackages();
             BrowserService.bind(this, browserServiceConnection);
         } catch (Exception ignored) {} // Will fail if service hasn't bound yet
+
+        // Fix focus
+        final View focused = getCurrentFocus();
+        if (focused != null) {
+            focused.clearFocus();
+            focused.post(focused::requestFocus);
+        }
     }
 
     public void reloadPackages() {
@@ -380,7 +385,11 @@ public class LauncherActivity extends Activity {
             Log.w(TAG, "Failed to call refresh on service!");
         }
     }
+    View focused;
     public void refreshInterface() {
+        // Fix focus
+        focused = getCurrentFocus();
+
         if (sharedPreferenceEditor != null) sharedPreferenceEditor.apply();
         try {
             post(this::refreshInternal);
@@ -396,6 +405,14 @@ public class LauncherActivity extends Activity {
 
         if (!groupsEnabled && isEditing()) groupsEnabled = true;
         refreshAdapters();
+        // Fix focus
+        focused = getCurrentFocus();
+        if (focused != null) focused.clearFocus();
+        post(() -> {
+            if (focused != null) {
+                focused.requestFocus();
+            }
+        });
     }
     public void refreshAdapters() {
         updatePadding();

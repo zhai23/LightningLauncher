@@ -234,6 +234,13 @@ public abstract class SettingsDialog {
             a.sharedPreferenceEditor.putBoolean(Settings.KEY_WIDE_VR, value);
             a.refreshAppDisplayListsAll();
         });
+        Switch bannerTv = dialog.findViewById(R.id.bannerTvSwitch);
+        bannerTv.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_WIDE_TV, Settings.DEFAULT_WIDE_TV));
+        bannerTv.setOnCheckedChangeListener((compoundButton, value) -> {
+            Compat.clearIconCache(a);
+            a.sharedPreferenceEditor.putBoolean(Settings.KEY_WIDE_TV, value);
+            a.refreshAppDisplayListsAll();
+        });
         Switch banner2d = dialog.findViewById(R.id.banner2dSwitch);
         banner2d.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_WIDE_2D, Settings.DEFAULT_WIDE_2D));
         banner2d.setOnCheckedChangeListener((compoundButton, value) -> {
@@ -262,6 +269,20 @@ public abstract class SettingsDialog {
             a.sharedPreferenceEditor.putBoolean(Settings.KEY_SHOW_NAMES_BANNER, value);
             a.refreshInterfaceAll();
             if(a.getAdapterBanner() != null) a.getAdapterBanner().setShowNames(value);
+        });
+
+        // Advanced
+        Switch longPressDetails = dialog.findViewById(R.id.longPressDetailSwitch);
+        longPressDetails.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_DETAILS_LONG_PRESS, Settings.DEFAULT_DETAILS_LONG_PRESS));
+        longPressDetails.setOnCheckedChangeListener((compoundButton, value) -> {
+            a.sharedPreferenceEditor.putBoolean(Settings.KEY_DETAILS_LONG_PRESS, value);
+            a.refreshInterfaceAll();
+        });
+        Switch hideEmpty = dialog.findViewById(R.id.hideEmptySwitch);
+        hideEmpty.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_AUTO_HIDE_EMPTY, Settings.DEFAULT_AUTO_HIDE_EMPTY));
+        hideEmpty.setOnCheckedChangeListener((compoundButton, value) -> {
+            a.sharedPreferenceEditor.putBoolean(Settings.KEY_AUTO_HIDE_EMPTY, value);
+            a.refreshInterfaceAll();
         });
     }
 }

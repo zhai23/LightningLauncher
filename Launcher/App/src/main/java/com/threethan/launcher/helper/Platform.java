@@ -1,7 +1,11 @@
 package com.threethan.launcher.helper;
 
+import android.app.Activity;
+import android.app.UiModeManager;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
+import android.content.res.Configuration;
 
 import com.threethan.launcher.lib.StringLib;
 import com.threethan.launcher.support.SettingsManager;
@@ -15,7 +19,7 @@ import java.util.Set;
     Platform
 
     This abstract class stores lists of apps.
-    It also provides a few helper functions for adding websites.
+    It also provides a few helper functions for adding websites, and decides if we're in VR
  */
 
 public abstract class Platform {
@@ -43,5 +47,13 @@ public abstract class Platform {
         sharedPreferences.edit()
                 .putStringSet(Settings.KEY_WEBSITE_LIST, webApps)
                 .apply();
+    }
+
+    public static boolean isVr(Activity activity) {
+        return !isTv(activity);
+    }
+    public static boolean isTv(Activity activity) {
+        UiModeManager uiModeManager = (UiModeManager) activity.getSystemService(Context.UI_MODE_SERVICE);
+        return uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION;
     }
 }

@@ -14,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+
 import com.threethan.launcher.R;
 import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.helper.Settings;
@@ -43,11 +45,13 @@ public class GroupsAdapter extends BaseAdapter {
     private final Set<String> selectedGroups;
     private final SettingsManager settingsManager;
     private final boolean isEditMode;
+    public @Nullable View firstView;
 
     public GroupsAdapter(LauncherActivity activity, boolean editMode) {
         launcherActivity = activity;
         isEditMode = editMode;
         settingsManager = SettingsManager.getInstance(activity);
+        firstView = null;
 
         SettingsManager settings = SettingsManager.getInstance(launcherActivity);
         appGroups = Collections.synchronizedList(settings.getAppGroupsSorted(false));
@@ -58,6 +62,7 @@ public class GroupsAdapter extends BaseAdapter {
         selectedGroups = settings.getSelectedGroups();
         if (!editMode) selectedGroups.remove(Settings.HIDDEN_GROUP);
         if (selectedGroups.isEmpty()) selectedGroups.addAll(appGroups);
+
     }
     public void setLauncherActivity(LauncherActivity val) {
         launcherActivity = val;
@@ -104,12 +109,26 @@ public class GroupsAdapter extends BaseAdapter {
 
         setTextViewValue(holder.textView, getItem(position));
 
+        holder.textView.setOnClickListener((view) -> {
+            if (launcherActivity == null) return;
+            if (launcherActivity.clickGroup(position)) holder.menu.callOnClick();
+        });
+        holder.textView.setOnLongClickListener((view) -> {
+            if (launcherActivity == null) return false;
+            if (launcherActivity.longClickGroup(position)) holder.menu.callOnClick();
+            return true;
+        });
+
         holder.textView.setOnHoverListener((view, event) -> {
             if (event.getAction() == MotionEvent.ACTION_HOVER_ENTER)
                 holder.textView.setBackgroundResource(R.drawable.bkg_hover_button_editbar_hovered);
             else if (event.getAction() == MotionEvent.ACTION_HOVER_EXIT)
                 holder.textView.setBackground(null);
             return false;
+        });
+        holder.textView.setOnFocusChangeListener((view, hasFocus) -> {
+            if (hasFocus || view.isHovered()) holder.textView.setBackgroundResource(R.drawable.bkg_hover_button_editbar_hovered);
+            else holder.textView.setBackground(null);
         });
 
         // set menu action
@@ -133,28 +152,36 @@ public class GroupsAdapter extends BaseAdapter {
             });
 
             Switch switch_2d = dialog.findViewById(R.id.default2dSwitch);
+            Switch switch_tv = dialog.findViewById(R.id.defaultTvSwitch);
             Switch switch_vr = dialog.findViewById(R.id.defaultVrSwitch);
             Switch switch_web = dialog.findViewById(R.id.defaultWebSwitch);
-            switch_2d .setChecked(SettingsManager.getDefaultGroup(false,false).equals(groupName));
-            switch_vr .setChecked(SettingsManager.getDefaultGroup(true ,false).equals(groupName));
-            switch_web.setChecked(SettingsManager.getDefaultGroup(false,true ).equals(groupName));
+            switch_2d .setChecked(SettingsManager.getDefaultGroup(false,false,false).equals(groupName));
+            switch_vr .setChecked(SettingsManager.getDefaultGroup(false,true ,false).equals(groupName));
+            switch_tv.setChecked(SettingsManager.getDefaultGroup(true ,false,false).equals(groupName));
+            switch_web.setChecked(SettingsManager.getDefaultGroup(false,false,true ).equals(groupName));
             switch_2d .setOnCheckedChangeListener((switchView, value) -> {
                 String newDefault = value ? groupName : Settings.DEFAULT_GROUP_2D;
                 if ((!value && groupName.equals(newDefault)) || !appGroups.contains(newDefault)) newDefault = null;
                 launcherActivity.sharedPreferenceEditor.putString(Settings.KEY_GROUP_2D , newDefault).apply();
-                switch_2d .setChecked(SettingsManager.getDefaultGroup(false,false).equals(groupName));
+                switch_2d .setChecked(SettingsManager.getDefaultGroup(false,false,false).equals(groupName));
             });
             switch_vr .setOnCheckedChangeListener((switchView, value) -> {
                 String newDefault = value ? groupName : Settings.DEFAULT_GROUP_VR;
                 if ((!value && groupName.equals(newDefault)) || !appGroups.contains(newDefault)) newDefault = null;
                 launcherActivity.sharedPreferenceEditor.putString(Settings.KEY_GROUP_VR , newDefault).apply();
-                switch_vr .setChecked(SettingsManager.getDefaultGroup(true ,false).equals(groupName));
+                switch_vr .setChecked(SettingsManager.getDefaultGroup(true ,false,false).equals(groupName));
+            });
+            switch_tv.setOnCheckedChangeListener((switchView, value) -> {
+                String newDefault = value ? groupName : Settings.DEFAULT_GROUP_TV;
+                if ((!value && groupName.equals(newDefault)) || !appGroups.contains(newDefault)) newDefault = null;
+                launcherActivity.sharedPreferenceEditor.putString(Settings.KEY_GROUP_TV , newDefault).apply();
+                switch_tv .setChecked(SettingsManager.getDefaultGroup(false ,true,false).equals(groupName));
             });
             switch_web .setOnCheckedChangeListener((switchView, value) -> {
                 String newDefault = value ? groupName : Settings.DEFAULT_GROUP_VR;
                 if ((!value && groupName.equals(newDefault)) || !appGroups.contains(newDefault)) newDefault = null;
                 launcherActivity.sharedPreferenceEditor.putString(Settings.KEY_GROUP_WEB, newDefault).apply();
-                switch_web.setChecked(SettingsManager.getDefaultGroup(false,true ).equals(groupName));
+                switch_web.setChecked(SettingsManager.getDefaultGroup(false,false,true ).equals(groupName));
             });
 
             dialog.findViewById(R.id.confirm).setOnClickListener(view1 -> {
@@ -162,11 +189,13 @@ public class GroupsAdapter extends BaseAdapter {
                 if (newGroupName.equals(Settings.UNSUPPORTED_GROUP)) newGroupName = "UNSUPPORTED"; // Prevent permanently hiding apps
 
                 // Move the default group when we rename
-                if (SettingsManager.getDefaultGroup(false, false).equals(groupName))
+                if (SettingsManager.getDefaultGroup(false, false,false).equals(groupName))
                     launcherActivity.sharedPreferenceEditor.putString(Settings.KEY_GROUP_2D, newGroupName);
-                if (SettingsManager.getDefaultGroup(true, false).equals(groupName))
+                if (SettingsManager.getDefaultGroup(true, false,false).equals(groupName))
                     launcherActivity.sharedPreferenceEditor.putString(Settings.KEY_GROUP_VR, newGroupName);
-                if (SettingsManager.getDefaultGroup(false, true).equals(groupName))
+                if (SettingsManager.getDefaultGroup(false,true, false).equals(groupName))
+                    launcherActivity.sharedPreferenceEditor.putString(Settings.KEY_GROUP_TV,newGroupName);
+                if (SettingsManager.getDefaultGroup(false,false, true).equals(groupName))
                     launcherActivity.sharedPreferenceEditor.putString(Settings.KEY_GROUP_WEB,newGroupName);
 
 
@@ -227,6 +256,9 @@ public class GroupsAdapter extends BaseAdapter {
         TextView textView = convertView.findViewById(R.id.textLabel);
         setTextViewValue(textView, appGroups.get(position));
 
+        if (firstView == null) {
+            firstView = convertView;
+        }
         return convertView;
     }
 

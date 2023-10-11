@@ -94,6 +94,10 @@ public class BrowserActivity extends Activity {
 
         back.setOnClickListener((view) -> {
             if (w == null) return;
+            if (w.historyIndex <= 1) {
+                finish();
+                return;
+            }
             w.historyIndex--;
             loadUrl(w.history.get(w.historyIndex - 1));
             updateButtons();

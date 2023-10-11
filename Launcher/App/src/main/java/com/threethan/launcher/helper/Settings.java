@@ -61,9 +61,13 @@ public abstract class Settings {
     public static final String KEY_BACKGROUND = "KEY_CUSTOM_THEME";
     public static final String KEY_DARK_MODE = "KEY_DARK_MODE";
     public static final String KEY_GROUPS_ENABLED = "KEY_GROUPS_ENABLED";
+    public static final String KEY_DETAILS_LONG_PRESS = "KEY_DETAILS_LONG_PRESS";
+    public static final String KEY_AUTO_HIDE_EMPTY = "KEY_AUTO_HIDE_EMPTY";
     public static final int DEFAULT_BACKGROUND = 0;
     public static final boolean DEFAULT_DARK_MODE = true;
     public static final boolean DEFAULT_GROUPS_ENABLED = true;
+    public static final boolean DEFAULT_DETAILS_LONG_PRESS = false;
+    public static final boolean DEFAULT_AUTO_HIDE_EMPTY = true;
     public static final int PICK_ICON_CODE = 450;
     public static final int PICK_THEME_CODE = 95;
     public static final String CUSTOM_BACKGROUND_PATH = "background.png";
@@ -80,14 +84,19 @@ public abstract class Settings {
     public static final String KEY_SEEN_ADDONS = "KEY_SEEN_ADDONS";
     public static final String KEY_VR_SET = "KEY_VR_SET";
     public static final String KEY_2D_SET = "KEY_2D_SET";
+    public static final String KEY_TV_SET = "KEY_TV_SET";
+    public static final String KEY_NON_TV_SET = "KEY_NON_TV_SET";
+
     public static final String KEY_SUPPORTED_SET = "KEY_SUPPORTED_SET";
     public static final String KEY_UNSUPPORTED_SET = "KEY_UNSUPPORTED_SET";
 
     // banner-style display by app type
     public static final String KEY_WIDE_VR = "KEY_WIDE_VR";
+    public static final String KEY_WIDE_TV = "KEY_WIDE_TV";
     public static final String KEY_WIDE_2D = "KEY_WIDE_2D";
     public static final String KEY_WIDE_WEB = "KEY_WIDE_WEB";
     public static final boolean DEFAULT_WIDE_VR = true;
+    public static final boolean DEFAULT_WIDE_TV = true;
     public static final boolean DEFAULT_WIDE_2D = false;
     public static final boolean DEFAULT_WIDE_WEB = false;
     public static final String DONT_DOWNLOAD_ICONS = "DONT_DOWNLOAD_ICONS";
@@ -106,11 +115,13 @@ public abstract class Settings {
 
     // group
     public static final String KEY_GROUP_2D = "KEY_DEFAULT_GROUP_2D";
+    public static final String KEY_GROUP_TV = "KEY_DEFAULT_GROUP_TV";
     public static final String KEY_GROUP_VR = "KEY_DEFAULT_GROUP_VR";
     public static final String KEY_GROUP_WEB = "KEY_DEFAULT_GROUP_WEB";
     public static final String DEFAULT_GROUP_2D = "Apps";
     public static final String DEFAULT_GROUP_VR = StringLib.setStarred("Games", true);
     public static final String DEFAULT_GROUP_WEB = "Apps";
+    public static final String DEFAULT_GROUP_TV = StringLib.setStarred("Media", true);
 
     public static final int MAX_GROUPS = 20;
     public static final int GROUP_WIDTH_DP = 225;

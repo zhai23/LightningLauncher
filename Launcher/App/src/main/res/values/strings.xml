@@ -15,9 +15,10 @@
     <string name="icons_margin">Icon Margin</string>
 
     <string name="apps_vr">VR Apps</string>
-    <string name="apps_2d">2D Apps</string>
+    <string name="apps_2d">Phone Apps</string>
+    <string name="apps_tv">TV Apps</string>
     <string name="apps_web">Websites</string>
-    <string name="default_group">Use this as the default group for newly added</string>
+    <string name="default_group">Use this as the default group for new</string>
     <string name="app_name_icon">Below Icons</string>
     <string name="app_name_wide">Below Banners</string>
 
@@ -32,12 +33,16 @@
     <string name="icon_header">Icons &amp; Layout</string>
     <string name="wide_header">Display as Banner</string>
     <string name="name_header">Show Names</string>
+    <string name="advanced_header">Advanced Behaviour</string>
 
-    <string name="dark_mode">Light Label &amp; Text Dark Top Bar</string>
+    <string name="dark_mode">Light Label Text &amp; Dark Top Bar</string>
     <string name="group_mode">Always Show Top Bar</string>
     <string name="clear_cache">Reset All Icons</string>
     <string name="clear_labels">Reset All Labels</string>
     <string name="clear_sort">Move All to Selected Default Groups</string>
+
+    <string name="long_press">Always Show Details on Long Press</string>
+    <string name="hide_empty">Hide Empty Groups when not Editing</string>
 
     <string name="service_desc">When this service is enabled, Lightning Launcher will open automatically when you hover
         the cursor over the App Library icon on the right of dock for about half a second.\n(This may make it difficult to access the default launcher)\n
@@ -166,7 +171,12 @@
     <string name="addons_main">Install Shortcuts</string>
     <string name="addons_info">Shortcuts make it easier to open the launcher.
         \nIt\'s highly recommended that you set up use at least one.</string>
+    <string name="addons_tv_info">Unfortunately, Android TV limits the functionality of accessibility services, but there are some ways around it.</string>
     <string name="addons_exit">Return to Settings</string>
+
+    <string name="addons_androidtv">Accessibility Manager</string>
+    <string name="addons_androidtv_desc">Install a third-party application which may allow you to change the default home on Android TV.
+    \nThis requires ADB Debugging to be enabled, and may not work on every device.</string>
 
     <string name="addons_messenger">Messenger App Shortcut</string>
     <string name="addons_messenger_desc">Adds an icon, which you can pin to the dock, that looks like Facebook Messenger, but will actually open the launcher.

@@ -146,7 +146,7 @@ public class LauncherActivityEditable extends LauncherActivity {
     }
 
     @Override
-    protected void clickGroup(int position) {
+    public boolean clickGroup(int position) {
         final List<String> groupsSorted = settingsManager.getAppGroupsSorted(false);
 
         // If the new group button was selected, create and select a new group
@@ -154,7 +154,7 @@ public class LauncherActivityEditable extends LauncherActivity {
             final String newName = settingsManager.addGroup();
             settingsManager.selectGroup(newName);
             refreshInterface();
-            return;
+            return false;
         }
         final String group = groupsSorted.get(position);
 
@@ -177,7 +177,8 @@ public class LauncherActivityEditable extends LauncherActivity {
 
             SettingsManager.storeValues();
             refreshInterface();
-        } else super.clickGroup(position);
+            return false;
+        } else return super.clickGroup(position);
     }
 
     // Function overrides
@@ -186,7 +187,12 @@ public class LauncherActivityEditable extends LauncherActivity {
         editMode = value;
         if (sharedPreferenceEditor == null) return;
         sharedPreferenceEditor.putBoolean(Settings.KEY_EDIT_MODE, editMode);
+        final View focused = getCurrentFocus();
         refreshInterface();
+        if (focused != null) {
+            focused.clearFocus();
+            focused.post(focused::requestFocus);
+        }
     }
 
     @Override
@@ -255,7 +261,7 @@ public class LauncherActivityEditable extends LauncherActivity {
         final ArrayList<String> appGroupsSorted = settingsManager.getAppGroupsSorted(true);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N && !appGroupsSorted.isEmpty())
             group = appGroupsSorted.get(0);
-        else group = SettingsManager.getDefaultGroup(false, true);
+        else group = SettingsManager.getDefaultGroup(false, false, true);
 
         dialog.findViewById(R.id.cancel).setOnClickListener(view -> dialog.cancel());
         ((TextView) dialog.findViewById(R.id.addText)).setText(getString(R.string.add_website_group, group));

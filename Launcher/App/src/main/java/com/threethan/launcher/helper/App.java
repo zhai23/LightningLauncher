@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 
 import com.threethan.launcher.R;
@@ -26,6 +27,8 @@ import java.util.Set;
 public abstract class App {
     static Set<String> setVr = Collections.synchronizedSet(new HashSet<>());
     static Set<String> set2d = Collections.synchronizedSet(new HashSet<>());
+    static Set<String> setTv = Collections.synchronizedSet(new HashSet<>());
+    static Set<String> setNonTv = Collections.synchronizedSet(new HashSet<>());
     public static boolean isVirtualReality(ApplicationInfo applicationInfo, LauncherActivity launcherActivity) {
         final SharedPreferences sharedPreferences = launcherActivity.sharedPreferences;
         final SharedPreferences.Editor sharedPreferenceEditor = launcherActivity.sharedPreferenceEditor;
@@ -57,6 +60,36 @@ public abstract class App {
             if (key.contains("vr.application.mode")) return true;
         }
         return false;
+    }
+    public static boolean isAndroidTv(ApplicationInfo applicationInfo, LauncherActivity launcherActivity) {
+        final SharedPreferences sharedPreferences = launcherActivity.sharedPreferences;
+        final SharedPreferences.Editor sharedPreferenceEditor = launcherActivity.sharedPreferenceEditor;
+        if (setTv.isEmpty()) {
+            setTv.addAll(sharedPreferences.getStringSet(Settings.KEY_TV_SET, new HashSet<>()));
+            setNonTv.addAll(sharedPreferences.getStringSet(Settings.KEY_NON_TV_SET, new HashSet<>()));
+        }
+        if (setTv.contains(applicationInfo.packageName)) return true;
+        if (setNonTv.contains(applicationInfo.packageName)) return false;
+
+        if (checkAndroidTv(applicationInfo, launcherActivity)) {
+            setTv.add(applicationInfo.packageName);
+            launcherActivity.post(() -> sharedPreferenceEditor.putStringSet(Settings.KEY_TV_SET, setTv));
+            launcherActivity.postSharedPreferenceApply();
+            return true;
+        } else {
+            setNonTv.add(applicationInfo.packageName);
+            launcherActivity.post(() -> sharedPreferenceEditor.putStringSet(Settings.KEY_NON_TV_SET, setNonTv));
+            launcherActivity.postSharedPreferenceApply();
+            return false;
+        }
+    }
+    public static boolean checkAndroidTv(ApplicationInfo applicationInfo, LauncherActivity launcherActivity) {
+        PackageManager pm = launcherActivity.getPackageManager();
+
+        Intent tvIntent = new Intent();
+        tvIntent.setAction(Intent.CATEGORY_LEANBACK_LAUNCHER);
+        tvIntent.setPackage(applicationInfo.packageName);
+        return (tvIntent.resolveActivity(pm) != null);
     }
 
     static Set<String> setSupported = Collections.synchronizedSet(new HashSet<>());

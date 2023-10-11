@@ -5,6 +5,8 @@
     android:id="@+id/layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:descendantFocusability="beforeDescendants"
+    android:focusable="true"
     android:gravity="center"
     android:orientation="vertical">
 
@@ -12,7 +14,9 @@
         android:id="@+id/clip"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/bkg_app">
+        android:background="@drawable/bkg_app"
+        android:focusable="false"
+        android:focusableInTouchMode="false">
 
         <Button
             android:id="@+id/moreButton"
@@ -20,6 +24,8 @@
             android:layout_height="25dp"
             android:layout_margin="3dp"
             android:background="@drawable/ic_circ_more"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -30,7 +36,9 @@
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_margin="3dp"
-            android:background="@drawable/ic_running"
+            android:background="@drawable/ic_running_ns"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/imageLabel"
             app:layout_constraintEnd_toEndOf="parent"
@@ -40,6 +48,8 @@
             android:id="@+id/imageLabel"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:1"
@@ -56,10 +66,12 @@
         android:layout_marginTop="-1sp"
         android:layout_marginBottom="-1dp"
         android:ellipsize="end"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:gravity="center"
         android:lineSpacingExtra="-1dp"
         android:maxLines="2"
         android:singleLine="false"
         android:textColor="@android:color/white"
-        android:textSize="16sp"/>
+        android:textSize="16sp" />
 </LinearLayout>

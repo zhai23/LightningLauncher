@@ -56,6 +56,7 @@
                     android:id="@+id/editModeSwitch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:foreground="@drawable/bkg_hover_button"
                     android:thumb="@drawable/switch_thumb_custom"
                     android:track="@drawable/switch_track_custom"
                     tools:ignore="UseSwitchCompatOrMaterialXml" />
@@ -68,8 +69,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginStart="5dp"
                 android:layout_weight="1"
-                android:background="@drawable/bkg_button"
-                android:backgroundTint="#FFFFFF"
+                android:background="@drawable/bkg_button_highlight"
                 android:orientation="horizontal"
                 android:visibility="gone"
                 tools:visibility="visible">
@@ -133,8 +133,7 @@
             android:layout_height="match_parent"
             android:layout_marginTop="10dp"
             android:layout_weight="1"
-            android:background="@drawable/bkg_button"
-            android:backgroundTint="#FFFFFF"
+            android:background="@drawable/bkg_button_highlight"
             android:orientation="horizontal"
             android:visibility="gone"
             tools:visibility="visible">
@@ -187,6 +186,7 @@
                     android:layout_width="30dp"
                     android:layout_height="match_parent"
                     android:background="@drawable/bkg_button_wallpaper"
+                    android:foreground="@drawable/bkg_hover_button_wp"
                     android:padding="0dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/bg_px_blue_icon"
@@ -198,6 +198,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginStart="4dp"
                     android:background="@drawable/bkg_button_wallpaper"
+                    android:foreground="@drawable/bkg_hover_button_wp"
                     android:padding="0dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/bg_px_grey_icon"
@@ -209,6 +210,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginStart="4dp"
                     android:background="@drawable/bkg_button_wallpaper"
+                    android:foreground="@drawable/bkg_hover_button_wp"
                     android:padding="0dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/bg_px_red_icon"
@@ -220,6 +222,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginStart="4dp"
                     android:background="@drawable/bkg_button_wallpaper"
+                    android:foreground="@drawable/bkg_hover_button_wp"
                     android:padding="0dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/bg_px_yellow_icon"
@@ -231,6 +234,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginStart="4dp"
                     android:background="@drawable/bkg_button_wallpaper"
+                    android:foreground="@drawable/bkg_hover_button_wp"
                     android:padding="0dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/bg_px_white_icon"
@@ -242,6 +246,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginStart="4dp"
                     android:background="@drawable/bkg_button_wallpaper"
+                    android:foreground="@drawable/bkg_hover_button_wp"
                     android:padding="0dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/bg_px_orange_icon"
@@ -253,6 +258,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginStart="4dp"
                     android:background="@drawable/bkg_button_wallpaper"
+                    android:foreground="@drawable/bkg_hover_button_wp"
                     android:padding="0dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/bg_px_green_icon"
@@ -264,6 +270,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginStart="4dp"
                     android:background="@drawable/bkg_button_wallpaper"
+                    android:foreground="@drawable/bkg_hover_button_wp"
                     android:padding="0dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/bg_px_purple_icon"
@@ -275,6 +282,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginStart="4dp"
                     android:background="@drawable/bkg_button_wallpaper"
+                    android:foreground="@drawable/bkg_hover_button_wp"
                     android:padding="0dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/bg_meta_dark_icon"
@@ -286,6 +294,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginStart="4dp"
                     android:background="@drawable/bkg_button_wallpaper"
+                    android:foreground="@drawable/bkg_hover_button_wp"
                     android:padding="0dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/bg_meta_light_icon"
@@ -297,6 +306,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginStart="4dp"
                     android:background="@drawable/bkg_button_wallpaper"
+                    android:foreground="@drawable/bkg_hover_button"
                     android:paddingTop="3dp"
                     android:paddingBottom="6dp"
                     android:scaleType="centerInside"
@@ -327,6 +337,7 @@
                 android:id="@+id/darkModeSwitch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:foreground="@drawable/bkg_hover_button"
                 android:showText="false"
                 android:splitTrack="false"
                 android:thumb="@drawable/switch_thumb_custom"
@@ -345,70 +356,71 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:baselineAligned="false"
+            android:background="@drawable/bkg_button"
             android:orientation="horizontal">
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="5dp"
-                android:layout_weight="1"
-                android:background="@drawable/bkg_button"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/SettingButtonLabel"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:singleLine="true"
-                    android:text="@string/icons_size"
-                    tools:ignore="NestedWeights" />
-
-                <SeekBar
-                    android:id="@+id/scaleSeekBar"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:max="255"
-                    android:padding="0dp"
-                    android:progressBackgroundTint="@android:color/white"
-                    android:progressDrawable="@drawable/seekbar_custom"
-                    android:thumb="@null" />
-            </LinearLayout>
-
-            <LinearLayout
+            <TextView
+                style="@style/SettingButtonLabel"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@drawable/bkg_button"
-                android:orientation="horizontal"
-                tools:layout_marginStart="5dp">
+                android:gravity="center_vertical"
+                android:singleLine="true"
+                android:text="@string/icons_margin"
+                tools:ignore="NestedWeights" />
 
-                <TextView
-                    style="@style/SettingButtonLabel"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:singleLine="true"
-                    android:text="@string/icons_margin"
-                    tools:ignore="NestedWeights" />
+            <SeekBar
+                android:id="@+id/marginSeekBar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:foreground="@drawable/bkg_hover_button"
+                android:max="255"
+                android:padding="0dp"
+                android:progressBackgroundTint="@android:color/white"
+                android:progressDrawable="@drawable/seekbar_custom"
+                android:thumb="@null" />
+        </LinearLayout>
 
-                <SeekBar
-                    android:id="@+id/marginSeekBar"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:max="255"
-                    android:padding="0dp"
-                    android:progressBackgroundTint="@android:color/white"
-                    android:progressDrawable="@drawable/seekbar_custom"
-                    android:thumb="@null" />
-            </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/bkg_button"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/SettingButtonLabel"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:singleLine="true"
+                android:text="@string/icons_size"
+                tools:ignore="NestedWeights" />
+
+            <SeekBar
+                android:id="@+id/scaleSeekBar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:foreground="@drawable/bkg_hover_button"
+                android:max="255"
+                android:padding="0dp"
+                android:progressBackgroundTint="@android:color/white"
+                android:progressDrawable="@drawable/seekbar_custom"
+                android:thumb="@null" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:baselineAligned="false"
+            android:orientation="vertical">
 
         </LinearLayout>
 
@@ -442,6 +454,7 @@
                     android:id="@+id/groupSwitch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:foreground="@drawable/bkg_hover_button"
                     android:thumb="@drawable/switch_thumb_custom"
                     android:track="@drawable/switch_track_custom"
                     tools:ignore="UseSwitchCompatOrMaterialXml" />
@@ -530,7 +543,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginEnd="6.6dp"
+                android:layout_marginEnd="5dp"
                 android:layout_weight="1"
                 android:background="@drawable/bkg_button"
                 android:orientation="horizontal"
@@ -550,6 +563,7 @@
                     android:id="@+id/bannerVrSwitch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:foreground="@drawable/bkg_hover_button"
                     android:thumb="@drawable/switch_thumb_custom"
                     android:track="@drawable/switch_track_custom"
                     tools:ignore="UseSwitchCompatOrMaterialXml" />
@@ -558,9 +572,47 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/bkg_button"
+
+                android:orientation="horizontal"
+                tools:ignore="NestedWeights">
+
+                <TextView
+                    style="@style/SettingButtonLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="-5dp"
+                    android:layout_weight="1"
+                    android:singleLine="true"
+                    android:text="@string/apps_tv" />
+
+                <Switch
+                    android:id="@+id/bannerTvSwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:foreground="@drawable/bkg_hover_button"
+                    android:thumb="@drawable/switch_thumb_custom"
+                    android:track="@drawable/switch_track_custom"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="3.4dp"
-                android:layout_marginEnd="3.4dp"
+                android:layout_marginEnd="5dp"
                 android:layout_weight="1"
                 android:background="@drawable/bkg_button"
                 android:orientation="horizontal">
@@ -578,6 +630,7 @@
                     android:id="@+id/banner2dSwitch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:foreground="@drawable/bkg_hover_button"
                     android:thumb="@drawable/switch_thumb_custom"
                     android:track="@drawable/switch_track_custom"
                     tools:ignore="UseSwitchCompatOrMaterialXml" />
@@ -586,7 +639,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginStart="6.6dp"
+                android:layout_marginStart="5dp"
                 android:layout_weight="1"
                 android:background="@drawable/bkg_button"
                 android:orientation="horizontal"
@@ -606,6 +659,7 @@
                     android:id="@+id/bannerWebSwitch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:foreground="@drawable/bkg_hover_button"
                     android:thumb="@drawable/switch_thumb_custom"
                     android:track="@drawable/switch_track_custom"
                     tools:ignore="UseSwitchCompatOrMaterialXml" />
@@ -647,6 +701,7 @@
                     android:id="@+id/nameSquareSwitch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:foreground="@drawable/bkg_hover_button"
                     android:thumb="@drawable/switch_thumb_custom"
                     android:track="@drawable/switch_track_custom"
                     tools:ignore="UseSwitchCompatOrMaterialXml" />
@@ -674,10 +729,79 @@
                     android:id="@+id/nameBannerSwitch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:foreground="@drawable/bkg_hover_button"
                     android:thumb="@drawable/switch_thumb_custom"
                     android:track="@drawable/switch_track_custom"
                     tools:ignore="UseSwitchCompatOrMaterialXml" />
             </LinearLayout>
+
+        </LinearLayout>
+
+        <TextView
+            style="@style/SettingSubtitle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/advanced_header" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/bkg_button"
+            android:gravity="clip_vertical|center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/SettingButtonLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:singleLine="true"
+                android:text="@string/long_press"
+                tools:ignore="NestedWeights" />
+
+            <Switch
+                android:id="@+id/longPressDetailSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:foreground="@drawable/bkg_hover_button"
+                android:showText="false"
+                android:splitTrack="false"
+                android:thumb="@drawable/switch_thumb_custom"
+                android:track="@drawable/switch_track_custom"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/bkg_button"
+            android:gravity="clip_vertical|center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/SettingButtonLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:singleLine="true"
+                android:text="@string/hide_empty"
+                tools:ignore="NestedWeights" />
+
+            <Switch
+                android:id="@+id/hideEmptySwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:foreground="@drawable/bkg_hover_button"
+                android:showText="false"
+                android:splitTrack="false"
+                android:thumb="@drawable/switch_thumb_custom"
+                android:track="@drawable/switch_track_custom"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
 
         </LinearLayout>
 

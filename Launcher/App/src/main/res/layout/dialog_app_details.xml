@@ -31,6 +31,7 @@
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="3dp"
             android:background="@drawable/bkg_app"
+            android:foreground="@drawable/bkg_hover_button_app"
             android:scaleType="centerCrop"
             android:tooltipText="@string/change_icon"
             tools:ignore="UnusedAttribute" />
@@ -51,6 +52,17 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_weight="1" />
+
+                <ImageView
+                    android:id="@+id/kill"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="3dp"
+                    android:background="@drawable/bkg_hover_button"
+                    android:padding="1dp"
+                    android:src="@drawable/ic_running_stop"
+                    android:tooltipText="@string/launch_tip"
+                    tools:ignore="UnusedAttribute" />
 
                 <ImageView
                     android:id="@+id/launchOut"

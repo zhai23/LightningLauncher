@@ -104,14 +104,14 @@ public class SettingsManager extends Settings {
         sharedPreferenceEditor.putString(app.packageName, newName);
     }
     public static boolean getAppLaunchOut(String pkg) {
-        if (appsToLaunchOut.isEmpty()) appsToLaunchOut = sharedPreferences.getStringSet(KEY_LAUNCH_OUT, Collections.emptySet());
+        appsToLaunchOut = sharedPreferences.getStringSet(KEY_LAUNCH_OUT, Collections.emptySet());
         return (appsToLaunchOut.contains(pkg));
     }
 
     public static void setAppLaunchOut(String pkg, boolean shouldLaunchOut) {
         if (shouldLaunchOut) appsToLaunchOut.add(pkg);
         else appsToLaunchOut.remove(pkg);
-        queueStoreValuesStatic();
+        sharedPreferenceEditor.putStringSet(KEY_LAUNCH_OUT, appsToLaunchOut);
     }
 
     public static Map<String, String> getAppGroupMap() {
@@ -145,8 +145,9 @@ public class SettingsManager extends Settings {
             else if (!appGroupMap.containsKey(app.packageName) ||
                     Objects.equals(appGroupMap.get(app.packageName), Settings.UNSUPPORTED_GROUP)){
                 final boolean isVr = App.isVirtualReality(app, launcherActivity);
+                final boolean isTv = App.isAndroidTv(app, launcherActivity);
                 final boolean isWeb = App.isWebsite(app);
-                appGroupMap.put(app.packageName, getDefaultGroup(isVr, isWeb));
+                appGroupMap.put(app.packageName, getDefaultGroup(isVr, isTv, isWeb));
             }
         }
 
@@ -156,8 +157,9 @@ public class SettingsManager extends Settings {
                 if (!App.isSupported(app, launcherActivity)) appGroupMap.put(app.packageName, Settings.UNSUPPORTED_GROUP);
                 else {
                     final boolean isVr = App.isVirtualReality(app, launcherActivity);
+                    final boolean isTv = App.isAndroidTv(app, launcherActivity);
                     final boolean isWeb = App.isWebsite(app);
-                    appGroupMap.put(app.packageName, getDefaultGroup(isVr, isWeb));
+                    appGroupMap.put(app.packageName, getDefaultGroup(isVr, isTv, isWeb));
                 }
             }
         }
@@ -205,13 +207,25 @@ public class SettingsManager extends Settings {
         if (selectedGroupsSet.isEmpty()) {
             Set<String> defaultGroupsSet = new HashSet<>();
             defaultGroupsSet.add(DEFAULT_GROUP_VR);
+            defaultGroupsSet.add(DEFAULT_GROUP_TV);
             defaultGroupsSet.add(DEFAULT_GROUP_2D);
+//            defaultGroupsSet.add(DEFAULT_GROUP_WEB);
+
             selectedGroupsSet.addAll(sharedPreferences.getStringSet(KEY_SELECTED_GROUPS, defaultGroupsSet));
         }
         if (myLauncherActivityRef.get() != null &&
-                myLauncherActivityRef.get().groupsEnabled || myLauncherActivityRef.get().isEditing())
+                myLauncherActivityRef.get().groupsEnabled || myLauncherActivityRef.get().isEditing()) {
+
+            // Deselect hidden
+            if (myLauncherActivityRef.get() != null && !myLauncherActivityRef.get().isEditing()
+                    && sharedPreferences.getBoolean(Settings.KEY_AUTO_HIDE_EMPTY, Settings.DEFAULT_AUTO_HIDE_EMPTY)) {
+                for (Object group : selectedGroupsSet.toArray()) {
+                    if (!appGroupMap.containsValue((String) group))
+                        selectedGroupsSet.remove((String) group);
+                }
+            }
             return selectedGroupsSet;
-        else {
+        } else {
             Set<String> retSet = new HashSet<>(appGroupsSet);
             retSet.remove(Settings.HIDDEN_GROUP);
             return retSet;
@@ -225,23 +239,31 @@ public class SettingsManager extends Settings {
 
     public ArrayList<String> getAppGroupsSorted(boolean selected) {
         if ((selected ? selectedGroupsSet : appGroupsSet).isEmpty()) readValues();
-        ArrayList<String> sortedGroupMap = new ArrayList<>(selected ? getSelectedGroups() : getAppGroups());
+        ArrayList<String> sortedGroupList = new ArrayList<>(selected ? getSelectedGroups() : getAppGroups());
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-            sortedGroupMap.sort(Comparator.comparing(StringLib::forSort));
+            sortedGroupList.sort(Comparator.comparing(StringLib::forSort));
         else
-            Log.e("OLD API", "Your android version is too old so groups can not be sorted," +
+            Log.e("OLD API", "Your android version is too old (<7.0) " +
+                    "so groups can not be sorted," +
                     "which may cause serious issues!");
 
         // Move hidden group to end
-        if (sortedGroupMap.contains(Settings.HIDDEN_GROUP)) {
-            sortedGroupMap.remove(Settings.HIDDEN_GROUP);
-            sortedGroupMap.add(Settings.HIDDEN_GROUP);
+        if (sortedGroupList.contains(Settings.HIDDEN_GROUP)) {
+            sortedGroupList.remove(Settings.HIDDEN_GROUP);
+            sortedGroupList.add(Settings.HIDDEN_GROUP);
         }
 
-        sortedGroupMap.remove(Settings.UNSUPPORTED_GROUP);
+        sortedGroupList.remove(Settings.UNSUPPORTED_GROUP);
 
-        return sortedGroupMap;
+        if (myLauncherActivityRef.get() != null && !myLauncherActivityRef.get().isEditing()
+                && sharedPreferences.getBoolean(Settings.KEY_AUTO_HIDE_EMPTY, Settings.DEFAULT_AUTO_HIDE_EMPTY)) {
+            for (Object group: sortedGroupList.toArray()) {
+                if (!appGroupMap.containsValue((String) group)) sortedGroupList.remove((String) group);
+            }
+        }
+
+        return sortedGroupList;
     }
 
     public void resetGroups(){
@@ -261,9 +283,9 @@ public class SettingsManager extends Settings {
         Log.i("Groups (SettingsManager)", "Groups have been reset");
     }
 
-    public static String getDefaultGroup(boolean vr, boolean web) {
-        final String key = web ? KEY_GROUP_WEB : (vr ? KEY_GROUP_VR : KEY_GROUP_2D);
-        final String def = web ? DEFAULT_GROUP_WEB : (vr ? DEFAULT_GROUP_VR : DEFAULT_GROUP_2D);
+    public static String getDefaultGroup(boolean vr, boolean tv, boolean web) {
+        final String key = tv ? KEY_GROUP_TV : (web ? KEY_GROUP_WEB : (vr ? KEY_GROUP_VR : KEY_GROUP_2D));
+        final String def = tv ? DEFAULT_GROUP_TV : (web ? DEFAULT_GROUP_WEB : (vr ? DEFAULT_GROUP_VR : DEFAULT_GROUP_2D));
         final String group = sharedPreferences.getString(key, def);
         if (!appGroupsSet.contains(group)) return Settings.HIDDEN_GROUP;
         return group;
@@ -274,7 +296,9 @@ public class SettingsManager extends Settings {
         try {
             Set<String> defaultGroupsSet = new HashSet<>();
             defaultGroupsSet.add(DEFAULT_GROUP_VR);
+            defaultGroupsSet.add(DEFAULT_GROUP_TV);
             defaultGroupsSet.add(DEFAULT_GROUP_2D);
+//            defaultGroupsSet.add(DEFAULT_GROUP_WEB);
             appGroupsSet.clear();
             appGroupsSet.addAll(sharedPreferences.getStringSet(KEY_GROUPS, defaultGroupsSet));
 
@@ -319,7 +343,7 @@ public class SettingsManager extends Settings {
             for (String group : appGroupsSet) appListSetMap.put(group, new HashSet<>());
             for (String pkg : appGroupMap.keySet()) {
                 Set<String> group = appListSetMap.get(appGroupMap.get(pkg));
-                if (group == null) group = appListSetMap.get(getDefaultGroup(false, false));
+                if (group == null) group = appListSetMap.get(getDefaultGroup(false, false,false));
                 if (group == null) {
                     Log.e("Group was null", pkg);
                     return;

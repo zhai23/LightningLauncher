@@ -5,13 +5,14 @@
     android:id="@+id/layout"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_marginStart="2.5dp"
     android:background="@drawable/bkg_dialog"
     android:orientation="vertical"
     android:padding="20dp">
 
     <View
         android:id="@+id/sizer"
-        android:layout_width="440dp"
+        android:layout_width="360dp"
         android:layout_height="0dp" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -42,9 +43,9 @@
             android:layout_height="30dp"
             android:layout_marginStart="10dp"
             android:layout_marginBottom="2dp"
-            android:src="@drawable/ic_star_on"
             android:background="@drawable/bkg_hover_button"
             android:foregroundGravity="center"
+            android:src="@drawable/ic_star_on"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@id/groupName"
             app:layout_constraintTop_toTopOf="parent"
@@ -74,13 +75,13 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:baselineAligned="false">
+        android:baselineAligned="false"
+        android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="2.5dp"
+            android:layout_marginEnd="5dp"
             android:layout_weight="1"
             android:background="@drawable/bkg_button"
             android:gravity="right"
@@ -102,18 +103,18 @@
             <Switch
                 android:id="@+id/defaultVrSwitch"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:foreground="@drawable/bkg_hover_button"
                 android:thumb="@drawable/switch_thumb_custom"
                 android:track="@drawable/switch_track_custom"
-                tools:ignore="UseSwitchCompatOrMaterialXml"
-                android:layout_height="wrap_content" />
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginStart="2.5dp"
-            android:layout_marginEnd="2.5dp"
+            android:layout_marginStart="5dp"
             android:layout_weight="1"
             android:background="@drawable/bkg_button"
             android:gravity="end"
@@ -127,6 +128,48 @@
                 android:layout_marginEnd="-7dp"
                 android:layout_weight="1"
                 android:paddingStart="5dp"
+                android:scaleX="0.95"
+                android:singleLine="true"
+                android:text="@string/apps_tv"
+                tools:ignore="NestedWeights,RtlSymmetry" />
+
+            <Switch
+                android:id="@id/defaultTvSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:foreground="@drawable/bkg_hover_button"
+                android:thumb="@drawable/switch_thumb_custom"
+                android:track="@drawable/switch_track_custom"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/bkg_button"
+            android:gravity="end"
+            android:orientation="horizontal"
+            android:padding="6dp">
+
+            <TextView
+                style="@style/SettingButtonLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="-7dp"
+                android:layout_weight="1"
+                android:paddingStart="5dp"
+                android:scaleX="0.95"
                 android:singleLine="true"
                 android:text="@string/apps_2d"
                 tools:ignore="NestedWeights,RtlSymmetry" />
@@ -135,6 +178,7 @@
                 android:id="@+id/default2dSwitch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:foreground="@drawable/bkg_hover_button"
                 android:thumb="@drawable/switch_thumb_custom"
                 android:track="@drawable/switch_track_custom"
                 tools:ignore="UseSwitchCompatOrMaterialXml" />
@@ -143,7 +187,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="2.5dp"
+            android:layout_marginStart="5dp"
             android:layout_weight="1"
             android:background="@drawable/bkg_button"
             android:gravity="end"
@@ -165,6 +209,7 @@
                 android:id="@+id/defaultWebSwitch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:foreground="@drawable/bkg_hover_button"
                 android:thumb="@drawable/switch_thumb_custom"
                 android:track="@drawable/switch_track_custom"
                 tools:ignore="UseSwitchCompatOrMaterialXml" />
@@ -177,7 +222,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="13dp"
         android:background="@drawable/bkg_button"
         android:gravity="center"
         android:text="@string/confirm" />
