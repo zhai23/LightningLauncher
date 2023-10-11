@@ -67,7 +67,11 @@ public abstract class Icon {
             PackageManager packageManager = activity.getPackageManager();
             Resources resources = packageManager.getResourcesForApplication(app.packageName);
 
+            // Check Icon
             int iconId = app.icon;
+            // Check AndroidTV banner
+            if (app.banner != 0 && App.isBanner(app, activity)) iconId = app.banner;
+
             if (iconId == 0) iconId = android.R.drawable.sym_def_app_icon;
             appIcon = ResourcesCompat.getDrawableForDensity(resources, iconId,
                     DisplayMetrics.DENSITY_XXXHIGH, null);
