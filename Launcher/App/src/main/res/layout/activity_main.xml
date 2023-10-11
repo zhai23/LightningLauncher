@@ -11,9 +11,10 @@
         android:id="@+id/background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:elevation="0dp"
         android:scaleType="centerCrop"
         android:visibility="visible"
-        tools:visibility="gone" />
+        tools:background="#E66666" />
 
     <com.threethan.launcher.view.FadingTopScrollView
         android:id="@+id/mainScrollView"
@@ -65,31 +66,34 @@
         </LinearLayout>
     </com.threethan.launcher.view.FadingTopScrollView>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/topBarLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="22dp"
-        android:layout_marginTop="22dp"
-        android:layout_marginEnd="22dp"
+        android:layout_height="match_parent"
+        android:clipChildren="false"
         android:orientation="horizontal">
 
         <eightbitlab.com.blurview.BlurView
             android:id="@+id/blurViewGroups"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="12dp"
-            android:layout_weight="1"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="10dp"
             android:background="@drawable/bkg_blur_view"
-            android:minHeight="32dp"
+            android:elevation="5dp"
+            android:minHeight="40dp"
             android:visibility="visible"
-            app:blurOverlayColor="#46000000">
+            app:layout_constraintEnd_toStartOf="@id/blurViewSearchIcon"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_conversion_absoluteHeight="32dp"
+            tools:layout_conversion_absoluteWidth="263dp">
 
             <GridView
                 android:id="@+id/groupsView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="-0.1dp"
                 android:descendantFocusability="afterDescendants"
                 android:divider="#00000000"
                 android:dividerHeight="0dp"
@@ -97,7 +101,11 @@
                 android:minWidth="100dp"
                 android:padding="0dp"
                 android:stretchMode="columnWidth"
-                android:visibility="gone" />
+                android:visibility="gone"
+                tools:layout_conversion_absoluteHeight="0dp"
+                tools:layout_conversion_absoluteWidth="0dp"
+                tools:layout_editor_absoluteX="22dp"
+                tools:layout_editor_absoluteY="22dp" />
 
         </eightbitlab.com.blurview.BlurView>
 
@@ -105,12 +113,17 @@
             android:id="@+id/blurViewSearchIcon"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_gravity="end"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="10dp"
             android:background="@drawable/bkg_blur_view"
+            android:elevation="5dp"
             android:focusable="true"
             android:foreground="@drawable/bkg_hover_button_editbtn"
             android:visibility="visible"
-            app:blurOverlayColor="#4A000000"
+            app:layout_constraintEnd_toStartOf="@id/blurViewSettingsIcon"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_conversion_absoluteHeight="40dp"
+            tools:layout_conversion_absoluteWidth="40dp"
             tools:visibility="visible">
 
             <ImageView
@@ -122,7 +135,11 @@
                 android:padding="8dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/ic_search_button"
-                tools:ignore="ImageContrastCheck" />
+                tools:ignore="ImageContrastCheck"
+                tools:layout_conversion_absoluteHeight="40dp"
+                tools:layout_conversion_absoluteWidth="40dp"
+                tools:layout_editor_absoluteX="297dp"
+                tools:layout_editor_absoluteY="22dp" />
 
             <EditText
                 android:id="@+id/searchClickableEditText"
@@ -132,18 +149,27 @@
                 android:ems="10"
                 android:focusable="false"
                 android:focusableInTouchMode="true"
-                android:inputType="text" />
+                android:inputType="text"
+                tools:layout_conversion_absoluteHeight="40dp"
+                tools:layout_conversion_absoluteWidth="40dp"
+                tools:layout_editor_absoluteX="297dp"
+                tools:layout_editor_absoluteY="22dp" />
         </eightbitlab.com.blurview.BlurView>
 
         <eightbitlab.com.blurview.BlurView
             android:id="@+id/blurViewSettingsIcon"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_gravity="end"
-            android:layout_marginStart="12dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="25dp"
             android:background="@drawable/bkg_blur_view"
+            android:elevation="5dp"
             android:visibility="visible"
             app:blurOverlayColor="#4A000000"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_conversion_absoluteHeight="40dp"
+            tools:layout_conversion_absoluteWidth="40dp"
             tools:visibility="visible">
 
             <ImageView
@@ -156,27 +182,31 @@
                 android:padding="8dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/ic_config"
-                tools:ignore="ImageContrastCheck" />
+                tools:ignore="ImageContrastCheck"
+                tools:layout_conversion_absoluteHeight="40dp"
+                tools:layout_conversion_absoluteWidth="40dp"
+                tools:layout_editor_absoluteX="349dp"
+                tools:layout_editor_absoluteY="22dp" />
         </eightbitlab.com.blurview.BlurView>
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
         android:id="@+id/searchBarLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="22dp"
-        android:layout_marginTop="22dp"
-        android:layout_marginEnd="22dp"
-        android:orientation="horizontal">
+        android:layout_height="100dp"
+        android:orientation="horizontal"
+        tools:visibility="gone">
 
         <eightbitlab.com.blurview.BlurView
             android:id="@+id/blurViewSearchBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
+            android:layout_margin="24dp"
             android:background="@drawable/bkg_blur_view"
+            android:elevation="10dp"
+            android:translationY="24dp"
             android:visibility="gone"
-            app:blurOverlayColor="#4A000000"
             tools:visibility="visible">
 
             <LinearLayout
@@ -208,8 +238,7 @@
                     android:paddingTop="1dp"
                     android:paddingEnd="15dp"
                     android:paddingBottom="0dp"
-                    android:singleLine="true"
-                    android:text="" />
+                    android:singleLine="true" />
 
                 <FrameLayout
                     android:layout_width="40dp"
@@ -242,6 +271,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
+        android:background="#000000"
+        android:elevation="13dp"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
         android:visibility="gone"

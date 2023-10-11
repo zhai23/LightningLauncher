@@ -105,7 +105,7 @@ public class LauncherActivity extends Activity {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
         int background = sharedPreferences.getInt(Settings.KEY_BACKGROUND, Settings.DEFAULT_BACKGROUND);
-        boolean custom = background < 0 || background > SettingsManager.BACKGROUND_COLORS.length;
+        boolean custom = background < 0 || background >= SettingsManager.BACKGROUND_COLORS.length;
         int backgroundColor = custom ? Color.parseColor("#404044") : SettingsManager.BACKGROUND_COLORS[background];
         container.setBackgroundColor(backgroundColor);
     }
@@ -208,6 +208,7 @@ public class LauncherActivity extends Activity {
     }
 
     public boolean clickGroup(int position) {
+        lastSelectedGroup = position;
         // This method is replaced with a greatly expanded one in the child class
         final List<String> groupsSorted = settingsManager.getAppGroupsSorted(false);
         final String group = groupsSorted.get(position);
@@ -221,6 +222,8 @@ public class LauncherActivity extends Activity {
         }
     }
     public boolean longClickGroup(int position) {
+        lastSelectedGroup = position;
+
         List<String> groups = settingsManager.getAppGroupsSorted(false);
         Set<String> selectedGroups = settingsManager.getSelectedGroups();
 
@@ -265,13 +268,6 @@ public class LauncherActivity extends Activity {
             recheckPackages();
             BrowserService.bind(this, browserServiceConnection);
         } catch (Exception ignored) {} // Will fail if service hasn't bound yet
-
-        // Fix focus
-        final View focused = getCurrentFocus();
-        if (focused != null) {
-            focused.clearFocus();
-            focused.post(focused::requestFocus);
-        }
     }
 
     public void reloadPackages() {
@@ -337,6 +333,7 @@ public class LauncherActivity extends Activity {
                 rootView.findViewById(R.id.blurViewGroups),
                 rootView.findViewById(R.id.blurViewSettingsIcon),
                 rootView.findViewById(R.id.blurViewSearchIcon),
+                rootView.findViewById(R.id.blurViewSearchBar),
         };
 
         if (!groupsEnabled) {
@@ -351,8 +348,9 @@ public class LauncherActivity extends Activity {
         Drawable windowBackground = windowDecorView.getBackground();
 
         for (BlurView blurView: blurViews) {
-            blurView.setVisibility(View.VISIBLE);
-            blurView.setOverlayColor(Color.parseColor(darkMode ? "#4A000000" : "#50FFFFFF"));
+//            blurView.setVisibility(View.VISIBLE);
+            blurView.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(darkMode ? "#00000000" : "#00FFFFFF")));
+            blurView.setOverlayColor((Color.parseColor(darkMode ? "#3A000000" : "#40FFFFFF")));
             blurView.setupWith(rootViewGroup, new RenderScriptBlur(getApplicationContext())) // or RenderEffectBlur
                     .setFrameClearDrawable(windowBackground) // Optional
                     .setBlurRadius(blurRadiusDp);
@@ -386,11 +384,10 @@ public class LauncherActivity extends Activity {
             Log.w(TAG, "Failed to call refresh on service!");
         }
     }
-    View focused;
+    public int lastSelectedGroup;
+
     public void refreshInterface() {
         // Fix focus
-        focused = getCurrentFocus();
-
         if (sharedPreferenceEditor != null) sharedPreferenceEditor.apply();
         try {
             post(this::refreshInternal);
@@ -406,13 +403,12 @@ public class LauncherActivity extends Activity {
 
         if (!groupsEnabled && isEditing()) groupsEnabled = true;
         refreshAdapters();
-        // Fix focus
-        focused = getCurrentFocus();
+
+        // Fix some focus issues
+        final View focused = getCurrentFocus();
         if (focused != null) focused.clearFocus();
         post(() -> {
-            if (focused != null) {
-                focused.requestFocus();
-            }
+            if (focused != null && getCurrentFocus() == null) focused.requestFocus();
         });
     }
     public void refreshAdapters() {
@@ -423,8 +419,8 @@ public class LauncherActivity extends Activity {
         boolean namesSquare = sharedPreferences.getBoolean(Settings.KEY_SHOW_NAMES_SQUARE, Settings.DEFAULT_SHOW_NAMES_SQUARE);
         boolean namesBanner = sharedPreferences.getBoolean(Settings.KEY_SHOW_NAMES_BANNER, Settings.DEFAULT_SHOW_NAMES_BANNER);
 
-        appGridViewSquare.setMargin(marginPx, namesSquare);
-        appGridViewBanner.setMargin(marginPx, namesBanner);
+        appGridViewSquare.setMargin(marginPx-dp(20), namesSquare);
+        appGridViewBanner.setMargin(marginPx-dp(20), namesBanner);
 
         setAdapters(namesSquare, namesBanner);
 
@@ -532,7 +528,7 @@ public class LauncherActivity extends Activity {
 
         // Set initial color, execute background task
         int background = sharedPreferences.getInt(Settings.KEY_BACKGROUND, Settings.DEFAULT_BACKGROUND);
-        boolean custom = background < 0 || background > SettingsManager.BACKGROUND_COLORS.length;
+        boolean custom = background < 0 || background >= SettingsManager.BACKGROUND_COLORS.length;
         int backgroundColor = custom ? Color.parseColor("#404044") : SettingsManager.BACKGROUND_COLORS[background];
 
         backgroundImageView.setBackgroundColor(backgroundColor);

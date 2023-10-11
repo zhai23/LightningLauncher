@@ -72,7 +72,7 @@ public class LauncherActivityEditable extends LauncherActivity {
         final View editFooter = rootView.findViewById(R.id.editFooter);
         if (editMode) {
             // Edit bar theming and actions
-            editFooter.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(darkMode ? "#60000000" : "#70BeBeBe")));
+            editFooter.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#00000000")));
 
             final TextView selectionHintText = rootView.findViewById(R.id.selectionHintText);
             final ImageView uninstallButton = rootView.findViewById(R.id.uninstallBulk);
@@ -147,6 +147,7 @@ public class LauncherActivityEditable extends LauncherActivity {
 
     @Override
     public boolean clickGroup(int position) {
+        lastSelectedGroup = position;
         final List<String> groupsSorted = settingsManager.getAppGroupsSorted(false);
 
         // If the new group button was selected, create and select a new group
@@ -319,7 +320,7 @@ public class LauncherActivityEditable extends LauncherActivity {
         BlurView blurViewE = rootView.findViewById(R.id.editFooter);
         blurViewE.setOverlayColor(Color.parseColor(darkMode ? "#4A000000" : "#50FFFFFF"));
 
-        float blurRadiusDp = 15f;
+        float blurRadiusDp = 25f;
 
         View windowDecorView = getWindow().getDecorView();
         ViewGroup rootViewGroup = windowDecorView.findViewById(android.R.id.content);

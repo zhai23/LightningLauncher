@@ -100,8 +100,7 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
         viewAnimator.setInterpolator(new DecelerateInterpolator());
         viewAnimator.addUpdateListener(animation -> {
             LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) searchBar.getLayoutParams();
-            lp.setMarginEnd((int) animation.getAnimatedValue());
-            lp.setMarginStart((int) animation.getAnimatedValue());
+            lp.setMargins((int) animation.getAnimatedValue()+dp(25), 0, (int) animation.getAnimatedValue()+ dp(25), 0);
             searchBar.setLayoutParams(lp);
             searchBar.requestLayout();
         });
@@ -171,7 +170,6 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
         searchBg.setOnClickListener((v) -> {
             showSearchBar();
         });
-
 
         EditTextWatched searchText = findViewById(R.id.searchText);
         searchText.setOnEdited(this::searchFor);

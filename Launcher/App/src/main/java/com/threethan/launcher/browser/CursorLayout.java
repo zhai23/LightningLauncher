@@ -243,7 +243,7 @@ public class CursorLayout extends LinearLayout {
             // Click animation
             if (keyEvent.getAction() == 0 && !getKeyDispatcherState().isTracking(keyEvent)) {
                 getKeyDispatcherState().startTracking(keyEvent, this);
-                dispatchMotionEvent(this.cursorPosition.x, this.cursorPosition.y, 0);
+                dispatchMotionEvent(this.cursorPosition.x, this.cursorPosition.y, MotionEvent.ACTION_DOWN);
 
                 ValueAnimator viewAnimator = ValueAnimator.ofFloat(sizeMult, 0.7f);
                 viewAnimator.setDuration(250);
@@ -268,7 +268,7 @@ public class CursorLayout extends LinearLayout {
 
             } else if (keyEvent.getAction() == 1) {
                 getKeyDispatcherState().handleUpEvent(keyEvent);
-                dispatchMotionEvent(this.cursorPosition.x, this.cursorPosition.y, 1);
+                dispatchMotionEvent(this.cursorPosition.x, this.cursorPosition.y, MotionEvent.ACTION_UP);
             }
             return true;
         }
@@ -276,7 +276,7 @@ public class CursorLayout extends LinearLayout {
     }
 
     /* access modifiers changed from: private */
-    public void dispatchMotionEvent(float x, float y, int i) {
+    public void dispatchMotionEvent(float x, float y, int action) {
         long uptimeMillis = SystemClock.uptimeMillis();
         PointerProperties pointerProperties = new PointerProperties();
         pointerProperties.id = 0;
@@ -288,7 +288,7 @@ public class CursorLayout extends LinearLayout {
         pointerCoords.pressure = 1.0f;
         pointerCoords.size = 1.0f;
         dispatchTouchEvent(
-                MotionEvent.obtain(uptimeMillis, uptimeMillis, i, 1, pointerPropertiesArr, new PointerCoords[]{pointerCoords}, 0, 0, 1.0f, 1.0f, 0, 0, 0, 0));
+                MotionEvent.obtain(uptimeMillis, uptimeMillis, action, 1, pointerPropertiesArr, new PointerCoords[]{pointerCoords}, 0, 0, 1.0f, 1.0f, 0, 0, 0, 0));
     }
 
     private void handleDirectionKeyEvent(KeyEvent keyEvent, int i, int i2, boolean hasInput) {

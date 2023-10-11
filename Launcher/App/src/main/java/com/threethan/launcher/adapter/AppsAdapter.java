@@ -112,6 +112,7 @@ public class AppsAdapter extends BaseAdapter{
     private static class ViewHolder {
         View view;
         ImageView imageView;
+        View clip;
         ImageView imageViewBg;
         TextView textView;
         Button moreButton;
@@ -160,6 +161,7 @@ public class AppsAdapter extends BaseAdapter{
             holder = new ViewHolder();
             holder.view = convertView;
             holder.imageView = convertView.findViewById(R.id.imageLabel);
+            holder.clip = convertView.findViewById(R.id.clip);
             holder.textView = convertView.findViewById(R.id.textLabel);
             holder.moreButton = convertView.findViewById(R.id.moreButton);
             holder.killButton = convertView.findViewById(R.id.killButton);
@@ -269,8 +271,9 @@ public class AppsAdapter extends BaseAdapter{
         ObjectAnimator aYi = ObjectAnimator.ofFloat(holder.imageView, "scaleY", hovered ? 1.05f : 1.00f);
         ObjectAnimator aYv = ObjectAnimator.ofFloat(holder.view, "scaleY", hovered ? 1.05f : 1.00f);
         ObjectAnimator aAm = ObjectAnimator.ofFloat(holder.moreButton, "alpha", hovered ? 1f : 0f);
+        ObjectAnimator aAe = ObjectAnimator.ofFloat(holder.clip, "elevation", hovered ? 15f : 3f);
 
-        final ObjectAnimator[] animators = new ObjectAnimator[] {aXi, aXv, aYi, aYv, aAm};
+        final ObjectAnimator[] animators = new ObjectAnimator[] {aXi, aXv, aYi, aYv, aAm, aAe};
         for (ObjectAnimator animator:animators) animator.setInterpolator(new OvershootInterpolator());
         for (ObjectAnimator animator:animators) animator.setDuration(250);
         for (ObjectAnimator animator:animators) animator.start();

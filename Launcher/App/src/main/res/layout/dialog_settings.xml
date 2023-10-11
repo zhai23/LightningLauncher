@@ -786,7 +786,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"
                 android:layout_weight="1"
                 android:background="@drawable/bkg_button"
                 android:gravity="clip_vertical|center_vertical"

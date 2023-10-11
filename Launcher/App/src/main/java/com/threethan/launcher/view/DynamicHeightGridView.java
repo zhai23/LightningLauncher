@@ -11,6 +11,7 @@ import android.widget.GridView;
     becoming scrollable. This is used to combine two gridviews in one larger ScrollView.
  */
 public class DynamicHeightGridView extends GridView {
+    public final int CHEAT_OFFSET = 44;
     public DynamicHeightGridView(Context context) {
         super(context);
     }
@@ -35,7 +36,7 @@ public class DynamicHeightGridView extends GridView {
         int pad = getPaddingTop()+getPaddingBottom();
 
         setMeasuredDimension(getMeasuredWidth(),
-                (getMeasuredHeight()-pad)*rows + getVerticalSpacing()*rows + pad);
+                (getMeasuredHeight()-pad)*rows + getVerticalSpacing()*rows + pad + CHEAT_OFFSET);
     }
     public void setMargin(int margin, boolean names) {
         setVerticalSpacing(names ? margin/2 : margin);

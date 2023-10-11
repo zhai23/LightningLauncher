@@ -14,8 +14,6 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
-
 import com.threethan.launcher.R;
 import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.helper.Settings;
@@ -45,13 +43,10 @@ public class GroupsAdapter extends BaseAdapter {
     private final Set<String> selectedGroups;
     private final SettingsManager settingsManager;
     private final boolean isEditMode;
-    public @Nullable View firstView;
-
     public GroupsAdapter(LauncherActivity activity, boolean editMode) {
         launcherActivity = activity;
         isEditMode = editMode;
         settingsManager = SettingsManager.getInstance(activity);
-        firstView = null;
 
         SettingsManager settings = SettingsManager.getInstance(launcherActivity);
         appGroups = Collections.synchronizedList(settings.getAppGroupsSorted(false));
@@ -62,7 +57,6 @@ public class GroupsAdapter extends BaseAdapter {
         selectedGroups = settings.getSelectedGroups();
         if (!editMode) selectedGroups.remove(Settings.HIDDEN_GROUP);
         if (selectedGroups.isEmpty()) selectedGroups.addAll(appGroups);
-
     }
     public void setLauncherActivity(LauncherActivity val) {
         launcherActivity = val;
@@ -256,8 +250,8 @@ public class GroupsAdapter extends BaseAdapter {
         TextView textView = convertView.findViewById(R.id.textLabel);
         setTextViewValue(textView, appGroups.get(position));
 
-        if (firstView == null) {
-            firstView = convertView;
+        if (Objects.equals(launcherActivity.lastSelectedGroup, position)) {
+            convertView.post(convertView::requestFocus);
         }
         return convertView;
     }
