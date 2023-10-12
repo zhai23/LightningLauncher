@@ -12,10 +12,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#1C1C1D"
-        android:elevation="0dp"
         android:scaleType="centerCrop"
-        android:visibility="visible"
-        tools:background="#E66666" />
+        android:tintMode="screen"
+        android:visibility="visible" />
 
     <com.threethan.launcher.view.FadingTopScrollView
         android:id="@+id/mainScrollView"
@@ -38,6 +37,8 @@
                 android:id="@+id/appsViewBanner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="-22dp"
+                android:layout_marginBottom="-22dp"
                 android:clipChildren="true"
                 android:clipToPadding="false"
                 android:descendantFocusability="afterDescendants"
@@ -71,7 +72,7 @@
         android:id="@+id/topBarLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:alpha="0.1"
+        android:alpha="0.2"
         android:clipChildren="false"
         android:orientation="horizontal">
 
@@ -80,7 +81,7 @@
             android:layout_width="0dp"
             android:layout_height="10dp"
             android:layout_marginBottom="10dp"
-            android:focusable="true"
+            android:focusable="false"
             app:layout_constraintBottom_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -93,7 +94,7 @@
             android:layout_marginTop="24dp"
             android:layout_marginEnd="13dp"
             android:background="@drawable/bkg_blur_view"
-            android:elevation="10dp"
+            android:elevation="12dp"
             android:minHeight="40dp"
             android:visibility="visible"
             app:layout_constraintEnd_toStartOf="@id/blurViewSearchIcon"
@@ -128,7 +129,7 @@
             android:layout_marginTop="24dp"
             android:layout_marginEnd="13dp"
             android:background="@drawable/bkg_blur_view"
-            android:elevation="10dp"
+            android:elevation="12dp"
             android:focusable="true"
             android:foreground="@drawable/bkg_hover_button_bar"
             android:visibility="visible"
@@ -162,7 +163,7 @@
             android:layout_marginTop="24dp"
             android:layout_marginEnd="25dp"
             android:background="@drawable/bkg_blur_view"
-            android:elevation="10dp"
+            android:elevation="12dp"
             android:visibility="visible"
             app:blurOverlayColor="#4A000000"
             app:layout_constraintEnd_toEndOf="parent"
@@ -192,8 +193,7 @@
         android:id="@+id/searchBarLayout"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:orientation="horizontal"
-        tools:visibility="gone">
+        android:orientation="horizontal">
 
         <eightbitlab.com.blurview.BlurView
             android:id="@+id/blurViewSearchBar"
@@ -204,8 +204,7 @@
             android:background="@drawable/bkg_blur_view"
             android:elevation="10dp"
             android:translationY="24dp"
-            android:visibility="gone"
-            tools:visibility="visible">
+            android:visibility="gone">
 
             <LinearLayout
                 android:layout_width="match_parent"

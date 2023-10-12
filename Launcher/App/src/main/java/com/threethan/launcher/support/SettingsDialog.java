@@ -85,6 +85,12 @@ public abstract class SettingsDialog {
             a.refreshInterfaceAll();
             a.post(a::clearAdapterCaches);
         });
+        Switch shimmer = dialog.findViewById(R.id.shimmerEffectSwitch);
+        shimmer.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_SHIMMER_ENABLED, Settings.DEFAULT_SHIMMER_ENABLED));
+        shimmer.setOnCheckedChangeListener((compoundButton, value) -> {
+            // No refresh needed, this value is checked periodically
+            a.sharedPreferenceEditor.putBoolean(Settings.KEY_SHIMMER_ENABLED, value);
+        });
         ImageView[] views = {
                 dialog.findViewById(R.id.background0),
                 dialog.findViewById(R.id.background1),
@@ -105,7 +111,7 @@ public abstract class SettingsDialog {
             image.setClipToOutline(true);
         }
         final int wallpaperWidth = 32;
-        final int selectedWallpaperWidthPx = a.dp(455+20-(wallpaperWidth+4)*(views.length-1)-wallpaperWidth);
+        final int selectedWallpaperWidthPx = a.dp(445+20-(wallpaperWidth+4)*(views.length-1)-wallpaperWidth);
         views[background].getLayoutParams().width = selectedWallpaperWidthPx;
         views[background].requestLayout();
         for (int i = 0; i < views.length; i++) {
@@ -301,16 +307,16 @@ public abstract class SettingsDialog {
                 dialog.dismiss();
                 SettingsSaver.load(a);
                 a.finish();
-                new Timer().schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        a.startActivity(a.getIntent());
-                        SettingsSaver.load(a);
-                        a.refreshInterfaceAll();
-                        a.refreshBackground();
-                        a.refreshAppDisplayListsAll();
-                    }
-                }, 1000);
+//                new Timer().schedule(new TimerTask() {
+//                    @Override
+//                    public void run() {
+//                        a.startActivity(a.getIntent());
+//                        SettingsSaver.load(a);
+//                        a.refreshInterfaceAll();
+//                        a.refreshBackground();
+//                        a.refreshAppDisplayListsAll();
+//                    }
+//                }, 1000);
 
             }
         });

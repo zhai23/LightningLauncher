@@ -18,7 +18,7 @@
 
         <View
             android:id="@+id/view"
-            android:layout_width="455dp"
+            android:layout_width="445dp"
             android:layout_height="wrap_content" />
 
         <TextView
@@ -225,7 +225,7 @@
                     android:foreground="@drawable/bkg_hover_button_wp"
                     android:padding="0dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/bg_px_yellow_icon"
+                    android:src="@drawable/bg_px_white_icon"
                     tools:ignore="ImageContrastCheck" />
 
                 <ImageView
@@ -237,7 +237,7 @@
                     android:foreground="@drawable/bkg_hover_button_wp"
                     android:padding="0dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/bg_px_white_icon"
+                    android:src="@drawable/bg_px_orange_icon"
                     tools:ignore="ImageContrastCheck" />
 
                 <ImageView
@@ -249,7 +249,7 @@
                     android:foreground="@drawable/bkg_hover_button_wp"
                     android:padding="0dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/bg_px_orange_icon"
+                    android:src="@drawable/bg_px_green_icon"
                     tools:ignore="ImageContrastCheck" />
 
                 <ImageView
@@ -261,7 +261,7 @@
                     android:foreground="@drawable/bkg_hover_button_wp"
                     android:padding="0dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/bg_px_green_icon"
+                    android:src="@drawable/bg_px_purple_icon"
                     tools:ignore="ImageContrastCheck" />
 
                 <ImageView
@@ -273,7 +273,7 @@
                     android:foreground="@drawable/bkg_hover_button_wp"
                     android:padding="0dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/bg_px_purple_icon"
+                    android:src="@drawable/bg_meta_dark_icon"
                     tools:ignore="ImageContrastCheck" />
 
                 <ImageView
@@ -285,7 +285,7 @@
                     android:foreground="@drawable/bkg_hover_button_wp"
                     android:padding="0dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/bg_meta_dark_icon"
+                    android:src="@drawable/bg_meta_light_icon"
                     tools:ignore="ImageContrastCheck" />
 
                 <ImageView
@@ -297,7 +297,7 @@
                     android:foreground="@drawable/bkg_hover_button_wp"
                     android:padding="0dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/bg_meta_light_icon"
+                    android:src="@drawable/bg_warm_dark_icon"
                     tools:ignore="ImageContrastCheck" />
 
                 <ImageView
@@ -318,32 +318,71 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="10dp"
-            android:layout_weight="1"
-            android:background="@drawable/bkg_button"
-            android:gravity="clip_vertical|center_vertical"
             android:orientation="horizontal">
 
-            <TextView
-                style="@style/SettingButtonLabel"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="5dp"
                 android:layout_weight="1"
-                android:singleLine="true"
-                android:text="@string/dark_mode"
-                tools:ignore="NestedWeights" />
+                android:background="@drawable/bkg_button"
+                android:gravity="clip_vertical|center_vertical"
+                android:orientation="horizontal">
 
-            <Switch
-                android:id="@+id/darkModeSwitch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:foreground="@drawable/bkg_hover_button"
-                android:showText="false"
-                android:splitTrack="false"
-                android:thumb="@drawable/switch_thumb_custom"
-                android:track="@drawable/switch_track_custom"
-                tools:ignore="UseSwitchCompatOrMaterialXml" />
+                <TextView
+                    style="@style/SettingButtonLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:singleLine="true"
+                    android:text="@string/shimmer_effect"
+                    tools:ignore="NestedWeights" />
 
+                <Switch
+                    android:id="@+id/shimmerEffectSwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:foreground="@drawable/bkg_hover_button"
+                    android:showText="false"
+                    android:splitTrack="false"
+                    android:thumb="@drawable/switch_thumb_custom"
+                    android:track="@drawable/switch_track_custom"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/bkg_button"
+                android:gravity="clip_vertical|center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/SettingButtonLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:singleLine="true"
+                    android:text="@string/dark_mode"
+                    tools:ignore="NestedWeights" />
+
+                <Switch
+                    android:id="@+id/darkModeSwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:foreground="@drawable/bkg_hover_button"
+                    android:showText="false"
+                    android:splitTrack="false"
+                    android:thumb="@drawable/switch_thumb_custom"
+                    android:track="@drawable/switch_track_custom"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+            </LinearLayout>
         </LinearLayout>
 
         <TextView

@@ -24,25 +24,25 @@ public abstract class Settings {
             R.drawable.bg_px_blue,
             R.drawable.bg_px_grey,
             R.drawable.bg_px_red,
-            R.drawable.bg_px_yellow,
             R.drawable.bg_px_white,
             R.drawable.bg_px_orange,
             R.drawable.bg_px_green,
             R.drawable.bg_px_purple,
             R.drawable.bg_meta_dark,
             R.drawable.bg_meta_light,
+            R.drawable.bg_warm_dark,
     };
     public static final int[] BACKGROUND_COLORS = {
             Color.parseColor("#25374f"),
             Color.parseColor("#eaebea"),
             Color.parseColor("#f89b94"),
-            Color.parseColor("#f2eac9"),
             Color.parseColor("#d9d4da"),
             Color.parseColor("#f9ce9b"),
             Color.parseColor("#e4eac8"),
             Color.parseColor("#74575c"),
             Color.parseColor("#202a36"),
             Color.parseColor("#c6d1df"),
+            Color.parseColor("#412d4e"),
     };
     public static final boolean[] BACKGROUND_DARK = {
             true,
@@ -51,10 +51,10 @@ public abstract class Settings {
             false,
             false,
             false,
-            false,
             true,
             true,
             false,
+            true,
     };
 
     // Theme/background
@@ -75,7 +75,7 @@ public abstract class Settings {
     // Basic UI keys
     public static final String KEY_SCALE = "KEY_CUSTOM_SCALE";
     public static final String KEY_MARGIN = "KEY_CUSTOM_MARGIN";
-    public static final int DEFAULT_SCALE = 190;
+    public static final int DEFAULT_SCALE = 90;
     public static final int DEFAULT_MARGIN = 20;
     public static final String KEY_EDIT_MODE = "KEY_EDIT_MODE";
     public static final String KEY_SEEN_LAUNCH_OUT_POPUP = "KEY_SEEN_LAUNCH_OUT_POPUP";
@@ -100,6 +100,10 @@ public abstract class Settings {
     public static final boolean DEFAULT_WIDE_2D = false;
     public static final boolean DEFAULT_WIDE_WEB = false;
     public static final String DONT_DOWNLOAD_ICONS = "DONT_DOWNLOAD_ICONS";
+
+    // extra pizzazz
+    public static final String KEY_SHIMMER_ENABLED = "KEY_SHIMMER_ENABLED";
+    public static final boolean DEFAULT_SHIMMER_ENABLED = true;
 
     // show names by display type
     public static final String KEY_SHOW_NAMES_SQUARE = "KEY_CUSTOM_NAMES";

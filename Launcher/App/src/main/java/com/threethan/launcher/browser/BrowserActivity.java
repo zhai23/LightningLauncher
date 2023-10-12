@@ -253,7 +253,7 @@ public class BrowserActivity extends Activity {
     protected void onStart() {
         super.onStart();
         // Bind to BrowserService, which will provide our WebView
-        BrowserService.bind(this, connection);
+        BrowserService.bind(this, connection, true);
     }
     // Defines callbacks for service binding
     private final ServiceConnection connection = new ServiceConnection() {

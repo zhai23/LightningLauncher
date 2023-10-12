@@ -81,6 +81,10 @@ public abstract class Compat {
                         final String KEY_OLD_LAUNCH_OUT = "prefLaunchOutList";
                         final Set<String> launchOutSet = sharedPreferences.getStringSet(KEY_OLD_LAUNCH_OUT, Collections.emptySet());
                         for (String app : launchOutSet) sharedPreferenceEditor.putBoolean(Settings.KEY_LAUNCH_OUT_PREFIX + app, true);
+                        // Wallpaper remap
+                        int backgroundIndex = sharedPreferences.getInt(Settings.KEY_BACKGROUND, Settings.DEFAULT_BACKGROUND);
+                        if (backgroundIndex > 2)
+                            sharedPreferenceEditor.putInt(Settings.KEY_BACKGROUND, backgroundIndex - 1);
                 }
             }
             Log.i(TAG, String.format("Settings Updated from v%s to v%s (Settings versions are not the same as app versions)",

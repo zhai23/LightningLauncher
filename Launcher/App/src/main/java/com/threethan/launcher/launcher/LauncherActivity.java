@@ -83,7 +83,6 @@ public class LauncherActivity extends Activity {
     public SharedPreferences sharedPreferences;
     public SynchronizedSharedPreferenceEditor sharedPreferenceEditor;
     public View mainView;
-    public View fadeView;
     private int prevViewWidth;
     public boolean isKillable = false;
 
@@ -154,9 +153,9 @@ public class LauncherActivity extends Activity {
         refreshInterface();
 
         // Animate in the apps
-        ValueAnimator an = android.animation.ObjectAnimator.ofFloat(fadeView, "alpha", 1f);
+        ValueAnimator an = android.animation.ObjectAnimator.ofFloat(scrollView, "alpha", 1f);
         an.setDuration(150);
-        fadeView.post(an::start);
+        scrollView.post(an::start);
     }
     protected void startWithExistingActivity() {
         Log.v(TAG, "Starting with existing view");
@@ -168,7 +167,7 @@ public class LauncherActivity extends Activity {
         try {
             init();
 
-            fadeView.setAlpha(1f); // Just in case the app was closed before it faded in
+            scrollView.setAlpha(1f); // Just in case the app was closed before it faded in
 
             // Take ownership of adapters (which are currently referencing a dead activity)
             Objects.requireNonNull(getAdapterSquare()).setLauncherActivity(this);
@@ -197,7 +196,6 @@ public class LauncherActivity extends Activity {
         appGridViewSquare = rootView.findViewById(R.id.appsViewSquare);
         appGridViewBanner = rootView.findViewById(R.id.appsViewBanner);
         scrollView = rootView.findViewById(R.id.mainScrollView);
-        fadeView = scrollView;
         backgroundImageView = rootView.findViewById(R.id.background);
         groupGridView = rootView.findViewById(R.id.groupsView);
 
@@ -206,6 +204,8 @@ public class LauncherActivity extends Activity {
         settingsImageView.setOnClickListener(view -> {
             if (!settingsVisible) SettingsDialog.showSettings(this);
         });
+
+        postInit();
     }
 
     public boolean clickGroup(int position) {
@@ -266,13 +266,12 @@ public class LauncherActivity extends Activity {
         super.onResume();
         try {
             // Hide KB
-            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(mainView.getWindowToken(), 0);
+            hideKeyboard();
 
             // Bind service
             AppsAdapter.animateClose(this);
             recheckPackages();
-            BrowserService.bind(this, browserServiceConnection);
+            BrowserService.bind(this, browserServiceConnection, false);
 
         } catch (Exception ignored) {} // Will fail if service hasn't bound yet
     }
@@ -334,7 +333,7 @@ public class LauncherActivity extends Activity {
         }
     }
     void updateToolBars() {
-        BrowserService.bind(this, browserServiceConnection);
+        BrowserService.bind(this, browserServiceConnection, false);
 
         BlurView[] blurViews = new BlurView[]{
                 rootView.findViewById(R.id.blurViewGroups),
@@ -505,7 +504,7 @@ public class LauncherActivity extends Activity {
 
         appGridViewBanner.setPadding(
                 marginPx,
-                Math.max(0,marginPx+(groupsEnabled ? dp(-23) : 0))+topAdd,
+                Math.max(0,marginPx+(groupsEnabled ? 0 : dp(22)))+topAdd,
                 marginPx,
                 0);
         appGridViewSquare.setPadding(
@@ -603,6 +602,11 @@ public class LauncherActivity extends Activity {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
     }
+    void hideKeyboard() {
+        // Hide Soft Keyboard
+        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(mainView.getWindowToken(),0);
+    }
     public HashSet<String> getAllPackages() {
         HashSet<String> setAll = new HashSet<>();
         for (ApplicationInfo app : Platform.installedApps) setAll.add(app.packageName);
@@ -657,4 +661,36 @@ public class LauncherActivity extends Activity {
     }
     public boolean isEditing() { return false; }
     public boolean canEdit() { return false; }
+
+    // Wallpaper Shimmer Effect
+    double h = 0;
+    double t = 0;
+    int c = 0;
+    protected void postInit() {
+        Runnable shimmerStep = new Runnable() {
+            @Override
+            public void run() {
+                c--;
+                if (c<=0) {
+                    // Check if enabled every second
+                    if (!sharedPreferences.getBoolean(Settings.KEY_SHIMMER_ENABLED, Settings.DEFAULT_SHIMMER_ENABLED)) {
+                        mainView.postDelayed(this, 2500); //Wait 2.5 seconds before checking again
+                        backgroundImageView.setImageTintList(null);;
+                        return;
+                    } else {
+                        c = 20;
+                    }
+                }
+                // These numbers are basically random, but give decent results
+                h+=1.52;
+                t+=0.042;
+                backgroundImageView.setImageTintList(ColorStateList.valueOf(Color.HSVToColor(
+                        15, new float[]{(float) (h%360),
+                                (float) (30 + 25*Math.cos(t))/100,
+                                (float) (65 + 40 * Math.sin(t*0.43+15.2))/100})));
+                mainView.postDelayed(this, 50); //~20 FPS
+            }
+        };
+        shimmerStep.run();
+    }
 }

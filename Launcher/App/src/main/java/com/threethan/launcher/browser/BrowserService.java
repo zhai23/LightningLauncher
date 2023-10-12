@@ -156,14 +156,13 @@ public class BrowserService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         startForeground(NOTIFICATION_ID, getNotification());
         return super.onStartCommand(intent, flags, startId);
-
     }
 
-    public static void bind(Activity activity, ServiceConnection connection){
+    public static void bind(Activity activity, ServiceConnection connection, boolean needed){
         Intent intent = new Intent(activity, BrowserService.class);
         if (amRunning(activity)) {
             activity.bindService(intent, connection, 0);
-        } else {
+        } else if (needed) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 activity.startForegroundService(intent);
                 activity.bindService(intent, connection, 0);
@@ -185,7 +184,7 @@ public class BrowserService extends Service {
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(NOTIFICATION_ID, getNotification());
 
-        if (webViewByBaseUrl.isEmpty()) stopSelf();
+        if (webViewByBaseUrl.size() < 1) stopSelf();
     }
 
     private Notification getNotification() {

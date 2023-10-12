@@ -30,6 +30,7 @@ import com.threethan.launcher.helper.Compat;
 import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.helper.Icon;
 import com.threethan.launcher.helper.Launch;
+import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.launcher.LauncherActivity;
 import com.threethan.launcher.lib.ImageLib;
@@ -205,13 +206,14 @@ public class AppsAdapter extends BaseAdapter{
 
                 boolean isWeb = App.isWebsite(holder.app);
                 if (isWeb) holder.killButton.setVisibility(View.VISIBLE);
-                shouldAnimateClose = isWeb;
+                shouldAnimateClose = isWeb || Platform.isTv(launcherActivity);
             }
         });
         holder.view.setOnLongClickListener(view -> {
             if (getEditMode() || launcherActivity.sharedPreferences
                     .getBoolean(Settings.KEY_DETAILS_LONG_PRESS, Settings.DEFAULT_DETAILS_LONG_PRESS)) {
-                showAppDetails(holder.app);
+                if (holder.killButton.getVisibility() == View.VISIBLE) holder.killButton.callOnClick();
+                else showAppDetails(holder.app);
             } else {
                 launcherActivity.setEditMode(true);
                 launcherActivity.selectApp(holder.app.packageName);
@@ -416,7 +418,10 @@ public class AppsAdapter extends BaseAdapter{
         openAnim.setLayoutParams(layoutParams);
 
         openAnim.setVisibility(View.VISIBLE);
+        openAnim.setAlpha(1F);
         openAnim.setClipToOutline(true);
+        openAnim.setScaleX(1F);
+        openAnim.setScaleY(1F);
 
         ImageView animIcon = openAnim.findViewById(R.id.openIcon);
         ImageView animIconBg = openAnim.findViewById(R.id.openIconBg);

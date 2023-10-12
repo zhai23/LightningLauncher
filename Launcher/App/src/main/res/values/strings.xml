@@ -35,7 +35,8 @@
     <string name="name_header">Show Names</string>
     <string name="advanced_header">Advanced Behavior</string>
 
-    <string name="dark_mode">Light Label Text &amp; Dark Top Bar</string>
+    <string name="dark_mode">Light Text on Dark</string>
+    <string name="shimmer_effect">Hue Shift Effect</string>
     <string name="group_mode">Always Show Top Bar</string>
     <string name="clear_cache">Reset All Icons</string>
     <string name="clear_labels">Reset All Labels</string>
@@ -79,7 +80,7 @@
     <string name="add_website_url_label">Enter Any Website URL</string>
     <string name="add_website_bad_url">Enter a valid URL and try again</string>
     <string name="add_website_used_url">This website is already in %1$s</string>
-    <string name="add_website_audio_info">Added websites can play audio in-game</string>
+    <string name="add_website_audio_info">Added websites can play background audio</string>
     <string name="add_website_group">Add to %s</string>
 
     <string name="service_title">Shortcuts Services</string>
@@ -171,17 +172,24 @@
     <string name="notification_content">This notification keeps your websites\' background audio running smoothly.</string>
 
     <!-- Addons -->
-    <string name="addons_main">Install Shortcuts</string>
+    <string name="addons_main_vr">Install Shortcuts</string>
+    <string name="addons_main_tv">Shortcut Options</string>
     <string name="addons_info">Shortcuts make it easier to open the launcher.
         \nIt\'s highly recommended that you set up use at least one.</string>
-    <string name="addons_tv_info">Unfortunately, Android TV limits the functionality of accessibility services and third-party launchers, but there are some ways around it.</string>
+    <string name="addons_tv_info">Unfortunately, Android TV limits the functionality of accessibility services and third-party launchers.</string>
     <string name="addons_exit">Return to Settings</string>
 
     <string name="addons_androidtv">Android TV Launcher Manager</string>
     <string name="addons_androidtv_desc">Install a third-party application which may allow you to change the default home on Android TV.
     \nThis requires ADB Debugging to be enabled, and may not work on every device.
     \n
-    \nIf it will not install through here, look up &quot;Android TV Launcher Manager XDA&quot;, then manually download &amp; install.</string>
+    \nIf it doesn\'t install through here, look up &quot;Android TV Launcher Manager XDA&quot;, then manually download &amp; install.</string>
+
+    <string name="addons_androidtv_alt">Or… Just Use the Back Button!</string>
+    <string name="addons_androidtv_alt_desc">If you just use the back button on your remote, instead of the home button, you will always come back to LightningLauncher.
+    \n
+    \nPressing back once you get to the launcher will just toggle edit mode, keeping you from accidentally returning to the default launcher.</string>
+
 
     <string name="addons_messenger">Messenger App Shortcut</string>
     <string name="addons_messenger_desc">Adds an icon, which you can pin to the dock, that looks like Facebook Messenger, but will actually open the launcher.

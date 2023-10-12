@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:background="#2A000000"
+        android:layerType="hardware"
         android:orientation="horizontal"
         android:paddingLeft="7dp"
         android:paddingRight="7dp">
@@ -104,11 +105,12 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:alpha="0.7"
+                    android:paddingStart="0dp"
                     android:paddingEnd="5sp"
                     android:singleLine="true"
                     android:textColor="#FFFFFF"
                     android:textSize="16sp"
-                    tools:text=".com/app/longstringidk" />
+                    tools:text=".com/app/long-example-string" />
 
                 <ImageButton
                     android:id="@+id/addHome"

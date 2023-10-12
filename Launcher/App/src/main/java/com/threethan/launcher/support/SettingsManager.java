@@ -110,7 +110,7 @@ public class SettingsManager extends Settings {
                 sharedPreferences.getBoolean(Settings.KEY_DEFAULT_LAUNCH_OUT, DEFAULT_DEFAULT_LAUNCH_OUT));
     }
     public static void setAppLaunchOut(String pkg, boolean shouldLaunchOut) {
-        sharedPreferenceEditor.putBoolean(Settings.KEY_LAUNCH_OUT_PREFIX+pkg, shouldLaunchOut);
+        sharedPreferenceEditor.putBoolean(Settings.KEY_LAUNCH_OUT_PREFIX+pkg, shouldLaunchOut).apply();
     }
     public static Map<String, String> getAppGroupMap() {
         if (appGroupMap.isEmpty()) readValues();

@@ -28,7 +28,7 @@ import eightbitlab.com.blurview.RenderScriptBlur;
     LauncherActivitySingle
 
     This is a dummy class to allow for a more standard launcher-style intent on Android TV devices,
-    and on normal Android devices if you want to use this as your normal launcher for some reason.
+    or on normal Android devices if you want to use this as your normal launcher for some reason.
  */
 
-public class LauncherActivitySingle extends LauncherActivityEditable { }
+public class LauncherActivitySingle extends LauncherActivitySearchable { }

@@ -2,8 +2,10 @@ package com.threethan.launcher.support;
 
 import android.app.Activity;
 import android.content.ContextWrapper;
+import android.content.SharedPreferences;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.launcher.LauncherActivity;
@@ -17,32 +19,24 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Objects;
 
+// This class is a stub for if/when I actually get around to implementing backups
+
 public abstract class SettingsSaver {
     public static void save(LauncherActivity activity) {
         File ff = new File(activity.getFilesDir().getParent()
                 + "/shared_prefs/" +
                 activity.getPackageName() + "_preferences.xml");
         File docs = new ContextWrapper(activity).getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
+        assert docs != null;
         //noinspection ResultOfMethodCallIgnored
-        docs.mkdirs();
-        copyFile(ff.getPath(), docs.getPath()+"/LightningLauncher.xml");
+        Objects.requireNonNull(docs.getParentFile()).mkdirs();
+        copyFile(ff, new File(docs.getPath(),"LightningLauncher.xml"));
     }
 
 
     //TODO: This doesn't work
     public synchronized static void load(LauncherActivity activity) {
-        File ff = new File(activity.getFilesDir().getParent()
-                + "/shared_prefs/" +
-                activity.getPackageName() + "_preferences.xml");
-        File docs = new ContextWrapper(activity).getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
-        if (docs == null) return;
-        DataLib.delete(ff.getParent());
-        activity.launcherService.finishAllActivities();
-
-        //noinspection ResultOfMethodCallIgnored
-        ff.mkdirs();
-        copyFile(docs.getPath()+"/LightningLauncher.xml", ff.getPath());
-
+        // TODO: Actually serialize stuff
     }
     public static boolean canLoad(LauncherActivity activity) {
         ContextWrapper cw = new ContextWrapper(activity);
@@ -52,12 +46,10 @@ public abstract class SettingsSaver {
     }
 
     /** @noinspection IOStreamConstructor*/
-    private static void copyFile(String inPath, String outPath) {
+    private static void copyFile(File fIn, File fOut) {
         try {
-            File f1 = new File(inPath);
-            File f2 = new File(outPath);
-            InputStream in = new FileInputStream(f1);
-            OutputStream out = new FileOutputStream(f2);
+            InputStream in = new FileInputStream(fIn);
+            OutputStream out = new FileOutputStream(fOut);
             byte[] buf = new byte[1024];
             int len;
             while ((len = in.read(buf)) > 0) out.write(buf, 0, len);
@@ -66,5 +58,6 @@ public abstract class SettingsSaver {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        Log.v("PATH", fOut.getAbsolutePath());
     }
 }

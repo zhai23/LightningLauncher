@@ -70,14 +70,16 @@ public class CursorLayout extends LinearLayout {
                 }
                 return;
             }
+
             tmpPointF.set(cursorPosition);
             cursorPosition.offset(cursorSpeed.x, cursorSpeed.y);
             if (cursorPosition.x < 0.0f) cursorPosition.x = 0.0f;
             else if (cursorPosition.x > ((float) (getWidth() - 1)))  cursorPosition.x = (float) (getWidth() - 1);
             if (cursorPosition.y < 0.0f) cursorPosition.y = 0.0f;
             else if (cursorPosition.y > ((float) (getHeight() - 1))) cursorPosition.y = (float) (getHeight() - 1);
-            if (!tmpPointF.equals(cursorPosition))
-                dispatchMotionEvent(cursorPosition.x, cursorPosition.y, MotionEvent.ACTION_DOWN); // Hover
+            // HOVER //
+//            if (!tmpPointF.equals(cursorPosition))
+//                dispatchMotionEvent(cursorPosition.x, cursorPosition.y, MotionEvent.ACTION_MOVE); // Hover
 
             if (targetView != null) {
                 try {

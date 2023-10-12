@@ -7,6 +7,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,6 +20,7 @@ import android.widget.LinearLayout;
 import com.threethan.launcher.R;
 import com.threethan.launcher.adapter.AppsAdapter;
 import com.threethan.launcher.helper.Launch;
+import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.view.EditTextWatched;
 
 import eightbitlab.com.blurview.BlurView;
@@ -37,7 +39,10 @@ import eightbitlab.com.blurview.RenderScriptBlur;
 
 public class LauncherActivitySearchable extends LauncherActivityEditable {
     private boolean searching = false;
+    boolean startedTyping = false;
+
     protected void searchFor(String text) {
+        if (!text.isEmpty()) startedTyping = true;
         final AppsAdapter squareAdapter = getAdapterSquare();
         final AppsAdapter bannerAdapter = getAdapterBanner();
         if (squareAdapter != null) {
@@ -49,24 +54,27 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
             appGridViewBanner.setAdapter(bannerAdapter);
         }
     }
-
+    ObjectAnimator alphaIn;
+    ObjectAnimator alphaOut;
     void showSearchBar() {
         try {
+            startedTyping = false;
             searching = true;
 
             final int endMargin = 275;
 
             BlurView searchBar = rootView.findViewById(R.id.blurViewSearchBar);
             View topBar = rootView.findViewById(R.id.topBarLayout);
-            ObjectAnimator alphaIn = ObjectAnimator.ofFloat(searchBar, "alpha", 1f);
-            ObjectAnimator alphaOut = ObjectAnimator.ofFloat(topBar, "alpha", 0f);
+            if (alphaIn  != null) alphaIn .end();
+            if (alphaOut != null) alphaOut.end();
+            alphaIn = ObjectAnimator.ofFloat(searchBar, "alpha", 1f);
+            alphaOut = ObjectAnimator.ofFloat(topBar, "alpha", 0f);
             alphaIn.setDuration(100);
             alphaOut.setDuration(300);
             alphaIn.start();
             alphaOut.start();
             topBar.postDelayed(() -> {
-                if (searching) topBar.setVisibility(View.GONE);
-                else hideSearchBar();
+                fixState();
             }, 300);
             searchBar.setVisibility(View.VISIBLE);
 
@@ -111,36 +119,48 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
             if (getCurrentFocus() != null) getCurrentFocus().clearFocus();
             searchText.setText("");
             searchText.post(searchText::requestFocus);
-            showKeyboard();
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
     }
 
     void hideSearchBar() {
-        searching = false;
+        try {
+            searching = false;
 
-        View searchBar = rootView.findViewById(R.id.blurViewSearchBar);
-        View topBar = rootView.findViewById(R.id.topBarLayout);
-        ObjectAnimator alphaIn  = ObjectAnimator.ofFloat(topBar   , "alpha", 1f);
-        ObjectAnimator alphaOut = ObjectAnimator.ofFloat(searchBar, "alpha", 0f);
-        alphaIn .setDuration(100);
-        alphaOut.setDuration(300);
-        alphaIn .start();
-        alphaOut.start();
-        searchBar.postDelayed(() -> searchBar.setVisibility(View.GONE), 250);
+            View searchBar = rootView.findViewById(R.id.blurViewSearchBar);
+            View topBar = rootView.findViewById(R.id.topBarLayout);
+            if (alphaIn != null) alphaIn.end();
+            if (alphaOut != null) alphaOut.end();
+            alphaIn = ObjectAnimator.ofFloat(topBar, "alpha", 1f);
+            alphaOut = ObjectAnimator.ofFloat(searchBar, "alpha", 0f);
+            alphaIn.setDuration(100);
+            alphaOut.setDuration(300);
+            alphaIn.start();
+            alphaOut.start();
+            searchBar.postDelayed(() -> searchBar.setVisibility(View.GONE), 250);
 
-        refreshAdapters();
+            refreshAdapters();
 
-        searchBar.postDelayed(() -> {
-            if (!searching) searchBar.setVisibility(View.GONE);
-            else hideSearchBar();
-        }, 300);
-        topBar.setVisibility(View.VISIBLE);
+            searchBar.postDelayed(() -> {
+                fixState();
+            }, 300);
+            topBar.setVisibility(View.VISIBLE);
 
-        // Hide KB
-        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(searchBar.getWindowToken(),0);
+            hideKeyboard();
+        } catch (NullPointerException ignored) {}
+    }
+    protected void fixState() {
+        try {
+            if (alphaIn != null) alphaIn.end();
+            if (alphaOut != null) alphaOut.end();
+            View searchBar = rootView.findViewById(R.id.blurViewSearchBar);
+            View topBar = rootView.findViewById(R.id.topBarLayout);
+            searchBar.setVisibility(searching ? View.VISIBLE : View.GONE);
+            topBar.setVisibility(!searching ? View.VISIBLE : View.GONE);
+            searchBar.setAlpha(searching ? 1F : 0F);
+            topBar.post(() -> topBar.setAlpha(1F)); // Prevent flicker on start
+        } catch (NullPointerException ignored) {}
     }
 
     @Override
@@ -172,35 +192,45 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
             }
         }));
         View searchBg = rootView.findViewById(R.id.blurViewSearchIcon);
-        searchBg.setOnClickListener((v) -> {
-            showSearchBar();
-        });
+        searchBg.setOnClickListener((v) -> showSearchBar());
 
         EditTextWatched searchText = findViewById(R.id.searchText);
         searchText.setOnEdited(this::searchFor);
-        searchText.setOnKeyListener((v, keyCode, event) -> {
-            if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                if (event.getAction() == KeyEvent.ACTION_DOWN)
-                    // Launch the first visible icon when enter is pressed
-                    if (getAdapterBanner() != null && getAdapterBanner().getCount() > 0)
-                        Launch.launchApp(this, (ApplicationInfo) getAdapterBanner().getItem(0));
-                    else if (getAdapterSquare() != null && getAdapterSquare().getCount() > 0)
-                        Launch.launchApp(this, (ApplicationInfo) getAdapterSquare().getItem(0));
-                return true;
-            }
-            return false;
-        });
+
+        if (Platform.isVr(this)) { // For some reason this is buggy AF on android TV
+            searchText.setOnKeyListener((v, keyCode, event) -> {
+                if (event.getAction() == KeyEvent.ACTION_UP) {
+                    if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                        // Launch the first visible icon when enter is pressed
+                        if (getAdapterBanner() != null && getAdapterBanner().getCount() > 0)
+                            Launch.launchApp(this, (ApplicationInfo) getAdapterBanner().getItem(0));
+                        else if (getAdapterSquare() != null && getAdapterSquare().getCount() > 0)
+                            Launch.launchApp(this, (ApplicationInfo) getAdapterSquare().getItem(0));
+                        return true;
+                    }
+                }
+                return false;
+            });
+        }
         searchText.setOnFocusChangeListener((view, hasFocus) -> {
-            if (hasFocus) showKeyboard();
+            if (hasFocus && searching) showKeyboard();
+            else {
+                hideKeyboard();
+                // Dismiss empty search bar automatically on Android TV
+                if (Platform.isTv(this) && searchText.getText().toString().isEmpty()) hideSearchBar();
+            }
         });
 
         // Secret focusable element off the top of the screen to allow search on android tv by pressing up
-        findViewById(R.id.searchShortcutView).setOnFocusChangeListener((v, hasFocus) -> {
+        final View searchShortcutView = findViewById(R.id.searchShortcutView);
+        searchShortcutView.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus && !searching) showSearchBar();
         });
-
-
+        searchShortcutView.postDelayed(() -> searchShortcutView.setFocusable(true), 500);
         findViewById(R.id.searchCancelIcon).setOnClickListener(v -> hideSearchBar());
+
+        searching = false;
+        fixState();
     }
 
     @Override
