@@ -22,7 +22,6 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -40,12 +39,13 @@ import com.threethan.launcher.helper.App;
 import com.threethan.launcher.helper.Compat;
 import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.helper.IconRepo;
+import com.threethan.launcher.helper.Keyboard;
 import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.lib.ImageLib;
-import com.threethan.launcher.support.SynchronizedSharedPreferenceEditor;
 import com.threethan.launcher.support.SettingsDialog;
 import com.threethan.launcher.support.SettingsManager;
+import com.threethan.launcher.support.SynchronizedSharedPreferenceEditor;
 import com.threethan.launcher.support.Updater;
 import com.threethan.launcher.view.DynamicHeightGridView;
 import com.threethan.launcher.view.FadingTopScrollView;
@@ -267,7 +267,7 @@ public class LauncherActivity extends Activity {
         super.onResume();
         try {
             // Hide KB
-            hideKeyboard();
+            Keyboard.hide(this, mainView);
 
             // Bind service
             AppsAdapter.animateClose(this);
@@ -607,16 +607,7 @@ public class LauncherActivity extends Activity {
     public @Nullable GroupsAdapter getAdapterGroups() {
         return (GroupsAdapter) groupGridView.getAdapter();
     }
-    void showKeyboard() {
-        // Show Soft Keyboard
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-    }
-    void hideKeyboard() {
-        // Hide Soft Keyboard
-        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(mainView.getWindowToken(),0);
-    }
+
     public HashSet<String> getAllPackages() {
         HashSet<String> setAll = new HashSet<>();
         for (ApplicationInfo app : Platform.installedApps) setAll.add(app.packageName);
@@ -673,22 +664,24 @@ public class LauncherActivity extends Activity {
     public boolean canEdit() { return false; }
 
     // Wallpaper Hue Shift Effect
-    private final int HUE_SHIFT_INTERVAL = 1000/10; // 10 FPS
+    private final int HUE_SHIFT_INTERVAL = 1000/60; // 10 FPS
     private boolean hueShiftActive = false;
     private double hueShiftTime = 0;
     protected void startHueShift() {
-        hueShiftActive = true;
+        hueShiftActive = sharedPreferences.getBoolean(Settings.KEY_HUE_SHIFT_ENABLED, Settings.DEFAULT_HUE_SHIFT_ENABLED);
         Runnable shimmerStep = new Runnable() {
             @Override
             public void run() {
                 if (!hueShiftActive) return;
                 if (mainView == null || backgroundImageView == null) return;
 
-                hueShiftTime *= HUE_SHIFT_INTERVAL;
+                hueShiftTime += HUE_SHIFT_INTERVAL / 1000f;
                 backgroundImageView.setImageTintList(ColorStateList.valueOf(Color.HSVToColor(
-                        23, new float[]{(float) ((HUE_SHIFT_INTERVAL/15)%360),
-                                (float) (0.3 + 0.2 * Math.cos(hueShiftTime*0.0042)),
-                                (float) (0.6 + 0.4 * Math.sin(hueShiftTime*0.0026))}
+                        50, new float[]{(float) ((hueShiftTime*2.132)%360),
+                                (float) (0.8 + 0.1 * Math.cos(hueShiftTime*1.237)
+                                             + 0.2 * Math.cos(hueShiftTime*0.523)),
+                                (float) (0.8 + 0.03 * Math.sin(hueShiftTime*4.339)
+                                             + 0.1 * Math.cos(hueShiftTime*0.794))}
                 )));
                 mainView.postDelayed(this, HUE_SHIFT_INTERVAL); //~5 FPS
             }
@@ -697,6 +690,7 @@ public class LauncherActivity extends Activity {
     }
     public void setHueShiftActive(boolean val) {
         hueShiftActive = val;
+        sharedPreferenceEditor.putBoolean(Settings.KEY_HUE_SHIFT_ENABLED, val).apply();
         if (val) startHueShift();
     }
 }

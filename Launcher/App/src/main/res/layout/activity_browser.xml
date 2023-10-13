@@ -59,73 +59,66 @@
             tools:ignore="UnusedAttribute" />
 
         <LinearLayout
+            android:id="@+id/urlLayout"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:layout_weight="1"
-            android:layoutDirection="rtl"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingStart="8dp"
+            android:paddingEnd="0dp"
+            tools:ignore="UselessParent"
+            tools:nextFocusRight="@id/addHome">
 
-            <LinearLayout
-                android:id="@+id/urlLayout"
+            <TextView
+                android:id="@+id/urlPre"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:alpha="0.7"
+                android:singleLine="true"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                tools:text="www." />
+
+            <TextView
+                android:id="@+id/urlMid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:singleLine="true"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                tools:text="url" />
+
+            <TextView
+                android:id="@+id/urlEnd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="25dp"
+                android:alpha="0.7"
+                android:paddingStart="0dp"
+                android:paddingEnd="5sp"
+                android:singleLine="true"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                tools:text=".com/app/long-example-string" />
+
+            <ImageButton
+                android:id="@+id/addHome"
+                android:layout_width="25dp"
                 android:layout_height="match_parent"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="-25dp"
                 android:background="@drawable/bkg_button_web"
-                android:orientation="horizontal"
-                android:paddingStart="8dp"
-                android:paddingEnd="0dp"
-                tools:ignore="UselessParent"
-                tools:nextFocusRight="@id/addHome">
-
-                <TextView
-                    android:id="@+id/urlPre"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:alpha="0.7"
-                    android:singleLine="true"
-                    android:textColor="#FFFFFF"
-                    android:textSize="16sp"
-                    tools:text="www." />
-
-                <TextView
-                    android:id="@+id/urlMid"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:singleLine="true"
-                    android:textColor="#FFFFFF"
-                    android:textSize="16sp"
-                    tools:text="url" />
-
-                <TextView
-                    android:id="@+id/urlEnd"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:alpha="0.7"
-                    android:paddingStart="0dp"
-                    android:paddingEnd="5sp"
-                    android:singleLine="true"
-                    android:textColor="#FFFFFF"
-                    android:textSize="16sp"
-                    tools:text=".com/app/long-example-string" />
-
-                <ImageButton
-                    android:id="@+id/addHome"
-                    android:layout_width="25dp"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_vertical"
-                    android:background="@drawable/bkg_button_web"
-                    android:nextFocusLeft="@id/urlLayout"
-                    android:src="@drawable/web_add_home"
-                    android:tooltipText="@string/web_add_home"
-                    android:visibility="gone"
-                    tools:ignore="UnusedAttribute"
-                    tools:visibility="visible" />
-
-            </LinearLayout>
+                android:nextFocusLeft="@id/urlLayout"
+                android:src="@drawable/web_add_home"
+                android:tooltipText="@string/web_add_home"
+                android:visibility="gone"
+                tools:ignore="UnusedAttribute"
+                tools:visibility="visible" />
 
         </LinearLayout>
 

@@ -21,6 +21,7 @@ import com.threethan.launcher.adapter.AppsAdapter;
 import com.threethan.launcher.adapter.GroupsAdapter;
 import com.threethan.launcher.helper.App;
 import com.threethan.launcher.helper.Dialog;
+import com.threethan.launcher.helper.Keyboard;
 import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.lib.StringLib;
@@ -269,7 +270,7 @@ public class LauncherActivityEditable extends LauncherActivity {
         EditText urlEdit = dialog.findViewById(R.id.appUrl);
         urlEdit.post(urlEdit::requestFocus);
 
-        showKeyboard();
+        Keyboard.show(this);
 
         TextView badUrl  = dialog.findViewById(R.id.badUrl);
         TextView usedUrl = dialog.findViewById(R.id.usedUrl);

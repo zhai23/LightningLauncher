@@ -76,6 +76,7 @@ public class Updater {
     public static final int STATE_HAS_UPDATE = 2;
     public static final int STATE_INACTIVE = 3;
     String latestVersionTag;
+    private AlertDialog downloadingDialog;
 
     public Updater(Activity activity) {
         this.activity = activity;
@@ -253,6 +254,7 @@ public class Updater {
         updateDialogBuilder.setMessage(R.string.update_downloading_content);
         updateDialogBuilder.setNegativeButton(R.string.update_hide_button, (dialog, which) -> dialog.cancel());
         updateDialogBuilder.show();
+        downloadingDialog = updateAlertDialog;
 
         activity.registerReceiver(onDownloadComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
@@ -286,6 +288,7 @@ public class Updater {
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             intent.putExtra(Intent.EXTRA_NOT_UNKNOWN_SOURCE, true);
 
+            if (downloadingDialog != null) downloadingDialog.dismiss();
             activity.startActivity(intent);
         } else {
             if (attempts > 0) {

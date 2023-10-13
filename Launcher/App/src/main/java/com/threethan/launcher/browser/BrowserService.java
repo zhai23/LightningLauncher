@@ -114,7 +114,6 @@ public class BrowserService extends Service {
             activityByBaseUrl.put(url, activity);
 
             webView.setInitialScale(Platform.isTv(activity) ? 150 : 100);
-            webView.loadUrl(url);
 
             // Change a number of settings to behave more like a normal browser
             final WebSettings ws = webView.getSettings();
@@ -139,6 +138,8 @@ public class BrowserService extends Service {
                 ws.setForceDark(activity.sharedPreferences
                 .getBoolean(BrowserActivity.KEY_WEBSITE_DARK+activity.baseUrl, true)
                 ? WebSettings.FORCE_DARK_ON : WebSettings.FORCE_DARK_OFF);
+
+            webView.loadUrl(url);
         }
         webView.setActivity(activity);
         updateStatus();

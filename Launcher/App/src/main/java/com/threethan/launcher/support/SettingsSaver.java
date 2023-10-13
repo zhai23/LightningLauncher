@@ -41,7 +41,7 @@ public abstract class SettingsSaver {
         FileLib.delete(prefs);
         FileLib.copy(export, prefs);
 
-        Dialog.toast("Loaded settings,","will close!");
+        Dialog.toast("Imported settings,","launcher will close!");
 
         activity.postDelayed(() -> {
             int pid = android.os.Process.myPid();

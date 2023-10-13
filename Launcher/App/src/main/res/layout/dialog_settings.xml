@@ -340,7 +340,7 @@
                     tools:ignore="NestedWeights" />
 
                 <Switch
-                    android:id="@+id/shimmerEffectSwitch"
+                    android:id="@+id/hueShiftSwitch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:foreground="@drawable/bkg_hover_button"
@@ -859,6 +859,37 @@
             android:layout_height="match_parent"
             android:layout_marginTop="10dp"
             android:layout_weight="1"
+            android:background="@drawable/bkg_button"
+            android:gravity="clip_vertical|center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/SettingButtonLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:singleLine="true"
+                android:text="@string/default_launch_out"
+                tools:ignore="NestedWeights" />
+
+            <Switch
+                android:id="@+id/defaultLaunchOutSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:foreground="@drawable/bkg_hover_button"
+                android:showText="false"
+                android:splitTrack="false"
+                android:thumb="@drawable/switch_thumb_custom"
+                android:track="@drawable/switch_track_custom"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
             android:gravity="clip_vertical|center_vertical"
             android:orientation="horizontal"
             android:visibility="visible"
@@ -919,37 +950,6 @@
                     tools:ignore="UseAppTint" />
 
             </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="10dp"
-            android:layout_weight="1"
-            android:background="@drawable/bkg_button"
-            android:gravity="clip_vertical|center_vertical"
-            android:orientation="horizontal">
-
-            <TextView
-                style="@style/SettingButtonLabel"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:singleLine="true"
-                android:text="@string/default_launch_out"
-                tools:ignore="NestedWeights" />
-
-            <Switch
-                android:id="@+id/defaultLaunchOutSwitch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:foreground="@drawable/bkg_hover_button"
-                android:showText="false"
-                android:splitTrack="false"
-                android:thumb="@drawable/switch_thumb_custom"
-                android:track="@drawable/switch_track_custom"
-                tools:ignore="UseSwitchCompatOrMaterialXml" />
 
         </LinearLayout>
 

@@ -102,8 +102,8 @@ public abstract class Settings {
     public static final String DONT_DOWNLOAD_ICONS = "DONT_DOWNLOAD_ICONS";
 
     // extra pizzazz
-    public static final String KEY_SHIMMER_ENABLED = "KEY_SHIMMER_ENABLED";
-    public static final boolean DEFAULT_SHIMMER_ENABLED = true;
+    public static final String KEY_HUE_SHIFT_ENABLED = "KEY_SHIMMER_ENABLED";
+    public static final boolean DEFAULT_HUE_SHIFT_ENABLED = true;
 
     // show names by display type
     public static final String KEY_SHOW_NAMES_SQUARE = "KEY_CUSTOM_NAMES";

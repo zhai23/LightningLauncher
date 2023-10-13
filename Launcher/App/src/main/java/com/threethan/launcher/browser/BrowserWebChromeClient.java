@@ -70,9 +70,11 @@ class BrowserWebChromeClient extends WebChromeClient {
     @Override
     public void onShowCustomView(View paramView, WebChromeClient.CustomViewCallback paramCustomViewCallback) {
         if (this.customView != null) onHideCustomView();
-        this.customView = paramView;
         this.callback = paramCustomViewCallback;
         activity.addFullscreenView(paramView);
+    }
+    public boolean hasCustomView() {
+        return (customView != null);
     }
 
     @Nullable

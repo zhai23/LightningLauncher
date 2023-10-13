@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -17,11 +18,13 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -29,6 +32,7 @@ import androidx.annotation.NonNull;
 
 import com.threethan.launcher.R;
 import com.threethan.launcher.helper.Dialog;
+import com.threethan.launcher.helper.Keyboard;
 import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.lib.StringLib;
@@ -161,7 +165,7 @@ public class BrowserActivity extends Activity {
             topBarEdit.setVisibility(View.VISIBLE);
             urlEdit.setText(currentUrl);
             urlEdit.post(urlEdit::requestFocus);
-            urlEdit.post(this::showKeyboard);
+            urlEdit.postDelayed(() -> Keyboard.show(this), 100);
         });
         urlEdit.setOnKeyListener((v, keyCode, event) -> {
             if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
@@ -178,10 +182,12 @@ public class BrowserActivity extends Activity {
             updateButtonsAndUrl(url);
             topBar.setVisibility(View.VISIBLE);
             topBarEdit.setVisibility(View.GONE);
+            Keyboard.hide(this, topBar);
         });
         topBarEdit.findViewById(R.id.cancel).setOnClickListener((view) -> {
             topBar.setVisibility(View.VISIBLE);
             topBarEdit.setVisibility(View.GONE);
+            Keyboard.hide(this, topBar);
         });
 
         addHome = findViewById(R.id.addHome);
@@ -280,6 +286,13 @@ public class BrowserActivity extends Activity {
             findViewById(R.id.cancel).callOnClick();
         else {
             if (w == null) return;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                BrowserWebChromeClient client = (BrowserWebChromeClient) w.getWebChromeClient();
+                if (client.hasCustomView()) {
+                    client.onHideCustomView();
+                    return;
+                }
+            }
             if (w.back()) updateButtonsAndUrl();
             else finish();
         }
@@ -371,11 +384,5 @@ public class BrowserActivity extends Activity {
     protected void onResume() {
         Dialog.setActivityContext(this);
         super.onResume();
-    }
-
-    protected void showKeyboard() {
-        // Show Soft Keyboard
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
     }
 }

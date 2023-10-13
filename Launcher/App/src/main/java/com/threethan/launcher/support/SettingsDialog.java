@@ -16,14 +16,11 @@ import com.threethan.launcher.helper.Compat;
 import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.launcher.LauncherActivity;
-import com.threethan.launcher.launcher.LauncherService;
 import com.threethan.launcher.lib.ImageLib;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /*
     SettingsDialog
@@ -86,11 +83,10 @@ public abstract class SettingsDialog {
             a.refreshInterfaceAll();
             a.post(a::clearAdapterCaches);
         });
-        Switch shimmer = dialog.findViewById(R.id.shimmerEffectSwitch);
-        shimmer.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_SHIMMER_ENABLED, Settings.DEFAULT_SHIMMER_ENABLED));
-        shimmer.setOnCheckedChangeListener((compoundButton, value) -> {
-            // No refresh needed, this value is checked periodically
-            a.sharedPreferenceEditor.putBoolean(Settings.KEY_SHIMMER_ENABLED, value);
+        Switch hueShift = dialog.findViewById(R.id.hueShiftSwitch);
+        hueShift.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_HUE_SHIFT_ENABLED, Settings.DEFAULT_HUE_SHIFT_ENABLED));
+        hueShift.setOnCheckedChangeListener((compoundButton, value) -> {
+            a.setHueShiftActive(value);
         });
         ImageView[] views = {
                 dialog.findViewById(R.id.background0),
@@ -307,18 +303,6 @@ public abstract class SettingsDialog {
             if (SettingsSaver.canLoad(a)) {
                 dialog.dismiss();
                 SettingsSaver.load(a);
-
-//                new Timer().schedule(new TimerTask() {
-//                    @Override
-//                    public void run() {
-//                        a.startActivity(a.getIntent());
-//                        SettingsSaver.load(a);
-//                        a.refreshInterfaceAll();
-//                        a.refreshBackground();
-//                        a.refreshAppDisplayListsAll();
-//                    }
-//                }, 1000);
-
             }
         });
 

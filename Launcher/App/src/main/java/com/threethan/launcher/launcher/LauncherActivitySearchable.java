@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 
 import com.threethan.launcher.R;
 import com.threethan.launcher.adapter.AppsAdapter;
+import com.threethan.launcher.helper.Keyboard;
 import com.threethan.launcher.helper.Launch;
 import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.view.EditTextWatched;
@@ -122,7 +123,7 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
     void hideSearchBar() {
         try {
             searching = false;
-            hideKeyboard();
+            Keyboard.hide(this, mainView);
 
             View searchBar = rootView.findViewById(R.id.blurViewSearchBar);
             View topBar = rootView.findViewById(R.id.topBarLayout);
@@ -205,9 +206,9 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
             });
         }
         searchText.setOnFocusChangeListener((view, hasFocus) -> {
-            if (hasFocus && searching) showKeyboard();
+            if (hasFocus && searching) Keyboard.show(this);
             else {
-                hideKeyboard();
+                Keyboard.hide(this, mainView);
                 // Dismiss empty search bar automatically on Android TV
                 if (Platform.isTv(this) && searchText.getText().toString().isEmpty()) hideSearchBar();
             }
