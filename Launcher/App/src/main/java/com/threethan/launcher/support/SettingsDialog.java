@@ -16,6 +16,7 @@ import com.threethan.launcher.helper.Compat;
 import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.launcher.LauncherActivity;
+import com.threethan.launcher.launcher.LauncherService;
 import com.threethan.launcher.lib.ImageLib;
 
 import java.util.ArrayList;
@@ -306,7 +307,7 @@ public abstract class SettingsDialog {
             if (SettingsSaver.canLoad(a)) {
                 dialog.dismiss();
                 SettingsSaver.load(a);
-                a.finish();
+
 //                new Timer().schedule(new TimerTask() {
 //                    @Override
 //                    public void run() {

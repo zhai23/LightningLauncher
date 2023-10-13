@@ -118,7 +118,7 @@
     <string name="update_skip_button">Skip this Update</string>
 
     <string name="update_downloading_title">Downloading Latest Version…</string>
-    <string name="update_downloading_content">You should get a prompt to install in a few seconds</string>
+    <string name="update_downloading_content">You should get a prompt to install shortly</string>
     <string name="update_hide_button">Hide</string>
 
     <string name="update_failed_title">Failed to download package!</string>

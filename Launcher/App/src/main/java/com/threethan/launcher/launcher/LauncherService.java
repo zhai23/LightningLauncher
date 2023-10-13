@@ -12,11 +12,11 @@ import android.view.ViewGroup;
 import androidx.annotation.Nullable;
 
 import com.threethan.launcher.R;
-import com.threethan.launcher.lib.FileLib;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /*
@@ -79,6 +79,11 @@ public class LauncherService extends Service {
     public void finishAllActivities() {
         for (Activity activity: activityByIndex.keySet()) activity.finishAndRemoveTask();
     }
+    public void invalidateAll() {
+        finishAllActivities();
+        activityByIndex.clear();
+        viewByIndex.clear();
+    }
 
     // ______All functions
     // calls the specified function on all launcher activities
@@ -107,9 +112,16 @@ public class LauncherService extends Service {
                 viewByIndex.remove(index);
                 Log.v("LauncherService", "Removed inactive view with index: "+index);
             } else {
-                LauncherActivity activity = FileLib.keyByValue(activityByIndex, index);
+                LauncherActivity activity = keyByValue(activityByIndex, index);
                 if (activity == null) continue;
                 if (activity.isKillable) activity.finish();
             }
+    }
+    /** @noinspection SameParameterValue*/
+    static <T, E> T keyByValue(Map<T, E> map, E value) {
+        for (Map.Entry<T, E> entry : map.entrySet())
+            if (Objects.equals(value, entry.getValue()))
+                return entry.getKey();
+        return null;
     }
 }

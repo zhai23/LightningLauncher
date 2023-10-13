@@ -19,25 +19,11 @@ public class FileLib {
         delete(new File(path));
     }
     public static void delete(File fileOrDirectory) {
-        if (fileOrDirectory.isDirectory()) {
-            Log.v("dir", fileOrDirectory.getAbsolutePath());
-
-            for (File child : Objects.requireNonNull(fileOrDirectory.listFiles())) {
-                Log.v("Deletingchild", child.getAbsolutePath());
-
+        if (fileOrDirectory.isDirectory())
+            for (File child : Objects.requireNonNull(fileOrDirectory.listFiles()))
                 delete(child);
 
-            }
-        }
-
-        Log.v("Deleting", fileOrDirectory.getAbsolutePath());
         final boolean ignored = fileOrDirectory.delete();
-    }
-    public static <T, E> T keyByValue(Map<T, E> map, E value) {
-        for (Map.Entry<T, E> entry : map.entrySet())
-            if (Objects.equals(value, entry.getValue()))
-                return entry.getKey();
-        return null;
     }
 
     /** @noinspection IOStreamConstructor*/ // Fix requires higher API

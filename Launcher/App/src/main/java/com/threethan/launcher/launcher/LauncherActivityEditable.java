@@ -304,7 +304,7 @@ public class LauncherActivityEditable extends LauncherActivity {
         dialog.findViewById(R.id.presetDiscord).setOnClickListener(view -> urlEdit.setText(R.string.preset_discord));
         dialog.findViewById(R.id.presetSpotify).setOnClickListener(view -> urlEdit.setText(R.string.preset_spotify));
         dialog.findViewById(R.id.presetTidal).setOnClickListener(view -> urlEdit.setText(R.string.preset_tidal));
-        dialog.findViewById(R.id.presetAptoide).setOnClickListener(view -> urlEdit.setText(R.string.preset_aptoide));
+        dialog.findViewById(R.id.presetApkPure).setOnClickListener(view -> urlEdit.setText(R.string.preset_aptoide));
     }
 
     void showWebsiteInfo() {

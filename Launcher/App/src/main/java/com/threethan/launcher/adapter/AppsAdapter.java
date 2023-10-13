@@ -335,10 +335,8 @@ public class AppsAdapter extends BaseAdapter{
             packageName = currentApp.packageName;
 
             iconFile = Icon.iconFileForPackage(launcherActivity, currentApp.packageName);
-            if (iconFile.exists()) {
-                //noinspection ResultOfMethodCallIgnored
+            if (iconFile.exists()) //noinspection ResultOfMethodCallIgnored
                 iconFile.delete();
-            }
             launcherActivity.setSelectedIconImage(iconImageView, currentApp.packageName);
             ImageLib.showImagePicker(launcherActivity, Settings.PICK_ICON_CODE);
         });

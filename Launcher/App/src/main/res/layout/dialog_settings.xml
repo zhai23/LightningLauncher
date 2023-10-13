@@ -861,7 +861,7 @@
             android:layout_weight="1"
             android:gravity="clip_vertical|center_vertical"
             android:orientation="horizontal"
-            android:visibility="gone"
+            android:visibility="visible"
             tools:visibility="visible">
 
             <LinearLayout

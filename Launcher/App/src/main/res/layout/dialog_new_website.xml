@@ -148,7 +148,6 @@
             android:padding="4dp">
 
             <ImageView
-                android:id="@+id/imageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -156,7 +155,7 @@
         </FrameLayout>
 
         <FrameLayout
-            android:id="@+id/presetAptoide"
+            android:id="@+id/presetApkPure"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginEnd="8dp"
@@ -165,11 +164,10 @@
             android:padding="4dp">
 
             <ImageView
-                android:id="@+id/imageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:src="@drawable/web_preset_aptoide" />
+                android:src="@drawable/web_preset_apkpure" />
         </FrameLayout>
 
     </LinearLayout>
