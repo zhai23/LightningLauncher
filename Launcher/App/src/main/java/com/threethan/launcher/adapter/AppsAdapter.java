@@ -434,8 +434,8 @@ public class AppsAdapter extends BaseAdapter{
         openAnim.setVisibility(View.VISIBLE);
         openAnim.setAlpha(1F);
         openAnim.setClipToOutline(true);
-        openAnim.setScaleX(1F);
-        openAnim.setScaleY(1F);
+        openAnim.setScaleX(1.1F);
+        openAnim.setScaleY(1.1F);
 
         ImageView animIcon = openAnim.findViewById(R.id.openIcon);
         ImageView animIconBg = openAnim.findViewById(R.id.openIconBg);

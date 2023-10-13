@@ -28,10 +28,10 @@ import androidx.annotation.NonNull;
 // This is necessary for web browsing to work, as many sites try to hook the dpad
 
 public class CursorLayout extends LinearLayout {
-    private static final float CURSOR_ACCEL = 950f;
-    private static final float CURSOR_FRICTION = 10f;
+    private static final float CURSOR_ACCEL = 900f;
+    private static final float CURSOR_FRICTION = 20f;
     private static final float MAX_CURSOR_SPEED = 20000.0f;
-    private static final float MIN_CURSOR_SPEED = 100f;
+    private static final float MIN_CURSOR_SPEED = 180f;
     private static int CURSOR_RADIUS = 0;
     private static float CURSOR_STROKE_WIDTH = 0f;
     private static int SCROLL_START_PADDING = 100;
@@ -93,17 +93,17 @@ public class CursorLayout extends LinearLayout {
                 try {
                     if (cursorPosition.y > ((float) (getHeight() - CursorLayout.SCROLL_START_PADDING))) {
                         if (cursorSpeed.y > 0.0f && targetView.canScrollVertically((int) cursorSpeed.y)) {
-                            targetView.scrollTo(targetView.getScrollX(), targetView.getScrollY() + ((int) cursorSpeed.y));
+                            targetView.scrollTo(targetView.getScrollX(), (int) (targetView.getScrollY() + (cursorSpeed.y * deltaTime)));
                         }
                     } else if (cursorPosition.y < ((float) CursorLayout.SCROLL_START_PADDING) && cursorSpeed.y < 0.0f && targetView.canScrollVertically((int) cursorSpeed.y)) {
-                        targetView.scrollTo(targetView.getScrollX(), targetView.getScrollY() + ((int) cursorSpeed.y));
+                        targetView.scrollTo(targetView.getScrollX(), (int) (targetView.getScrollY() + (cursorSpeed.y * deltaTime)));
                     }
                     if (cursorPosition.x > ((float) (getWidth() - CursorLayout.SCROLL_START_PADDING))) {
                         if (cursorSpeed.x > 0.0f && targetView.canScrollHorizontally((int) cursorSpeed.x)) {
-                            targetView.scrollTo(targetView.getScrollX() + ((int) cursorSpeed.x), targetView.getScrollY());
+                            targetView.scrollTo((int) (targetView.getScrollX() + (cursorSpeed.x * deltaTime)), targetView.getScrollY());
                         }
                     } else if (cursorPosition.x < ((float) CursorLayout.SCROLL_START_PADDING) && cursorSpeed.x < 0.0f && targetView.canScrollHorizontally((int) cursorSpeed.x)) {
-                        targetView.scrollTo(targetView.getScrollX() + ((int) cursorSpeed.x), targetView.getScrollY());
+                        targetView.scrollTo((int) (targetView.getScrollX() + (cursorSpeed.x * deltaTime)), targetView.getScrollY());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
