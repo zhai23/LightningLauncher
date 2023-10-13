@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.view.WindowManager;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
@@ -45,12 +46,17 @@ public abstract class Dialog {
         dialog.show();
         return dialog;
     }
-    public static AlertDialog toast(String string) {
-        return toast(string, "");
-    }
     @Nullable
-    public static AlertDialog toast(String stringMain, String stringBold) {
-        if (getActivityContext() == null) return null;
+    public static void toast(String stringMain, String stringBold) {
+        if (getActivityContext() == null) return;
+
+        // Real toast doesn't block dpad input
+        if (!Platform.isVr(getActivityContext())) {
+            Toast.makeText(getActivityContext() , stringMain + " " + stringBold, Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        // Fake toast for the Quest
         AlertDialog dialog = new AlertDialog.Builder(getActivityContext(), R.style.dialogToast).setView(R.layout.dialog_toast).create();
 
         if (dialog.getWindow() != null) {
@@ -65,6 +71,5 @@ public abstract class Dialog {
 
         // Dismiss if not done automatically
         dialog.findViewById(R.id.toastTextMain).postDelayed(dialog::dismiss, 5000);
-        return dialog;
     }
 }

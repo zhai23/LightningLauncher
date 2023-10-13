@@ -119,7 +119,10 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
             if (getCurrentFocus() != null) getCurrentFocus().clearFocus();
             searchText.setText("");
             searchText.post(searchText::requestFocus);
-            if (Platform.isVr(this)) postDelayed(() -> Keyboard.show(this), 50);
+            if (Platform.isVr(this)) postDelayed(() -> {
+                Keyboard.hide(this, searchBar);
+                Keyboard.show(this);
+            }, 50);
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
@@ -224,11 +227,6 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
             }
         });
 
-        // Secret focusable element off the top of the screen to allow search on android tv by pressing up
-        final View searchShortcutView = findViewById(R.id.searchShortcutView);
-        searchShortcutView.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus && !searching) showSearchBar();
-        });
         findViewById(R.id.searchCancelIcon).setOnClickListener(v -> hideSearchBar());
 
         searching = false;
@@ -256,6 +254,10 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
     protected void postRefresh() {
         final View searchShortcutView = findViewById(R.id.searchShortcutView);
         searchShortcutView.setFocusable(true);
+        // Secret focusable element off the top of the screen to allow search on android tv by pressing up
+        searchShortcutView.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus && !searching) showSearchBar();
+        });
         super.postRefresh();
     }
 
