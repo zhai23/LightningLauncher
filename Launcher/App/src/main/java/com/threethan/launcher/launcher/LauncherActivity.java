@@ -249,8 +249,8 @@ public class LauncherActivity extends Activity {
     protected void onDestroy() {
         Log.v(TAG, "Activity is being destroyed - "
                 + (isFinishing() ? "Finishing" : "Not Finishing"));
-        launcherService.destroyed(this);
         try {
+            launcherService.destroyed(this);
             unbindService(launcherServiceConnection); // Should rarely cause exception
             unbindService(browserServiceConnection); // Will ofter cause an exception if uncaught
         } catch (RuntimeException ignored) {} //Runtime exception called when a service is invalid

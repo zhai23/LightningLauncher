@@ -119,6 +119,7 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
             if (getCurrentFocus() != null) getCurrentFocus().clearFocus();
             searchText.setText("");
             searchText.post(searchText::requestFocus);
+            if (Platform.isVr(this)) postDelayed(() -> Keyboard.show(this), 50);
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
