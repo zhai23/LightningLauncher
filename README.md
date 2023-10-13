@@ -1,5 +1,6 @@
 # LightningLauncher
-### [Now available on SideQuest!](https://sidequestvr.com/app/21783)
+### Now compatible with Android TV!
+### [Available on SideQuest!](https://sidequestvr.com/app/21783)
 
 LightningLauncher is a launcher designed for Oculus Quest that supports both official and sideloaded apps and games.
 
