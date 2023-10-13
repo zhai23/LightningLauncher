@@ -28,13 +28,14 @@ import androidx.annotation.NonNull;
 // This is necessary for web browsing to work, as many sites try to hook the dpad
 
 public class CursorLayout extends LinearLayout {
-    private static final float CURSOR_ACCEL = 0.01f;
-    private static final float CURSOR_FRICTION = 0.012f;
-    private static final float MAX_CURSOR_SPEED = 30.0f;
-    private static final float MIN_CURSOR_SPEED = 1.5f;
+    private static final float CURSOR_ACCEL = 950f;
+    private static final float CURSOR_FRICTION = 10f;
+    private static final float MAX_CURSOR_SPEED = 20000.0f;
+    private static final float MIN_CURSOR_SPEED = 100f;
     private static int CURSOR_RADIUS = 0;
     private static float CURSOR_STROKE_WIDTH = 0f;
     private static int SCROLL_START_PADDING = 100;
+    private static final float PHYSICS_SUBSTEPS = 8;
     private final Point cursorDirection = new Point(0, 0);
     private final PointF cursorPosition = new PointF(0.0f, 0.0f);
     private final PointF cursorSpeed = new PointF(0.0f, 0.0f);
@@ -43,13 +44,18 @@ public class CursorLayout extends LinearLayout {
     private final Runnable cursorUpdateRunnable = new Runnable() {
         public void run() {
             long currentTimeMillis = System.currentTimeMillis();
-            long deltaTime = currentTimeMillis - lastCursorUpdate;
+            float deltaTime = (currentTimeMillis - lastCursorUpdate)/1000f;
             lastCursorUpdate = currentTimeMillis;
-            float f = ((float) deltaTime) * CURSOR_ACCEL;
             CursorLayout cursorLayout = CursorLayout.this;
-            float xSpeed = cursorSpeed.x;
-            float xSpeedBound = cursorLayout.bound(xSpeed + (bound((float) cursorDirection.x, 1.0f) * f), CursorLayout.MAX_CURSOR_SPEED);
-            cursorSpeed.set(xSpeedBound, bound(cursorSpeed.y + (bound((float) cursorDirection.y, 1.0f) * f), CursorLayout.MAX_CURSOR_SPEED));
+
+
+            float f = (deltaTime/PHYSICS_SUBSTEPS) * CURSOR_ACCEL;
+            for (int i=0; i<PHYSICS_SUBSTEPS; i++) {
+                float xSpeed = cursorSpeed.x;
+                float xSpeedBound = cursorLayout.bound(xSpeed + (bound((float) cursorDirection.x, 1.0f) * f), CursorLayout.MAX_CURSOR_SPEED);
+                cursorSpeed.set(xSpeedBound, bound(cursorSpeed.y + (bound((float) cursorDirection.y, 1.0f) * f), CursorLayout.MAX_CURSOR_SPEED));
+            }
+
             if (Math.abs(cursorSpeed.x) < 0.1f) cursorSpeed.x = 0.0f;
             else if (Math.abs(cursorSpeed.x) < MIN_CURSOR_SPEED && cursorDirection.x != 0)
                 cursorSpeed.x += MIN_CURSOR_SPEED * (cursorDirection.x > 0 ? 1 : -1);
@@ -57,10 +63,13 @@ public class CursorLayout extends LinearLayout {
             if (Math.abs(cursorSpeed.y) < 0.1f) cursorSpeed.y = 0.0f;
             else if (Math.abs(cursorSpeed.y) < MIN_CURSOR_SPEED && cursorDirection.y != 0)
                 cursorSpeed.y += MIN_CURSOR_SPEED * (cursorDirection.y > 0 ? 1 : -1);
+
             if (cursorDirection.x == 0)
-                cursorSpeed.x -= cursorSpeed.x * Math.min(1f, deltaTime * CURSOR_FRICTION);
+                for (int i=0; i<PHYSICS_SUBSTEPS; i++)
+                    cursorSpeed.x -= cursorSpeed.x * Math.min(1f, deltaTime/PHYSICS_SUBSTEPS * CURSOR_FRICTION);
             if (cursorDirection.y == 0)
-                cursorSpeed.y -= cursorSpeed.y * Math.min(1f, deltaTime * CURSOR_FRICTION);
+                for (int i=0; i<PHYSICS_SUBSTEPS; i++)
+                    cursorSpeed.y -= cursorSpeed.y * Math.min(1f, deltaTime/PHYSICS_SUBSTEPS * CURSOR_FRICTION);
 
             if (cursorDirection.x == 0 && cursorDirection.y == 0 && cursorSpeed.x == 0.0f && cursorSpeed.y == 0.0f) {
                 if (getHandler() != null) {
@@ -71,7 +80,8 @@ public class CursorLayout extends LinearLayout {
             }
 
             tmpPointF.set(cursorPosition);
-            cursorPosition.offset(cursorSpeed.x, cursorSpeed.y);
+            cursorPosition.offset(cursorSpeed.x*deltaTime, cursorSpeed.y*deltaTime);
+
             if (cursorPosition.x < 0.0f) cursorPosition.x = 0.0f;
             else if (cursorPosition.x > ((float) (getWidth() - 1)))  cursorPosition.x = (float) (getWidth() - 1);
             if (cursorPosition.y < 0.0f) cursorPosition.y = 0.0f;
