@@ -95,16 +95,14 @@ public abstract class Launch {
         questIntent.setPackage(app.packageName);
         if (questIntent.resolveActivity(pm) != null) return questIntent;
 
-        // Prefer launching as android TV app
-        Intent tvIntent = new Intent();
-        tvIntent.setAction(Intent.CATEGORY_LEANBACK_LAUNCHER);
-        tvIntent.setPackage(app.packageName);
-        if (tvIntent.resolveActivity(pm) != null) return tvIntent;
-
         // Otherwise android TV settings is not recognized
         if (Objects.equals(app.packageName, "com.android.tv.settings")) {
             return new Intent(android.provider.Settings.ACTION_SETTINGS);
         }
+
+        // Prefer launching as android TV app
+        Intent tvIntent = pm.getLeanbackLaunchIntentForPackage(app.packageName);
+        if (tvIntent != null) return tvIntent;
 
         // Get normal launch intent
         return pm.getLaunchIntentForPackage(app.packageName);
