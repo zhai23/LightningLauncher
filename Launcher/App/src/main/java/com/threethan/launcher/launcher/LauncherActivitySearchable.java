@@ -206,6 +206,7 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
                 // Launch the first visible icon when enter is pressed
                 updateTopSearchResult();
                 if (currentTopSearchResult != null) try {
+                    Keyboard.hide(this, searchBg);
                     Launch.launchApp(this, currentTopSearchResult);
                     return true;
                 } catch (Exception ignored) {

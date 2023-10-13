@@ -434,8 +434,8 @@ public class AppsAdapter extends BaseAdapter{
         openAnim.setVisibility(View.VISIBLE);
         openAnim.setAlpha(1F);
         openAnim.setClipToOutline(true);
-        openAnim.setScaleX(1.1F);
-        openAnim.setScaleY(1.1F);
+        openAnim.setScaleX(1.08F);
+        openAnim.setScaleY(1.08F);
 
         ImageView animIcon = openAnim.findViewById(R.id.openIcon);
         ImageView animIconBg = openAnim.findViewById(R.id.openIconBg);
@@ -488,8 +488,8 @@ public class AppsAdapter extends BaseAdapter{
             openAnim.setScaleY(3f);
             animIcon.setAlpha(1f);
 
-            ObjectAnimator aX = ObjectAnimator.ofFloat(openAnim, "ScaleX", 1f);
-            ObjectAnimator aY = ObjectAnimator.ofFloat(openAnim, "ScaleY", 1f);
+            ObjectAnimator aX = ObjectAnimator.ofFloat(openAnim, "ScaleX", 1.08f);
+            ObjectAnimator aY = ObjectAnimator.ofFloat(openAnim, "ScaleY", 1.08f);
             ObjectAnimator aA = ObjectAnimator.ofFloat(animIconBg, "Alpha", 0f);
 
             aX.setDuration(100);
