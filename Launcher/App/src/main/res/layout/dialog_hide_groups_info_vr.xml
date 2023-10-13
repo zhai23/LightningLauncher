@@ -23,7 +23,7 @@
         android:layout_marginBottom="10dp"
         android:autofillHints="text"
         android:backgroundTint="@android:color/white"
-        android:text="@string/hidden_groups_message"
+        android:text="@string/hidden_groups_message_vr"
         android:textColor="@android:color/white" />
 
 

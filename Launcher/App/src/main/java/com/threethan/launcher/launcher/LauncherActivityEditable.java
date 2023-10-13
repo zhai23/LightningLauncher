@@ -25,6 +25,7 @@ import com.threethan.launcher.helper.Keyboard;
 import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.lib.StringLib;
+import com.threethan.launcher.support.SettingsDialog;
 import com.threethan.launcher.support.SettingsManager;
 
 import java.util.ArrayList;
@@ -51,7 +52,10 @@ public class LauncherActivityEditable extends LauncherActivity {
     @Override
     public void onBackPressed() {
         if (AppsAdapter.animateClose(this)) return;
-        if (!settingsVisible) setEditMode(Boolean.FALSE.equals(editMode));
+        if (!settingsVisible) {
+            if (groupsEnabled) setEditMode(Boolean.FALSE.equals(editMode));
+            else try { SettingsDialog.showSettings(this); } catch (Exception ignored) {}
+        }
     }
 
     // Startup
@@ -187,6 +191,7 @@ public class LauncherActivityEditable extends LauncherActivity {
     @Override
     public void setEditMode(boolean value) {
         editMode = value;
+        if (!editMode) currentSelectedApps.clear();
         if (sharedPreferenceEditor == null) return;
         sharedPreferenceEditor.putBoolean(Settings.KEY_EDIT_MODE, editMode);
         final View focused = getCurrentFocus();
@@ -240,7 +245,7 @@ public class LauncherActivityEditable extends LauncherActivity {
     @Override
     public boolean isEditing() { return Boolean.TRUE.equals(editMode); }
     @Override
-    public boolean canEdit() { return true; }
+    public boolean canEdit() { return groupsEnabled; }
 
     // Utility functions
     void updateSelectionHint() {
@@ -254,7 +259,7 @@ public class LauncherActivityEditable extends LauncherActivity {
         else selectionHintText.setText(getString(R.string.selection_hint_multiple, size));
     }
 
-    void addWebsite(Context context) {
+    public void addWebsite(Context context) {
         sharedPreferenceEditor.apply();
         AlertDialog dialog = Dialog.build(this, R.layout.dialog_new_website);
 

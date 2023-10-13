@@ -215,7 +215,7 @@ public class AppsAdapter extends BaseAdapter{
             }
         });
         holder.view.setOnLongClickListener(view -> {
-            if (getEditMode() || launcherActivity.sharedPreferences
+            if (getEditMode() || !launcherActivity.canEdit() || launcherActivity.sharedPreferences
                     .getBoolean(Settings.KEY_DETAILS_LONG_PRESS, Settings.DEFAULT_DETAILS_LONG_PRESS)) {
                 if (holder.killButton.getVisibility() == View.VISIBLE) holder.killButton.callOnClick();
                 else showAppDetails(holder.app);

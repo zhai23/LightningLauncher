@@ -13,6 +13,7 @@ import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -208,7 +209,8 @@ public class LauncherActivity extends Activity {
         settingsImageView.setOnClickListener(view -> {
             if (!settingsVisible) SettingsDialog.showSettings(this);
         });
-        startHueShift();
+        if (sharedPreferences.getBoolean(Settings.KEY_BACKGROUND_OVERLAY, Settings.DEFAULT_BACKGROUND_OVERLAY))
+            startBackgroundOverlay();
     }
 
     public boolean clickGroup(int position) {
@@ -256,7 +258,6 @@ public class LauncherActivity extends Activity {
         } catch (RuntimeException ignored) {} //Runtime exception called when a service is invalid
         // For the GC & easier debugging
         settingsManager = null;
-        hueShiftActive = false;
         super.onDestroy();
     }
     @Override
@@ -280,13 +281,6 @@ public class LauncherActivity extends Activity {
         Dialog.setActivityContext(this);
         post(this::recheckPackages);
         postDelayed(this::recheckPackages, 1000);
-        startHueShift();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        hueShiftActive = false;
     }
 
     public void reloadPackages() {
@@ -355,8 +349,9 @@ public class LauncherActivity extends Activity {
                 rootView.findViewById(R.id.blurViewSearchBar),
         };
 
-        final boolean hide = !groupsEnabled && !isEditing();
+        final boolean hide = !groupsEnabled;
         for (int i = 0; i<blurViews.length-1; i++) blurViews[i].setVisibility(hide ? View.GONE : View.VISIBLE);
+        if (isEditing() && hide) setEditMode(false); // If groups were disabled while in edit mode
         if (hide) return;
 
         float blurRadiusDp = 15f;
@@ -419,7 +414,6 @@ public class LauncherActivity extends Activity {
         darkMode = sharedPreferences.getBoolean(Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE);
         groupsEnabled = sharedPreferences.getBoolean(Settings.KEY_GROUPS_ENABLED, Settings.DEFAULT_GROUPS_ENABLED);
 
-        if (!groupsEnabled && isEditing()) groupsEnabled = true;
         refreshAdapters();
 
         // Fix some focus issues
@@ -534,10 +528,7 @@ public class LauncherActivity extends Activity {
     // Sets the background value in the settings, then refreshes the background for all views
     public void setBackground(int index) {
         if (index >= SettingsManager.BACKGROUND_DRAWABLES.length || index < 0) index = -1;
-        else {
-            sharedPreferenceEditor.putBoolean(Settings.KEY_DARK_MODE, SettingsManager.BACKGROUND_DARK[index]);
-            sharedPreferenceEditor.putBoolean(Settings.KEY_HUE_SHIFT_ENABLED, SettingsManager.BACKGROUND_HUE_SHIFT[index]);
-        }
+        else sharedPreferenceEditor.putBoolean(Settings.KEY_DARK_MODE, SettingsManager.BACKGROUND_DARK[index]);
         sharedPreferenceEditor.putInt(Settings.KEY_BACKGROUND, index);
         isKillable = false;
         launcherService.refreshBackgroundAll();
@@ -669,36 +660,20 @@ public class LauncherActivity extends Activity {
     }
     public boolean isEditing() { return false; }
     public boolean canEdit() { return false; }
+    public void addWebsite(Context context) {}
 
-    // Wallpaper Hue Shift Effect
-    private final int HUE_SHIFT_INTERVAL = 1000/10; // 10 FPS
-    private boolean hueShiftActive = false;
-    private double hueShiftTime = 0;
-    protected void startHueShift() {
-        hueShiftActive = sharedPreferences.getBoolean(Settings.KEY_HUE_SHIFT_ENABLED, Settings.DEFAULT_HUE_SHIFT_ENABLED);
-        Runnable shimmerStep = new Runnable() {
-            @Override
-            public void run() {
-                if (!hueShiftActive) return;
-                if (mainView == null || backgroundImageView == null) return;
-
-                hueShiftTime += HUE_SHIFT_INTERVAL / 1000f;
-                backgroundImageView.setImageTintList(ColorStateList.valueOf(Color.HSVToColor(
-                        100, new float[]{(float) ((hueShiftTime*2.132)%360),
-                                (float) (0.8 + 0.1 * Math.cos(hueShiftTime*1.237)
-                                             + 0.2 * Math.cos(hueShiftTime*0.523)),
-                                (float) (0.5 + 0.03 * Math.sin(hueShiftTime*4.339)
-                                             + 0.1 * Math.sin(hueShiftTime*0.794))}
-                )));
-                mainView.postDelayed(this, HUE_SHIFT_INTERVAL); //~5 FPS
-            }
-        };
-        shimmerStep.run();
+    // Wallpaper Animated Gradient Overlay
+    protected void startBackgroundOverlay() {
+        findViewById(R.id.overlayGradient).setVisibility(View.VISIBLE);
+        final View gradView = findViewById(R.id.overlayGradient);
+        AnimationDrawable anim = ((AnimationDrawable) gradView.getBackground());
+        anim.setExitFadeDuration(5000);
+        anim.setEnterFadeDuration(10);
+        anim.start();
     }
-    public void setHueShiftActive(boolean val) {
-        hueShiftActive = val;
-        sharedPreferenceEditor.putBoolean(Settings.KEY_HUE_SHIFT_ENABLED, val).apply();
-        if (val) startHueShift();
-        else backgroundImageView.setImageTintList(null);
+    public void setBackgroundOverlay(boolean val) {
+        sharedPreferenceEditor.putBoolean(Settings.KEY_BACKGROUND_OVERLAY, val).apply();
+        if (val) startBackgroundOverlay();
+        else findViewById(R.id.overlayGradient).setVisibility(View.GONE);
     }
 }

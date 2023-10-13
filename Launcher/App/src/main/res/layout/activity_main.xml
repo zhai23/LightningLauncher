@@ -11,10 +11,18 @@
         android:id="@+id/background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#1C1C1D"
+        android:background="#2a2a2c"
         android:scaleType="centerCrop"
-        android:tintMode="screen"
+        android:tintMode="add"
         android:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/overlayGradient"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.1"
+        android:background="@drawable/anim_combined"
+        android:visibility="gone" />
 
     <com.threethan.launcher.view.FadingTopScrollView
         android:id="@+id/mainScrollView"

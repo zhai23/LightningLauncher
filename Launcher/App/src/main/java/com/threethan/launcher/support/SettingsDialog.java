@@ -9,7 +9,6 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Switch;
-import android.widget.TextView;
 
 import com.threethan.launcher.R;
 import com.threethan.launcher.helper.Compat;
@@ -54,20 +53,32 @@ public abstract class SettingsDialog {
 
         // Edit
         Switch editSwitch = dialog.findViewById(R.id.editModeSwitch);
+        editSwitch.setOnClickListener(view1 -> {
+            a.setEditMode(!a.isEditing());
+            ArrayList<String> selectedGroups = a.settingsManager.getAppGroupsSorted(true);
+            if (a.isEditing() && (selectedGroups.size() > 1)) {
+                Set<String> selectFirst = new HashSet<>();
+                selectFirst.add(selectedGroups.get(0));
+                a.settingsManager.setSelectedGroups(selectFirst);
+            }
+        });
+
+        View addWebsite = dialog.findViewById(R.id.addWebsiteButton);
+        addWebsite.setOnClickListener(v -> a.addWebsite(a));
+
+        // Group enabled state
         if (a.canEdit()) {
+            // Can edit, show switch
             editSwitch.setChecked(a.isEditing());
-            editSwitch.setOnClickListener(view1 -> {
-                a.setEditMode(!a.isEditing());
-                ArrayList<String> selectedGroups = a.settingsManager.getAppGroupsSorted(true);
-                if (a.isEditing() && (selectedGroups.size() > 1)) {
-                    Set<String> selectFirst = new HashSet<>();
-                    selectFirst.add(selectedGroups.get(0));
-                    a.settingsManager.setSelectedGroups(selectFirst);
-                }
-            });
-        } else editSwitch.setVisibility(View.GONE);
-        TextView editModeText = dialog.findViewById(R.id.editModeText);
-        editModeText.setText(a.canEdit() ? R.string.edit_mode : R.string.edit_mode_disabled);
+            dialog.findViewById(R.id.editModeContainer).setVisibility(View.VISIBLE);
+            dialog.findViewById(R.id.editRequiredContaier).setVisibility(View.VISIBLE);
+            addWebsite.setVisibility(View.GONE);
+        } else {
+            dialog.findViewById(R.id.editModeContainer).setVisibility(View.GONE);
+            dialog.findViewById(R.id.editRequiredContaier).setVisibility(View.GONE);
+            addWebsite.setVisibility(View.VISIBLE);
+        }
+
         // Update button
         if (Updater.isUpdateAvailable(a)) {
             View skippedUpdateButton = dialog.findViewById(R.id.updateButton);
@@ -85,10 +96,8 @@ public abstract class SettingsDialog {
             a.refreshInterfaceAll();
         });
         Switch hueShift = dialog.findViewById(R.id.hueShiftSwitch);
-        hueShift.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_HUE_SHIFT_ENABLED, Settings.DEFAULT_HUE_SHIFT_ENABLED));
-        hueShift.setOnCheckedChangeListener((compoundButton, value) -> {
-            a.setHueShiftActive(value);
-        });
+        hueShift.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_BACKGROUND_OVERLAY, Settings.DEFAULT_BACKGROUND_OVERLAY));
+        hueShift.setOnCheckedChangeListener((compoundButton, value) -> a.setBackgroundOverlay(value));
         ImageView[] views = {
                 dialog.findViewById(R.id.background0),
                 dialog.findViewById(R.id.background1),
@@ -143,7 +152,7 @@ public abstract class SettingsDialog {
                 } else {
                     a.setBackground(index);
                     dark.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE));
-                    hueShift.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_HUE_SHIFT_ENABLED, Settings.DEFAULT_HUE_SHIFT_ENABLED));
+                    hueShift.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_BACKGROUND_OVERLAY, Settings.DEFAULT_BACKGROUND_OVERLAY));
                 }
             });
         }
@@ -187,7 +196,7 @@ public abstract class SettingsDialog {
         groups.setOnCheckedChangeListener((sw, value) -> {
             if (!a.sharedPreferences.getBoolean(Settings.KEY_SEEN_HIDDEN_GROUPS_POPUP, false) && value != Settings.DEFAULT_GROUPS_ENABLED) {
                 groups.setChecked(Settings.DEFAULT_GROUPS_ENABLED); // Revert switch
-                AlertDialog subDialog = Dialog.build(a, R.layout.dialog_hide_groups_info);
+                AlertDialog subDialog = Dialog.build(a, R.layout.dialog_hide_groups_info_tv);
                 subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
                     final boolean newValue = !Settings.DEFAULT_GROUPS_ENABLED;
                     a.sharedPreferenceEditor
@@ -197,10 +206,28 @@ public abstract class SettingsDialog {
                     groups.setChecked(!Settings.DEFAULT_GROUPS_ENABLED);
                     a.refreshInterfaceAll();
                     subDialog.dismiss();
+                    // Group enabled state
+                    {
+                        dialog.findViewById(R.id.editModeContainer).setVisibility(View.GONE);
+                        dialog.findViewById(R.id.editRequiredContaier).setVisibility(View.GONE);
+                        addWebsite.setVisibility(View.VISIBLE);
+                    }
                 });
                 subDialog.findViewById(R.id.cancel).setOnClickListener(view -> subDialog.dismiss());
             } else {
                 a.sharedPreferenceEditor.putBoolean(Settings.KEY_GROUPS_ENABLED, value);
+                // Group enabled state
+                if (value) {
+                    // Can edit, show switch
+                    editSwitch.setChecked(a.isEditing());
+                    dialog.findViewById(R.id.editModeContainer).setVisibility(View.VISIBLE);
+                    dialog.findViewById(R.id.editRequiredContaier).setVisibility(View.VISIBLE);
+                    addWebsite.setVisibility(View.GONE);
+                } else {
+                    dialog.findViewById(R.id.editModeContainer).setVisibility(View.GONE);
+                    dialog.findViewById(R.id.editRequiredContaier).setVisibility(View.GONE);
+                    addWebsite.setVisibility(View.VISIBLE);
+                }
                 a.refreshInterfaceAll();
             }
         });

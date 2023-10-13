@@ -37,7 +37,8 @@
             android:orientation="horizontal">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
+                android:id="@+id/editModeContainer"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="5dp"
                 android:layout_weight="1"
@@ -69,9 +70,27 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <TextView
+                android:id="@+id/addWebsiteButton"
+                style="@style/SettingButtonLabel"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/bkg_button"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:singleLine="true"
+                android:text="@string/add_website"
+                android:visibility="gone">
+
+            </TextView>
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/addonsButtonAttract"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="5dp"
                 android:layout_weight="1"
@@ -107,7 +126,7 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/addonsButton"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="5dp"
                 android:layout_weight="1"
@@ -324,80 +343,69 @@
             </LinearLayout>
         </HorizontalScrollView>
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="39dp"
             android:layout_marginTop="10dp"
-            android:baselineAligned="false"
-            android:orientation="horizontal">
+            android:background="@drawable/bkg_button"
+            android:gravity="clip_vertical|center_vertical">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="0dp"
-                android:layout_height="39dp"
-                android:layout_marginEnd="5dp"
-                android:layout_weight="1"
-                android:background="@drawable/bkg_button"
-                android:gravity="clip_vertical|center_vertical">
+            <TextView
+                style="@style/SettingButtonLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginEnd="52dp"
+                android:singleLine="true"
+                android:text="@string/dark_mode"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    style="@style/SettingButtonLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:layout_marginEnd="52dp"
-                    android:singleLine="true"
-                    android:text="@string/shimmer_effect"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+            <Switch
+                android:id="@+id/darkModeSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:foreground="@drawable/bkg_hover_button"
+                android:thumb="@drawable/switch_thumb_custom"
+                android:track="@drawable/switch_track_custom"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
 
-                <Switch
-                    android:id="@+id/hueShiftSwitch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:foreground="@drawable/bkg_hover_button"
-                    android:thumb="@drawable/switch_thumb_custom"
-                    android:track="@drawable/switch_track_custom"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="39dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bkg_button"
+            android:gravity="clip_vertical|center_vertical">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="0dp"
-                android:layout_height="39dp"
-                android:layout_marginStart="5dp"
-                android:layout_weight="1"
-                android:background="@drawable/bkg_button"
-                android:gravity="clip_vertical|center_vertical">
+            <TextView
+                style="@style/SettingButtonLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginEnd="52dp"
+                android:singleLine="true"
+                android:text="@string/background_overlay"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    style="@style/SettingButtonLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:layout_marginEnd="52dp"
-                    android:singleLine="true"
-                    android:text="@string/dark_mode"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+            <Switch
+                android:id="@+id/hueShiftSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:foreground="@drawable/bkg_hover_button"
+                android:thumb="@drawable/switch_thumb_custom"
+                android:track="@drawable/switch_track_custom"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
 
-                <Switch
-                    android:id="@+id/darkModeSwitch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:foreground="@drawable/bkg_hover_button"
-                    android:thumb="@drawable/switch_thumb_custom"
-                    android:track="@drawable/switch_track_custom"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="UseSwitchCompatOrMaterialXml" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
             style="@style/SettingSubtitle"
@@ -408,36 +416,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="39dp"
-            android:background="@drawable/bkg_button"
-            android:orientation="horizontal">
-
-            <TextView
-                style="@style/SettingButtonLabel"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center_vertical"
-                android:singleLine="true"
-                android:text="@string/icons_margin" />
-
-            <SeekBar
-                android:id="@+id/marginSeekBar"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1"
-                android:foreground="@drawable/bkg_hover_button"
-                android:max="255"
-                android:padding="0dp"
-                android:progressBackgroundTint="@android:color/white"
-                android:progressDrawable="@drawable/seekbar_custom"
-                android:thumb="@null" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="39dp"
-            android:layout_marginTop="10dp"
             android:background="@drawable/bkg_button"
             android:orientation="horizontal">
 
@@ -463,6 +441,36 @@
                 android:progressDrawable="@drawable/seekbar_custom"
                 android:thumb="@null" />
 
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="39dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bkg_button"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/SettingButtonLabel"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:singleLine="true"
+                android:text="@string/icons_margin" />
+
+            <SeekBar
+                android:id="@+id/marginSeekBar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:foreground="@drawable/bkg_hover_button"
+                android:max="255"
+                android:padding="0dp"
+                android:progressBackgroundTint="@android:color/white"
+                android:progressDrawable="@drawable/seekbar_custom"
+                android:thumb="@null" />
         </LinearLayout>
 
         <LinearLayout
@@ -801,6 +809,7 @@
             android:text="@string/advanced_header"/>
 
         <LinearLayout
+            android:id="@+id/editRequiredContaier"
             android:layout_width="match_parent"
             android:layout_height="39dp"
             android:baselineAligned="false"

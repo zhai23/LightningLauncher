@@ -35,12 +35,12 @@
     <string name="name_header">Show Names</string>
     <string name="advanced_header">Advanced Options</string>
 
-    <string name="dark_mode">Light Text on Dark</string>
-    <string name="shimmer_effect">Hue Shift Effect</string>
-    <string name="group_mode">Always Show Top Bar</string>
+    <string name="dark_mode">Dark Mode with Light Text</string>
+    <string name="background_overlay">Animated Gradient over Wallpaper</string>
+    <string name="group_mode">Enable Groups</string>
     <string name="clear_cache">Reset All Icons</string>
     <string name="clear_labels">Reset All Labels</string>
-    <string name="clear_sort">Move All to Selected Default Groups</string>
+    <string name="clear_sort">Move Everything to Default Groups</string>
 
     <string name="long_press">Long Press to Edit</string>
     <string name="hide_empty">Hide Empty Groups</string>
@@ -58,9 +58,14 @@
 
     <string name="launch_message">Launching 2D apps or websites in their own window allows for easier multitasking on Quest devices,
         but will cause certain apps to not always launch.\n\nIf you have any issues, disable this option!</string>
-    <string name="hidden_groups_message">Turning this option off will hide the top bar when not in Edit Mode. \n
+    <string name="hidden_groups_message_tv">Turning this option off will hide the top bar when not in Edit Mode. \n
         \nThe settings button will also be hidden when not in Edit Mode.\n
-        \nTo turn on Edit Mode, press the back button on the top of the window, or B on your controller.
+        \nInstead, press the back button on your remote to open the settings.\n
+        \nYou can still search by navigating to the top row, then pressing up.
+    </string>
+    <string name="hidden_groups_message_vr">Turning this option off will hide the top bar when not in Edit Mode. \n
+        \nThe settings button will also be hidden when not in Edit Mode.\n
+        \nInstead, press the back button at the top of the window or B on the controller to open settings.
     </string>
 
     <string name="website_title">Websites in Lightning Launcher</string>

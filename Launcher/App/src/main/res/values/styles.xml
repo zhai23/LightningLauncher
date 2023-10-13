@@ -5,8 +5,8 @@
         <item name="android:windowActionBar">false</item>
         <item name="android:windowActivityTransitions">false</item>
         <item name="android:fontFamily">@font/poligon</item>
-        <item name="android:colorPrimary">#1C1C1D</item>
-        <item name="android:colorBackground">#1C1C1D</item>
+        <item name="android:colorPrimary">#2a2a2c</item>
+        <item name="android:windowBackground">@drawable/ic_app_splash</item>
     </style>
 
     <style name="SettingTitle">
@@ -58,4 +58,10 @@
         <item name="android:windowMinWidthMajor">100%</item>
         <item name="android:windowMinWidthMinor">100%</item>
     </style>
+    <color name="colorGradient0">#FFDD00</color>
+    <color name="colorGradient1">#FF5C00</color>
+    <color name="colorGradient2">#FF006F</color>
+    <color name="colorGradient3">#A600FF</color>
+    <color name="colorGradient4">#000EFF</color>
+    <color name="colorGradient5">#63FF00</color>
 </resources>

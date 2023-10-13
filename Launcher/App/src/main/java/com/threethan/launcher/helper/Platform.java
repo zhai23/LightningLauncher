@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.res.Configuration;
-import android.util.Log;
 
 import com.threethan.launcher.lib.StringLib;
 import com.threethan.launcher.support.SettingsManager;
