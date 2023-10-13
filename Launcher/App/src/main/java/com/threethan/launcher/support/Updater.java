@@ -56,12 +56,12 @@ public class Updater {
     public static final String TAG_LIBRARY_SHORTCUT = "TAG_LIBRARY_SHORTCUT";
     public static final String TAG_EXPLORE_SHORTCUT = "TAG_EXPLORE_SHORTCUT";
     public static final String TAG_ANDROID_TV_SHORTCUT = "TAG_ANDROID_TV_SHORTCUT";
-    public static final String ADDON_RELEASE_TAG = "addons";
+    public static final String ADDON_RELEASE_TAG = "addons2";
     public static final String APK_DIR = "/Content/TemporaryDownloadedApk/";
     public static final Addon[] addons = {
-            new Addon(TAG_MESSENGER_SHORTCUT, "MessengerRedirect", "com.facebook.orca", "5.1.0", false),
-            new Addon(TAG_LIBRARY_SHORTCUT, "LibraryShortcutService", "com.threethan.launcher.service.library", "5.1.0", true),
-            new Addon(TAG_EXPLORE_SHORTCUT, "ExploreShortcutService", "com.threethan.launcher.service.explore", "5.1.0", true),
+            new Addon(TAG_MESSENGER_SHORTCUT, "MessengerRedirect", "com.facebook.orca", "6.0.0", false),
+            new Addon(TAG_LIBRARY_SHORTCUT, "LibraryShortcutService", "com.threethan.launcher.service.library", "6.0.0", true),
+            new Addon(TAG_EXPLORE_SHORTCUT, "ExploreShortcutService", "com.threethan.launcher.service.explore", "6.0.0", true),
             new Addon(TAG_ANDROID_TV_SHORTCUT, "LM (ATV) - 1.0.4", "com.wolf.google.lm", "1.0.4", false,
                     "https://xdaforums.com/attachments/lm-atv-1-0-4-apk.5498333/"),
     };

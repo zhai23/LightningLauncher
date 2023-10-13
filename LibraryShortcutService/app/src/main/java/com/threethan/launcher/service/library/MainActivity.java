@@ -1,4 +1,4 @@
-package com.threethan.launcher.service.explore;
+package com.threethan.launcher.service.library;
 
 import android.app.Activity;
 import android.content.Intent;

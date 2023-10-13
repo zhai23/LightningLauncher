@@ -153,7 +153,7 @@
     <string name="preset_discord">discord.com/app</string>
     <string name="preset_spotify">open.spotify.com</string>
     <string name="preset_tidal">listen.tidal.com</string>
-    <string name="preset_aptoide">aptoide.com</string>
+    <string name="preset_apkpure">apkpure.com</string>
 
     <string name="notification_title_n">LightningLauncher: No Websites Running</string>
     <string name="notification_title_s">LightningLauncher: Running a Website</string>

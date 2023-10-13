@@ -1,4 +1,4 @@
-package com.threethan.launcher.service.explore;
+package com.facebook.orca;
 
 import android.app.Activity;
 import android.content.Intent;
