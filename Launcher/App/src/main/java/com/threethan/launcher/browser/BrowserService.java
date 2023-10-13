@@ -9,6 +9,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -165,7 +166,7 @@ public class BrowserService extends Service {
             downloadFilenameById.put(id, filename);
             downloadActivityById.put(id, activity);
 
-            Dialog.toast("Started downloading", filename);
+            Dialog.toast(getString(R.string.web_download_started), filename);
         });
         return webView;
     }
@@ -217,7 +218,11 @@ public class BrowserService extends Service {
                 openIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 openIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-                startActivity(openIntent);
+                try {
+                    startActivity(openIntent);
+                } catch (ActivityNotFoundException ignored) {
+                    Dialog.toast(getString(R.string.web_download_finished), filename);
+                }
             }
         }
     };

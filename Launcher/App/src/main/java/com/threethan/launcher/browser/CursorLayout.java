@@ -121,7 +121,6 @@ public class CursorLayout extends LinearLayout {
     private final Paint paint = new Paint();
     PointF tmpPointF = new PointF();
 
-    /* access modifiers changed from: private */
     private float bound(float val, float bound) {
         if (val > bound) return bound;
         return Math.max(val, -bound);
@@ -138,20 +137,20 @@ public class CursorLayout extends LinearLayout {
     }
 
     private void init() {
-        if (!isInEditMode()) {
-            this.paint.setAntiAlias(true);
-            setWillNotDraw(false);
-            Display defaultDisplay = ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-            Point point = new Point();
-            defaultDisplay.getSize(point);
-            CURSOR_RADIUS = (int) (point.x / 150f);
-            CURSOR_STROKE_WIDTH = CURSOR_RADIUS / 5f;
-            SCROLL_START_PADDING = point.x / 15;
-            this.post(() -> cursorPosition.y = getHeight() / 2f);
-        }
+        if (isInEditMode()) return;
+        this.paint.setAntiAlias(true);
+        setWillNotDraw(false);
+        Display defaultDisplay = ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        Point point = new Point();
+        defaultDisplay.getSize(point);
+        CURSOR_RADIUS = (int) (point.x / 150f);
+        CURSOR_STROKE_WIDTH = CURSOR_RADIUS / 5f;
+        SCROLL_START_PADDING = point.x / 15;
+        this.post(() -> cursorPosition.y = getHeight() / 2f);
+
     }
-    /* access modifiers changed from: protected */
-    public void onSizeChanged(int w, int h, int oldWidth, int oldHeight) {
+    @Override
+    protected void onSizeChanged(int w, int h, int oldWidth, int oldHeight) {
         super.onSizeChanged(w, h, oldWidth, oldHeight);
         if (!isInEditMode()) {
             this.cursorPosition.set(((float) w) / 2.0f, ((float) oldWidth) / 2.0f);
@@ -161,6 +160,7 @@ public class CursorLayout extends LinearLayout {
         }
     }
 
+    @Override
     public boolean dispatchKeyEvent(KeyEvent keyEvent) {
         int keyCode = keyEvent.getKeyCode();
         if (!(keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) &&
@@ -261,8 +261,7 @@ public class CursorLayout extends LinearLayout {
         return super.dispatchKeyEvent(keyEvent);
     }
 
-    /* access modifiers changed from: private */
-    public void dispatchMotionEvent(float x, float y, int action) {
+    protected void dispatchMotionEvent(float x, float y, int action) {
         long uptimeMillis = SystemClock.uptimeMillis();
         PointerProperties pointerProperties = new PointerProperties();
         pointerProperties.id = 0;
@@ -277,7 +276,7 @@ public class CursorLayout extends LinearLayout {
                 MotionEvent.obtain(uptimeMillis, uptimeMillis, action, 1, pointerPropertiesArr, new PointerCoords[]{pointerCoords}, 0, 0, 1.0f, 1.0f, 0, 0, 0, 0));
     }
 
-    private void handleDirectionKeyEvent(KeyEvent keyEvent, int x, int y, boolean hasInput) {
+    protected void handleDirectionKeyEvent(KeyEvent keyEvent, int x, int y, boolean hasInput) {
         this.lastCursorUpdate = System.currentTimeMillis();
         if (!hasInput) {
             cursorDirection.x = 0;
@@ -297,9 +296,8 @@ public class CursorLayout extends LinearLayout {
         if (y == -100) y = this.cursorDirection.y;
         point.set(x, y);
     }
-
-    /* access modifiers changed from: protected */
-    public void dispatchDraw(@NonNull Canvas canvas) {
+    @Override
+    protected void dispatchDraw(@NonNull Canvas canvas) {
         super.dispatchDraw(canvas);
 
         if (!isInEditMode()) {
@@ -325,13 +323,7 @@ public class CursorLayout extends LinearLayout {
         }
 
     }
-
-    private boolean isCursorVisible() {
+    protected boolean isCursorVisible() {
         return System.currentTimeMillis() - this.lastCursorUpdate <= 4000;
-    }
-
-    /* access modifiers changed from: protected */
-    public void onDraw(@NonNull Canvas canvas) {
-        super.onDraw(canvas);
     }
 }

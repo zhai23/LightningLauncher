@@ -212,6 +212,9 @@
     <string name="web_confirm">Confirm &amp; Go</string>
 
     <!-- Browser -->
+    <string name="web_download_started">Downloading</string>
+    <string name="web_download_finished">Finished downloading</string>
+
     <string name="web_apk_prompt_title">APK File Downloaded</string>
     <string name="web_apk_prompt_message_pre">Finished downloading %1$s</string>
     <string name="web_apk_prompt_message">Would you like to install it, or save it to your downloads folder?\n
