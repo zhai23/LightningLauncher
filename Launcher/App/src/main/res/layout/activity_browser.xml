@@ -201,7 +201,8 @@
         android:indeterminateTint="#E4E4E4"
         android:maxHeight="5dp"
         android:minHeight="5dp"
-        android:scaleY="5" />
+        android:scaleY="4"
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/topBarEdit"

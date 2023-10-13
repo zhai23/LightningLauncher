@@ -20,6 +20,7 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.Environment;
 import android.os.IBinder;
+import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.CookieManager;
 import android.webkit.URLUtil;
@@ -113,7 +114,7 @@ public class BrowserService extends Service {
             webViewByBaseUrl.put(url, webView);
             activityByBaseUrl.put(url, activity);
 
-            webView.setInitialScale(Platform.isTv(activity) ? 150 : 100);
+            webView.setInitialScale(Platform.isTv(activity) ? 160 : 120);
 
             // Change a number of settings to behave more like a normal browser
             final WebSettings ws = webView.getSettings();
@@ -139,6 +140,7 @@ public class BrowserService extends Service {
                 .getBoolean(BrowserActivity.KEY_WEBSITE_DARK+activity.baseUrl, true)
                 ? WebSettings.FORCE_DARK_ON : WebSettings.FORCE_DARK_OFF);
 
+            activity.findViewById(R.id.loading).setVisibility(View.VISIBLE);
             webView.loadUrl(url);
         }
         webView.setActivity(activity);

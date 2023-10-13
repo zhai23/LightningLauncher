@@ -204,6 +204,7 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
             if (event.getAction() == KeyEvent.ACTION_UP &&
             keyCode == KeyEvent.KEYCODE_ENTER) {
                 // Launch the first visible icon when enter is pressed
+                updateTopSearchResult();
                 if (currentTopSearchResult != null) try {
                     Launch.launchApp(this, currentTopSearchResult);
                     return true;
@@ -253,6 +254,10 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
     @Override
     protected void postRefresh() {
         final View searchShortcutView = findViewById(R.id.searchShortcutView);
+        if (searchShortcutView == null) {
+            post(this::postRefresh);
+            return;
+        }
         searchShortcutView.setFocusable(true);
         // Secret focusable element off the top of the screen to allow search on android tv by pressing up
         searchShortcutView.setOnFocusChangeListener((v, hasFocus) -> {

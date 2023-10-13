@@ -3,13 +3,10 @@ package com.threethan.launcher.browser;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -17,14 +14,10 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.webkit.WebChromeClient;
-import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -208,7 +201,7 @@ public class BrowserActivity extends Activity {
     }
     private void updateZoom(float scale) {
         zoomIn .setVisibility(scale < 2.00 ? View.VISIBLE : View.GONE);
-        zoomOut.setVisibility(scale > (Platform.isTv(this) ? 1.51 : 1.01) ? View.VISIBLE : View.GONE);
+        zoomOut.setVisibility(scale > (Platform.isTv(this) ? 1.61 : 1.21) ? View.VISIBLE : View.GONE);
     }
     private void updateDark(boolean newDark) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -287,7 +280,8 @@ public class BrowserActivity extends Activity {
         else {
             if (w == null) return;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                BrowserWebChromeClient client = (BrowserWebChromeClient) w.getWebChromeClient();
+                @SuppressLint("WebViewApiAvailability") BrowserWebChromeClient client = (BrowserWebChromeClient) w.getWebChromeClient();
+                assert client != null;
                 if (client.hasCustomView()) {
                     client.onHideCustomView();
                     return;

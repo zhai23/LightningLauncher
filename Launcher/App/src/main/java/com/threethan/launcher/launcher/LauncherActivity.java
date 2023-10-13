@@ -340,7 +340,6 @@ public class LauncherActivity extends Activity {
         }
     }
     void updateToolBars() {
-        BrowserService.bind(this, browserServiceConnection, false);
 
         BlurView[] blurViews = new BlurView[]{
                 rootView.findViewById(R.id.blurViewGroups),
@@ -379,7 +378,9 @@ public class LauncherActivity extends Activity {
         searchIcon  .setImageTintList(ColorStateList.valueOf(darkMode ? Color.WHITE : Color.BLACK));
         post(this::postRefresh);
     }
-    protected void postRefresh(){}
+    protected void postRefresh(){
+        BrowserService.bind(this, browserServiceConnection, false);
+    }
 
     public void refreshInterfaceAll() {
         isKillable = false;
@@ -667,7 +668,7 @@ public class LauncherActivity extends Activity {
         findViewById(R.id.overlayGradient).setVisibility(View.VISIBLE);
         final View gradView = findViewById(R.id.overlayGradient);
         AnimationDrawable anim = ((AnimationDrawable) gradView.getBackground());
-        anim.setExitFadeDuration(5000);
+        anim.setExitFadeDuration(15000);
         anim.setEnterFadeDuration(10);
         anim.start();
     }

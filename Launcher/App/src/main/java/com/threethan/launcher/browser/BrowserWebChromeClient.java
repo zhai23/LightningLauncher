@@ -42,6 +42,7 @@ class BrowserWebChromeClient extends WebChromeClient {
             }
         }
     }
+
     private void askForAudioPermission(String webkitPermission) {
         if (activity == null) {
             Log.i("WebChromeClient", "Activity was null!");

@@ -240,9 +240,11 @@ public class AppsAdapter extends BaseAdapter{
                 }
                 holder.killButton.setVisibility(SettingsManager.getRunning(holder.app.packageName) ? View.VISIBLE : View.GONE);
                 // Top search result
-                if (launcherActivity.currentTopSearchResult != null)
+                if (launcherActivity.currentTopSearchResult != null) {
                     updateHover(holder, launcherActivity.currentTopSearchResult == holder.app);
-                else if (launcherActivity.clearTopSearchResult != null &&
+                    if (launcherActivity.currentTopSearchResult == holder.app)
+                        launcherActivity.currentTopSearchResult = null;
+                } else if (launcherActivity.clearTopSearchResult != null &&
                         launcherActivity.clearTopSearchResult == holder.app) {
                     updateHover(holder, false);
                     launcherActivity.clearTopSearchResult = null;
@@ -283,9 +285,9 @@ public class AppsAdapter extends BaseAdapter{
         holder.killButton.setBackgroundResource(hovered ? R.drawable.ic_circ_running_kb : R.drawable.ic_running_ns);
 
         ObjectAnimator aXi = ObjectAnimator.ofFloat(holder.imageView, "scaleX", hovered ? 1.055f : 1.005f);
-        ObjectAnimator aXv = ObjectAnimator.ofFloat(holder.view, "scaleX", hovered ? 1.05f : 1.001f);
+        ObjectAnimator aXv = ObjectAnimator.ofFloat(holder.view, "scaleX", hovered ? 1.055f : 1.000f);
         ObjectAnimator aYi = ObjectAnimator.ofFloat(holder.imageView, "scaleY", hovered ? 1.055f : 1.005f);
-        ObjectAnimator aYv = ObjectAnimator.ofFloat(holder.view, "scaleY", hovered ? 1.055f : 1.005f);
+        ObjectAnimator aYv = ObjectAnimator.ofFloat(holder.view, "scaleY", hovered ? 1.055f : 1.000f);
         ObjectAnimator aAm = ObjectAnimator.ofFloat(holder.moreButton, "alpha", hovered ? 1f : 0f);
         ObjectAnimator aAe = ObjectAnimator.ofFloat(holder.clip, "elevation", hovered ? 15f : 4f);
 
