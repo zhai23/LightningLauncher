@@ -3,29 +3,46 @@ package com.threethan.launcher.browser;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.AlertDialog;
+import android.app.DownloadManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
+import android.os.Environment;
 import android.os.IBinder;
 import android.view.ViewGroup;
 import android.webkit.CookieManager;
+import android.webkit.URLUtil;
 import android.webkit.WebSettings;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.core.content.FileProvider;
 
 import com.threethan.launcher.R;
+import com.threethan.launcher.helper.Dialog;
+import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.launcher.LauncherActivity;
+import com.threethan.launcher.lib.FileLib;
+import com.threethan.launcher.support.Updater;
 
+import java.io.File;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 /*
     BrowserService
@@ -71,7 +88,8 @@ public class BrowserService extends Service {
     public IBinder onBind(Intent intent) {
         return binder;
     }
-    @SuppressLint("SetJavaScriptEnabled") // Javascript is important
+    @SuppressLint({"SetJavaScriptEnabled", "UnspecifiedRegisterReceiverFlag"})
+    // Javascript is important
     public BrowserWebView getWebView(BrowserActivity activity) {
         BrowserWebView webView;
         final String url = activity.baseUrl;
@@ -94,8 +112,7 @@ public class BrowserService extends Service {
             webViewByBaseUrl.put(url, webView);
             activityByBaseUrl.put(url, activity);
 
-            webView.setInitialScale(100);
-
+            webView.setInitialScale(Platform.isTv(activity) ? 150 : 100);
             webView.loadUrl(url);
 
             // Change a number of settings to behave more like a normal browser
@@ -111,6 +128,7 @@ public class BrowserService extends Service {
             ws.setSupportZoom(true);
             ws.setMediaPlaybackRequiresUserGesture(false);
             ws.setDefaultTextEncodingName("utf-8");
+            ws.setJavaScriptCanOpenWindowsAutomatically(true);
             // Enable Cookies
             CookieManager.getInstance().setAcceptCookie(true);
             CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true);
@@ -123,7 +141,113 @@ public class BrowserService extends Service {
         }
         webView.setActivity(activity);
         updateStatus();
+
+        webView.setDownloadListener((url1, userAgent, contentDisposition, mimetype, contentLength) -> {
+            DownloadManager.Request request = new DownloadManager.Request(
+                    Uri.parse(url1));
+            final String filename= URLUtil.guessFileName(url1, contentDisposition, mimetype);
+
+            request.allowScanningByMediaScanner();
+            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED); //Notify client once download is completed!
+
+            if (filename.endsWith(".apk")) request.setDestinationInExternalFilesDir(activity, Updater.APK_DIR, filename);
+            else try {
+                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, filename);
+            } catch (IllegalStateException ignored) {
+                // If we can't access downloads dir
+                request.setDestinationInExternalFilesDir(this, Environment.DIRECTORY_DOWNLOADS, filename);
+            }
+
+            DownloadManager manager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+
+            registerReceiver(onDownloadComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+            final long id = manager.enqueue(request);
+            downloadFilenameById.put(id, filename);
+            downloadActivityById.put(id, activity);
+
+            Dialog.toast("Started downloading", filename);
+        });
         return webView;
+    }
+
+    // Downloads
+    Map<Long, String> downloadFilenameById = new ConcurrentHashMap<>();
+    Map<Long, Activity> downloadActivityById = new ConcurrentHashMap<>();
+    BroadcastReceiver onDownloadComplete=new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            Long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0);
+            String filename = downloadFilenameById.get(id);
+            downloadFilenameById.remove(id);
+
+            if (filename == null) return;
+
+            if (filename.endsWith(".apk")) {
+                final File path = getApplicationContext().getExternalFilesDir(Updater.APK_DIR);
+                final File file = new File(path, filename);
+
+                if (Dialog.getActivityContext() == null) {
+                    // If we can't show an alert, copy AND prompt install
+                    copyToDownloads(file);
+                    promptInstall(file);
+                }
+                AlertDialog dialog = Dialog.build(Dialog.getActivityContext(), R.layout.dialog_downloaded_apk);
+                dialog.findViewById(R.id.install).setOnClickListener(v -> {
+                    promptInstall(file);
+                    dialog.dismiss();
+                });
+                dialog.findViewById(R.id.save).setOnClickListener(v -> {
+                    copyToDownloads(file);
+                    dialog.dismiss();
+                });
+                dialog.findViewById(R.id.delete).setOnClickListener(v -> {
+                    final boolean ignored = file.delete();
+                    dialog.dismiss();
+                });
+                ((TextView) dialog.findViewById(R.id.downloadMessage)).setText(getString(R.string.web_apk_prompt_message_pre, filename));
+                AlertDialog.Builder builder = new AlertDialog.Builder(Dialog.getActivityContext(), android.R.style.Theme_DeviceDefault_Dialog_Alert);
+            } else {
+                final File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+                final File file = new File(path, filename);
+
+                // provider is already included in the imagepicker lib
+                Uri fileURI = FileProvider.getUriForFile(getBaseContext(), getApplicationContext().getPackageName() + ".imagepicker.provider", file);
+
+                Intent openIntent = new Intent(Intent.ACTION_VIEW);
+                openIntent.setDataAndType(fileURI, getContentResolver().getType(fileURI));
+                openIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                openIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                startActivity(openIntent);
+            }
+        }
+    };
+    private void copyToDownloads(File file) {
+        // Copy to downloads
+        // Original file will be deleted next time the updater is called
+        File dlPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        File dlFile = new File(dlPath, file.getName());
+        FileLib.copy(file, dlFile);
+    }
+    private void promptInstall(File file) {
+        if(!file.exists()) return;
+
+        // provider is already included in the imagepicker lib
+        Uri apkURI = FileProvider.getUriForFile(getBaseContext(), getApplicationContext().getPackageName() + ".imagepicker.provider", file);
+
+        Intent openIntent = new Intent(Intent.ACTION_VIEW);
+        openIntent.setDataAndType(apkURI, "application/vnd.android.package-archive");
+        openIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        openIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        openIntent.putExtra(Intent.EXTRA_NOT_UNKNOWN_SOURCE, true);
+
+        startActivity(openIntent);
+    }
+    @Override
+    public void onDestroy() {
+        try {
+            unregisterReceiver(onDownloadComplete);
+        } catch (Exception ignored) {}
+        super.onDestroy();
     }
 
     public boolean hasWebView(String url) {

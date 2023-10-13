@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import androidx.annotation.Nullable;
 
 import com.threethan.launcher.R;
-import com.threethan.launcher.lib.DataLib;
+import com.threethan.launcher.lib.FileLib;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -107,7 +107,7 @@ public class LauncherService extends Service {
                 viewByIndex.remove(index);
                 Log.v("LauncherService", "Removed inactive view with index: "+index);
             } else {
-                LauncherActivity activity = DataLib.keyByValue(activityByIndex, index);
+                LauncherActivity activity = FileLib.keyByValue(activityByIndex, index);
                 if (activity == null) continue;
                 if (activity.isKillable) activity.finish();
             }

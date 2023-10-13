@@ -29,13 +29,14 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.threethan.launcher.R;
 import com.threethan.launcher.launcher.LauncherActivity;
-import com.threethan.launcher.lib.DataLib;
+import com.threethan.launcher.lib.FileLib;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.util.List;
+import java.util.Objects;
 
 /*
     Updater
@@ -51,13 +52,12 @@ public class Updater {
     private static final String UPDATE_URL = "https://api.github.com/repos/threethan/LightningLauncher/releases/latest";
     private static final String TEMPLATE_URL = "https://github.com/threethan/LightningLauncher/releases/download/%s/%s.apk";
     private static final String NAME_MAIN = "LightningLauncher";
-    private static final String KEY_SAVED_VERSION_CODE = "KEY_SAVED_VERSION_CODE";
     public static final String TAG_MESSENGER_SHORTCUT = "TAG_MESSENGER_SHORTCUT";
     public static final String TAG_LIBRARY_SHORTCUT = "TAG_LIBRARY_SHORTCUT";
     public static final String TAG_EXPLORE_SHORTCUT = "TAG_EXPLORE_SHORTCUT";
     public static final String TAG_ANDROID_TV_SHORTCUT = "TAG_ANDROID_TV_SHORTCUT";
     public static final String ADDON_RELEASE_TAG = "addons";
-    public static final String UPDATE_DIR = "/Content/Updates/";
+    public static final String APK_DIR = "/Content/TemporaryDownloadedApk/";
     public static final Addon[] addons = {
             new Addon(TAG_MESSENGER_SHORTCUT, "MessengerRedirect", "com.facebook.orca", "5.1.0", false),
             new Addon(TAG_LIBRARY_SHORTCUT, "LibraryShortcutService", "com.threethan.launcher.service.library", "5.1.0", true),
@@ -88,19 +88,8 @@ public class Updater {
         this.packageManager = activity.getPackageManager();
 
         // Clear update files if just updated
-        try {
-            String savedVersion = activity.sharedPreferences.getString(KEY_SAVED_VERSION_CODE, null);
-            PackageInfo packageInfo = packageManager.getPackageInfo(
-                    activity.getPackageName(), PackageManager.GET_ACTIVITIES);
-            if (!packageInfo.versionName.equals(savedVersion)) {
-                Log.i(TAG, String.format("Update was detected! Old update files will be cleared..." +
-                        " (%s)->(%s)", packageInfo.versionName, savedVersion));
-                DataLib.delete(UPDATE_DIR);
-                activity.sharedPreferenceEditor.putString(KEY_SAVED_VERSION_CODE, packageInfo.versionName).apply();
-            }
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
+        Log.v(TAG, "Clearing Temporary Apk Dir");
+        FileLib.delete(Objects.requireNonNull(activity.getExternalFilesDir(APK_DIR)));
     }
     public void checkForAppUpdate() {
         checkLatestVersion(this::storeLatestVersionAndPrompt);
@@ -251,13 +240,13 @@ public class Updater {
         if (overrideUrl != null) url = overrideUrl;
 
         Log.v(TAG, "Downloading from url "+url);
-        DownloadManager.Request request1 = new DownloadManager.Request(Uri.parse(url));
-        request1.setDescription("Downloading Update");   //appears the same in Notification bar while downloading
-        request1.setTitle("LightningLauncher Auto-Updater");
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+        request.setDescription("Downloading Update");   //appears the same in Notification bar while downloading
+        request.setTitle("LightningLauncher Auto-Updater");
 
-        request1.setDestinationInExternalFilesDir(activity, UPDATE_DIR, apkName+latestVersionTag+".apk");
+        request.setDestinationInExternalFilesDir(activity, APK_DIR, apkName+latestVersionTag+".apk");
 
-        DownloadManager manager1 = (DownloadManager) activity.getSystemService(Context.DOWNLOAD_SERVICE);
+        DownloadManager manager = (DownloadManager) activity.getSystemService(Context.DOWNLOAD_SERVICE);
 
         AlertDialog.Builder updateDialogBuilder = new AlertDialog.Builder(activity, android.R.style.Theme_DeviceDefault_Dialog_Alert);
         updateDialogBuilder.setTitle(R.string.update_downloading_title);
@@ -265,15 +254,15 @@ public class Updater {
         updateDialogBuilder.setNegativeButton(R.string.update_hide_button, (dialog, which) -> dialog.cancel());
         updateDialogBuilder.show();
 
-        activity.registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+        activity.registerReceiver(onDownloadComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
-        manager1.enqueue(request1);
+        manager.enqueue(request);
     }
     String downloadingTag;
     String downloadingName;
     boolean downloadSucceeded;
     AlertDialog updateAlertDialog;
-    BroadcastReceiver onComplete=new BroadcastReceiver() {
+    BroadcastReceiver onDownloadComplete =new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             if (updateAlertDialog != null) updateAlertDialog.dismiss();
             installUpdate(downloadingName);
@@ -282,13 +271,14 @@ public class Updater {
 
     static int attempts = 8;
     public void installUpdate(String apkName) {
-        File p = activity.getApplicationContext().getExternalFilesDir(UPDATE_DIR);
-        File f = new File(p, apkName+latestVersionTag+".apk");
+        File path = activity.getApplicationContext().getExternalFilesDir(APK_DIR);
+        File file = new File(path, apkName+latestVersionTag+".apk");
+
         if (downloadSucceeded) return;
-        if (f.exists()) {
+        if (file.exists()) {
             downloadSucceeded = true;
             // provider is already included in the imagepicker lib
-            Uri apkURI = FileProvider.getUriForFile(activity, activity.getApplicationContext().getPackageName() + ".imagepicker.provider", f);
+            Uri apkURI = FileProvider.getUriForFile(activity, activity.getApplicationContext().getPackageName() + ".imagepicker.provider", file);
             Intent intent = new Intent(Intent.ACTION_VIEW);
 
             intent.setDataAndType(apkURI, "application/vnd.android.package-archive");

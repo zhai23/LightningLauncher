@@ -2,4 +2,5 @@
 <resources>
     <item name="cancelSearch" type="id" />
     <item name="defaultTvSwitch" type="id" />
+    <item name="toastTextMain" type="id" />
 </resources>

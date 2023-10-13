@@ -70,15 +70,15 @@
         android:id="@+id/presets"
         android:layout_width="match_parent"
         android:layout_height="30dp"
-        android:layout_marginEnd="-10dp"
-        android:orientation="horizontal"
-        android:baselineAligned="false">
+        android:layout_marginEnd="-8dp"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
 
         <FrameLayout
             android:id="@+id/presetGoogle"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="8dp"
             android:layout_weight="1"
             android:background="@drawable/bkg_button"
             android:padding="5dp">
@@ -94,7 +94,7 @@
             android:id="@+id/presetYoutube"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="8dp"
             android:layout_weight="1"
             android:background="@drawable/bkg_button"
             android:padding="4.5dp">
@@ -110,7 +110,7 @@
             android:id="@+id/presetDiscord"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="8dp"
             android:layout_weight="1"
             android:background="@drawable/bkg_button"
             android:padding="4dp">
@@ -126,7 +126,7 @@
             android:id="@+id/presetSpotify"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="8dp"
             android:layout_weight="1"
             android:background="@drawable/bkg_button"
             android:padding="5dp">
@@ -142,7 +142,7 @@
             android:id="@+id/presetTidal"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="8dp"
             android:layout_weight="1"
             android:background="@drawable/bkg_button"
             android:padding="4dp">
@@ -153,6 +153,23 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:src="@drawable/web_preset_tidal" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/presetAptoide"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/bkg_button"
+            android:padding="4dp">
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/web_preset_aptoide" />
         </FrameLayout>
 
     </LinearLayout>

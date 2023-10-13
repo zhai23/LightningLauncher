@@ -38,6 +38,7 @@ import com.threethan.launcher.adapter.GroupsAdapter;
 import com.threethan.launcher.browser.BrowserService;
 import com.threethan.launcher.helper.App;
 import com.threethan.launcher.helper.Compat;
+import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.helper.IconRepo;
 import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
@@ -204,8 +205,7 @@ public class LauncherActivity extends Activity {
         settingsImageView.setOnClickListener(view -> {
             if (!settingsVisible) SettingsDialog.showSettings(this);
         });
-
-        postInit();
+        startHueShift();
     }
 
     public boolean clickGroup(int position) {
@@ -253,6 +253,7 @@ public class LauncherActivity extends Activity {
         } catch (RuntimeException ignored) {} //Runtime exception called when a service is invalid
         // For the GC & easier debugging
         settingsManager = null;
+        hueShiftActive = false;
         super.onDestroy();
     }
     @Override
@@ -270,10 +271,19 @@ public class LauncherActivity extends Activity {
 
             // Bind service
             AppsAdapter.animateClose(this);
-            recheckPackages();
             BrowserService.bind(this, browserServiceConnection, false);
-
         } catch (Exception ignored) {} // Will fail if service hasn't bound yet
+
+        Dialog.setActivityContext(this);
+        post(this::recheckPackages);
+        postDelayed(this::recheckPackages, 1000);
+        startHueShift();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        hueShiftActive = false;
     }
 
     public void reloadPackages() {
@@ -343,7 +353,7 @@ public class LauncherActivity extends Activity {
         };
 
         final boolean hide = !groupsEnabled && !isEditing();
-        for (BlurView blurView: blurViews) blurView.setVisibility(hide ? View.GONE : View.VISIBLE);
+        for (int i = 0; i<blurViews.length-1; i++) blurViews[i].setVisibility(hide ? View.GONE : View.VISIBLE);
         if (hide) return;
 
         float blurRadiusDp = 15f;
@@ -662,35 +672,31 @@ public class LauncherActivity extends Activity {
     public boolean isEditing() { return false; }
     public boolean canEdit() { return false; }
 
-    // Wallpaper Shimmer Effect
-    double h = 0;
-    double t = 0;
-    int c = 0;
-    protected void postInit() {
+    // Wallpaper Hue Shift Effect
+    private final int HUE_SHIFT_INTERVAL = 1000/10; // 10 FPS
+    private boolean hueShiftActive = false;
+    private double hueShiftTime = 0;
+    protected void startHueShift() {
+        hueShiftActive = true;
         Runnable shimmerStep = new Runnable() {
             @Override
             public void run() {
-                c--;
-                if (c<=0) {
-                    // Check if enabled every second
-                    if (!sharedPreferences.getBoolean(Settings.KEY_SHIMMER_ENABLED, Settings.DEFAULT_SHIMMER_ENABLED)) {
-                        mainView.postDelayed(this, 2500); //Wait 2.5 seconds before checking again
-                        backgroundImageView.setImageTintList(null);;
-                        return;
-                    } else {
-                        c = 20;
-                    }
-                }
-                // These numbers are basically random, but give decent results
-                h+=1.52;
-                t+=0.042;
+                if (!hueShiftActive) return;
+                if (mainView == null || backgroundImageView == null) return;
+
+                hueShiftTime *= HUE_SHIFT_INTERVAL;
                 backgroundImageView.setImageTintList(ColorStateList.valueOf(Color.HSVToColor(
-                        15, new float[]{(float) (h%360),
-                                (float) (30 + 25*Math.cos(t))/100,
-                                (float) (65 + 40 * Math.sin(t*0.43+15.2))/100})));
-                mainView.postDelayed(this, 50); //~20 FPS
+                        23, new float[]{(float) ((HUE_SHIFT_INTERVAL/15)%360),
+                                (float) (0.3 + 0.2 * Math.cos(hueShiftTime*0.0042)),
+                                (float) (0.6 + 0.4 * Math.sin(hueShiftTime*0.0026))}
+                )));
+                mainView.postDelayed(this, HUE_SHIFT_INTERVAL); //~5 FPS
             }
         };
         shimmerStep.run();
+    }
+    public void setHueShiftActive(boolean val) {
+        hueShiftActive = val;
+        if (val) startHueShift();
     }
 }

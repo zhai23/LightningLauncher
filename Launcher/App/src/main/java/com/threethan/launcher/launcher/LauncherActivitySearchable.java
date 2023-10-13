@@ -2,18 +2,15 @@ package com.threethan.launcher.launcher;
 
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -73,9 +70,7 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
             alphaOut.setDuration(300);
             alphaIn.start();
             alphaOut.start();
-            topBar.postDelayed(() -> {
-                fixState();
-            }, 300);
+            topBar.postDelayed(this::fixState, 300);
             searchBar.setVisibility(View.VISIBLE);
 
             searchBar.setOverlayColor(Color.parseColor(darkMode ? "#4A000000" : "#50FFFFFF"));
@@ -127,6 +122,7 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
     void hideSearchBar() {
         try {
             searching = false;
+            hideKeyboard();
 
             View searchBar = rootView.findViewById(R.id.blurViewSearchBar);
             View topBar = rootView.findViewById(R.id.topBarLayout);
@@ -140,14 +136,10 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
             alphaOut.start();
             searchBar.postDelayed(() -> searchBar.setVisibility(View.GONE), 250);
 
+            searchBar.postDelayed(this::fixState, 300);
+            topBar.setVisibility(View.VISIBLE);
             refreshAdapters();
 
-            searchBar.postDelayed(() -> {
-                fixState();
-            }, 300);
-            topBar.setVisibility(View.VISIBLE);
-
-            hideKeyboard();
         } catch (NullPointerException ignored) {}
     }
     protected void fixState() {

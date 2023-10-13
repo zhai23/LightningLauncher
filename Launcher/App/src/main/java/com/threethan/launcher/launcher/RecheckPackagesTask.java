@@ -35,7 +35,6 @@ class RecheckPackagesTask extends AsyncTask<Object, Void, Object> {
 
         ownerRef = new WeakReference<>(owner);
         return null;
-
     }
     @Override
     protected void onPostExecute(Object _n) {

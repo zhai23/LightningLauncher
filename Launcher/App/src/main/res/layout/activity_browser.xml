@@ -198,6 +198,18 @@
 
     </LinearLayout>
 
+    <ProgressBar
+        android:id="@+id/loading"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="-2dp"
+        android:indeterminate="true"
+        android:indeterminateTint="#E4E4E4"
+        android:maxHeight="5dp"
+        android:minHeight="5dp"
+        android:scaleY="5" />
+
     <LinearLayout
         android:id="@+id/topBarEdit"
         android:layout_width="match_parent"
@@ -219,6 +231,7 @@
             android:background="@android:color/transparent"
             android:ems="10"
             android:inputType="textUri"
+            android:selectAllOnFocus="true"
             android:singleLine="true"
             tools:text="discord.com/app" />
 

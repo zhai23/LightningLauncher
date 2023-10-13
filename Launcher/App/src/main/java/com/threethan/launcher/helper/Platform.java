@@ -49,11 +49,14 @@ public abstract class Platform {
                 .apply();
     }
 
+    protected static Boolean isTv;
     public static boolean isVr(Activity activity) {
         return !isTv(activity);
     }
     public static boolean isTv(Activity activity) {
+        if (isTv != null) return isTv;
         UiModeManager uiModeManager = (UiModeManager) activity.getSystemService(Context.UI_MODE_SERVICE);
-        return uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION;
+        isTv = uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION;
+        return isTv;
     }
 }

@@ -57,4 +57,8 @@ public class StringLib {
         }
         return builder.toString();
     }
+
+    public static String searchForUrl(String string) {
+        return "https://www.google.com/search?q="+string;
+    }
 }

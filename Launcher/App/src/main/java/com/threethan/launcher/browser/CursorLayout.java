@@ -37,7 +37,6 @@ public class CursorLayout extends LinearLayout {
     private static int SCROLL_START_PADDING = 100;
     private final Point cursorDirection = new Point(0, 0);
     private final PointF cursorPosition = new PointF(0.0f, 0.0f);
-    /* access modifiers changed from: private */
     private final PointF cursorSpeed = new PointF(0.0f, 0.0f);
     private float sizeMult = 0.0f;
     public View targetView;
@@ -77,9 +76,8 @@ public class CursorLayout extends LinearLayout {
             else if (cursorPosition.x > ((float) (getWidth() - 1)))  cursorPosition.x = (float) (getWidth() - 1);
             if (cursorPosition.y < 0.0f) cursorPosition.y = 0.0f;
             else if (cursorPosition.y > ((float) (getHeight() - 1))) cursorPosition.y = (float) (getHeight() - 1);
-            // HOVER //
-//            if (!tmpPointF.equals(cursorPosition))
-//                dispatchMotionEvent(cursorPosition.x, cursorPosition.y, MotionEvent.ACTION_MOVE); // Hover
+            if (!tmpPointF.equals(cursorPosition))
+                dispatchMotionEvent(cursorPosition.x, cursorPosition.y, MotionEvent.ACTION_MOVE); // Drag
 
             if (targetView != null) {
                 try {
@@ -149,6 +147,7 @@ public class CursorLayout extends LinearLayout {
             CURSOR_RADIUS = (int) (point.x / 150f);
             CURSOR_STROKE_WIDTH = CURSOR_RADIUS / 5f;
             SCROLL_START_PADDING = point.x / 15;
+            this.post(() -> cursorPosition.y = getHeight() / 2f);
         }
     }
     /* access modifiers changed from: protected */
@@ -164,115 +163,100 @@ public class CursorLayout extends LinearLayout {
 
     public boolean dispatchKeyEvent(KeyEvent keyEvent) {
         int keyCode = keyEvent.getKeyCode();
-        if (!(keyCode == 66 || keyCode == 160)) {
+        if (!(keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) &&
+        (keyEvent.getAction() == KeyEvent.ACTION_DOWN || keyEvent.getAction() == KeyEvent.ACTION_UP)) {
             switch (keyCode) {
-                case 19:
+                case KeyEvent.KEYCODE_DPAD_UP:
                     if (keyEvent.getAction() == 0) {
-                        if (this.cursorPosition.y <= 0.0f) {
+                        if (this.cursorPosition.y <= 0.0f)
                             return super.dispatchKeyEvent(keyEvent);
-                        }
                         handleDirectionKeyEvent(keyEvent, -100, -1, true);
-                    } else if (keyEvent.getAction() == 1) {
+                    } else
                         handleDirectionKeyEvent(keyEvent, -100, 0, false);
-                    }
                     return true;
-                case 20:
+                case KeyEvent.KEYCODE_DPAD_DOWN:
                     if (keyEvent.getAction() == 0) {
-                        if (this.cursorPosition.y >= ((float) getHeight())) {
+                        if (this.cursorPosition.y >= ((float) getHeight()))
                             return super.dispatchKeyEvent(keyEvent);
-                        }
                         handleDirectionKeyEvent(keyEvent, -100, 1, true);
-                    } else if (keyEvent.getAction() == 1) {
+                    } else
                         handleDirectionKeyEvent(keyEvent, -100, 0, false);
-                    }
                     return true;
-                case 21:
+                case KeyEvent.KEYCODE_DPAD_LEFT:
                     if (keyEvent.getAction() == 0) {
-                        if (this.cursorPosition.x <= 0.0f) {
+                        if (this.cursorPosition.x <= 0.0f)
                             return super.dispatchKeyEvent(keyEvent);
-                        }
                         handleDirectionKeyEvent(keyEvent, -1, -100, true);
-                    } else if (keyEvent.getAction() == 1) {
+                    } else
                         handleDirectionKeyEvent(keyEvent, 0, -100, false);
-                    }
                     return true;
-                case 22:
+                case KeyEvent.KEYCODE_DPAD_RIGHT:
                     if (keyEvent.getAction() == 0) {
-                        if (this.cursorPosition.x >= ((float) getWidth())) {
+                        if (this.cursorPosition.x >= ((float) getWidth()))
                             return super.dispatchKeyEvent(keyEvent);
-                        }
                         handleDirectionKeyEvent(keyEvent, 1, -100, true);
-                    } else if (keyEvent.getAction() == 1) {
+                    } else
                         handleDirectionKeyEvent(keyEvent, 0, -100, false);
-                    }
                     return true;
-                case 23:
-                    break;
-                default:
-                    switch (keyCode) {
-                        case 268:
-                            if (keyEvent.getAction() == 0) {
-                                handleDirectionKeyEvent(keyEvent, -1, -1, true);
-                            } else if (keyEvent.getAction() == 1) {
-                                handleDirectionKeyEvent(keyEvent, 0, 0, false);
-                            }
-                            return true;
-                        case 269:
-                            if (keyEvent.getAction() == 0) {
-                                handleDirectionKeyEvent(keyEvent, -1, 1, true);
-                            } else if (keyEvent.getAction() == 1) {
-                                handleDirectionKeyEvent(keyEvent, 0, 0, false);
-                            }
-                            return true;
-                        case 270:
-                            if (keyEvent.getAction() == 0) {
-                                handleDirectionKeyEvent(keyEvent, 1, -1, true);
-                            } else if (keyEvent.getAction() == 1) {
-                                handleDirectionKeyEvent(keyEvent, 0, 0, false);
-                            }
-                            return true;
-                        case 271:
-                            if (keyEvent.getAction() == 0) {
-                                handleDirectionKeyEvent(keyEvent, 1, 1, true);
-                            } else if (keyEvent.getAction() == 1) {
-                                handleDirectionKeyEvent(keyEvent, 0, 0, false);
-                            }
-                            return true;
+                case KeyEvent.KEYCODE_DPAD_UP_LEFT:
+                    if (keyEvent.getAction() == 0)
+                        handleDirectionKeyEvent(keyEvent, -1, -1, true);
+                    else
+                        handleDirectionKeyEvent(keyEvent, 0, 0, false);
+                    return true;
+                case KeyEvent.KEYCODE_DPAD_DOWN_LEFT:
+                    if (keyEvent.getAction() == 0)
+                        handleDirectionKeyEvent(keyEvent, -1, 1, true);
+                    else
+                        handleDirectionKeyEvent(keyEvent, 0, 0, false);
+                    return true;
+                case KeyEvent.KEYCODE_DPAD_UP_RIGHT:
+                    if (keyEvent.getAction() == 0)
+                        handleDirectionKeyEvent(keyEvent, 1, -1, true);
+                    else
+                        handleDirectionKeyEvent(keyEvent, 0, 0, false);
+                    return true;
+                case KeyEvent.KEYCODE_DPAD_DOWN_RIGHT:
+                    if (keyEvent.getAction() == 0)
+                        handleDirectionKeyEvent(keyEvent, 1, 1, true);
+                    else
+                        handleDirectionKeyEvent(keyEvent, 0, 0, false);
+                    return true;
+                case KeyEvent.KEYCODE_DPAD_CENTER:
+                    if (isCursorVisible()) {
+                        // Click animation
+                        if (keyEvent.getAction() == KeyEvent.ACTION_DOWN && !getKeyDispatcherState().isTracking(keyEvent)) {
+                            getKeyDispatcherState().startTracking(keyEvent, this);
+                            dispatchMotionEvent(this.cursorPosition.x, this.cursorPosition.y, MotionEvent.ACTION_DOWN);
+
+                            ValueAnimator viewAnimator = ValueAnimator.ofFloat(sizeMult, 0.7f);
+                            viewAnimator.setDuration(250);
+                            viewAnimator.setInterpolator(new OvershootInterpolator());
+                            viewAnimator.addUpdateListener(animation -> {
+                                sizeMult = (float) animation.getAnimatedValue();
+                                this.lastCursorUpdate = System.currentTimeMillis();
+                                invalidate();
+                            });
+                            viewAnimator.start();
+                            postDelayed(() -> {
+                                ValueAnimator viewAnimator2 = ValueAnimator.ofFloat(sizeMult, 1.0f);
+                                viewAnimator2.setDuration(250);
+                                viewAnimator2.setInterpolator(new OvershootInterpolator());
+                                viewAnimator2.addUpdateListener(animation -> {
+                                    sizeMult = (float) animation.getAnimatedValue();
+                                    this.lastCursorUpdate = System.currentTimeMillis();
+                                    invalidate();
+                                });
+                                viewAnimator2.start();
+                            }, 250);
+
+                        } else if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
+                            getKeyDispatcherState().handleUpEvent(keyEvent);
+                            dispatchMotionEvent(this.cursorPosition.x, this.cursorPosition.y, MotionEvent.ACTION_UP);
+                        }
+                        return true;
                     }
             }
-        }
-        if (isCursorVisible()) {
-            // Click animation
-            if (keyEvent.getAction() == 0 && !getKeyDispatcherState().isTracking(keyEvent)) {
-                getKeyDispatcherState().startTracking(keyEvent, this);
-                dispatchMotionEvent(this.cursorPosition.x, this.cursorPosition.y, MotionEvent.ACTION_DOWN);
-
-                ValueAnimator viewAnimator = ValueAnimator.ofFloat(sizeMult, 0.7f);
-                viewAnimator.setDuration(250);
-                viewAnimator.setInterpolator(new OvershootInterpolator());
-                viewAnimator.addUpdateListener(animation -> {
-                    sizeMult = (float) animation.getAnimatedValue();
-                    this.lastCursorUpdate = System.currentTimeMillis();
-                    invalidate();
-                });
-                viewAnimator.start();
-                postDelayed(() -> {
-                    ValueAnimator viewAnimator2 = ValueAnimator.ofFloat(sizeMult, 1.0f);
-                    viewAnimator2.setDuration(250);
-                    viewAnimator2.setInterpolator(new OvershootInterpolator());
-                    viewAnimator2.addUpdateListener(animation -> {
-                        sizeMult = (float) animation.getAnimatedValue();
-                        this.lastCursorUpdate = System.currentTimeMillis();
-                        invalidate();
-                    });
-                    viewAnimator2.start();
-                }, 250);
-
-            } else if (keyEvent.getAction() == 1) {
-                getKeyDispatcherState().handleUpEvent(keyEvent);
-                dispatchMotionEvent(this.cursorPosition.x, this.cursorPosition.y, MotionEvent.ACTION_UP);
-            }
-            return true;
         }
         return super.dispatchKeyEvent(keyEvent);
     }
@@ -293,7 +277,7 @@ public class CursorLayout extends LinearLayout {
                 MotionEvent.obtain(uptimeMillis, uptimeMillis, action, 1, pointerPropertiesArr, new PointerCoords[]{pointerCoords}, 0, 0, 1.0f, 1.0f, 0, 0, 0, 0));
     }
 
-    private void handleDirectionKeyEvent(KeyEvent keyEvent, int i, int i2, boolean hasInput) {
+    private void handleDirectionKeyEvent(KeyEvent keyEvent, int x, int y, boolean hasInput) {
         this.lastCursorUpdate = System.currentTimeMillis();
         if (!hasInput) {
             cursorDirection.x = 0;
@@ -309,9 +293,9 @@ public class CursorLayout extends LinearLayout {
         } catch (Exception ignored) {}
 
         Point point = this.cursorDirection;
-        if (i == -100) i = point.x;
-        if (i2 == -100) i2 = this.cursorDirection.y;
-        point.set(i, i2);
+        if (x == -100) x = point.x;
+        if (y == -100) y = this.cursorDirection.y;
+        point.set(x, y);
     }
 
     /* access modifiers changed from: protected */

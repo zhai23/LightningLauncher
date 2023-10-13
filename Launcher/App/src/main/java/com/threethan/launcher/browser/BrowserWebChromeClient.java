@@ -1,12 +1,14 @@
 package com.threethan.launcher.browser;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.util.Log;
+import android.view.View;
 import android.webkit.PermissionRequest;
 import android.webkit.WebChromeClient;
 
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 
 import java.util.Objects;
@@ -22,7 +24,7 @@ import java.util.Objects;
  */
 class BrowserWebChromeClient extends WebChromeClient {
     private PermissionRequest webkitPermissionRequest = null;
-    private Activity activity = null;
+    private BrowserActivity activity = null;
 
     @Override
     public void onPermissionRequest(PermissionRequest request) {
@@ -51,7 +53,31 @@ class BrowserWebChromeClient extends WebChromeClient {
         else
             ActivityCompat.requestPermissions(activity, new String[]{androidPermission}, 1); // requestCode is arbitrary int
     }
-    public void setActivity(Activity newActivity) {
+    public void setActivity(BrowserActivity newActivity) {
         activity = newActivity;
+    }
+
+    @Override
+    public void onHideCustomView() {
+        activity.removeFullscreenView(customView);
+        callback.onCustomViewHidden();
+        this.customView = null;
+        this.callback = null;
+    }
+
+    private View customView;
+    private WebChromeClient.CustomViewCallback callback;
+    @Override
+    public void onShowCustomView(View paramView, WebChromeClient.CustomViewCallback paramCustomViewCallback) {
+        if (this.customView != null) onHideCustomView();
+        this.customView = paramView;
+        this.callback = paramCustomViewCallback;
+        activity.addFullscreenView(paramView);
+    }
+
+    @Nullable
+    @Override
+    public Bitmap getDefaultVideoPoster() {
+        return Bitmap.createBitmap(10, 10, Bitmap.Config.ARGB_8888);
     }
 }
