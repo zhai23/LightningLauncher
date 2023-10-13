@@ -80,6 +80,9 @@ public class LauncherActivity extends Activity {
     DynamicHeightGridView appGridViewBanner;
     ScrollView scrollView;
     ImageView backgroundImageView;
+
+    public ApplicationInfo currentTopSearchResult = null;
+    public ApplicationInfo clearTopSearchResult = null;
     GridView groupGridView;
     public SharedPreferences sharedPreferences;
     public SynchronizedSharedPreferenceEditor sharedPreferenceEditor;
@@ -379,8 +382,9 @@ public class LauncherActivity extends Activity {
         settingsIcon.setImageTintList(ColorStateList.valueOf(darkMode ? Color.WHITE : Color.BLACK));
         ImageView searchIcon   = rootView.findViewById(R.id.searchIcon);
         searchIcon  .setImageTintList(ColorStateList.valueOf(darkMode ? Color.WHITE : Color.BLACK));
+        post(this::postRefresh);
     }
-
+    protected void postRefresh(){}
 
     public void refreshInterfaceAll() {
         isKillable = false;
@@ -530,7 +534,10 @@ public class LauncherActivity extends Activity {
     // Sets the background value in the settings, then refreshes the background for all views
     public void setBackground(int index) {
         if (index >= SettingsManager.BACKGROUND_DRAWABLES.length || index < 0) index = -1;
-        else sharedPreferenceEditor.putBoolean(Settings.KEY_DARK_MODE, SettingsManager.BACKGROUND_DARK[index]);
+        else {
+            sharedPreferenceEditor.putBoolean(Settings.KEY_DARK_MODE, SettingsManager.BACKGROUND_DARK[index]);
+            sharedPreferenceEditor.putBoolean(Settings.KEY_HUE_SHIFT_ENABLED, SettingsManager.BACKGROUND_HUE_SHIFT[index]);
+        }
         sharedPreferenceEditor.putInt(Settings.KEY_BACKGROUND, index);
         isKillable = false;
         launcherService.refreshBackgroundAll();
@@ -664,7 +671,7 @@ public class LauncherActivity extends Activity {
     public boolean canEdit() { return false; }
 
     // Wallpaper Hue Shift Effect
-    private final int HUE_SHIFT_INTERVAL = 1000/60; // 10 FPS
+    private final int HUE_SHIFT_INTERVAL = 1000/10; // 10 FPS
     private boolean hueShiftActive = false;
     private double hueShiftTime = 0;
     protected void startHueShift() {
@@ -677,11 +684,11 @@ public class LauncherActivity extends Activity {
 
                 hueShiftTime += HUE_SHIFT_INTERVAL / 1000f;
                 backgroundImageView.setImageTintList(ColorStateList.valueOf(Color.HSVToColor(
-                        50, new float[]{(float) ((hueShiftTime*2.132)%360),
+                        100, new float[]{(float) ((hueShiftTime*2.132)%360),
                                 (float) (0.8 + 0.1 * Math.cos(hueShiftTime*1.237)
                                              + 0.2 * Math.cos(hueShiftTime*0.523)),
-                                (float) (0.8 + 0.03 * Math.sin(hueShiftTime*4.339)
-                                             + 0.1 * Math.cos(hueShiftTime*0.794))}
+                                (float) (0.5 + 0.03 * Math.sin(hueShiftTime*4.339)
+                                             + 0.1 * Math.sin(hueShiftTime*0.794))}
                 )));
                 mainView.postDelayed(this, HUE_SHIFT_INTERVAL); //~5 FPS
             }
@@ -692,5 +699,6 @@ public class LauncherActivity extends Activity {
         hueShiftActive = val;
         sharedPreferenceEditor.putBoolean(Settings.KEY_HUE_SHIFT_ENABLED, val).apply();
         if (val) startHueShift();
+        else backgroundImageView.setImageTintList(null);
     }
 }

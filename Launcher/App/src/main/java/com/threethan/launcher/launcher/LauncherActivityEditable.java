@@ -47,7 +47,7 @@ import eightbitlab.com.blurview.RenderScriptBlur;
 public class LauncherActivityEditable extends LauncherActivity {
     @Nullable
     Boolean editMode = null;
-    public Set<String> currentSelectedApps = new HashSet<>();
+    public HashSet<String> currentSelectedApps = new HashSet<>();
     @Override
     public void onBackPressed() {
         if (AppsAdapter.animateClose(this)) return;
@@ -269,8 +269,6 @@ public class LauncherActivityEditable extends LauncherActivity {
         ((TextView) dialog.findViewById(R.id.addText)).setText(getString(R.string.add_website_group, group));
         EditText urlEdit = dialog.findViewById(R.id.appUrl);
         urlEdit.post(urlEdit::requestFocus);
-
-        Keyboard.show(this);
 
         TextView badUrl  = dialog.findViewById(R.id.badUrl);
         TextView usedUrl = dialog.findViewById(R.id.usedUrl);

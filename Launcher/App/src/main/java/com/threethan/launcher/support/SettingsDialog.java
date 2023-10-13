@@ -80,8 +80,9 @@ public abstract class SettingsDialog {
         dark.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE));
         dark.setOnCheckedChangeListener((compoundButton, value) -> {
             a.sharedPreferenceEditor.putBoolean(Settings.KEY_DARK_MODE, value);
+            a.darkMode = value;
+            a.clearAdapterCaches();
             a.refreshInterfaceAll();
-            a.post(a::clearAdapterCaches);
         });
         Switch hueShift = dialog.findViewById(R.id.hueShiftSwitch);
         hueShift.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_HUE_SHIFT_ENABLED, Settings.DEFAULT_HUE_SHIFT_ENABLED));
@@ -142,6 +143,7 @@ public abstract class SettingsDialog {
                 } else {
                     a.setBackground(index);
                     dark.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE));
+                    hueShift.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_HUE_SHIFT_ENABLED, Settings.DEFAULT_HUE_SHIFT_ENABLED));
                 }
             });
         }
@@ -275,6 +277,7 @@ public abstract class SettingsDialog {
         wideNames.setOnCheckedChangeListener((compoundButton, value) -> {
             a.sharedPreferenceEditor.putBoolean(Settings.KEY_SHOW_NAMES_BANNER, value);
             a.refreshInterfaceAll();
+            if(a.getAdapterBanner() != null) a.getAdapterBanner().setShowNames(value);
             if(a.getAdapterBanner() != null) a.getAdapterBanner().setShowNames(value);
         });
 

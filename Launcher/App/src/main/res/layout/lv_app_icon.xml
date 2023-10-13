@@ -16,7 +16,7 @@
         android:layout_height="match_parent"
         android:layout_margin="20dp"
         android:background="@drawable/bkg_app"
-        android:elevation="3dp"
+        android:elevation="4dp"
         android:focusable="false"
         android:focusableInTouchMode="false">
 

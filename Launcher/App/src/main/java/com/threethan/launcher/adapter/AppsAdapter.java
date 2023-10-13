@@ -41,6 +41,8 @@ import java.io.File;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 
 /*
@@ -120,12 +122,14 @@ public class AppsAdapter extends BaseAdapter{
         Button killButton;
         ApplicationInfo app;
     }
+
+    @Override
     public int getCount() { return currentAppList.size(); }
 
-    public Object getItem(int position) {
-        return currentAppList.get(position);
-    }
+    @Override
+    public Object getItem(int position) { return currentAppList.get(position); }
 
+    @Override
     public long getItemId(int position) {
         return position;
     }
@@ -137,6 +141,7 @@ public class AppsAdapter extends BaseAdapter{
     }
 
     /** @noinspection deprecation*/
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         final ApplicationInfo currentApp = currentAppList.get(position);
 
@@ -233,8 +238,17 @@ public class AppsAdapter extends BaseAdapter{
                     an.setDuration(150);
                     an.start();
                 }
-                holder.view.postDelayed(this, 250);
                 holder.killButton.setVisibility(SettingsManager.getRunning(holder.app.packageName) ? View.VISIBLE : View.GONE);
+                // Top search result
+                if (launcherActivity.currentTopSearchResult != null)
+                    updateHover(holder, launcherActivity.currentTopSearchResult == holder.app);
+                else if (launcherActivity.clearTopSearchResult != null &&
+                        launcherActivity.clearTopSearchResult == holder.app) {
+                    updateHover(holder, false);
+                    launcherActivity.clearTopSearchResult = null;
+                }
+                // Post self again
+                holder.view.postDelayed(this, 250);
             }
         };
         periodicUpdate.run();
@@ -265,7 +279,7 @@ public class AppsAdapter extends BaseAdapter{
             view.setVisibility(View.GONE);
         });
     }
-    void updateHover(ViewHolder holder, boolean hovered) {
+    public void updateHover(ViewHolder holder, boolean hovered) {
         holder.killButton.setBackgroundResource(hovered ? R.drawable.ic_circ_running_kb : R.drawable.ic_running_ns);
 
         ObjectAnimator aXi = ObjectAnimator.ofFloat(holder.imageView, "scaleX", hovered ? 1.055f : 1.005f);
@@ -273,7 +287,7 @@ public class AppsAdapter extends BaseAdapter{
         ObjectAnimator aYi = ObjectAnimator.ofFloat(holder.imageView, "scaleY", hovered ? 1.055f : 1.005f);
         ObjectAnimator aYv = ObjectAnimator.ofFloat(holder.view, "scaleY", hovered ? 1.055f : 1.005f);
         ObjectAnimator aAm = ObjectAnimator.ofFloat(holder.moreButton, "alpha", hovered ? 1f : 0f);
-        ObjectAnimator aAe = ObjectAnimator.ofFloat(holder.clip, "elevation", hovered ? 15f : 3f);
+        ObjectAnimator aAe = ObjectAnimator.ofFloat(holder.clip, "elevation", hovered ? 15f : 4f);
 
         final ObjectAnimator[] animators = new ObjectAnimator[] {aXi, aXv, aYi, aYv, aAm, aAe};
         for (ObjectAnimator animator:animators) animator.setInterpolator(new OvershootInterpolator());

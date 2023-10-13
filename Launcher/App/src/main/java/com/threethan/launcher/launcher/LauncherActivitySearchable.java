@@ -21,6 +21,8 @@ import com.threethan.launcher.helper.Launch;
 import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.view.EditTextWatched;
 
+import java.util.HashSet;
+
 import eightbitlab.com.blurview.BlurView;
 import eightbitlab.com.blurview.RenderScriptBlur;
 
@@ -51,11 +53,13 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
             bannerAdapter.filterBy(text);
             appGridViewBanner.setAdapter(bannerAdapter);
         }
+        updateTopSearchResult();
     }
     ObjectAnimator alphaIn;
     ObjectAnimator alphaOut;
     void showSearchBar() {
         try {
+            clearTopSearchResult();
             startedTyping = false;
             searching = true;
 
@@ -142,6 +146,8 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
             refreshAdapters();
 
         } catch (NullPointerException ignored) {}
+        clearTopSearchResult();
+
     }
     protected void fixState() {
         try {
@@ -190,25 +196,28 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
         EditTextWatched searchText = findViewById(R.id.searchText);
         searchText.setOnEdited(this::searchFor);
 
-        if (Platform.isVr(this)) { // For some reason this is buggy AF on android TV
-            searchText.setOnKeyListener((v, keyCode, event) -> {
-                if (event.getAction() == KeyEvent.ACTION_UP) {
-                    if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                        // Launch the first visible icon when enter is pressed
-                        if (getAdapterBanner() != null && getAdapterBanner().getCount() > 0)
-                            Launch.launchApp(this, (ApplicationInfo) getAdapterBanner().getItem(0));
-                        else if (getAdapterSquare() != null && getAdapterSquare().getCount() > 0)
-                            Launch.launchApp(this, (ApplicationInfo) getAdapterSquare().getItem(0));
-                        return true;
-                    }
+        searchText.setOnKeyListener((v, keyCode, event) -> {
+            if (event.getAction() == KeyEvent.ACTION_UP &&
+            keyCode == KeyEvent.KEYCODE_ENTER) {
+                // Launch the first visible icon when enter is pressed
+                if (currentTopSearchResult != null) try {
+                    Launch.launchApp(this, currentTopSearchResult);
+                    return true;
+                } catch (Exception ignored) {
+                    return false;
                 }
-                return false;
-            });
-        }
+            }
+
+            return false;
+        });
+
         searchText.setOnFocusChangeListener((view, hasFocus) -> {
-            if (hasFocus && searching) Keyboard.show(this);
-            else {
+            if (hasFocus && searching) {
+                Keyboard.show(this);
+                updateTopSearchResult();
+            } else {
                 Keyboard.hide(this, mainView);
+                clearTopSearchResult();
                 // Dismiss empty search bar automatically on Android TV
                 if (Platform.isTv(this) && searchText.getText().toString().isEmpty()) hideSearchBar();
             }
@@ -219,11 +228,34 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
         searchShortcutView.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus && !searching) showSearchBar();
         });
-        searchShortcutView.postDelayed(() -> searchShortcutView.setFocusable(true), 500);
         findViewById(R.id.searchCancelIcon).setOnClickListener(v -> hideSearchBar());
 
         searching = false;
         fixState();
+    }
+    private void updateTopSearchResult() {
+        EditTextWatched searchText = findViewById(R.id.searchText);
+        if (searchText == null) clearTopSearchResult();
+        else if (searchText.getText().toString().isEmpty()) clearTopSearchResult();
+        else {
+            // Highlight top result
+            if (getAdapterBanner() != null && getAdapterBanner().getCount() > 0)
+                currentTopSearchResult = (ApplicationInfo) getAdapterBanner().getItem(0);
+            else if (getAdapterSquare() != null && getAdapterSquare().getCount() > 0)
+                currentTopSearchResult = (ApplicationInfo) getAdapterSquare().getItem(0);
+            else clearTopSearchResult();
+        }
+    }
+    private void clearTopSearchResult() {
+        if (currentTopSearchResult == null) return;
+        clearTopSearchResult = currentTopSearchResult;
+        currentTopSearchResult = null;
+    }
+    @Override
+    protected void postRefresh() {
+        final View searchShortcutView = findViewById(R.id.searchShortcutView);
+        searchShortcutView.setFocusable(true);
+        super.postRefresh();
     }
 
     @Override

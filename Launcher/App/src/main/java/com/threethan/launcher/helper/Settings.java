@@ -56,6 +56,18 @@ public abstract class Settings {
             false,
             true,
     };
+    public static final boolean[] BACKGROUND_HUE_SHIFT = {
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            true,
+            true,
+            true,
+    };
 
     // Theme/background
     public static final String KEY_BACKGROUND = "KEY_CUSTOM_THEME";
@@ -102,8 +114,8 @@ public abstract class Settings {
     public static final String DONT_DOWNLOAD_ICONS = "DONT_DOWNLOAD_ICONS";
 
     // extra pizzazz
-    public static final String KEY_HUE_SHIFT_ENABLED = "KEY_SHIMMER_ENABLED";
-    public static final boolean DEFAULT_HUE_SHIFT_ENABLED = true;
+    public static final String KEY_HUE_SHIFT_ENABLED = "KEY_HUE_SHIFT_ENABLED";
+    public static final boolean DEFAULT_HUE_SHIFT_ENABLED = false;
 
     // show names by display type
     public static final String KEY_SHOW_NAMES_SQUARE = "KEY_CUSTOM_NAMES";

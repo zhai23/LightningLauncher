@@ -315,7 +315,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginStart="4dp"
                     android:background="@drawable/bkg_button_wallpaper"
-                    android:foreground="@drawable/bkg_hover_button"
+                    android:foreground="@drawable/bkg_hover_button_wp"
                     android:paddingTop="3dp"
                     android:paddingBottom="6dp"
                     android:scaleType="centerInside"
