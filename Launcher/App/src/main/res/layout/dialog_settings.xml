@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -11,46 +12,48 @@
 
     <LinearLayout
         android:id="@+id/layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="39dp"
         android:orientation="vertical"
         android:padding="20dp">
 
         <View
             android:id="@+id/view"
-            android:layout_width="445dp"
+            android:layout_width="415dp"
             android:layout_height="wrap_content" />
 
         <TextView
             style="@style/SettingTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/settings_main" />
+            android:text="@string/settings_main"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="5dp"
+            android:layout_height="39dp"
             android:baselineAligned="false"
             android:orientation="horizontal">
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="5dp"
                 android:layout_weight="1"
-                android:background="@drawable/bkg_button"
-                android:orientation="horizontal">
+                android:background="@drawable/bkg_button">
 
                 <TextView
                     android:id="@+id/editModeText"
                     style="@style/SettingButtonLabel"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_marginEnd="52dp"
                     android:singleLine="true"
                     android:text="@string/edit_mode"
-                    tools:ignore="NestedWeights" />
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <Switch
                     android:id="@+id/editModeSwitch"
@@ -59,117 +62,123 @@
                     android:foreground="@drawable/bkg_hover_button"
                     android:thumb="@drawable/switch_thumb_custom"
                     android:track="@drawable/switch_track_custom"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="UseSwitchCompatOrMaterialXml" />
 
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/addonsButtonAttract"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="5dp"
                 android:layout_weight="1"
                 android:background="@drawable/bkg_button_highlight"
-                android:orientation="horizontal"
-                android:visibility="gone"
-                tools:visibility="visible">
+                android:visibility="gone">
 
                 <TextView
                     style="@style/SettingButtonLabel"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginEnd="35dp"
+                    android:layout_marginEnd="1dp"
                     android:singleLine="true"
                     android:text="@string/settings_addons_attract"
                     android:textColor="#000000"
+                    app:layout_constraintBottom_toBottomOf="@+id/imageView"
+                    app:layout_constraintEnd_toStartOf="@+id/imageView"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/imageView"
                     tools:ignore="NestedWeights,RtlSymmetry" />
 
                 <ImageView
-                    android:layout_width="35dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="-35dp"
-                    android:layout_marginEnd="-8dp"
+                    android:id="@+id/imageView"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
                     android:src="@drawable/ic_shortcut"
                     android:tint="#000000"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="UseAppTint" />
 
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/addonsButton"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="5dp"
                 android:layout_weight="1"
                 android:background="@drawable/bkg_button"
-                android:orientation="horizontal"
-                tools:visibility="gone">
+                android:orientation="horizontal">
 
                 <TextView
                     style="@style/SettingButtonLabel"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginEnd="35dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_marginEnd="52dp"
                     android:singleLine="true"
                     android:text="@string/settings_addons"
-                    tools:ignore="NestedWeights,RtlSymmetry" />
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
-                    android:layout_width="35dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="-35dp"
-                    android:layout_marginEnd="-8dp"
-                    android:src="@drawable/ic_shortcut" />
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_shortcut"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/removeButton"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/updateButton"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="39dp"
             android:layout_marginTop="10dp"
-            android:layout_weight="1"
             android:background="@drawable/bkg_button_highlight"
-            android:orientation="horizontal"
             android:visibility="gone"
             tools:visibility="visible">
 
             <TextView
                 style="@style/SettingButtonLabel"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginEnd="35dp"
                 android:singleLine="true"
                 android:text="@string/settings_update"
                 android:textColor="#000000"
-                tools:ignore="NestedWeights,RtlSymmetry" />
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
-                android:layout_width="35dp"
-                android:layout_height="match_parent"
-                android:layout_marginStart="-35dp"
-                android:layout_marginEnd="-8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:src="@drawable/ic_update"
-                android:tint="#000000" />
+                android:tint="#000000"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="UseAppTint" />
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
             style="@style/SettingSubtitle"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:paddingTop="5dp"
             android:text="@string/background_header" />
 
         <HorizontalScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_height="42dp"
             android:scrollbars="none"
             tools:ignore="SpeakableTextPresentCheck">
 
@@ -317,84 +326,88 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="39dp"
+            android:layout_marginTop="10dp"
+            android:baselineAligned="false"
             android:orientation="horizontal">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="10dp"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="0dp"
+                android:layout_height="39dp"
                 android:layout_marginEnd="5dp"
                 android:layout_weight="1"
                 android:background="@drawable/bkg_button"
-                android:gravity="clip_vertical|center_vertical"
-                android:orientation="horizontal">
+                android:gravity="clip_vertical|center_vertical">
 
                 <TextView
                     style="@style/SettingButtonLabel"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_marginEnd="52dp"
                     android:singleLine="true"
                     android:text="@string/shimmer_effect"
-                    tools:ignore="NestedWeights" />
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <Switch
                     android:id="@+id/hueShiftSwitch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:foreground="@drawable/bkg_hover_button"
-                    android:showText="false"
-                    android:splitTrack="false"
                     android:thumb="@drawable/switch_thumb_custom"
                     android:track="@drawable/switch_track_custom"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="UseSwitchCompatOrMaterialXml" />
 
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="0dp"
+                android:layout_height="39dp"
                 android:layout_marginStart="5dp"
-                android:layout_marginTop="10dp"
                 android:layout_weight="1"
                 android:background="@drawable/bkg_button"
-                android:gravity="clip_vertical|center_vertical"
-                android:orientation="horizontal">
+                android:gravity="clip_vertical|center_vertical">
 
                 <TextView
                     style="@style/SettingButtonLabel"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_marginEnd="52dp"
                     android:singleLine="true"
                     android:text="@string/dark_mode"
-                    tools:ignore="NestedWeights" />
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <Switch
                     android:id="@+id/darkModeSwitch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:foreground="@drawable/bkg_hover_button"
-                    android:showText="false"
-                    android:splitTrack="false"
                     android:thumb="@drawable/switch_thumb_custom"
                     android:track="@drawable/switch_track_custom"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="UseSwitchCompatOrMaterialXml" />
 
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
         </LinearLayout>
 
         <TextView
             style="@style/SettingSubtitle"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="@string/icon_header" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/icon_header"/>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="39dp"
             android:background="@drawable/bkg_button"
             android:orientation="horizontal">
 
@@ -405,8 +418,7 @@
                 android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:singleLine="true"
-                android:text="@string/icons_margin"
-                tools:ignore="NestedWeights" />
+                android:text="@string/icons_margin" />
 
             <SeekBar
                 android:id="@+id/marginSeekBar"
@@ -424,9 +436,8 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="39dp"
             android:layout_marginTop="10dp"
-            android:layout_weight="1"
             android:background="@drawable/bkg_button"
             android:orientation="horizontal">
 
@@ -437,8 +448,7 @@
                 android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:singleLine="true"
-                android:text="@string/icons_size"
-                tools:ignore="NestedWeights" />
+                android:text="@string/icons_size" />
 
             <SeekBar
                 android:id="@+id/scaleSeekBar"
@@ -457,37 +467,28 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:baselineAligned="false"
-            android:orientation="vertical">
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="39dp"
             android:layout_marginTop="10dp"
-            android:layout_weight="1"
             android:baselineAligned="false"
             android:orientation="horizontal">
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="3.4dp"
                 android:layout_weight="2"
-                android:background="@drawable/bkg_button"
-                android:orientation="horizontal"
-                tools:ignore="NestedWeights">
+                android:background="@drawable/bkg_button">
 
                 <TextView
                     style="@style/SettingButtonLabel"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_marginEnd="52dp"
                     android:singleLine="true"
                     android:text="@string/group_mode"
-                    tools:ignore="NestedWeights" />
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <Switch
                     android:id="@+id/groupSwitch"
@@ -496,9 +497,12 @@
                     android:foreground="@drawable/bkg_hover_button"
                     android:thumb="@drawable/switch_thumb_custom"
                     android:track="@drawable/switch_track_custom"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="UseSwitchCompatOrMaterialXml" />
 
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
                 android:id="@+id/clearIconButton"
@@ -513,15 +517,14 @@
                 android:paddingStart="5dp"
                 android:paddingEnd="5dp"
                 android:singleLine="true"
-                android:text="@string/clear_cache"
-                tools:ignore="NestedWeights">
+                android:text="@string/clear_cache">
 
             </TextView>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="39dp"
             android:layout_marginTop="10dp"
             android:baselineAligned="false"
             android:orientation="horizontal">
@@ -539,8 +542,7 @@
                 android:paddingStart="5dp"
                 android:paddingEnd="5dp"
                 android:singleLine="true"
-                android:text="@string/clear_sort"
-                tools:ignore="NestedWeights">
+                android:text="@string/clear_sort">
 
             </TextView>
 
@@ -557,8 +559,7 @@
                 android:paddingStart="5dp"
                 android:paddingEnd="5dp"
                 android:singleLine="true"
-                android:text="@string/clear_labels"
-                tools:ignore="NestedWeights">
+                android:text="@string/clear_labels">
 
             </TextView>
 
@@ -567,36 +568,34 @@
         <TextView
             android:id="@+id/textView"
             style="@style/SettingSubtitle"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="@string/wide_header" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/wide_header"/>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_height="39dp"
             android:baselineAligned="false"
             android:orientation="horizontal">
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="5dp"
                 android:layout_weight="1"
-                android:background="@drawable/bkg_button"
-                android:orientation="horizontal"
 
-                tools:ignore="NestedWeights">
+                android:background="@drawable/bkg_button">
 
                 <TextView
                     style="@style/SettingButtonLabel"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="-5dp"
-                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_marginEnd="52dp"
                     android:singleLine="true"
-                    android:text="@string/apps_vr" />
+                    android:text="@string/apps_vr"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <Switch
                     android:id="@+id/bannerVrSwitch"
@@ -605,28 +604,31 @@
                     android:foreground="@drawable/bkg_hover_button"
                     android:thumb="@drawable/switch_thumb_custom"
                     android:track="@drawable/switch_track_custom"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="UseSwitchCompatOrMaterialXml" />
 
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="5dp"
                 android:layout_weight="1"
-                android:background="@drawable/bkg_button"
 
-                android:orientation="horizontal"
-                tools:ignore="NestedWeights">
+                android:background="@drawable/bkg_button">
 
                 <TextView
                     style="@style/SettingButtonLabel"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="-5dp"
-                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_marginEnd="52dp"
                     android:singleLine="true"
-                    android:text="@string/apps_tv" />
+                    android:text="@string/apps_tv"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <Switch
                     android:id="@+id/bannerTvSwitch"
@@ -635,35 +637,38 @@
                     android:foreground="@drawable/bkg_hover_button"
                     android:thumb="@drawable/switch_thumb_custom"
                     android:track="@drawable/switch_track_custom"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="UseSwitchCompatOrMaterialXml" />
 
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="39dp"
             android:layout_marginTop="10dp"
-            android:layout_weight="1"
             android:baselineAligned="false"
             android:orientation="horizontal">
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="5dp"
                 android:layout_weight="1"
-                android:background="@drawable/bkg_button"
-                android:orientation="horizontal">
+                android:background="@drawable/bkg_button">
 
                 <TextView
                     style="@style/SettingButtonLabel"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="-5dp"
-                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_marginEnd="52dp"
                     android:singleLine="true"
-                    android:text="@string/apps_2d" />
+                    android:text="@string/apps_2d"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <Switch
                     android:id="@+id/banner2dSwitch"
@@ -672,27 +677,30 @@
                     android:foreground="@drawable/bkg_hover_button"
                     android:thumb="@drawable/switch_thumb_custom"
                     android:track="@drawable/switch_track_custom"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="UseSwitchCompatOrMaterialXml" />
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="5dp"
                 android:layout_weight="1"
                 android:background="@drawable/bkg_button"
-                android:orientation="horizontal"
-                android:paddingStart="11dp"
                 tools:ignore="RtlSymmetry">
 
                 <TextView
                     style="@style/SettingButtonLabel"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="-5dp"
-                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_marginEnd="52dp"
                     android:singleLine="true"
-                    android:text="@string/apps_web" />
+                    android:text="@string/apps_web"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <Switch
                     android:id="@+id/bannerWebSwitch"
@@ -701,40 +709,43 @@
                     android:foreground="@drawable/bkg_hover_button"
                     android:thumb="@drawable/switch_thumb_custom"
                     android:track="@drawable/switch_track_custom"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="UseSwitchCompatOrMaterialXml" />
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
 
         <TextView
             style="@style/SettingSubtitle"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="@string/name_header" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="39dp"
             android:baselineAligned="false"
             android:orientation="horizontal">
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="5dp"
                 android:layout_weight="1"
-                android:background="@drawable/bkg_button"
-                android:orientation="horizontal">
+                android:background="@drawable/bkg_button">
 
                 <TextView
                     style="@style/SettingButtonLabel"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_marginEnd="52dp"
                     android:singleLine="true"
                     android:text="@string/app_name_icon"
-                    tools:ignore="NestedWeights" />
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <Switch
                     android:id="@+id/nameSquareSwitch"
@@ -743,26 +754,30 @@
                     android:foreground="@drawable/bkg_hover_button"
                     android:thumb="@drawable/switch_thumb_custom"
                     android:track="@drawable/switch_track_custom"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="UseSwitchCompatOrMaterialXml" />
 
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:layout_weight="1"
-                android:background="@drawable/bkg_button"
-                android:orientation="horizontal">
+                android:background="@drawable/bkg_button">
 
                 <TextView
                     style="@style/SettingButtonLabel"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_marginEnd="52dp"
                     android:singleLine="true"
                     android:text="@string/app_name_wide"
-                    tools:ignore="NestedWeights" />
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <Switch
                     android:id="@+id/nameBannerSwitch"
@@ -771,26 +786,28 @@
                     android:foreground="@drawable/bkg_hover_button"
                     android:thumb="@drawable/switch_thumb_custom"
                     android:track="@drawable/switch_track_custom"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="UseSwitchCompatOrMaterialXml" />
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
 
         <TextView
             style="@style/SettingSubtitle"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="@string/advanced_header" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/advanced_header"/>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_height="39dp"
+            android:baselineAligned="false"
             android:gravity="clip_vertical|center_vertical"
             android:orientation="horizontal">
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="5dp"
@@ -801,155 +818,163 @@
 
                 <TextView
                     style="@style/SettingButtonLabel"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_marginEnd="52dp"
                     android:singleLine="true"
                     android:text="@string/long_press"
-                    tools:ignore="NestedWeights" />
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="TooManyViews" />
 
                 <Switch
                     android:id="@+id/longPressEditSwitch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:foreground="@drawable/bkg_hover_button"
-                    android:showText="false"
-                    android:splitTrack="false"
                     android:thumb="@drawable/switch_thumb_custom"
                     android:track="@drawable/switch_track_custom"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="UseSwitchCompatOrMaterialXml" />
 
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="5dp"
                 android:layout_weight="1"
                 android:background="@drawable/bkg_button"
-                android:gravity="clip_vertical|center_vertical"
-                android:orientation="horizontal">
+                android:gravity="clip_vertical|center_vertical">
 
                 <TextView
                     style="@style/SettingButtonLabel"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="-5dp"
-                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_marginEnd="52dp"
                     android:singleLine="true"
                     android:text="@string/hide_empty"
-                    tools:ignore="NestedWeights" />
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <Switch
                     android:id="@+id/hideEmptySwitch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:foreground="@drawable/bkg_hover_button"
-                    android:showText="false"
-                    android:splitTrack="false"
                     android:thumb="@drawable/switch_thumb_custom"
                     android:track="@drawable/switch_track_custom"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="UseSwitchCompatOrMaterialXml" />
 
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="39dp"
             android:layout_marginTop="10dp"
-            android:layout_weight="1"
             android:background="@drawable/bkg_button"
-            android:gravity="clip_vertical|center_vertical"
-            android:orientation="horizontal">
+            android:gravity="clip_vertical|center_vertical">
 
             <TextView
                 style="@style/SettingButtonLabel"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:singleLine="true"
                 android:text="@string/default_launch_out"
-                tools:ignore="NestedWeights" />
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <Switch
                 android:id="@+id/defaultLaunchOutSwitch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:foreground="@drawable/bkg_hover_button"
-                android:showText="false"
-                android:splitTrack="false"
                 android:thumb="@drawable/switch_thumb_custom"
                 android:track="@drawable/switch_track_custom"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="UseSwitchCompatOrMaterialXml" />
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="39dp"
             android:layout_marginTop="10dp"
-            android:layout_weight="1"
+            android:baselineAligned="false"
             android:gravity="clip_vertical|center_vertical"
             android:orientation="horizontal"
-            android:visibility="visible"
-            tools:visibility="visible">
+            android:visibility="visible">
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/saveSettingsButton"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="5dp"
                 android:layout_weight="1"
                 android:background="@drawable/bkg_button"
-                android:gravity="clip_vertical|center_vertical"
-                android:orientation="horizontal">
+                android:tooltipText="@string/tip_save_settings"
+                tools:ignore="UnusedAttribute">
 
                 <TextView
                     style="@style/SettingButtonLabel"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
                     android:singleLine="true"
                     android:text="@string/settings_save"
-                    tools:ignore="NestedWeights" />
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
-                    android:layout_width="38dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="-35dp"
+                    android:layout_width="30dp"
+                    android:layout_height="27dp"
                     android:src="@drawable/ic_upload"
-                    tools:ignore="UseAppTint" />
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/loadSettingsButton"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="0dp"
+                android:layout_height="39dp"
                 android:layout_marginStart="5dp"
                 android:layout_weight="1"
                 android:background="@drawable/bkg_button"
-                android:gravity="clip_vertical|center_vertical"
-                android:orientation="horizontal">
+                android:tooltipText="@string/tip_load_settings"
+                tools:ignore="UnusedAttribute">
 
                 <TextView
                     style="@style/SettingButtonLabel"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
                     android:singleLine="true"
                     android:text="@string/settings_load"
-                    tools:ignore="NestedWeights" />
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
-                    android:layout_width="38dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="-35dp"
+                    android:layout_width="30dp"
+                    android:layout_height="27dp"
                     android:src="@drawable/ic_download"
-                    tools:ignore="UseAppTint" />
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
 

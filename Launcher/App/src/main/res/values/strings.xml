@@ -54,7 +54,6 @@
     </string>
 
     <string name="launch_switch">Runs in Own Window</string>
-    <string name="launch_tip">Launch in Own Window Once</string>
     <string name="reload_icon">Refresh Icon / Banner</string>
 
     <string name="launch_message">Launching 2D apps or websites in their own window allows for easier multitasking on Quest devices,
@@ -132,20 +131,26 @@
     <string name="update_skip_confirm_button">I Understand, Skip It</string>
     <string name="update_skip_cancel_button">Just Dismiss</string>
 
+    <string name="saved_settings">Saved configuration to</string>
+    <string name="loaded_settings1">Imported configuration,</string>
+    <string name="loaded_settings2">the launcher must now close!</string>
+
     <!--  Tooltips  -->
-    <string name="app_settings">App Settings</string>
-    <string name="group_settings">Group Settings</string>
-    <string name="kill_process">Stop Running in the Background</string>
+    <string name="tip_kill_process">Stop Running in the Background</string>
+    <string name="tip_launch_out">Launch in Own Window Once</string>
 
-    <string name="info_website">About Adding Websites</string>git
+    <string name="tip_info_website">About Adding Websites</string>git
 
-    <string name="stop_editing">Turn Off Edit Mode</string>
-    <string name="select_all">Select/Deselect All Visible Apps</string>
+    <string name="tip_stop_editing">Turn Off Edit Mode</string>
+    <string name="tip_select_all">Select/Deselect All Visible Apps</string>
 
-    <string name="uninstall">Uninstall / Remove</string>
-    <string name="uninstall_bulk">Uninstall / Remove All Selected</string>
-    <string name="info">Android App Info</string>
-    <string name="change_icon">Change Icon</string>
+    <string name="tip_uninstall">Uninstall / Remove</string>
+    <string name="tip_uninstall_bulk">Uninstall / Remove All Selected</string>
+    <string name="tip_info">Android App Info</string>
+    <string name="tip_change_icon">Change Icon</string>
+
+    <string name="tip_save_settings">Backup All Settings &amp; Groupings</string>
+    <string name="tip_load_settings">Restore All Settings &amp; Groupings</string>
 
     <!--  Web Presets  -->
     <string name="preset_google">google.com</string>

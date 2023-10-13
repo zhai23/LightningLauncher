@@ -70,7 +70,7 @@ public abstract class SettingsDialog {
         editModeText.setText(a.canEdit() ? R.string.edit_mode : R.string.edit_mode_disabled);
         // Update button
         if (Updater.isUpdateAvailable(a)) {
-            View skippedUpdateButton = dialog.findViewById(R.id.removeButton);
+            View skippedUpdateButton = dialog.findViewById(R.id.updateButton);
             skippedUpdateButton.setVisibility(View.VISIBLE);
             skippedUpdateButton.setOnClickListener((view) -> new Updater(a).updateAppEvenIfSkipped());
         }
