@@ -123,7 +123,8 @@
     <string name="update_skip_toast">Skipped version</string>
 
     <string name="update_downloading_title">Downloading Latest Version…</string>
-    <string name="update_downloading_content">You should get a prompt to install shortly</string>
+    <string name="update_downloading_content">You should get a prompt to install shortly.\n
+    \nIf you have accidentally dismissed this prompt, you will have to open settings and try again.</string>
     <string name="update_hide_button">Hide</string>
 
     <string name="update_failed_title">Failed to download package!</string>
