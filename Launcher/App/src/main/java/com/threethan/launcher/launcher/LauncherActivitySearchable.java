@@ -84,7 +84,7 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
             searchBar.setClipToOutline(true);
 
             View windowDecorView = getWindow().getDecorView();
-            ViewGroup rootViewGroup = windowDecorView.findViewById(android.R.id.content);
+            ViewGroup rootViewGroup = (ViewGroup) windowDecorView;
 
             Drawable windowBackground = windowDecorView.getBackground();
             //noinspection deprecation

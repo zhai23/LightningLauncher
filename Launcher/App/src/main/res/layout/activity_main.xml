@@ -70,7 +70,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/topBarLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:alpha="0.2"
         android:clipChildren="false"
         android:orientation="horizontal">
@@ -92,10 +92,12 @@
             android:layout_marginStart="25dp"
             android:layout_marginTop="24dp"
             android:layout_marginEnd="13dp"
+            android:layout_marginBottom="24dp"
             android:background="@drawable/bkg_blur_view"
             android:elevation="12dp"
             android:minHeight="40dp"
             android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/blurViewSearchIcon"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -313,6 +315,7 @@
                 android:nextFocusLeft="@id/selectionHintText"
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
+                android:scaleType="centerInside"
                 android:src="@drawable/ic_uninstall"
                 android:visibility="gone"
                 tools:visibility="visible" />

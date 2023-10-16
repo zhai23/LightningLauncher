@@ -331,7 +331,7 @@ public class LauncherActivityEditable extends LauncherActivity {
         float blurRadiusDp = 25f;
 
         View windowDecorView = getWindow().getDecorView();
-        ViewGroup rootViewGroup = windowDecorView.findViewById(android.R.id.content);
+        ViewGroup rootViewGroup = (ViewGroup) windowDecorView;
 
         Drawable windowBackground = windowDecorView.getBackground();
         //noinspection deprecation

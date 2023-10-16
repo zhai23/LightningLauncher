@@ -358,7 +358,7 @@ public class LauncherActivity extends Activity {
         float blurRadiusDp = 15f;
 
         View windowDecorView = getWindow().getDecorView();
-        ViewGroup rootViewGroup = windowDecorView.findViewById(android.R.id.content);
+        ViewGroup rootViewGroup = (ViewGroup) windowDecorView;
         Drawable windowBackground = windowDecorView.getBackground();
 
         for (BlurView blurView: blurViews) {
