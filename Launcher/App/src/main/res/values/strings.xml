@@ -157,6 +157,13 @@
     <string name="tip_save_settings">Backup All Settings &amp; Groupings</string>
     <string name="tip_load_settings">Restore All Settings &amp; Groupings</string>
 
+    <string name="tip_hide">Hide this App</string>
+    <string name="tip_show">Un-Hide this App</string>
+
+    <string name="moved_hidden">Moved to</string>
+    <string name="moved_hidden_bold">Hidden Group</string>
+    <string name="moved_shown">Moved to</string>
+
     <!--  Web Presets  -->
     <string name="preset_google">google.com</string>
     <string name="preset_youtube">youtube.com</string>

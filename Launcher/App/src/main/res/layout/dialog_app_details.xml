@@ -48,10 +48,15 @@
                 android:layout_marginTop="-1dp"
                 android:orientation="horizontal">
 
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_weight="1" />
+                <ImageView
+                    android:id="@+id/launchOut"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@drawable/bkg_hover_button"
+                    android:padding="1dp"
+                    android:src="@drawable/ic_launch_out"
+                    android:tooltipText="@string/tip_launch_out"
+                    tools:ignore="UnusedAttribute" />
 
                 <ImageView
                     android:id="@+id/kill"
@@ -64,16 +69,36 @@
                     android:tooltipText="@string/tip_kill_process"
                     tools:ignore="UnusedAttribute" />
 
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
                 <ImageView
-                    android:id="@+id/launchOut"
+                    android:id="@+id/hide"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_marginStart="3dp"
                     android:background="@drawable/bkg_hover_button"
                     android:padding="1dp"
-                    android:src="@drawable/ic_launch_out"
-                    android:tooltipText="@string/tip_launch_out"
-                    tools:ignore="UnusedAttribute" />
+                    android:src="@drawable/ic_hide"
+                    android:tooltipText="@string/tip_hide"
+                    android:visibility="gone"
+                    tools:ignore="UnusedAttribute"
+                    tools:visibility="visible" />
+
+                <ImageView
+                    android:id="@+id/show"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="3dp"
+                    android:background="@drawable/bkg_hover_button"
+                    android:padding="1dp"
+                    android:src="@drawable/ic_show"
+                    android:tooltipText="@string/tip_show"
+                    android:visibility="gone"
+                    tools:ignore="UnusedAttribute"
+                    tools:visibility="visible" />
 
                 <ImageView
                     android:id="@+id/info"
@@ -166,6 +191,8 @@
                 style="@style/SettingButtonLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
                 android:text="@string/reload_icon" />
 
         </LinearLayout>

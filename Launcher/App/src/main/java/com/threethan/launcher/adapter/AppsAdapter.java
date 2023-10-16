@@ -41,6 +41,7 @@ import java.io.File;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
@@ -329,14 +330,16 @@ public class AppsAdapter extends BaseAdapter{
             view.setVisibility(View.GONE);
         });
 
+
         // Launch Mode Toggle
         @SuppressLint("UseSwitchCompatOrMaterialCode")
         final Switch launchModeSwitch = dialog.findViewById(R.id.launchModeSwitch);
         final View launchOutButton = dialog.findViewById(R.id.launchOut);
         final View launchModeSection = dialog.findViewById(R.id.launchModeSection);
         final View refreshIconButton = dialog.findViewById(R.id.refreshIconButton);
-        final boolean isVr = App.isVirtualReality(currentApp, launcherActivity);
-        final boolean isWeb = App.isWebsite(currentApp);
+        final boolean appIsVr = App.isVirtualReality(currentApp, launcherActivity);
+        final boolean appIsTv = App.isAndroidTv(currentApp, launcherActivity);
+        final boolean appIsWeb = App.isWebsite(currentApp);
 
         // Load Icon
         PackageManager packageManager = launcherActivity.getPackageManager();
@@ -357,8 +360,8 @@ public class AppsAdapter extends BaseAdapter{
             ImageLib.showImagePicker(launcherActivity, Settings.PICK_ICON_CODE);
         });
 
-        dialog.findViewById(R.id.info).setVisibility(isWeb ? View.GONE : View.VISIBLE);
-        if (isVr) {
+        dialog.findViewById(R.id.info).setVisibility(appIsWeb ? View.GONE : View.VISIBLE);
+        if (appIsVr || Platform.isTv(launcherActivity)) {
             // VR apps MUST launch out, so just hide the option and replace it with another
             // Websites could theoretically support this option, but it is currently way too buggy
             launchModeSection.setVisibility(View.GONE);
@@ -392,6 +395,39 @@ public class AppsAdapter extends BaseAdapter{
                 }
             });
         }
+
+        // Show/hide button
+        final View showButton = dialog.findViewById(R.id.show);
+        final View hideButton = dialog.findViewById(R.id.hide);
+        String unhideGroup = SettingsManager.getAppGroupMap().get(currentApp.packageName);
+        if (unhideGroup == Settings.HIDDEN_GROUP)
+            unhideGroup = SettingsManager.getDefaultGroup(appIsVr, appIsTv, appIsWeb);
+        String finalUnhideGroup = unhideGroup;
+
+        boolean amHidden = Objects.equals(SettingsManager.getAppGroupMap()
+                .get(currentApp.packageName), Settings.HIDDEN_GROUP);
+        showButton.setVisibility( amHidden ? View.VISIBLE : View.GONE);
+        hideButton.setVisibility(!amHidden ? View.VISIBLE : View.GONE);
+        showButton.setOnClickListener(v -> {
+            launcherActivity.settingsManager.setAppGroup(currentApp.packageName,
+                    finalUnhideGroup);
+            boolean nowHidden = Objects.equals(SettingsManager.getAppGroupMap()
+                    .get(currentApp.packageName), Settings.HIDDEN_GROUP);
+            showButton.setVisibility( nowHidden ? View.VISIBLE : View.GONE);
+            hideButton.setVisibility(!nowHidden ? View.VISIBLE : View.GONE);
+            Dialog.toast(launcherActivity.getString(R.string.moved_shown), finalUnhideGroup);
+        });
+        hideButton.setOnClickListener(v -> {
+            launcherActivity.settingsManager.setAppGroup(currentApp.packageName,
+                    Settings.HIDDEN_GROUP);
+            boolean nowHidden = Objects.equals(SettingsManager.getAppGroupMap()
+                    .get(currentApp.packageName), Settings.HIDDEN_GROUP);
+            showButton.setVisibility( nowHidden ? View.VISIBLE : View.GONE);
+            hideButton.setVisibility(!nowHidden ? View.VISIBLE : View.GONE);
+            Dialog.toast(launcherActivity.getString(R.string.moved_hidden),
+                    launcherActivity.getString(R.string.moved_hidden_bold));
+
+        });
 
         // Set Label (don't show star)
         String label = SettingsManager.getAppLabel(currentApp);
