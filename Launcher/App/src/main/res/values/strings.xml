@@ -94,7 +94,7 @@
     <string name="service_message">1. Use the button to open Android\'s accessibility settings\n2.
         Select the service you wish to enable\n3.
         Switch the service on at the top of the page\n4.
-        Tap \"Allow\" on the prompt\n5.
+        Click \"Allow\" on the prompt\n5.
         \'X\' out of the window and enjoy!</string>
     <string name="service_next">Continue to Accessibility Settings</string>
 
@@ -107,9 +107,9 @@
     <string name="edit_off">Turn On Edit Mode</string>
     <string name="edit_on">Turn Off Edit Mode</string>
 
-    <string name="selection_hint_none">Tap an app to or tap here to select</string>
-    <string name="selection_hint_single">1 app selected, tap a group to move it</string>
-    <string name="selection_hint_multiple">%d apps selected, tap a group to move them</string>
+    <string name="selection_hint_none">Click an app to or click here to select</string>
+    <string name="selection_hint_single">1 app selected, click a group to move it</string>
+    <string name="selection_hint_multiple">%d apps selected, click a group to move them</string>
     <string name="selection_moved_single">Moved an app to %s</string>
     <string name="selection_moved_multiple">Moved %d apps to %s</string>
     <string name="selection_hint_cleared">Cleared selection</string>
@@ -117,7 +117,7 @@
 
     <!--  Updater  -->
     <string name="update_title">An update is available!</string>
-    <string name="update_content">You can update from version %1$s to %2$s without taking off your headset!</string>
+    <string name="update_content">You can update from version %1$s to %2$s now, without any external device</string>
     <string name="update_button">Continue</string>
     <string name="update_skip_button">Skip this Update</string>
     <string name="update_skip_toast">Skipped version</string>
