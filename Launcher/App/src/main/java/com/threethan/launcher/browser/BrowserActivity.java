@@ -343,7 +343,7 @@ public class BrowserActivity extends Activity {
     }
 
     public void addFullscreenView(View view) {
-        w.setVisibility(View.GONE);
+        if (w != null) w.setVisibility(View.GONE);
         View topBar = findViewById(R.id.topBar);
         topBar.setVisibility(View.GONE);
         LinearLayout container = findViewById(R.id.container);
@@ -352,7 +352,7 @@ public class BrowserActivity extends Activity {
     public void removeFullscreenView(View view) {
         LinearLayout container = findViewById(R.id.container);
         container.removeView(view);
-        w.setVisibility(View.VISIBLE);
+        if (w != null) w.setVisibility(View.VISIBLE);
         View topBar = findViewById(R.id.topBar);
         topBar.setVisibility(View.VISIBLE);
     }
@@ -364,13 +364,13 @@ public class BrowserActivity extends Activity {
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        w.saveState(outState);
+        if (w != null) w.saveState(outState);
     }
 
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        w.restoreState(savedInstanceState);
+        if (w != null) w.restoreState(savedInstanceState);
     }
 
     @Override
