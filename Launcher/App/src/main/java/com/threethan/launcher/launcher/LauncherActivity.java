@@ -24,7 +24,6 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
-import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -48,7 +47,7 @@ import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.lib.ImageLib;
 import com.threethan.launcher.support.SettingsDialog;
 import com.threethan.launcher.support.SettingsManager;
-import com.threethan.launcher.support.SynchronizedSharedPreferenceEditor;
+import com.threethan.launcher.support.SafeSharedPrefernceEditor;
 import com.threethan.launcher.support.Updater;
 import com.threethan.launcher.view.DynamicHeightGridView;
 import com.threethan.launcher.view.FadingTopScrollView;
@@ -86,7 +85,7 @@ public class LauncherActivity extends Activity {
     public ApplicationInfo clearTopSearchResult = null;
     GridView groupGridView;
     public SharedPreferences sharedPreferences;
-    public SynchronizedSharedPreferenceEditor sharedPreferenceEditor;
+    public SafeSharedPrefernceEditor sharedPreferenceEditor;
     public View mainView;
     private int prevViewWidth;
     public boolean isKillable = false;
@@ -191,7 +190,7 @@ public class LauncherActivity extends Activity {
     }
 
     protected void init() {
-        sharedPreferenceEditor = new SynchronizedSharedPreferenceEditor(sharedPreferences.edit());
+        sharedPreferenceEditor = new SafeSharedPrefernceEditor(sharedPreferences.edit());
         settingsManager = SettingsManager.getInstance(this);
 
         mainView = rootView.findViewById(R.id.mainLayout);
