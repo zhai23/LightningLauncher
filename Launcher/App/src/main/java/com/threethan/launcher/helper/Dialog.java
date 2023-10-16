@@ -4,6 +4,8 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.Paint;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,7 +39,10 @@ public abstract class Dialog {
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawableResource(R.drawable.bkg_dialog);
             dialog.getWindow().setDimAmount(0.2f);
-            ObjectAnimator animator = ObjectAnimator.ofFloat(dialog.getWindow().getDecorView(), "TranslationY", 100, 0);
+            final View rootView = dialog.getWindow().getDecorView().findViewById(android.R.id.content).getRootView();
+            rootView.setLayerType(View.LAYER_TYPE_HARDWARE, new Paint());
+
+            ObjectAnimator animator = ObjectAnimator.ofFloat(rootView, "TranslationY", 100, 0);
             animator.setDuration(300);
             animator.setInterpolator(new FastOutSlowInInterpolator());
             animator.start();

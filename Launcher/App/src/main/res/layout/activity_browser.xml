@@ -12,7 +12,6 @@
         android:layout_height="40dp"
         android:descendantFocusability="blocksDescendants"
         android:focusable="false"
-        android:layerType="hardware"
         android:orientation="horizontal"
         android:paddingLeft="7dp"
         android:paddingRight="7dp">
@@ -208,7 +207,6 @@
         android:id="@+id/topBarEdit"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:background="#2A000000"
         android:orientation="horizontal"
         android:paddingLeft="7dp"
         android:paddingRight="7dp"

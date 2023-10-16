@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:text="@string/settings_main"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -411,7 +411,7 @@
             style="@style/SettingSubtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/icon_header"/>
+            android:text="@string/icon_header" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -578,7 +578,7 @@
             style="@style/SettingSubtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/wide_header"/>
+            android:text="@string/wide_header" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -806,7 +806,7 @@
             style="@style/SettingSubtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/advanced_header"/>
+            android:text="@string/advanced_header" />
 
         <LinearLayout
             android:id="@+id/editRequiredContaier"

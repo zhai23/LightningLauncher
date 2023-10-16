@@ -373,9 +373,6 @@ public class LauncherActivity extends Activity {
                     .setBlurRadius(blurRadiusDp);
             blurView.setOutlineProvider(ViewOutlineProvider.BACKGROUND);
             blurView.setClipToOutline(true);
-            blurView.setActivated(false);
-            blurView.setActivated(true);
-            blurView.setActivated(false);
         }
 
         ImageView settingsIcon = rootView.findViewById(R.id.settingsIcon);
