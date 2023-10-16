@@ -108,6 +108,19 @@ public class AppsAdapter extends BaseAdapter{
         for (final ApplicationInfo app : tempAppList)
             if (StringLib.forSort(SettingsManager.getAppLabel(app)).contains(StringLib.forSort(text)))
                 currentAppList.add(app);
+
+        // Add search queries
+        if (!isBanner && !text.isEmpty()) {
+            final ApplicationInfo googleProxy = new ApplicationInfo();
+            googleProxy.packageName = StringLib.googleSearchForUrl(text);
+            currentAppList.add(googleProxy);
+            final ApplicationInfo youTubeProxy = new ApplicationInfo();
+            youTubeProxy.packageName = StringLib.youTubeSearchForUrl(text);
+            currentAppList.add(youTubeProxy);
+            final ApplicationInfo apkPureProxy = new ApplicationInfo();
+            apkPureProxy.packageName = StringLib.apkPureSearchForUrl(text);
+            currentAppList.add(apkPureProxy);
+        }
     }
     public void setLauncherActivity(LauncherActivity val) {
         launcherActivity = val;
@@ -135,9 +148,9 @@ public class AppsAdapter extends BaseAdapter{
         return position;
     }
 
-    Map<ApplicationInfo, ViewHolder> viewCacheSquare = new ConcurrentHashMap<>();
-    Map<ApplicationInfo, ViewHolder> viewCacheBanner = new ConcurrentHashMap<>();
-    private Map<ApplicationInfo, ViewHolder> getViewCache() {
+    Map<String, ViewHolder> viewCacheSquare = new ConcurrentHashMap<>();
+    Map<String, ViewHolder> viewCacheBanner = new ConcurrentHashMap<>();
+    private Map<String, ViewHolder> getViewCache() {
         return isBanner ? viewCacheBanner : viewCacheSquare;
     }
 
@@ -146,10 +159,11 @@ public class AppsAdapter extends BaseAdapter{
     public View getView(int position, View convertView, ViewGroup parent) {
         final ApplicationInfo currentApp = currentAppList.get(position);
 
-        if (getViewCache().containsKey(currentApp)) {
-            ViewHolder holder = getViewCache().get(currentApp);
+        if (getViewCache().containsKey(Icon.cacheName(currentApp.packageName))) {
+            ViewHolder holder = getViewCache().get(Icon.cacheName(currentApp.packageName));
             if (holder != null) {
                 if (firstView == null) firstView = holder.view;
+                holder.app = currentApp;
                 return holder.view;
             }
         }
@@ -193,7 +207,7 @@ public class AppsAdapter extends BaseAdapter{
         new LoadIconTask().execute(this, currentApp, launcherActivity, holder.imageView, holder.imageViewBg);
         holder.view.post(() -> updateView(holder));
 
-        getViewCache().put(currentApp, holder);
+        getViewCache().put(Icon.cacheName(currentApp.packageName), holder);
         return convertView;
     }
     public void clearViewCache() {
@@ -242,11 +256,14 @@ public class AppsAdapter extends BaseAdapter{
                 holder.killButton.setVisibility(SettingsManager.getRunning(holder.app.packageName) ? View.VISIBLE : View.GONE);
                 // Top search result
                 if (launcherActivity.currentTopSearchResult != null) {
-                    updateHover(holder, launcherActivity.currentTopSearchResult == holder.app);
-                    if (launcherActivity.currentTopSearchResult == holder.app)
-                        launcherActivity.currentTopSearchResult = null;
+                    updateHover(holder,
+                            Objects.equals(
+                                    Icon.cacheName(launcherActivity.currentTopSearchResult.packageName),
+                                    Icon.cacheName(holder.app.packageName)));
                 } else if (launcherActivity.clearTopSearchResult != null &&
-                        launcherActivity.clearTopSearchResult == holder.app) {
+                        Objects.equals(
+                                Icon.cacheName(launcherActivity.clearTopSearchResult.packageName),
+                                Icon.cacheName(holder.app.packageName))) {
                     updateHover(holder, false);
                     launcherActivity.clearTopSearchResult = null;
                 }
@@ -285,17 +302,29 @@ public class AppsAdapter extends BaseAdapter{
     public void updateHover(ViewHolder holder, boolean hovered) {
         holder.killButton.setBackgroundResource(hovered ? R.drawable.ic_circ_running_kb : R.drawable.ic_running_ns);
 
-        ObjectAnimator aXi = ObjectAnimator.ofFloat(holder.imageView, "scaleX", hovered ? 1.055f : 1.005f);
-        ObjectAnimator aXv = ObjectAnimator.ofFloat(holder.view, "scaleX", hovered ? 1.055f : 1.000f);
-        ObjectAnimator aYi = ObjectAnimator.ofFloat(holder.imageView, "scaleY", hovered ? 1.055f : 1.005f);
-        ObjectAnimator aYv = ObjectAnimator.ofFloat(holder.view, "scaleY", hovered ? 1.055f : 1.000f);
+        final float newScaleInner = hovered ? 1.055f : 1.005f;
+        final float newScaleOuter = hovered ? 1.055f : 1.000f;
+        final float newElevation = hovered ? 15f : 4f;
+        ObjectAnimator aXi = ObjectAnimator.ofFloat(holder.imageView, "scaleX", newScaleInner);
+        ObjectAnimator aXv = ObjectAnimator.ofFloat(holder.view, "scaleX", newScaleOuter);
+        ObjectAnimator aYi = ObjectAnimator.ofFloat(holder.imageView, "scaleY", newScaleInner);
+        ObjectAnimator aYv = ObjectAnimator.ofFloat(holder.view, "scaleY", newScaleOuter);
         ObjectAnimator aAm = ObjectAnimator.ofFloat(holder.moreButton, "alpha", hovered ? 1f : 0f);
-        ObjectAnimator aAe = ObjectAnimator.ofFloat(holder.clip, "elevation", hovered ? 15f : 4f);
+        ObjectAnimator aAe = ObjectAnimator.ofFloat(holder.clip, "elevation", newElevation);
 
         final ObjectAnimator[] animators = new ObjectAnimator[] {aXi, aXv, aYi, aYv, aAm, aAe};
         for (ObjectAnimator animator:animators) animator.setInterpolator(new OvershootInterpolator());
         for (ObjectAnimator animator:animators) animator.setDuration(250);
         for (ObjectAnimator animator:animators) animator.start();
+
+        // Force correct state, even if interrupted
+        holder.view.postDelayed(() -> {
+            holder.imageView.setScaleX(newScaleInner);
+            holder.imageView.setScaleY(newScaleInner);
+            holder.view.setScaleX(newScaleOuter);
+            holder.view.setScaleY(newScaleOuter);
+            holder.clip.setElevation(newElevation);
+        }, 250);
     }
 
     public void onImageSelected(String path, ImageView selectedImageView) {

@@ -8,6 +8,7 @@
     android:descendantFocusability="beforeDescendants"
     android:focusable="true"
     android:gravity="center"
+    android:layerType="none"
     android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.threethan.launcher.launcher.LauncherActivity;
 import com.threethan.launcher.lib.ImageLib;
+import com.threethan.launcher.lib.StringLib;
 import com.threethan.launcher.support.SettingsManager;
 
 import java.io.DataInputStream;
@@ -47,7 +48,7 @@ public abstract class IconRepo {
     };
     // Instead of matching a package name, websites match their TLD
     private static final String[] ICON_URLS_WEB = {
-            "https://logo.clearbit.com/google.com/%s", // Provides high-res icons for TLDs
+            "https://logo.clearbit.com/%s", // Provides high-res icons for TLDs
             "%s/favicon.ico", // The standard directory for an icon to be places
     };
     // If a download finishes, regardless of whether an icon is found, the app will be added to this
@@ -92,7 +93,7 @@ public abstract class IconRepo {
                 try {
                     for (final String url : App.isWebsite(app) ? ICON_URLS_WEB : (isWide ? ICON_URLS_BANNER : ICON_URLS_SQUARE)) {
                         final String urlTLD = App.isWebsite(app) ?
-                                pkgName.split("//")[0] + "//" + pkgName.split("/")[2] : pkgName;
+                                StringLib.baseUrl(pkgName) : pkgName;
                         if (downloadIconFromUrl(activity, String.format(url, urlTLD), iconFile)) {
                             activity.runOnUiThread(callback);
                             break;

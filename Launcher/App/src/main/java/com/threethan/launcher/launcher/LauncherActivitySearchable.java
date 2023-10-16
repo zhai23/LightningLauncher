@@ -19,9 +19,8 @@ import com.threethan.launcher.adapter.AppsAdapter;
 import com.threethan.launcher.helper.Keyboard;
 import com.threethan.launcher.helper.Launch;
 import com.threethan.launcher.helper.Platform;
+import com.threethan.launcher.lib.StringLib;
 import com.threethan.launcher.view.EditTextWatched;
-
-import java.util.HashSet;
 
 import eightbitlab.com.blurview.BlurView;
 import eightbitlab.com.blurview.RenderScriptBlur;
@@ -39,10 +38,7 @@ import eightbitlab.com.blurview.RenderScriptBlur;
 
 public class LauncherActivitySearchable extends LauncherActivityEditable {
     private boolean searching = false;
-    boolean startedTyping = false;
-
     protected void searchFor(String text) {
-        if (!text.isEmpty()) startedTyping = true;
         final AppsAdapter squareAdapter = getAdapterSquare();
         final AppsAdapter bannerAdapter = getAdapterBanner();
         if (squareAdapter != null) {
@@ -54,13 +50,13 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
             appGridViewBanner.setAdapter(bannerAdapter);
         }
         updateTopSearchResult();
+        resetScroll();
     }
     ObjectAnimator alphaIn;
     ObjectAnimator alphaOut;
     void showSearchBar() {
         try {
             clearTopSearchResult();
-            startedTyping = false;
             searching = true;
 
             final int endMargin = 275;
@@ -123,6 +119,19 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
                 Keyboard.hide(this, searchBar);
                 Keyboard.show(this);
             }, 50);
+
+
+            if (groupsEnabled) updatePadding();
+            ValueAnimator padAnimator = ValueAnimator.ofInt(scrollView.getPaddingTop(), dp(68));
+            padAnimator.setDuration(200);
+            padAnimator.setInterpolator(new DecelerateInterpolator());
+            padAnimator.addUpdateListener(animation -> {
+                scrollView.setPadding(0, (Integer) animation.getAnimatedValue(), 0,0);
+                resetScroll();
+            });
+            padAnimator.start();
+
+
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
@@ -149,6 +158,13 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
             topBar.setVisibility(View.VISIBLE);
             refreshAdapters();
 
+            ValueAnimator padAnimator = ValueAnimator.ofInt(scrollView.getPaddingTop(), 0);
+            padAnimator.setDuration(groupsEnabled ? 0 : 300);
+            padAnimator.setInterpolator(new DecelerateInterpolator());
+            padAnimator.addUpdateListener(animation ->
+                    scrollView.setPadding(0, (Integer) animation.getAnimatedValue(), 0,0));
+            padAnimator.start();
+
         } catch (NullPointerException ignored) {}
         clearTopSearchResult();
 
@@ -163,12 +179,16 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
             topBar.setVisibility(!searching ? View.VISIBLE : View.GONE);
             searchBar.setAlpha(searching ? 1F : 0F);
             topBar.post(() -> topBar.setAlpha(1F)); // Prevent flicker on start
+            scrollView.setPadding(0, searching ? dp(68):0, 0, 0);
+            scrollView.post(this::resetScroll);
         } catch (NullPointerException ignored) {}
     }
 
     @Override
     public void refreshInterface() {
-        hideSearchBar();
+        searching = false;
+
+        fixState();
         super.refreshInterface();
     }
 
@@ -213,7 +233,6 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
                     return false;
                 }
             }
-
             return false;
         });
 
@@ -224,17 +243,16 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
             } else {
                 Keyboard.hide(this, mainView);
                 clearTopSearchResult();
-                // Dismiss empty search bar automatically on Android TV
-                if (Platform.isTv(this) && searchText.getText().toString().isEmpty()) hideSearchBar();
             }
         });
 
         findViewById(R.id.searchCancelIcon).setOnClickListener(v -> hideSearchBar());
 
         searching = false;
-        fixState();
+//        fixState();
     }
-    private void updateTopSearchResult() {
+    private void
+    updateTopSearchResult() {
         EditTextWatched searchText = findViewById(R.id.searchText);
         if (searchText == null) clearTopSearchResult();
         else if (searchText.getText().toString().isEmpty()) clearTopSearchResult();
@@ -252,6 +270,7 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
         clearTopSearchResult = currentTopSearchResult;
         currentTopSearchResult = null;
     }
+
     @Override
     protected void postRefresh() {
         final View searchShortcutView = findViewById(R.id.searchShortcutView);
@@ -259,7 +278,7 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
             post(this::postRefresh);
             return;
         }
-        searchShortcutView.setFocusable(true);
+//        searchShortcutView.setFocusable(true);
         // Secret focusable element off the top of the screen to allow search on android tv by pressing up
         searchShortcutView.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus && !searching) showSearchBar();
@@ -271,5 +290,10 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
     public void onBackPressed() {
         if (searching) hideSearchBar();
         else super.onBackPressed();
+    }
+
+    @Override
+    protected boolean getSearching() {
+        return searching;
     }
 }

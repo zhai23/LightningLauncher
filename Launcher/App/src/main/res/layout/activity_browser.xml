@@ -12,6 +12,7 @@
         android:layout_height="40dp"
         android:descendantFocusability="blocksDescendants"
         android:focusable="false"
+        android:layerType="hardware"
         android:orientation="horizontal"
         android:paddingLeft="7dp"
         android:paddingRight="7dp">

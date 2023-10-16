@@ -26,9 +26,11 @@ public abstract class Platform {
     public static List<ApplicationInfo> installedApps;
     public static List<ApplicationInfo> appListBanner;
     public static List<ApplicationInfo> appListSquare;
+    public static int changeIndex = 0; //Used to track changes, specifically adding websites
     public static void clearPackageLists() {
         App.setNonVr.clear();
         App.setVr.clear();
+        changeIndex ++;
     }
     public static String findWebsite(SharedPreferences sharedPreferences, String url) {
         url = StringLib.fixUrl(url);
@@ -47,6 +49,8 @@ public abstract class Platform {
         sharedPreferences.edit()
                 .putStringSet(Settings.KEY_WEBSITE_LIST, webApps)
                 .apply();
+
+        changeIndex ++;
     }
 
     protected static Boolean isTv;

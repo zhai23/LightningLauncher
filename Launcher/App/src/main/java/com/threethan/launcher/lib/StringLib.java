@@ -58,7 +58,29 @@ public class StringLib {
         return builder.toString();
     }
 
-    public static String searchForUrl(String string) {
-        return "https://www.google.com/search?q="+string;
+    public static String baseUrl(String string) {
+        try {
+            return string.split("//")[0] + "//" + string.split("/")[2];
+        } catch (Exception ignored) { return string; }
+    }
+
+    public static final String GOOGLE_SEARCH_PRE = "https://www.google.com/search?q=";
+
+    public static String googleSearchForUrl(String string) {
+        return GOOGLE_SEARCH_PRE+string;
+    }
+    public static final String YOUTUBE_SEARCH_PRE = "https://www.youtube.com/results?search_query=";
+    public static String youTubeSearchForUrl(String string) {
+        return YOUTUBE_SEARCH_PRE+string;
+    }
+    public static final String APKPURE_SEARCH_PRE = "https://apkpure.com/search?q=";
+
+    public static String apkPureSearchForUrl(String string) {
+        return APKPURE_SEARCH_PRE+string;
+    }
+
+
+    public static boolean isSearchUrl(String url) {
+        return url.contains("search?q=") || url.contains("?search_query=");
     }
 }

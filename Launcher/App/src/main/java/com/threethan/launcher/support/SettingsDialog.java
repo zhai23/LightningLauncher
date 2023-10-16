@@ -171,7 +171,7 @@ public abstract class SettingsDialog {
         SeekBar scale = dialog.findViewById(R.id.scaleSeekBar);
         scale.setProgress(a.sharedPreferences.getInt(Settings.KEY_SCALE, Settings.DEFAULT_SCALE));
 
-        scale.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        scale.post(() -> scale.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int value, boolean b) {
                 a.sharedPreferenceEditor.putInt(Settings.KEY_SCALE, value);
@@ -181,13 +181,13 @@ public abstract class SettingsDialog {
             public void onStartTrackingTouch(SeekBar seekBar) {}
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) { a.refreshInterfaceAll(); }
-        });
+        }));
         scale.setMax(150);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) scale.setMin(80);
 
         SeekBar margin = dialog.findViewById(R.id.marginSeekBar);
         margin.setProgress(a.sharedPreferences.getInt(Settings.KEY_MARGIN, Settings.DEFAULT_MARGIN));
-        margin.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        margin.post(() -> margin.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int value, boolean b) {
                 a.sharedPreferenceEditor.putInt(Settings.KEY_MARGIN, value);
@@ -197,7 +197,7 @@ public abstract class SettingsDialog {
             public void onStartTrackingTouch(SeekBar seekBar) {}
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) { a.refreshInterfaceAll(); }
-        });
+        }));
         margin.setMax(40);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) margin.setMin(0);
 

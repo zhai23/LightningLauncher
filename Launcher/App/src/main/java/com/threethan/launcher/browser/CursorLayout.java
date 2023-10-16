@@ -44,6 +44,7 @@ public class CursorLayout extends LinearLayout {
     private final PointF cursorSpeed = new PointF(0.0f, 0.0f);
     private float sizeMult = 0.0f;
     private float holdMult = 1.0f;
+    private int hoverCounter = 0;
     public View targetView;
     private final Runnable cursorUpdateRunnable = new Runnable() {
         public void run() {
@@ -91,8 +92,7 @@ public class CursorLayout extends LinearLayout {
             if (cursorPosition.y < 0.0f) cursorPosition.y = 0.0f;
             else if (cursorPosition.y > ((float) (getHeight() - 1))) cursorPosition.y = (float) (getHeight() - 1);
             if (!tmpPointF.equals(cursorPosition))
-                    dispatchMotionEvent(cursorPosition.x, cursorPosition.y,
-                            centerPressed ? MotionEvent.ACTION_MOVE : MotionEvent.ACTION_DOWN); // Drag
+                dispatchMotionEvent(cursorPosition.x, cursorPosition.y, MotionEvent.ACTION_MOVE); // Drag
 
 
             if (targetView != null) {

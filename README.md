@@ -21,6 +21,7 @@ It can run on any Android device, but has been tailored for the lastest updates 
 - Enter edit mode and then select "Add Website" on the bottom right
 - Websites will be automatically given labels and icons from, but both can be customized as you wish
 - Websites launch in a custom browser, and will continue running in the background when hidden
+- High-res logos for many websites provided by [clearbit](https://clearbit.com/)
 - ***Background audio and recording is fully supported! Enjoy the web versions of Discord, Spotify, and many more!***
 
 ### 🎨 **Simple but Powerful Interface**

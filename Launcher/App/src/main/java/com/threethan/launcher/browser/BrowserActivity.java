@@ -24,11 +24,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.threethan.launcher.R;
+import com.threethan.launcher.helper.App;
 import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.helper.Keyboard;
 import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
+import com.threethan.launcher.launcher.LauncherActivity;
 import com.threethan.launcher.lib.StringLib;
+import com.threethan.launcher.support.SettingsManager;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -157,7 +160,7 @@ public class BrowserActivity extends Activity {
             topBar    .setVisibility(View.GONE);
             topBarEdit.setVisibility(View.VISIBLE);
             urlEdit.setText(currentUrl);
-            urlEdit.post(urlEdit::requestFocus);
+//            urlEdit.post(urlEdit::requestFocus);
             urlEdit.postDelayed(() -> Keyboard.show(this), 100);
         });
         urlEdit.setOnKeyListener((v, keyCode, event) -> {
@@ -170,7 +173,7 @@ public class BrowserActivity extends Activity {
         });
         topBarEdit.findViewById(R.id.confirm).setOnClickListener((view) -> {
             String url = urlEdit.getText().toString();
-            if (StringLib.isInvalidUrl(url)) url = StringLib.searchForUrl(url);
+            if (StringLib.isInvalidUrl(url)) url = StringLib.googleSearchForUrl(url);
             w.loadUrl(url);
             updateButtonsAndUrl(url);
             topBar.setVisibility(View.VISIBLE);
@@ -241,7 +244,7 @@ public class BrowserActivity extends Activity {
 
         addHome.setVisibility(View.VISIBLE);
         if (StringLib.isInvalidUrl(url)) addHome.setVisibility(View.GONE);
-        else if (StringLib.compareUrl(baseUrl, url)) addHome.setVisibility(View.GONE);
+        else if (StringLib.compareUrl(baseUrl, url) && !isEphemeral()) addHome.setVisibility(View.GONE);
         else {
             Set<String> webList = sharedPreferences.getStringSet(Settings.KEY_WEBSITE_LIST, new HashSet<>());
             for (String webUrl : webList) {
@@ -294,8 +297,18 @@ public class BrowserActivity extends Activity {
 
     @Override
     protected void onDestroy() {
+        // Don't keep search views in background
+        if (isEphemeral())
+            wService.killWebView(baseUrl);
+        // Unbind
         unbindService(connection);
         super.onDestroy();
+    }
+
+    protected boolean isEphemeral() {
+        return  (w != null && w.getUrl() != null &&
+                StringLib.isSearchUrl(baseUrl) &&
+                !(Platform.appListBanner.contains(baseUrl) || Platform.appListSquare.contains(baseUrl)));
     }
 
     // Sets the WebView when the service is bound

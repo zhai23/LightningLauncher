@@ -39,6 +39,7 @@ import com.threethan.launcher.adapter.GroupsAdapter;
 import com.threethan.launcher.browser.BrowserService;
 import com.threethan.launcher.helper.App;
 import com.threethan.launcher.helper.Compat;
+import com.threethan.launcher.helper.Debug;
 import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.helper.IconRepo;
 import com.threethan.launcher.helper.Keyboard;
@@ -271,6 +272,8 @@ public class LauncherActivity extends Activity {
         if (AppsAdapter.animateClose(this)) return;
         if (!settingsVisible) SettingsDialog.showSettings(this);
     }
+
+    private int myPlatformChangeIndex = 0;
     @Override
     protected void onResume() {
         isKillable = false;
@@ -285,8 +288,13 @@ public class LauncherActivity extends Activity {
         } catch (Exception ignored) {} // Will fail if service hasn't bound yet
 
         Dialog.setActivityContext(this);
-        post(this::recheckPackages);
-        postDelayed(this::recheckPackages, 1000);
+        if (Platform.changeIndex > myPlatformChangeIndex) reloadPackages();
+        else {
+            post(this::recheckPackages);
+            postDelayed(this::recheckPackages, 1000);
+        }
+        postDelayed(() -> new Updater(this).checkForAppUpdate(), 1000);
+
     }
 
     public void reloadPackages() {
@@ -300,6 +308,7 @@ public class LauncherActivity extends Activity {
         Platform.installedApps = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);
         Platform.installedApps = Collections.synchronizedList(Platform.installedApps);
         refreshAppDisplayListsWithoutInterface();
+        myPlatformChangeIndex = Platform.changeIndex;
     }
 
     public void recheckPackages() {
@@ -346,7 +355,6 @@ public class LauncherActivity extends Activity {
         }
     }
     void updateToolBars() {
-
         BlurView[] blurViews = new BlurView[]{
                 rootView.findViewById(R.id.blurViewGroups),
                 rootView.findViewById(R.id.blurViewSettingsIcon),
@@ -357,28 +365,32 @@ public class LauncherActivity extends Activity {
         final boolean hide = !groupsEnabled;
         for (int i = 0; i<blurViews.length-1; i++) blurViews[i].setVisibility(hide ? View.GONE : View.VISIBLE);
         if (isEditing() && hide) setEditMode(false); // If groups were disabled while in edit mode
-        if (hide) return;
 
-        float blurRadiusDp = 15f;
+        resetScroll();
 
-        View windowDecorView = getWindow().getDecorView();
-        ViewGroup rootViewGroup = (ViewGroup) windowDecorView;
-        Drawable windowBackground = windowDecorView.getBackground();
+        if (!hide) {
+            float blurRadiusDp = 15f;
 
-        for (BlurView blurView: blurViews) {
-            blurView.setBackgroundTintList(ColorStateList.valueOf(Color.TRANSPARENT));
-            blurView.setOverlayColor((Color.parseColor(darkMode ? "#29000000" : "#40FFFFFF")));
-            blurView.setupWith(rootViewGroup, new RenderScriptBlur(getApplicationContext())) // or RenderEffectBlur
-                    .setFrameClearDrawable(windowBackground) // Optional
-                    .setBlurRadius(blurRadiusDp);
-            blurView.setOutlineProvider(ViewOutlineProvider.BACKGROUND);
-            blurView.setClipToOutline(true);
+            View windowDecorView = getWindow().getDecorView();
+            ViewGroup rootViewGroup = (ViewGroup) windowDecorView;
+            Drawable windowBackground = windowDecorView.getBackground();
+
+            for (BlurView blurView : blurViews) {
+                blurView.setBackgroundTintList(ColorStateList.valueOf(Color.TRANSPARENT));
+                blurView.setOverlayColor((Color.parseColor(darkMode ? "#29000000" : "#40FFFFFF")));
+                blurView.setupWith(rootViewGroup, new RenderScriptBlur(getApplicationContext())) // or RenderEffectBlur
+                        .setFrameClearDrawable(windowBackground) // Optional
+                        .setBlurRadius(blurRadiusDp);
+                blurView.setOutlineProvider(ViewOutlineProvider.BACKGROUND);
+                blurView.setClipToOutline(true);
+            }
+
+            ImageView settingsIcon = rootView.findViewById(R.id.settingsIcon);
+            settingsIcon.setImageTintList(ColorStateList.valueOf(darkMode ? Color.WHITE : Color.BLACK));
+            ImageView searchIcon = rootView.findViewById(R.id.searchIcon);
+            searchIcon.setImageTintList(ColorStateList.valueOf(darkMode ? Color.WHITE : Color.BLACK));
         }
 
-        ImageView settingsIcon = rootView.findViewById(R.id.settingsIcon);
-        settingsIcon.setImageTintList(ColorStateList.valueOf(darkMode ? Color.WHITE : Color.BLACK));
-        ImageView searchIcon   = rootView.findViewById(R.id.searchIcon);
-        searchIcon  .setImageTintList(ColorStateList.valueOf(darkMode ? Color.WHITE : Color.BLACK));
         post(this::postRefresh);
     }
     protected void postRefresh(){
@@ -442,13 +454,14 @@ public class LauncherActivity extends Activity {
 
         groupGridView.setAdapter(new GroupsAdapter(this, isEditing()));
 
-        scrollView.scrollTo(0,0); // Reset scroll
-        scrollView.smoothScrollTo(0,0); // Cancel inertia
-
         prevViewWidth = -1;
         updateGridViews();
 
         post(this::updateToolBars);
+    }
+    protected void resetScroll() {
+        scrollView.scrollTo(0,0); // Reset scroll
+        scrollView.smoothScrollTo(0,0); // Cancel inertia
     }
     protected void setAdapters(boolean namesSquare, boolean namesBanner) {
         if (getAdapterSquare() == null)
@@ -491,10 +504,6 @@ public class LauncherActivity extends Activity {
                 groupGridView.setLayoutParams(new FrameLayout.LayoutParams
                         (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             }
-            scrollView.setFadingEdgeLength(dp(23 + 22) + groupHeight);
-        } else {
-            FadingTopScrollView scrollView = rootView.findViewById(R.id.mainScrollView);
-            scrollView.setFadingEdgeLength(0);
         }
         updatePadding();
 
@@ -504,19 +513,22 @@ public class LauncherActivity extends Activity {
         appGridViewBanner.setNumColumns((int) Math.round((double) estimatedWidth/targetSizePx/2));
         groupGridView.post(() -> groupGridView.setVisibility(View.VISIBLE));
     }
+
+
+
     // Updates padding on the app grid views:
     // - Top padding to account for the groups bar
     // - Side padding to account for icon margins (otherwise icons would touch window edges)
     // - Bottom padding to account for icon margin, as well as the edit mode footer if applicable
     protected void updatePadding() {
         final int marginPx = dp(sharedPreferences.getInt(Settings.KEY_MARGIN, Settings.DEFAULT_MARGIN));
-        final boolean groupsVisible = getAdapterGroups() != null && groupsEnabled;
+        final boolean groupsVisible = getAdapterGroups() != null && groupsEnabled && !getSearching();
         final int topAdd = groupsVisible ? dp(23 + 22) + groupHeight : 0;
         final int bottomAdd = groupsVisible ? getBottomBarHeight() : marginPx/2+getBottomBarHeight();
 
         appGridViewBanner.setPadding(
                 marginPx,
-                Math.max(0,marginPx+(groupsEnabled ? 0 : dp(22)))+topAdd,
+                Math.max(0,marginPx+(groupsVisible ? 0 : dp(22)))+topAdd,
                 marginPx,
                 0);
         appGridViewSquare.setPadding(
@@ -524,6 +536,8 @@ public class LauncherActivity extends Activity {
                 dp(5), // Margin top is -5dp
                 marginPx,
                 bottomAdd);
+
+        scrollView.setFadingEdgeLength(groupsVisible ? dp(23 + 22) + groupHeight : 0);
     }
     // Accounts for the height of the edit mode footer when visible, actual function in child class
     protected int getBottomBarHeight() {
@@ -668,7 +682,7 @@ public class LauncherActivity extends Activity {
     public boolean isEditing() { return false; }
     public boolean canEdit() { return false; }
     public void addWebsite(Context context) {}
-
+    protected boolean getSearching() { return false; }
     // Wallpaper Animated Gradient Overlay
     protected void startBackgroundOverlay() {
         findViewById(R.id.overlayGradient).setVisibility(View.VISIBLE);

@@ -80,13 +80,16 @@ public class SettingsManager extends Settings {
     private static String checkAppLabel(ApplicationInfo app) {
         String name = sharedPreferences.getString(app.packageName, "");
         if (!name.isEmpty()) return name;
-        if (App.isWebsite(app)) {
+        if (App.isWebsite(app) || StringLib.isSearchUrl(app.packageName)) {
             try {
                 name = app.packageName.split("//")[1];
                 String[] split = name.split("\\.");
                 if (split.length <= 1) name = app.packageName;
                 else if (split.length == 2) name = split[0];
                 else name = split[1];
+
+                if (StringLib.isSearchUrl(app.packageName))
+                    name += " Search";
 
                 if (!name.isEmpty()) return StringLib.toTitleCase(name);
             } catch (Exception ignored) {}

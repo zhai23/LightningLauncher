@@ -31,18 +31,22 @@ import java.util.HashMap;
 public abstract class Icon {
     public static final HashMap<String, Drawable> cachedIcons = new HashMap<>();
     public static File iconFileForPackage(LauncherActivity launcherActivity, String packageName) {
-        packageName = StringLib.toValidFilename(packageName);
+        packageName = cacheName(StringLib.toValidFilename(packageName));
         ApplicationInfo tempApp = new ApplicationInfo();
         tempApp.packageName = packageName;
         final boolean wide = App.isBanner(tempApp, launcherActivity);
         return new File(launcherActivity.getApplicationInfo().dataDir,
                 packageName + (wide?"-wide":"") + ".webp");
     }
+    public static String cacheName(String packageName) {
+        if (App.isWebsite(packageName)) return StringLib.baseUrl(packageName);
+        else return packageName;
+    }
     public static void updateIcon(File iconFile, String packageName, ImageView imageView) {
         try {
             Drawable newIconDrawable = Drawable.createFromPath(iconFile.getAbsolutePath());
             if (newIconDrawable != null) {
-                cachedIcons.put(packageName, newIconDrawable); // Success
+                cachedIcons.put(cacheName(packageName), newIconDrawable); // Success
                 if (imageView != null) imageView.setImageDrawable(newIconDrawable);
             }
         } catch (Exception ignored) {
@@ -52,7 +56,7 @@ public abstract class Icon {
     @Nullable
     public static Drawable loadIcon(LauncherActivity activity, ApplicationInfo app, ImageView imageView) {
         // Try to load from memory
-        if (cachedIcons.containsKey(app.packageName)) return cachedIcons.get(app.packageName);
+        if (cachedIcons.containsKey(cacheName(app.packageName))) return cachedIcons.get(cacheName(app.packageName));
         // Try to load from file
         final File iconFile = iconFileForPackage(activity, app.packageName);
 
@@ -63,7 +67,7 @@ public abstract class Icon {
 
         // Try to load from package manager
         Drawable appIcon = null;
-        if (cachedIcons.containsKey(app.packageName)) return cachedIcons.get(app.packageName);
+        if (cachedIcons.containsKey(cacheName(app.packageName))) return cachedIcons.get(cacheName(app.packageName));
         try {
             PackageManager packageManager = activity.getPackageManager();
             Resources resources = packageManager.getResourcesForApplication(app.packageName);
