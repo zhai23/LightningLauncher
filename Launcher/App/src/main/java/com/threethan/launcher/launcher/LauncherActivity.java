@@ -107,7 +107,10 @@ public class LauncherActivity extends Activity {
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
-        int background = sharedPreferences.getInt(Settings.KEY_BACKGROUND, Settings.DEFAULT_BACKGROUND);
+        int background = sharedPreferences.getInt(Settings.KEY_BACKGROUND,
+                Platform.isTv(this)
+                        ? Settings.DEFAULT_BACKGROUND_TV
+                        : Settings.DEFAULT_BACKGROUND_VR);
         boolean custom = background < 0 || background >= SettingsManager.BACKGROUND_COLORS.length;
         int backgroundColor = custom ? Color.parseColor("#404044") : SettingsManager.BACKGROUND_COLORS[background];
         getWindow().setBackgroundDrawable(new ColorDrawable(backgroundColor));
@@ -205,7 +208,9 @@ public class LauncherActivity extends Activity {
         settingsImageView.setOnClickListener(view -> {
             if (!settingsVisible) SettingsDialog.showSettings(this);
         });
-        if (sharedPreferences.getBoolean(Settings.KEY_BACKGROUND_OVERLAY, Settings.DEFAULT_BACKGROUND_OVERLAY))
+        if (sharedPreferences.getBoolean(Settings.KEY_BACKGROUND_OVERLAY,
+                Platform.isTv(this) ? Settings.DEFAULT_BACKGROUND_OVERLAY_TV
+                                            : Settings.DEFAULT_BACKGROUND_OVERLAY_VR))
             startBackgroundOverlay();
     }
     protected void onLayoutChaged(View v, int left, int top, int right, int bottom,
@@ -541,7 +546,10 @@ public class LauncherActivity extends Activity {
         sharedPreferenceEditor.apply();
 
         // Set initial color, execute background task
-        int background = sharedPreferences.getInt(Settings.KEY_BACKGROUND, Settings.DEFAULT_BACKGROUND);
+        int background = sharedPreferences.getInt(Settings.KEY_BACKGROUND,
+                Platform.isTv(this)
+                        ? Settings.DEFAULT_BACKGROUND_TV
+                        : Settings.DEFAULT_BACKGROUND_VR);
         boolean custom = background < 0 || background >= SettingsManager.BACKGROUND_COLORS.length;
         int backgroundColor = custom ? Color.parseColor("#404044") : SettingsManager.BACKGROUND_COLORS[background];
 

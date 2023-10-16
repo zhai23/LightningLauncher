@@ -13,6 +13,7 @@ import android.widget.Switch;
 import com.threethan.launcher.R;
 import com.threethan.launcher.helper.Compat;
 import com.threethan.launcher.helper.Dialog;
+import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.launcher.LauncherActivity;
 import com.threethan.launcher.lib.ImageLib;
@@ -96,7 +97,8 @@ public abstract class SettingsDialog {
             a.refreshInterfaceAll();
         });
         Switch hueShift = dialog.findViewById(R.id.hueShiftSwitch);
-        hueShift.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_BACKGROUND_OVERLAY, Settings.DEFAULT_BACKGROUND_OVERLAY));
+        hueShift.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_BACKGROUND_OVERLAY,
+                Platform.isTv(a) ? Settings.DEFAULT_BACKGROUND_OVERLAY_TV : Settings.DEFAULT_BACKGROUND_OVERLAY_VR));
         hueShift.setOnCheckedChangeListener((compoundButton, value) -> a.setBackgroundOverlay(value));
         ImageView[] views = {
                 dialog.findViewById(R.id.background0),
@@ -111,7 +113,10 @@ public abstract class SettingsDialog {
                 dialog.findViewById(R.id.background9),
                 dialog.findViewById(R.id.background_custom)
         };
-        int background = a.sharedPreferences.getInt(Settings.KEY_BACKGROUND, Settings.DEFAULT_BACKGROUND);
+        int background = a.sharedPreferences.getInt(Settings.KEY_BACKGROUND,
+                Platform.isTv(a)
+                        ? Settings.DEFAULT_BACKGROUND_TV
+                        : Settings.DEFAULT_BACKGROUND_VR);
         if (background < 0) background = views.length-1;
 
         for (ImageView image : views) {
@@ -124,8 +129,12 @@ public abstract class SettingsDialog {
         for (int i = 0; i < views.length; i++) {
             int index = i;
             views[i].setOnClickListener(view -> {
-                int lastIndex = a.sharedPreferences.getInt(Settings.KEY_BACKGROUND, Settings.DEFAULT_BACKGROUND);
-                if (lastIndex >= SettingsManager.BACKGROUND_DRAWABLES.length || lastIndex < 0) lastIndex = SettingsManager.BACKGROUND_DRAWABLES.length;
+                int lastIndex = a.sharedPreferences.getInt(Settings.KEY_BACKGROUND,
+                        Platform.isTv(a)
+                                ? Settings.DEFAULT_BACKGROUND_TV
+                                : Settings.DEFAULT_BACKGROUND_VR);
+                if (lastIndex >= SettingsManager.BACKGROUND_DRAWABLES.length || lastIndex < 0)
+                    lastIndex = SettingsManager.BACKGROUND_DRAWABLES.length;
                 ImageView last = views[lastIndex];
                 if (last == view) return;
 
@@ -152,7 +161,8 @@ public abstract class SettingsDialog {
                 } else {
                     a.setBackground(index);
                     dark.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE));
-                    hueShift.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_BACKGROUND_OVERLAY, Settings.DEFAULT_BACKGROUND_OVERLAY));
+                    hueShift.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_BACKGROUND_OVERLAY,
+                            Platform.isTv(a) ? Settings.DEFAULT_BACKGROUND_OVERLAY_TV : Settings.DEFAULT_BACKGROUND_OVERLAY_VR));
                 }
             });
         }

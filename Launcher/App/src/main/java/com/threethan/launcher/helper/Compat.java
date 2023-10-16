@@ -50,7 +50,10 @@ public abstract class Compat {
             // If updated
             for (int version = 0; version <= Compat.CURRENT_COMPATIBILITY_VERSION; version++) {
                 if (SettingsManager.getVersionsWithBackgroundChanges().contains(version)) {
-                    int backgroundIndex = sharedPreferences.getInt(Settings.KEY_BACKGROUND, Settings.DEFAULT_BACKGROUND);
+                    int backgroundIndex = sharedPreferences.getInt(Settings.KEY_BACKGROUND,
+                            Platform.isTv(launcherActivity)
+                                    ? Settings.DEFAULT_BACKGROUND_TV
+                                    : Settings.DEFAULT_BACKGROUND_VR);
 
                     if (backgroundIndex >= 0 && backgroundIndex < SettingsManager.BACKGROUND_DARK.length)
                         sharedPreferenceEditor.putBoolean(Settings.KEY_DARK_MODE, SettingsManager.BACKGROUND_DARK[backgroundIndex]);
@@ -59,13 +62,19 @@ public abstract class Compat {
                 }
                 switch (version) {
                     case (0):
-                        if (sharedPreferences.getInt(Settings.KEY_BACKGROUND, Settings.DEFAULT_BACKGROUND) == 6)
+                        if (sharedPreferences.getInt(Settings.KEY_BACKGROUND,
+                                Platform.isTv(launcherActivity)
+                                        ? Settings.DEFAULT_BACKGROUND_TV
+                                        : Settings.DEFAULT_BACKGROUND_VR) == 6)
                             sharedPreferenceEditor.putInt(Settings.KEY_BACKGROUND, -1);
                         // Rename group to new default
                         renameGroup(launcherActivity, "Tools", "Apps");
                         break;
                     case (1):
-                        int bg = sharedPreferences.getInt(Settings.KEY_BACKGROUND, Settings.DEFAULT_BACKGROUND);
+                        int bg = sharedPreferences.getInt(Settings.KEY_BACKGROUND,
+                                Platform.isTv(launcherActivity)
+                                        ? Settings.DEFAULT_BACKGROUND_TV
+                                        : Settings.DEFAULT_BACKGROUND_VR);
                         if (bg > 2) sharedPreferenceEditor.putInt(Settings.KEY_BACKGROUND, bg + 1);
                         recheckSupported(launcherActivity);
                         break;
@@ -82,7 +91,10 @@ public abstract class Compat {
                         final Set<String> launchOutSet = sharedPreferences.getStringSet(KEY_OLD_LAUNCH_OUT, Collections.emptySet());
                         for (String app : launchOutSet) sharedPreferenceEditor.putBoolean(Settings.KEY_LAUNCH_OUT_PREFIX + app, true);
                         // Wallpaper remap
-                        int backgroundIndex = sharedPreferences.getInt(Settings.KEY_BACKGROUND, Settings.DEFAULT_BACKGROUND);
+                        int backgroundIndex = sharedPreferences.getInt(Settings.KEY_BACKGROUND,
+                                Platform.isTv(launcherActivity)
+                                        ? Settings.DEFAULT_BACKGROUND_TV
+                                        : Settings.DEFAULT_BACKGROUND_VR);
                         if (backgroundIndex > 2)
                             sharedPreferenceEditor.putInt(Settings.KEY_BACKGROUND, backgroundIndex - 1);
                 }

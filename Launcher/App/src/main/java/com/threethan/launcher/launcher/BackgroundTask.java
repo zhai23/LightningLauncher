@@ -5,11 +5,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
-import android.widget.ImageView;
 
-import androidx.core.content.ContextCompat;
-
-import com.threethan.launcher.R;
+import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.lib.ImageLib;
 import com.threethan.launcher.support.SettingsManager;
@@ -32,7 +29,10 @@ class BackgroundTask extends AsyncTask<Object, Void, Object> {
     @Override
     protected Object doInBackground(Object... objects) {
         LauncherActivity owner = (LauncherActivity) objects[0];
-        int background = owner.sharedPreferences.getInt(Settings.KEY_BACKGROUND, Settings.DEFAULT_BACKGROUND);
+        int background = owner.sharedPreferences.getInt(Settings.KEY_BACKGROUND,
+                Platform.isTv(owner)
+                        ? Settings.DEFAULT_BACKGROUND_TV
+                        : Settings.DEFAULT_BACKGROUND_VR);
         if (background >= 0 && background < SettingsManager.BACKGROUND_DRAWABLES.length) {
 //            backgroundThemeDrawable = ContextCompat.getDrawable(owner, SettingsManager.BACKGROUND_DRAWABLES[background]);
 
@@ -71,6 +71,7 @@ class BackgroundTask extends AsyncTask<Object, Void, Object> {
     protected void onPostExecute(Object _n) {
         LauncherActivity owner = ownerRef.get();
         if (owner != null) owner.getWindow().setBackgroundDrawable(backgroundThemeDrawable);
+        if (owner != null) owner.updateToolBars();
     }
 
 }

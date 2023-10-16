@@ -62,7 +62,8 @@ public abstract class Settings {
     public static final String KEY_GROUPS_ENABLED = "KEY_GROUPS_ENABLED";
     public static final String KEY_DETAILS_LONG_PRESS = "KEY_DETAILS_LONG_PRESS";
     public static final String KEY_AUTO_HIDE_EMPTY = "KEY_AUTO_HIDE_EMPTY";
-    public static final int DEFAULT_BACKGROUND = 0;
+    public static final int DEFAULT_BACKGROUND_VR = 0;
+    public static final int DEFAULT_BACKGROUND_TV = 9;
     public static final boolean DEFAULT_DARK_MODE = true;
     public static final boolean DEFAULT_GROUPS_ENABLED = true;
     public static boolean DEFAULT_DETAILS_LONG_PRESS = false;
@@ -102,7 +103,8 @@ public abstract class Settings {
 
     // extra pizzazz
     public static final String KEY_BACKGROUND_OVERLAY = "KEY_BACKGROUND_OVERLAY";
-    public static final boolean DEFAULT_BACKGROUND_OVERLAY = false;
+    public static final boolean DEFAULT_BACKGROUND_OVERLAY_VR = false;
+    public static final boolean DEFAULT_BACKGROUND_OVERLAY_TV = true;
 
     // show names by display type
     public static final String KEY_SHOW_NAMES_SQUARE = "KEY_CUSTOM_NAMES";
