@@ -14,6 +14,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -23,6 +24,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
+import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -80,8 +82,6 @@ public class LauncherActivity extends Activity {
     DynamicHeightGridView appGridViewSquare;
     DynamicHeightGridView appGridViewBanner;
     ScrollView scrollView;
-    ImageView backgroundImageView;
-
     public ApplicationInfo currentTopSearchResult = null;
     public ApplicationInfo clearTopSearchResult = null;
     GridView groupGridView;
@@ -106,13 +106,12 @@ public class LauncherActivity extends Activity {
         Intent intent = new Intent(this, LauncherService.class);
         bindService(intent, launcherServiceConnection, Context.BIND_AUTO_CREATE);
 
-        ViewGroup container = findViewById(R.id.container);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
         int background = sharedPreferences.getInt(Settings.KEY_BACKGROUND, Settings.DEFAULT_BACKGROUND);
         boolean custom = background < 0 || background >= SettingsManager.BACKGROUND_COLORS.length;
         int backgroundColor = custom ? Color.parseColor("#404044") : SettingsManager.BACKGROUND_COLORS[background];
-        container.setBackgroundColor(backgroundColor);
+        getWindow().setBackgroundDrawable(new ColorDrawable(backgroundColor));
     }
 
     @Override
@@ -196,12 +195,10 @@ public class LauncherActivity extends Activity {
         settingsManager = SettingsManager.getInstance(this);
 
         mainView = rootView.findViewById(R.id.mainLayout);
-        mainView.addOnLayoutChangeListener((view, i, i1, i2, i3, i4, i5, i6, i7)
-                -> post(this::updateGridViews));
+        mainView.addOnLayoutChangeListener(this::onLayoutChaged);
         appGridViewSquare = rootView.findViewById(R.id.appsViewSquare);
         appGridViewBanner = rootView.findViewById(R.id.appsViewBanner);
         scrollView = rootView.findViewById(R.id.mainScrollView);
-        backgroundImageView = rootView.findViewById(R.id.background);
         groupGridView = rootView.findViewById(R.id.groupsView);
 
         // Set logo button
@@ -211,6 +208,11 @@ public class LauncherActivity extends Activity {
         });
         if (sharedPreferences.getBoolean(Settings.KEY_BACKGROUND_OVERLAY, Settings.DEFAULT_BACKGROUND_OVERLAY))
             startBackgroundOverlay();
+    }
+    protected void onLayoutChaged(View v, int left, int top, int right, int bottom,
+                                  int oldLeft, int oldTop, int oldRight, int oldBottom) {
+        new BackgroundTask().execute(this);
+        updateGridViews();
     }
 
     public boolean clickGroup(int position) {
@@ -544,12 +546,12 @@ public class LauncherActivity extends Activity {
         boolean custom = background < 0 || background >= SettingsManager.BACKGROUND_COLORS.length;
         int backgroundColor = custom ? Color.parseColor("#404044") : SettingsManager.BACKGROUND_COLORS[background];
 
-        backgroundImageView.setBackgroundColor(backgroundColor);
         getWindow().setNavigationBarColor(backgroundColor);
         getWindow().setStatusBarColor(backgroundColor);
 
         new BackgroundTask().execute(this);
     }
+
 
     public void refreshAppDisplayLists() {
         refreshAppDisplayListsWithoutInterface();
