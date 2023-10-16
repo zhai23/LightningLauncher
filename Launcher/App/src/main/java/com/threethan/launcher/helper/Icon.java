@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import androidx.annotation.Nullable;
 import androidx.core.content.res.ResourcesCompat;
 
+import com.threethan.launcher.R;
 import com.threethan.launcher.launcher.LauncherActivity;
 import com.threethan.launcher.lib.ImageLib;
 import com.threethan.launcher.lib.StringLib;
@@ -93,6 +94,7 @@ public abstract class Icon {
         final boolean ignored = iconFile.delete();
         downloadImageView.setImageDrawable(loadIcon(activity, app, downloadImageView));
         IconRepo.download(activity, app, () -> updateIcon(iconFile, app.packageName, downloadImageView));
+        Dialog.toast(activity.getString(R.string.refreshed_icon), "", false);
     }
 
     protected static void saveIconDrawable(LauncherActivity activity, Drawable icon, String packageName) {

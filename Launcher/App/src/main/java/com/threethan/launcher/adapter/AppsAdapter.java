@@ -415,7 +415,7 @@ public class AppsAdapter extends BaseAdapter{
                     .get(currentApp.packageName), Settings.HIDDEN_GROUP);
             showButton.setVisibility( nowHidden ? View.VISIBLE : View.GONE);
             hideButton.setVisibility(!nowHidden ? View.VISIBLE : View.GONE);
-            Dialog.toast(launcherActivity.getString(R.string.moved_shown), finalUnhideGroup);
+            Dialog.toast(launcherActivity.getString(R.string.moved_shown), finalUnhideGroup, false);
         });
         hideButton.setOnClickListener(v -> {
             launcherActivity.settingsManager.setAppGroup(currentApp.packageName,
@@ -425,7 +425,7 @@ public class AppsAdapter extends BaseAdapter{
             showButton.setVisibility( nowHidden ? View.VISIBLE : View.GONE);
             hideButton.setVisibility(!nowHidden ? View.VISIBLE : View.GONE);
             Dialog.toast(launcherActivity.getString(R.string.moved_hidden),
-                    launcherActivity.getString(R.string.moved_hidden_bold));
+                    launcherActivity.getString(R.string.moved_hidden_bold), false);
 
         });
 

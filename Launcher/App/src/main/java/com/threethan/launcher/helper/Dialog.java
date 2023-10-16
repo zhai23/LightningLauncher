@@ -46,13 +46,15 @@ public abstract class Dialog {
         dialog.show();
         return dialog;
     }
+
     @Nullable
-    public static void toast(String stringMain, String stringBold) {
+    public static void toast(String stringMain, String stringBold, boolean isLong) {
         if (getActivityContext() == null) return;
 
         // Real toast doesn't block dpad input
         if (!Platform.isVr(getActivityContext())) {
-            Toast.makeText(getActivityContext() , stringMain + " " + stringBold, Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivityContext() , stringMain + " " + stringBold,
+                    (isLong ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT)).show();
             return;
         }
 
@@ -70,6 +72,7 @@ public abstract class Dialog {
         ((TextView) dialog.findViewById(R.id.toastTextBold)).setText(stringBold);
 
         // Dismiss if not done automatically
-        dialog.findViewById(R.id.toastTextMain).postDelayed(dialog::dismiss, 5000);
+        dialog.findViewById(R.id.toastTextMain).postDelayed(dialog::dismiss,
+                isLong ? 5000 : 1750);
     }
 }

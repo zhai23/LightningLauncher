@@ -120,6 +120,7 @@
     <string name="update_content">You can update from version %1$s to %2$s without taking off your headset!</string>
     <string name="update_button">Continue</string>
     <string name="update_skip_button">Skip this Update</string>
+    <string name="update_skip_toast">Skipped version</string>
 
     <string name="update_downloading_title">Downloading Latest Version…</string>
     <string name="update_downloading_content">You should get a prompt to install shortly</string>
@@ -160,9 +161,11 @@
     <string name="tip_hide">Hide this App</string>
     <string name="tip_show">Un-Hide this App</string>
 
+    <!--  Toasts  -->
     <string name="moved_hidden">Moved to</string>
     <string name="moved_hidden_bold">Hidden Group</string>
     <string name="moved_shown">Moved to</string>
+    <string name="refreshed_icon">Refreshing icon…</string>
 
     <!--  Web Presets  -->
     <string name="preset_google">google.com</string>

@@ -24,7 +24,9 @@ public abstract class SettingsSaver {
         FileLib.delete(export);
         FileLib.copy(prefs, export);
 
-        Dialog.toast(activity.getString(R.string.saved_settings),"Android/Data/"+activity.getPackageName()+"/"+SettingsSaver.CONFIG_FILE_NAME);
+        Dialog.toast(activity.getString(R.string.saved_settings),
+                "Android/Data/"+activity.getPackageName()+"/"+SettingsSaver.CONFIG_FILE_NAME,
+                false);
     }
     public synchronized static void load(LauncherActivity activity) {
         File prefs = new File(activity.getFilesDir().getParent()
@@ -38,7 +40,9 @@ public abstract class SettingsSaver {
         FileLib.delete(prefs);
         FileLib.copy(export, prefs);
 
-        Dialog.toast(activity.getString(R.string.loaded_settings1), activity.getString(R.string.loaded_settings2));
+        Dialog.toast(activity.getString(R.string.loaded_settings1),
+                activity.getString(R.string.loaded_settings2),
+                false);
 
         activity.postDelayed(() -> {
             int pid = android.os.Process.myPid();

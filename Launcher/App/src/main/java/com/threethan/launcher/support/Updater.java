@@ -28,6 +28,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.threethan.launcher.R;
+import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.launcher.LauncherActivity;
 import com.threethan.launcher.lib.FileLib;
 
@@ -216,6 +217,7 @@ public class Updater {
         skipDialogBuilder.setMessage(R.string.update_skip_content);
         skipDialogBuilder.setPositiveButton(R.string.update_skip_confirm_button, (dialog, i) -> {
             getSharedPreferences().edit().putString(KEY_IGNORED_UPDATE_VERSION, versionTag).apply();
+            Dialog.toast(activity.getString(R.string.update_skip_toast), versionTag, false);
             dialog.dismiss();
         });
         skipDialogBuilder.setNegativeButton(R.string.update_skip_cancel_button, ((dialog, i) -> dialog.dismiss()));

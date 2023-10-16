@@ -169,7 +169,7 @@ public class BrowserService extends Service {
             downloadFilenameById.put(id, filename);
             downloadActivityById.put(id, activity);
 
-            Dialog.toast(getString(R.string.web_download_started), filename);
+            Dialog.toast(getString(R.string.web_download_started), filename, true);
         });
         return webView;
     }
@@ -224,7 +224,7 @@ public class BrowserService extends Service {
                 try {
                     startActivity(openIntent);
                 } catch (ActivityNotFoundException ignored) {
-                    Dialog.toast(getString(R.string.web_download_finished), filename);
+                    Dialog.toast(getString(R.string.web_download_finished), filename, true);
                 }
             }
         }
