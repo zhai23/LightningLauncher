@@ -88,7 +88,8 @@
             android:screenOrientation="unspecified"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
             android:exported="true"
-            android:resizeableActivity="true">
+            android:resizeableActivity="true"
+            android:theme="@style/ThemeOverlay.Browser">
 
             <layout android:defaultWidth="706dp" android:defaultHeight="442dp" android:gravity="top|end" />
 

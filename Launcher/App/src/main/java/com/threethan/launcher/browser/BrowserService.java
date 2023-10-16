@@ -130,6 +130,7 @@ public class BrowserService extends Service {
             ws.setMediaPlaybackRequiresUserGesture(false);
             ws.setDefaultTextEncodingName("utf-8");
             ws.setJavaScriptCanOpenWindowsAutomatically(true);
+            ws.setRenderPriority(WebSettings.RenderPriority.HIGH); // May improve performance
             // Enable Cookies
             CookieManager.getInstance().setAcceptCookie(true);
             CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true);

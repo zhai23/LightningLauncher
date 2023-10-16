@@ -4,14 +4,14 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_meta_dark"
     android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/topBar"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:background="#2A000000"
+        android:descendantFocusability="blocksDescendants"
+        android:focusable="false"
         android:layerType="hardware"
         android:orientation="horizontal"
         android:paddingLeft="7dp"

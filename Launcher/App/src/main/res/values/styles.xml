@@ -7,7 +7,9 @@
         <item name="android:fontFamily">@font/poligon</item>
         <item name="android:colorPrimary">#2a2a2c</item>
         <item name="android:windowBackground">@drawable/ic_app_splash</item>
-        <item name="android:scaleType">centerCrop</item>
+    </style>
+    <style name="ThemeOverlay.Browser" parent="ThemeOverlay.Material">
+        <item name="android:windowBackground">@drawable/bg_meta_darker</item>
     </style>
 
     <style name="SettingTitle">

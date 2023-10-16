@@ -8,10 +8,13 @@ import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Point;
 import android.graphics.PointF;
+import android.os.Build;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Display;
+import android.view.DragEvent;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.MotionEvent.PointerCoords;
@@ -40,6 +43,7 @@ public class CursorLayout extends LinearLayout {
     private final PointF cursorPosition = new PointF(0.0f, 0.0f);
     private final PointF cursorSpeed = new PointF(0.0f, 0.0f);
     private float sizeMult = 0.0f;
+    private float holdMult = 1.0f;
     public View targetView;
     private final Runnable cursorUpdateRunnable = new Runnable() {
         public void run() {
@@ -87,7 +91,9 @@ public class CursorLayout extends LinearLayout {
             if (cursorPosition.y < 0.0f) cursorPosition.y = 0.0f;
             else if (cursorPosition.y > ((float) (getHeight() - 1))) cursorPosition.y = (float) (getHeight() - 1);
             if (!tmpPointF.equals(cursorPosition))
-                dispatchMotionEvent(cursorPosition.x, cursorPosition.y, MotionEvent.ACTION_MOVE); // Drag
+                    dispatchMotionEvent(cursorPosition.x, cursorPosition.y,
+                            centerPressed ? MotionEvent.ACTION_MOVE : MotionEvent.ACTION_DOWN); // Drag
+
 
             if (targetView != null) {
                 try {
@@ -115,6 +121,8 @@ public class CursorLayout extends LinearLayout {
             visUpdate();
         }
     };
+    private boolean centerPressed;
+
     private void visUpdate() {
         invalidate();
 
@@ -158,6 +166,15 @@ public class CursorLayout extends LinearLayout {
         SCROLL_START_PADDING = point.x / 15;
         this.post(() -> cursorPosition.y = getHeight() / 2f);
 
+        // Drag&Drop can eat all input as we don't have a mouse on the system level
+        setOnDragListener((v, event) -> {
+            if (event.getAction() == DragEvent.ACTION_DRAG_STARTED)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    cancelDragAndDrop();
+                    cancelLongPress();
+                }
+            return false;
+        });
     }
     @Override
     protected void onSizeChanged(int w, int h, int oldWidth, int oldHeight) {
@@ -234,8 +251,14 @@ public class CursorLayout extends LinearLayout {
                     return true;
                 case KeyEvent.KEYCODE_DPAD_CENTER:
                     if (isCursorVisible()) {
+
                         // Click animation
                         if (keyEvent.getAction() == KeyEvent.ACTION_DOWN && !getKeyDispatcherState().isTracking(keyEvent)) {
+                            // Cancel possible hover event
+                            dispatchMotionEvent(this.cursorPosition.x, this.cursorPosition.y, MotionEvent.ACTION_CANCEL);
+
+                            centerPressed = true;
+
                             getKeyDispatcherState().startTracking(keyEvent, this);
                             dispatchMotionEvent(this.cursorPosition.x, this.cursorPosition.y, MotionEvent.ACTION_DOWN);
 
@@ -258,11 +281,32 @@ public class CursorLayout extends LinearLayout {
                                     invalidate();
                                 });
                                 viewAnimator2.start();
+
+                                if (centerPressed) {
+                                    ValueAnimator holdAnimator = ValueAnimator.ofFloat(holdMult, 0.7f);
+                                    holdAnimator.addUpdateListener(animation -> {
+                                        holdMult = (float) animation.getAnimatedValue();
+                                    });
+                                    holdAnimator.setDuration(100);
+                                    holdAnimator.start();
+                                }
                             }, 250);
 
+
+
                         } else if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
+                            centerPressed = false;
+
                             getKeyDispatcherState().handleUpEvent(keyEvent);
                             dispatchMotionEvent(this.cursorPosition.x, this.cursorPosition.y, MotionEvent.ACTION_UP);
+
+                            ValueAnimator holdAnimator = ValueAnimator.ofFloat(holdMult, 1.0f);
+                            holdAnimator.addUpdateListener(animation -> {
+                                holdMult = (float) animation.getAnimatedValue();
+                                invalidate();
+                            });
+                            holdAnimator.setDuration(150);
+                            holdAnimator.start();
                         }
                         return true;
                     }
@@ -314,22 +358,24 @@ public class CursorLayout extends LinearLayout {
 
             float x = this.cursorPosition.x;
             float y = this.cursorPosition.y;
+
+            float adjustedRadius = CURSOR_RADIUS * sizeMult * holdMult;
             // Shadow
             this.paint.setColor(Color.argb(10, 0, 0, 0));
             this.paint.setStyle(Style.FILL);
-            canvas.drawCircle(x, y+CURSOR_STROKE_WIDTH, (float) CURSOR_RADIUS * sizeMult, this.paint);
+            canvas.drawCircle(x, y+CURSOR_STROKE_WIDTH, adjustedRadius, this.paint);
             this.paint.setColor(Color.argb(10, 0, 0, 0));
             this.paint.setStyle(Style.FILL);
-            canvas.drawCircle(x, y+CURSOR_STROKE_WIDTH, (float) CURSOR_RADIUS * sizeMult + CURSOR_STROKE_WIDTH, this.paint);
+            canvas.drawCircle(x, y+CURSOR_STROKE_WIDTH, adjustedRadius + CURSOR_STROKE_WIDTH, this.paint);
             // Cursor
             this.paint.setColor(Color.argb(128, 255, 255, 255));
             this.paint.setStyle(Style.FILL);
-            canvas.drawCircle(x, y, (float) CURSOR_RADIUS * sizeMult, this.paint);
+            canvas.drawCircle(x, y, adjustedRadius, this.paint);
             // Outline
             this.paint.setColor(Color.argb(200, 150, 150, 150));
             this.paint.setStrokeWidth(CURSOR_STROKE_WIDTH);
             this.paint.setStyle(Style.STROKE);
-            canvas.drawCircle(x, y, (float) CURSOR_RADIUS * sizeMult, this.paint);
+            canvas.drawCircle(x, y, adjustedRadius, this.paint);
         }
 
     }

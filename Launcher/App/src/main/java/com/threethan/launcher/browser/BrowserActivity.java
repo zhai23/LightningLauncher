@@ -210,7 +210,7 @@ public class BrowserActivity extends Activity {
             sharedPreferences.edit().putBoolean(KEY_WEBSITE_DARK+baseUrl, newDark).apply();
 
             if (w != null) w.getSettings().setForceDark(newDark ? WebSettings.FORCE_DARK_ON : WebSettings.FORCE_DARK_OFF);
-            background.setBackgroundResource(newDark ? R.drawable.bg_meta_dark : R.drawable.bg_meta_light);
+            getWindow().setBackgroundDrawableResource(newDark ? R.drawable.bg_meta_darker : R.drawable.bg_meta_light);
         }
     }
     private void reload() {
@@ -334,7 +334,6 @@ public class BrowserActivity extends Activity {
                 super.doUpdateVisitedHistory(view, url, isReload);
             }
         });
-        w.setBackgroundColor(Color.parseColor("#10000000"));
         updateButtonsAndUrl();
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
