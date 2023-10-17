@@ -9,6 +9,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import com.threethan.launcher.R;
 import com.threethan.launcher.helper.Compat;
@@ -33,6 +34,7 @@ public abstract class SettingsDialog {
     private static boolean clearedLabel;
     private static boolean clearedIcon;
     private static boolean clearedSort;
+    private static boolean clearedGroups;
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     public static void showSettings(LauncherActivity a) {
         a.settingsVisible = true;
@@ -244,8 +246,8 @@ public abstract class SettingsDialog {
 
         // Clear buttons (limited to one use to prevent bugs due to spamming)
         clearedLabel= false;
-        clearedSort = false;
         clearedIcon = false;
+
         View clearLabel = dialog.findViewById(R.id.clearLabelButton);
         clearLabel.setOnClickListener(view -> {
             if (!clearedLabel) {
@@ -262,14 +264,8 @@ public abstract class SettingsDialog {
                 clearedIcon = true;
             }
         });
-        View clearSort = dialog.findViewById(R.id.clearSortButton);
-        clearSort.setOnClickListener(view -> {
-            if (!clearedSort) {
-                Compat.clearSort(a);
-                clearSort.setAlpha(0.5f);
-                clearedSort = true;
-            }
-        });
+        View groupSettings = dialog.findViewById(R.id.groupDefaultsInfoButton);
+        groupSettings.setOnClickListener(view -> showGroupSettings(a));
 
         // Wide display
         Switch bannerVr = dialog.findViewById(R.id.bannerVrSwitch);
@@ -354,4 +350,55 @@ public abstract class SettingsDialog {
         });
 
     }
-}
+    public static void showGroupSettings(LauncherActivity a) {
+        clearedSort = false;
+        clearedGroups = false;
+
+        AlertDialog dialog = Dialog.build(a, R.layout.dialog_setting_reset_groups);
+
+        TextView info = dialog.findViewById(R.id.infoText);
+        info.setText(a.getString(R.string.default_groups_info,
+                SettingsManager.getDefaultGroup(true, false, false),
+                SettingsManager.getDefaultGroup(false, true, false),
+                SettingsManager.getDefaultGroup(false, false, false),
+                SettingsManager.getDefaultGroup(false, false, true)
+                ));
+
+        View clearSort = dialog.findViewById(R.id.resortOnly);
+        clearSort.setOnClickListener(view -> {
+            if (!clearedSort) {
+                Compat.clearSort(a);
+                clearSort.setAlpha(0.5f);
+                clearedSort = true;
+
+                Dialog.toast(a.getString(R.string.default_groups_resort_only_toast_main),
+                        a.getString(R.string.default_groups_resort_only_toast_bold),
+                        false);
+            }
+        });
+        View clearDefaults = dialog.findViewById(R.id.resetGroups);
+        clearDefaults.setOnClickListener(view -> {
+            if (!clearedGroups) {
+                Compat.resetDefaultGroups(a);
+                clearDefaults.setAlpha(0.5f);
+                clearedGroups = true;
+                clearSort.setAlpha(0.5f);
+                clearedSort = true;
+
+                Dialog.toast(a.getString(R.string.default_groups_reset_groups_toast_main),
+                        a.getString(R.string.default_groups_reset_groups_toast_bold),
+                        false);
+
+                info.setText(a.getString(R.string.default_groups_info,
+                        SettingsManager.getDefaultGroup(true, false, false),
+                        SettingsManager.getDefaultGroup(false, true, false),
+                        SettingsManager.getDefaultGroup(false, false, false),
+                        SettingsManager.getDefaultGroup(false, false, true)
+                ));
+            }
+        });
+
+        dialog.findViewById(R.id.cancel).setOnClickListener(v -> dialog.dismiss());
+    }
+
+    }

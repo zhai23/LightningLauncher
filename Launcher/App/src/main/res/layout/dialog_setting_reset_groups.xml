@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bkg_dialog"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <View
+        android:layout_width="360dp"
+        android:layout_height="0dp" />
+
+    <TextView
+        style="@style/SettingTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/default_groups_title" />
+
+    <TextView
+        android:id="@+id/infoText"
+        android:layout_width="match_parent"
+        android:layout_height="205sp"
+        android:layout_marginBottom="10dp"
+        android:autofillHints="text"
+        android:backgroundTint="@android:color/white"
+        android:text="@string/default_groups_info"
+        android:textColor="@android:color/white" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:id="@+id/resetGroups"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bkg_button"
+            android:nextFocusDown="@id/resortOnly">
+
+            <TextView
+                style="@style/SettingButtonLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/default_groups_reset_groups" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/resortOnly"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/bkg_button"
+            android:nextFocusUp="@id/resetGroups"
+            android:nextFocusDown="@id/cancel">
+
+            <TextView
+                style="@style/SettingButtonLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/default_groups_resort_only" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/cancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/bkg_button"
+            android:nextFocusUp="@id/resortOnly">
+
+            <TextView
+                style="@style/SettingButtonLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/default_groups_cancel" />
+
+        </FrameLayout>
+    </LinearLayout>
+
+</LinearLayout>

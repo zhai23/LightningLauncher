@@ -51,7 +51,6 @@ import com.threethan.launcher.support.SettingsManager;
 import com.threethan.launcher.support.SafeSharedPrefernceEditor;
 import com.threethan.launcher.support.Updater;
 import com.threethan.launcher.view.DynamicHeightGridView;
-import com.threethan.launcher.view.FadingTopScrollView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -83,7 +82,7 @@ public class LauncherActivity extends Activity {
     DynamicHeightGridView appGridViewBanner;
     ScrollView scrollView;
     public ApplicationInfo currentTopSearchResult = null;
-    public ApplicationInfo clearTopSearchResult = null;
+    public Set<String> clearFocusPackageNames = new HashSet<>();
     GridView groupGridView;
     public SharedPreferences sharedPreferences;
     public SafeSharedPrefernceEditor sharedPreferenceEditor;

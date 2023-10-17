@@ -19,7 +19,6 @@ import com.threethan.launcher.adapter.AppsAdapter;
 import com.threethan.launcher.helper.Keyboard;
 import com.threethan.launcher.helper.Launch;
 import com.threethan.launcher.helper.Platform;
-import com.threethan.launcher.lib.StringLib;
 import com.threethan.launcher.view.EditTextWatched;
 
 import eightbitlab.com.blurview.BlurView;
@@ -249,7 +248,6 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
         findViewById(R.id.searchCancelIcon).setOnClickListener(v -> hideSearchBar());
 
         searching = false;
-//        fixState();
     }
     private void
     updateTopSearchResult() {
@@ -259,18 +257,22 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
         else {
             // Highlight top result
             if (getAdapterBanner() != null && getAdapterBanner().getCount() > 0)
-                currentTopSearchResult = (ApplicationInfo) getAdapterBanner().getItem(0);
+                changeTopSearchResult((ApplicationInfo) getAdapterBanner().getItem(0));
             else if (getAdapterSquare() != null && getAdapterSquare().getCount() > 0)
-                currentTopSearchResult = (ApplicationInfo) getAdapterSquare().getItem(0);
+                changeTopSearchResult((ApplicationInfo) getAdapterSquare().getItem(0));
             else clearTopSearchResult();
         }
     }
     private void clearTopSearchResult() {
         if (currentTopSearchResult == null) return;
-        clearTopSearchResult = currentTopSearchResult;
+        clearFocusPackageNames.add(currentTopSearchResult.packageName);
         currentTopSearchResult = null;
     }
-
+    private void changeTopSearchResult(ApplicationInfo val) {
+        if (currentTopSearchResult != null)
+            clearFocusPackageNames.add(currentTopSearchResult.packageName);
+        currentTopSearchResult = val;
+    }
     @Override
     protected void postRefresh() {
         final View searchShortcutView = findViewById(R.id.searchShortcutView);

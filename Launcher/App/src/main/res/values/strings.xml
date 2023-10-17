@@ -40,7 +40,7 @@
     <string name="group_mode">Enable Groups</string>
     <string name="clear_cache">Reset All Icons</string>
     <string name="clear_labels">Reset All Labels</string>
-    <string name="clear_sort">Move Everything to Default Groups</string>
+    <string name="group_defaults_button">Default Group Settings</string>
 
     <string name="long_press">Long Press to Edit</string>
     <string name="hide_empty">Hide Empty Groups</string>
@@ -71,12 +71,14 @@
     <string name="website_title">Websites in Lightning Launcher</string>
     <string name="website_subtitle1">Easily Access Websites &amp; Web Apps</string>
     <string name="website_info1">
-        Websites will appear as apps on your home screen, and will open in a custom browser in the same window. Any 2D website works.
+        Websites will appear as apps on your home screen, and will open in a custom browser in the same window. Any 2D website works.\n
+        \nYou can also search Google, YouTube, or ApkPure using the search bar.
     </string>
     <string name="website_subtitle2">Audio in the Background</string>
     <string name="website_info2">
         After being closed, websites will continue running, and can play and record audio in the background - even while in a game!\n
-        \nAn indicator will be shown on the icon of any running website;\nPress the indicator to fully stop that website.
+        \nAn indicator will be shown on the icon of any running website;\nPress the indicator to fully stop that website.\n
+        \nWebsites open via a search will not run in the background unless added with the Add Page to Launcher (+) button.
     </string>
 
     <string name="add_website">Add a Website</string>
@@ -117,14 +119,15 @@
 
     <!--  Updater  -->
     <string name="update_title">An update is available!</string>
-    <string name="update_content">You can update from version %1$s to %2$s now, without any external device</string>
+    <string name="update_content">You can update from version %1$s to %2$s, all in this app.</string>
     <string name="update_button">Continue</string>
     <string name="update_skip_button">Skip this Update</string>
     <string name="update_skip_toast">Skipped version</string>
 
     <string name="update_downloading_title">Downloading Latest Version…</string>
     <string name="update_downloading_content">You should get a prompt to install shortly.\n
-    \nIf you have accidentally dismissed this prompt, you will have to open settings and try again.</string>
+    \nIf you accidentally dismissed it, didn\'t give permission, or got an error,
+    you can try again from settings.</string>
     <string name="update_hide_button">Hide</string>
 
     <string name="update_failed_title">Failed to download package!</string>
@@ -141,6 +144,22 @@
     <string name="saved_settings">Saved configuration to</string>
     <string name="loaded_settings1">Imported configuration,</string>
     <string name="loaded_settings2">the launcher must now close!</string>
+
+    <string name="default_groups_title">Default Group Settings</string>
+    <string name="default_groups_info">Current Default Groups:\n\n
+        \nFor VR-Supported apps: %1$s\n
+        \nFor TV-Supported apps: %2$s\n
+        \nFor Phone apps: %3$s\n
+        \nFor Added Websites: %4$s\n\n
+        \nYou can change these by editing a group in edit mode.
+        \nWhat would you like to do now?</string>
+    <string name="default_groups_reset_groups">Reset All Groups &amp; Sort to Default</string>
+    <string name="default_groups_resort_only">Move everything to its Default Group</string>
+    <string name="default_groups_cancel">Go Back, Don\'t do Anything</string>
+    <string name="default_groups_reset_groups_toast_main">Reset groups</string>
+    <string name="default_groups_reset_groups_toast_bold">fully!</string>
+    <string name="default_groups_resort_only_toast_main">Apps have been moved to</string>
+    <string name="default_groups_resort_only_toast_bold">your selected default groups</string>
 
     <!--  Tooltips  -->
     <string name="tip_kill_process">Stop Running in the Background</string>

@@ -42,8 +42,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 
 /*
@@ -255,17 +253,14 @@ public class AppsAdapter extends BaseAdapter{
                 }
                 holder.killButton.setVisibility(SettingsManager.getRunning(holder.app.packageName) ? View.VISIBLE : View.GONE);
                 // Top search result
-                if (launcherActivity.currentTopSearchResult != null) {
-                    updateHover(holder,
-                            Objects.equals(
-                                    Icon.cacheName(launcherActivity.currentTopSearchResult.packageName),
-                                    Icon.cacheName(holder.app.packageName)));
-                } else if (launcherActivity.clearTopSearchResult != null &&
+                if (launcherActivity.currentTopSearchResult != null &&
                         Objects.equals(
-                                Icon.cacheName(launcherActivity.clearTopSearchResult.packageName),
-                                Icon.cacheName(holder.app.packageName))) {
+                            Icon.cacheName(launcherActivity.currentTopSearchResult.packageName),
+                            Icon.cacheName(holder.app.packageName))) {
+                        updateHover(holder, true);
+                } else if (launcherActivity.clearFocusPackageNames.contains(Icon.cacheName(holder.app.packageName))) {
                     updateHover(holder, false);
-                    launcherActivity.clearTopSearchResult = null;
+                    launcherActivity.clearFocusPackageNames.remove(Icon.cacheName(holder.app.packageName));
                 }
                 // Post self again
                 holder.view.postDelayed(this, 250);
@@ -429,8 +424,15 @@ public class AppsAdapter extends BaseAdapter{
         final View showButton = dialog.findViewById(R.id.show);
         final View hideButton = dialog.findViewById(R.id.hide);
         String unhideGroup = SettingsManager.getAppGroupMap().get(currentApp.packageName);
-        if (unhideGroup == Settings.HIDDEN_GROUP)
+        if (Objects.equals(unhideGroup, Settings.HIDDEN_GROUP))
             unhideGroup = SettingsManager.getDefaultGroup(appIsVr, appIsTv, appIsWeb);
+        if (Objects.equals(unhideGroup, Settings.HIDDEN_GROUP))
+            try {
+                unhideGroup = (String) SettingsManager.getAppGroups().toArray()[0];
+            } catch (AssertionError | IndexOutOfBoundsException ignored) {
+                unhideGroup = Settings.HIDDEN_GROUP;
+                Dialog.toast("Could not find a group to unhide app to!", "", true);
+            }
         String finalUnhideGroup = unhideGroup;
 
         boolean amHidden = Objects.equals(SettingsManager.getAppGroupMap()

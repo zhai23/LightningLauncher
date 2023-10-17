@@ -59,6 +59,7 @@ public class Updater {
     public static final String TAG_ANDROID_TV_SHORTCUT = "TAG_ANDROID_TV_SHORTCUT";
     public static final String ADDON_RELEASE_TAG = "addons2";
     public static final String APK_DIR = "/Content/TemporaryDownloadedApk/";
+    public static boolean anyDialogVisible = false;
     public static final Addon[] addons = {
             new Addon(TAG_MESSENGER_SHORTCUT, "MessengerRedirect", "com.facebook.orca", "6.0.0", false),
             new Addon(TAG_LIBRARY_SHORTCUT, "LibraryShortcutService", "com.threethan.launcher.service.library", "6.0.0", true),
@@ -170,6 +171,7 @@ public class Updater {
     }
 
     public void checkLatestVersion(Response.Listener<String> callback) {
+        if (anyDialogVisible) return; // Hide if already shown
         StringRequest updateRequest = new StringRequest(
                 Request.Method.GET, UPDATE_URL,
                 (response -> handleUpdateResponse(response, callback)),
@@ -200,7 +202,9 @@ public class Updater {
             updateDialogBuilder.setMessage(activity.getString(R.string.update_content, curName, newName));
             updateDialogBuilder.setPositiveButton(R.string.update_button, (dialog, which) -> downloadUpdate(NAME_MAIN));
             updateDialogBuilder.setNegativeButton(R.string.update_skip_button, (dialog, which) -> skipUpdate(newName));
+            updateDialogBuilder.setOnDismissListener(di -> Updater.anyDialogVisible = false);
             updateDialogBuilder.show();
+            anyDialogVisible = true;
         } catch (Exception ignored) {}
     }
     private SharedPreferences getSharedPreferences() {
@@ -221,7 +225,9 @@ public class Updater {
             dialog.dismiss();
         });
         skipDialogBuilder.setNegativeButton(R.string.update_skip_cancel_button, ((dialog, i) -> dialog.dismiss()));
+        skipDialogBuilder.setOnDismissListener(di -> Updater.anyDialogVisible = false);
         skipDialogBuilder.show();
+        anyDialogVisible = true;
     }
     @SuppressLint("UnspecifiedRegisterReceiverFlag") // Can't be fixed on this android API
     public void downloadUpdate(String apkName) {
@@ -251,12 +257,16 @@ public class Updater {
 
         DownloadManager manager = (DownloadManager) activity.getSystemService(Context.DOWNLOAD_SERVICE);
 
-        AlertDialog.Builder updateDialogBuilder = new AlertDialog.Builder(activity, android.R.style.Theme_DeviceDefault_Dialog_Alert);
-        updateDialogBuilder.setTitle(R.string.update_downloading_title);
-        updateDialogBuilder.setMessage(R.string.update_downloading_content);
-        updateDialogBuilder.setNegativeButton(R.string.update_hide_button, (dialog, which) -> dialog.cancel());
-        updateDialogBuilder.show();
-        downloadingDialog = updateAlertDialog;
+        if (downloadingDialog == null) {
+            AlertDialog.Builder updateDialogBuilder = new AlertDialog.Builder(activity, android.R.style.Theme_DeviceDefault_Dialog_Alert);
+            updateDialogBuilder.setTitle(R.string.update_downloading_title);
+            updateDialogBuilder.setMessage(R.string.update_downloading_content);
+            updateDialogBuilder.setNegativeButton(R.string.update_hide_button, (dialog, which) -> dialog.cancel());
+            updateDialogBuilder.setOnDismissListener(di -> Updater.anyDialogVisible = false);
+            updateDialogBuilder.show();
+            anyDialogVisible = true;
+            downloadingDialog = updateAlertDialog;
+        }
 
         activity.registerReceiver(onDownloadComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
@@ -302,7 +312,9 @@ public class Updater {
                 failedDownloadDialogBuilder.setTitle(R.string.update_failed_title);
                 failedDownloadDialogBuilder.setMessage(R.string.update_failed_content);
                 failedDownloadDialogBuilder.setNegativeButton(R.string.update_hide_button, (dialog, which) -> dialog.cancel());
+                failedDownloadDialogBuilder.setOnDismissListener(di -> Updater.anyDialogVisible = false);
                 failedDownloadDialogBuilder.show();
+                anyDialogVisible = true;
             }
         }
 

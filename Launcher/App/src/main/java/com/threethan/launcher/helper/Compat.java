@@ -117,7 +117,7 @@ public abstract class Compat {
         SettingsManager settingsManager = launcherActivity.settingsManager;
 
         final Map<String, String> apps = SettingsManager.getAppGroupMap();
-        final Set<String> appGroupsList = settingsManager.getAppGroups();
+        final Set<String> appGroupsList = SettingsManager.getAppGroups();
         appGroupsList.remove(from);
         appGroupsList.add(to);
         Map<String, String> updatedAppList = new HashMap<>();
@@ -182,6 +182,22 @@ public abstract class Compat {
         SharedPreferences.Editor editor = launcherActivity.sharedPreferenceEditor;
         for (String groupName : appGroupsSet) editor.remove(Settings.KEY_GROUP_APP_LIST+groupName);
         storeAndReload(launcherActivity);
+        launcherActivity.refreshAppDisplayListsAll();
+
+    }
+    // Resets the group list to default, including default groups for sorting
+    public static void resetDefaultGroups(LauncherActivity launcherActivity) {
+        launcherActivity.sharedPreferenceEditor
+                .putString(Settings.KEY_GROUP_VR , Settings.DEFAULT_GROUP_VR )
+                .putString(Settings.KEY_GROUP_TV , Settings.DEFAULT_GROUP_TV )
+                .putString(Settings.KEY_GROUP_2D , Settings.DEFAULT_GROUP_2D )
+                .putString(Settings.KEY_GROUP_WEB, Settings.DEFAULT_GROUP_WEB)
+                .apply();
+
+        launcherActivity.settingsManager.resetGroups();
+        clearSort(launcherActivity);
+
+        launcherActivity.refreshInterfaceAll();
     }
     // Stores any settings which may have been changed then refreshes any extant launcher activities
     private static void storeAndReload(LauncherActivity launcherActivity) {

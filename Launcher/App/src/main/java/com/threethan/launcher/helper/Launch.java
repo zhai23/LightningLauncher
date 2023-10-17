@@ -31,6 +31,7 @@ public abstract class Launch {
             // Apply any pending preference changes before launching
             launcherActivity.sharedPreferenceEditor.apply();
             // This is unlikely to fail, but it shouldn't stop us from launching if it somehow does
+            Keyboard.hide(launcherActivity, launcherActivity.mainView);
         } catch (Exception ignored) {}
 
         Intent intent = getLaunchIntent(launcherActivity, app);

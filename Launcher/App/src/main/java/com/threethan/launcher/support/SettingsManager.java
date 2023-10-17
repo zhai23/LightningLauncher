@@ -194,7 +194,7 @@ public class SettingsManager extends Settings {
         return sortedApps;
     }
 
-    public Set<String> getAppGroups() {
+    public static Set<String> getAppGroups() {
         if (appGroupsSet.isEmpty()) readValues();
         return appGroupsSet;
     }
@@ -204,15 +204,17 @@ public class SettingsManager extends Settings {
         queueStoreValues();
     }
 
+    public static Set<String> getDefaultGroupsSet() {
+        Set<String> defaultGroupsSet = new HashSet<>();
+        defaultGroupsSet.add(DEFAULT_GROUP_VR);
+        defaultGroupsSet.add(DEFAULT_GROUP_TV);
+        defaultGroupsSet.add(DEFAULT_GROUP_2D);
+//            defaultGroupsSet.add(DEFAULT_GROUP_WEB);
+        return (defaultGroupsSet);
+    }
     public Set<String> getSelectedGroups() {
         if (selectedGroupsSet.isEmpty()) {
-            Set<String> defaultGroupsSet = new HashSet<>();
-            defaultGroupsSet.add(DEFAULT_GROUP_VR);
-            defaultGroupsSet.add(DEFAULT_GROUP_TV);
-            defaultGroupsSet.add(DEFAULT_GROUP_2D);
-//            defaultGroupsSet.add(DEFAULT_GROUP_WEB);
-
-            selectedGroupsSet.addAll(sharedPreferences.getStringSet(KEY_SELECTED_GROUPS, defaultGroupsSet));
+            selectedGroupsSet.addAll(sharedPreferences.getStringSet(KEY_SELECTED_GROUPS, getDefaultGroupsSet()));
         }
         if (myLauncherActivityRef.get() != null &&
                 myLauncherActivityRef.get().groupsEnabled || myLauncherActivityRef.get().isEditing()) {
