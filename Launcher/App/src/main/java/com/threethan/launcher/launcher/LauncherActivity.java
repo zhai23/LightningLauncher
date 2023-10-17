@@ -216,8 +216,10 @@ public class LauncherActivity extends Activity {
     }
     protected void onLayoutChaged(View v, int left, int top, int right, int bottom,
                                   int oldLeft, int oldTop, int oldRight, int oldBottom) {
-        new BackgroundTask().execute(this);
-        updateGridViews();
+        if (Math.abs(oldBottom-bottom) > 10 || Math.abs(oldRight-right) > 10) { // Only on significant diff
+            new BackgroundTask().execute(this);
+            updateGridViews();
+        }
     }
 
     public boolean clickGroup(int position) {
@@ -366,8 +368,6 @@ public class LauncherActivity extends Activity {
         for (int i = 0; i<blurViews.length-1; i++) blurViews[i].setVisibility(hide ? View.GONE : View.VISIBLE);
         if (isEditing() && hide) setEditMode(false); // If groups were disabled while in edit mode
 
-        resetScroll();
-
         if (!hide) {
             float blurRadiusDp = 15f;
 
@@ -460,6 +460,7 @@ public class LauncherActivity extends Activity {
         post(this::updateToolBars);
     }
     protected void resetScroll() {
+        Debug.printStackTrace();
         scrollView.scrollTo(0,0); // Reset scroll
         scrollView.smoothScrollTo(0,0); // Cancel inertia
     }
