@@ -459,7 +459,6 @@ public class LauncherActivity extends Activity {
         post(this::updateToolBars);
     }
     protected void resetScroll() {
-        Debug.printStackTrace();
         scrollView.scrollTo(0,0); // Reset scroll
         scrollView.smoothScrollTo(0,0); // Cancel inertia
     }

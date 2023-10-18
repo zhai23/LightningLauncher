@@ -108,7 +108,7 @@ public class AppsAdapter extends BaseAdapter{
                 currentAppList.add(app);
 
         // Add search queries
-        if (!isBanner && !text.isEmpty()) {
+        if (!isBanner && !text.isEmpty() && !launcherActivity.isEditing()) {
             final ApplicationInfo googleProxy = new ApplicationInfo();
             googleProxy.packageName = StringLib.googleSearchForUrl(text);
             currentAppList.add(googleProxy);
@@ -214,7 +214,7 @@ public class AppsAdapter extends BaseAdapter{
 
     private void updateView(ViewHolder holder) {
         holder.view.setOnClickListener(view -> {
-            if (getEditMode() && !StringLib.isSearchUrl(holder.app.packageName)) {
+            if (getEditMode()) {
                 boolean selected = launcherActivity.selectApp(holder.app.packageName);
                 ObjectAnimator an = ObjectAnimator.ofFloat(holder.view, "alpha", selected ? 0.5F : 1.0F);
                 an.setDuration(150);
