@@ -138,7 +138,7 @@ public class BrowserService extends Service {
             // Set website's to use chrome's internal dark mode
             if (Build.VERSION.SDK_INT >= 29)
                 ws.setForceDark(activity.sharedPreferences
-                .getBoolean(BrowserActivity.KEY_WEBSITE_DARK+activity.baseUrl, true)
+                .getBoolean(BrowserActivity.KEY_WEBSITE_DARK+activity.baseUrl, false)
                 ? WebSettings.FORCE_DARK_ON : WebSettings.FORCE_DARK_OFF);
 
             activity.findViewById(R.id.loading).setVisibility(View.VISIBLE);

@@ -208,12 +208,12 @@ public class BrowserActivity extends Activity {
     }
     private void updateDark(boolean newDark) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            dark .setVisibility(newDark  ? View.GONE : View.VISIBLE);
+            dark.setVisibility(newDark ? View.GONE : View.VISIBLE);
             light.setVisibility(!newDark ? View.GONE : View.VISIBLE);
-            sharedPreferences.edit().putBoolean(KEY_WEBSITE_DARK+baseUrl, newDark).apply();
+            sharedPreferences.edit().putBoolean(KEY_WEBSITE_DARK + baseUrl, newDark).apply();
 
-            if (w != null) w.getSettings().setForceDark(newDark ? WebSettings.FORCE_DARK_ON : WebSettings.FORCE_DARK_OFF);
-            getWindow().setBackgroundDrawableResource(newDark ? R.drawable.bg_meta_darker : R.drawable.bg_meta_light);
+            if (w != null)
+                w.getSettings().setForceDark(newDark ? WebSettings.FORCE_DARK_ON : WebSettings.FORCE_DARK_OFF);
         }
     }
     private void reload() {
