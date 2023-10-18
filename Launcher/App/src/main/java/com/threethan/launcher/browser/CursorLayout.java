@@ -91,7 +91,7 @@ public class CursorLayout extends LinearLayout {
             else if (cursorPosition.x > ((float) (getWidth() - 1)))  cursorPosition.x = (float) (getWidth() - 1);
             if (cursorPosition.y < 0.0f) cursorPosition.y = 0.0f;
             else if (cursorPosition.y > ((float) (getHeight() - 1))) cursorPosition.y = (float) (getHeight() - 1);
-            if (!tmpPointF.equals(cursorPosition))
+            if (!tmpPointF.equals(cursorPosition) && centerPressed)
                 dispatchMotionEvent(cursorPosition.x, cursorPosition.y, MotionEvent.ACTION_MOVE); // Drag
 
 

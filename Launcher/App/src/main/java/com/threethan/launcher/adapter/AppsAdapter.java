@@ -214,7 +214,7 @@ public class AppsAdapter extends BaseAdapter{
 
     private void updateView(ViewHolder holder) {
         holder.view.setOnClickListener(view -> {
-            if (getEditMode()) {
+            if (getEditMode() && !StringLib.isSearchUrl(holder.app.packageName)) {
                 boolean selected = launcherActivity.selectApp(holder.app.packageName);
                 ObjectAnimator an = ObjectAnimator.ofFloat(holder.view, "alpha", selected ? 0.5F : 1.0F);
                 an.setDuration(150);
