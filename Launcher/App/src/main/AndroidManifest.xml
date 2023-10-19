@@ -101,7 +101,8 @@
             android:exported="true"
             android:launchMode="singleInstancePerTask"
             android:resizeableActivity="true"
-            tools:ignore="UnusedAttribute">
+            tools:ignore="UnusedAttribute"
+            android:theme="@style/ThemeOverlay.Browser">
 
             <layout android:defaultWidth="706dp" android:defaultHeight="442dp" android:gravity="top|end" />
             <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
@@ -113,7 +114,8 @@
             android:exported="true"
             android:launchMode="singleInstancePerTask"
             android:resizeableActivity="true"
-            tools:ignore="UnusedAttribute">
+            tools:ignore="UnusedAttribute"
+            android:theme="@style/ThemeOverlay.Browser">
 
             <layout android:defaultWidth="706dp" android:defaultHeight="442dp" android:gravity="top|end" />
             <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>

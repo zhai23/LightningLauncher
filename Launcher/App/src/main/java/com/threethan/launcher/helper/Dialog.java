@@ -33,26 +33,26 @@ public abstract class Dialog {
     public static void setActivityContext(Activity activityContext) {
         activityContextWeakReference = new WeakReference<>(activityContext);
     }
+
+    @Nullable
     public static AlertDialog build(Context context, int resource) {
         AlertDialog dialog = new AlertDialog.Builder(context, R.style.dialog).setView(resource).create();
 
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawableResource(R.drawable.bkg_dialog);
-            dialog.getWindow().setDimAmount(0.2f);
-            final View rootView = dialog.getWindow().getDecorView().findViewById(android.R.id.content).getRootView();
-            rootView.setLayerType(View.LAYER_TYPE_HARDWARE, new Paint());
+        if (dialog.getWindow() == null) return null;
+        dialog.getWindow().setBackgroundDrawableResource(R.drawable.bkg_dialog);
+        dialog.getWindow().setDimAmount(0.2f);
+        final View rootView = dialog.getWindow().getDecorView().findViewById(android.R.id.content).getRootView();
+        rootView.setLayerType(View.LAYER_TYPE_HARDWARE, new Paint());
 
-            ObjectAnimator animator = ObjectAnimator.ofFloat(rootView, "TranslationY", 100, 0);
-            animator.setDuration(300);
-            animator.setInterpolator(new FastOutSlowInInterpolator());
-            animator.start();
-        }
+        ObjectAnimator animator = ObjectAnimator.ofFloat(rootView, "TranslationY", 100, 0);
+        animator.setDuration(300);
+        animator.setInterpolator(new FastOutSlowInInterpolator());
+        animator.start();
 
         dialog.show();
         return dialog;
     }
 
-    @Nullable
     public static void toast(String stringMain, String stringBold, boolean isLong) {
         if (getActivityContext() == null) return;
 

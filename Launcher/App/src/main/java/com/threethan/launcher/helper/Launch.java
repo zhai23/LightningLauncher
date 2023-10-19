@@ -9,7 +9,6 @@ import androidx.annotation.Nullable;
 
 import com.threethan.launcher.browser.BrowserActivity;
 import com.threethan.launcher.browser.BrowserActivitySeparate;
-import com.threethan.launcher.browser.BrowserActivitySeparateAlt;
 import com.threethan.launcher.launcher.LauncherActivity;
 import com.threethan.launcher.launcher.LauncherService;
 import com.threethan.launcher.support.SettingsManager;
@@ -55,6 +54,7 @@ public abstract class Launch {
                 } catch (Exception ignored) {}
 
             launcherActivity.launcherService.finishAllActivities();
+
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                     Intent.FLAG_ACTIVITY_NEW_DOCUMENT |
                     Intent.FLAG_ACTIVITY_MULTIPLE_TASK );
@@ -86,11 +86,8 @@ public abstract class Launch {
     public static Intent getLaunchIntent(LauncherActivity activity, ApplicationInfo app) {
         if (App.isWebsite(app)) {
             Intent intent = new Intent(activity, (SettingsManager.getAppLaunchOut(app.packageName)
-                    ? (
-                        LauncherService.browserActivitySeparate == null ?
-                                BrowserActivitySeparate.class :
-                                BrowserActivitySeparateAlt.class
-                    ) : BrowserActivity.class));
+                    ?  BrowserActivitySeparate.class
+                    : BrowserActivity.class));
             intent.putExtra("url", app.packageName);
             return intent;
         }
