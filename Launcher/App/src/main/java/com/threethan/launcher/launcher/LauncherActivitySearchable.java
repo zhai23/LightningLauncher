@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -105,8 +106,8 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
             viewAnimator.setDuration(200);
             viewAnimator.setInterpolator(new DecelerateInterpolator());
             viewAnimator.addUpdateListener(animation -> {
-                LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) searchBar.getLayoutParams();
-                lp.setMargins((int) animation.getAnimatedValue() + dp(25), 0, (int) animation.getAnimatedValue() + dp(25), 0);
+                FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) searchBar.getLayoutParams();
+                lp.setMargins((int) animation.getAnimatedValue() + dp(24), 0, (int) animation.getAnimatedValue() + dp(25), 0);
                 searchBar.setLayoutParams(lp);
                 searchBar.requestLayout();
             });
@@ -121,11 +122,12 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
 
 
             if (groupsEnabled) updatePadding();
-            ValueAnimator padAnimator = ValueAnimator.ofInt(scrollView.getPaddingTop(), dp(68));
+            View scrollInterior = findViewById(R.id.mainScrollInterior);
+            ValueAnimator padAnimator = ValueAnimator.ofInt(scrollInterior.getPaddingTop(), dp(64));
             padAnimator.setDuration(200);
             padAnimator.setInterpolator(new DecelerateInterpolator());
             padAnimator.addUpdateListener(animation -> {
-                scrollView.setPadding(0, (Integer) animation.getAnimatedValue(), 0,0);
+                scrollInterior.setPadding(0, (Integer) animation.getAnimatedValue(), 0,0);
                 resetScroll();
             });
             padAnimator.start();
@@ -157,11 +159,13 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
             topBar.setVisibility(View.VISIBLE);
             refreshAdapters();
 
-            ValueAnimator padAnimator = ValueAnimator.ofInt(scrollView.getPaddingTop(), 0);
+            View scrollInterior = findViewById(R.id.mainScrollInterior);
+            ValueAnimator padAnimator = ValueAnimator.ofInt(scrollInterior.getPaddingTop(), 0);
             padAnimator.setDuration(groupsEnabled ? 0 : 300);
             padAnimator.setInterpolator(new DecelerateInterpolator());
             padAnimator.addUpdateListener(animation ->
-                    scrollView.setPadding(0, (Integer) animation.getAnimatedValue(), 0,0));
+                    scrollInterior.setPadding(0, (Integer) animation.getAnimatedValue(), 0,0));
+
             padAnimator.start();
 
         } catch (NullPointerException ignored) {}
@@ -178,8 +182,9 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
             topBar.setVisibility(!searching ? View.VISIBLE : View.GONE);
             searchBar.setAlpha(searching ? 1F : 0F);
             topBar.post(() -> topBar.setAlpha(1F)); // Prevent flicker on start
-            scrollView.setPadding(0, searching ? dp(68):0, 0, 0);
-            scrollView.post(this::resetScroll);
+            View scrollInterior = findViewById(R.id.mainScrollInterior);
+            scrollInterior.setPadding(0, searching ? dp(64):0, 0, 0);
+            scrollInterior.post(this::resetScroll);
         } catch (NullPointerException ignored) {}
     }
 

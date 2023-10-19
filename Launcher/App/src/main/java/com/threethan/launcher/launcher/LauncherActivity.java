@@ -39,6 +39,7 @@ import com.threethan.launcher.adapter.GroupsAdapter;
 import com.threethan.launcher.browser.BrowserService;
 import com.threethan.launcher.helper.App;
 import com.threethan.launcher.helper.Compat;
+import com.threethan.launcher.helper.Debug;
 import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.helper.IconRepo;
 import com.threethan.launcher.helper.Keyboard;
@@ -458,6 +459,7 @@ public class LauncherActivity extends Activity {
         post(this::updateToolBars);
     }
     protected void resetScroll() {
+        Debug.printStackTrace();
         scrollView.scrollTo(0,0); // Reset scroll
         scrollView.smoothScrollTo(0,0); // Cancel inertia
     }

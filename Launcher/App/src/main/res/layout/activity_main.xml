@@ -98,6 +98,18 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
+        <View
+            android:id="@+id/clickSafeZone"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="-5dp"
+            android:clickable="true"
+            android:focusable="false"
+            app:layout_constraintBottom_toBottomOf="@id/blurViewGroups"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <eightbitlab.com.blurview.BlurView
             android:id="@+id/blurViewGroups"
             android:layout_width="0dp"
@@ -105,7 +117,7 @@
             android:layout_marginStart="25dp"
             android:layout_marginTop="24dp"
             android:layout_marginEnd="13dp"
-            android:layout_marginBottom="15dp"
+            android:layout_marginBottom="24dp"
             android:background="@drawable/bkg_blur_view"
             android:elevation="12dp"
             android:minHeight="40dp"
@@ -204,11 +216,18 @@
         </eightbitlab.com.blurview.BlurView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <LinearLayout
+    <FrameLayout
         android:id="@+id/searchBarLayout"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:orientation="horizontal">
+        android:layout_height="88dp">
+
+        <View
+            android:id="@+id/clickSafeZoneSearch"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="20dp"
+            android:clickable="true"
+            android:focusable="false" />
 
         <eightbitlab.com.blurview.BlurView
             android:id="@+id/blurViewSearchBar"
@@ -277,7 +296,7 @@
             </LinearLayout>
 
         </eightbitlab.com.blurview.BlurView>
-    </LinearLayout>
+    </FrameLayout>
 
     <eightbitlab.com.blurview.BlurView
         android:id="@+id/editFooter"
