@@ -245,8 +245,8 @@
     <string name="web_zoom_in">Increase Zoom</string>
     <string name="web_zoom_out">Decrease Zoom</string>
     <string name="web_exit">Return to Launcher</string>
-    <string name="web_dark">Set Dark Mode</string>
-    <string name="web_light">Set Light Mode</string>
+    <string name="web_dark">Set Website Dark Mode</string>
+    <string name="web_light">Set Website Light Mode</string>
     <string name="web_add_home">Add Page to Launcher</string>
     <string name="web_cancel">Cancel</string>
     <string name="web_confirm">Confirm &amp; Go</string>

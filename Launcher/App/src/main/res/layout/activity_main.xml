@@ -78,6 +78,18 @@
         android:orientation="horizontal">
 
         <View
+            android:id="@+id/clickSafeZone"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="-5dp"
+            android:clickable="true"
+            android:focusable="false"
+            app:layout_constraintBottom_toBottomOf="@id/blurViewGroups"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
             android:id="@+id/focusGrabberView"
             android:layout_width="0dp"
             android:layout_height="10dp"
@@ -97,18 +109,6 @@
             app:layout_constraintBottom_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
-
-        <View
-            android:id="@+id/clickSafeZone"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginBottom="-5dp"
-            android:clickable="true"
-            android:focusable="false"
-            app:layout_constraintBottom_toBottomOf="@id/blurViewGroups"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <eightbitlab.com.blurview.BlurView
             android:id="@+id/blurViewGroups"
@@ -214,6 +214,7 @@
                 tools:layout_editor_absoluteX="349dp"
                 tools:layout_editor_absoluteY="22dp" />
         </eightbitlab.com.blurview.BlurView>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <FrameLayout
@@ -221,24 +222,27 @@
         android:layout_width="match_parent"
         android:layout_height="88dp">
 
-        <View
-            android:id="@+id/clickSafeZoneSearch"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="20dp"
-            android:clickable="true"
-            android:focusable="false" />
-
         <eightbitlab.com.blurview.BlurView
             android:id="@+id/blurViewSearchBar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
             android:layout_margin="24dp"
             android:background="@drawable/bkg_blur_view"
             android:elevation="10dp"
-            android:translationY="24dp"
-            android:visibility="gone">
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <View
+                android:id="@+id/clickSafeZoneSearch"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="-24dp"
+                android:layout_marginTop="-24dp"
+                android:layout_marginEnd="-24dp"
+                android:layout_marginBottom="-5dp"
+                android:clickable="true"
+                android:focusable="false" />
 
             <LinearLayout
                 android:layout_width="match_parent"
