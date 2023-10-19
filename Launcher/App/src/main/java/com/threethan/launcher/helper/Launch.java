@@ -109,9 +109,11 @@ public abstract class Launch {
 
         // Prefer launching as android TV app
         Intent tvIntent = pm.getLeanbackLaunchIntentForPackage(app.packageName);
-        if (tvIntent != null) return tvIntent;
+        if (Platform.isTv(activity) && tvIntent != null) return tvIntent;
 
         // Get normal launch intent
-        return pm.getLaunchIntentForPackage(app.packageName);
+        final Intent normalIntent = pm.getLaunchIntentForPackage(app.packageName);
+        if (normalIntent == null && tvIntent != null) return tvIntent;
+        return normalIntent;
     }
 }
