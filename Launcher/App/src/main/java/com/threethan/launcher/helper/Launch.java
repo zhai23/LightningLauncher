@@ -10,7 +10,6 @@ import androidx.annotation.Nullable;
 import com.threethan.launcher.browser.BrowserActivity;
 import com.threethan.launcher.browser.BrowserActivitySeparate;
 import com.threethan.launcher.launcher.LauncherActivity;
-import com.threethan.launcher.launcher.LauncherService;
 import com.threethan.launcher.support.SettingsManager;
 
 import java.util.Objects;

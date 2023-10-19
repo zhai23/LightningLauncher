@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.ComponentName;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Build;
@@ -24,14 +25,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.threethan.launcher.R;
-import com.threethan.launcher.helper.App;
 import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.helper.Keyboard;
 import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
-import com.threethan.launcher.launcher.LauncherActivity;
 import com.threethan.launcher.lib.StringLib;
-import com.threethan.launcher.support.SettingsManager;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -306,9 +304,15 @@ public class BrowserActivity extends Activity {
     }
 
     protected boolean isEphemeral() {
-        return  (w != null && w.getUrl() != null &&
-                StringLib.isSearchUrl(baseUrl) &&
-                !(Platform.appListBanner.contains(baseUrl) || Platform.appListSquare.contains(baseUrl)));
+        if (w != null && w.getUrl() != null &&
+            StringLib.isSearchUrl(baseUrl)) {
+            for (ApplicationInfo app : Platform.appListBanner)
+                if (Objects.equals(app.packageName, baseUrl)) return true;
+            for (ApplicationInfo app : Platform.appListSquare)
+                if (Objects.equals(app.packageName, baseUrl)) return true;
+        }
+
+        return false;
     }
 
     // Sets the WebView when the service is bound

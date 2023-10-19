@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import com.threethan.launcher.R;
 import com.threethan.launcher.browser.BrowserActivitySeparate;
 
+import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,7 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class LauncherService extends Service {
     private final IBinder binder = new LocalBinder();
     private final static ConcurrentHashMap<Integer, View> viewByIndex = new ConcurrentHashMap<>();
-    @Nullable public static BrowserActivitySeparate browserActivitySeparate = null;
+    @Nullable public static WeakReference<BrowserActivitySeparate> browserActivitySeparateRef = null;
     public class LocalBinder extends Binder {
         public LauncherService getService() {
             return LauncherService.this;
@@ -79,12 +80,8 @@ public class LauncherService extends Service {
 
     public void finishAllActivities() {
         for (Activity activity: activityByIndex.keySet()) activity.finishAndRemoveTask();
-        if (browserActivitySeparate != null) browserActivitySeparate.finishAndRemoveTask();
-    }
-    public void invalidateAll() {
-        finishAllActivities();
-        activityByIndex.clear();
-        viewByIndex.clear();
+        if (browserActivitySeparateRef != null && browserActivitySeparateRef.get() != null)
+            browserActivitySeparateRef.get().finishAndRemoveTask();
     }
 
     // ______All functions

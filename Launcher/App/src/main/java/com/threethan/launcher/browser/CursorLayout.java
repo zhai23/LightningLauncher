@@ -12,7 +12,6 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Display;
 import android.view.DragEvent;
 import android.view.KeyEvent;
@@ -44,7 +43,6 @@ public class CursorLayout extends LinearLayout {
     private final PointF cursorSpeed = new PointF(0.0f, 0.0f);
     private float sizeMult = 0.0f;
     private float holdMult = 1.0f;
-    private int hoverCounter = 0;
     public View targetView;
     private final Runnable cursorUpdateRunnable = new Runnable() {
         public void run() {
@@ -284,9 +282,7 @@ public class CursorLayout extends LinearLayout {
 
                                 if (centerPressed) {
                                     ValueAnimator holdAnimator = ValueAnimator.ofFloat(holdMult, 0.7f);
-                                    holdAnimator.addUpdateListener(animation -> {
-                                        holdMult = (float) animation.getAnimatedValue();
-                                    });
+                                    holdAnimator.addUpdateListener(animation -> holdMult = (float) animation.getAnimatedValue());
                                     holdAnimator.setDuration(100);
                                     holdAnimator.start();
                                 }

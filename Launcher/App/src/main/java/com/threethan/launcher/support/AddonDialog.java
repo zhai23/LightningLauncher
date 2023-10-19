@@ -28,6 +28,7 @@ public abstract class AddonDialog {
     private static final String EXPLORE_PACKAGE = "com.oculus.explore";
     public static void showAddons(LauncherActivity a) {
         AlertDialog dialog = Dialog.build(a, Platform.isVr(a) ? R.layout.dialog_addons_vr : R.layout.dialog_addons_tv);
+        if (dialog == null) return;
         activityRef = new WeakReference<>(a);
 
         View addonMessenger = dialog.findViewById(R.id.addonMessenger);
@@ -106,6 +107,7 @@ public abstract class AddonDialog {
         Activity a = activityRef.get();
         if (a==null) return;
         AlertDialog subDialog = Dialog.build(a, R.layout.dialog_service_info);
+        if (subDialog == null) return;
         subDialog.findViewById(R.id.confirm).setOnClickListener(view1 -> {
             // Navigate to accessibility settings
             Intent localIntent = new Intent("android.settings.ACCESSIBILITY_SETTINGS");

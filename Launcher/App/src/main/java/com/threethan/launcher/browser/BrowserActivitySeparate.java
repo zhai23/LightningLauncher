@@ -4,8 +4,9 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.threethan.launcher.R;
-import com.threethan.launcher.launcher.LauncherActivity;
 import com.threethan.launcher.launcher.LauncherService;
+
+import java.lang.ref.WeakReference;
 
 /*
     BrowserActivitySeparate
@@ -21,9 +22,8 @@ public class BrowserActivitySeparate extends BrowserActivity {
         super.onCreate(savedInstanceState);
         View exit = findViewById(R.id.exit);
         exit.setVisibility(View.GONE);
-        setForKill();
-    }
-    protected void setForKill() {
-        LauncherService.browserActivitySeparate = this;
+
+        LauncherService.browserActivitySeparateRef = new WeakReference<>(this);
+
     }
 }

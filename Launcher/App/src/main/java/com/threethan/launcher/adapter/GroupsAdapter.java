@@ -134,6 +134,7 @@ public class GroupsAdapter extends BaseAdapter {
             if (groupName == null) return;
 
             AlertDialog dialog = Dialog.build(launcherActivity, R.layout.dialog_group_details);
+            if (dialog == null) return;
 
             final EditText groupNameInput = dialog.findViewById(R.id.groupName);
             groupNameInput.setText(StringLib.withoutStar(groupName));

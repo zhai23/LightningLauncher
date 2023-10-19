@@ -37,8 +37,11 @@ public abstract class SettingsDialog {
     private static boolean clearedGroups;
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     public static void showSettings(LauncherActivity a) {
-        a.settingsVisible = true;
         AlertDialog dialog = Dialog.build(a, R.layout.dialog_settings);
+
+        if (dialog == null) return;
+        a.settingsVisible = true;
+
         dialog.setOnDismissListener(dialogInterface -> a.settingsVisible = false);
 
         // Addons
@@ -209,6 +212,7 @@ public abstract class SettingsDialog {
             if (!a.sharedPreferences.getBoolean(Settings.KEY_SEEN_HIDDEN_GROUPS_POPUP, false) && value != Settings.DEFAULT_GROUPS_ENABLED) {
                 groups.setChecked(Settings.DEFAULT_GROUPS_ENABLED); // Revert switch
                 AlertDialog subDialog = Dialog.build(a, R.layout.dialog_hide_groups_info_tv);
+                if (subDialog == null) return;
                 subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
                     final boolean newValue = !Settings.DEFAULT_GROUPS_ENABLED;
                     a.sharedPreferenceEditor
@@ -355,7 +359,7 @@ public abstract class SettingsDialog {
         clearedGroups = false;
 
         AlertDialog dialog = Dialog.build(a, R.layout.dialog_setting_reset_groups);
-
+        if (dialog == null) return;
         TextView info = dialog.findViewById(R.id.infoText);
         info.setText(a.getString(R.string.default_groups_info,
                 SettingsManager.getDefaultGroup(true, false, false),

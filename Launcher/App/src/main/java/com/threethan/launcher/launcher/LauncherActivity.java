@@ -39,16 +39,15 @@ import com.threethan.launcher.adapter.GroupsAdapter;
 import com.threethan.launcher.browser.BrowserService;
 import com.threethan.launcher.helper.App;
 import com.threethan.launcher.helper.Compat;
-import com.threethan.launcher.helper.Debug;
 import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.helper.IconRepo;
 import com.threethan.launcher.helper.Keyboard;
 import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.lib.ImageLib;
+import com.threethan.launcher.support.SafeSharedPreferenceEditor;
 import com.threethan.launcher.support.SettingsDialog;
 import com.threethan.launcher.support.SettingsManager;
-import com.threethan.launcher.support.SafeSharedPrefernceEditor;
 import com.threethan.launcher.support.Updater;
 import com.threethan.launcher.view.DynamicHeightGridView;
 
@@ -85,7 +84,7 @@ public class LauncherActivity extends Activity {
     public Set<String> clearFocusPackageNames = new HashSet<>();
     GridView groupGridView;
     public SharedPreferences sharedPreferences;
-    public SafeSharedPrefernceEditor sharedPreferenceEditor;
+    public SafeSharedPreferenceEditor sharedPreferenceEditor;
     public View mainView;
     private int prevViewWidth;
     public boolean isKillable = false;
@@ -193,7 +192,7 @@ public class LauncherActivity extends Activity {
     }
 
     protected void init() {
-        sharedPreferenceEditor = new SafeSharedPrefernceEditor(sharedPreferences.edit());
+        sharedPreferenceEditor = new SafeSharedPreferenceEditor(sharedPreferences.edit());
         settingsManager = SettingsManager.getInstance(this);
 
         mainView = rootView.findViewById(R.id.mainLayout);

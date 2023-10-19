@@ -21,7 +21,6 @@ import com.threethan.launcher.adapter.AppsAdapter;
 import com.threethan.launcher.adapter.GroupsAdapter;
 import com.threethan.launcher.helper.App;
 import com.threethan.launcher.helper.Dialog;
-import com.threethan.launcher.helper.Keyboard;
 import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.lib.StringLib;
@@ -270,6 +269,8 @@ public class LauncherActivityEditable extends LauncherActivity {
             group = appGroupsSorted.get(0);
         else group = SettingsManager.getDefaultGroup(false, false, true);
 
+        if (dialog == null) return;
+
         dialog.findViewById(R.id.cancel).setOnClickListener(view -> dialog.cancel());
         ((TextView) dialog.findViewById(R.id.addText)).setText(getString(R.string.add_website_group, group));
         EditText urlEdit = dialog.findViewById(R.id.appUrl);
@@ -313,6 +314,7 @@ public class LauncherActivityEditable extends LauncherActivity {
 
     void showWebsiteInfo() {
         AlertDialog subDialog = Dialog.build(this, R.layout.dialog_website_info);
+        if (subDialog == null) return;
         subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
             sharedPreferenceEditor.putBoolean(Settings.KEY_SEEN_WEBSITE_POPUP, true).apply();
             addWebsite(this);

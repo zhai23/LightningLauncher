@@ -27,7 +27,6 @@ import android.webkit.URLUtil;
 import android.webkit.WebSettings;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -130,7 +129,8 @@ public class BrowserService extends Service {
             ws.setMediaPlaybackRequiresUserGesture(false);
             ws.setDefaultTextEncodingName("utf-8");
             ws.setJavaScriptCanOpenWindowsAutomatically(true);
-            ws.setRenderPriority(WebSettings.RenderPriority.HIGH); // May improve performance
+            if (Platform.isTv(activity)) //noinspection deprecation
+                ws.setRenderPriority(WebSettings.RenderPriority.HIGH); // May improve performance
             // Enable Cookies
             CookieManager.getInstance().setAcceptCookie(true);
             CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true);
@@ -196,6 +196,7 @@ public class BrowserService extends Service {
                     promptInstall(file);
                 }
                 AlertDialog dialog = Dialog.build(Dialog.getActivityContext(), R.layout.dialog_downloaded_apk);
+                if (dialog == null) return;
                 dialog.findViewById(R.id.install).setOnClickListener(v -> {
                     promptInstall(file);
                     dialog.dismiss();
@@ -209,7 +210,6 @@ public class BrowserService extends Service {
                     dialog.dismiss();
                 });
                 ((TextView) dialog.findViewById(R.id.downloadMessage)).setText(getString(R.string.web_apk_prompt_message_pre, filename));
-                AlertDialog.Builder builder = new AlertDialog.Builder(Dialog.getActivityContext(), android.R.style.Theme_DeviceDefault_Dialog_Alert);
             } else {
                 final File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
                 final File file = new File(path, filename);

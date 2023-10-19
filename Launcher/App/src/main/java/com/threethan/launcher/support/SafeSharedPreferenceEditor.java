@@ -11,10 +11,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 // A thread-safe wrapper around SharedPreferences.Editor
-public class SafeSharedPrefernceEditor implements SharedPreferences.Editor {
+public class SafeSharedPreferenceEditor implements SharedPreferences.Editor {
     private static SharedPreferences.Editor editor;
 
-    public SafeSharedPrefernceEditor(SharedPreferences.Editor from) {
+    public SafeSharedPreferenceEditor(SharedPreferences.Editor from) {
         editor = from;
     }
     @Override
