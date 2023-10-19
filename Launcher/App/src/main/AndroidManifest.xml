@@ -61,7 +61,6 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
-                <action android:name="com.threethan.launcher.FINISH" />
             </intent-filter>
         </activity>
         <!-- Main activity, called by leanback launcher & launcher manager (Android TV) -->
@@ -80,7 +79,6 @@
                 <category android:name="android.intent.category.HOME"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER"/>
-                <action android:name="com.threethan.launcher.FINISH" />
             </intent-filter>
         </activity>
         <!-- Activity for browsers which open within the main window -->
@@ -98,6 +96,18 @@
         </activity>
         <!-- Activity for browsers which open in a separate window -->
         <activity android:name=".browser.BrowserActivitySeparate"
+            android:screenOrientation="unspecified"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
+            android:exported="true"
+            android:launchMode="singleInstancePerTask"
+            android:resizeableActivity="true"
+            tools:ignore="UnusedAttribute">
+
+            <layout android:defaultWidth="706dp" android:defaultHeight="442dp" android:gravity="top|end" />
+            <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
+            <meta-data android:name="com.oculus.vrshell.free_resizing_limits" android:value="300,2000,500,1000"/>
+        </activity>
+        <activity android:name=".browser.BrowserActivitySeparateAlt"
             android:screenOrientation="unspecified"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
             android:exported="true"

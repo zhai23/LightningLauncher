@@ -9,7 +9,9 @@ import androidx.annotation.Nullable;
 
 import com.threethan.launcher.browser.BrowserActivity;
 import com.threethan.launcher.browser.BrowserActivitySeparate;
+import com.threethan.launcher.browser.BrowserActivitySeparateAlt;
 import com.threethan.launcher.launcher.LauncherActivity;
+import com.threethan.launcher.launcher.LauncherService;
 import com.threethan.launcher.support.SettingsManager;
 
 import java.util.Objects;
@@ -84,7 +86,11 @@ public abstract class Launch {
     public static Intent getLaunchIntent(LauncherActivity activity, ApplicationInfo app) {
         if (App.isWebsite(app)) {
             Intent intent = new Intent(activity, (SettingsManager.getAppLaunchOut(app.packageName)
-                    ? BrowserActivitySeparate.class : BrowserActivity.class));
+                    ? (
+                        LauncherService.browserActivitySeparate == null ?
+                                BrowserActivitySeparate.class :
+                                BrowserActivitySeparateAlt.class
+                    ) : BrowserActivity.class));
             intent.putExtra("url", app.packageName);
             return intent;
         }

@@ -129,8 +129,9 @@ public class GroupsAdapter extends BaseAdapter {
         holder.menu.setOnClickListener(view -> {
 
             final Map<String, String> apps = SettingsManager.getAppGroupMap();
-            final Set<String> appGroupsSet = settingsManager.getAppGroups();
+            final Set<String> appGroupsSet = SettingsManager.getAppGroups();
             final String groupName = settingsManager.getAppGroupsSorted(false).get(position);
+            if (groupName == null) return;
 
             AlertDialog dialog = Dialog.build(launcherActivity, R.layout.dialog_group_details);
 
@@ -220,7 +221,7 @@ public class GroupsAdapter extends BaseAdapter {
             dialog.findViewById(R.id.deleteGroupButton).setOnClickListener(view1 -> {
                 HashMap<String, String> appGroupMap = new HashMap<>();
                 for (String packageName : apps.keySet())
-                    if (!groupName.equals(apps.get(packageName)))
+                    if (!Objects.equals(groupName, apps.get(packageName)))
                         appGroupMap.put(packageName, apps.get(packageName));
 
                 SettingsManager.setAppGroupMap(appGroupMap);
@@ -228,8 +229,8 @@ public class GroupsAdapter extends BaseAdapter {
 
                 boolean hasNormalGroup = false;
                 for (String groupNameIterator : appGroupsSet) {
-                    if (groupNameIterator.equals(Settings.HIDDEN_GROUP)) continue;
-                    if (groupNameIterator.equals(Settings.UNSUPPORTED_GROUP)) continue;
+                    if (Objects.equals(groupNameIterator, Settings.HIDDEN_GROUP)) continue;
+                    if (Objects.equals(groupNameIterator, Settings.UNSUPPORTED_GROUP)) continue;
                     hasNormalGroup = true; break;
                 }
                 if (!hasNormalGroup) {

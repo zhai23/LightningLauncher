@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import androidx.annotation.Nullable;
 
 import com.threethan.launcher.R;
+import com.threethan.launcher.browser.BrowserActivitySeparate;
+import com.threethan.launcher.browser.BrowserActivitySeparateAlt;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -33,6 +35,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class LauncherService extends Service {
     private final IBinder binder = new LocalBinder();
     private final static ConcurrentHashMap<Integer, View> viewByIndex = new ConcurrentHashMap<>();
+    @Nullable public static BrowserActivitySeparate browserActivitySeparate = null;
+    @Nullable public static BrowserActivitySeparateAlt browserActivitySeparateAlt = null;
     public class LocalBinder extends Binder {
         public LauncherService getService() {
             return LauncherService.this;
@@ -77,6 +81,8 @@ public class LauncherService extends Service {
 
     public void finishAllActivities() {
         for (Activity activity: activityByIndex.keySet()) activity.finishAndRemoveTask();
+        if (browserActivitySeparate != null) browserActivitySeparate.finishAndRemoveTask();
+        if (browserActivitySeparateAlt != null) browserActivitySeparateAlt.finishAndRemoveTask();
     }
     public void invalidateAll() {
         finishAllActivities();

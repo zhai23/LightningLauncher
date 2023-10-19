@@ -37,11 +37,15 @@ class BrowserWebChromeClient extends WebChromeClient {
                 askForAudioPermission(resource);
             }
             // Allow DRM (spotify, tidal)
-            if (Objects.equals(resource, PermissionRequest.RESOURCE_PROTECTED_MEDIA_ID)) {
+            else if (Objects.equals(resource, PermissionRequest.RESOURCE_PROTECTED_MEDIA_ID)) {
                 request.grant(new String[]{resource});
+            }
+            else {
+                request.deny();
             }
         }
     }
+
 
     private void askForAudioPermission(String webkitPermission) {
         if (activity == null) {
