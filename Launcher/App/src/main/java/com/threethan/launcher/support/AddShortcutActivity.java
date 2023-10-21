@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.LauncherApps;
 import android.content.pm.ShortcutInfo;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -19,6 +20,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import com.threethan.launcher.helper.Icon;
 import com.threethan.launcher.helper.Platform;
 
 import java.io.IOException;
@@ -47,9 +49,17 @@ public class AddShortcutActivity extends Activity {
 
         ShortcutInfo shortcutInfo = pinItemRequest.getShortcutInfo();
 
-        pinItemRequest.accept();
+        if (shortcutInfo == null) return;
 
-        assert shortcutInfo != null;
+        Drawable iconDrawable = launcherApps.getShortcutIconDrawable(shortcutInfo, 0);
+
+
+        try {
+            pinItemRequest.accept();
+        } catch (RuntimeException ignored) {
+            return;
+        }
+
         String label = "";
 
         if (shortcutInfo.getShortLabel() != null) {
@@ -61,8 +71,8 @@ public class AddShortcutActivity extends Activity {
         String json = getFixedGsonWriter().toJson(shortcutInfo);
         //noinspection deprecation
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        Platform.addWebsite(sharedPreferences, json, label);
-
+        String url = Platform.addWebsite(sharedPreferences, json, label);
+        Icon.saveIconDrawableExternal(this, iconDrawable, url);
         this.finish();
     }
     public static void launchShortcut(Activity activity, String json) {

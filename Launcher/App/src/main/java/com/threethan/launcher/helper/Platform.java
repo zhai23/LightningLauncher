@@ -45,7 +45,7 @@ public abstract class Platform {
         addWebsite(sharedPreferences, url, null);
     }
 
-    public static void addWebsite(SharedPreferences sharedPreferences, String url, String name) {
+    public static String addWebsite(SharedPreferences sharedPreferences, String url, String name) {
         url = StringLib.fixUrl(url);
 
         Set<String> webApps = sharedPreferences.getStringSet(Settings.KEY_WEBSITE_LIST, Collections.emptySet());
@@ -58,6 +58,7 @@ public abstract class Platform {
         editor.apply();
 
         changeIndex ++;
+        return url;
     }
 
     protected static Boolean isTv;

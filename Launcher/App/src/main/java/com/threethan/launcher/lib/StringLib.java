@@ -39,8 +39,12 @@ public class StringLib {
         return (!url.contains("://") || !url.contains("."));
     }
     public static String toValidFilename(String string) {
-        return string.replace("/","").replace("&","")
+        if (string.startsWith("json://")) // Hash json that would otherwise be too long
+            return  "shortcut-json-hash-"+String.valueOf(string.hashCode());
+
+        string = string.replace("/","").replace("&","")
                 .replace("=","").replace(":","");
+        return string.substring(0, Math.min(string.length()-1, 100));
     }
     public static String toTitleCase(String string) {
         if (string == null) return null;

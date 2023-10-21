@@ -64,6 +64,7 @@ public abstract class IconRepo {
     }
 
     public static boolean shouldDownload(LauncherActivity activity, ApplicationInfo app) {
+        if (App.isShortcut(app)) return false;
         if (downloadFinishedPackages.isEmpty())
             downloadFinishedPackages = activity.sharedPreferences
                     .getStringSet(SettingsManager.DONT_DOWNLOAD_ICONS, downloadFinishedPackages);

@@ -1,5 +1,6 @@
 package com.threethan.launcher.helper;
 
+import android.app.Activity;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -16,10 +17,13 @@ import com.threethan.launcher.R;
 import com.threethan.launcher.launcher.LauncherActivity;
 import com.threethan.launcher.lib.ImageLib;
 import com.threethan.launcher.lib.StringLib;
+import com.threethan.launcher.support.SettingsManager;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /*
     Icon
@@ -29,7 +33,7 @@ import java.util.HashMap;
  */
 
 public abstract class Icon {
-    public static final HashMap<String, Drawable> cachedIcons = new HashMap<>();
+    public static final Map<String, Drawable> cachedIcons = new ConcurrentHashMap<>();
     public static File iconFileForPackage(LauncherActivity launcherActivity, String packageName) {
         packageName = cacheName(StringLib.toValidFilename(packageName));
         ApplicationInfo tempApp = new ApplicationInfo();
@@ -126,5 +130,42 @@ public abstract class Icon {
             Log.i("AbstractPlatform", "Exception while converting file " + packageName);
             e.printStackTrace();
         }
+    }
+    public static void saveIconDrawableExternal(Activity activity, Drawable icon, String packageName) {
+        try {
+            Bitmap bitmap = ImageLib.bitmapFromDrawable(icon);
+            if (bitmap == null)
+                Log.i("Icon", "Failed to load drawable bitmap for "+packageName);
+            else {
+                int width = bitmap.getWidth();
+                int height = bitmap.getHeight();
+                float aspectRatio = (float) width / height;
+                if (width > 512) {
+                    width = 512;
+                    height = Math.round(width / aspectRatio);
+                    bitmap = Bitmap.createScaledBitmap(bitmap, width, height, false);
+                }
+                FileOutputStream fileOutputStream =
+                        new FileOutputStream(iconFileForPackageExt(activity, packageName, false)
+                                .getAbsolutePath());
+                bitmap.compress(Bitmap.CompressFormat.WEBP, 90, fileOutputStream);
+                fileOutputStream.close();
+                FileOutputStream fileOutputStream2 =
+                        new FileOutputStream(iconFileForPackageExt(activity, packageName, true)
+                                .getAbsolutePath());
+                bitmap.compress(Bitmap.CompressFormat.WEBP, 90, fileOutputStream2);
+                fileOutputStream2.close();
+            }
+        } catch (Exception e) {
+            Log.i("ICON", "Exception while converting file " + packageName);
+            e.printStackTrace();
+        }
+    }
+    protected static File iconFileForPackageExt(Activity launcherActivity, String packageName, boolean wide) {
+        packageName = cacheName(StringLib.toValidFilename(packageName));
+        ApplicationInfo tempApp = new ApplicationInfo();
+        tempApp.packageName = packageName;
+        return new File(launcherActivity.getApplicationInfo().dataDir,
+                packageName + (wide?"-wide":"") + ".webp");
     }
 }

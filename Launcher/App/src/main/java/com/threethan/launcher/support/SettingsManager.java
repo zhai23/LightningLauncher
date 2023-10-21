@@ -7,6 +7,8 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+
 import com.threethan.launcher.helper.App;
 import com.threethan.launcher.helper.AppData;
 import com.threethan.launcher.helper.Platform;
@@ -20,7 +22,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -55,7 +56,6 @@ public class SettingsManager extends Settings {
     private static Set<String> appGroupsSet = Collections.synchronizedSet(new HashSet<>());
     private Set<String> selectedGroupsSet = Collections.synchronizedSet(new HashSet<>());
     private static final Map<Context, SettingsManager> instanceByContext = Collections.synchronizedMap(new HashMap<>());
-
     private SettingsManager(LauncherActivity activity) {
         myLauncherActivityRef = new WeakReference<>(activity);
         anyLauncherActivityRef = new WeakReference<>(activity);
@@ -157,7 +157,7 @@ public class SettingsManager extends Settings {
         setAppGroupMap(appGroupMap);
 
         // Map Packages
-        Map<String, ApplicationInfo> appMap = new LinkedHashMap<>();
+        Map<String, ApplicationInfo> appMap = new ConcurrentHashMap<>();
         for (ApplicationInfo applicationInfo : myApps) {
             String pkg = applicationInfo.packageName;
             if (apps.containsKey(pkg) && selectedGroups.contains(apps.get(pkg))) {

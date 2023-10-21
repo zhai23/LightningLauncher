@@ -291,17 +291,17 @@ public class LauncherActivity extends Activity {
         } catch (Exception ignored) {} // Will fail if service hasn't bound yet
 
         Dialog.setActivityContext(this);
-        if (Platform.changeIndex > myPlatformChangeIndex) reloadPackages();
-        else {
-            post(this::recheckPackages);
-            postDelayed(this::recheckPackages, 1000);
-        }
+
+        post(this::recheckPackages);
+        postDelayed(this::recheckPackages, 1000);
+
         postDelayed(() -> new Updater(this).checkForAppUpdate(), 1000);
 
     }
 
     public void reloadPackages() {
         if (sharedPreferenceEditor == null) return;
+
         sharedPreferenceEditor.apply();
         Platform.clearPackageLists(this);
         PackageManager packageManager = getPackageManager();
@@ -309,11 +309,11 @@ public class LauncherActivity extends Activity {
         Platform.installedApps = Collections.synchronizedList(Platform.installedApps);
         Compat.recheckSupported(this);
         refreshAppDisplayListsAll();
-        myPlatformChangeIndex = Platform.changeIndex;
     }
 
     public void recheckPackages() {
-        try {
+        if (Platform.changeIndex > myPlatformChangeIndex) reloadPackages();
+        else try {
             new RecheckPackagesTask().execute(this);
         } catch (Exception ignore) {
             reloadPackages();

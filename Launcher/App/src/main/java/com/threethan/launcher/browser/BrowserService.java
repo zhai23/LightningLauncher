@@ -40,7 +40,6 @@ import com.threethan.launcher.lib.FileLib;
 import com.threethan.launcher.support.Updater;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -62,8 +61,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class BrowserService extends Service {
     private final IBinder binder = new LocalBinder();
-    private final static HashMap<String, BrowserWebView> webViewByBaseUrl = new HashMap<>();
-    private final static HashMap<String, Activity> activityByBaseUrl = new HashMap<>();
+    private final static Map<String, BrowserWebView> webViewByBaseUrl = new ConcurrentHashMap<>();
+    private final static Map<String, Activity> activityByBaseUrl = new ConcurrentHashMap<>();
 
     // Arbitrary ID for the persistent notification
     private final static int NOTIFICATION_ID = 42;

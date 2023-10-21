@@ -173,7 +173,7 @@ public abstract class Compat {
         App.invalidateCaches(launcherActivity);
         for (ApplicationInfo app: apps) {
             final boolean supported = App.isSupported(app, launcherActivity);
-            Log.v("SUPPORTED: "+supported, app.packageName);
+//            Log.v("SUPPORTED: "+supported, app.packageName);
             if(!supported) appGroupMap.put(app.packageName, Settings.UNSUPPORTED_GROUP);
             else if (Objects.equals(appGroupMap.get(app.packageName), Settings.UNSUPPORTED_GROUP))
                 appGroupMap.remove(app.packageName);
