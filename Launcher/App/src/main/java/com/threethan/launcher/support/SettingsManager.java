@@ -368,9 +368,8 @@ public class SettingsManager extends Settings {
         if (!Settings.FALLBACK_GROUPS.containsKey(type)) type = App.Type.TYPE_PHONE;
         String def = Settings.FALLBACK_GROUPS.get(type);
 
-        final String group = SettingsManager.sharedPreferences.getString(key, def);
-//        if (!appGroupsSet.isEmpty() && appGroupsSet.contains(group)) return Settings.HIDDEN_GROUP;
-        return group;
+        //        if (!appGroupsSet.isEmpty() && appGroupsSet.contains(group)) return Settings.HIDDEN_GROUP;
+        return SettingsManager.sharedPreferences.getString(key, def);
     }
 
     public static boolean isTypeBanner(App.Type type) {

@@ -30,7 +30,6 @@ import com.threethan.launcher.helper.Compat;
 import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.helper.Icon;
 import com.threethan.launcher.helper.Launch;
-import com.threethan.launcher.helper.PanelApp;
 import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.launcher.LauncherActivity;

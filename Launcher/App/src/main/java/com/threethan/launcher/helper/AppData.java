@@ -1,16 +1,11 @@
 package com.threethan.launcher.helper;
 
-import android.app.Activity;
-import android.content.pm.ApplicationInfo;
-
-import com.threethan.launcher.launcher.LauncherActivity;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/*
+/** @noinspection CommentedOutCode*/ /*
     PanelAppList
 
     Stores a list of panel apps, invalid apps, and label overrides.

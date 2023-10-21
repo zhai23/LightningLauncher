@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import com.threethan.launcher.R;
 import com.threethan.launcher.adapter.AppsAdapter;

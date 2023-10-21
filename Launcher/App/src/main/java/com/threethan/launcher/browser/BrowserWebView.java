@@ -8,11 +8,6 @@ import android.webkit.WebView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-
 /*
     BrowserWebView
 
@@ -52,34 +47,14 @@ public class BrowserWebView extends WebView {
         myClient.setActivity(activity);
     }
 
-
-    // History
-    protected List<String> history = Collections.synchronizedList(new ArrayList<>());
-    public int historyIndex = 0;
-    public void forward() {
-        historyIndex ++;
-        loadUrl(history.get(historyIndex-1));
-    }
-    public boolean back() {
-        if (historyIndex <= 1) return false;
-        historyIndex--;
-        loadUrl(history.get(historyIndex - 1));
-        return true;
-    }
     public void backFull() {
-        historyIndex = history.size();
-        loadUrl(history.get(historyIndex-1));
+        int i = 0;
+        while (canGoBackOrForward(i-1)) i--;
+        goBackOrForward(i);
     }
     public void forwardFull() {
-        historyIndex = 1;
-        loadUrl(history.get(0));
-    }
-
-    public void addHistory(String url) {
-        if (historyIndex == 0 || !Objects.equals(url, history.get(historyIndex - 1))) {
-            history = history.subList(0, historyIndex);
-            history.add(url);
-            historyIndex++;
-        }
+        int i = 0;
+        while (canGoBackOrForward(i+1)) i++;
+        goBackOrForward(i);
     }
 }

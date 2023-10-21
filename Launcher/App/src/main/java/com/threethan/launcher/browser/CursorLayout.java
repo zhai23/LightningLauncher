@@ -92,7 +92,6 @@ public class CursorLayout extends LinearLayout {
             if (!tmpPointF.equals(cursorPosition) && centerPressed)
                 dispatchMotionEvent(cursorPosition.x, cursorPosition.y, MotionEvent.ACTION_MOVE); // Drag
 
-
             if (targetView != null) {
                 try {
                     if (cursorPosition.y > ((float) (getHeight() - CursorLayout.SCROLL_START_PADDING))) {

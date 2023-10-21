@@ -122,7 +122,7 @@ public abstract class Compat {
 
                         for (String key : oldWideKeyToType.keySet()) {
                             if (sharedPreferences.contains(key)) {
-                                Boolean val = sharedPreferences.getBoolean(key, false);
+                                boolean val = sharedPreferences.getBoolean(key, false);
                                 sharedPreferenceEditor.putBoolean(Settings.KEY_BANNER + oldDefKeyToType.get(key), val);
                                 sharedPreferenceEditor.remove(key);
                             }

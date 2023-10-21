@@ -104,12 +104,12 @@ public class BrowserActivity extends Activity {
 
         back.setOnClickListener((view) -> {
             if (w == null) return;
-            w.back();
+            if (w.canGoBack()) w.goBack();
             updateButtonsAndUrl();
         });
         forward.setOnClickListener((view) -> {
             if (w == null) return;
-            w.forward();
+            if (w.canGoForward()) w.goForward();
             updateButtonsAndUrl();
         });
 
@@ -130,8 +130,7 @@ public class BrowserActivity extends Activity {
         View refresh = findViewById(R.id.refresh);
         refresh.setOnClickListener((view) -> reload());
         refresh.setOnLongClickListener((view) -> {
-            w.history.clear();
-            w.historyIndex = 0;
+            w.clearHistory();
             w.loadUrl(baseUrl);
             updateUrl(baseUrl);
             return true;
@@ -197,8 +196,8 @@ public class BrowserActivity extends Activity {
     private void updateButtonsAndUrl(String url) {
         if (w == null) return;
         updateUrl(url);
-        back.setVisibility(w.historyIndex > 1 ? View.VISIBLE : View.GONE);
-        forward.setVisibility(w.historyIndex < w.history.size() ? View.VISIBLE : View.GONE);
+        back.setVisibility(w.canGoBack() ? View.VISIBLE : View.GONE);
+        forward.setVisibility(w.canGoForward() ? View.VISIBLE : View.GONE);
     }
     private void updateZoom(float scale) {
         zoomIn .setVisibility(scale < 2.00 ? View.VISIBLE : View.GONE);
@@ -288,7 +287,10 @@ public class BrowserActivity extends Activity {
                     return;
                 }
             }
-            if (w.back()) updateButtonsAndUrl();
+            if (w.canGoBack()) {
+                w.goBack();
+                updateButtonsAndUrl();
+            }
             else finish();
         }
     }
@@ -346,9 +348,8 @@ public class BrowserActivity extends Activity {
             @Override
             public void doUpdateVisitedHistory(WebView view, String url, boolean isReload) {
                 if (isReload) loading.setVisibility(View.VISIBLE);
-                w.addHistory(url);
-                updateButtonsAndUrl(url);
                 super.doUpdateVisitedHistory(view, url, isReload);
+                updateButtonsAndUrl(url);
             }
         });
         updateButtonsAndUrl();
