@@ -394,6 +394,7 @@
                 tools:ignore="DuplicateIds">
 
                 <TextView
+                    android:id="@+id/disableExploreText"
                     style="@style/SettingButtonLabel"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

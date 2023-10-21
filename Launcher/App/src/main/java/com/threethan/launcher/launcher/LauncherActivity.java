@@ -301,11 +301,12 @@ public class LauncherActivity extends Activity {
     public void reloadPackages() {
         if (sharedPreferenceEditor == null) return;
         sharedPreferenceEditor.apply();
-        Platform.clearPackageLists();
+        Platform.clearPackageLists(this);
         PackageManager packageManager = getPackageManager();
         Platform.installedApps = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);
         Platform.installedApps = Collections.synchronizedList(Platform.installedApps);
-        refreshAppDisplayListsWithoutInterface();
+        Compat.recheckSupported(this);
+        refreshAppDisplayListsAll();
         myPlatformChangeIndex = Platform.changeIndex;
     }
 
@@ -592,7 +593,7 @@ public class LauncherActivity extends Activity {
         }
         // Add panel apps (Quest Only)
         if (Platform.isQuest(this)) {
-            for (ApplicationInfo panelApp : AppData.getPanelAppList()) {
+            for (ApplicationInfo panelApp : AppData.getFullPanelAppList()) {
                 (App.typeIsBanner(App.Type.TYPE_PANEL) ?
                         Platform.appListBanner : Platform.appListSquare)
                         .add(panelApp);
@@ -635,7 +636,7 @@ public class LauncherActivity extends Activity {
         Set<String> webApps = sharedPreferences.getStringSet(Settings.KEY_WEBSITE_LIST, new HashSet<>());
         setAll.addAll(webApps);
         if (Platform.isQuest(this)) {
-            for (ApplicationInfo panelApp : AppData.getPanelAppList())
+            for (ApplicationInfo panelApp : AppData.getFullPanelAppList())
                 setAll.add(panelApp.packageName);
         }
         return setAll;

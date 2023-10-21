@@ -1,5 +1,10 @@
 package com.threethan.launcher.helper;
 
+import android.app.Activity;
+import android.content.pm.ApplicationInfo;
+
+import com.threethan.launcher.launcher.LauncherActivity;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +18,7 @@ import java.util.Map;
  */
 public abstract class AppData {
     protected static final List<PanelApp> panelAppList;
+    public static final String EXPLORE_PACKAGE = "com.oculus.explore";
 
     static {
         panelAppList = new ArrayList<>();
@@ -28,15 +34,20 @@ public abstract class AppData {
 //        panelAppList.add(new PanelApp("Meta Quest Guide", "com.oculus.helpcenter"));
 
 //        panelAppList.add(new PanelApp("Meta Quest Browser (Intent)", "systemux://browser"));
+//        panelAppList.add(new PanelApp("Meta Quest Store (Intent)", "systemux://store"));
         panelAppList.add(new PanelApp("Camera", "systemux://sharing"));
         panelAppList.add(new PanelApp("People", "systemux://aui-social-v2"));
 //        panelAppList.add(new PanelApp("Quick Settings", "systemux://quick_settings"));
         panelAppList.add(new PanelApp("Quest Settings", "systemux://settings"));
 //        panelAppList.add(new PanelApp("Notifications", "systemux://notifications"));
 //        panelAppList.add(new PanelApp("Profile", "systemux://aui-profile"));
+//        panelAppList.add(new PanelApp("Explore", "systemux://explore"));// Can just use the explore app
+        panelAppList.add(new PanelApp("Events", "systemux://events"));// Part of Explore
+        panelAppList.add(new PanelApp("File Manager", "systemux://file-manager"));
+
     }
 
-    public static List<PanelApp> getPanelAppList() {
+    public static List<PanelApp> getFullPanelAppList() {
         return panelAppList;
     }
 

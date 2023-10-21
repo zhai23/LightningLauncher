@@ -13,11 +13,11 @@ import com.threethan.launcher.launcher.LauncherActivity;
 import com.threethan.launcher.support.SettingsManager;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 /*
     App
@@ -32,8 +32,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 
 public abstract class App {
-    static Map<Type, Set<String>> categoryIncludedApps = new ConcurrentHashMap<>();
-    static Map<Type, Set<String>> categoryExcludedApps = new ConcurrentHashMap<>();
+    static Map<Type, Set<String>> categoryIncludedApps = new HashMap<>();
+    static Map<Type, Set<String>> categoryExcludedApps = new HashMap<>();
 
     public enum Type {
         TYPE_PHONE, TYPE_VR, TYPE_TV, TYPE_PANEL, TYPE_WEB, TYPE_SUPPORTED, TYPE_UNSUPPORTED
@@ -66,8 +66,8 @@ public abstract class App {
             final SharedPreferences sharedPreferences = launcherActivity.sharedPreferences;
             final SharedPreferences.Editor sharedPreferenceEditor = launcherActivity.sharedPreferenceEditor;
 
-            if (!categoryIncludedApps.containsKey(appType) ||
-                    Objects.requireNonNull(categoryIncludedApps.get(appType)).isEmpty()) {
+            if (!categoryIncludedApps.containsKey(appType)) {
+                // Create new hashsets for cache
                 categoryIncludedApps.put(appType, Collections.synchronizedSet(new HashSet<>()));
                 categoryExcludedApps.put(appType, Collections.synchronizedSet(new HashSet<>()));
                 Objects.requireNonNull(categoryIncludedApps.get(appType))
@@ -76,12 +76,16 @@ public abstract class App {
                 Objects.requireNonNull(categoryExcludedApps.get(appType))
                         .addAll(sharedPreferences.getStringSet(Settings.KEY_EXCLUDED_SET + appType
                                 , new HashSet<>()));
-            } else {
-                if (Objects.requireNonNull(categoryIncludedApps.get(appType))
-                        .contains(applicationInfo.packageName)) return true;
-                if (Objects.requireNonNull(categoryExcludedApps.get(appType))
-                        .contains(applicationInfo.packageName)) return false;
             }
+
+            // Check cache
+            if (Objects.requireNonNull(categoryIncludedApps.get(appType))
+                    .contains(applicationInfo.packageName)) return true;
+            if (Objects.requireNonNull(categoryExcludedApps.get(appType))
+                    .contains(applicationInfo.packageName)) return false;
+
+
+
             boolean isType = false;
 
             // this function shouldn't be called until checking higher priorities first
@@ -126,7 +130,7 @@ public abstract class App {
     private static boolean checkPanelApp
             (ApplicationInfo applicationInfo, LauncherActivity launcherActivity) {
         //noinspection SuspiciousMethodCalls
-        if (AppData.getPanelAppList().contains(applicationInfo)) return true;
+        if (AppData.getFullPanelAppList().contains(applicationInfo)) return true;
 
         if (AppData.AUTO_DETECT_PANEL_APPS) {
             PackageManager pm = launcherActivity.getPackageManager();
@@ -141,7 +145,6 @@ public abstract class App {
     }
     private static String[] unsupportedPrefixes;
     private static boolean checkSupported(ApplicationInfo app, LauncherActivity launcherActivity) {
-
         if (isWebsite(app)) return true;
 
         if (app.metaData != null) {
@@ -163,15 +166,18 @@ public abstract class App {
     /** @noinspection SuspiciousMethodCalls*/
     public static boolean isWebsite(ApplicationInfo applicationInfo) {
         return (isWebsite(applicationInfo.packageName) &&
-                !AppData.getPanelAppList().contains(applicationInfo));
+                !AppData.getFullPanelAppList().contains(applicationInfo));
     }
     public static boolean isWebsite(String packageName) {
         return (packageName.contains("//"));
     }
 
     // Invalidate the values caches for isBlank functions
-    public static void invalidateCaches(LauncherActivity launcherActivity) {
-        for (App.Type type : Platform.getSupportedAppTypes(launcherActivity))
+    public static synchronized void invalidateCaches(LauncherActivity launcherActivity) {
+        categoryIncludedApps = new HashMap<>();
+        categoryExcludedApps = new HashMap<>();
+
+        for (App.Type type : App.Type.values())
             launcherActivity.sharedPreferenceEditor
                     .remove(Settings.KEY_INCLUDED_SET + type)
                     .remove(Settings.KEY_EXCLUDED_SET + type);
@@ -181,7 +187,8 @@ public abstract class App {
     // Opens the app info settings pane
     public static void openInfo(Context context, String packageName) {
         Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-        intent.setData(Uri.parse("package:" + packageName));
+        intent.setData(Uri.parse("package:" +
+                packageName.replace(PanelApp.packagePrefix, "")));
         context.startActivity(intent);
     }
     // Requests to uninstall the app
@@ -232,4 +239,12 @@ public abstract class App {
         return SettingsManager.isTypeBanner(type);
     }
 
+    public static boolean isPackageEnabled(Activity activity, String packageName) {
+        try {
+            ApplicationInfo ai = activity.getPackageManager().getApplicationInfo(packageName,0);
+            return ai.enabled;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
+    }
 }

@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.res.Configuration;
 
+import com.threethan.launcher.launcher.LauncherActivity;
 import com.threethan.launcher.lib.StringLib;
 import com.threethan.launcher.support.SettingsManager;
 
@@ -28,9 +29,8 @@ public abstract class Platform {
     public static List<ApplicationInfo> appListBanner;
     public static List<ApplicationInfo> appListSquare;
     public static int changeIndex = 0; //Used to track changes, specifically adding websites
-    public static void clearPackageLists() {
-        App.categoryIncludedApps.clear();
-        App.categoryExcludedApps.clear();
+    public static void clearPackageLists(LauncherActivity launcherActivity) {
+        App.invalidateCaches(launcherActivity);
         changeIndex ++;
     }
     public static String findWebsite(SharedPreferences sharedPreferences, String url) {

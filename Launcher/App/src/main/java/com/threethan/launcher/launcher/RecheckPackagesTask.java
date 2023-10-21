@@ -33,6 +33,7 @@ class RecheckPackagesTask extends AsyncTask<Object, Void, Object> {
         changeFound = Platform.installedApps == null ||
                 Platform.installedApps.size() != foundApps.size();
 
+
         ownerRef = new WeakReference<>(owner);
         return null;
     }

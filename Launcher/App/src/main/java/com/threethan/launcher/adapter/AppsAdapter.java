@@ -30,6 +30,7 @@ import com.threethan.launcher.helper.Compat;
 import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.helper.Icon;
 import com.threethan.launcher.helper.Launch;
+import com.threethan.launcher.helper.PanelApp;
 import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.launcher.LauncherActivity;
@@ -382,8 +383,10 @@ public class AppsAdapter extends BaseAdapter{
             ImageLib.showImagePicker(launcherActivity, Settings.PICK_ICON_CODE);
         });
 
-        dialog.findViewById(R.id.info).setVisibility(App.isWebsite(currentApp) ? View.GONE : View.VISIBLE);
-        if (App.getType(launcherActivity, currentApp) == App.Type.TYPE_VR
+        App.Type appType = App.getType(launcherActivity, currentApp);
+        dialog.findViewById(R.id.info).setVisibility(currentApp.packageName.contains("://")
+                ? View.GONE : View.VISIBLE);
+        if (appType == App.Type.TYPE_VR || appType == App.Type.TYPE_PANEL
                 || Platform.isTv(launcherActivity)) {
             // VR apps MUST launch out, so just hide the option and replace it with another
             // Also hide it on TV where it is useless

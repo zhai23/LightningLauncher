@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import com.threethan.launcher.browser.BrowserActivity;
 import com.threethan.launcher.browser.BrowserActivitySeparate;
 import com.threethan.launcher.launcher.LauncherActivity;
+import com.threethan.launcher.support.AddonDialog;
 import com.threethan.launcher.support.SettingsManager;
 
 import java.util.Objects;
@@ -39,9 +40,9 @@ public abstract class Launch {
         Intent intent = getLaunchIntent(launcherActivity, app);
 
         if (intent == null) {
-            Log.w("AppPlatform", "Package could not be launched (Uninstalled?): "
+            Log.w("AppLaunch", "Package could not be launched (Uninstalled?): "
                     +app.packageName);
-            launcherActivity.recheckPackages();
+            launcherActivity.reloadPackages();
             return false;
         }
 
@@ -91,6 +92,8 @@ public abstract class Launch {
         if (app.packageName.startsWith(activity.getPackageName())) return null;
         if (AppData.invalidAppsList.contains(app.packageName)) return null;
 
+        PackageManager pm = activity.getPackageManager();
+
         // Detect panel apps
         if (App.getType(activity, app) == App.Type.TYPE_PANEL) {
             String uri = app.packageName;
@@ -102,9 +105,12 @@ public abstract class Launch {
                     "com.oculus.vrshell", "com.oculus.vrshell.MainActivity"));
             panelIntent.setData(Uri.parse(uri));
 
-            Log.v("PANELINTENT", panelIntent.toString());
+            // Special case for events, which depends on explore
+            if (app.packageName.equals("systemux://events") &&
+                    !App.isPackageEnabled(activity, AppData.EXPLORE_PACKAGE)) return null;
 
-            return panelIntent;
+            if (pm.resolveActivity(panelIntent, 0) != null) return panelIntent;
+            else return null;
         }
 
         // Detect websites
@@ -116,7 +122,6 @@ public abstract class Launch {
             return intent;
         }
 
-        PackageManager pm = activity.getPackageManager();
 
         // Otherwise android TV settings is not recognized
         if (Objects.equals(app.packageName, "com.android.tv.settings"))

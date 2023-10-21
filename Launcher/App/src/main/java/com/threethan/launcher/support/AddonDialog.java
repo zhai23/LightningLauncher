@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
 import com.threethan.launcher.R;
 import com.threethan.launcher.helper.App;
+import com.threethan.launcher.helper.AppData;
 import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.launcher.LauncherActivity;
@@ -25,7 +27,6 @@ import java.util.Objects;
 public abstract class AddonDialog {
     private static WeakReference<Updater> updaterRef;
     private static WeakReference<LauncherActivity> activityRef;
-    private static final String EXPLORE_PACKAGE = "com.oculus.explore";
     public static void showAddons(LauncherActivity a) {
         AlertDialog dialog = Dialog.build(a, Platform.isVr(a) ? R.layout.dialog_addons_vr : R.layout.dialog_addons_tv);
         if (dialog == null) return;
@@ -35,8 +36,13 @@ public abstract class AddonDialog {
         if (addonMessenger!=null) updateAddonButton(a, addonMessenger, Updater.TAG_MESSENGER_SHORTCUT);
 
         View addonExplore = dialog.findViewById(R.id.addonExplore);
-        if (addonExplore!=null) updateAddonButton(a, addonExplore, Updater.TAG_EXPLORE_SHORTCUT);
-        if (addonExplore!=null) dialog.findViewById(R.id.disableExplore).setOnClickListener(v -> App.openInfo(a, EXPLORE_PACKAGE));
+        if (addonExplore!=null) {
+            updateAddonButton(a, addonExplore, Updater.TAG_EXPLORE_SHORTCUT);
+            dialog.findViewById(R.id.disableExplore).setOnClickListener(v -> App.openInfo(a, AppData.EXPLORE_PACKAGE));
+            ((TextView) dialog.findViewById(R.id.disableExploreText)).setText(
+                    App.isPackageEnabled(a, AppData.EXPLORE_PACKAGE) ?
+                    R.string.addons_explore_disable : R.string.addons_explore_enable);
+        }
 
         View addonLibrary = dialog.findViewById(R.id.addonLibrary);
         if (addonLibrary!=null) updateAddonButton(a, addonLibrary, Updater.TAG_LIBRARY_SHORTCUT);

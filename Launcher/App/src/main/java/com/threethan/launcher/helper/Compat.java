@@ -30,7 +30,7 @@ import java.util.Set;
 public abstract class Compat {
     public static final String KEY_COMPATIBILITY_VERSION = "KEY_COMPATIBILITY_VERSION";
     public static final int CURRENT_COMPATIBILITY_VERSION = 6;
-    public static final boolean DEBUG_COMPATIBILITY = true; //TODO
+    public static final boolean DEBUG_COMPATIBILITY = false;
     private static final String TAG = "Compatibility";
 
     public static synchronized void checkCompatibilityUpdate(LauncherActivity launcherActivity) {
@@ -127,7 +127,7 @@ public abstract class Compat {
                                 sharedPreferenceEditor.remove(key);
                             }
                         }
-
+                        recheckSupported(launcherActivity);
                         break;
 
                 }
@@ -172,9 +172,11 @@ public abstract class Compat {
         List<ApplicationInfo> apps = launcherActivity.getPackageManager().getInstalledApplications(PackageManager.GET_META_DATA);
         App.invalidateCaches(launcherActivity);
         for (ApplicationInfo app: apps) {
-            final boolean supported = App.isSupported(app, launcherActivity) || App.isWebsite(app);
+            final boolean supported = App.isSupported(app, launcherActivity);
+            Log.v("SUPPORTED: "+supported, app.packageName);
             if(!supported) appGroupMap.put(app.packageName, Settings.UNSUPPORTED_GROUP);
-            if(supported && Objects.equals(appGroupMap.get(app.packageName), Settings.HIDDEN_GROUP)) appGroupMap.remove(app.packageName);
+            else if (Objects.equals(appGroupMap.get(app.packageName), Settings.UNSUPPORTED_GROUP))
+                appGroupMap.remove(app.packageName);
         }
         SettingsManager.setAppGroupMap(appGroupMap);
     }

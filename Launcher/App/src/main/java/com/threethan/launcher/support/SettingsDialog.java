@@ -297,10 +297,9 @@ public abstract class SettingsDialog {
                 if (bSwitch == null) continue;
                 bSwitch.setChecked(App.typeIsBanner(type));
                 bSwitch.setOnCheckedChangeListener((switchView, value) -> {
-                            Compat.clearIconCache(a);
-                            a.sharedPreferenceEditor.putBoolean(Settings.KEY_BANNER + type, value)
-                                    .apply();
-                            a.refreshAppDisplayListsAll();
+                    a.sharedPreferenceEditor.putBoolean(Settings.KEY_BANNER + type, value).apply();
+                    Compat.clearIconCache(a);
+                    a.refreshAppDisplayListsAll();
                 });
 
             } else {

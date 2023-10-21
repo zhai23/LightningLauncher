@@ -35,14 +35,14 @@ public abstract class IconRepo {
     // Repository URLs:
     // Each URL will be tried in order: the first with a file matching the package name will be used
     private static final String[] ICON_URLS_SQUARE = {
-            //TODO: Custom repo for panel apps
+            "https://raw.githubusercontent.com/threethan/QuestLauncherImages/main/icon/%s.jpg",
             "https://raw.githubusercontent.com/veticia/binaries/main/icons/%s.png",
             "https://raw.githubusercontent.com/basti564/LauncherIcons/main/oculus_square/%s.jpg",
             "https://raw.githubusercontent.com/basti564/LauncherIcons/main/pico_square/%s.jpg",
             "https://raw.githubusercontent.com/basti564/LauncherIcons/main/viveport_square/%s.jpg"
     };
     private static final String[] ICON_URLS_BANNER = {
-            //TODO: Custom repo for panel apps
+            "https://raw.githubusercontent.com/threethan/QuestLauncherImages/main/banner/%s.jpg",
             "https://raw.githubusercontent.com/veticia/binaries/main/banners/%s.png",
             "https://raw.githubusercontent.com/basti564/LauncherIcons/main/oculus_landscape/%s.jpg",
             "https://raw.githubusercontent.com/basti564/LauncherIcons/main/pico_landscape/%s.jpg",
@@ -95,7 +95,8 @@ public abstract class IconRepo {
                 try {
                     for (final String url : App.isWebsite(app) ? ICON_URLS_WEB : (isWide ? ICON_URLS_BANNER : ICON_URLS_SQUARE)) {
                         final String urlTLD = App.isWebsite(app) ?
-                                StringLib.baseUrl(pkgName) : pkgName;
+                                StringLib.baseUrl(pkgName) :
+                                pkgName.replace("://","").replace(PanelApp.packagePrefix, "");
                         if (downloadIconFromUrl(activity, String.format(url, urlTLD), iconFile)) {
                             activity.runOnUiThread(callback);
                             break;

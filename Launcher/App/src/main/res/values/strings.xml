@@ -228,7 +228,8 @@
     <string name="addons_explore">Explore Shortcut Service</string>
     <string name="addons_explore_desc">Install then activate to open LightningLauncher whenever you hover over the &quot;Explore&quot; button.
         \n(Faster if the Explore app is disabled)</string>
-    <string name="addons_explore_disable">Disable/Enable the Explore app</string>
+    <string name="addons_explore_disable">Disable the Explore app</string>
+    <string name="addons_explore_enable">Re-Enable the Explore app</string>
 
     <string name="addons_library">Library Shortcut Service</string>
     <string name="addons_library_desc">Install then activate to open LightningLauncher whenever you hover over the &quot;App Library&quot; button.
