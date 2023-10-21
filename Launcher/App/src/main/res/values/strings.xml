@@ -48,6 +48,8 @@
     <string name="default_launch_out">Launch Apps in Own Window by Default</string>
     <string name="settings_save">Export Configuration</string>
     <string name="settings_load">Import Configuration</string>
+    <string name="settings_default_launcher">Open Android Default Home App Settings</string>
+    <string name="toast_settings_default_launcher">Set LightningLauncher to let other apps add shortcuts. DOES NOT REPLACE APP LIBRARY!</string>
 
     <string name="service_desc">When this service is enabled, Lightning Launcher will open automatically when you hover
         the cursor over the App Library icon on the right of dock for about half a second.\n(This may make it difficult to access the default launcher)\n

@@ -3,6 +3,9 @@ package com.threethan.launcher.support;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
@@ -359,6 +362,14 @@ public abstract class SettingsDialog {
             loadSettings.setAlpha(1F);
         });
 
+        View defaultSettingsButton = dialog.findViewById(R.id.defaultLauncherSettingsButton);
+        defaultSettingsButton.setVisibility(Platform.isTv(a) ? View.GONE : View.VISIBLE);
+        defaultSettingsButton.setOnClickListener((view) -> {
+            final Intent intent = new Intent(android.provider.Settings.ACTION_HOME_SETTINGS);
+            intent.setPackage("com.android.permissioncontroller");
+            a.startActivity(intent);
+        });
+
     }
     public static void showGroupSettings(LauncherActivity a) {
         clearedSort = false;
@@ -420,4 +431,4 @@ public abstract class SettingsDialog {
         dialog.findViewById(R.id.cancel).setOnClickListener(v -> dialog.dismiss());
     }
 
-    }
+}
