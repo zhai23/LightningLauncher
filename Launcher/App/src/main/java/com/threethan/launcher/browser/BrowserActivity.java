@@ -15,6 +15,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -66,7 +67,6 @@ public class BrowserActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState != null) {
@@ -126,13 +126,12 @@ public class BrowserActivity extends Activity {
             return true;
         }));
 
-
         View refresh = findViewById(R.id.refresh);
         refresh.setOnClickListener((view) -> reload());
         refresh.setOnLongClickListener((view) -> {
-            w.clearHistory();
             w.loadUrl(baseUrl);
-            updateUrl(baseUrl);
+            w.clearQueued = true;
+            updateButtonsAndUrl(baseUrl);
             return true;
         });
 
@@ -196,8 +195,8 @@ public class BrowserActivity extends Activity {
     private void updateButtonsAndUrl(String url) {
         if (w == null) return;
         updateUrl(url);
-        back.setVisibility(w.canGoBack() ? View.VISIBLE : View.GONE);
-        forward.setVisibility(w.canGoForward() ? View.VISIBLE : View.GONE);
+        back.setVisibility(w.canGoBack()       && !w.clearQueued ? View.VISIBLE : View.GONE);
+        forward.setVisibility(w.canGoForward() && !w.clearQueued ? View.VISIBLE : View.GONE);
     }
     private void updateZoom(float scale) {
         zoomIn .setVisibility(scale < 2.00 ? View.VISIBLE : View.GONE);
@@ -345,11 +344,23 @@ public class BrowserActivity extends Activity {
                         "document.body.style.webkitTapHighlightColor = 'rgba(0,0,0,0)'; " +
                         "})()");
             }
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                loading.setVisibility(View.VISIBLE);
+                return super.shouldOverrideUrlLoading(view, request);
+            }
+
             @Override
             public void doUpdateVisitedHistory(WebView view, String url, boolean isReload) {
                 if (isReload) loading.setVisibility(View.VISIBLE);
                 super.doUpdateVisitedHistory(view, url, isReload);
                 updateButtonsAndUrl(url);
+
+                if (w.clearQueued) {
+                    w.clearHistory();
+                    w.clearQueued = false;
+                }
             }
         });
         updateButtonsAndUrl();

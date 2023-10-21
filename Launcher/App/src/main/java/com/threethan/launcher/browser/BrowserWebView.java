@@ -49,12 +49,14 @@ public class BrowserWebView extends WebView {
 
     public void backFull() {
         int i = 0;
-        while (canGoBackOrForward(i-1)) i--;
+        while (canGoBackOrForward(i+1)) i++;
         goBackOrForward(i);
     }
     public void forwardFull() {
         int i = 0;
-        while (canGoBackOrForward(i+1)) i++;
+        while (canGoBackOrForward(i-1)) i--;
         goBackOrForward(i);
     }
+
+    public boolean clearQueued = false;
 }
