@@ -38,6 +38,7 @@ public abstract class Icon {
         return new File(launcherActivity.getApplicationInfo().dataDir,
                 packageName + (wide?"-wide":"") + ".webp");
     }
+
     public static String cacheName(String packageName) {
         if (App.isWebsite(packageName)) return StringLib.baseUrl(packageName);
         else return packageName;

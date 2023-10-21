@@ -171,8 +171,14 @@ public abstract class App {
     public static boolean isWebsite(String packageName) {
         return (packageName.contains("//"));
     }
+    public static boolean isShortcut(ApplicationInfo applicationInfo) {
+        return isShortcut(applicationInfo.packageName);
+    }
+    public static boolean isShortcut(String packageName) {
+        return packageName.startsWith("{\"mActivity\"") || packageName.startsWith("json://");
+    }
 
-    // Invalidate the values caches for isBlank functions
+        // Invalidate the values caches for isBlank functions
     public static synchronized void invalidateCaches(LauncherActivity launcherActivity) {
         categoryIncludedApps = new HashMap<>();
         categoryExcludedApps = new HashMap<>();
@@ -243,6 +249,14 @@ public abstract class App {
         try {
             ApplicationInfo ai = activity.getPackageManager().getApplicationInfo(packageName,0);
             return ai.enabled;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
+    }
+    public static boolean doesPackageExist(Activity activity, String packageName) {
+        try {
+            ApplicationInfo ai = activity.getPackageManager().getApplicationInfo(packageName,0);
+            return true;
         } catch (PackageManager.NameNotFoundException e) {
             return false;
         }

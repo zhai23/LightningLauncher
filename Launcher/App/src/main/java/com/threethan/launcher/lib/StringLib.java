@@ -1,6 +1,6 @@
 package com.threethan.launcher.lib;
 
-import android.util.Patterns;
+import com.threethan.launcher.helper.App;
 
 public class StringLib {
     private static final String STAR = "★";
@@ -24,7 +24,8 @@ public class StringLib {
         else return in;
     }
     public static String fixUrl(String url) {
-        if (!url.contains("//")) url = "https://" + url;
+        if (App.isShortcut(url)) return "json://" + url; //URL was actually json!
+        if (!url.contains("://")) url = "https://" + url;
         return url;
     }
     public static boolean compareUrl(String url1, String url2) {
@@ -35,7 +36,7 @@ public class StringLib {
                 .replace("https:","").replace("www.","");
     }
     public static boolean isInvalidUrl(String url) {
-        return (!Patterns.WEB_URL.matcher(url).matches() || !url.contains("."));
+        return (!url.contains("://") || !url.contains("."));
     }
     public static String toValidFilename(String string) {
         return string.replace("/","").replace("&","")

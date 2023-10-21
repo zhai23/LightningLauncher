@@ -40,28 +40,36 @@ public abstract class Platform {
         if (!webApps.contains(url)) return null;
         else return SettingsManager.getAppGroupMap().get(url);
     }
+
     public static void addWebsite(SharedPreferences sharedPreferences, String url) {
+        addWebsite(sharedPreferences, url, null);
+    }
+
+    public static void addWebsite(SharedPreferences sharedPreferences, String url, String name) {
         url = StringLib.fixUrl(url);
 
         Set<String> webApps = sharedPreferences.getStringSet(Settings.KEY_WEBSITE_LIST, Collections.emptySet());
         webApps = new HashSet<>(webApps); // Copy since we're not supposed to modify directly
         webApps.add(url);
 
-        sharedPreferences.edit()
-                .putStringSet(Settings.KEY_WEBSITE_LIST, webApps)
-                .apply();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putStringSet(Settings.KEY_WEBSITE_LIST, webApps);
+        if (name != null) editor.putString(url, name);
+        editor.apply();
 
         changeIndex ++;
     }
 
     protected static Boolean isTv;
+    protected static Boolean isQuest;
     public static boolean isVr(Activity activity) {
         // Quest reports itself as UI_MODE_NORMAL
         return !isTv(activity);
     }
     public static boolean isQuest(Activity activity) {
-        // Quest reports itself as UI_MODE_NORMAL
-        return !isTv(activity);
+        if (isQuest != null) return isQuest;
+        isQuest = App.doesPackageExist(activity, "com.oculus.vrshell");
+        return isQuest;
     }
     public static boolean isTv(Activity activity) {
         if (isTv != null) return isTv;

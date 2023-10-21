@@ -184,7 +184,7 @@ public class BrowserActivity extends Activity {
 
         addHome = findViewById(R.id.addHome);
         addHome.setOnClickListener(view -> {
-            Platform.addWebsite(sharedPreferences, currentUrl);
+            Platform.addWebsite(sharedPreferences, currentUrl, w.getTitle());
             addHome.setVisibility(View.GONE);
         });
     }

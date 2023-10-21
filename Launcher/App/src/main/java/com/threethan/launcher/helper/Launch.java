@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -12,6 +13,7 @@ import androidx.annotation.Nullable;
 import com.threethan.launcher.browser.BrowserActivity;
 import com.threethan.launcher.browser.BrowserActivitySeparate;
 import com.threethan.launcher.launcher.LauncherActivity;
+import com.threethan.launcher.support.AddShortcutActivity;
 import com.threethan.launcher.support.SettingsManager;
 
 import java.util.Objects;
@@ -28,6 +30,7 @@ import java.util.TimerTask;
  */
 
 public abstract class Launch {
+    protected static final String ACTION_ACTUALLY_SHORTCUT = "ACTION_ACTUALLY_SHORTCUT";
     public static boolean launchApp(LauncherActivity launcherActivity, ApplicationInfo app) {
         try {
             // Apply any pending preference changes before launching
@@ -81,7 +84,12 @@ public abstract class Launch {
     }
 
     private static void startIntent(LauncherActivity launcherActivity, Intent intent) {
-        launcherActivity.startActivity(intent);
+        if (Objects.equals(intent.getAction(), ACTION_ACTUALLY_SHORTCUT)) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+                AddShortcutActivity.launchShortcut(launcherActivity, intent.getStringExtra("json"));
+            }
+        }
+        else launcherActivity.startActivity(intent);
     }
 
     @Nullable
@@ -113,12 +121,28 @@ public abstract class Launch {
         }
 
         // Detect websites
-        if (App.isWebsite(app)) {
-            Intent intent = new Intent(activity, (SettingsManager.getAppLaunchOut(app.packageName)
-                    ?  BrowserActivitySeparate.class
-                    : BrowserActivity.class));
-            intent.putExtra("url", app.packageName);
+        if (App.isShortcut(app)) {
+            Intent intent = new Intent(ACTION_ACTUALLY_SHORTCUT);
+            intent.putExtra("json", app.packageName.replaceFirst("json://", ""));
             return intent;
+        }
+
+        // Detect websites
+        if (App.isWebsite(app)) {
+            if (app.packageName.startsWith("http://") || (app.packageName.startsWith("https://"))) {
+                // Actual Website
+                Intent intent = new Intent(activity, (SettingsManager.getAppLaunchOut(app.packageName)
+                        ? BrowserActivitySeparate.class
+                        : BrowserActivity.class));
+
+                intent.putExtra("url", app.packageName);
+                return intent;
+            } else {
+                // Non-web intent
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(app.packageName));
+                return intent;
+            }
         }
 
 
