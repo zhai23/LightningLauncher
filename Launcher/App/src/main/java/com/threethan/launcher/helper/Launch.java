@@ -81,24 +81,29 @@ public abstract class Launch {
     }
 
     private static void startIntent(LauncherActivity launcherActivity, Intent intent) {
-        launcherActivity.startService(intent);
+        launcherActivity.startActivity(intent);
     }
 
     @Nullable
     public static Intent getLaunchIntent(LauncherActivity activity, ApplicationInfo app) {
 
         // Ignore apps which don't work or should be excluded
-        if (app.packageName.startsWith("com.threethan.launcher")) return null;
-        if (app.packageName.equals("com.oculus.browser")) return null;
-
-
+        if (app.packageName.startsWith(activity.getPackageName())) return null;
+        if (AppData.invalidAppsList.contains(app.packageName)) return null;
 
         // Detect panel apps
         if (App.getType(activity, app) == App.Type.TYPE_PANEL) {
+            String uri = app.packageName;
+            if (uri.startsWith(PanelApp.packagePrefix))
+                uri = uri.replace(PanelApp.packagePrefix, "");
+
             Intent panelIntent = new Intent(Intent.ACTION_VIEW);
             panelIntent.setComponent(new ComponentName(
                     "com.oculus.vrshell", "com.oculus.vrshell.MainActivity"));
-            panelIntent.setData(Uri.parse(app.packageName));
+            panelIntent.setData(Uri.parse(uri));
+
+            Log.v("PANELINTENT", panelIntent.toString());
+
             return panelIntent;
         }
 

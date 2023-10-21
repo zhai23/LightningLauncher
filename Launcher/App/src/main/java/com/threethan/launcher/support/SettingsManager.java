@@ -8,6 +8,7 @@ import android.os.Build;
 import android.util.Log;
 
 import com.threethan.launcher.helper.App;
+import com.threethan.launcher.helper.AppData;
 import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.launcher.LauncherActivity;
@@ -80,6 +81,8 @@ public class SettingsManager extends Settings {
     private static String checkAppLabel(ApplicationInfo app) {
         String name = sharedPreferences.getString(app.packageName, "");
         if (!name.isEmpty()) return name;
+        if (AppData.labelOverrides.containsKey(app.packageName))
+            return AppData.labelOverrides.get(app.packageName);
         if (App.isWebsite(app) || StringLib.isSearchUrl(app.packageName)) {
             try {
                 name = app.packageName.split("//")[1];

@@ -77,10 +77,11 @@ public abstract class Platform {
 
         final List<App.Type> validTypes = new ArrayList<>();
 
-        // These must be in order
+        // These must be in order of priority
+        if (Platform.isQuest(activity)) validTypes.add(App.Type.TYPE_PANEL);
+
         if (Platform.isTv(activity)) validTypes.add(App.Type.TYPE_TV);
         if (Platform.isVr(activity)) validTypes.add(App.Type.TYPE_VR);
-        if (Platform.isQuest(activity)) validTypes.add(App.Type.TYPE_PANEL);
 
         validTypes.add(App.Type.TYPE_WEB);
         validTypes.add(App.Type.TYPE_PHONE);

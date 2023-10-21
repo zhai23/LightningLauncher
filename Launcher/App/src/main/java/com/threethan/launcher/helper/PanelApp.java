@@ -14,8 +14,10 @@ import androidx.annotation.Nullable;
  */
 
 public class PanelApp extends ApplicationInfo {
+    public static final String packagePrefix = "panel:";
     String label;
     public PanelApp(String label, String uri) {
+        if (!uri.contains("//")) uri = packagePrefix + uri;
         this.packageName = uri;
         this.label = label;
     }

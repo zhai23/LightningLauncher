@@ -93,7 +93,7 @@ public abstract class App {
                     isType = checkAndroidTv(applicationInfo, launcherActivity);
                     break;
                 case TYPE_PANEL:
-                    isType = checkPanelApp(applicationInfo);
+                    isType = checkPanelApp(applicationInfo, launcherActivity);
                     break;
                 case TYPE_WEB:
                     isType = isWebsite(applicationInfo);
@@ -124,9 +124,16 @@ public abstract class App {
 
 
     private static boolean checkPanelApp
-            (ApplicationInfo applicationInfo) {
+            (ApplicationInfo applicationInfo, LauncherActivity launcherActivity) {
         //noinspection SuspiciousMethodCalls
-        return PanelAppList.get().contains(applicationInfo);
+        if (AppData.getPanelAppList().contains(applicationInfo)) return true;
+
+        if (AppData.AUTO_DETECT_PANEL_APPS) {
+            PackageManager pm = launcherActivity.getPackageManager();
+            Intent panelIntent = new Intent("com.oculus.vrshell.SHELL_MAIN");
+            panelIntent.setPackage(applicationInfo.packageName);
+            return (pm.resolveService(panelIntent, 0) != null);
+        } else return false;
     }
 
     synchronized public static boolean isSupported(ApplicationInfo app, LauncherActivity launcherActivity) {
@@ -153,12 +160,13 @@ public abstract class App {
     public static boolean isBanner(LauncherActivity launcherActivity, ApplicationInfo applicationInfo) {
         return typeIsBanner(getType(launcherActivity, applicationInfo));
     }
+    /** @noinspection SuspiciousMethodCalls*/
     public static boolean isWebsite(ApplicationInfo applicationInfo) {
-        return (isWebsite(applicationInfo.packageName));
+        return (isWebsite(applicationInfo.packageName) &&
+                !AppData.getPanelAppList().contains(applicationInfo));
     }
     public static boolean isWebsite(String packageName) {
-        return (packageName.contains("//") &&
-                !packageName.startsWith("systemux://"));
+        return (packageName.contains("//"));
     }
 
     // Invalidate the values caches for isBlank functions

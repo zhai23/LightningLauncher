@@ -42,7 +42,7 @@ import com.threethan.launcher.helper.Compat;
 import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.helper.IconRepo;
 import com.threethan.launcher.helper.Keyboard;
-import com.threethan.launcher.helper.PanelAppList;
+import com.threethan.launcher.helper.AppData;
 import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.lib.ImageLib;
@@ -592,7 +592,7 @@ public class LauncherActivity extends Activity {
         }
         // Add panel apps (Quest Only)
         if (Platform.isQuest(this)) {
-            for (ApplicationInfo panelApp : PanelAppList.get()) {
+            for (ApplicationInfo panelApp : AppData.getPanelAppList()) {
                 (App.typeIsBanner(App.Type.TYPE_PANEL) ?
                         Platform.appListBanner : Platform.appListSquare)
                         .add(panelApp);
@@ -635,7 +635,7 @@ public class LauncherActivity extends Activity {
         Set<String> webApps = sharedPreferences.getStringSet(Settings.KEY_WEBSITE_LIST, new HashSet<>());
         setAll.addAll(webApps);
         if (Platform.isQuest(this)) {
-            for (ApplicationInfo panelApp : PanelAppList.get())
+            for (ApplicationInfo panelApp : AppData.getPanelAppList())
                 setAll.add(panelApp.packageName);
         }
         return setAll;
