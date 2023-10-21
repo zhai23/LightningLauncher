@@ -53,7 +53,7 @@
 
     <string name="advanced_sizing">Enable Additional Phone App Window Settings</string>
     <string name="tip_advanced_sizing">Allows apps to be opened in different sized windows, may cause issues.</string>
-    <string name="toast_advanced_sizing">Additional size options can be cycled in individual app\'s settings</string>
+    <string name="toast_advanced_sizing">New size options can be cycled in per-app settings</string>
 
     <string name="service_desc">When this service is enabled, Lightning Launcher will open automatically when you hover
         the cursor over the App Library icon on the right of dock for about half a second.\n(This may make it difficult to access the default launcher)\n
