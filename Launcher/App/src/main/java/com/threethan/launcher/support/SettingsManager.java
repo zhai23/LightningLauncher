@@ -7,8 +7,6 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.Log;
 
-import androidx.annotation.Nullable;
-
 import com.threethan.launcher.helper.App;
 import com.threethan.launcher.helper.AppData;
 import com.threethan.launcher.helper.Platform;
@@ -392,5 +390,10 @@ public class SettingsManager extends Settings {
         try {
             anyLauncherActivityRef.get().browserService.killWebView(pkgName);
         } catch (NullPointerException ignored) {}
+    }
+
+    public static boolean getAdvancedLaunching(LauncherActivity activity) {
+        return activity.sharedPreferences.getBoolean(Settings.KEY_ADVANCED_SIZING,
+                Settings.DEFAULT_ADVANCED_SIZING);
     }
  }

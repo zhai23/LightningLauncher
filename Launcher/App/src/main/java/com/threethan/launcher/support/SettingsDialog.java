@@ -3,9 +3,7 @@ package com.threethan.launcher.support;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
@@ -340,12 +338,36 @@ public abstract class SettingsDialog {
             a.sharedPreferenceEditor.putBoolean(Settings.KEY_AUTO_HIDE_EMPTY, value);
             a.refreshInterfaceAll();
         });
-        Switch defaultLaunchOut = dialog.findViewById(R.id.defaultLaunchOutSwitch);
-        defaultLaunchOut.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_DEFAULT_LAUNCH_OUT, Settings.DEFAULT_DEFAULT_LAUNCH_OUT));
-        defaultLaunchOut.setOnCheckedChangeListener((compoundButton, value) -> {
-            a.sharedPreferenceEditor.putBoolean(Settings.KEY_DEFAULT_LAUNCH_OUT, value);
-            a.refreshInterfaceAll();
-        });
+
+        if (Platform.isVr(a)) {
+            Switch defaultLaunchOut = dialog.findViewById(R.id.defaultLaunchOutSwitch);
+            defaultLaunchOut.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_DEFAULT_LAUNCH_OUT, Settings.DEFAULT_DEFAULT_LAUNCH_OUT));
+            defaultLaunchOut.setOnCheckedChangeListener((compoundButton, value) -> {
+                a.sharedPreferenceEditor.putBoolean(Settings.KEY_DEFAULT_LAUNCH_OUT, value);
+                a.refreshInterfaceAll();
+            });
+
+            Switch advancedSizingSwitch = dialog.findViewById(R.id.advancedSizingSwitch);
+            advancedSizingSwitch.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_ADVANCED_SIZING, Settings.DEFAULT_ADVANCED_SIZING));
+            advancedSizingSwitch.setOnCheckedChangeListener((compoundButton, value) -> {
+                a.sharedPreferenceEditor.putBoolean(Settings.KEY_ADVANCED_SIZING, value).apply();
+                if (value) Dialog.toast(a.getString(R.string.toast_advanced_sizing));
+            });
+
+            View defaultSettingsButton = dialog.findViewById(R.id.defaultLauncherSettingsButton);
+            defaultSettingsButton.setVisibility(Platform.isTv(a) ? View.GONE : View.VISIBLE);
+            defaultSettingsButton.setOnClickListener((view) -> {
+                final Intent intent = new Intent(android.provider.Settings.ACTION_HOME_SETTINGS);
+                intent.setPackage("com.android.permissioncontroller");
+                a.startActivity(intent);
+            });
+        } else {
+            dialog.findViewById(R.id.defaultLauncherSettingsButton).setVisibility(View.GONE);
+            dialog.findViewById(R.id.defaultLaunchOutSection).setVisibility(View.GONE);
+            dialog.findViewById(R.id.advancedSizingSection).setVisibility(View.GONE);
+        }
+
+        // Save/load settings
         View loadSettings = dialog.findViewById(R.id.loadSettingsButton);
         loadSettings.setAlpha(SettingsSaver.canLoad(a) ? 1F : 0.5F);
         loadSettings.setOnClickListener((view) -> {
@@ -361,15 +383,6 @@ public abstract class SettingsDialog {
             SettingsSaver.save(a);
             loadSettings.setAlpha(1F);
         });
-
-        View defaultSettingsButton = dialog.findViewById(R.id.defaultLauncherSettingsButton);
-        defaultSettingsButton.setVisibility(Platform.isTv(a) ? View.GONE : View.VISIBLE);
-        defaultSettingsButton.setOnClickListener((view) -> {
-            final Intent intent = new Intent(android.provider.Settings.ACTION_HOME_SETTINGS);
-            intent.setPackage("com.android.permissioncontroller");
-            a.startActivity(intent);
-        });
-
     }
     public static void showGroupSettings(LauncherActivity a) {
         clearedSort = false;

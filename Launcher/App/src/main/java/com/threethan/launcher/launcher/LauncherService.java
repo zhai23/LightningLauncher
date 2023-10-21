@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 
 import com.threethan.launcher.R;
 import com.threethan.launcher.browser.BrowserActivitySeparate;
+import com.threethan.launcher.launcher.chainload.ChainLoadActivity;
 
 import java.lang.ref.WeakReference;
 import java.util.Collections;
@@ -82,6 +83,8 @@ public class LauncherService extends Service {
         for (Activity activity: activityByIndex.keySet()) activity.finishAndRemoveTask();
         if (browserActivitySeparateRef != null && browserActivitySeparateRef.get() != null)
             browserActivitySeparateRef.get().finishAndRemoveTask();
+        for (Activity activity : ChainLoadActivity.activityList)
+            activity.finishAndRemoveTask();
     }
 
     // ______All functions

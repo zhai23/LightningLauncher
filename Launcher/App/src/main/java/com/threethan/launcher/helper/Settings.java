@@ -3,6 +3,9 @@ package com.threethan.launcher.helper;
 import android.graphics.Color;
 
 import com.threethan.launcher.R;
+import com.threethan.launcher.launcher.chainload.ChainLoadActivityLarge;
+import com.threethan.launcher.launcher.chainload.ChainLoadActivityPhone;
+import com.threethan.launcher.launcher.chainload.ChainLoadActivitySmall;
 import com.threethan.launcher.lib.StringLib;
 
 import java.util.HashMap;
@@ -117,10 +120,27 @@ public abstract class Settings {
     public static final String KEY_LAUNCH_OUT_PREFIX = "prefLaunchOutPackage";
     public static final String KEY_SELECTED_GROUPS = "prefSelectedGroups";
     public static final String KEY_WEBSITE_LIST = "prefWebAppNames";
+    public static final String KEY_LAUNCH_SIZE = "prefLaunchSize";
 
     public static final String KEY_DEFAULT_LAUNCH_OUT = "KEY_DEFAULT_LAUNCH_OUT";
     public static final boolean DEFAULT_DEFAULT_LAUNCH_OUT = false;
-
+    public static final String KEY_ADVANCED_SIZING = "KEY_ADVANCED_SIZING";
+    public static final boolean DEFAULT_ADVANCED_SIZING = false;
+    public static final int[] launchSizeStrings = {
+            R.string.size_none,
+            R.string.size_own,
+            R.string.size_phone,
+            R.string.size_small,
+            R.string.size_large,
+    };
+    /** @noinspection rawtypes*/
+    public static final Class[] launchSizeClasses = {
+            null,
+            null,
+            ChainLoadActivityPhone.class,
+            ChainLoadActivitySmall.class,
+            ChainLoadActivityLarge.class,
+    };
     // group
     public static final String KEY_DEFAULT_GROUP = "prefDefaultGroupForType";
     public static final Map<App.Type, String> FALLBACK_GROUPS = new HashMap<>();

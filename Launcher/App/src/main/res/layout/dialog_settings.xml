@@ -936,6 +936,7 @@
         </LinearLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/defaultLaunchOutSection"
             android:layout_width="match_parent"
             android:layout_height="39dp"
             android:layout_marginTop="10dp"
@@ -954,6 +955,41 @@
 
             <Switch
                 android:id="@+id/defaultLaunchOutSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:foreground="@drawable/bkg_hover_button"
+                android:thumb="@drawable/switch_thumb_custom"
+                android:track="@drawable/switch_track_custom"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/advancedSizingSection"
+            android:layout_width="match_parent"
+            android:layout_height="39dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bkg_button"
+            android:gravity="clip_vertical|center_vertical"
+            android:orientation="horizontal"
+            android:tooltipText="@string/tip_advanced_sizing">
+
+            <TextView
+                style="@style/SettingButtonLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:singleLine="true"
+                android:text="@string/advanced_sizing"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="TooManyViews" />
+
+            <Switch
+                android:id="@+id/advancedSizingSwitch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:foreground="@drawable/bkg_hover_button"
@@ -1044,7 +1080,7 @@
             android:layout_marginTop="10dp"
             android:layout_weight="1"
             android:background="@drawable/bkg_button"
-            android:tooltipText="@string/toast_settings_default_launcher"
+            android:tooltipText="@string/tip_settings_default_launcher"
             tools:ignore="UnusedAttribute">
 
             <TextView

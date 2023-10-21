@@ -52,13 +52,10 @@ public abstract class Launch {
         if (SettingsManager.
                 getAppLaunchOut(app.packageName) ||
                 appType == App.Type.TYPE_VR || appType == App.Type.TYPE_PANEL) {
-            // Launch in own window properly
-            if (App.isWebsite(app))
-                try {
-                    launcherActivity.browserService.killActivities();
-                } catch (Exception ignored) {}
+
 
             launcherActivity.launcherService.finishAllActivities();
+
 
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                     Intent.FLAG_ACTIVITY_NEW_DOCUMENT |
@@ -129,20 +126,20 @@ public abstract class Launch {
 
         // Detect websites
         if (App.isWebsite(app)) {
+            Intent intent;
             if (app.packageName.startsWith("http://") || (app.packageName.startsWith("https://"))) {
                 // Actual Website
-                Intent intent = new Intent(activity, (SettingsManager.getAppLaunchOut(app.packageName)
+                intent = new Intent(activity, (SettingsManager.getAppLaunchOut(app.packageName)
                         ? BrowserActivitySeparate.class
                         : BrowserActivity.class));
 
                 intent.putExtra("url", app.packageName);
-                return intent;
             } else {
                 // Non-web intent
-                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(Uri.parse(app.packageName));
-                return intent;
             }
+            return intent;
         }
 
 
@@ -150,10 +147,23 @@ public abstract class Launch {
         if (Objects.equals(app.packageName, "com.android.tv.settings"))
             return new Intent(android.provider.Settings.ACTION_SETTINGS);
 
-
         // Prefer launching as android TV app
         Intent tvIntent = pm.getLeanbackLaunchIntentForPackage(app.packageName);
         if (Platform.isTv(activity) && tvIntent != null) return tvIntent;
+
+        // Chainload for advanced launch options
+        if (SettingsManager.getAdvancedLaunching(activity)
+                && App.getType(activity, app) == App.Type.TYPE_PHONE &&
+                SettingsManager.getAppLaunchOut(app.packageName)) {
+
+            int index = activity.sharedPreferences.getInt(Settings.KEY_LAUNCH_SIZE + app.packageName, 1);
+            // Index of 1 is normal launch own
+            if (index != 1) {
+                Intent chainIntent = new Intent(activity, Settings.launchSizeClasses[index]);
+                chainIntent.putExtra("app", app);
+                return chainIntent;
+            }
+        }
 
         // Get normal launch intent
         final Intent normalIntent = pm.getLaunchIntentForPackage(app.packageName);

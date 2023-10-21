@@ -49,7 +49,11 @@
     <string name="settings_save">Export Configuration</string>
     <string name="settings_load">Import Configuration</string>
     <string name="settings_default_launcher">Open Android Default Home App Settings</string>
-    <string name="toast_settings_default_launcher">Set LightningLauncher to let other apps add shortcuts. DOES NOT REPLACE APP LIBRARY!</string>
+    <string name="tip_settings_default_launcher">Set LightningLauncher to let other apps add shortcuts. DOES NOT REPLACE APP LIBRARY!</string>
+
+    <string name="advanced_sizing">Enable Additional 2D App Window Settings</string>
+    <string name="tip_advanced_sizing">Allows apps to be opened in different sized windows, may cause issues.</string>
+    <string name="toast_advanced_sizing">Additional size options can be cycled in individual app\'s settings</string>
 
     <string name="service_desc">When this service is enabled, Lightning Launcher will open automatically when you hover
         the cursor over the App Library icon on the right of dock for about half a second.\n(This may make it difficult to access the default launcher)\n
@@ -108,6 +112,12 @@
     <string name="understood">Got It!</string>
     <string name="confirm">Confirm</string>
     <string name="next">Continue</string>
+
+    <string name="size_none">Open in This Window</string>
+    <string name="size_own">Open in Own Window</string>
+    <string name="size_phone">Open in Phone-Style Window</string>
+    <string name="size_small">Open in Small 4:3 Window</string>
+    <string name="size_large">Open in Large 16:9 Window</string>
 
     <string name="edit_off">Turn On Edit Mode</string>
     <string name="edit_on">Turn Off Edit Mode</string>

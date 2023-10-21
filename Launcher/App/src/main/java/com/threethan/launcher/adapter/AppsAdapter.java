@@ -363,6 +363,10 @@ public class AppsAdapter extends BaseAdapter{
         final View launchModeSection = dialog.findViewById(R.id.launchModeSection);
         final View refreshIconButton = dialog.findViewById(R.id.refreshIconButton);
 
+        // Launch Mode Toggle
+        final View launchSizeSpinner = dialog.findViewById(R.id.launchSizeSpinner);
+        final TextView launchSizeSpinnerText = dialog.findViewById(R.id.launchSizeSpinnerText);
+
         // Load Icon
         PackageManager packageManager = launcherActivity.getPackageManager();
         ImageView iconImageView = dialog.findViewById(R.id.appIcon);
@@ -406,6 +410,7 @@ public class AppsAdapter extends BaseAdapter{
                 SettingsManager.setAppLaunchOut(currentApp.packageName, prevLaunchOut);
             });
 
+            // Normal size settings
             launchModeSwitch.setChecked(SettingsManager.getAppLaunchOut(currentApp.packageName));
             launchModeSwitch.setOnCheckedChangeListener((sw, value) -> {
                 SettingsManager.setAppLaunchOut(currentApp.packageName, value);
@@ -420,6 +425,24 @@ public class AppsAdapter extends BaseAdapter{
                     });
                 }
             });
+
+            // Advanced size settings
+            if (SettingsManager.getAdvancedLaunching(launcherActivity)) {
+                launchSizeSpinner.setVisibility(View.VISIBLE);
+                launchModeSection.setVisibility(View.GONE);
+                final String launchSizeKey = Settings.KEY_LAUNCH_SIZE + currentApp.packageName;
+                final int[] launchSizeSelection = {launcherActivity.sharedPreferences.getInt(
+                        launchSizeKey,
+                        SettingsManager.getAppLaunchOut(currentApp.packageName) ? 0 : 1)};
+
+                launchSizeSpinnerText.setText(Settings.launchSizeStrings[launchSizeSelection[0]]);
+                launchSizeSpinner.setOnClickListener((view) -> {
+                    launchSizeSelection[0] = (launchSizeSelection[0] + 1) % Settings.launchSizeStrings.length;
+                    launchSizeSpinnerText.setText(Settings.launchSizeStrings[launchSizeSelection[0]]);
+                    launcherActivity.sharedPreferenceEditor.putInt(launchSizeKey, launchSizeSelection[0]);
+                    SettingsManager.setAppLaunchOut(currentApp.packageName, launchSizeSelection[0] != 0);
+                });
+            }
         }
 
         // Show/hide button
