@@ -1,5 +1,6 @@
 package com.threethan.launcher.helper;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,10 +10,14 @@ import android.net.Uri;
 
 import com.threethan.launcher.R;
 import com.threethan.launcher.launcher.LauncherActivity;
+import com.threethan.launcher.support.SettingsManager;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /*
     App
@@ -24,33 +29,14 @@ import java.util.Set;
     Functions prefixed with "is" are wrappers around "check" functions which cache values
  */
 
-public abstract class App {
-    static Set<String> setVr = Collections.synchronizedSet(new HashSet<>());
-    static Set<String> setNonVr = Collections.synchronizedSet(new HashSet<>());
-    static Set<String> setTv = Collections.synchronizedSet(new HashSet<>());
-    static Set<String> setNonTv = Collections.synchronizedSet(new HashSet<>());
-    public synchronized static boolean isVirtualReality(ApplicationInfo applicationInfo, LauncherActivity launcherActivity) {
-        final SharedPreferences sharedPreferences = launcherActivity.sharedPreferences;
-        final SharedPreferences.Editor sharedPreferenceEditor = launcherActivity.sharedPreferenceEditor;
-        if (setVr.isEmpty()) {
-            setVr.addAll(sharedPreferences.getStringSet(Settings.KEY_VR_SET, new HashSet<>()));
-            setNonVr.addAll(sharedPreferences.getStringSet(Settings.KEY_2D_SET, new HashSet<>()));
-        }
-        if (setVr.contains(applicationInfo.packageName)) return true;
-        if (setNonVr.contains(applicationInfo.packageName)) return false;
 
-        if (
-            checkVirtualReality(applicationInfo)) {
-            setVr.add(applicationInfo.packageName);
-            sharedPreferenceEditor.putStringSet(Settings.KEY_VR_SET, setVr);
-            launcherActivity.postSharedPreferenceApply();
-            return true;
-        } else {
-            setNonVr.add(applicationInfo.packageName);
-            sharedPreferenceEditor.putStringSet(Settings.KEY_2D_SET, setNonVr);
-            launcherActivity.postSharedPreferenceApply();
-            return false;
-        }
+
+public abstract class App {
+    static Map<Type, Set<String>> categoryIncludedApps = new ConcurrentHashMap<>();
+    static Map<Type, Set<String>> categoryExcludedApps = new ConcurrentHashMap<>();
+
+    public enum Type {
+        TYPE_PHONE, TYPE_VR, TYPE_TV, TYPE_PANEL, TYPE_WEB, TYPE_SUPPORTED, TYPE_UNSUPPORTED
     }
     private static boolean checkVirtualReality(ApplicationInfo applicationInfo) {
         if (applicationInfo.metaData == null) return false;
@@ -61,30 +47,10 @@ public abstract class App {
         }
         return false;
     }
-    public synchronized static boolean isAndroidTv(ApplicationInfo applicationInfo, LauncherActivity launcherActivity) {
-        final SharedPreferences sharedPreferences = launcherActivity.sharedPreferences;
-        final SharedPreferences.Editor sharedPreferenceEditor = launcherActivity.sharedPreferenceEditor;
-        if (setTv.isEmpty()) {
-            setTv.addAll(sharedPreferences.getStringSet(Settings.KEY_TV_SET, new HashSet<>()));
-            setNonTv.addAll(sharedPreferences.getStringSet(Settings.KEY_NON_TV_SET, new HashSet<>()));
-        }
-        if (setTv.contains(applicationInfo.packageName)) return true;
-        if (setNonTv.contains(applicationInfo.packageName)) return false;
-
-        if (checkAndroidTv(applicationInfo, launcherActivity)) {
-            setTv.add(applicationInfo.packageName);
-            sharedPreferenceEditor.putStringSet(Settings.KEY_TV_SET, setTv);
-            launcherActivity.postSharedPreferenceApply();
-            return true;
-        } else {
-            setNonTv.add(applicationInfo.packageName);
-            sharedPreferenceEditor.putStringSet(Settings.KEY_NON_TV_SET, setNonTv);
-            launcherActivity.postSharedPreferenceApply();
-            return false;
-        }
-    }
-    private static boolean checkAndroidTv(ApplicationInfo applicationInfo, LauncherActivity launcherActivity) {
+    private static boolean checkAndroidTv
+            (ApplicationInfo applicationInfo, LauncherActivity launcherActivity) {
         PackageManager pm = launcherActivity.getPackageManager();
+
         // First check for banner
         if (applicationInfo.banner != 0) return true;
         // Then check for intent
@@ -92,32 +58,79 @@ public abstract class App {
         tvIntent.setAction(Intent.CATEGORY_LEANBACK_LAUNCHER);
         tvIntent.setPackage(applicationInfo.packageName);
         return (tvIntent.resolveActivity(pm) != null);
+
+    }
+    protected synchronized static boolean isAppOfType
+            (ApplicationInfo applicationInfo, App.Type appType, LauncherActivity launcherActivity) {
+
+            final SharedPreferences sharedPreferences = launcherActivity.sharedPreferences;
+            final SharedPreferences.Editor sharedPreferenceEditor = launcherActivity.sharedPreferenceEditor;
+
+            if (!categoryIncludedApps.containsKey(appType) ||
+                    Objects.requireNonNull(categoryIncludedApps.get(appType)).isEmpty()) {
+                categoryIncludedApps.put(appType, Collections.synchronizedSet(new HashSet<>()));
+                categoryExcludedApps.put(appType, Collections.synchronizedSet(new HashSet<>()));
+                Objects.requireNonNull(categoryIncludedApps.get(appType))
+                        .addAll(sharedPreferences.getStringSet(Settings.KEY_INCLUDED_SET + appType
+                                , new HashSet<>()));
+                Objects.requireNonNull(categoryExcludedApps.get(appType))
+                        .addAll(sharedPreferences.getStringSet(Settings.KEY_EXCLUDED_SET + appType
+                                , new HashSet<>()));
+            } else {
+                if (Objects.requireNonNull(categoryIncludedApps.get(appType))
+                        .contains(applicationInfo.packageName)) return true;
+                if (Objects.requireNonNull(categoryExcludedApps.get(appType))
+                        .contains(applicationInfo.packageName)) return false;
+            }
+            boolean isType = false;
+
+            // this function shouldn't be called until checking higher priorities first
+            switch (appType) {
+                case TYPE_VR:
+                    isType = checkVirtualReality(applicationInfo);
+                    break;
+                case TYPE_TV:
+                    isType = checkAndroidTv(applicationInfo, launcherActivity);
+                    break;
+                case TYPE_PANEL:
+                    isType = checkPanelApp(applicationInfo);
+                    break;
+                case TYPE_WEB:
+                    isType = isWebsite(applicationInfo);
+                    break;
+                case TYPE_PHONE:
+                    isType = true;
+                    break;
+                case TYPE_SUPPORTED:
+                    isType = checkSupported(applicationInfo, launcherActivity);
+                    break;
+            }
+
+            if (isType) {
+                Objects.requireNonNull(categoryIncludedApps.get(appType))
+                        .add(applicationInfo.packageName);
+                sharedPreferenceEditor.putStringSet(Settings.KEY_INCLUDED_SET + appType,
+                        categoryIncludedApps.get(appType));
+            } else {
+                Objects.requireNonNull(categoryExcludedApps.get(appType))
+                        .add(applicationInfo.packageName);
+                sharedPreferenceEditor.putStringSet(Settings.KEY_EXCLUDED_SET + appType,
+                        categoryIncludedApps.get(appType));
+            }
+            sharedPreferenceEditor.apply();
+
+            return isType;
     }
 
-    static Set<String> setSupported = Collections.synchronizedSet(new HashSet<>());
-    static Set<String> setUnsupported = Collections.synchronizedSet(new HashSet<>());
+
+    private static boolean checkPanelApp
+            (ApplicationInfo applicationInfo) {
+        //noinspection SuspiciousMethodCalls
+        return PanelAppList.get().contains(applicationInfo);
+    }
+
     synchronized public static boolean isSupported(ApplicationInfo app, LauncherActivity launcherActivity) {
-        final SharedPreferences sharedPreferences = launcherActivity.sharedPreferences;
-        final SharedPreferences.Editor sharedPreferenceEditor = launcherActivity.sharedPreferenceEditor;
-        if (setSupported.isEmpty()) {
-            setSupported.addAll(sharedPreferences.getStringSet(Settings.KEY_SUPPORTED_SET, new HashSet<>()));
-            setUnsupported.addAll(sharedPreferences.getStringSet(Settings.KEY_UNSUPPORTED_SET, new HashSet<>()));
-            setUnsupported.add(launcherActivity.getPackageName());
-            setSupported.addAll(sharedPreferences.getStringSet(Settings.KEY_WEBSITE_LIST, Collections.emptySet()));
-        }
-
-        if (setSupported.contains(app.packageName)) return true;
-        if (setUnsupported.contains(app.packageName)) return false;
-
-        if (checkSupported(app, launcherActivity)) {
-            setSupported.add(app.packageName);
-            sharedPreferenceEditor.putStringSet(Settings.KEY_SUPPORTED_SET, setSupported);
-            return true;
-        } else {
-            setUnsupported.add(app.packageName);
-            sharedPreferenceEditor.putStringSet(Settings.KEY_UNSUPPORTED_SET, setUnsupported);
-            return false;
-        }
+        return isAppOfType(app, Type.TYPE_SUPPORTED, launcherActivity);
     }
     private static String[] unsupportedPrefixes;
     private static boolean checkSupported(ApplicationInfo app, LauncherActivity launcherActivity) {
@@ -125,7 +138,7 @@ public abstract class App {
         if (isWebsite(app)) return true;
 
         if (app.metaData != null) {
-            boolean isVr = isVirtualReality(app, launcherActivity);
+            boolean isVr = isAppOfType(app, Type.TYPE_VR, launcherActivity);
             if (!isVr && app.metaData.keySet().contains("com.oculus.environmentVersion")) return false;
         }
         if (Launch.getLaunchIntent(launcherActivity, app) == null) return false;
@@ -137,36 +150,25 @@ public abstract class App {
         return true;
     }
 
-    public static boolean isBanner(ApplicationInfo applicationInfo, LauncherActivity launcherActivity) {
-        final boolean isVr = isVirtualReality(applicationInfo, launcherActivity);
-        final SharedPreferences sharedPreferences = launcherActivity.sharedPreferences;
-        if (isVr)  return sharedPreferences.getBoolean(Settings.KEY_WIDE_VR , Settings.DEFAULT_WIDE_VR );
-        final boolean isWeb = isWebsite(applicationInfo);
-        if (isWeb) return sharedPreferences.getBoolean(Settings.KEY_WIDE_WEB, Settings.DEFAULT_WIDE_WEB);
-        final boolean isTv = isAndroidTv(applicationInfo, launcherActivity);
-        if (isTv)  return sharedPreferences.getBoolean(Settings.KEY_WIDE_TV , Settings.DEFAULT_WIDE_TV );
-        else       return sharedPreferences.getBoolean(Settings.KEY_WIDE_2D , Settings.DEFAULT_WIDE_2D );
+    public static boolean isBanner(LauncherActivity launcherActivity, ApplicationInfo applicationInfo) {
+        return typeIsBanner(getType(launcherActivity, applicationInfo));
     }
     public static boolean isWebsite(ApplicationInfo applicationInfo) {
         return (isWebsite(applicationInfo.packageName));
     }
     public static boolean isWebsite(String packageName) {
-        return (packageName.contains("//"));
+        return (packageName.contains("//") &&
+                !packageName.startsWith("systemux://"));
     }
 
     // Invalidate the values caches for isBlank functions
     public static void invalidateCaches(LauncherActivity launcherActivity) {
-        setVr.clear();
-        setNonVr.clear();
-        setSupported.clear();
-        setUnsupported.clear();
+        for (App.Type type : Platform.getSupportedAppTypes(launcherActivity))
+            launcherActivity.sharedPreferenceEditor
+                    .remove(Settings.KEY_INCLUDED_SET + type)
+                    .remove(Settings.KEY_EXCLUDED_SET + type);
 
-        launcherActivity.sharedPreferenceEditor
-                .remove(Settings.KEY_2D_SET)
-                .remove(Settings.KEY_VR_SET)
-                .remove(Settings.KEY_SUPPORTED_SET)
-                .remove(Settings.KEY_UNSUPPORTED_SET)
-                .apply();
+        launcherActivity.sharedPreferenceEditor.apply();
     }
     // Opens the app info settings pane
     public static void openInfo(Context context, String packageName) {
@@ -191,4 +193,35 @@ public abstract class App {
             launcher.startActivity(intent);
         }
     }
+
+    public static App.Type getType(LauncherActivity launcherActivity, ApplicationInfo app) {
+        for (Type type : Platform.getSupportedAppTypes(launcherActivity)) {
+            if (isAppOfType(app, type, launcherActivity)) return type;
+        }
+        return Type.TYPE_UNSUPPORTED;
+    }
+
+    public static String getTypeString(Activity a, Type type) {
+        switch (type) {
+            case TYPE_PHONE:
+                return a.getString(R.string.apps_phone);
+            case TYPE_VR:
+                return a.getString(R.string.apps_vr);
+            case TYPE_TV:
+                return a.getString(R.string.apps_tv);
+            case TYPE_WEB:
+                return a.getString(R.string.apps_web);
+            case TYPE_PANEL:
+                return a.getString(R.string.apps_panel);
+            default:
+                return "Invalid type";
+        }
+    }
+    public static String getDefaultGroupFor(App.Type type) {
+        return SettingsManager.getDefaultGroupFor(type);
+    }
+    public static boolean typeIsBanner(App.Type type) {
+        return SettingsManager.isTypeBanner(type);
+    }
+
 }

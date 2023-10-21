@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 import android.webkit.CookieManager;
 import android.webkit.URLUtil;
 import android.webkit.WebSettings;
+import android.webkit.WebStorage;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 

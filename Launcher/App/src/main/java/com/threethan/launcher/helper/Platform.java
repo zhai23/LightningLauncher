@@ -10,6 +10,7 @@ import android.content.res.Configuration;
 import com.threethan.launcher.lib.StringLib;
 import com.threethan.launcher.support.SettingsManager;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -28,8 +29,8 @@ public abstract class Platform {
     public static List<ApplicationInfo> appListSquare;
     public static int changeIndex = 0; //Used to track changes, specifically adding websites
     public static void clearPackageLists() {
-        App.setNonVr.clear();
-        App.setVr.clear();
+        App.categoryIncludedApps.clear();
+        App.categoryExcludedApps.clear();
         changeIndex ++;
     }
     public static String findWebsite(SharedPreferences sharedPreferences, String url) {
@@ -58,10 +59,33 @@ public abstract class Platform {
         // Quest reports itself as UI_MODE_NORMAL
         return !isTv(activity);
     }
+    public static boolean isQuest(Activity activity) {
+        // Quest reports itself as UI_MODE_NORMAL
+        return !isTv(activity);
+    }
     public static boolean isTv(Activity activity) {
         if (isTv != null) return isTv;
         UiModeManager uiModeManager = (UiModeManager) activity.getSystemService(Context.UI_MODE_SERVICE);
         isTv = uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION;
         return isTv;
+    }
+
+    // Get a list of valid app types depending on platform
+    private static List<App.Type> cachedSupportedAppTypes;
+    public static List<App.Type> getSupportedAppTypes(Activity activity) {
+        if (cachedSupportedAppTypes != null) return  cachedSupportedAppTypes;
+
+        final List<App.Type> validTypes = new ArrayList<>();
+
+        // These must be in order
+        if (Platform.isTv(activity)) validTypes.add(App.Type.TYPE_TV);
+        if (Platform.isVr(activity)) validTypes.add(App.Type.TYPE_VR);
+        if (Platform.isQuest(activity)) validTypes.add(App.Type.TYPE_PANEL);
+
+        validTypes.add(App.Type.TYPE_WEB);
+        validTypes.add(App.Type.TYPE_PHONE);
+
+        cachedSupportedAppTypes = validTypes;
+        return validTypes;
     }
 }

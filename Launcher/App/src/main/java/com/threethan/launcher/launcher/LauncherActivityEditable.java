@@ -180,7 +180,7 @@ public class LauncherActivityEditable extends LauncherActivity {
 
             currentSelectedApps.clear();
 
-            SettingsManager.storeValues();
+            SettingsManager.writeValues();
             refreshInterface();
             return false;
         } else return super.clickGroup(position);
@@ -267,7 +267,7 @@ public class LauncherActivityEditable extends LauncherActivity {
         final ArrayList<String> appGroupsSorted = settingsManager.getAppGroupsSorted(true);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N && !appGroupsSorted.isEmpty())
             group = appGroupsSorted.get(0);
-        else group = SettingsManager.getDefaultGroup(false, false, true);
+        else group = App.getDefaultGroupFor(App.Type.TYPE_PHONE);
 
         if (dialog == null) return;
 

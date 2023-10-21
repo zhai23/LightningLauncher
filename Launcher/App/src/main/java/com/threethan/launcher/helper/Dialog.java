@@ -53,6 +53,10 @@ public abstract class Dialog {
         return dialog;
     }
 
+    public static void toast(String string) {
+        toast(string, "", false);
+    }
+
     public static void toast(String stringMain, String stringBold, boolean isLong) {
         if (getActivityContext() == null) return;
 

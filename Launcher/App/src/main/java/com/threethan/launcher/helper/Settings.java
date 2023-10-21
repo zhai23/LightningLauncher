@@ -5,6 +5,9 @@ import android.graphics.Color;
 import com.threethan.launcher.R;
 import com.threethan.launcher.lib.StringLib;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /*
     Settings
 
@@ -82,23 +85,20 @@ public abstract class Settings {
     public static final String KEY_SEEN_HIDDEN_GROUPS_POPUP = "KEY_SEEN_HIDDEN_GROUPS_POPUP";
     public static final String KEY_SEEN_WEBSITE_POPUP = "KEY_SEEN_WEBSITE_POPUP";
     public static final String KEY_SEEN_ADDONS = "KEY_SEEN_ADDONS";
-    public static final String KEY_VR_SET = "KEY_VR_SET";
-    public static final String KEY_2D_SET = "KEY_2D_SET";
-    public static final String KEY_TV_SET = "KEY_TV_SET";
-    public static final String KEY_NON_TV_SET = "KEY_NON_TV_SET";
+    public static final String KEY_INCLUDED_SET = "prefIncludedIn";
+    public static final String KEY_EXCLUDED_SET = "prefExcludedFrom";
 
-    public static final String KEY_SUPPORTED_SET = "KEY_SUPPORTED_SET";
-    public static final String KEY_UNSUPPORTED_SET = "KEY_UNSUPPORTED_SET";
 
     // banner-style display by app type
-    public static final String KEY_WIDE_VR = "KEY_WIDE_VR";
-    public static final String KEY_WIDE_TV = "KEY_WIDE_TV";
-    public static final String KEY_WIDE_2D = "KEY_WIDE_2D";
-    public static final String KEY_WIDE_WEB = "KEY_WIDE_WEB";
-    public static final boolean DEFAULT_WIDE_VR = true;
-    public static final boolean DEFAULT_WIDE_TV = true;
-    public static final boolean DEFAULT_WIDE_2D = false;
-    public static final boolean DEFAULT_WIDE_WEB = false;
+    public static final String KEY_BANNER = "prefTypeIsWide";
+    public static final Map<App.Type, Boolean> FALLBACK_BANNER = new HashMap<>();
+    static {
+        FALLBACK_BANNER.put(App.Type.TYPE_PHONE, false);
+        FALLBACK_BANNER.put(App.Type.TYPE_WEB, false);
+        FALLBACK_BANNER.put(App.Type.TYPE_VR, true);
+        FALLBACK_BANNER.put(App.Type.TYPE_TV, true);
+        FALLBACK_BANNER.put(App.Type.TYPE_PANEL, false);
+    }
     public static final String DONT_DOWNLOAD_ICONS = "DONT_DOWNLOAD_ICONS";
 
     // extra pizzazz
@@ -122,14 +122,15 @@ public abstract class Settings {
     public static final boolean DEFAULT_DEFAULT_LAUNCH_OUT = false;
 
     // group
-    public static final String KEY_GROUP_2D = "KEY_DEFAULT_GROUP_2D";
-    public static final String KEY_GROUP_TV = "KEY_DEFAULT_GROUP_TV";
-    public static final String KEY_GROUP_VR = "KEY_DEFAULT_GROUP_VR";
-    public static final String KEY_GROUP_WEB = "KEY_DEFAULT_GROUP_WEB";
-    public static final String DEFAULT_GROUP_2D = "Apps";
-    public static final String DEFAULT_GROUP_VR = StringLib.setStarred("Games", true);
-    public static final String DEFAULT_GROUP_WEB = "Apps";
-    public static final String DEFAULT_GROUP_TV = StringLib.setStarred("Media", true);
+    public static final String KEY_DEFAULT_GROUP = "prefDefaultGroupForType";
+    public static final Map<App.Type, String> FALLBACK_GROUPS = new HashMap<>();
+    static {
+        FALLBACK_GROUPS.put(App.Type.TYPE_PHONE, "Apps");
+        FALLBACK_GROUPS.put(App.Type.TYPE_WEB, "Apps");
+        FALLBACK_GROUPS.put(App.Type.TYPE_VR, StringLib.setStarred("Games", true));
+        FALLBACK_GROUPS.put(App.Type.TYPE_TV, StringLib.setStarred("Media", true));
+        FALLBACK_GROUPS.put(App.Type.TYPE_PANEL, "Apps");
+    }
 
     public static final int MAX_GROUPS = 20;
     public static final int GROUP_WIDTH_DP = 225;

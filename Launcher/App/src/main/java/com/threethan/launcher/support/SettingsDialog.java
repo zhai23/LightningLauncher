@@ -12,6 +12,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.threethan.launcher.R;
+import com.threethan.launcher.helper.App;
 import com.threethan.launcher.helper.Compat;
 import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.helper.Platform;
@@ -20,7 +21,10 @@ import com.threethan.launcher.launcher.LauncherActivity;
 import com.threethan.launcher.lib.ImageLib;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /*
@@ -271,35 +275,38 @@ public abstract class SettingsDialog {
         View groupSettings = dialog.findViewById(R.id.groupDefaultsInfoButton);
         groupSettings.setOnClickListener(view -> showGroupSettings(a));
 
-        // Wide display
-        Switch bannerVr = dialog.findViewById(R.id.bannerVrSwitch);
-        bannerVr.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_WIDE_VR, Settings.DEFAULT_WIDE_VR));
-        bannerVr.setOnCheckedChangeListener((compoundButton, value) -> {
-            Compat.clearIconCache(a);
-            a.sharedPreferenceEditor.putBoolean(Settings.KEY_WIDE_VR, value);
-            a.refreshAppDisplayListsAll();
-        });
-        Switch bannerTv = dialog.findViewById(R.id.bannerTvSwitch);
-        bannerTv.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_WIDE_TV, Settings.DEFAULT_WIDE_TV));
-        bannerTv.setOnCheckedChangeListener((compoundButton, value) -> {
-            Compat.clearIconCache(a);
-            a.sharedPreferenceEditor.putBoolean(Settings.KEY_WIDE_TV, value);
-            a.refreshAppDisplayListsAll();
-        });
-        Switch banner2d = dialog.findViewById(R.id.banner2dSwitch);
-        banner2d.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_WIDE_2D, Settings.DEFAULT_WIDE_2D));
-        banner2d.setOnCheckedChangeListener((compoundButton, value) -> {
-            Compat.clearIconCache(a);
-            a.sharedPreferenceEditor.putBoolean(Settings.KEY_WIDE_2D, value);
-            a.refreshAppDisplayListsAll();
-        });
-        Switch bannerWeb = dialog.findViewById(R.id.bannerWebSwitch);
-        bannerWeb.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_WIDE_WEB, Settings.DEFAULT_WIDE_WEB));
-        bannerWeb.setOnCheckedChangeListener((compoundButton, value) -> {
-            Compat.clearIconCache(a);
-            a.sharedPreferenceEditor.putBoolean(Settings.KEY_WIDE_WEB, value);
-            a.refreshAppDisplayListsAll();
-        });
+        // Banner mode
+        final Map<App.Type, Switch> switchByType = new HashMap<>();
+        switchByType.put(App.Type.TYPE_PHONE, dialog.findViewById(R.id.banner2dSwitch));
+        switchByType.put(App.Type.TYPE_VR, dialog.findViewById(R.id.bannerVrSwitch));
+        switchByType.put(App.Type.TYPE_TV, dialog.findViewById(R.id.bannerTvSwitch));
+        switchByType.put(App.Type.TYPE_PANEL, dialog.findViewById(R.id.bannerPanelSwitch));
+        switchByType.put(App.Type.TYPE_WEB, dialog.findViewById(R.id.bannerWebSwitch));
+        final Map<App.Type, View> switchContainerByType = new HashMap<>();
+        switchContainerByType.put(App.Type.TYPE_PHONE, dialog.findViewById(R.id.bannerPhoneContainer));
+        switchContainerByType.put(App.Type.TYPE_VR, dialog.findViewById(R.id.bannerVrContainer));
+        switchContainerByType.put(App.Type.TYPE_TV, dialog.findViewById(R.id.bannerTvContainer));
+        switchContainerByType.put(App.Type.TYPE_PANEL, dialog.findViewById(R.id.bannerPanelContainer));
+        switchContainerByType.put(App.Type.TYPE_WEB, dialog.findViewById(R.id.bannerWebsiteContainer));
+
+        for (App.Type type : switchByType.keySet()) {
+            if (Platform.getSupportedAppTypes(a).contains(type)) {
+                Objects.requireNonNull(switchContainerByType.get(type)).setVisibility(View.VISIBLE);
+
+                final Switch bSwitch = switchByType.get(type);
+                if (bSwitch == null) continue;
+                bSwitch.setChecked(App.typeIsBanner(type));
+                bSwitch.setOnCheckedChangeListener((switchView, value) -> {
+                            Compat.clearIconCache(a);
+                            a.sharedPreferenceEditor.putBoolean(Settings.KEY_BANNER + type, value)
+                                    .apply();
+                            a.refreshAppDisplayListsAll();
+                });
+
+            } else {
+                Objects.requireNonNull(switchContainerByType.get(type)).setVisibility(View.GONE);
+            }
+        }
 
         // Names
         Switch names = dialog.findViewById(R.id.nameSquareSwitch);
@@ -360,13 +367,6 @@ public abstract class SettingsDialog {
 
         AlertDialog dialog = Dialog.build(a, R.layout.dialog_setting_reset_groups);
         if (dialog == null) return;
-        TextView info = dialog.findViewById(R.id.infoText);
-        info.setText(a.getString(R.string.default_groups_info,
-                SettingsManager.getDefaultGroup(true, false, false),
-                SettingsManager.getDefaultGroup(false, true, false),
-                SettingsManager.getDefaultGroup(false, false, false),
-                SettingsManager.getDefaultGroup(false, false, true)
-                ));
 
         View clearSort = dialog.findViewById(R.id.resortOnly);
         clearSort.setOnClickListener(view -> {
@@ -380,6 +380,19 @@ public abstract class SettingsDialog {
                         false);
             }
         });
+
+        StringBuilder builder = new StringBuilder();
+        for (App.Type type : Platform.getSupportedAppTypes(a)) {
+            builder.append(App.getTypeString(a, type))
+                    .append(" : ")
+                    .append(App.getDefaultGroupFor(type))
+                    .append("\n");
+        }
+
+        TextView info = dialog.findViewById(R.id.infoText);
+        info.setText(a.getString(R.string.default_groups_info, builder.toString()));
+
+
         View clearDefaults = dialog.findViewById(R.id.resetGroups);
         clearDefaults.setOnClickListener(view -> {
             if (!clearedGroups) {
@@ -393,12 +406,15 @@ public abstract class SettingsDialog {
                         a.getString(R.string.default_groups_reset_groups_toast_bold),
                         false);
 
-                info.setText(a.getString(R.string.default_groups_info,
-                        SettingsManager.getDefaultGroup(true, false, false),
-                        SettingsManager.getDefaultGroup(false, true, false),
-                        SettingsManager.getDefaultGroup(false, false, false),
-                        SettingsManager.getDefaultGroup(false, false, true)
-                ));
+                StringBuilder builder2 = new StringBuilder();
+                for (App.Type type : Platform.getSupportedAppTypes(a)) {
+                    builder2.append(App.getTypeString(a, type))
+                            .append(" : ")
+                            .append(App.getDefaultGroupFor(type))
+                            .append("\n");
+                }
+
+                info.setText(a.getString(R.string.default_groups_info, builder2.toString()));
             }
         });
 

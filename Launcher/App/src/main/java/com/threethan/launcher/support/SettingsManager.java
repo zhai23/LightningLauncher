@@ -99,9 +99,9 @@ public class SettingsManager extends Settings {
             String label = app.loadLabel(pm).toString();
             if (!label.isEmpty()) return label;
             // Try to load this app's real app info
-            label = (String) pm.getApplicationInfo(app.packageName, 0).loadLabel(pm);
+            label = (String) app.loadLabel(pm);
             if (!label.isEmpty()) return label;
-        } catch (NullPointerException | PackageManager.NameNotFoundException ignored) {}
+        } catch (NullPointerException ignored) {}
         return app.packageName;
     }
     public static void setAppLabel(ApplicationInfo app, String newName) {
@@ -139,29 +139,14 @@ public class SettingsManager extends Settings {
             Log.e("LightningLauncher", "Got null app list");
             return new ArrayList<>();
         }
+
         // Sort into groups
         for (ApplicationInfo app : myApps) {
             if (!App.isSupported(app, launcherActivity))
                 appGroupMap.put(app.packageName, Settings.UNSUPPORTED_GROUP);
             else if (!appGroupMap.containsKey(app.packageName) ||
                     Objects.equals(appGroupMap.get(app.packageName), Settings.UNSUPPORTED_GROUP)){
-                final boolean isVr = App.isVirtualReality(app, launcherActivity);
-                final boolean isTv = App.isAndroidTv(app, launcherActivity);
-                final boolean isWeb = App.isWebsite(app);
-                appGroupMap.put(app.packageName, getDefaultGroup(isVr, isTv, isWeb));
-            }
-        }
-
-        // Sort into groups
-        for (ApplicationInfo app : myApps) {
-            if (!appGroupMap.containsKey(app.packageName)) {
-                if (!App.isSupported(app, launcherActivity)) appGroupMap.put(app.packageName, Settings.UNSUPPORTED_GROUP);
-                else {
-                    final boolean isVr = App.isVirtualReality(app, launcherActivity);
-                    final boolean isTv = App.isAndroidTv(app, launcherActivity);
-                    final boolean isWeb = App.isWebsite(app);
-                    appGroupMap.put(app.packageName, getDefaultGroup(isVr, isTv, isWeb));
-                }
+                appGroupMap.put(app.packageName, App.getDefaultGroupFor(App.getType(launcherActivity, app)));
             }
         }
 
@@ -205,11 +190,13 @@ public class SettingsManager extends Settings {
     }
 
     public static Set<String> getDefaultGroupsSet() {
+        LauncherActivity launcherActivity = anyLauncherActivityRef.get();
+        if (launcherActivity == null) return Collections.emptySet();
+
         Set<String> defaultGroupsSet = new HashSet<>();
-        defaultGroupsSet.add(DEFAULT_GROUP_VR);
-        defaultGroupsSet.add(DEFAULT_GROUP_TV);
-        defaultGroupsSet.add(DEFAULT_GROUP_2D);
-//            defaultGroupsSet.add(DEFAULT_GROUP_WEB);
+        for (App.Type type : Platform.getSupportedAppTypes(launcherActivity))
+            defaultGroupsSet.add(App.getDefaultGroupFor(type));
+
         return (defaultGroupsSet);
     }
     public Set<String> getSelectedGroups() {
@@ -276,34 +263,21 @@ public class SettingsManager extends Settings {
         appGroupMap.clear();
         editor.remove(KEY_GROUPS);
         editor.remove(KEY_SELECTED_GROUPS);
-        editor.remove(KEY_GROUP_2D);
-        editor.remove(KEY_GROUP_VR);
-        editor.remove(KEY_GROUP_WEB);
-        editor.remove(KEY_VR_SET);
-        editor.remove(KEY_2D_SET);
+        for (String group : getAppGroups())
+            editor.remove(group);
+
         editor.apply();
+
         readValues();
+        writeValues();
+
         Log.i("Groups (SettingsManager)", "Groups have been reset");
     }
 
-    public static String getDefaultGroup(boolean vr, boolean tv, boolean web) {
-        final String key = web ? KEY_GROUP_WEB : (tv ? KEY_GROUP_TV : (vr ? KEY_GROUP_VR : KEY_GROUP_2D));
-        final String def = web ? DEFAULT_GROUP_WEB : (tv ? DEFAULT_GROUP_TV : (vr ? DEFAULT_GROUP_VR : DEFAULT_GROUP_2D));
-        final String group = sharedPreferences.getString(key, def);
-        if (!appGroupsSet.contains(group)) return Settings.HIDDEN_GROUP;
-        return group;
-    }
-
-
     public static synchronized void readValues() {
         try {
-            Set<String> defaultGroupsSet = new HashSet<>();
-            defaultGroupsSet.add(DEFAULT_GROUP_VR);
-            defaultGroupsSet.add(DEFAULT_GROUP_TV);
-            defaultGroupsSet.add(DEFAULT_GROUP_2D);
-//            defaultGroupsSet.add(DEFAULT_GROUP_WEB);
             appGroupsSet.clear();
-            appGroupsSet.addAll(sharedPreferences.getStringSet(KEY_GROUPS, defaultGroupsSet));
+            appGroupsSet.addAll(sharedPreferences.getStringSet(KEY_GROUPS, getDefaultGroupsSet()));
 
             appGroupMap.clear();
 
@@ -311,7 +285,7 @@ public class SettingsManager extends Settings {
             appGroupsSet.add(Settings.UNSUPPORTED_GROUP);
             for (String group : appGroupsSet) {
                 Set<String> appListSet = new HashSet<>();
-                appListSet = sharedPreferences.getStringSet(KEY_GROUP_APP_LIST +group, appListSet);
+                appListSet = sharedPreferences.getStringSet(KEY_GROUP_APP_LIST + group, appListSet);
                 for (String app : appListSet) appGroupMap.put(app, group);
             }
 
@@ -321,18 +295,18 @@ public class SettingsManager extends Settings {
     }
     synchronized private void queueStoreValues() {
         if (myLauncherActivityRef.get() != null && myLauncherActivityRef.get().mainView != null) {
-            myLauncherActivityRef.get().post(SettingsManager::storeValues);
+            myLauncherActivityRef.get().post(SettingsManager::writeValues);
             sharedPreferenceEditor.putStringSet(KEY_SELECTED_GROUPS, selectedGroupsSet);
         }
-        else storeValues();
+        else writeValues();
     }
     private static void queueStoreValuesStatic() {
         if (anyLauncherActivityRef.get() != null && anyLauncherActivityRef.get().mainView != null) {
-            anyLauncherActivityRef.get().post(SettingsManager::storeValues);
+            anyLauncherActivityRef.get().post(SettingsManager::writeValues);
         }
-        else storeValues();
+        else writeValues();
     }
-    public synchronized static void storeValues() {
+    public synchronized static void writeValues() {
         try {
             SharedPreferences.Editor editor = sharedPreferenceEditor;
             editor.putStringSet(KEY_GROUPS, appGroupsSet);
@@ -341,7 +315,8 @@ public class SettingsManager extends Settings {
             for (String group : appGroupsSet) appListSetMap.put(group, new HashSet<>());
             for (String pkg : appGroupMap.keySet()) {
                 Set<String> group = appListSetMap.get(appGroupMap.get(pkg));
-                if (group == null) group = appListSetMap.get(getDefaultGroup(false, false,false));
+                if (group == null) group = appListSetMap.get(
+                        App.getDefaultGroupFor(App.Type.TYPE_SUPPORTED));
                 if (group == null) {
                     Log.e("Group was null", pkg);
                     return;
@@ -383,6 +358,24 @@ public class SettingsManager extends Settings {
         selectFirst.add(name);
         setSelectedGroups(selectFirst);
         return true;
+    }
+
+    public static String getDefaultGroupFor(App.Type type) {
+        String key = Settings.KEY_DEFAULT_GROUP + type;
+        if (!Settings.FALLBACK_GROUPS.containsKey(type)) type = App.Type.TYPE_PHONE;
+        String def = Settings.FALLBACK_GROUPS.get(type);
+
+        final String group = SettingsManager.sharedPreferences.getString(key, def);
+//        if (!appGroupsSet.isEmpty() && appGroupsSet.contains(group)) return Settings.HIDDEN_GROUP;
+        return group;
+    }
+
+    public static boolean isTypeBanner(App.Type type) {
+        String key = Settings.KEY_BANNER + type;
+        if (!Settings.FALLBACK_BANNER.containsKey(type)) type = App.Type.TYPE_PHONE;
+        Boolean def = Settings.FALLBACK_BANNER.get(type);
+
+        return SettingsManager.sharedPreferences.getBoolean(key, Boolean.TRUE.equals(def));
     }
 
     public static boolean getRunning(String pkgName) {

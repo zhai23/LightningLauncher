@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="cancelSearch" type="id" />
+
     <item name="defaultTvSwitch" type="id" />
-    <item name="toastTextMain" type="id" />
 </resources>

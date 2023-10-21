@@ -15,7 +15,9 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.threethan.launcher.R;
+import com.threethan.launcher.helper.App;
 import com.threethan.launcher.helper.Dialog;
+import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.launcher.LauncherActivity;
 import com.threethan.launcher.lib.StringLib;
@@ -147,53 +149,48 @@ public class GroupsAdapter extends BaseAdapter {
                     starButton.setImageResource(starred[0] ? R.drawable.ic_star_on : R.drawable.ic_star_off);
             });
 
-            Switch switch_2d = dialog.findViewById(R.id.default2dSwitch);
-            Switch switch_tv = dialog.findViewById(R.id.defaultTvSwitch);
-            Switch switch_vr = dialog.findViewById(R.id.defaultVrSwitch);
-            Switch switch_web = dialog.findViewById(R.id.defaultWebSwitch);
-            switch_2d .setChecked(SettingsManager.getDefaultGroup(false,false,false).equals(groupName));
-            switch_vr .setChecked(SettingsManager.getDefaultGroup(false,true ,false).equals(groupName));
-            switch_tv.setChecked(SettingsManager.getDefaultGroup(true ,false,false).equals(groupName));
-            switch_web.setChecked(SettingsManager.getDefaultGroup(false,false,true ).equals(groupName));
-            switch_2d .setOnCheckedChangeListener((switchView, value) -> {
-                String newDefault = value ? groupName : Settings.DEFAULT_GROUP_2D;
-                if ((!value && groupName.equals(newDefault)) || !appGroups.contains(newDefault)) newDefault = null;
-                launcherActivity.sharedPreferenceEditor.putString(Settings.KEY_GROUP_2D , newDefault).apply();
-                switch_2d .setChecked(SettingsManager.getDefaultGroup(false,false,false).equals(groupName));
-            });
-            switch_vr .setOnCheckedChangeListener((switchView, value) -> {
-                String newDefault = value ? groupName : Settings.DEFAULT_GROUP_VR;
-                if ((!value && groupName.equals(newDefault)) || !appGroups.contains(newDefault)) newDefault = null;
-                launcherActivity.sharedPreferenceEditor.putString(Settings.KEY_GROUP_VR , newDefault).apply();
-                switch_vr .setChecked(SettingsManager.getDefaultGroup(true ,false,false).equals(groupName));
-            });
-            switch_tv.setOnCheckedChangeListener((switchView, value) -> {
-                String newDefault = value ? groupName : Settings.DEFAULT_GROUP_TV;
-                if ((!value && groupName.equals(newDefault)) || !appGroups.contains(newDefault)) newDefault = null;
-                launcherActivity.sharedPreferenceEditor.putString(Settings.KEY_GROUP_TV , newDefault).apply();
-                switch_tv .setChecked(SettingsManager.getDefaultGroup(false ,true,false).equals(groupName));
-            });
-            switch_web .setOnCheckedChangeListener((switchView, value) -> {
-                String newDefault = value ? groupName : Settings.DEFAULT_GROUP_VR;
-                if ((!value && groupName.equals(newDefault)) || !appGroups.contains(newDefault)) newDefault = null;
-                launcherActivity.sharedPreferenceEditor.putString(Settings.KEY_GROUP_WEB, newDefault).apply();
-                switch_web.setChecked(SettingsManager.getDefaultGroup(false,false,true ).equals(groupName));
-            });
+            final Map<App.Type, Switch> switchByType = new HashMap<>();
+            switchByType.put(App.Type.TYPE_PHONE, dialog.findViewById(R.id.default2dSwitch));
+            switchByType.put(App.Type.TYPE_VR, dialog.findViewById(R.id.defaultVrSwitch));
+            switchByType.put(App.Type.TYPE_TV, dialog.findViewById(R.id.defaultTvSwitch));
+            switchByType.put(App.Type.TYPE_PANEL, dialog.findViewById(R.id.defaultPanelSwitch));
+            switchByType.put(App.Type.TYPE_WEB, dialog.findViewById(R.id.defaultWebSwitch));
+            final Map<App.Type, View> switchContainerByType = new HashMap<>();
+            switchContainerByType.put(App.Type.TYPE_PHONE, dialog.findViewById(R.id.defaultPhoneContainer));
+            switchContainerByType.put(App.Type.TYPE_VR, dialog.findViewById(R.id.defaultVrContainer));
+            switchContainerByType.put(App.Type.TYPE_TV, dialog.findViewById(R.id.defaultTvContainer));
+            switchContainerByType.put(App.Type.TYPE_PANEL, dialog.findViewById(R.id.defaultPanelContainer));
+            switchContainerByType.put(App.Type.TYPE_WEB, dialog.findViewById(R.id.defaultWebsiteContainer));
+
+            for (App.Type type : switchByType.keySet()) {
+                if (Platform.getSupportedAppTypes(launcherActivity).contains(type)) {
+                    Objects.requireNonNull(switchContainerByType.get(type)).setVisibility(View.VISIBLE);
+
+                    final Switch cSwitch = switchByType.get(type);
+                    if (cSwitch == null) continue;
+                    cSwitch.setChecked(App.getDefaultGroupFor(type).equals(groupName));
+                    cSwitch.setOnCheckedChangeListener((switchView, value) -> {
+                        String newDefault = value ? groupName : Settings.FALLBACK_GROUPS.get(type);
+                        if ((!value && groupName.equals(newDefault)) || !appGroups.contains(newDefault))
+                            newDefault = null;
+                        launcherActivity.sharedPreferenceEditor.putString(Settings.KEY_DEFAULT_GROUP + type, newDefault).apply();
+                        final boolean newChecked = App.getDefaultGroupFor(type).equals(groupName);
+                        if (newChecked && !value) Dialog.toast(launcherActivity.getString(R.string.toast_cant_unset_group));
+                        cSwitch.setChecked(newChecked);
+                    });
+                } else {
+                    Objects.requireNonNull(switchContainerByType.get(type)).setVisibility(View.GONE);
+                }
+            }
 
             dialog.findViewById(R.id.confirm).setOnClickListener(view1 -> {
                 String newGroupName = StringLib.setStarred(groupNameInput.getText().toString(), starred[0]);
                 if (newGroupName.equals(Settings.UNSUPPORTED_GROUP)) newGroupName = "UNSUPPORTED"; // Prevent permanently hiding apps
 
                 // Move the default group when we rename
-                if (SettingsManager.getDefaultGroup(false, false,false).equals(groupName))
-                    launcherActivity.sharedPreferenceEditor.putString(Settings.KEY_GROUP_2D, newGroupName);
-                if (SettingsManager.getDefaultGroup(true, false,false).equals(groupName))
-                    launcherActivity.sharedPreferenceEditor.putString(Settings.KEY_GROUP_VR, newGroupName);
-                if (SettingsManager.getDefaultGroup(false,true, false).equals(groupName))
-                    launcherActivity.sharedPreferenceEditor.putString(Settings.KEY_GROUP_TV,newGroupName);
-                if (SettingsManager.getDefaultGroup(false,false, true).equals(groupName))
-                    launcherActivity.sharedPreferenceEditor.putString(Settings.KEY_GROUP_WEB,newGroupName);
-
+                for (App.Type type : Platform.getSupportedAppTypes(launcherActivity))
+                    if (App.getDefaultGroupFor(type).equals(groupName))
+                        launcherActivity.sharedPreferenceEditor.putString(Settings.KEY_DEFAULT_GROUP + type, newGroupName);
 
                 if (newGroupName.length() > 0) {
                     appGroupsSet.remove(groupName);

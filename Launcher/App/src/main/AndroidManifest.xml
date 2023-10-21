@@ -27,6 +27,8 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"/>
 
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"
         tools:ignore="QueryAllPackagesPermission" />
@@ -108,19 +110,6 @@
             <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
             <meta-data android:name="com.oculus.vrshell.free_resizing_limits" android:value="300,2000,500,1000"/>
         </activity>
-        <activity android:name=".browser.BrowserActivitySeparateAlt"
-            android:screenOrientation="unspecified"
-            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
-            android:exported="true"
-            android:launchMode="singleInstancePerTask"
-            android:resizeableActivity="true"
-            tools:ignore="UnusedAttribute"
-            android:theme="@style/ThemeOverlay.Browser">
-
-            <layout android:defaultWidth="706dp" android:defaultHeight="442dp" android:gravity="top|end" />
-            <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
-            <meta-data android:name="com.oculus.vrshell.free_resizing_limits" android:value="300,2000,500,1000"/>
-        </activity>
         <!-- Service that provides/manages Launcher views -->
         <service
             android:name=".launcher.LauncherService"
@@ -131,6 +120,7 @@
         <service
             android:name=".browser.BrowserService"
             android:exported="true"
+            android:foregroundServiceType="mediaPlayback|microphone"
             android:permission="com.threethan.launcher.start_browser">
         </service>
     </application>

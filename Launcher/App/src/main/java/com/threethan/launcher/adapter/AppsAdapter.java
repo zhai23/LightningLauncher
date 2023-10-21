@@ -172,7 +172,7 @@ public class AppsAdapter extends BaseAdapter{
 
         if (convertView == null) {
             // Create a new ViewHolder and inflate the view
-            int layout = App.isBanner(currentApp, launcherActivity) ? R.layout.lv_app_wide : R.layout.lv_app_icon;
+            int layout = App.isBanner(launcherActivity, currentApp) ? R.layout.lv_app_wide : R.layout.lv_app_icon;
 
             convertView = layoutInflater.inflate(layout, parent, false);
             if (currentApp.packageName == null) return convertView;
@@ -339,6 +339,7 @@ public class AppsAdapter extends BaseAdapter{
     private void showAppDetails(ApplicationInfo currentApp) {
         // Set View
         AlertDialog dialog = Dialog.build(launcherActivity, R.layout.dialog_app_details);
+        if (dialog == null) return;
         // Package Name
         ((TextView) dialog.findViewById(R.id.packageName)).setText(currentApp.packageName);
         // Info Action
@@ -361,9 +362,6 @@ public class AppsAdapter extends BaseAdapter{
         final View launchOutButton = dialog.findViewById(R.id.launchOut);
         final View launchModeSection = dialog.findViewById(R.id.launchModeSection);
         final View refreshIconButton = dialog.findViewById(R.id.refreshIconButton);
-        final boolean appIsVr = App.isVirtualReality(currentApp, launcherActivity);
-        final boolean appIsTv = App.isAndroidTv(currentApp, launcherActivity);
-        final boolean appIsWeb = App.isWebsite(currentApp);
 
         // Load Icon
         PackageManager packageManager = launcherActivity.getPackageManager();
@@ -371,7 +369,7 @@ public class AppsAdapter extends BaseAdapter{
         iconImageView.setImageDrawable(Icon.loadIcon(launcherActivity, currentApp, null));
 
         iconImageView.setClipToOutline(true);
-        if (App.isBanner(currentApp, launcherActivity)) iconImageView.getLayoutParams().width = launcherActivity.dp(150);
+        if (App.isBanner(launcherActivity, currentApp)) iconImageView.getLayoutParams().width = launcherActivity.dp(150);
 
         iconImageView.setOnClickListener(iconPickerView -> {
             iconDrawable = currentApp.loadIcon(packageManager);
@@ -384,10 +382,11 @@ public class AppsAdapter extends BaseAdapter{
             ImageLib.showImagePicker(launcherActivity, Settings.PICK_ICON_CODE);
         });
 
-        dialog.findViewById(R.id.info).setVisibility(appIsWeb ? View.GONE : View.VISIBLE);
-        if (appIsVr || Platform.isTv(launcherActivity)) {
+        dialog.findViewById(R.id.info).setVisibility(App.isWebsite(currentApp) ? View.GONE : View.VISIBLE);
+        if (App.getType(launcherActivity, currentApp) == App.Type.TYPE_VR
+                || Platform.isTv(launcherActivity)) {
             // VR apps MUST launch out, so just hide the option and replace it with another
-            // Websites could theoretically support this option, but it is currently way too buggy
+            // Also hide it on TV where it is useless
             launchModeSection.setVisibility(View.GONE);
             refreshIconButton.setVisibility(View.VISIBLE);
             launchOutButton.setVisibility(View.GONE);
@@ -411,6 +410,7 @@ public class AppsAdapter extends BaseAdapter{
 
                 if (!launcherActivity.sharedPreferences.getBoolean(Settings.KEY_SEEN_LAUNCH_OUT_POPUP, false)) {
                     AlertDialog subDialog = Dialog.build(launcherActivity, R.layout.dialog_launch_out_info);
+                    if (subDialog == null) return;
                     subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
                         launcherActivity.sharedPreferenceEditor
                                 .putBoolean(Settings.KEY_SEEN_LAUNCH_OUT_POPUP, true).apply();
@@ -425,13 +425,13 @@ public class AppsAdapter extends BaseAdapter{
         final View hideButton = dialog.findViewById(R.id.hide);
         String unhideGroup = SettingsManager.getAppGroupMap().get(currentApp.packageName);
         if (Objects.equals(unhideGroup, Settings.HIDDEN_GROUP))
-            unhideGroup = SettingsManager.getDefaultGroup(appIsVr, appIsTv, appIsWeb);
+            unhideGroup = App.getDefaultGroupFor(App.getType(launcherActivity, currentApp));
         if (Objects.equals(unhideGroup, Settings.HIDDEN_GROUP))
             try {
                 unhideGroup = (String) SettingsManager.getAppGroups().toArray()[0];
             } catch (AssertionError | IndexOutOfBoundsException ignored) {
                 unhideGroup = Settings.HIDDEN_GROUP;
-                Dialog.toast("Could not find a group to unhide app to!", "", true);
+                Dialog.toast("Could not find a group to unhide app to!");
             }
         String finalUnhideGroup = unhideGroup;
 

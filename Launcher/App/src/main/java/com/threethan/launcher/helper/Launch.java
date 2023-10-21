@@ -1,8 +1,10 @@
 package com.threethan.launcher.helper;
 
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -43,9 +45,10 @@ public abstract class Launch {
             return false;
         }
 
+        final App.Type appType = App.getType(launcherActivity, app);
         if (SettingsManager.
                 getAppLaunchOut(app.packageName) ||
-                App.isVirtualReality(app, launcherActivity)) {
+                appType == App.Type.TYPE_VR || appType == App.Type.TYPE_PANEL) {
             // Launch in own window properly
             if (App.isWebsite(app))
                 try {
@@ -78,11 +81,28 @@ public abstract class Launch {
     }
 
     private static void startIntent(LauncherActivity launcherActivity, Intent intent) {
-        launcherActivity.startActivity(intent);
+        launcherActivity.startService(intent);
     }
 
     @Nullable
     public static Intent getLaunchIntent(LauncherActivity activity, ApplicationInfo app) {
+
+        // Ignore apps which don't work or should be excluded
+        if (app.packageName.startsWith("com.threethan.launcher")) return null;
+        if (app.packageName.equals("com.oculus.browser")) return null;
+
+
+
+        // Detect panel apps
+        if (App.getType(activity, app) == App.Type.TYPE_PANEL) {
+            Intent panelIntent = new Intent(Intent.ACTION_VIEW);
+            panelIntent.setComponent(new ComponentName(
+                    "com.oculus.vrshell", "com.oculus.vrshell.MainActivity"));
+            panelIntent.setData(Uri.parse(app.packageName));
+            return panelIntent;
+        }
+
+        // Detect websites
         if (App.isWebsite(app)) {
             Intent intent = new Intent(activity, (SettingsManager.getAppLaunchOut(app.packageName)
                     ?  BrowserActivitySeparate.class
@@ -93,15 +113,10 @@ public abstract class Launch {
 
         PackageManager pm = activity.getPackageManager();
 
-        Intent questIntent = new Intent();
-        questIntent.setAction("com.oculus.vrshell.SHELL_MAIN");
-        questIntent.setPackage(app.packageName);
-        if (questIntent.resolveActivity(pm) != null) return questIntent;
-
         // Otherwise android TV settings is not recognized
-        if (Objects.equals(app.packageName, "com.android.tv.settings")) {
+        if (Objects.equals(app.packageName, "com.android.tv.settings"))
             return new Intent(android.provider.Settings.ACTION_SETTINGS);
-        }
+
 
         // Prefer launching as android TV app
         Intent tvIntent = pm.getLeanbackLaunchIntentForPackage(app.packageName);

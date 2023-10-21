@@ -20,7 +20,7 @@
     <TextView
         android:id="@+id/infoText"
         android:layout_width="match_parent"
-        android:layout_height="205sp"
+        android:layout_height="160sp"
         android:layout_marginBottom="10dp"
         android:autofillHints="text"
         android:backgroundTint="@android:color/white"

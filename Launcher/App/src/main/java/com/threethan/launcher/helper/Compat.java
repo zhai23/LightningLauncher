@@ -29,9 +29,10 @@ import java.util.Set;
 
 public abstract class Compat {
     public static final String KEY_COMPATIBILITY_VERSION = "KEY_COMPATIBILITY_VERSION";
-    public static final int CURRENT_COMPATIBILITY_VERSION = 5;
-    public static final boolean DEBUG_COMPATIBILITY = false;
+    public static final int CURRENT_COMPATIBILITY_VERSION = 6;
+    public static final boolean DEBUG_COMPATIBILITY = true; //TODO
     private static final String TAG = "Compatibility";
+
     public static synchronized void checkCompatibilityUpdate(LauncherActivity launcherActivity) {
         if (DEBUG_COMPATIBILITY) Log.e(TAG, "CRITICAL WARNING: DEBUG_COMPATIBILITY IS ON");
         SharedPreferences sharedPreferences = launcherActivity.sharedPreferences;
@@ -79,7 +80,7 @@ public abstract class Compat {
                         recheckSupported(launcherActivity);
                         break;
                     case (2):
-                        String from = sharedPreferences.getString(Settings.KEY_GROUP_VR, Settings.DEFAULT_GROUP_VR);
+                        String from = sharedPreferences.getString("KEY_DEFAULT_GROUP_VR", Settings.FALLBACK_GROUPS.get(App.Type.TYPE_VR));
                         String to = StringLib.setStarred(from, true);
                         renameGroup(launcherActivity, from, to);
                         break;
@@ -97,6 +98,38 @@ public abstract class Compat {
                                         : Settings.DEFAULT_BACKGROUND_VR);
                         if (backgroundIndex > 2)
                             sharedPreferenceEditor.putInt(Settings.KEY_BACKGROUND, backgroundIndex - 1);
+                    case (6):
+                        // Remap old default group settings
+                        final Map<String, App.Type> oldDefKeyToType = new HashMap<>();
+                        oldDefKeyToType.put("KEY_DEFAULT_GROUP_2D", App.Type.TYPE_PHONE);
+                        oldDefKeyToType.put("KEY_DEFAULT_GROUP_VR", App.Type.TYPE_VR);
+                        oldDefKeyToType.put("KEY_DEFAULT_GROUP_TV", App.Type.TYPE_TV);
+                        oldDefKeyToType.put("KEY_DEFAULT_GROUP_WEB", App.Type.TYPE_WEB);
+
+                        for (String key : oldDefKeyToType.keySet()) {
+                            String val = sharedPreferences.getString(key, null);
+                            if (val != null) {
+                                sharedPreferenceEditor.putString(Settings.KEY_DEFAULT_GROUP + oldDefKeyToType.get(key), val);
+                                sharedPreferenceEditor.remove(key);
+                            }
+                        }
+
+                        final Map<String, App.Type> oldWideKeyToType = new HashMap<>();
+                        oldWideKeyToType.put("KEY_WIDE_2D", App.Type.TYPE_PHONE);
+                        oldWideKeyToType.put("KEY_WIDE_VR", App.Type.TYPE_VR);
+                        oldWideKeyToType.put("KEY_WIDE_TV", App.Type.TYPE_TV);
+                        oldWideKeyToType.put("KEY_WIDE_WEB", App.Type.TYPE_WEB);
+
+                        for (String key : oldWideKeyToType.keySet()) {
+                            if (sharedPreferences.contains(key)) {
+                                Boolean val = sharedPreferences.getBoolean(key, false);
+                                sharedPreferenceEditor.putBoolean(Settings.KEY_BANNER + oldDefKeyToType.get(key), val);
+                                sharedPreferenceEditor.remove(key);
+                            }
+                        }
+
+                        break;
+
                 }
             }
             Log.i(TAG, String.format("Settings Updated from v%s to v%s (Settings versions are not the same as app versions)",
@@ -172,6 +205,8 @@ public abstract class Compat {
         SharedPreferences.Editor editor = launcherActivity.sharedPreferenceEditor;
         for (String packageName : setAll) editor.remove(packageName);
         storeAndReload(launcherActivity);
+        if (launcherActivity.launcherService != null)
+            launcherActivity.launcherService.clearAdapterCachesAll();
     }
     // Clears the categorization of apps & resets everything to selected default groups
     public static void clearSort(LauncherActivity launcherActivity) {
@@ -187,12 +222,8 @@ public abstract class Compat {
     }
     // Resets the group list to default, including default groups for sorting
     public static void resetDefaultGroups(LauncherActivity launcherActivity) {
-        launcherActivity.sharedPreferenceEditor
-                .putString(Settings.KEY_GROUP_VR , Settings.DEFAULT_GROUP_VR )
-                .putString(Settings.KEY_GROUP_TV , Settings.DEFAULT_GROUP_TV )
-                .putString(Settings.KEY_GROUP_2D , Settings.DEFAULT_GROUP_2D )
-                .putString(Settings.KEY_GROUP_WEB, Settings.DEFAULT_GROUP_WEB)
-                .apply();
+        for (App.Type type : Platform.getSupportedAppTypes(launcherActivity))
+            launcherActivity.sharedPreferenceEditor.remove(Settings.KEY_DEFAULT_GROUP + type);
 
         launcherActivity.settingsManager.resetGroups();
         clearSort(launcherActivity);
@@ -203,7 +234,7 @@ public abstract class Compat {
     private static void storeAndReload(LauncherActivity launcherActivity) {
         launcherActivity.sharedPreferenceEditor.apply();
         Compat.recheckSupported(launcherActivity);
-        SettingsManager.storeValues();
+        SettingsManager.writeValues();
         launcherActivity.reloadPackages();
         launcherActivity.refreshInterfaceAll();
         SettingsManager.readValues();

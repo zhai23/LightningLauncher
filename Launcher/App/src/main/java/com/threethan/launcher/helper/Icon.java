@@ -34,7 +34,7 @@ public abstract class Icon {
         packageName = cacheName(StringLib.toValidFilename(packageName));
         ApplicationInfo tempApp = new ApplicationInfo();
         tempApp.packageName = packageName;
-        final boolean wide = App.isBanner(tempApp, launcherActivity);
+        final boolean wide = App.isBanner(launcherActivity, tempApp);
         return new File(launcherActivity.getApplicationInfo().dataDir,
                 packageName + (wide?"-wide":"") + ".webp");
     }
@@ -75,7 +75,7 @@ public abstract class Icon {
             // Check Icon
             int iconId = app.icon;
             // Check AndroidTV banner
-            if (app.banner != 0 && App.isBanner(app, activity)) iconId = app.banner;
+            if (app.banner != 0 && App.isBanner(activity, app)) iconId = app.banner;
 
             if (iconId == 0) iconId = android.R.drawable.sym_def_app_icon;
             appIcon = ResourcesCompat.getDrawableForDensity(resources, iconId,
@@ -98,7 +98,7 @@ public abstract class Icon {
         final boolean ignored = iconFile.delete();
         downloadImageView.setImageDrawable(loadIcon(activity, app, downloadImageView));
         IconRepo.download(activity, app, () -> updateIcon(iconFile, app.packageName, downloadImageView));
-        Dialog.toast(activity.getString(R.string.refreshed_icon), "", false);
+        Dialog.toast(activity.getString(R.string.refreshed_icon));
     }
 
     protected static void saveIconDrawable(LauncherActivity activity, Drawable icon, String packageName) {

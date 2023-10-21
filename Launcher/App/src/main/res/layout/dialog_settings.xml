@@ -601,11 +601,12 @@
             android:orientation="horizontal">
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/bannerVrContainer"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+
                 android:layout_marginEnd="5dp"
                 android:layout_weight="1"
-
                 android:background="@drawable/bkg_button">
 
                 <TextView
@@ -634,18 +635,51 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/bannerPanelContainer"
                 android:layout_width="match_parent"
+
                 android:layout_height="match_parent"
                 android:layout_marginStart="5dp"
                 android:layout_weight="1"
-
                 android:background="@drawable/bkg_button">
 
                 <TextView
                     style="@style/SettingButtonLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
-                    android:layout_marginEnd="52dp"
+                    android:singleLine="true"
+                    android:text="@string/apps_panel"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Switch
+                    android:id="@+id/bannerPanelSwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:foreground="@drawable/bkg_hover_button"
+                    android:thumb="@drawable/switch_thumb_custom"
+                    android:track="@drawable/switch_track_custom"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/bannerTvContainer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                android:layout_weight="1"
+                android:background="@drawable/bkg_button">
+
+                <TextView
+                    android:id="@+id/tvOrPanelWideLabel"
+                    style="@style/SettingButtonLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
                     android:singleLine="true"
                     android:text="@string/apps_tv"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -675,6 +709,7 @@
             android:orientation="horizontal">
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/bannerPhoneContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="5dp"
@@ -687,7 +722,7 @@
                     android:layout_height="0dp"
                     android:layout_marginEnd="52dp"
                     android:singleLine="true"
-                    android:text="@string/apps_2d"
+                    android:text="@string/apps_phone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -706,6 +741,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/bannerWebsiteContainer"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="5dp"

@@ -35,12 +35,14 @@ public abstract class IconRepo {
     // Repository URLs:
     // Each URL will be tried in order: the first with a file matching the package name will be used
     private static final String[] ICON_URLS_SQUARE = {
+            //TODO: Custom repo for panel apps
             "https://raw.githubusercontent.com/veticia/binaries/main/icons/%s.png",
             "https://raw.githubusercontent.com/basti564/LauncherIcons/main/oculus_square/%s.jpg",
             "https://raw.githubusercontent.com/basti564/LauncherIcons/main/pico_square/%s.jpg",
             "https://raw.githubusercontent.com/basti564/LauncherIcons/main/viveport_square/%s.jpg"
     };
     private static final String[] ICON_URLS_BANNER = {
+            //TODO: Custom repo for panel apps
             "https://raw.githubusercontent.com/veticia/binaries/main/banners/%s.png",
             "https://raw.githubusercontent.com/basti564/LauncherIcons/main/oculus_landscape/%s.jpg",
             "https://raw.githubusercontent.com/basti564/LauncherIcons/main/pico_landscape/%s.jpg",
@@ -81,7 +83,7 @@ public abstract class IconRepo {
     public static void download(final LauncherActivity activity, ApplicationInfo app, final Runnable callback) {
         final String pkgName = app.packageName;
 
-        final boolean isWide = App.isBanner(app, activity);
+        final boolean isWide = App.isBanner(activity, app);
         final File iconFile = Icon.iconFileForPackage(activity, pkgName);
 
         new Thread(() -> {

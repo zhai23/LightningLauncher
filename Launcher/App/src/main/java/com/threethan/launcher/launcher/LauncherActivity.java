@@ -39,10 +39,10 @@ import com.threethan.launcher.adapter.GroupsAdapter;
 import com.threethan.launcher.browser.BrowserService;
 import com.threethan.launcher.helper.App;
 import com.threethan.launcher.helper.Compat;
-import com.threethan.launcher.helper.Debug;
 import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.helper.IconRepo;
 import com.threethan.launcher.helper.Keyboard;
+import com.threethan.launcher.helper.PanelAppList;
 import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.lib.ImageLib;
@@ -301,9 +301,6 @@ public class LauncherActivity extends Activity {
     public void reloadPackages() {
         if (sharedPreferenceEditor == null) return;
         sharedPreferenceEditor.apply();
-        sharedPreferenceEditor
-                .remove(Settings.KEY_VR_SET)
-                .remove(Settings.KEY_2D_SET);
         Platform.clearPackageLists();
         PackageManager packageManager = getPackageManager();
         Platform.installedApps = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);
@@ -459,7 +456,6 @@ public class LauncherActivity extends Activity {
         post(this::updateToolBars);
     }
     protected void resetScroll() {
-        Debug.printStackTrace();
         scrollView.scrollTo(0,0); // Reset scroll
         scrollView.smoothScrollTo(0,0); // Cancel inertia
     }
@@ -582,16 +578,25 @@ public class LauncherActivity extends Activity {
         Platform.appListBanner = Collections.synchronizedList(new ArrayList<>());
 
         for (ApplicationInfo app: Platform.installedApps) {
-            if (App.isBanner(app, this)) Platform.appListBanner.add(app);
+            if (App.isBanner(this, app)) Platform.appListBanner.add(app);
             else Platform.appListSquare.add(app);
         }
+        // Add web apps
         Set<String> webApps = sharedPreferences.getStringSet(Settings.KEY_WEBSITE_LIST, Collections.emptySet());
         for (String url:webApps) {
             ApplicationInfo applicationInfo = new ApplicationInfo();
             applicationInfo.packageName = url;
-            (sharedPreferences.getBoolean(Settings.KEY_WIDE_WEB, Settings.DEFAULT_WIDE_WEB) ?
+            (App.typeIsBanner(App.Type.TYPE_WEB) ?
                     Platform.appListBanner : Platform.appListSquare)
                     .add(applicationInfo);
+        }
+        // Add panel apps (Quest Only)
+        if (Platform.isQuest(this)) {
+            for (ApplicationInfo panelApp : PanelAppList.get()) {
+                (App.typeIsBanner(App.Type.TYPE_PANEL) ?
+                        Platform.appListBanner : Platform.appListSquare)
+                        .add(panelApp);
+            }
         }
 
         if (getAdapterSquare() != null)
@@ -608,9 +613,6 @@ public class LauncherActivity extends Activity {
     public void postDelayed(Runnable action, int ms) {
         if (mainView == null) action.run();
         else mainView.postDelayed(action, ms);
-    }
-    public void postSharedPreferenceApply() {
-        post(() -> sharedPreferenceEditor.apply());
     }
 
     public int dp(float dip) {
@@ -630,6 +632,12 @@ public class LauncherActivity extends Activity {
     public HashSet<String> getAllPackages() {
         HashSet<String> setAll = new HashSet<>();
         for (ApplicationInfo app : Platform.installedApps) setAll.add(app.packageName);
+        Set<String> webApps = sharedPreferences.getStringSet(Settings.KEY_WEBSITE_LIST, new HashSet<>());
+        setAll.addAll(webApps);
+        if (Platform.isQuest(this)) {
+            for (ApplicationInfo panelApp : PanelAppList.get())
+                setAll.add(panelApp.packageName);
+        }
         return setAll;
     }
 

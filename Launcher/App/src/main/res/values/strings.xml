@@ -15,8 +15,9 @@
     <string name="icons_margin">Icon Margin</string>
 
     <string name="apps_vr">VR Apps</string>
-    <string name="apps_2d">Phone Apps</string>
+    <string name="apps_phone">Phone Apps</string>
     <string name="apps_tv">TV Apps</string>
+    <string name="apps_panel">Panel Apps</string>
     <string name="apps_web">Websites</string>
     <string name="default_group">Use this as the default group for new</string>
     <string name="app_name_icon">Below Icons</string>
@@ -147,12 +148,10 @@
 
     <string name="default_groups_title">Default Group Settings</string>
     <string name="default_groups_info">Current Default Groups:\n\n
-        \nFor VR-Supported apps: %1$s\n
-        \nFor TV-Supported apps: %2$s\n
-        \nFor Phone apps: %3$s\n
-        \nFor Added Websites: %4$s\n\n
+        \n%1$s\n
         \nYou can change these by editing a group in edit mode.
         \nWhat would you like to do now?</string>
+
     <string name="default_groups_reset_groups">Reset All Groups &amp; Sort to Default</string>
     <string name="default_groups_resort_only">Move everything to its Default Group</string>
     <string name="default_groups_cancel">Go Back, Don\'t do Anything</string>
@@ -160,6 +159,8 @@
     <string name="default_groups_reset_groups_toast_bold">fully!</string>
     <string name="default_groups_resort_only_toast_main">Apps have been moved to</string>
     <string name="default_groups_resort_only_toast_bold">your selected default groups</string>
+
+    <string name="toast_cant_unset_group">Set another group as default to unset this one</string>
 
     <!--  Tooltips  -->
     <string name="tip_kill_process">Stop Running in the Background</string>

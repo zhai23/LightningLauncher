@@ -36,8 +36,10 @@
             android:layout_height="26dp"
             android:layout_margin="3dp"
             android:background="@drawable/ic_circ_more"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
 
         <ImageView
             android:id="@+id/imageLabel"

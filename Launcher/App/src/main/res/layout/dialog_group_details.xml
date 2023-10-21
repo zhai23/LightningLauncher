@@ -81,6 +81,7 @@
         android:orientation="horizontal">
 
         <LinearLayout
+            android:id="@+id/defaultVrContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="5dp"
@@ -114,14 +115,15 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/defaultTvContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginStart="5dp"
             android:layout_weight="1"
             android:background="@drawable/bkg_button"
             android:gravity="end"
             android:orientation="horizontal"
-            android:padding="6dp">
+            android:padding="6dp"
+            tools:visibility="gone">
 
             <TextView
                 style="@style/SettingButtonLabel"
@@ -145,6 +147,39 @@
                 tools:ignore="UseSwitchCompatOrMaterialXml" />
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/defaultPanelContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/bkg_button"
+            android:gravity="end"
+            android:orientation="horizontal"
+            android:padding="6dp">
+
+            <TextView
+                style="@style/SettingButtonLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="-7dp"
+                android:layout_weight="1"
+                android:paddingStart="5dp"
+                android:scaleX="0.95"
+                android:singleLine="true"
+                android:text="@string/apps_panel"
+                tools:ignore="NestedWeights,RtlSymmetry" />
+
+            <Switch
+                android:id="@+id/defaultPanelSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:foreground="@drawable/bkg_hover_button"
+                android:thumb="@drawable/switch_thumb_custom"
+                android:track="@drawable/switch_track_custom"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
+        </LinearLayout>
+
     </LinearLayout>
 
     <LinearLayout
@@ -155,6 +190,7 @@
         android:orientation="horizontal">
 
         <LinearLayout
+            android:id="@+id/defaultPhoneContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginEnd="5dp"
@@ -173,7 +209,7 @@
                 android:paddingStart="5dp"
                 android:scaleX="0.95"
                 android:singleLine="true"
-                android:text="@string/apps_2d"
+                android:text="@string/apps_phone"
                 tools:ignore="NestedWeights,RtlSymmetry" />
 
             <Switch
@@ -187,6 +223,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/defaultWebsiteContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
