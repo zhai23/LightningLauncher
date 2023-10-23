@@ -157,8 +157,9 @@ public class LauncherActivityEditable extends LauncherActivity {
         // If the new group button was selected, create and select a new group
         if (position >= groupsSorted.size()) {
             final String newName = settingsManager.addGroup();
-            settingsManager.selectGroup(newName);
+            super.clickGroup(position-1); //Auto-move selection and select new group
             refreshInterface();
+            postDelayed(() -> clickGroup(position-1), 500); //Auto-move selection
             return false;
         }
         final String group = groupsSorted.get(position);

@@ -133,7 +133,7 @@
     <string name="edit_off">Turn On Edit Mode</string>
     <string name="edit_on">Turn Off Edit Mode</string>
 
-    <string name="selection_hint_none">Click an app to select it or click here to select all for moving</string>
+    <string name="selection_hint_none">Click an app to select it or click here to select all</string>
     <string name="selection_hint_single">1 app selected, click a group to move it</string>
     <string name="selection_hint_multiple">%d apps selected, click a group to move them</string>
     <string name="selection_moved_single">Moved an app to %s</string>
