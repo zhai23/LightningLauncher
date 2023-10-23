@@ -345,21 +345,41 @@ public abstract class SettingsDialog {
             defaultLaunchOut.setOnCheckedChangeListener((compoundButton, value) -> {
                 a.sharedPreferenceEditor.putBoolean(Settings.KEY_DEFAULT_LAUNCH_OUT, value);
                 a.refreshInterfaceAll();
+                if (!a.sharedPreferences.getBoolean(Settings.KEY_SEEN_LAUNCH_OUT_POPUP, false)) {
+                    AlertDialog subDialog = Dialog.build(a, R.layout.dialog_launch_out_info);
+                    if (subDialog == null) return;
+                    subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
+                        a.sharedPreferenceEditor
+                                .putBoolean(Settings.KEY_SEEN_LAUNCH_OUT_POPUP, true).apply();
+                        subDialog.dismiss();
+                    });
+                }
             });
 
             Switch advancedSizingSwitch = dialog.findViewById(R.id.advancedSizingSwitch);
             advancedSizingSwitch.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_ADVANCED_SIZING, Settings.DEFAULT_ADVANCED_SIZING));
             advancedSizingSwitch.setOnCheckedChangeListener((compoundButton, value) -> {
                 a.sharedPreferenceEditor.putBoolean(Settings.KEY_ADVANCED_SIZING, value).apply();
-                if (value) Dialog.toast(a.getString(R.string.toast_advanced_sizing));
+                if (!a.sharedPreferences.getBoolean(Settings.KEY_SEEN_LAUNCH_SIZE_POPUP, false)) {
+                    AlertDialog subDialog = Dialog.build(a, R.layout.dialog_launch_size_info);
+                    if (subDialog == null) return;
+                    subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
+                        a.sharedPreferenceEditor
+                                .putBoolean(Settings.KEY_SEEN_LAUNCH_SIZE_POPUP, true).apply();
+                        subDialog.dismiss();
+                    });
+                }
             });
 
             View defaultSettingsButton = dialog.findViewById(R.id.defaultLauncherSettingsButton);
             defaultSettingsButton.setVisibility(Platform.isTv(a) ? View.GONE : View.VISIBLE);
             defaultSettingsButton.setOnClickListener((view) -> {
-                final Intent intent = new Intent(android.provider.Settings.ACTION_HOME_SETTINGS);
-                intent.setPackage("com.android.permissioncontroller");
-                a.startActivity(intent);
+                Dialog.build(a, R.layout.dialog_set_default_launcher_info);
+                dialog.findViewById(R.id.confirm).setOnClickListener((view1) -> {
+                    final Intent intent = new Intent(android.provider.Settings.ACTION_HOME_SETTINGS);
+                    intent.setPackage("com.android.permissioncontroller");
+                    a.startActivity(intent);
+                });
             });
         } else {
             dialog.findViewById(R.id.defaultLauncherSettingsButton).setVisibility(View.GONE);

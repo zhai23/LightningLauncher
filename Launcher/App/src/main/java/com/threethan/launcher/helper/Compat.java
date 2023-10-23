@@ -29,7 +29,7 @@ import java.util.Set;
 
 public abstract class Compat {
     public static final String KEY_COMPATIBILITY_VERSION = "KEY_COMPATIBILITY_VERSION";
-    public static final int CURRENT_COMPATIBILITY_VERSION = 6;
+    public static final int CURRENT_COMPATIBILITY_VERSION = 7;
     public static final boolean DEBUG_COMPATIBILITY = false;
     private static final String TAG = "Compatibility";
 
@@ -129,7 +129,8 @@ public abstract class Compat {
                         }
                         recheckSupported(launcherActivity);
                         break;
-
+                    case (7):
+                        break; // This bump was to fix an issue with clearIconCache()
                 }
             }
             Log.i(TAG, String.format("Settings Updated from v%s to v%s (Settings versions are not the same as app versions)",
@@ -140,10 +141,15 @@ public abstract class Compat {
             e.printStackTrace();
         }
 
-        Compat.clearIconCache(launcherActivity);
+        launcherActivity.needsUpdateCleanup = true;
+
         // Store the updated version
         sharedPreferenceEditor.putInt(Compat.KEY_COMPATIBILITY_VERSION, Compat.CURRENT_COMPATIBILITY_VERSION);
         sharedPreferenceEditor.apply();
+    }
+    public static void doUpdateCleanup(LauncherActivity launcherActivity) {
+        clearIconCache(launcherActivity);
+        launcherActivity.needsUpdateCleanup = false;
     }
 
     public static void renameGroup(LauncherActivity launcherActivity, String from, String to) {

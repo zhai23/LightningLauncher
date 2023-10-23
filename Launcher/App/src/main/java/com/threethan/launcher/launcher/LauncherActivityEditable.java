@@ -281,6 +281,7 @@ public class LauncherActivityEditable extends LauncherActivity {
 
         dialog.findViewById(R.id.confirm).setOnClickListener(view -> {
             String url  = urlEdit.getText().toString().toLowerCase();
+            if (StringLib.isInvalidUrl(url)) url = "https://" + url;
             if (StringLib.isInvalidUrl(url)) {
                 badUrl .setVisibility(View.VISIBLE);
                 usedUrl.setVisibility(View.GONE);
@@ -288,7 +289,7 @@ public class LauncherActivityEditable extends LauncherActivity {
             }
             String foundGroup = Platform.findWebsite(sharedPreferences, url);
             if (foundGroup != null) {
-                badUrl .setVisibility(View.GONE);
+                badUrl.setVisibility(View.GONE);
                 usedUrl.setVisibility(View.VISIBLE);
                 usedUrl.setText(context.getString(R.string.add_website_used_url, foundGroup));
                 return;

@@ -8,7 +8,7 @@
     android:padding="20dp">
 
     <View
-        android:layout_width="300dp"
+        android:layout_width="350dp"
         android:layout_height="0dp" />
 
     <TextView
@@ -23,8 +23,8 @@
         android:layout_marginBottom="10dp"
         android:autofillHints="text"
         android:backgroundTint="@android:color/white"
-        android:minHeight="90sp"
-        android:text="@string/launch_out_message"
+        android:minHeight="220sp"
+        android:text="@string/launch_size_message"
         android:textColor="@android:color/white" />
 
     <LinearLayout

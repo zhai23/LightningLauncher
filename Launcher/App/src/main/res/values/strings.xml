@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <string name="app_name">Lightning Launcher</string>
     <string name="add_group">Add Group</string>
     <string name="delete_group">Delete Group</string>
@@ -63,8 +63,14 @@
     <string name="launch_switch">Runs in Own Window</string>
     <string name="reload_icon">Refresh Icon / Banner</string>
 
-    <string name="launch_message">Launching 2D apps or websites in their own window allows for easier multitasking on Quest devices,
+    <string name="launch_out_message">Launching 2D apps or websites in their own window allows for easier multitasking on Quest devices,
         but will cause certain apps to not always launch.\n\nIf you have any issues, disable this option!</string>
+    <string name="launch_size_message">Launching 2D apps or websites in their own window allows for easier multitasking on Quest devices,
+        but will cause certain apps to not always launch.\n
+        \nSetting custom window sizes will fix apps not launching, display some apps slightly clearer, and allow for different window sizes in the flat view.
+        \nHowever, it may occasionally cause windows to get stuck or LightningLauncher to crash.\n
+        \nAll of these options can be set only on a per-app basis.\n
+        \nIf you have issues, turn this option off and make sure any apps are not set to launch in their own windows. Reboot to fix stuck windows.</string>
     <string name="hidden_groups_message_tv">Turning this option off will hide the top bar when not in Edit Mode. \n
         \nThe settings button will also be hidden when not in Edit Mode.\n
         \nInstead, press the back button on your remote to open the settings.\n
@@ -73,6 +79,11 @@
     <string name="hidden_groups_message_vr">Turning this option off will hide the top bar when not in Edit Mode. \n
         \nThe settings button will also be hidden when not in Edit Mode.\n
         \nInstead, press the back button at the top of the window or B on the controller to open settings.
+    </string>
+    <string name="set_default_launcher_message">Setting LightningLauncher as your default android home app will allow other apps to add shortcut icons to the home screen.
+        \nThis only needs to be done once.\n
+        \nIt WILL NOT replace the actual default launcher on VR devices, and with not change the operation of LightningLauncher itself.\n\n
+        If you want to do that, check Set Up Shortcuts/Shortcut Settings for shortcuts TO LightningLauncher.
     </string>
 
     <string name="website_title">Websites in Lightning Launcher</string>
@@ -113,7 +124,7 @@
     <string name="confirm">Confirm</string>
     <string name="next">Continue</string>
 
-    <string name="size_none">Open in This Window</string>
+    <string name="size_none">Open in Default Window</string>
     <string name="size_own">Open in Own Window</string>
     <string name="size_phone">Open in Phone-Style Window</string>
     <string name="size_small">Open in Small 4:3 Window</string>
@@ -239,8 +250,8 @@
 
     <string name="addons_explore">Explore Shortcut Service</string>
     <string name="addons_explore_desc">Install then activate to open LightningLauncher whenever you hover over the &quot;Explore&quot; button.
-        \n(Faster if the Explore app is disabled)</string>
-    <string name="addons_explore_disable">Disable the Explore app</string>
+        \n(You may want to disable the explore app for faster launching, or re-enable it if its icon gets hidden from the dock)</string>
+    <string name="addons_explore_disable">(Optional) Disable the Explore app</string>
     <string name="addons_explore_enable">Re-Enable the Explore app</string>
 
     <string name="addons_library">Library Shortcut Service</string>

@@ -38,14 +38,14 @@ public abstract class App {
     public enum Type {
         TYPE_PHONE, TYPE_VR, TYPE_TV, TYPE_PANEL, TYPE_WEB, TYPE_SUPPORTED, TYPE_UNSUPPORTED
     }
-    private static boolean checkVirtualReality(ApplicationInfo applicationInfo) {
+    private static boolean checkVirtualReality(ApplicationInfo applicationInfo, Activity activity) {
         if (applicationInfo.metaData == null) return false;
-        for (String key : applicationInfo.metaData.keySet()) {
-            if (key.startsWith("notch.config")) return true;
-            if (key.contains("com.oculus.supportedDevices")) return true;
-            if (key.contains("vr.application.mode")) return true;
-        }
-        return false;
+        if (applicationInfo.metaData.containsKey("com.oculus.supportedDevices")) return true;
+        if (applicationInfo.metaData.containsKey("com.oculus.ossplash")) return true;
+        if (applicationInfo.metaData.containsKey("com.samsung.android.vr.application.mode")) return true;
+        // Just matches all unity apps, good enough for now
+        return applicationInfo.metaData.containsKey("notch.config")
+                && applicationInfo.metaData.containsKey("unity.splash-enable");
     }
     private static boolean checkAndroidTv
             (ApplicationInfo applicationInfo, LauncherActivity launcherActivity) {
@@ -91,7 +91,7 @@ public abstract class App {
             // this function shouldn't be called until checking higher priorities first
             switch (appType) {
                 case TYPE_VR:
-                    isType = checkVirtualReality(applicationInfo);
+                    isType = checkVirtualReality(applicationInfo, launcherActivity);
                     break;
                 case TYPE_TV:
                     isType = checkAndroidTv(applicationInfo, launcherActivity);

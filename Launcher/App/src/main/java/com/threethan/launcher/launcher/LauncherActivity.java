@@ -91,7 +91,7 @@ public class LauncherActivity extends Activity {
     public View mainView;
     private int prevViewWidth;
     public boolean isKillable = false;
-
+    public boolean needsUpdateCleanup = false;
     // Settings
     public SettingsManager settingsManager;
     public boolean settingsVisible;
@@ -394,6 +394,7 @@ public class LauncherActivity extends Activity {
     }
     protected void postRefresh(){
         BrowserService.bind(this, browserServiceConnection, false);
+        if (needsUpdateCleanup) Compat.doUpdateCleanup(this);
     }
 
     public void refreshInterfaceAll() {
