@@ -40,10 +40,8 @@ public class AddShortcutActivity extends Activity {
 
         LauncherApps.PinItemRequest pinItemRequest = launcherApps.getPinItemRequest(getIntent());
 
-
         if (pinItemRequest == null) {
             this.finish();
-
             return;
         }
 
@@ -52,7 +50,6 @@ public class AddShortcutActivity extends Activity {
         if (shortcutInfo == null) return;
 
         Drawable iconDrawable = launcherApps.getShortcutIconDrawable(shortcutInfo, 0);
-
 
         try {
             pinItemRequest.accept();

@@ -48,7 +48,7 @@
     <string name="default_launch_out">Launch Apps in Own Window by Default</string>
     <string name="settings_save">Export Configuration</string>
     <string name="settings_load">Import Configuration</string>
-    <string name="settings_default_launcher">Set Android Default Home App</string>
+    <string name="settings_default_launcher">Set Android Default App for Shortcuts</string>
     <string name="tip_settings_default_launcher">Set LightningLauncher to let other apps add shortcuts. DOES NOT REPLACE APP LIBRARY!</string>
 
     <string name="advanced_sizing">Enable Additional Phone App Window Settings</string>
@@ -129,6 +129,7 @@
     <string name="size_phone">Open in Phone-Style Window</string>
     <string name="size_small">Open in Small 4:3 Window</string>
     <string name="size_large">Open in Large 16:9 Window</string>
+    <string name="size_huge">Open in Huge 16:9 Window</string>
 
     <string name="edit_off">Turn On Edit Mode</string>
     <string name="edit_on">Turn Off Edit Mode</string>

@@ -374,8 +374,9 @@ public abstract class SettingsDialog {
             View defaultSettingsButton = dialog.findViewById(R.id.defaultLauncherSettingsButton);
             defaultSettingsButton.setVisibility(Platform.isTv(a) ? View.GONE : View.VISIBLE);
             defaultSettingsButton.setOnClickListener((view) -> {
-                Dialog.build(a, R.layout.dialog_set_default_launcher_info);
-                dialog.findViewById(R.id.confirm).setOnClickListener((view1) -> {
+                AlertDialog minDialog = Dialog.build(a, R.layout.dialog_set_default_launcher_info);
+                assert minDialog != null;
+                minDialog.findViewById(R.id.confirm).setOnClickListener((view1) -> {
                     final Intent intent = new Intent(android.provider.Settings.ACTION_HOME_SETTINGS);
                     intent.setPackage("com.android.permissioncontroller");
                     a.startActivity(intent);

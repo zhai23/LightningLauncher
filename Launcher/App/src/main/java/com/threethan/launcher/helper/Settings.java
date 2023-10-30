@@ -3,6 +3,7 @@ package com.threethan.launcher.helper;
 import android.graphics.Color;
 
 import com.threethan.launcher.R;
+import com.threethan.launcher.launcher.chainload.ChainLoadActivityHuge;
 import com.threethan.launcher.launcher.chainload.ChainLoadActivityLarge;
 import com.threethan.launcher.launcher.chainload.ChainLoadActivityPhone;
 import com.threethan.launcher.launcher.chainload.ChainLoadActivitySmall;
@@ -133,6 +134,7 @@ public abstract class Settings {
             R.string.size_phone,
             R.string.size_small,
             R.string.size_large,
+            R.string.size_huge
     };
     /** @noinspection rawtypes*/
     public static final Class[] launchSizeClasses = {
@@ -141,6 +143,7 @@ public abstract class Settings {
             ChainLoadActivityPhone.class,
             ChainLoadActivitySmall.class,
             ChainLoadActivityLarge.class,
+            ChainLoadActivityHuge.class,
     };
     // group
     public static final String KEY_DEFAULT_GROUP = "prefDefaultGroupForType";
