@@ -243,20 +243,25 @@
     \n
     \nPressing back once you get to the launcher will just toggle edit mode, keeping you from accidentally returning to the default launcher.</string>
 
-
-    <string name="addons_messenger">Messenger App Shortcut</string>
-    <string name="addons_messenger_desc">Adds an icon, which you can pin to the dock, that looks like Facebook Messenger, but will actually open the launcher.
+    <string name="addons_facebook">Facebook App Shortcut</string>
+    <string name="addons_facebook_desc">Adds an icon, which you can pin to the dock, that looks like Facebook, but will actually open the launcher.
         \n(This won\'t install if the real Messenger app is installed)</string>
 
-    <string name="addons_explore">Explore Shortcut Service</string>
-    <string name="addons_explore_desc">Install then activate to open LightningLauncher whenever you hover over the &quot;Explore&quot; button.
-        \n(You may want to disable the explore app for faster launching, or re-enable it if its icon gets hidden from the dock)</string>
-    <string name="addons_explore_disable">(Optional) Disable the Explore app</string>
-    <string name="addons_explore_enable">Re-Enable the Explore app</string>
+    <string name="addons_explore">Horizon Feed Shortcut Service</string>
+    <string name="addons_explore_desc">Install then activate to open Lightning Launcher whenever you hover over the &quot;Horizon Feed&quot;/&quot;Oculus Explore&quot; button on the dock.</string>
 
-    <string name="addons_library">Library Shortcut Service</string>
-    <string name="addons_library_desc">Install then activate to open LightningLauncher whenever you hover over the &quot;App Library&quot; button.
+    <string name="addons_explore_disable_why">Instead of using this shortcut, you can disable the Explore app &amp; reboot to remove the feed icon.</string>
+    <string name="addons_explore_enable_why">To restore the icon &amp; fix this shortcut, re-enable the Explore app, then reboot your headset.</string>
+
+    <string name="addons_explore_disable">(Optional) Disable the Explore app</string>
+    <string name="addons_explore_enable">Re-Enable Explore app</string>
+
+    <string name="addons_library">App Library Shortcut Service</string>
+    <string name="addons_library_desc">Install then activate to open Lightning Launcher whenever you hover over the &quot;App Library&quot; button on the dock.
         \n(This makes it hard to open the quest\'s app library)</string>
+    <string name="addons_people">People Shortcut Service</string>
+    <string name="addons_people_desc">Install then activate to open Lightning Launcher whenever you hover over the &quot;People&quot; button on the dock.
+        \n(This makes it hard to open the quest\'s people app)</string>
 
     <string name="addons_install">Install</string>
     <string name="addons_update">Update</string>

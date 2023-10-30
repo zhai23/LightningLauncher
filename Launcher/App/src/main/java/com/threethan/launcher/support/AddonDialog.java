@@ -32,20 +32,26 @@ public abstract class AddonDialog {
         if (dialog == null) return;
         activityRef = new WeakReference<>(a);
 
-        View addonMessenger = dialog.findViewById(R.id.addonMessenger);
-        if (addonMessenger!=null) updateAddonButton(a, addonMessenger, Updater.TAG_MESSENGER_SHORTCUT);
+        View addonFacebook = dialog.findViewById(R.id.addonFacebook);
+        if (addonFacebook!=null) updateAddonButton(a, addonFacebook, Updater.TAG_FACEBOOK_SHORTCUT);
 
         View addonExplore = dialog.findViewById(R.id.addonExplore);
         if (addonExplore!=null) {
-            updateAddonButton(a, addonExplore, Updater.TAG_EXPLORE_SHORTCUT);
+            updateAddonButton(a, addonExplore, Updater.TAG_HORIZON_FEED_SHORTCUT);
             dialog.findViewById(R.id.disableExplore).setOnClickListener(v -> App.openInfo(a, AppData.EXPLORE_PACKAGE));
+            ((TextView) dialog.findViewById(R.id.disableExploreWhy)).setText(
+                    App.isPackageEnabled(a, AppData.EXPLORE_PACKAGE) ?
+                            R.string.addons_explore_disable_why : R.string.addons_explore_enable_why);
             ((TextView) dialog.findViewById(R.id.disableExploreText)).setText(
                     App.isPackageEnabled(a, AppData.EXPLORE_PACKAGE) ?
                     R.string.addons_explore_disable : R.string.addons_explore_enable);
         }
 
         View addonLibrary = dialog.findViewById(R.id.addonLibrary);
-        if (addonLibrary!=null) updateAddonButton(a, addonLibrary, Updater.TAG_LIBRARY_SHORTCUT);
+        if (addonLibrary!=null) updateAddonButton(a, addonLibrary, Updater.TAG_APP_LIBRARY_SHORTCUT);
+
+        View addonPeople = dialog.findViewById(R.id.addonPeople);
+        if (addonLibrary!=null) updateAddonButton(a, addonPeople, Updater.TAG_PEOPLE_SHORTCUT);
 
         View addonAndroidTv = dialog.findViewById(R.id.addonAndroidTv);
         if (addonAndroidTv!=null) updateAddonButton(a, addonAndroidTv, Updater.TAG_ANDROID_TV_SHORTCUT);

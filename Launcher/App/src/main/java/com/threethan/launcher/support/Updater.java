@@ -53,17 +53,19 @@ public class Updater {
     private static final String UPDATE_URL = "https://api.github.com/repos/threethan/LightningLauncher/releases/latest";
     private static final String TEMPLATE_URL = "https://github.com/threethan/LightningLauncher/releases/download/%s/%s.apk";
     private static final String NAME_MAIN = "LightningLauncher";
-    public static final String TAG_MESSENGER_SHORTCUT = "TAG_MESSENGER_SHORTCUT";
-    public static final String TAG_LIBRARY_SHORTCUT = "TAG_LIBRARY_SHORTCUT";
-    public static final String TAG_EXPLORE_SHORTCUT = "TAG_EXPLORE_SHORTCUT";
+    public static final String TAG_FACEBOOK_SHORTCUT = "TAG_FACEBOOK_SHORTCUT";
+    public static final String TAG_APP_LIBRARY_SHORTCUT = "TAG_APP_LIBRARY_SHORTCUT";
+    public static final String TAG_PEOPLE_SHORTCUT = "TAG_PEOPLE_SHORTCUT";
+    public static final String TAG_HORIZON_FEED_SHORTCUT = "TAG_FEED_SHORTCUT";
     public static final String TAG_ANDROID_TV_SHORTCUT = "TAG_ANDROID_TV_SHORTCUT";
-    public static final String ADDON_RELEASE_TAG = "addons2";
+    public static final String ADDON_RELEASE_TAG = "addons6.2.0";
     public static final String APK_DIR = "/Content/TemporaryDownloadedApk/";
     public static boolean anyDialogVisible = false;
     public static final Addon[] addons = {
-            new Addon(TAG_MESSENGER_SHORTCUT, "MessengerRedirect", "com.facebook.orca", "6.0.0", false),
-            new Addon(TAG_LIBRARY_SHORTCUT, "LibraryShortcutService", "com.threethan.launcher.service.library", "6.0.0", true),
-            new Addon(TAG_EXPLORE_SHORTCUT, "ExploreShortcutService", "com.threethan.launcher.service.explore", "6.0.0", true),
+            new Addon(TAG_FACEBOOK_SHORTCUT, "ShortcutFaceebook", "com.facebook.facebookvr", "6.2.0", false),
+            new Addon(TAG_PEOPLE_SHORTCUT, "ShortcutPeople", "com.threethan.launcher.service.people", "6.2.0", true),
+            new Addon(TAG_APP_LIBRARY_SHORTCUT, "ShortcutAppLibrary", "com.threethan.launcher.service.library", "6.2.0", true),
+            new Addon(TAG_HORIZON_FEED_SHORTCUT, "ShortcutHorizonFeed", "com.threethan.launcher.service.explore", "6.2.0", true),
             new Addon(TAG_ANDROID_TV_SHORTCUT, "LM (ATV) - 1.0.4", "com.wolf.google.lm", "1.0.4", false,
                     "https://xdaforums.com/attachments/lm-atv-1-0-4-apk.5498333/"),
     };
