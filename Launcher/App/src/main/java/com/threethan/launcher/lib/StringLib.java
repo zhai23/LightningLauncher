@@ -68,11 +68,6 @@ public class StringLib {
             return string.split("//")[0] + "//" + string.split("/")[2];
         } catch (Exception ignored) { return string; }
     }
-    public static String baseUrlWithoutScheme(String string) {
-        try {
-            return string.split("/")[2];
-        } catch (Exception ignored) { return string; }
-    }
     public static final String GOOGLE_SEARCH_PRE = "https://www.google.com/search?q=";
     public static final String YOUTUBE_SEARCH_PRE = "https://www.youtube.com/results?search_query=";
     public static final String APKPURE_SEARCH_PRE = "https://apkpure.com/search?q=";

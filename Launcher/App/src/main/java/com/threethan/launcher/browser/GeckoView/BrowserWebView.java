@@ -28,12 +28,6 @@ import java.util.Objects;
  */
 @SuppressLint("ViewConstructor")
 public class BrowserWebView extends GeckoView {
-    @Override
-    protected void onVisibilityChanged(@NonNull View changedView, int visibility) {
-        // Pretend we're always visible
-        if (visibility == VISIBLE) super.onVisibilityChanged(changedView, visibility);
-    }
-
     // Delegates
     private final CustomNavigationDelegate navigationDelegate;
     private final CustomHistoryDelgate historyDelegate;
@@ -69,14 +63,14 @@ public class BrowserWebView extends GeckoView {
 
     public void loadUrl(String url) {
         if (getSession() == null) return;
-        getSession().loadUri(url);
+        getSession().load(new GeckoSession.Loader().uri(url).flags(GeckoSession.LOAD_FLAGS_BYPASS_CACHE | GeckoSession.LOAD_FLAGS_FORCE_ALLOW_DATA_URI | GeckoSession.LOAD_FLAGS_BYPASS_CACHE | GeckoSession.LOAD_FLAGS_ALLOW_POPUPS));
     }
     public void reload() {
         if (getSession() == null) return;
         getSession().reload();
     }
     public void kill() {
-        super.onVisibilityChanged(this, View.GONE);
+        Objects.requireNonNull(getSession()).close();
         releaseSession();
     }
 
@@ -90,6 +84,7 @@ public class BrowserWebView extends GeckoView {
 
         GeckoSessionSettings sessionSettings = session.getSettings();
         sessionSettings.setUserAgentMode(GeckoSessionSettings.USER_AGENT_MODE_DESKTOP);
+
         session.setPriorityHint(GeckoSession.PRIORITY_HIGH);
 
         navigationDelegate = new CustomNavigationDelegate(mActivity);
@@ -105,12 +100,10 @@ public class BrowserWebView extends GeckoView {
         session.setProgressDelegate(progressDelegate);
         session.setContentDelegate(contentDelegate);
         session.setPromptDelegate(promptDelegate);
-        
+
         setSession(session);
         Objects.requireNonNull(mSession).getCompositorController().setClearColor(0xFF2A2A2E);
         coverUntilFirstPaint(0xFF2A2A2E);
-
-
     }
 }
 

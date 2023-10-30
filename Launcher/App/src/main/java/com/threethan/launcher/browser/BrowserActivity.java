@@ -161,7 +161,8 @@ public class BrowserActivity extends Activity {
         });
         topBarEdit.findViewById(R.id.confirm).setOnClickListener((view) -> {
             String url = urlEdit.getText().toString();
-            if (StringLib.isInvalidUrl(url)) url = StringLib.googleSearchForUrl(url);
+            if (!StringLib.isInvalidUrl("https://" + url)) url = "https://" + url;
+            else if (StringLib.isInvalidUrl(url)) url = StringLib.googleSearchForUrl(url);
             w.loadUrl(url);
             updateButtonsAndUrl(url);
             topBar.setVisibility(View.VISIBLE);
@@ -176,7 +177,7 @@ public class BrowserActivity extends Activity {
 
         addHome = findViewById(R.id.addHome);
         addHome.setOnClickListener(view -> {
-//            Platform.addWebsite(sharedPreferences, currentUrl, w.getTitle());
+            Platform.addWebsite(sharedPreferences, currentUrl);
             addHome.setVisibility(View.GONE);
         });
     }
@@ -190,16 +191,6 @@ public class BrowserActivity extends Activity {
         back.setVisibility(w.canGoBack()       && !w.clearQueued ? View.VISIBLE : View.GONE);
         forward.setVisibility(w.canGoForward() && !w.clearQueued ? View.VISIBLE : View.GONE);
     }
-//    private void updateDark(boolean newDark) {
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-//            dark.setVisibility(newDark ? View.GONE : View.VISIBLE);
-//            light.setVisibility(!newDark ? View.GONE : View.VISIBLE);
-//            sharedPreferences.edit().putBoolean(KEY_WEBSITE_DARK + baseUrl, newDark).apply();
-//
-//            if (w != null)
-//                w.getSettings().setForceDark(newDark ? WebSettings.FORCE_DARK_ON : WebSettings.FORCE_DARK_OFF);
-//        }
-//    }
     private void reload() {
         w.reload();
     }
@@ -244,6 +235,7 @@ public class BrowserActivity extends Activity {
         currentUrl = url;
 
         addHome.setVisibility(View.VISIBLE);
+        if (!StringLib.isInvalidUrl("https://" + url)) url = "https://" + url;
         if (StringLib.isInvalidUrl(url)) addHome.setVisibility(View.GONE);
         else if (StringLib.compareUrl(baseUrl, url) && !isEphemeral()) addHome.setVisibility(View.GONE);
         else {

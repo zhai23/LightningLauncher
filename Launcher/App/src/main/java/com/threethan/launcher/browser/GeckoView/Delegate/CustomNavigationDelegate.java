@@ -1,21 +1,24 @@
 package com.threethan.launcher.browser.GeckoView.Delegate;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.threethan.launcher.browser.BrowserActivity;
-import com.threethan.launcher.browser.GeckoView.MobileForcedWebsites;
 
 import org.mozilla.geckoview.AllowOrDeny;
 import org.mozilla.geckoview.GeckoResult;
 import org.mozilla.geckoview.GeckoSession;
 import org.mozilla.geckoview.GeckoSessionSettings;
+import org.mozilla.geckoview.WebRequestError;
 
 import java.util.List;
 
 public class CustomNavigationDelegate implements GeckoSession.NavigationDelegate {
     public boolean canGoBack = false;
     public boolean canGoForward = false;
+    public boolean spotifixed = false;
     public String currentUrl = "";
 
     private final BrowserActivity mActivity;
@@ -31,22 +34,34 @@ public class CustomNavigationDelegate implements GeckoSession.NavigationDelegate
     public void onCanGoForward(@NonNull GeckoSession session, boolean canGoForward) {
         this.canGoForward = canGoForward;
     }
-
     @Override
     public void onLocationChange(@NonNull GeckoSession session, @Nullable String url,
                                  @NonNull List<GeckoSession.PermissionDelegate.ContentPermission> perms) {
         GeckoSession.NavigationDelegate.super.onLocationChange(session, url, perms);
+
+        if (url != null && !url.isEmpty() && !url.equals("about:blank")) {
+            currentUrl = url;
+            mActivity.updateButtonsAndUrl(currentUrl);
+        }
     }
 
     @Nullable
     @Override
     public GeckoResult<AllowOrDeny> onLoadRequest(@NonNull GeckoSession session, @NonNull LoadRequest request) {
+        if (request.uri.contains("open.spotify.com")) {
+            session.getSettings().setUserAgentMode(GeckoSessionSettings.USER_AGENT_MODE_VR);
+        } else {
+            session.getSettings().setUserAgentMode(GeckoSessionSettings.USER_AGENT_MODE_DESKTOP);
+        }
+
         this.currentUrl = request.uri;
-        session.getSettings().setUserAgentMode(MobileForcedWebsites.check(currentUrl)
-                ? GeckoSessionSettings.USER_AGENT_MODE_MOBILE
-                : GeckoSessionSettings.USER_AGENT_MODE_DESKTOP
-        );
         this.mActivity.updateButtonsAndUrl(currentUrl);
         return GeckoSession.NavigationDelegate.super.onLoadRequest(session, request);
+    }
+    @Nullable
+    @Override
+    public GeckoResult<String> onLoadError(@NonNull GeckoSession session, @Nullable String uri, @NonNull WebRequestError error) {
+        Log.e("LOAD ERR!", uri);
+        return GeckoSession.NavigationDelegate.super.onLoadError(session, uri, error);
     }
 }

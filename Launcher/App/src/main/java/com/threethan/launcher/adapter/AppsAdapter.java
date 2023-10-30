@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -149,9 +150,9 @@ public class AppsAdapter extends BaseAdapter{
         return position;
     }
 
-    Map<String, ViewHolder> viewCacheSquare = new ConcurrentHashMap<>();
-    Map<String, ViewHolder> viewCacheBanner = new ConcurrentHashMap<>();
-    private Map<String, ViewHolder> getViewCache() {
+    Map<ApplicationInfo, ViewHolder> viewCacheSquare = new ConcurrentHashMap<>();
+    Map<ApplicationInfo, ViewHolder> viewCacheBanner = new ConcurrentHashMap<>();
+    private Map<ApplicationInfo, ViewHolder> getViewCache() {
         return isBanner ? viewCacheBanner : viewCacheSquare;
     }
 
@@ -160,8 +161,8 @@ public class AppsAdapter extends BaseAdapter{
     public View getView(int position, View convertView, ViewGroup parent) {
         final ApplicationInfo currentApp = currentAppList.get(position);
 
-        if (getViewCache().containsKey(Icon.cacheName(currentApp.packageName))) {
-            ViewHolder holder = getViewCache().get(Icon.cacheName(currentApp.packageName));
+        if (getViewCache().containsKey(currentApp)) {
+            ViewHolder holder = getViewCache().get(currentApp);
             if (holder != null) {
                 if (firstView == null) firstView = holder.view;
                 holder.app = currentApp;
@@ -208,7 +209,7 @@ public class AppsAdapter extends BaseAdapter{
         new LoadIconTask().execute(this, currentApp, launcherActivity, holder.imageView, holder.imageViewBg);
         holder.view.post(() -> updateView(holder));
 
-        getViewCache().put(Icon.cacheName(currentApp.packageName), holder);
+        getViewCache().put(currentApp, holder);
         return convertView;
     }
     public void clearViewCache() {
@@ -339,12 +340,19 @@ public class AppsAdapter extends BaseAdapter{
             // No longer sets icon here but that should be fine
         }
     }
+    @SuppressLint("SetTextI18n")
     private void showAppDetails(ApplicationInfo currentApp) {
         // Set View
         AlertDialog dialog = Dialog.build(launcherActivity, R.layout.dialog_app_details);
         if (dialog == null) return;
         // Package Name
         ((TextView) dialog.findViewById(R.id.packageName)).setText(currentApp.packageName);
+
+        PackageInfo packageInfo = null;
+        try {
+            packageInfo = launcherActivity.getPackageManager().getPackageInfo(currentApp.packageName, 0);
+            ((TextView) dialog.findViewById(R.id.packageVersion)).setText("v"+packageInfo.versionName);
+        } catch (PackageManager.NameNotFoundException ignored) {}
         // Info Action
         dialog.findViewById(R.id.info).setOnClickListener(view -> App.openInfo(launcherActivity, currentApp.packageName));
         dialog.findViewById(R.id.uninstall).setOnClickListener(view -> {

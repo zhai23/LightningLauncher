@@ -20,6 +20,6 @@ public class CustomProgressDelegate implements GeckoSession.ProgressDelegate {
     @Override
     public void onPageStop(@NonNull GeckoSession session, boolean success) {
         GeckoSession.ProgressDelegate.super.onPageStop(session, success);
-        if (mActivity !=null) mActivity.stopLoading();
+        if (mActivity != null) mActivity.stopLoading();
     }
 }

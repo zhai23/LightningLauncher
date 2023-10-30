@@ -19,6 +19,7 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.Environment;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -35,6 +36,7 @@ import com.threethan.launcher.launcher.LauncherActivity;
 import com.threethan.launcher.lib.FileLib;
 import com.threethan.launcher.support.Updater;
 
+import org.mozilla.geckoview.ContentBlocking;
 import org.mozilla.geckoview.GeckoRuntime;
 import org.mozilla.geckoview.GeckoRuntimeSettings;
 
@@ -86,6 +88,9 @@ public class BrowserService extends Service {
     public static GeckoRuntime getRuntime() {
         return sRuntime;
     }
+
+    private static final String EXTENSION_LOCATION = "resource://android/assets/internalwebext/";
+    private static final String EXTENSION_ID = "fixes@internal.ext";
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -113,12 +118,16 @@ public class BrowserService extends Service {
                 // GeckoRuntime can only be initialized once per process
                 GeckoRuntimeSettings.Builder set = new GeckoRuntimeSettings.Builder()
                         .preferredColorScheme(GeckoRuntimeSettings.COLOR_SCHEME_DARK)
-                        .consoleOutput(true)
-                        .aboutConfigEnabled(true)
-                        .allowInsecureConnections(GeckoRuntimeSettings.ALLOW_ALL)
+                        .consoleOutput(false)
                         .loginAutofillEnabled(true);
                 BrowserService.sRuntime = GeckoRuntime.create(this, set.build());
             }
+            sRuntime.getWebExtensionController()
+                    .ensureBuiltIn(EXTENSION_LOCATION, EXTENSION_ID)
+                    .accept(
+                            extension -> Log.i("MessageDelegate", "Extension installed: " + extension),
+                            e -> Log.e("MessageDelegate", "Error registering WebExtension", e)
+                    );
 
             webView = new BrowserWebView(activity, activity);
             webView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -126,65 +135,11 @@ public class BrowserService extends Service {
             webViewByBaseUrl.put(url, webView);
             activityByBaseUrl.put(url, activity);
 
-//            webView.setInitialScale(Platform.isTv(activity) ? 160 : 120);
-
-            // Change a number of settings to behave more like a normal browser
-//            final WebSettings ws = webView.getSettings();
-//            ws.setLoadWithOverviewMode(true);
-//            ws.setJavaScriptEnabled(true);
-//            ws.setAllowFileAccess(true);
-//            ws.setUserAgentString(UA);
-//            ws.setDomStorageEnabled(true);
-//            ws.setLoadWithOverviewMode(true);
-//            ws.setBuiltInZoomControls(true);
-//            ws.setDisplayZoomControls(false);
-//            ws.setSupportZoom(true);
-//            ws.setMediaPlaybackRequiresUserGesture(false);
-//            ws.setDefaultTextEncodingName("utf-8");
-//            ws.setJavaScriptCanOpenWindowsAutomatically(true);
-//            if (Platform.isTv(activity)) //noinspection deprecation
-//                ws.setRenderPriority(WebSettings.RenderPriority.HIGH); // May improve performance
-//            // Enable Cookies
-//            CookieManager.getInstance().setAcceptCookie(true);
-//            CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true);
-
-//            // Set website's to use chrome's internal dark mode
-//            if (Build.VERSION.SDK_INT >= 29)
-//                ws.setForceDark(activity.sharedPreferences
-//                .getBoolean(BrowserActivity.KEY_WEBSITE_DARK+activity.baseUrl, false)
-//                ? WebSettings.FORCE_DARK_ON : WebSettings.FORCE_DARK_OFF);
-
             activity.findViewById(R.id.loading).setVisibility(View.VISIBLE);
             webView.loadUrl(url);
         }
-//        webView.setActivity(activity);
         updateStatus();
 
-//        webView.setDownloadListener((url1, userAgent, contentDisposition, mimetype, contentLength) -> {
-//            DownloadManager.Request request = new DownloadManager.Request(
-//                    Uri.parse(url1));
-//            final String filename= URLUtil.guessFileName(url1, contentDisposition, mimetype);
-//
-//            request.allowScanningByMediaScanner();
-//            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED); //Notify client once download is completed!
-//
-//            if (filename.endsWith(".apk")) request.setDestinationInExternalFilesDir(activity, Updater.APK_DIR, filename);
-//            else try {
-//                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, filename);
-//            } catch (IllegalStateException ignored) {
-//                // If we can't access downloads dir
-//                request.setDestinationInExternalFilesDir(this, Environment.DIRECTORY_DOWNLOADS, filename);
-//            }
-//
-//            DownloadManager manager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
-//
-//            registerReceiver(onDownloadComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
-//            final long id = manager.enqueue(request);
-//            downloadFilenameById.put(id, filename);
-//            downloadActivityById.put(id, activity);
-//
-//            Dialog.toast(getString(R.string.web_download_started), filename, true);
-//        });
         return webView;
     }
 
