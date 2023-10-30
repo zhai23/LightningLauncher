@@ -36,7 +36,7 @@ public class StringLib {
                 .replace("https:","").replace("www.","");
     }
     public static boolean isInvalidUrl(String url) {
-        return (!url.contains("://") || !url.contains("."));
+        return ((!url.contains("://") || !url.contains(".")));
     }
     public static String toValidFilename(String string) {
         if (string.startsWith("json://")) // Hash json that would otherwise be too long
@@ -63,29 +63,35 @@ public class StringLib {
         return builder.toString();
     }
 
-    public static String baseUrl(String string) {
+    public static String baseUrlWithScheme(String string) {
         try {
             return string.split("//")[0] + "//" + string.split("/")[2];
         } catch (Exception ignored) { return string; }
     }
-
+    public static String baseUrlWithoutScheme(String string) {
+        try {
+            return string.split("/")[2];
+        } catch (Exception ignored) { return string; }
+    }
     public static final String GOOGLE_SEARCH_PRE = "https://www.google.com/search?q=";
+    public static final String YOUTUBE_SEARCH_PRE = "https://www.youtube.com/results?search_query=";
+    public static final String APKPURE_SEARCH_PRE = "https://apkpure.com/search?q=";
+    public static final String APKMIRROR_SEARCH_PRE = "https://www.apkmirror.com/?post_type=app_release&searchtype=apk&s=";
 
     public static String googleSearchForUrl(String string) {
         return GOOGLE_SEARCH_PRE+string;
     }
-    public static final String YOUTUBE_SEARCH_PRE = "https://www.youtube.com/results?search_query=";
     public static String youTubeSearchForUrl(String string) {
         return YOUTUBE_SEARCH_PRE+string;
     }
-    public static final String APKPURE_SEARCH_PRE = "https://apkpure.com/search?q=";
 
     public static String apkPureSearchForUrl(String string) {
         return APKPURE_SEARCH_PRE+string;
     }
-
-
+    public static String apkMirrorSearchForUrl(String string) {
+        return APKMIRROR_SEARCH_PRE+string;
+    }
     public static boolean isSearchUrl(String url) {
-        return url.contains("search?q=") || url.contains("?search_query=");
+        return url.contains("search?q=") || url.contains("?search_query=") || url.contains("&searchtype=");
     }
 }

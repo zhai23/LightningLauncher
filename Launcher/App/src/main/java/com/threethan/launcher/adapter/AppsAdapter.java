@@ -118,6 +118,9 @@ public class AppsAdapter extends BaseAdapter{
             final ApplicationInfo apkPureProxy = new ApplicationInfo();
             apkPureProxy.packageName = StringLib.apkPureSearchForUrl(text);
             currentAppList.add(apkPureProxy);
+            final ApplicationInfo apkMirrorProxy = new ApplicationInfo();
+            apkMirrorProxy.packageName = StringLib.apkMirrorSearchForUrl(text);
+            currentAppList.add(apkMirrorProxy);
         }
     }
     public void setLauncherActivity(LauncherActivity val) {

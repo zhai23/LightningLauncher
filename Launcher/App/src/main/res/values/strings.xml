@@ -217,6 +217,7 @@
     <string name="preset_discord">discord.com/app</string>
     <string name="preset_spotify">open.spotify.com</string>
     <string name="preset_tidal">listen.tidal.com</string>
+    <string name="preset_apkmirror">apkmirror.com</string>
     <string name="preset_apkpure">apkpure.com</string>
 
     <string name="notification_title_n">LightningLauncher: No Websites Running</string>
@@ -288,8 +289,26 @@
     <string name="web_apk_prompt_title">APK File Downloaded</string>
     <string name="web_apk_prompt_message_pre">Finished downloading %1$s</string>
     <string name="web_apk_prompt_message">Would you like to install it, or save it to your downloads folder?\n
-\nNote that this file was downloaded from the internet, and may be harmful!</string>
+    \nNote that this file was downloaded from the internet, and may be harmful!</string>
     <string name="web_apk_prompt_install">Install</string>
     <string name="web_apk_prompt_move">Save</string>
     <string name="web_apk_prompt_delete">Delete</string>
+
+    <!-- Gecko -->
+    <string name="before_unload_message">This page is asking you to confirm that you want to leave - data you have entered may not be saved</string>
+    <string name="before_unload_title">Are you sure?</string>
+    <string name="before_unload_leave_page">Leave Page</string>
+    <string name="before_unload_stay">Stay on Page</string>
+
+    <string name="repost_confirm_message">To display this page, GeckoViewExample must send information that will repeat any action (such as a search or order confirmation) that was performed earlier.</string>
+    <string name="repost_confirm_title">Are you sure?</string>
+    <string name="repost_confirm_resend">Resend</string>
+    <string name="repost_confirm_cancel">Cancel</string>
+
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="clear_field">Clear</string>
+
+    <string name="wait">Wait</string>
+    <string name="stop">Stop</string>
 </resources>

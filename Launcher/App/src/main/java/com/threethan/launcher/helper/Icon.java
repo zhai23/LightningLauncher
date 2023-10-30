@@ -17,11 +17,9 @@ import com.threethan.launcher.R;
 import com.threethan.launcher.launcher.LauncherActivity;
 import com.threethan.launcher.lib.ImageLib;
 import com.threethan.launcher.lib.StringLib;
-import com.threethan.launcher.support.SettingsManager;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -44,7 +42,7 @@ public abstract class Icon {
     }
 
     public static String cacheName(String packageName) {
-        if (App.isWebsite(packageName)) return StringLib.baseUrl(packageName);
+        if (App.isWebsite(packageName)) return StringLib.baseUrlWithScheme(packageName);
         else return packageName;
     }
     public static void updateIcon(File iconFile, String packageName, ImageView imageView) {

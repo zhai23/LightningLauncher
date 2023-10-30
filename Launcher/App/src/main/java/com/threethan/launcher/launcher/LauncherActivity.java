@@ -3,7 +3,6 @@ package com.threethan.launcher.launcher;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.ActivityOptions;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -25,7 +24,6 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
-import android.view.WindowMetrics;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -40,11 +38,11 @@ import com.threethan.launcher.adapter.AppsAdapter;
 import com.threethan.launcher.adapter.GroupsAdapter;
 import com.threethan.launcher.browser.BrowserService;
 import com.threethan.launcher.helper.App;
+import com.threethan.launcher.helper.AppData;
 import com.threethan.launcher.helper.Compat;
 import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.helper.IconRepo;
 import com.threethan.launcher.helper.Keyboard;
-import com.threethan.launcher.helper.AppData;
 import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.lib.ImageLib;
@@ -134,6 +132,7 @@ public class LauncherActivity extends Activity {
 
 
     private void onBound() {
+        hasBound = true;
         isKillable = false;
         final boolean hasView = launcherService.checkForExistingView();
 
@@ -276,7 +275,6 @@ public class LauncherActivity extends Activity {
         if (!settingsVisible) SettingsDialog.showSettings(this);
     }
 
-    private int myPlatformChangeIndex = 0;
     @Override
     protected void onResume() {
         isKillable = false;
@@ -312,6 +310,7 @@ public class LauncherActivity extends Activity {
     }
 
     public void recheckPackages() {
+        int myPlatformChangeIndex = 0;
         if (Platform.changeIndex > myPlatformChangeIndex) reloadPackages();
         else try {
             new RecheckPackagesTask().execute(this);
@@ -647,6 +646,7 @@ public class LauncherActivity extends Activity {
 
     // Services
     public BrowserService browserService;
+    private boolean hasBound = false;
 
     /** Defines callbacks for service binding, passed to bindService(). */
     private final ServiceConnection launcherServiceConnection = new ServiceConnection() {
@@ -657,7 +657,7 @@ public class LauncherActivity extends Activity {
             // We've bound to LocalService, cast the IBinder and get LocalService instance.
             LauncherService.LocalBinder binder = (LauncherService.LocalBinder) service;
             launcherService = binder.getService();
-            onBound();
+            if (!hasBound) onBound();
         }
 
         @Override

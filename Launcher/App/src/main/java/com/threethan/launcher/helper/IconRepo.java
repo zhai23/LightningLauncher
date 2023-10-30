@@ -96,7 +96,7 @@ public abstract class IconRepo {
                 try {
                     for (final String url : App.isWebsite(app) ? ICON_URLS_WEB : (isWide ? ICON_URLS_BANNER : ICON_URLS_SQUARE)) {
                         final String urlTLD = App.isWebsite(app) ?
-                                StringLib.baseUrl(pkgName) :
+                                StringLib.baseUrlWithScheme(pkgName) :
                                 pkgName.replace("://","").replace(PanelApp.packagePrefix, "");
                         if (downloadIconFromUrl(activity, String.format(url, urlTLD), iconFile)) {
                             activity.runOnUiThread(callback);

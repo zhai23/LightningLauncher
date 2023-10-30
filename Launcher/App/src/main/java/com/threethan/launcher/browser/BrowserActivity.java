@@ -15,10 +15,6 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.webkit.WebResourceRequest;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -26,6 +22,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.threethan.launcher.R;
+import com.threethan.launcher.browser.GeckoView.BrowserWebView;
 import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.helper.Keyboard;
 import com.threethan.launcher.helper.Platform;
@@ -60,6 +57,7 @@ public class BrowserActivity extends Activity {
     View dark;
     View light;
     View background;
+    View loading;
     View addHome;
     public SharedPreferences sharedPreferences;
     // Keys
@@ -68,11 +66,6 @@ public class BrowserActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (savedInstanceState != null) {
-            w.restoreState(savedInstanceState);
-            return;
-        }
 
         Log.v("LightningLauncher", "Starting Browser Activity");
 
@@ -83,6 +76,7 @@ public class BrowserActivity extends Activity {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
         background = findViewById(R.id.container);
+        loading = findViewById(R.id.loading);
 
         urlPre = findViewById(R.id.urlPre);
         urlMid = findViewById(R.id.urlMid);
@@ -91,6 +85,7 @@ public class BrowserActivity extends Activity {
         Bundle extras = getIntent().getExtras();
         assert extras != null;
         baseUrl = Objects.requireNonNull(extras.getString("url"));
+        setTitle(baseUrl);
 
         // Buttons
         back = findViewById(R.id.back);
@@ -138,14 +133,11 @@ public class BrowserActivity extends Activity {
         View exit = findViewById(R.id.exit);
         exit.setOnClickListener((View) -> finish());
 
-        zoomIn.setOnClickListener(view -> w.zoomIn());
-        zoomOut.setOnClickListener(view -> w.zoomOut());
-
-        dark .setOnClickListener(view -> updateDark(true ));
-        light.setOnClickListener(view -> updateDark(false));
+//        dark .setOnClickListener(view -> updateDark(true ));
+//        light.setOnClickListener(view -> updateDark(false));
+//        updateDark(isDark);
 
         boolean isDark = sharedPreferences.getBoolean(BrowserActivity.KEY_WEBSITE_DARK+baseUrl, true);
-        updateDark(isDark);
 
         // Edit URL
         View urlLayout = findViewById(R.id.urlLayout);
@@ -156,7 +148,7 @@ public class BrowserActivity extends Activity {
             topBar    .setVisibility(View.GONE);
             topBarEdit.setVisibility(View.VISIBLE);
             urlEdit.setText(currentUrl);
-//            urlEdit.post(urlEdit::requestFocus);
+            urlEdit.post(urlEdit::requestFocus);
             urlEdit.postDelayed(() -> Keyboard.show(this), 100);
         });
         urlEdit.setOnKeyListener((v, keyCode, event) -> {
@@ -184,7 +176,7 @@ public class BrowserActivity extends Activity {
 
         addHome = findViewById(R.id.addHome);
         addHome.setOnClickListener(view -> {
-            Platform.addWebsite(sharedPreferences, currentUrl, w.getTitle());
+//            Platform.addWebsite(sharedPreferences, currentUrl, w.getTitle());
             addHome.setVisibility(View.GONE);
         });
     }
@@ -192,29 +184,42 @@ public class BrowserActivity extends Activity {
     private void updateButtonsAndUrl() {
         updateButtonsAndUrl(w.getUrl());
     }
-    private void updateButtonsAndUrl(String url) {
+    public void updateButtonsAndUrl(String url) {
         if (w == null) return;
         updateUrl(url);
         back.setVisibility(w.canGoBack()       && !w.clearQueued ? View.VISIBLE : View.GONE);
         forward.setVisibility(w.canGoForward() && !w.clearQueued ? View.VISIBLE : View.GONE);
     }
-    private void updateZoom(float scale) {
-        zoomIn .setVisibility(scale < 2.00 ? View.VISIBLE : View.GONE);
-        zoomOut.setVisibility(scale > (Platform.isTv(this) ? 1.61 : 1.21) ? View.VISIBLE : View.GONE);
-    }
-    private void updateDark(boolean newDark) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            dark.setVisibility(newDark ? View.GONE : View.VISIBLE);
-            light.setVisibility(!newDark ? View.GONE : View.VISIBLE);
-            sharedPreferences.edit().putBoolean(KEY_WEBSITE_DARK + baseUrl, newDark).apply();
-
-            if (w != null)
-                w.getSettings().setForceDark(newDark ? WebSettings.FORCE_DARK_ON : WebSettings.FORCE_DARK_OFF);
-        }
-    }
+//    private void updateDark(boolean newDark) {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+//            dark.setVisibility(newDark ? View.GONE : View.VISIBLE);
+//            light.setVisibility(!newDark ? View.GONE : View.VISIBLE);
+//            sharedPreferences.edit().putBoolean(KEY_WEBSITE_DARK + baseUrl, newDark).apply();
+//
+//            if (w != null)
+//                w.getSettings().setForceDark(newDark ? WebSettings.FORCE_DARK_ON : WebSettings.FORCE_DARK_OFF);
+//        }
+//    }
     private void reload() {
         w.reload();
     }
+
+    public void startLoading() {
+        loading.setVisibility(View.VISIBLE);
+    }
+    public void stopLoading() {
+        loading.setVisibility(View.GONE);
+    }
+
+    public void showTopBar() {
+        findViewById(R.id.topBar).setVisibility(View.VISIBLE);
+        findViewById(R.id.topBarEdit).setVisibility(View.GONE);
+    }
+    public void hideTopBar() {
+        findViewById(R.id.topBar).setVisibility(View.GONE);
+        findViewById(R.id.topBarEdit).setVisibility(View.GONE);
+    }
+
     private String currentUrl = "";
 
     // Splits the URL into parts and updates the URL display
@@ -252,7 +257,7 @@ public class BrowserActivity extends Activity {
         }
     }
 
-    BrowserService wService;
+    public BrowserService wService;
     @Override
     protected void onStart() {
         super.onStart();
@@ -279,19 +284,19 @@ public class BrowserActivity extends Activity {
         else {
             if (w == null) return;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                @SuppressLint("WebViewApiAvailability") BrowserWebChromeClient client = (BrowserWebChromeClient) w.getWebChromeClient();
-                assert client != null;
-                if (client.hasCustomView()) {
-                    client.onHideCustomView();
-                    return;
+//                @SuppressLint("WebViewApiAvailability") BrowserWebChromeClient client = (BrowserWebChromeClient) w.getWebChromeClient();
+//                assert client != null;
+//                if (client.hasCustomView()) {
+//                    client.onHideCustomView();
+//                    return;
                 }
             }
-            if (w.canGoBack()) {
-                w.goBack();
-                updateButtonsAndUrl();
-            }
-            else finish();
-        }
+//            if (w.canGoBack()) {
+//                w.goBack();
+//                updateButtonsAndUrl();
+//            }
+//            else finish();
+//        }
     }
 
     @Override
@@ -305,7 +310,7 @@ public class BrowserActivity extends Activity {
     }
 
     protected boolean isEphemeral() {
-        if (w != null && w.getUrl() != null &&
+        if (w != null && /*w.getUrl() != null &&*/
             StringLib.isSearchUrl(baseUrl)) {
             for (ApplicationInfo app : Platform.appListBanner)
                 if (Objects.equals(app.packageName, baseUrl)) return true;
@@ -323,52 +328,7 @@ public class BrowserActivity extends Activity {
         container.addView(w);
         container.targetView = w;
 
-        View loading = findViewById(R.id.loading);
-
-        // The WebViewClient will be overridden to provide info, incl. when a new page is loaded
-        // Note than WebViewClient != WebChromeClient
-        w.setWebViewClient(new WebViewClient() {
-            @Override
-            public void onScaleChanged(WebView view, float oldScale, float newScale) {
-                super.onScaleChanged(view, oldScale, newScale);
-                updateZoom(newScale);
-            }
-
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                loading.setVisibility(View.GONE);
-                super.onPageFinished(view, url);
-                // Remove blue highlights via basic javascript injection
-                // this makes things feel a lot more native
-                view.loadUrl("javascript:(function() { " +
-                        "document.body.style.webkitTapHighlightColor = 'rgba(0,0,0,0)'; " +
-                        "})()");
-            }
-
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                loading.setVisibility(View.VISIBLE);
-                return super.shouldOverrideUrlLoading(view, request);
-            }
-
-            @Override
-            public void doUpdateVisitedHistory(WebView view, String url, boolean isReload) {
-                if (isReload) loading.setVisibility(View.VISIBLE);
-                super.doUpdateVisitedHistory(view, url, isReload);
-                updateButtonsAndUrl(url);
-
-                if (w.clearQueued) {
-                    w.clearHistory();
-                    w.clearQueued = false;
-                }
-            }
-        });
         updateButtonsAndUrl();
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-            boolean isDark = w.getSettings().getForceDark() == WebSettings.FORCE_DARK_ON;
-            (isDark ? light : dark).setVisibility(View.VISIBLE);
-        }
     }
 
     public void addFullscreenView(View view) {
@@ -385,26 +345,15 @@ public class BrowserActivity extends Activity {
         View topBar = findViewById(R.id.topBar);
         topBar.setVisibility(View.VISIBLE);
     }
-    @Override
-    public void onConfigurationChanged(@NonNull Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-    }
-
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        if (w != null) w.saveState(outState);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        if (w != null) w.restoreState(savedInstanceState);
-    }
 
     @Override
     protected void onResume() {
         Dialog.setActivityContext(this);
         super.onResume();
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        return true;
     }
 }

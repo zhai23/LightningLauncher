@@ -25,6 +25,8 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 
+import javax.security.auth.callback.Callback;
+
 // ADAPTED FROM https://gist.github.com/iyashamihsan/1ab5c1cfa47dea735ea46d8943a1bde4
 // Replaces d-pad navigation with an on-screen cursor that behaves like a mouse
 // This is necessary for web browsing to work, as many sites try to hook the dpad
@@ -89,8 +91,12 @@ public class CursorLayout extends LinearLayout {
             else if (cursorPosition.x > ((float) (getWidth() - 1)))  cursorPosition.x = (float) (getWidth() - 1);
             if (cursorPosition.y < 0.0f) cursorPosition.y = 0.0f;
             else if (cursorPosition.y > ((float) (getHeight() - 1))) cursorPosition.y = (float) (getHeight() - 1);
-            if (!tmpPointF.equals(cursorPosition) && centerPressed)
-                dispatchMotionEvent(cursorPosition.x, cursorPosition.y, MotionEvent.ACTION_MOVE); // Drag
+            boolean ALLOW_HOVER = false;
+            if (!tmpPointF.equals(cursorPosition))
+                if (centerPressed)
+                    dispatchMotionEvent(cursorPosition.x, cursorPosition.y, MotionEvent.ACTION_MOVE); // Drag
+                else if (ALLOW_HOVER)
+                    dispatchMotionEvent(cursorPosition.x, cursorPosition.y, MotionEvent.ACTION_DOWN);
 
             if (targetView != null) {
                 try {
@@ -119,6 +125,7 @@ public class CursorLayout extends LinearLayout {
         }
     };
     private boolean centerPressed;
+    private long downTime;
 
     private void visUpdate() {
         invalidate();
@@ -252,7 +259,7 @@ public class CursorLayout extends LinearLayout {
                         // Click animation
                         if (keyEvent.getAction() == KeyEvent.ACTION_DOWN && !getKeyDispatcherState().isTracking(keyEvent)) {
                             // Cancel possible hover event
-                            dispatchMotionEvent(this.cursorPosition.x, this.cursorPosition.y, MotionEvent.ACTION_CANCEL);
+//                            if (ALLOW_HOVER) dispatchMotionEvent(this.cursorPosition.x, this.cursorPosition.y, MotionEvent.ACTION_CANCEL);
 
                             centerPressed = true;
 
@@ -303,6 +310,7 @@ public class CursorLayout extends LinearLayout {
                             holdAnimator.setDuration(150);
                             holdAnimator.start();
                         }
+                        invalidate();
                         return true;
                     }
             }
@@ -311,10 +319,12 @@ public class CursorLayout extends LinearLayout {
     }
 
     protected void dispatchMotionEvent(float x, float y, int action) {
-        long uptimeMillis = SystemClock.uptimeMillis();
+        if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_POINTER_DOWN)
+            downTime = SystemClock.uptimeMillis();
+        long eventTime = SystemClock.uptimeMillis();
         PointerProperties pointerProperties = new PointerProperties();
         pointerProperties.id = 0;
-        pointerProperties.toolType = MotionEvent.TOOL_TYPE_MOUSE;
+        pointerProperties.toolType = MotionEvent.TOOL_TYPE_FINGER;
         PointerProperties[] pointerPropertiesArr = {pointerProperties};
         PointerCoords pointerCoords = new PointerCoords();
         pointerCoords.x = x;
@@ -322,7 +332,7 @@ public class CursorLayout extends LinearLayout {
         pointerCoords.pressure = 1.0f;
         pointerCoords.size = 1.0f;
         dispatchTouchEvent(
-                MotionEvent.obtain(uptimeMillis, uptimeMillis, action, 1, pointerPropertiesArr, new PointerCoords[]{pointerCoords}, 0, 0, 1.0f, 1.0f, 0, 0, 0, 0));
+                MotionEvent.obtain(downTime, eventTime, action, 1, pointerPropertiesArr, new PointerCoords[]{pointerCoords}, 0, 0, 1.0f, 1.0f, 0, 0, 0, 0));
     }
 
     protected void handleDirectionKeyEvent(KeyEvent keyEvent, int x, int y, boolean hasInput) {

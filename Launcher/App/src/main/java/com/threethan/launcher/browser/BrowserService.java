@@ -13,7 +13,6 @@ import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.net.Uri;
 import android.os.Binder;
@@ -22,9 +21,6 @@ import android.os.Environment;
 import android.os.IBinder;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.CookieManager;
-import android.webkit.URLUtil;
-import android.webkit.WebSettings;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -33,11 +29,14 @@ import androidx.annotation.RequiresApi;
 import androidx.core.content.FileProvider;
 
 import com.threethan.launcher.R;
+import com.threethan.launcher.browser.GeckoView.BrowserWebView;
 import com.threethan.launcher.helper.Dialog;
-import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.launcher.LauncherActivity;
 import com.threethan.launcher.lib.FileLib;
 import com.threethan.launcher.support.Updater;
+
+import org.mozilla.geckoview.GeckoRuntime;
+import org.mozilla.geckoview.GeckoRuntimeSettings;
 
 import java.io.File;
 import java.util.Map;
@@ -66,11 +65,12 @@ public class BrowserService extends Service {
 
     // Arbitrary ID for the persistent notification
     private final static int NOTIFICATION_ID = 42;
+    public final static String ACTION_MEDIA_CONTROL = "ACTION_MEDIA_CONTROL";
 
-    // User agent string; this is taken from the same version of chromium running as Google Chrome on desktop linux.
-    // Android chrome may be more accurate, but would cause sites to serve mobile pages,
-    // which look too large and often redirect to the play store instead of working in-browser.
-    String UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36";
+//    // User agent string; this is taken from the same version of chromium running as Google Chrome on desktop linux.
+//    // Android chrome may be more accurate, but would cause sites to serve mobile pages,
+//    // which look too large and often redirect to the play store instead of working in-browser.
+//    String UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36";
 
     @Override
     public void onCreate() {
@@ -82,7 +82,10 @@ public class BrowserService extends Service {
             return BrowserService.this;
         }
     }
-
+    private static GeckoRuntime sRuntime;
+    public static GeckoRuntime getRuntime() {
+        return sRuntime;
+    }
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -106,78 +109,89 @@ public class BrowserService extends Service {
                 activityByBaseUrl.put(url, activity);
             }
         } else {
-            webView = new BrowserWebView(getApplicationContext());
+            if (BrowserService.sRuntime == null) {
+                // GeckoRuntime can only be initialized once per process
+                GeckoRuntimeSettings.Builder set = new GeckoRuntimeSettings.Builder()
+                        .preferredColorScheme(GeckoRuntimeSettings.COLOR_SCHEME_DARK)
+                        .consoleOutput(true)
+                        .aboutConfigEnabled(true)
+                        .allowInsecureConnections(GeckoRuntimeSettings.ALLOW_ALL)
+                        .loginAutofillEnabled(true);
+                BrowserService.sRuntime = GeckoRuntime.create(this, set.build());
+            }
+
+            webView = new BrowserWebView(activity, activity);
             webView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
             webViewByBaseUrl.put(url, webView);
             activityByBaseUrl.put(url, activity);
 
-            webView.setInitialScale(Platform.isTv(activity) ? 160 : 120);
+//            webView.setInitialScale(Platform.isTv(activity) ? 160 : 120);
 
             // Change a number of settings to behave more like a normal browser
-            final WebSettings ws = webView.getSettings();
-            ws.setLoadWithOverviewMode(true);
-            ws.setJavaScriptEnabled(true);
-            ws.setAllowFileAccess(true);
-            ws.setUserAgentString(UA);
-            ws.setDomStorageEnabled(true);
-            ws.setLoadWithOverviewMode(true);
-            ws.setBuiltInZoomControls(true);
-            ws.setDisplayZoomControls(false);
-            ws.setSupportZoom(true);
-            ws.setMediaPlaybackRequiresUserGesture(false);
-            ws.setDefaultTextEncodingName("utf-8");
-            ws.setJavaScriptCanOpenWindowsAutomatically(true);
-            if (Platform.isTv(activity)) //noinspection deprecation
-                ws.setRenderPriority(WebSettings.RenderPriority.HIGH); // May improve performance
-            // Enable Cookies
-            CookieManager.getInstance().setAcceptCookie(true);
-            CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true);
+//            final WebSettings ws = webView.getSettings();
+//            ws.setLoadWithOverviewMode(true);
+//            ws.setJavaScriptEnabled(true);
+//            ws.setAllowFileAccess(true);
+//            ws.setUserAgentString(UA);
+//            ws.setDomStorageEnabled(true);
+//            ws.setLoadWithOverviewMode(true);
+//            ws.setBuiltInZoomControls(true);
+//            ws.setDisplayZoomControls(false);
+//            ws.setSupportZoom(true);
+//            ws.setMediaPlaybackRequiresUserGesture(false);
+//            ws.setDefaultTextEncodingName("utf-8");
+//            ws.setJavaScriptCanOpenWindowsAutomatically(true);
+//            if (Platform.isTv(activity)) //noinspection deprecation
+//                ws.setRenderPriority(WebSettings.RenderPriority.HIGH); // May improve performance
+//            // Enable Cookies
+//            CookieManager.getInstance().setAcceptCookie(true);
+//            CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true);
 
-            // Set website's to use chrome's internal dark mode
-            if (Build.VERSION.SDK_INT >= 29)
-                ws.setForceDark(activity.sharedPreferences
-                .getBoolean(BrowserActivity.KEY_WEBSITE_DARK+activity.baseUrl, false)
-                ? WebSettings.FORCE_DARK_ON : WebSettings.FORCE_DARK_OFF);
+//            // Set website's to use chrome's internal dark mode
+//            if (Build.VERSION.SDK_INT >= 29)
+//                ws.setForceDark(activity.sharedPreferences
+//                .getBoolean(BrowserActivity.KEY_WEBSITE_DARK+activity.baseUrl, false)
+//                ? WebSettings.FORCE_DARK_ON : WebSettings.FORCE_DARK_OFF);
 
             activity.findViewById(R.id.loading).setVisibility(View.VISIBLE);
             webView.loadUrl(url);
         }
-        webView.setActivity(activity);
+//        webView.setActivity(activity);
         updateStatus();
 
-        webView.setDownloadListener((url1, userAgent, contentDisposition, mimetype, contentLength) -> {
-            DownloadManager.Request request = new DownloadManager.Request(
-                    Uri.parse(url1));
-            final String filename= URLUtil.guessFileName(url1, contentDisposition, mimetype);
-
-            request.allowScanningByMediaScanner();
-            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED); //Notify client once download is completed!
-
-            if (filename.endsWith(".apk")) request.setDestinationInExternalFilesDir(activity, Updater.APK_DIR, filename);
-            else try {
-                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, filename);
-            } catch (IllegalStateException ignored) {
-                // If we can't access downloads dir
-                request.setDestinationInExternalFilesDir(this, Environment.DIRECTORY_DOWNLOADS, filename);
-            }
-
-            DownloadManager manager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
-
-            registerReceiver(onDownloadComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
-            final long id = manager.enqueue(request);
-            downloadFilenameById.put(id, filename);
-            downloadActivityById.put(id, activity);
-
-            Dialog.toast(getString(R.string.web_download_started), filename, true);
-        });
+//        webView.setDownloadListener((url1, userAgent, contentDisposition, mimetype, contentLength) -> {
+//            DownloadManager.Request request = new DownloadManager.Request(
+//                    Uri.parse(url1));
+//            final String filename= URLUtil.guessFileName(url1, contentDisposition, mimetype);
+//
+//            request.allowScanningByMediaScanner();
+//            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED); //Notify client once download is completed!
+//
+//            if (filename.endsWith(".apk")) request.setDestinationInExternalFilesDir(activity, Updater.APK_DIR, filename);
+//            else try {
+//                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, filename);
+//            } catch (IllegalStateException ignored) {
+//                // If we can't access downloads dir
+//                request.setDestinationInExternalFilesDir(this, Environment.DIRECTORY_DOWNLOADS, filename);
+//            }
+//
+//            DownloadManager manager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+//
+//            registerReceiver(onDownloadComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+//            final long id = manager.enqueue(request);
+//            downloadFilenameById.put(id, filename);
+//            downloadActivityById.put(id, activity);
+//
+//            Dialog.toast(getString(R.string.web_download_started), filename, true);
+//        });
         return webView;
     }
 
     // Downloads
-    Map<Long, String> downloadFilenameById = new ConcurrentHashMap<>();
-    Map<Long, Activity> downloadActivityById = new ConcurrentHashMap<>();
-    BroadcastReceiver onDownloadComplete=new BroadcastReceiver() {
+    public static Map<Long, String> downloadFilenameById = new ConcurrentHashMap<>();
+    public static Map<Long, Activity> downloadActivityById = new ConcurrentHashMap<>();
+    public BroadcastReceiver onDownloadComplete=new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             Long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0);
             String filename = downloadFilenameById.get(id);
@@ -265,7 +279,7 @@ public class BrowserService extends Service {
         if (!hasWebView(url)) return;
         BrowserWebView webView = webViewByBaseUrl.get(url);
         if (webView == null) return;
-        webView.destroy();
+        webView.kill();
         webViewByBaseUrl.remove(url);
         if (activityByBaseUrl.get(url) != null) {
             Objects.requireNonNull(activityByBaseUrl.get(url)).finish();
