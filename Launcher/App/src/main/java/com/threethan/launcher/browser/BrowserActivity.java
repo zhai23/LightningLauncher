@@ -22,7 +22,6 @@ import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.helper.Keyboard;
 import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
-import com.threethan.launcher.launcher.LauncherService;
 import com.threethan.launcher.lib.StringLib;
 
 import java.util.HashSet;
@@ -48,10 +47,6 @@ public class BrowserActivity extends Activity {
     String baseUrl = null;
     View back;
     View forward;
-    View zoomIn;
-    View zoomOut;
-    View dark;
-    View light;
     View background;
     View loading;
     View addHome;
@@ -83,12 +78,6 @@ public class BrowserActivity extends Activity {
         // Buttons
         back = findViewById(R.id.back);
         forward = findViewById(R.id.forward);
-
-        zoomIn = findViewById(R.id.zoomIn);
-        zoomOut = findViewById(R.id.zoomOut);
-
-        dark  = findViewById(R.id.darkMode);
-        light = findViewById(R.id.lightMode);
 
         back.setOnClickListener((view) -> {
             if (w == null) return;

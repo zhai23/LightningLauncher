@@ -110,15 +110,19 @@ public class AppsAdapter extends BaseAdapter{
 
         // Add search queries
         if (!isBanner && !text.isEmpty() && !launcherActivity.isEditing()) {
+
             final ApplicationInfo googleProxy = new ApplicationInfo();
             googleProxy.packageName = StringLib.googleSearchForUrl(text);
             currentAppList.add(googleProxy);
+
             final ApplicationInfo youTubeProxy = new ApplicationInfo();
             youTubeProxy.packageName = StringLib.youTubeSearchForUrl(text);
             currentAppList.add(youTubeProxy);
+
             final ApplicationInfo apkPureProxy = new ApplicationInfo();
             apkPureProxy.packageName = StringLib.apkPureSearchForUrl(text);
             currentAppList.add(apkPureProxy);
+
             final ApplicationInfo apkMirrorProxy = new ApplicationInfo();
             apkMirrorProxy.packageName = StringLib.apkMirrorSearchForUrl(text);
             currentAppList.add(apkMirrorProxy);
@@ -348,7 +352,7 @@ public class AppsAdapter extends BaseAdapter{
         // Package Name
         ((TextView) dialog.findViewById(R.id.packageName)).setText(currentApp.packageName);
 
-        PackageInfo packageInfo = null;
+        PackageInfo packageInfo;
         try {
             packageInfo = launcherActivity.getPackageManager().getPackageInfo(currentApp.packageName, 0);
             ((TextView) dialog.findViewById(R.id.packageVersion)).setText("v"+packageInfo.versionName);

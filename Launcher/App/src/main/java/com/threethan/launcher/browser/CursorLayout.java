@@ -12,7 +12,6 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Display;
 import android.view.DragEvent;
 import android.view.KeyEvent;
@@ -29,8 +28,6 @@ import androidx.annotation.NonNull;
 import org.mozilla.geckoview.GeckoView;
 import org.mozilla.geckoview.PanZoomController;
 import org.mozilla.geckoview.ScreenLength;
-
-import javax.security.auth.callback.Callback;
 
 // ADAPTED FROM https://gist.github.com/iyashamihsan/1ab5c1cfa47dea735ea46d8943a1bde4
 // Replaces d-pad navigation with an on-screen cursor that behaves like a mouse
@@ -97,12 +94,10 @@ public class CursorLayout extends LinearLayout {
             else if (cursorPosition.x > ((float) (getWidth() - 1)))  cursorPosition.x = (float) (getWidth() - 1);
             if (cursorPosition.y < 0.0f) cursorPosition.y = 0.0f;
             else if (cursorPosition.y > ((float) (getHeight() - 1))) cursorPosition.y = (float) (getHeight() - 1);
-            boolean ALLOW_HOVER = false;
             if (!tmpPointF.equals(cursorPosition))
                 if (centerPressed)
                     dispatchMotionEvent(cursorPosition.x, cursorPosition.y, MotionEvent.ACTION_MOVE); // Drag
-                else if (ALLOW_HOVER)
-                    dispatchMotionEvent(cursorPosition.x, cursorPosition.y, MotionEvent.ACTION_DOWN);
+
 
             if (targetView != null) {
                 try {
@@ -230,7 +225,7 @@ public class CursorLayout extends LinearLayout {
         if (!(keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) &&
         (keyEvent.getAction() == KeyEvent.ACTION_DOWN || keyEvent.getAction() == KeyEvent.ACTION_UP)) {
             switch (keyCode) {
-                case KeyEvent.KEYCODE_DPAD_UP:
+                case KeyEvent.KEYCODE_DPAD_UP -> {
                     if (keyEvent.getAction() == 0) {
                         if (this.cursorPosition.y <= 0.0f)
                             return super.dispatchKeyEvent(keyEvent);
@@ -238,7 +233,8 @@ public class CursorLayout extends LinearLayout {
                     } else
                         handleDirectionKeyEvent(keyEvent, -100, 0, false);
                     return true;
-                case KeyEvent.KEYCODE_DPAD_DOWN:
+                }
+                case KeyEvent.KEYCODE_DPAD_DOWN -> {
                     if (keyEvent.getAction() == 0) {
                         if (this.cursorPosition.y >= ((float) getHeight()))
                             return super.dispatchKeyEvent(keyEvent);
@@ -246,7 +242,8 @@ public class CursorLayout extends LinearLayout {
                     } else
                         handleDirectionKeyEvent(keyEvent, -100, 0, false);
                     return true;
-                case KeyEvent.KEYCODE_DPAD_LEFT:
+                }
+                case KeyEvent.KEYCODE_DPAD_LEFT -> {
                     if (keyEvent.getAction() == 0) {
                         if (this.cursorPosition.x <= 0.0f)
                             return super.dispatchKeyEvent(keyEvent);
@@ -254,7 +251,8 @@ public class CursorLayout extends LinearLayout {
                     } else
                         handleDirectionKeyEvent(keyEvent, 0, -100, false);
                     return true;
-                case KeyEvent.KEYCODE_DPAD_RIGHT:
+                }
+                case KeyEvent.KEYCODE_DPAD_RIGHT -> {
                     if (keyEvent.getAction() == 0) {
                         if (this.cursorPosition.x >= ((float) getWidth()))
                             return super.dispatchKeyEvent(keyEvent);
@@ -262,31 +260,36 @@ public class CursorLayout extends LinearLayout {
                     } else
                         handleDirectionKeyEvent(keyEvent, 0, -100, false);
                     return true;
-                case KeyEvent.KEYCODE_DPAD_UP_LEFT:
+                }
+                case KeyEvent.KEYCODE_DPAD_UP_LEFT -> {
                     if (keyEvent.getAction() == 0)
                         handleDirectionKeyEvent(keyEvent, -1, -1, true);
                     else
                         handleDirectionKeyEvent(keyEvent, 0, 0, false);
                     return true;
-                case KeyEvent.KEYCODE_DPAD_DOWN_LEFT:
+                }
+                case KeyEvent.KEYCODE_DPAD_DOWN_LEFT -> {
                     if (keyEvent.getAction() == 0)
                         handleDirectionKeyEvent(keyEvent, -1, 1, true);
                     else
                         handleDirectionKeyEvent(keyEvent, 0, 0, false);
                     return true;
-                case KeyEvent.KEYCODE_DPAD_UP_RIGHT:
+                }
+                case KeyEvent.KEYCODE_DPAD_UP_RIGHT -> {
                     if (keyEvent.getAction() == 0)
                         handleDirectionKeyEvent(keyEvent, 1, -1, true);
                     else
                         handleDirectionKeyEvent(keyEvent, 0, 0, false);
                     return true;
-                case KeyEvent.KEYCODE_DPAD_DOWN_RIGHT:
+                }
+                case KeyEvent.KEYCODE_DPAD_DOWN_RIGHT -> {
                     if (keyEvent.getAction() == 0)
                         handleDirectionKeyEvent(keyEvent, 1, 1, true);
                     else
                         handleDirectionKeyEvent(keyEvent, 0, 0, false);
                     return true;
-                case KeyEvent.KEYCODE_DPAD_CENTER:
+                }
+                case KeyEvent.KEYCODE_DPAD_CENTER -> {
                     if (isCursorVisible()) {
 
                         // Click animation
@@ -328,7 +331,6 @@ public class CursorLayout extends LinearLayout {
                             }, 250);
 
 
-
                         } else if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
                             centerPressed = false;
 
@@ -346,6 +348,7 @@ public class CursorLayout extends LinearLayout {
                         invalidate();
                         return true;
                     }
+                }
             }
         }
         return super.dispatchKeyEvent(keyEvent);

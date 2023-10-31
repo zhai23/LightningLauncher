@@ -43,8 +43,6 @@ import org.mozilla.geckoview.AllowOrDeny;
 import org.mozilla.geckoview.Autocomplete;
 import org.mozilla.geckoview.GeckoResult;
 import org.mozilla.geckoview.GeckoSession;
-import org.mozilla.geckoview.WebExtension;
-import org.mozilla.geckoview.WebExtensionController;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

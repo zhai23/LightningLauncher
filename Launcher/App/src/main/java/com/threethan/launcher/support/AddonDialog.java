@@ -78,18 +78,10 @@ public abstract class AddonDialog {
                 if (updater == null) return;
 
                 switch (updater.getAddonState(tag)) {
-                    case Updater.STATE_ACTIVE:
-                        uninstallButton.setVisibility(View.VISIBLE);
-                        break;
-                    case Updater.STATE_NOT_INSTALLED:
-                        installButton.setVisibility(View.VISIBLE);
-                        break;
-                    case Updater.STATE_HAS_UPDATE:
-                        updateButton.setVisibility(View.VISIBLE);
-                        break;
-                    case Updater.STATE_INACTIVE:
-                        activateButton.setVisibility(View.VISIBLE);
-                        break;
+                    case Updater.STATE_ACTIVE -> uninstallButton.setVisibility(View.VISIBLE);
+                    case Updater.STATE_NOT_INSTALLED -> installButton.setVisibility(View.VISIBLE);
+                    case Updater.STATE_HAS_UPDATE -> updateButton.setVisibility(View.VISIBLE);
+                    case Updater.STATE_INACTIVE -> activateButton.setVisibility(View.VISIBLE);
                 }
                 outerView.postDelayed(this, 100);
             }

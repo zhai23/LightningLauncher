@@ -3,7 +3,6 @@ package com.threethan.launcher.browser.GeckoView.Delegate;
 import static android.content.Context.DOWNLOAD_SERVICE;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.DownloadManager;
 import android.content.IntentFilter;
 import android.net.Uri;

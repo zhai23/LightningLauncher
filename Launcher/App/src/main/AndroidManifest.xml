@@ -148,7 +148,7 @@
             android:resizeableActivity="true"
             android:theme="@style/ThemeOverlay.Browser">
 
-            <layout android:defaultWidth="1024dp" android:defaultHeight="576dp" android:gravity="top|end" />
+            <layout android:defaultWidth="960dp" android:defaultHeight="540dp" android:gravity="top|end" />
             <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
             <meta-data android:name="com.oculus.vrshell.free_resizing_limits" android:value="300,2000,500,1000"/>
         </activity>
@@ -160,7 +160,7 @@
             android:resizeableActivity="true"
             android:theme="@style/ThemeOverlay.Browser">
 
-            <layout android:defaultWidth="1280dp" android:defaultHeight="720dp" android:gravity="top|end" />
+            <layout android:defaultWidth="1216dp" android:defaultHeight="684dp" android:gravity="top|end" />
             <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
             <meta-data android:name="com.oculus.vrshell.free_resizing_limits" android:value="300,2000,500,1000"/>
         </activity>

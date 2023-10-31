@@ -7,7 +7,7 @@ import com.threethan.launcher.browser.BrowserActivity;
 import org.mozilla.geckoview.GeckoSession;
 
 public class CustomProgressDelegate implements GeckoSession.ProgressDelegate {
-    private BrowserActivity mActivity;
+    private final BrowserActivity mActivity;
     public CustomProgressDelegate(BrowserActivity activity) {
         super();
         this.mActivity = activity;

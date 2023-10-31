@@ -1,7 +1,5 @@
 package com.threethan.launcher.browser.GeckoView.Delegate;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -11,14 +9,12 @@ import org.mozilla.geckoview.AllowOrDeny;
 import org.mozilla.geckoview.GeckoResult;
 import org.mozilla.geckoview.GeckoSession;
 import org.mozilla.geckoview.GeckoSessionSettings;
-import org.mozilla.geckoview.WebRequestError;
 
 import java.util.List;
 
 public class CustomNavigationDelegate implements GeckoSession.NavigationDelegate {
     public boolean canGoBack = false;
     public boolean canGoForward = false;
-    public boolean spotifixed = false;
     public String currentUrl = "";
 
     private final BrowserActivity mActivity;

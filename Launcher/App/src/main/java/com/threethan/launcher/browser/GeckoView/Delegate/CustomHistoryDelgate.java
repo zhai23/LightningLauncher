@@ -1,17 +1,15 @@
 package com.threethan.launcher.browser.GeckoView.Delegate;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.threethan.launcher.browser.BrowserActivity;
 
-import org.mozilla.geckoview.GeckoResult;
 import org.mozilla.geckoview.GeckoSession;
 
 public class CustomHistoryDelgate implements GeckoSession.HistoryDelegate {
     public HistoryList historyList = null;
 
-    public CustomHistoryDelgate(BrowserActivity activity) {
+    public CustomHistoryDelgate(BrowserActivity ignoredActivity) {
         super();
     }
     @Override
