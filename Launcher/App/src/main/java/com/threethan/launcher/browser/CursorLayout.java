@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Display;
 import android.view.DragEvent;
 import android.view.KeyEvent;
@@ -24,6 +25,10 @@ import android.view.animation.OvershootInterpolator;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
+
+import org.mozilla.geckoview.GeckoView;
+import org.mozilla.geckoview.PanZoomController;
+import org.mozilla.geckoview.ScreenLength;
 
 import javax.security.auth.callback.Callback;
 
@@ -38,8 +43,9 @@ public class CursorLayout extends LinearLayout {
     private static final float MIN_CURSOR_SPEED = 180f;
     private static int CURSOR_RADIUS = 0;
     private static float CURSOR_STROKE_WIDTH = 0f;
-    private static int SCROLL_START_PADDING = 100;
-    private static final float PHYSICS_SUBSTEPS = 8;
+    private static int SCROLL_START_PADDING = 80;
+    private static final float SCROLL_MULT = 1f;
+    private static final float PHYSICS_SUBSTEPS = 1;
     private final Point cursorDirection = new Point(0, 0);
     private final PointF cursorPosition = new PointF(0.0f, 0.0f);
     private final PointF cursorSpeed = new PointF(0.0f, 0.0f);
@@ -100,20 +106,24 @@ public class CursorLayout extends LinearLayout {
 
             if (targetView != null) {
                 try {
+                    float deltaX = 0;
+                    float deltaY = 0;
                     if (cursorPosition.y > ((float) (getHeight() - CursorLayout.SCROLL_START_PADDING))) {
-                        if (cursorSpeed.y > 0.0f && targetView.canScrollVertically((int) cursorSpeed.y)) {
-                            targetView.scrollTo(targetView.getScrollX(), (int) (targetView.getScrollY() + (cursorSpeed.y * deltaTime)));
+                        if (cursorSpeed.y > 0.0f) {
+                            deltaY += cursorPosition.y * deltaTime * SCROLL_MULT;
                         }
-                    } else if (cursorPosition.y < ((float) CursorLayout.SCROLL_START_PADDING) && cursorSpeed.y < 0.0f && targetView.canScrollVertically((int) cursorSpeed.y)) {
-                        targetView.scrollTo(targetView.getScrollX(), (int) (targetView.getScrollY() + (cursorSpeed.y * deltaTime)));
+                    } else if (cursorPosition.y < ((float) CursorLayout.SCROLL_START_PADDING) && cursorSpeed.y < 0.0f) {
+                        deltaY += cursorSpeed.y * deltaTime * SCROLL_MULT;
                     }
                     if (cursorPosition.x > ((float) (getWidth() - CursorLayout.SCROLL_START_PADDING))) {
-                        if (cursorSpeed.x > 0.0f && targetView.canScrollHorizontally((int) cursorSpeed.x)) {
-                            targetView.scrollTo((int) (targetView.getScrollX() + (cursorSpeed.x * deltaTime)), targetView.getScrollY());
+                        if (cursorSpeed.x > 0.0f) {
+                            deltaX += cursorSpeed.x * deltaTime * SCROLL_MULT;
                         }
-                    } else if (cursorPosition.x < ((float) CursorLayout.SCROLL_START_PADDING) && cursorSpeed.x < 0.0f && targetView.canScrollHorizontally((int) cursorSpeed.x)) {
-                        targetView.scrollTo((int) (targetView.getScrollX() + (cursorSpeed.x * deltaTime)), targetView.getScrollY());
+                    } else if (cursorPosition.x < ((float) CursorLayout.SCROLL_START_PADDING) && cursorSpeed.x < 0.0f) {
+                        deltaX += cursorSpeed.x * deltaTime * SCROLL_MULT;
                     }
+                    if (deltaX != 0 || deltaY != 0)
+                        scrollTargetBy(targetView, deltaX, deltaY);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -126,6 +136,29 @@ public class CursorLayout extends LinearLayout {
     };
     private boolean centerPressed;
     private long downTime;
+
+    private int geckoAccummulatedX = 0;
+    private int geckoAccummulatedY = 0;
+    private void scrollTargetBy(View targetView, float deltaX, float deltaY) {
+        if (targetView instanceof GeckoView) {
+            PanZoomController pzc = ((GeckoView) targetView).getPanZoomController();
+            int GECKO_SCROLL_INCREMENT = 25;
+            if (geckoAccummulatedY > GECKO_SCROLL_INCREMENT || geckoAccummulatedY < -GECKO_SCROLL_INCREMENT) {
+                pzc.scrollBy(ScreenLength.zero(), ScreenLength.fromPixels(geckoAccummulatedY),
+                        PanZoomController.SCROLL_BEHAVIOR_AUTO);
+                geckoAccummulatedY = 0;
+            }
+            if (geckoAccummulatedX > GECKO_SCROLL_INCREMENT || geckoAccummulatedX < -GECKO_SCROLL_INCREMENT) {
+                pzc.scrollBy(ScreenLength.fromPixels(geckoAccummulatedX), ScreenLength.zero(),
+                        PanZoomController.SCROLL_BEHAVIOR_AUTO);
+                geckoAccummulatedX = 0;
+            }
+            geckoAccummulatedY += deltaY;
+            geckoAccummulatedX += deltaX;
+        } else {
+            targetView.scrollBy((int) deltaX, (int) deltaY);
+        }
+    }
 
     private void visUpdate() {
         invalidate();
