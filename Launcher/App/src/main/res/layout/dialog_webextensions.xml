@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.threethan.launcher.browser.CursorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/bkg_dialog"
+    android:descendantFocusability="blocksDescendants"
+    android:focusable="false"
     android:orientation="vertical"
     android:padding="20dp">
 
@@ -33,4 +35,4 @@
         android:gravity="center"
         android:text="@string/extension_prompt_hint" />
 
-</LinearLayout>
+</com.threethan.launcher.browser.CursorLayout>

@@ -31,7 +31,6 @@ public abstract class Platform {
     public static int changeIndex = 0; //Used to track changes, specifically adding websites
     public static void clearPackageLists(LauncherActivity launcherActivity) {
         App.invalidateCaches(launcherActivity);
-        changeIndex ++;
     }
     public static String findWebsite(SharedPreferences sharedPreferences, String url) {
         url = StringLib.fixUrl(url);

@@ -1,6 +1,5 @@
 package com.threethan.launcher.browser;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
@@ -31,7 +30,6 @@ import androidx.core.content.FileProvider;
 
 import com.threethan.launcher.R;
 import com.threethan.launcher.browser.GeckoView.BrowserWebView;
-import com.threethan.launcher.browser.GeckoView.Delegate.CustomPromptDelegate;
 import com.threethan.launcher.browser.GeckoView.Delegate.ExtensionPromptDelegate;
 import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.launcher.LauncherActivity;
@@ -40,7 +38,6 @@ import com.threethan.launcher.support.Updater;
 
 import org.mozilla.geckoview.GeckoRuntime;
 import org.mozilla.geckoview.GeckoRuntimeSettings;
-import org.mozilla.geckoview.WebExtensionController;
 
 import java.io.File;
 import java.util.Map;

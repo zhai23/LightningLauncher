@@ -315,6 +315,7 @@ public class BrowserActivity extends Activity {
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) onBackPressed();
         return true;
     }
 }

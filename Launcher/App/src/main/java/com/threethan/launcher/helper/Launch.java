@@ -54,6 +54,8 @@ public abstract class Launch {
                 appType == App.Type.TYPE_VR || appType == App.Type.TYPE_PANEL) {
 
 
+            if (launcherActivity.browserService != null)
+                launcherActivity.browserService.killActivities();
             launcherActivity.launcherService.finishAllActivities();
 
 
