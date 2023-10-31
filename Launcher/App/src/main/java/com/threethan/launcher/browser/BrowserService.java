@@ -31,14 +31,16 @@ import androidx.core.content.FileProvider;
 
 import com.threethan.launcher.R;
 import com.threethan.launcher.browser.GeckoView.BrowserWebView;
+import com.threethan.launcher.browser.GeckoView.Delegate.CustomPromptDelegate;
+import com.threethan.launcher.browser.GeckoView.Delegate.ExtensionPromptDelegate;
 import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.launcher.LauncherActivity;
 import com.threethan.launcher.lib.FileLib;
 import com.threethan.launcher.support.Updater;
 
-import org.mozilla.geckoview.ContentBlocking;
 import org.mozilla.geckoview.GeckoRuntime;
 import org.mozilla.geckoview.GeckoRuntimeSettings;
+import org.mozilla.geckoview.WebExtensionController;
 
 import java.io.File;
 import java.util.Map;
@@ -67,12 +69,7 @@ public class BrowserService extends Service {
 
     // Arbitrary ID for the persistent notification
     private final static int NOTIFICATION_ID = 42;
-    public final static String ACTION_MEDIA_CONTROL = "ACTION_MEDIA_CONTROL";
-
-//    // User agent string; this is taken from the same version of chromium running as Google Chrome on desktop linux.
-//    // Android chrome may be more accurate, but would cause sites to serve mobile pages,
-//    // which look too large and often redirect to the play store instead of working in-browser.
-//    String UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36";
+    private static final ExtensionPromptDelegate extensionPromptDelegate = new ExtensionPromptDelegate();
 
     @Override
     public void onCreate() {
@@ -84,7 +81,7 @@ public class BrowserService extends Service {
             return BrowserService.this;
         }
     }
-    private static GeckoRuntime sRuntime;
+    public static GeckoRuntime sRuntime;
     public static GeckoRuntime getRuntime() {
         return sRuntime;
     }
@@ -96,7 +93,10 @@ public class BrowserService extends Service {
     public IBinder onBind(Intent intent) {
         return binder;
     }
-    @SuppressLint({"SetJavaScriptEnabled", "UnspecifiedRegisterReceiverFlag"})
+    public static void ManageExtensions() {
+        extensionPromptDelegate.showList();
+    }
+
     // Javascript is important
     public BrowserWebView getWebView(BrowserActivity activity) {
         BrowserWebView webView;
@@ -115,19 +115,10 @@ public class BrowserService extends Service {
             }
         } else {
             if (BrowserService.sRuntime == null) {
-                // GeckoRuntime can only be initialized once per process
-                GeckoRuntimeSettings.Builder set = new GeckoRuntimeSettings.Builder()
-                        .preferredColorScheme(GeckoRuntimeSettings.COLOR_SCHEME_DARK)
-                        .consoleOutput(false)
-                        .loginAutofillEnabled(true);
-                BrowserService.sRuntime = GeckoRuntime.create(this, set.build());
+                initRuntime();
             }
-            sRuntime.getWebExtensionController()
-                    .ensureBuiltIn(EXTENSION_LOCATION, EXTENSION_ID)
-                    .accept(
-                            extension -> Log.i("MessageDelegate", "Extension installed: " + extension),
-                            e -> Log.e("MessageDelegate", "Error registering WebExtension", e)
-                    );
+
+
 
             webView = new BrowserWebView(activity, activity);
             webView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -143,6 +134,26 @@ public class BrowserService extends Service {
         return webView;
     }
 
+    private void initRuntime() {
+        // GeckoRuntime can only be initialized once per process
+        GeckoRuntimeSettings.Builder set = new GeckoRuntimeSettings.Builder()
+                .preferredColorScheme(GeckoRuntimeSettings.COLOR_SCHEME_DARK)
+                .consoleOutput(false)
+                .loginAutofillEnabled(true)
+                .extensionsProcessEnabled(true)
+                .extensionsWebAPIEnabled(true)
+                .aboutConfigEnabled(true);
+        BrowserService.sRuntime = GeckoRuntime.create(this, set.build());
+        // Custom Fixes
+        sRuntime.getWebExtensionController()
+                .ensureBuiltIn(EXTENSION_LOCATION, EXTENSION_ID)
+                .accept(
+                        extension -> Log.i("MessageDelegate", "Extension installed: " + extension),
+                        e -> Log.e("MessageDelegate", "Error registering WebExtension", e)
+                );
+        // Install Prompts
+        sRuntime.getWebExtensionController().setPromptDelegate(extensionPromptDelegate);
+    }
     // Downloads
     public static Map<Long, String> downloadFilenameById = new ConcurrentHashMap<>();
     public static Map<Long, Activity> downloadActivityById = new ConcurrentHashMap<>();
@@ -161,12 +172,12 @@ public class BrowserService extends Service {
                 if (Dialog.getActivityContext() == null) {
                     // If we can't show an alert, copy AND prompt install
                     copyToDownloads(file);
-                    promptInstall(file);
+                    promptInstallApk(file);
                 }
                 AlertDialog dialog = Dialog.build(Dialog.getActivityContext(), R.layout.dialog_downloaded_apk);
                 if (dialog == null) return;
                 dialog.findViewById(R.id.install).setOnClickListener(v -> {
-                    promptInstall(file);
+                    promptInstallApk(file);
                     dialog.dismiss();
                 });
                 dialog.findViewById(R.id.save).setOnClickListener(v -> {
@@ -205,7 +216,7 @@ public class BrowserService extends Service {
         File dlFile = new File(dlPath, file.getName());
         FileLib.copy(file, dlFile);
     }
-    private void promptInstall(File file) {
+    private void promptInstallApk(File file) {
         if(!file.exists()) return;
 
         // provider is already included in the imagepicker lib
@@ -226,7 +237,9 @@ public class BrowserService extends Service {
         } catch (Exception ignored) {}
         super.onDestroy();
     }
-
+    public void removeActivity(BrowserActivity activity) {
+        activityByBaseUrl.remove(activity.baseUrl);
+    }
     public boolean hasWebView(String url) {
         return webViewByBaseUrl.containsKey(url);
     }

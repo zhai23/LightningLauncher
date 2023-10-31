@@ -36,7 +36,6 @@ import com.esafirm.imagepicker.model.Image;
 import com.threethan.launcher.R;
 import com.threethan.launcher.adapter.AppsAdapter;
 import com.threethan.launcher.adapter.GroupsAdapter;
-import com.threethan.launcher.browser.BrowserService;
 import com.threethan.launcher.helper.App;
 import com.threethan.launcher.helper.AppData;
 import com.threethan.launcher.helper.Compat;
@@ -285,7 +284,7 @@ public class LauncherActivity extends Activity {
 
             // Bind service
             AppsAdapter.animateClose(this);
-            BrowserService.bind(this, browserServiceConnection, false);
+            com.threethan.launcher.browser.BrowserService.bind(this, browserServiceConnection, false);
         } catch (Exception ignored) {} // Will fail if service hasn't bound yet
 
         Dialog.setActivityContext(this);
@@ -392,7 +391,7 @@ public class LauncherActivity extends Activity {
         post(this::postRefresh);
     }
     protected void postRefresh(){
-        BrowserService.bind(this, browserServiceConnection, false);
+        com.threethan.launcher.browser.BrowserService.bind(this, browserServiceConnection, false);
         if (needsUpdateCleanup) Compat.doUpdateCleanup(this);
     }
 
@@ -645,7 +644,7 @@ public class LauncherActivity extends Activity {
     }
 
     // Services
-    public BrowserService browserService;
+    public com.threethan.launcher.browser.BrowserService browserService;
     private boolean hasBound = false;
 
     /** Defines callbacks for service binding, passed to bindService(). */
@@ -668,7 +667,7 @@ public class LauncherActivity extends Activity {
         public void onServiceConnected(ComponentName className,
                                        IBinder service) {
             // We've bound to LocalService, cast the IBinder and get LocalService instance.
-            BrowserService.LocalBinder binder = (BrowserService.LocalBinder) service;
+            com.threethan.launcher.browser.BrowserService.LocalBinder binder = (com.threethan.launcher.browser.BrowserService.LocalBinder) service;
             browserService = binder.getService();
         }
         @Override

@@ -48,20 +48,14 @@ public class CustomNavigationDelegate implements GeckoSession.NavigationDelegate
     @Nullable
     @Override
     public GeckoResult<AllowOrDeny> onLoadRequest(@NonNull GeckoSession session, @NonNull LoadRequest request) {
-        if (request.uri.contains("open.spotify.com")) {
-            session.getSettings().setUserAgentMode(GeckoSessionSettings.USER_AGENT_MODE_VR);
-        } else {
+        // Spotify-specific patch
+        if (request.uri.contains("open.spotify.com"))
+            session.getSettings().setUserAgentMode(GeckoSessionSettings.USER_AGENT_MODE_MOBILE);
+        else
             session.getSettings().setUserAgentMode(GeckoSessionSettings.USER_AGENT_MODE_DESKTOP);
-        }
 
         this.currentUrl = request.uri;
         this.mActivity.updateButtonsAndUrl(currentUrl);
         return GeckoSession.NavigationDelegate.super.onLoadRequest(session, request);
-    }
-    @Nullable
-    @Override
-    public GeckoResult<String> onLoadError(@NonNull GeckoSession session, @Nullable String uri, @NonNull WebRequestError error) {
-        Log.e("LOAD ERR!", uri);
-        return GeckoSession.NavigationDelegate.super.onLoadError(session, uri, error);
     }
 }

@@ -36,6 +36,7 @@ public class StringLib {
                 .replace("https:","").replace("www.","");
     }
     public static boolean isInvalidUrl(String url) {
+        if (url.startsWith("about:")) return false;
         return ((!url.contains("://") || !url.contains(".")));
     }
     public static String toValidFilename(String string) {

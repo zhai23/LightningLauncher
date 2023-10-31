@@ -294,6 +294,8 @@
     <string name="web_apk_prompt_install">Install</string>
     <string name="web_apk_prompt_move">Save</string>
     <string name="web_apk_prompt_delete">Delete</string>
+    <string name="extension_prompt_title">Manage Web Extensions</string>
+    <string name="extension_prompt_hint">Search &quot;Firefox Addons&quot; to find more!</string>
 
     <!-- Gecko -->
     <string name="before_unload_message">This page is asking you to confirm that you want to leave - data you have entered may not be saved</string>

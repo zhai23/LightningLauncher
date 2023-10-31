@@ -1,9 +1,9 @@
 {
  "manifest_version": 2,
- "name": "LL Fixes",
+ "name": "Lightning Launcher Fixes",
  "author": "threethan",
  "version": "1",
- "description": "Various fixes/improvements for websites in LightningLauncher",
+ "description": "Various fixes/improvements for websites in LightningLauncher, do not remove!",
  "content_scripts": [
   {
    "matches": [

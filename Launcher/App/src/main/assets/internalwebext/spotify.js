@@ -7,7 +7,7 @@ function myFunction() {
 }
 
 async function delay() {
-    for (let i = 1; i < 5; i++) {
+    for (let i = 1; i < 6; i++) {
         await sleep(1000);
         var lib = document.querySelector("body.mobile-web-player #main div div div div div a:nth-child(3)");
         if (document.location == "https://open.spotify.com/collection/tracks") lib.click();

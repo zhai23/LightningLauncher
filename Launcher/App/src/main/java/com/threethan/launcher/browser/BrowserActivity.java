@@ -6,9 +6,7 @@ import android.content.ComponentName;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
-import android.content.res.Configuration;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -16,10 +14,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import androidx.annotation.NonNull;
 
 import com.threethan.launcher.R;
 import com.threethan.launcher.browser.GeckoView.BrowserWebView;
@@ -27,6 +22,7 @@ import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.helper.Keyboard;
 import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
+import com.threethan.launcher.launcher.LauncherService;
 import com.threethan.launcher.lib.StringLib;
 
 import java.util.HashSet;
@@ -45,7 +41,7 @@ import java.util.Set;
     Other than that, it's just a basic browser interface without tabs.
  */
 public class BrowserActivity extends Activity {
-    BrowserWebView w;
+    public BrowserWebView w;
     TextView urlPre;
     TextView urlMid;
     TextView urlEnd;
@@ -60,8 +56,6 @@ public class BrowserActivity extends Activity {
     View loading;
     View addHome;
     public SharedPreferences sharedPreferences;
-    // Keys
-    public static final String KEY_WEBSITE_DARK = "KEY_WEBSITE_DARK-";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +79,6 @@ public class BrowserActivity extends Activity {
         Bundle extras = getIntent().getExtras();
         assert extras != null;
         baseUrl = Objects.requireNonNull(extras.getString("url"));
-        setTitle(baseUrl);
 
         // Buttons
         back = findViewById(R.id.back);
@@ -133,12 +126,6 @@ public class BrowserActivity extends Activity {
         View exit = findViewById(R.id.exit);
         exit.setOnClickListener((View) -> finish());
 
-//        dark .setOnClickListener(view -> updateDark(true ));
-//        light.setOnClickListener(view -> updateDark(false));
-//        updateDark(isDark);
-
-        boolean isDark = sharedPreferences.getBoolean(BrowserActivity.KEY_WEBSITE_DARK+baseUrl, true);
-
         // Edit URL
         View urlLayout = findViewById(R.id.urlLayout);
         EditText urlEdit = findViewById(R.id.urlEdit);
@@ -161,8 +148,10 @@ public class BrowserActivity extends Activity {
         });
         topBarEdit.findViewById(R.id.confirm).setOnClickListener((view) -> {
             String url = urlEdit.getText().toString();
+
             if (!StringLib.isInvalidUrl("https://" + url)) url = "https://" + url;
             else if (StringLib.isInvalidUrl(url)) url = StringLib.googleSearchForUrl(url);
+
             w.loadUrl(url);
             updateButtonsAndUrl(url);
             topBar.setVisibility(View.VISIBLE);
@@ -180,6 +169,8 @@ public class BrowserActivity extends Activity {
             Platform.addWebsite(sharedPreferences, currentUrl);
             addHome.setVisibility(View.GONE);
         });
+
+        findViewById(R.id.extensions).setOnClickListener(v -> BrowserService.ManageExtensions());
     }
 
     private void updateButtonsAndUrl() {
@@ -248,7 +239,6 @@ public class BrowserActivity extends Activity {
             }
         }
     }
-
     public BrowserService wService;
     @Override
     protected void onStart() {
@@ -267,35 +257,29 @@ public class BrowserActivity extends Activity {
             onBound();
         }
         @Override
-        public void onServiceDisconnected(ComponentName arg0) {}
+        public void onServiceDisconnected(ComponentName arg0) { wService = null; }
     };
     @Override
     public void onBackPressed() {
         if (findViewById(R.id.topBarEdit).getVisibility() == View.VISIBLE)
             findViewById(R.id.cancel).callOnClick();
         else {
-            if (w == null) return;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//                @SuppressLint("WebViewApiAvailability") BrowserWebChromeClient client = (BrowserWebChromeClient) w.getWebChromeClient();
-//                assert client != null;
-//                if (client.hasCustomView()) {
-//                    client.onHideCustomView();
-//                    return;
-                }
+            if (w.canGoBack()) {
+                w.goBack();
+                updateButtonsAndUrl();
             }
-//            if (w.canGoBack()) {
-//                w.goBack();
-//                updateButtonsAndUrl();
-//            }
-//            else finish();
-//        }
+            else finish();
+        }
     }
 
     @Override
     protected void onDestroy() {
-        // Don't keep search views in background
-        if (isEphemeral())
-            wService.killWebView(baseUrl);
+        if (isFinishing()) {
+            // Don't keep search views in background
+            if (isEphemeral())
+                wService.killWebView(baseUrl);
+        }
+        wService.removeActivity(this);
         // Unbind
         unbindService(connection);
         super.onDestroy();
@@ -321,21 +305,6 @@ public class BrowserActivity extends Activity {
         container.targetView = w;
 
         updateButtonsAndUrl();
-    }
-
-    public void addFullscreenView(View view) {
-        if (w != null) w.setVisibility(View.GONE);
-        View topBar = findViewById(R.id.topBar);
-        topBar.setVisibility(View.GONE);
-        LinearLayout container = findViewById(R.id.container);
-        container.addView(view);
-    }
-    public void removeFullscreenView(View view) {
-        LinearLayout container = findViewById(R.id.container);
-        container.removeView(view);
-        if (w != null) w.setVisibility(View.VISIBLE);
-        View topBar = findViewById(R.id.topBar);
-        topBar.setVisibility(View.VISIBLE);
     }
 
     @Override

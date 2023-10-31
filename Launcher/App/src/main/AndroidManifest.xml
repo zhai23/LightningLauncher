@@ -92,7 +92,7 @@
         <!-- Activity for browsers which open within the main window -->
         <activity android:name=".browser.BrowserActivity"
             android:screenOrientation="unspecified"
-            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
+            android:configChanges="density|keyboard|keyboardHidden|navigation|orientation|screenLayout|screenSize|uiMode"
             android:exported="true"
             android:resizeableActivity="true"
             android:theme="@style/ThemeOverlay.Browser">
@@ -105,7 +105,7 @@
         <!-- Activity for browsers which open in a separate window -->
         <activity android:name=".browser.BrowserActivitySeparate"
             android:screenOrientation="unspecified"
-            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
+            android:configChanges="density|keyboard|keyboardHidden|navigation|orientation|screenLayout|screenSize|uiMode"
             android:exported="true"
             android:launchMode="singleInstancePerTask"
             android:resizeableActivity="true"

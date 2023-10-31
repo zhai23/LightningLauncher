@@ -43,6 +43,8 @@ import org.mozilla.geckoview.AllowOrDeny;
 import org.mozilla.geckoview.Autocomplete;
 import org.mozilla.geckoview.GeckoResult;
 import org.mozilla.geckoview.GeckoSession;
+import org.mozilla.geckoview.WebExtension;
+import org.mozilla.geckoview.WebExtensionController;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -165,6 +167,12 @@ public final class CustomPromptDelegate implements GeckoSession.PromptDelegate {
             @NonNull AutocompleteRequest<Autocomplete.LoginSaveOption> request) {
         Log.i(LOGTAG, "onLoginSave");
         return GeckoResult.fromValue(request.confirm(request.options[0]));
+    }
+
+    @Nullable
+    @Override
+    public GeckoResult<PromptResponse> onAddressSave(@NonNull GeckoSession session, @NonNull AutocompleteRequest<Autocomplete.AddressSaveOption> request) {
+        return GeckoSession.PromptDelegate.super.onAddressSave(session, request);
     }
 
     @NonNull

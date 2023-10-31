@@ -84,6 +84,7 @@ public class BrowserWebView extends GeckoView {
 
         GeckoSessionSettings sessionSettings = session.getSettings();
         sessionSettings.setUserAgentMode(GeckoSessionSettings.USER_AGENT_MODE_DESKTOP);
+        sessionSettings.setUseTrackingProtection(true);
 
         session.setPriorityHint(GeckoSession.PRIORITY_HIGH);
 

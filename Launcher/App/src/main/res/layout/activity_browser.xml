@@ -123,6 +123,19 @@
         </LinearLayout>
 
         <ImageButton
+            android:id="@+id/extensions"
+            android:layout_width="39dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/bkg_button_web"
+            android:src="@drawable/web_extensions"
+            android:tooltipText="@string/web_light"
+            tools:ignore="UnusedAttribute" />
+
+        <ImageButton
             android:id="@+id/lightMode"
             android:layout_width="39dp"
             android:layout_height="match_parent"
