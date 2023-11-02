@@ -54,7 +54,7 @@
     <string name="settings_save">Export Configuration</string>
     <string name="settings_load">Import Configuration</string>
     <string name="settings_default_launcher">Set Default Home to Enable 3rd-party Shortcuts</string>
-    <string name="tip_settings_default_launcher">Set LightningLauncher to let other apps add shortcuts. DOES NOT REPLACE APP LIBRARY!</string>
+    <string name="tip_settings_default_launcher">Setup LightningLauncher to let other apps add shortcuts</string>
 
     <string name="advanced_sizing">Enable Additional Phone App Window Sizes</string>
     <string name="tip_advanced_sizing">Allows apps to be opened in different sized windows, may cause issues.</string>

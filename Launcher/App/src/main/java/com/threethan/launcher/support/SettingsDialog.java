@@ -393,11 +393,13 @@ public abstract class SettingsDialog {
             defaultSettingsButton.setOnClickListener((view) -> {
                 AlertDialog minDialog = Dialog.build(a, R.layout.dialog_set_default_launcher_info);
                 assert minDialog != null;
-                minDialog.findViewById(R.id.confirm).setOnClickListener((view1) -> {
+                minDialog.findViewById(R.id.confirm).setOnClickListener(view1 -> {
                     final Intent intent = new Intent(android.provider.Settings.ACTION_HOME_SETTINGS);
                     intent.setPackage("com.android.permissioncontroller");
+                    minDialog.cancel();
                     a.startActivity(intent);
                 });
+                minDialog.findViewById(R.id.cancel).setOnClickListener(view1 -> minDialog.cancel());
             });
         } else {
             dialog.findViewById(R.id.defaultLauncherSettingsButton).setVisibility(View.GONE);
