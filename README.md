@@ -20,21 +20,22 @@ It can run on any Android device, but has been tailored for the lastest updates 
 ### 🌐 **Websites in the Launcher**
 - Enter edit mode and then select "Add Website" on the bottom right
 - Websites will be automatically given labels and icons from, but both can be customized as you wish
-- Websites launch in a custom browser, and will continue running in the background when hidden
+- Websites launch in a custom browser, and can continue running in the background when its window is closed
 - High-res logos for many websites provided by [clearbit](https://clearbit.com/)
-- ***Background audio and recording is fully supported! Enjoy the web versions of Discord, Spotify, and many more!***
+- WebExtensions from [Firefox Addons](https://addons.mozilla.org/en-US/firefox/) are fully supported
+- ***Background audio and recording is fully supported! Enjoy the web versions of Discord, Spotify, YouTube, etc***
 
 ### 🎨 **Simple but Powerful Interface**
-- Modern UI with a focus on ease-of-use
+- Flexible UI with a focus on ease-of-use
 - Manually hide, rename, or replace the icon of any app
-- High res banner images for VR apps from [custom respositories](https://github.com/basti564/LauncherIcons), thanks to [basti564](https://github.com/basti564/)
+- High res banner images for most VR apps, thanks to [basti564](https://github.com/basti564/LauncherIcons) and [Veticia](https://github.com/Veticia/binaries)
 - Change the size or spacing of apps to show more apps at once
 - Choose from 10 preset styles, or import your own custom wallpaper
 
 ### 📦 **App Groups**
-- Automatic grouping of apps
-- Customizable default groups for VR Apps, 2D Apps, and Websites
-- Easily sort apps into up to 12 custom groups
+- Automatic grouping of apps by platform
+- Customizable default groups for VR Apps _(Quest)_, 2D Apps, TV apps _(AndroidTV)_, and Websites
+- Easily sort apps into up to 20 custom groups
 
 ### ⭐ **Starred Apps & Groups**
 - Apps and groups you've starred will be moved to the front of the list for easier access
@@ -43,12 +44,12 @@ It can run on any Android device, but has been tailored for the lastest updates 
 ### 🔍 **Search**
 - Press the search icon next to the settings icon to start searching all apps
 - Press enter on the keyboard to instantly open the first result
+- _(AndroidTV)_ Open search by pressing up from the top row
 
-### 🔗 **Shortcuts**
+### 🔗 **Shortcuts** _(Quest)_
 - Open `Settings -> Shortcut Settings` to set up shortcuts
-- You can set Lightning Launcher to open from the app library, explore, and/or facebook messenger icons
+- You can set Lightning Launcher to open from the app Library, Explore, People, and/or Facebook icons
 - Use multiple shortcuts to open multiple windows of Lightning Launcher at once
-
 
 ## Similar Projects
 
