@@ -1,6 +1,5 @@
 package com.threethan.launcher.helper;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.graphics.Bitmap;
@@ -79,9 +78,11 @@ public abstract class IconRepo {
             downloadExemptPackages = activity.sharedPreferences
                     .getStringSet(SettingsManager.DONT_DOWNLOAD_ICONS, downloadExemptPackages);
         downloadExemptPackages.add(packageName);
-        if (hasInternet)
+        if (hasInternet) {
             activity.sharedPreferenceEditor
                     .putStringSet(SettingsManager.DONT_DOWNLOAD_ICONS, downloadExemptPackages);
+            activity.sharedPreferenceEditor.apply();
+        }
         else shouldSaveDownloadExemptPackagesIfConnected = true;
     }
 
@@ -190,19 +191,16 @@ public abstract class IconRepo {
     public static Boolean hasInternet = false;
     public static Boolean shouldSaveDownloadExemptPackagesIfConnected = false;
     public static void updateInternet(LauncherActivity activity) {
-        Thread thread = new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                try {
-                    hasInternet = checkInternet();
-                    if (shouldSaveDownloadExemptPackagesIfConnected)
-                        activity.sharedPreferenceEditor
-                                .putStringSet(SettingsManager.DONT_DOWNLOAD_ICONS, downloadExemptPackages);
-
-                } catch (Exception e) {
-                    e.printStackTrace();
+        Thread thread = new Thread(() -> {
+            try {
+                hasInternet = checkInternet();
+                if (shouldSaveDownloadExemptPackagesIfConnected) {
+                    activity.sharedPreferenceEditor
+                            .putStringSet(SettingsManager.DONT_DOWNLOAD_ICONS, downloadExemptPackages);
+                    activity.sharedPreferenceEditor.apply();
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
 

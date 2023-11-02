@@ -210,7 +210,12 @@ public abstract class Compat {
         launcherActivity.launcherService.clearAdapterCachesAll();
 
         IconRepo.downloadExemptPackages.clear();
+        launcherActivity.sharedPreferenceEditor.putStringSet(
+                SettingsManager.DONT_DOWNLOAD_ICONS, Collections.emptySet()).apply();
+
         Icon.cachedIcons.clear();
+
+        Icon.init(launcherActivity); // Recreate folders
         storeAndReload(launcherActivity);
     }
     // Clears any custom labels assigned to apps, including whether they've been starred

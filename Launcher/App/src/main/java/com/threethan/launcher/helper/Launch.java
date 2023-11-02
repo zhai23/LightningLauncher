@@ -32,9 +32,9 @@ import java.util.TimerTask;
 public abstract class Launch {
     protected static final String ACTION_ACTUALLY_SHORTCUT = "ACTION_ACTUALLY_SHORTCUT";
     public static boolean launchApp(LauncherActivity launcherActivity, ApplicationInfo app) {
+        // Apply any pending preference changes before launching
+        launcherActivity.sharedPreferenceEditor.apply();
         try {
-            // Apply any pending preference changes before launching
-            launcherActivity.sharedPreferenceEditor.apply();
             // This is unlikely to fail, but it shouldn't stop us from launching if it somehow does
             Keyboard.hide(launcherActivity, launcherActivity.mainView);
         } catch (Exception ignored) {}

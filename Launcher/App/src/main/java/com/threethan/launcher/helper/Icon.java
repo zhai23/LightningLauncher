@@ -79,13 +79,16 @@ public abstract class Icon {
     @Nullable
     public static Drawable loadIcon(LauncherActivity activity, ApplicationInfo app, ImageView imageView) {
         // Try to load from memory
-        Drawable appIcon = null;
         if (cachedIcons.containsKey(cacheName(app.packageName))) return cachedIcons.get(cacheName(app.packageName));
+
+        Drawable appIcon = null;
+
         // Try to load from custom icon file
         final File iconCustomFile = iconCustomFileForPackage(activity, app.packageName);
         if (iconCustomFile.exists()) {
             updateIcon(iconCustomFile, app.packageName, null);
             appIcon = Drawable.createFromPath(iconCustomFile.getAbsolutePath());
+            if (appIcon != null) return appIcon; // No need to download if we have a custom icon
         }
         // Try to load from cached icon file
         final File iconCacheFile = iconCacheFileForPackage(activity, app.packageName);
@@ -93,8 +96,6 @@ public abstract class Icon {
             updateIcon(iconCacheFile, app.packageName, null);
             appIcon = Drawable.createFromPath(iconCacheFile.getAbsolutePath());
         }
-
-//        if (!IconRepo.shouldDownload(activity, app))
 
         if (appIcon == null) {
             // Try to load from package manager

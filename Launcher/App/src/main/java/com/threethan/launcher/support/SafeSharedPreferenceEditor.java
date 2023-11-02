@@ -83,6 +83,10 @@ public class SafeSharedPreferenceEditor implements SharedPreferences.Editor {
 
     @Override
     synchronized public void apply() {
-        editor.apply();
+        try {
+            editor.apply();
+        } catch (ConcurrentModificationException e) {
+            e.printStackTrace();
+        }
     }
 }
