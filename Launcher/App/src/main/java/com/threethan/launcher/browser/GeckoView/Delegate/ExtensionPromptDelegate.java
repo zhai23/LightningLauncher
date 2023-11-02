@@ -47,6 +47,7 @@ public class ExtensionPromptDelegate implements WebExtensionController.PromptDel
                 dialog.dismiss();
             }
         });
+        dialog.findViewById(R.id.dismissButton).setOnClickListener(view -> dialog.dismiss());
 
         final ArrayAdapter<WebExtension> adapter =
             new ArrayAdapter<>(activity, R.layout.lv_webext) {

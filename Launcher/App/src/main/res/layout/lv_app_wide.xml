@@ -5,7 +5,7 @@
     android:id="@+id/layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:descendantFocusability="beforeDescendants"
+    android:descendantFocusability="blocksDescendants"
     android:focusable="true"
     android:gravity="center"
     android:nextFocusDown="@id/killButton"
@@ -17,7 +17,8 @@
         android:layout_height="match_parent"
         android:layout_margin="20dp"
         android:background="@drawable/bkg_app"
-        android:elevation="4dp">
+        android:elevation="4dp"
+        android:focusable="false">
 
         <Button
             android:id="@+id/killButton"

@@ -19,7 +19,6 @@ import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.launcher.LauncherActivity;
-import com.threethan.launcher.lib.ImageLib;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,6 +48,7 @@ public abstract class SettingsDialog {
         a.settingsVisible = true;
 
         dialog.setOnDismissListener(dialogInterface -> a.settingsVisible = false);
+        dialog.findViewById(R.id.dismissButton).setOnClickListener(view -> dialog.dismiss());
 
         // Addons
         View addonsButton = dialog.findViewById(R.id.addonsButton);
@@ -83,11 +83,9 @@ public abstract class SettingsDialog {
             // Can edit, show switch
             editSwitch.setChecked(a.isEditing());
             dialog.findViewById(R.id.editModeContainer).setVisibility(View.VISIBLE);
-            dialog.findViewById(R.id.editRequiredContaier).setVisibility(View.VISIBLE);
             addWebsite.setVisibility(View.GONE);
         } else {
             dialog.findViewById(R.id.editModeContainer).setVisibility(View.GONE);
-            dialog.findViewById(R.id.editRequiredContaier).setVisibility(View.GONE);
             addWebsite.setVisibility(View.VISIBLE);
         }
 
@@ -128,13 +126,13 @@ public abstract class SettingsDialog {
                 Platform.isTv(a)
                         ? Settings.DEFAULT_BACKGROUND_TV
                         : Settings.DEFAULT_BACKGROUND_VR);
-        if (background < 0) background = views.length-1;
+        if (background < 0) background = views.length - 1;
 
         for (ImageView image : views) {
             image.setClipToOutline(true);
         }
         final int wallpaperWidth = 32;
-        final int selectedWallpaperWidthPx = a.dp(445+20-(wallpaperWidth+4)*(views.length-1)-wallpaperWidth);
+        final int selectedWallpaperWidthPx = a.dp(445 + 20 - (wallpaperWidth + 4) * (views.length - 1) - wallpaperWidth);
         views[background].getLayoutParams().width = selectedWallpaperWidthPx;
         views[background].requestLayout();
         for (int i = 0; i < views.length; i++) {
@@ -167,14 +165,10 @@ public abstract class SettingsDialog {
                 });
                 lastAnimator.start();
 
-                if (index == SettingsManager.BACKGROUND_DRAWABLES.length) {
-                    ImageLib.showImagePicker(a, Settings.PICK_THEME_CODE);
-                } else {
-                    a.setBackground(index);
-                    dark.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE));
-                    hueShift.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_BACKGROUND_OVERLAY,
-                            Platform.isTv(a) ? Settings.DEFAULT_BACKGROUND_OVERLAY_TV : Settings.DEFAULT_BACKGROUND_OVERLAY_VR));
-                }
+                a.setBackground(index);
+                dark.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE));
+                hueShift.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_BACKGROUND_OVERLAY,
+                        Platform.isTv(a) ? Settings.DEFAULT_BACKGROUND_OVERLAY_TV : Settings.DEFAULT_BACKGROUND_OVERLAY_VR));
             });
         }
 
@@ -188,10 +182,15 @@ public abstract class SettingsDialog {
                 a.sharedPreferenceEditor.putInt(Settings.KEY_SCALE, value);
                 a.refreshInterface();
             }
+
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) { a.refreshInterfaceAll(); }
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                a.refreshInterfaceAll();
+            }
         }));
         scale.setMax(150);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) scale.setMin(80);
@@ -204,10 +203,15 @@ public abstract class SettingsDialog {
                 a.sharedPreferenceEditor.putInt(Settings.KEY_MARGIN, value);
                 a.refreshInterface();
             }
+
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) { a.refreshInterfaceAll(); }
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                a.refreshInterfaceAll();
+            }
         }));
         margin.setMax(40);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) margin.setMin(0);
@@ -255,7 +259,7 @@ public abstract class SettingsDialog {
         });
 
         // Clear buttons (limited to one use to prevent bugs due to spamming)
-        clearedLabel= false;
+        clearedLabel = false;
 
         View clearLabel = dialog.findViewById(R.id.clearLabelButton);
         clearLabel.setOnClickListener(view -> {
@@ -309,16 +313,34 @@ public abstract class SettingsDialog {
         names.setOnCheckedChangeListener((compoundButton, value) -> {
             a.sharedPreferenceEditor.putBoolean(Settings.KEY_SHOW_NAMES_SQUARE, value);
             a.refreshInterfaceAll();
-            if(a.getAdapterSquare() != null) a.getAdapterSquare().setShowNames(value);
+            if (a.getAdapterSquare() != null) a.getAdapterSquare().setShowNames(value);
         });
         Switch wideNames = dialog.findViewById(R.id.nameBannerSwitch);
         wideNames.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_SHOW_NAMES_BANNER, Settings.DEFAULT_SHOW_NAMES_BANNER));
         wideNames.setOnCheckedChangeListener((compoundButton, value) -> {
             a.sharedPreferenceEditor.putBoolean(Settings.KEY_SHOW_NAMES_BANNER, value);
             a.refreshInterfaceAll();
-            if(a.getAdapterBanner() != null) a.getAdapterBanner().setShowNames(value);
-            if(a.getAdapterBanner() != null) a.getAdapterBanner().setShowNames(value);
+            if (a.getAdapterBanner() != null) a.getAdapterBanner().setShowNames(value);
+            if (a.getAdapterBanner() != null) a.getAdapterBanner().setShowNames(value);
         });
+
+        // Advanced button
+        dialog.findViewById(R.id.advancedSettingsButton).setOnClickListener(view -> SettingsDialog.showAdvancedSettings(a));
+    }
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
+    public static void showAdvancedSettings(LauncherActivity a) {
+        AlertDialog dialog = Dialog.build(a, R.layout.dialog_settings_advanced);
+        if (dialog == null) return;
+
+        dialog.findViewById(R.id.dismissButton).setOnClickListener(view -> dialog.dismiss());
+
+        // Group enabled state
+        if (a.canEdit()) {
+            // Can edit, show switch
+            dialog.findViewById(R.id.editRequiredContaier).setVisibility(View.VISIBLE);
+        } else {
+            dialog.findViewById(R.id.editRequiredContaier).setVisibility(View.GONE);
+        }
 
         // Advanced
         Switch longPressEdit = dialog.findViewById(R.id.longPressEditSwitch);

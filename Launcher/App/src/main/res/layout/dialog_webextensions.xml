@@ -9,8 +9,16 @@
     android:padding="20dp">
 
     <View
-        android:layout_width="300dp"
+        android:layout_width="350dp"
         android:layout_height="0dp" />
+
+    <ImageView
+        android:id="@+id/dismissButton"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginBottom="-30dp"
+        android:background="@drawable/bkg_hover_button"
+        android:src="@drawable/ic_back" />
 
     <TextView
         style="@style/SettingTitle"

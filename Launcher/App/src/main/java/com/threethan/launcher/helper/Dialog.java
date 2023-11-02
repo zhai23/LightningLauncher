@@ -6,7 +6,9 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Paint;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,7 +42,7 @@ public abstract class Dialog {
 
         if (dialog.getWindow() == null) return null;
         dialog.getWindow().setBackgroundDrawableResource(R.drawable.bkg_dialog);
-        dialog.getWindow().setDimAmount(0.2f);
+        dialog.getWindow().setDimAmount(0.3f);
         final View rootView = dialog.getWindow().getDecorView().findViewById(android.R.id.content).getRootView();
         rootView.setLayerType(View.LAYER_TYPE_HARDWARE, new Paint());
 
@@ -51,6 +53,7 @@ public abstract class Dialog {
 
         dialog.show();
         return dialog;
+
     }
 
     public static void toast(String string) {

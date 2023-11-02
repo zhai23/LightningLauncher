@@ -34,7 +34,11 @@
     <string name="icon_header">Icons &amp; Layout</string>
     <string name="wide_header">Display as Banner</string>
     <string name="name_header">Show Names</string>
-    <string name="advanced_header">Advanced Options</string>
+    <string name="advanced_header">Advanced Settings</string>
+    <string name="advanced_button">Open Advanced Settings for More Options</string>
+    <string name="advanced_interface">Interface Options</string>
+    <string name="advanced_features">Extra Features</string>
+    <string name="advanced_backup">Backup &amp; Restore</string>
 
     <string name="dark_mode">Dark Mode with Light Text</string>
     <string name="background_overlay">Animated Gradient over Wallpaper</string>
@@ -49,10 +53,10 @@
     <string name="default_launch_out">Launch Apps in Own Window by Default</string>
     <string name="settings_save">Export Configuration</string>
     <string name="settings_load">Import Configuration</string>
-    <string name="settings_default_launcher">Set Android Default App for Shortcuts</string>
+    <string name="settings_default_launcher">Set Default Home to Enable 3rd-party Shortcuts</string>
     <string name="tip_settings_default_launcher">Set LightningLauncher to let other apps add shortcuts. DOES NOT REPLACE APP LIBRARY!</string>
 
-    <string name="advanced_sizing">Enable Additional Phone App Window Settings</string>
+    <string name="advanced_sizing">Enable Additional Phone App Window Sizes</string>
     <string name="tip_advanced_sizing">Allows apps to be opened in different sized windows, may cause issues.</string>
     <string name="toast_advanced_sizing">New size options can be cycled in per-app settings</string>
 

@@ -22,6 +22,14 @@
             android:layout_width="415dp"
             android:layout_height="wrap_content" />
 
+        <ImageView
+            android:id="@+id/dismissButton"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginBottom="-30dp"
+            android:background="@drawable/bkg_hover_button"
+            android:src="@drawable/ic_back" />
+
         <TextView
             style="@style/SettingTitle"
             android:layout_width="match_parent"
@@ -872,248 +880,33 @@
             android:layout_height="wrap_content"
             android:text="@string/advanced_header" />
 
-        <LinearLayout
-            android:id="@+id/editRequiredContaier"
-            android:layout_width="match_parent"
-            android:layout_height="39dp"
-            android:baselineAligned="false"
-            android:gravity="clip_vertical|center_vertical"
-            android:orientation="horizontal">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="5dp"
-                android:layout_weight="1"
-                android:background="@drawable/bkg_button"
-                android:gravity="clip_vertical|center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/SettingButtonLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:layout_marginEnd="52dp"
-                    android:singleLine="true"
-                    android:text="@string/long_press"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="TooManyViews" />
-
-                <Switch
-                    android:id="@+id/longPressEditSwitch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:foreground="@drawable/bkg_hover_button"
-                    android:thumb="@drawable/switch_thumb_custom"
-                    android:track="@drawable/switch_track_custom"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="UseSwitchCompatOrMaterialXml" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="5dp"
-                android:layout_weight="1"
-                android:background="@drawable/bkg_button"
-                android:gravity="clip_vertical|center_vertical">
-
-                <TextView
-                    style="@style/SettingButtonLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:layout_marginEnd="52dp"
-                    android:singleLine="true"
-                    android:text="@string/hide_empty"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <Switch
-                    android:id="@+id/hideEmptySwitch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:foreground="@drawable/bkg_hover_button"
-                    android:thumb="@drawable/switch_thumb_custom"
-                    android:track="@drawable/switch_track_custom"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="UseSwitchCompatOrMaterialXml" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </LinearLayout>
-
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/defaultLaunchOutSection"
+            android:id="@+id/advancedSettingsButton"
             android:layout_width="match_parent"
             android:layout_height="39dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/bkg_button"
-            android:gravity="clip_vertical|center_vertical">
+            android:layout_marginEnd="3dp"
+            android:background="@drawable/bkg_button">
 
             <TextView
                 style="@style/SettingButtonLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="25dp"
                 android:singleLine="true"
-                android:text="@string/default_launch_out"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <Switch
-                android:id="@+id/defaultLaunchOutSwitch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:foreground="@drawable/bkg_hover_button"
-                android:thumb="@drawable/switch_thumb_custom"
-                android:track="@drawable/switch_track_custom"
+                android:text="@string/advanced_button"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="UseSwitchCompatOrMaterialXml" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/advancedSizingSection"
-            android:layout_width="match_parent"
-            android:layout_height="39dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/bkg_button"
-            android:gravity="clip_vertical|center_vertical"
-            android:orientation="horizontal"
-            android:tooltipText="@string/tip_advanced_sizing">
-
-            <TextView
-                style="@style/SettingButtonLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:singleLine="true"
-                android:text="@string/advanced_sizing"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="TooManyViews" />
-
-            <Switch
-                android:id="@+id/advancedSizingSwitch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:foreground="@drawable/bkg_hover_button"
-                android:thumb="@drawable/switch_thumb_custom"
-                android:track="@drawable/switch_track_custom"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="UseSwitchCompatOrMaterialXml" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="39dp"
-            android:layout_marginTop="10dp"
-            android:baselineAligned="false"
-            android:gravity="clip_vertical|center_vertical"
-            android:orientation="horizontal"
-            android:visibility="visible">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/saveSettingsButton"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="5dp"
-                android:layout_weight="1"
-                android:background="@drawable/bkg_button"
-                android:tooltipText="@string/tip_save_settings"
-                tools:ignore="UnusedAttribute">
-
-                <TextView
-                    style="@style/SettingButtonLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:singleLine="true"
-                    android:text="@string/settings_save"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="27dp"
-                    android:src="@drawable/ic_upload"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/loadSettingsButton"
-                android:layout_width="0dp"
-                android:layout_height="39dp"
-                android:layout_marginStart="5dp"
-                android:layout_weight="1"
-                android:background="@drawable/bkg_button"
-                android:tooltipText="@string/tip_load_settings"
-                tools:ignore="UnusedAttribute">
-
-                <TextView
-                    style="@style/SettingButtonLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:singleLine="true"
-                    android:text="@string/settings_load"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="27dp"
-                    android:src="@drawable/ic_download"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </LinearLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/defaultLauncherSettingsButton"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="10dp"
-            android:layout_weight="1"
-            android:background="@drawable/bkg_button"
-            android:tooltipText="@string/tip_settings_default_launcher"
-            tools:ignore="UnusedAttribute">
-
-            <TextView
-                style="@style/SettingButtonLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:singleLine="true"
-                android:text="@string/settings_default_launcher"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
-                android:layout_width="30dp"
-                android:layout_height="27dp"
-                android:src="@drawable/ic_config"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_launch_out"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="UseAppTint" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
