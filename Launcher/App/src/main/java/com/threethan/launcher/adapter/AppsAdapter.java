@@ -280,10 +280,10 @@ public class AppsAdapter extends BaseAdapter{
             boolean hovered;
             if (event.getAction() == MotionEvent.ACTION_HOVER_ENTER) hovered = true;
             else if (event.getAction() == MotionEvent.ACTION_HOVER_EXIT) {
-                if ((view != holder.moreButton && holder.moreButton.isHovered())
-                        || (view != holder.killButton && holder.killButton.isHovered())) {
-                    return false;
-                } else hovered = false;
+                for (View subView : new View[] {holder.moreButton, holder.killButton})
+                    if (view != subView && subView != null && subView.isHovered()) return false;
+
+                hovered = false;
             } else return false;
             updateHover(holder, hovered);
             return false;

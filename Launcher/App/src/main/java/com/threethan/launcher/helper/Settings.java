@@ -31,7 +31,6 @@ public abstract class Settings {
             R.drawable.bg_px_blue,
             R.drawable.bg_px_grey,
             R.drawable.bg_px_red,
-            R.drawable.bg_px_red,
             R.drawable.bg_px_white,
             R.drawable.bg_px_orange,
             R.drawable.bg_px_green,
@@ -83,8 +82,8 @@ public abstract class Settings {
     // Basic UI keys
     public static final String KEY_SCALE = "KEY_CUSTOM_SCALE";
     public static final String KEY_MARGIN = "KEY_CUSTOM_MARGIN";
-    public static final int DEFAULT_SCALE = 120;
-    public static final int DEFAULT_MARGIN = 25;
+    public static final int DEFAULT_SCALE = 115;
+    public static final int DEFAULT_MARGIN = 20;
     public static final String KEY_EDIT_MODE = "KEY_EDIT_MODE";
     public static final String KEY_SEEN_LAUNCH_OUT_POPUP = "KEY_SEEN_LAUNCH_OUT_POPUP";
     public static final String KEY_SEEN_LAUNCH_SIZE_POPUP = "KEY_SEEN_LAUNCH_SIZE_POPUP";
