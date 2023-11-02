@@ -40,7 +40,7 @@ import java.util.Set;
     Other than that, it's just a basic browser interface without tabs.
  */
 public class BrowserActivity extends Activity {
-    public BrowserWebView w;
+    private BrowserWebView w;
     TextView urlPre;
     TextView urlMid;
     TextView urlEnd;
@@ -284,6 +284,10 @@ public class BrowserActivity extends Activity {
         }
 
         return false;
+    }
+    public void loadUrl(String url) {
+        w.loadUrl(url);
+        updateButtonsAndUrl(url);
     }
 
     // Sets the WebView when the service is bound

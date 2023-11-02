@@ -1,5 +1,6 @@
 package com.threethan.launcher.helper;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.graphics.Bitmap;
@@ -53,9 +54,10 @@ public abstract class IconRepo {
             "https://logo.clearbit.com/%s", // Provides high-res icons for TLDs
             "%s/favicon.ico", // The standard directory for an icon to be places
     };
+    private static final String TEST_URL = "https://github.com/threethan/QuestLauncherImages/blob/main/banner/com.oculus.browser.jpg";
     // If a download finishes, regardless of whether an icon is found, the app will be added to this
     // list, and will not be downloaded again unless manually requested.
-    protected static Set<String> downloadFinishedPackages = Collections.synchronizedSet(new HashSet<>());
+    protected static Set<String> downloadExemptPackages = Collections.synchronizedSet(new HashSet<>());
     private static final ConcurrentHashMap<String, Object> locks = new ConcurrentHashMap<>();
 
     // Helper functions
@@ -63,21 +65,24 @@ public abstract class IconRepo {
         if (shouldDownload(activity, app)) download(activity, app, callback);
     }
 
-    public static boolean shouldDownload(LauncherActivity activity, ApplicationInfo app) {
+    public static synchronized boolean shouldDownload(LauncherActivity activity, ApplicationInfo app) {
         if (App.isShortcut(app)) return false;
-        if (downloadFinishedPackages.isEmpty())
-            downloadFinishedPackages = activity.sharedPreferences
-                    .getStringSet(SettingsManager.DONT_DOWNLOAD_ICONS, downloadFinishedPackages);
-        return !downloadFinishedPackages.contains(app.packageName);
+        if (downloadExemptPackages.isEmpty()) {
+            downloadExemptPackages.addAll(activity.sharedPreferences
+                    .getStringSet(SettingsManager.DONT_DOWNLOAD_ICONS, downloadExemptPackages));
+        }
+        return !downloadExemptPackages.contains(app.packageName);
     }
 
-    public static void dontDownloadIconFor(LauncherActivity activity, String packageName) {
-        if (downloadFinishedPackages.isEmpty())
-            downloadFinishedPackages = activity.sharedPreferences
-                    .getStringSet(SettingsManager.DONT_DOWNLOAD_ICONS, downloadFinishedPackages);
-        downloadFinishedPackages.add(packageName);
-        activity.sharedPreferenceEditor
-                .putStringSet(SettingsManager.DONT_DOWNLOAD_ICONS, downloadFinishedPackages);
+    public static synchronized void dontDownloadIconFor(LauncherActivity activity, String packageName) {
+        if (downloadExemptPackages.isEmpty())
+            downloadExemptPackages = activity.sharedPreferences
+                    .getStringSet(SettingsManager.DONT_DOWNLOAD_ICONS, downloadExemptPackages);
+        downloadExemptPackages.add(packageName);
+        if (hasInternet)
+            activity.sharedPreferenceEditor
+                    .putStringSet(SettingsManager.DONT_DOWNLOAD_ICONS, downloadExemptPackages);
+        else shouldSaveDownloadExemptPackagesIfConnected = true;
     }
 
     // Starts the download and handles threading
@@ -85,7 +90,7 @@ public abstract class IconRepo {
         final String pkgName = app.packageName;
 
         final boolean isWide = App.isBanner(activity, app);
-        final File iconFile = Icon.iconFileForPackage(activity, pkgName);
+        final File iconFile = Icon.iconCacheFileForPackage(activity, pkgName);
 
         new Thread(() -> {
             Object lock = locks.putIfAbsent(pkgName, new Object());
@@ -108,12 +113,8 @@ public abstract class IconRepo {
                 } finally {
                     // Set the icon to now download if we either successfully downloaded it, or the download tried and failed
                     locks.remove(pkgName);
-                    if (!App.isWebsite(app)) {
-                        downloadFinishedPackages.add(pkgName);
-                        activity.sharedPreferenceEditor
-                                    .putStringSet(SettingsManager.DONT_DOWNLOAD_ICONS, downloadFinishedPackages);
-
-                    }
+                    // ..and if we have internet
+                    dontDownloadIconFor(activity, pkgName);
                 }
             }
         }).start();
@@ -152,23 +153,7 @@ public abstract class IconRepo {
             Bitmap bitmap = ImageLib.bitmapFromFile(context, outputFile);
 
             if (bitmap != null) {
-                int width = bitmap.getWidth();
-                int height = bitmap.getHeight();
-                float aspectRatio = (float) width / height;
-                if (width > 512) {
-                    width = 512;
-                    height = Math.round(width / aspectRatio);
-                    bitmap = Bitmap.createScaledBitmap(bitmap, width, height, false);
-                }
-
-                try {
-                    fileOutputStream = new FileOutputStream(outputFile);
-                    bitmap.compress(Bitmap.CompressFormat.WEBP, 90, fileOutputStream);
-                    fileOutputStream.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
+                Icon.compressAndSaveBitmap(outputFile, bitmap);
                 return true;
             }
             return false;
@@ -202,4 +187,35 @@ public abstract class IconRepo {
         return success;
     }
 
+    public static Boolean hasInternet = false;
+    public static Boolean shouldSaveDownloadExemptPackagesIfConnected = false;
+    public static void updateInternet(LauncherActivity activity) {
+        Thread thread = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    hasInternet = checkInternet();
+                    if (shouldSaveDownloadExemptPackagesIfConnected)
+                        activity.sharedPreferenceEditor
+                                .putStringSet(SettingsManager.DONT_DOWNLOAD_ICONS, downloadExemptPackages);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        thread.start();
+    }
+    private static boolean checkInternet() {
+        try {
+            InputStream inputStream = new URL(TEST_URL).openStream();
+            if (inputStream == null) return false;
+            inputStream.close();
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
 }

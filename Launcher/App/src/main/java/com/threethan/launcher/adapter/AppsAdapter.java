@@ -60,7 +60,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class AppsAdapter extends BaseAdapter{
     private static Drawable iconDrawable;
-    private static File iconFile;
+    private static File customIconFile;
     private static String packageName;
     private LauncherActivity launcherActivity;
     private List<ApplicationInfo> currentAppList;
@@ -336,11 +336,11 @@ public class AppsAdapter extends BaseAdapter{
             Bitmap bitmap = ImageLib.bitmapFromFile(launcherActivity, new File(path));
             if (bitmap == null) return;
             bitmap = ImageLib.getResizedBitmap(bitmap, 450);
-            ImageLib.saveBitmap(bitmap, iconFile);
+            ImageLib.saveBitmap(bitmap, customIconFile);
             selectedImageView.setImageBitmap(bitmap);
         } else {
             selectedImageView.setImageDrawable(iconDrawable);
-            Icon.updateIcon(iconFile, packageName, null);
+            Icon.updateIcon(customIconFile, packageName, null);
             // No longer sets icon here but that should be fine
         }
     }
@@ -394,9 +394,9 @@ public class AppsAdapter extends BaseAdapter{
             iconDrawable = currentApp.loadIcon(packageManager);
             packageName = currentApp.packageName;
 
-            iconFile = Icon.iconFileForPackage(launcherActivity, currentApp.packageName);
-            if (iconFile.exists()) //noinspection ResultOfMethodCallIgnored
-                iconFile.delete();
+            customIconFile = Icon.iconCustomFileForPackage(launcherActivity, currentApp.packageName);
+            if (customIconFile.exists()) //noinspection ResultOfMethodCallIgnored
+                customIconFile.delete();
             launcherActivity.setSelectedIconImage(iconImageView, currentApp.packageName);
             ImageLib.showImagePicker(launcherActivity, Settings.PICK_ICON_CODE);
         });

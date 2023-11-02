@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bkg_dialog"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <View
+        android:layout_width="360dp"
+        android:layout_height="0dp" />
+
+    <TextView
+        style="@style/SettingTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/clear_icons_title" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="85sp"
+        android:autofillHints="text"
+        android:text="@string/clear_icons_info"
+        android:textColor="@android:color/white" />
+
+
+    <TextView
+        android:id="@+id/questOnlyInfo"
+        android:layout_width="match_parent"
+        android:layout_height="85sp"
+        android:autofillHints="text"
+        android:text="@string/clear_icons_info_quest"
+        android:textColor="@android:color/white" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="95sp"
+        android:layout_marginBottom="10dp"
+        android:autofillHints="text"
+        android:text="@string/clear_icons_info_custom"
+        android:textColor="@android:color/white" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:id="@+id/clearCache"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bkg_button"
+            android:nextFocusDown="@id/resortOnly">
+
+            <TextView
+                style="@style/SettingButtonLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/clear_icons_clear_cache" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/clearAll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/bkg_button"
+            android:nextFocusUp="@id/resetGroups"
+            android:nextFocusDown="@id/cancel">
+
+            <TextView
+                style="@style/SettingButtonLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/clear_icons_clear_all" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/cancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/bkg_button"
+            android:nextFocusUp="@id/resortOnly">
+
+            <TextView
+                style="@style/SettingButtonLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/clear_icons_cancel" />
+
+        </FrameLayout>
+    </LinearLayout>
+
+</LinearLayout>

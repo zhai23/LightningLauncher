@@ -138,7 +138,7 @@
                 tools:ignore="NestedWeights,RtlSymmetry" />
 
             <Switch
-                android:id="@id/defaultTvSwitch"
+                android:id="@+id/defaultTvSwitch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:foreground="@drawable/bkg_hover_button"

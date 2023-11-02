@@ -513,7 +513,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
-                android:id="@+id/clearIconButton"
+                android:id="@+id/clearLabelButton"
                 style="@style/SettingButtonLabel"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -525,7 +525,7 @@
                 android:paddingStart="5dp"
                 android:paddingEnd="5dp"
                 android:singleLine="true"
-                android:text="@string/clear_cache">
+                android:text="@string/clear_labels">
 
             </TextView>
         </LinearLayout>
@@ -568,22 +568,36 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <TextView
-                android:id="@+id/clearLabelButton"
-                style="@style/SettingButtonLabel"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/iconSettingsButton"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginStart="6.6dp"
-                android:layout_weight="1"
-                android:background="@drawable/bkg_button"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:paddingStart="5dp"
-                android:paddingEnd="5dp"
-                android:singleLine="true"
-                android:text="@string/clear_labels">
+                android:layout_marginEnd="3dp"
+                android:layout_weight="2"
+                android:background="@drawable/bkg_button">
 
-            </TextView>
+                <TextView
+                    style="@style/SettingButtonLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="25dp"
+                    android:singleLine="true"
+                    android:text="@string/icons_settings_button"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_launch_out"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="UseAppTint" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
 

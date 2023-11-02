@@ -40,6 +40,7 @@ import com.threethan.launcher.helper.App;
 import com.threethan.launcher.helper.AppData;
 import com.threethan.launcher.helper.Compat;
 import com.threethan.launcher.helper.Dialog;
+import com.threethan.launcher.helper.Icon;
 import com.threethan.launcher.helper.IconRepo;
 import com.threethan.launcher.helper.Keyboard;
 import com.threethan.launcher.helper.Platform;
@@ -212,6 +213,8 @@ public class LauncherActivity extends Activity {
                 Platform.isTv(this) ? Settings.DEFAULT_BACKGROUND_OVERLAY_TV
                                             : Settings.DEFAULT_BACKGROUND_OVERLAY_VR))
             startBackgroundOverlay();
+
+        Icon.init(this);
     }
     protected void onLayoutChaged(View v, int left, int top, int right, int bottom,
                                   int oldLeft, int oldTop, int oldRight, int oldBottom) {

@@ -31,6 +31,7 @@ public abstract class Settings {
             R.drawable.bg_px_blue,
             R.drawable.bg_px_grey,
             R.drawable.bg_px_red,
+            R.drawable.bg_px_red,
             R.drawable.bg_px_white,
             R.drawable.bg_px_orange,
             R.drawable.bg_px_green,

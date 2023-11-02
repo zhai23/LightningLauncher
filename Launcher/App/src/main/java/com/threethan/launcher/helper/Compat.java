@@ -10,6 +10,7 @@ import com.threethan.launcher.lib.FileLib;
 import com.threethan.launcher.lib.StringLib;
 import com.threethan.launcher.support.SettingsManager;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,7 +30,7 @@ import java.util.Set;
 
 public abstract class Compat {
     public static final String KEY_COMPATIBILITY_VERSION = "KEY_COMPATIBILITY_VERSION";
-    public static final int CURRENT_COMPATIBILITY_VERSION = 7;
+    public static final int CURRENT_COMPATIBILITY_VERSION = 8;
     public static final boolean DEBUG_COMPATIBILITY = false;
     private static final String TAG = "Compatibility";
 
@@ -131,6 +132,13 @@ public abstract class Compat {
                         break;
                     case (7):
                         break; // This bump was to fix an issue with clearIconCache()
+                    case (8):
+                        // Clear old icon cache
+                        for (File fromFile : Objects.requireNonNull(
+                                new File (launcherActivity.getApplicationInfo().dataDir).listFiles()))
+                            if (fromFile.getName().endsWith(".webp"))
+                                //noinspection ResultOfMethodCallIgnored
+                                fromFile.delete();
                 }
             }
             Log.i(TAG, String.format("Settings Updated from v%s to v%s (Settings versions are not the same as app versions)",
@@ -179,7 +187,6 @@ public abstract class Compat {
         App.invalidateCaches(launcherActivity);
         for (ApplicationInfo app: apps) {
             final boolean supported = App.isSupported(app, launcherActivity);
-//            Log.v("SUPPORTED: "+supported, app.packageName);
             if(!supported) appGroupMap.put(app.packageName, Settings.UNSUPPORTED_GROUP);
             else if (Objects.equals(appGroupMap.get(app.packageName), Settings.UNSUPPORTED_GROUP))
                 appGroupMap.remove(app.packageName);
@@ -190,18 +197,19 @@ public abstract class Compat {
     // Clears all icons, including custom icons
     public static void clearIcons(LauncherActivity launcherActivity) {
         Log.i(TAG, "Icons are being cleared");
-        FileLib.delete(launcherActivity.getApplicationInfo().dataDir);
+        FileLib.delete(launcherActivity.getApplicationInfo().dataDir + Icon.ICON_CUSTOM_FOLDER);
         launcherActivity.sharedPreferenceEditor.remove(SettingsManager.DONT_DOWNLOAD_ICONS); 
         clearIconCache(launcherActivity);
     }
     // Clears all icons, except for custom icons, and sets them to be re-downloaded
     public static void clearIconCache(LauncherActivity launcherActivity) {
         Log.i(TAG, "Icon cache is being cleared");
+        FileLib.delete(launcherActivity.getApplicationInfo().dataDir + Icon.ICON_CACHE_FOLDER);
 
         launcherActivity.isKillable = false;
         launcherActivity.launcherService.clearAdapterCachesAll();
 
-        IconRepo.downloadFinishedPackages.clear();
+        IconRepo.downloadExemptPackages.clear();
         Icon.cachedIcons.clear();
         storeAndReload(launcherActivity);
     }

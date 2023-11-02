@@ -25,6 +25,7 @@ import org.mozilla.geckoview.WebExtension;
 import org.mozilla.geckoview.WebExtensionController;
 
 public class ExtensionPromptDelegate implements WebExtensionController.PromptDelegate {
+    final static String EXTENSIONS_URL = "https://addons.mozilla.org/firefox/extensions/";
     @Nullable
     @Override
     public GeckoResult<AllowOrDeny> onInstallPrompt(@NonNull WebExtension extension) {
@@ -39,6 +40,13 @@ public class ExtensionPromptDelegate implements WebExtensionController.PromptDel
         final AlertDialog dialog = Dialog.build(activity, R.layout.dialog_webextensions);
         assert dialog != null;
         dialog.hide();
+
+        dialog.findViewById(R.id.getMoreButton).setOnClickListener(view -> {
+            if (activity instanceof BrowserActivity) {
+                ((BrowserActivity) activity).loadUrl(EXTENSIONS_URL);
+                dialog.dismiss();
+            }
+        });
 
         final ArrayAdapter<WebExtension> adapter =
             new ArrayAdapter<>(activity, R.layout.lv_webext) {
@@ -77,8 +85,10 @@ public class ExtensionPromptDelegate implements WebExtensionController.PromptDel
                         showList();
                     });
                     view.findViewById(R.id.options).setOnClickListener(v -> {
-                        ((BrowserActivity) activity).w.loadUrl(item.metaData.optionsPageUrl);
-                        dialog.dismiss();
+                        if (activity instanceof BrowserActivity) {
+                            ((BrowserActivity) activity).loadUrl(item.metaData.optionsPageUrl);
+                            dialog.dismiss();
+                        }
                     });
                     TextView name = view.findViewById(R.id.name);
                     name.setText(item.metaData.name);

@@ -37,7 +37,8 @@ import java.util.Set;
 
 public abstract class SettingsDialog {
     private static boolean clearedLabel;
-    private static boolean clearedIcon;
+    private static boolean clearedIconCache;
+    private static boolean clearedIconCustom;
     private static boolean clearedSort;
     private static boolean clearedGroups;
     @SuppressLint("UseSwitchCompatOrMaterialCode")
@@ -255,7 +256,6 @@ public abstract class SettingsDialog {
 
         // Clear buttons (limited to one use to prevent bugs due to spamming)
         clearedLabel= false;
-        clearedIcon = false;
 
         View clearLabel = dialog.findViewById(R.id.clearLabelButton);
         clearLabel.setOnClickListener(view -> {
@@ -265,14 +265,9 @@ public abstract class SettingsDialog {
                 clearedLabel = true;
             }
         });
-        View clearIcon = dialog.findViewById(R.id.clearIconButton);
-        clearIcon.setOnClickListener(view -> {
-            if (!clearedIcon) {
-                Compat.clearIcons(a);
-                clearIcon.setAlpha(0.5f);
-                clearedIcon = true;
-            }
-        });
+        View iconSettings = dialog.findViewById(R.id.iconSettingsButton);
+        iconSettings.setOnClickListener(view -> SettingsDialog.showIconSettings(a));
+
         View groupSettings = dialog.findViewById(R.id.groupDefaultsInfoButton);
         groupSettings.setOnClickListener(view -> showGroupSettings(a));
 
@@ -459,6 +454,39 @@ public abstract class SettingsDialog {
                 }
 
                 info.setText(a.getString(R.string.default_groups_info, builder2.toString()));
+            }
+        });
+
+        dialog.findViewById(R.id.cancel).setOnClickListener(v -> dialog.dismiss());
+    }
+    public static void showIconSettings(LauncherActivity a) {
+        clearedIconCache = false;
+        clearedIconCustom = false;
+
+        AlertDialog dialog = Dialog.build(a, R.layout.dialog_setting_reset_icons);
+        if (dialog == null) return;
+
+        View clearCache = dialog.findViewById(R.id.clearCache);
+        clearCache.setOnClickListener(view -> {
+            if (!clearedIconCache) {
+                Compat.clearIconCache(a);
+                clearCache.setAlpha(0.5f);
+                clearedSort = true;
+
+                Dialog.toast(a.getString(R.string.toast_cleared_icon_cache));
+            }
+        });
+
+        View clearAll = dialog.findViewById(R.id.clearAll);
+        clearAll.setOnClickListener(view -> {
+            if (!clearedIconCustom) {
+                Compat.clearIcons(a);
+                clearAll.setAlpha(0.5f);
+                clearedIconCustom = true;
+                clearCache.setAlpha(0.5f);
+                clearedIconCache = true;
+
+                Dialog.toast(a.getString(R.string.toast_cleared_icon_all));
             }
         });
 

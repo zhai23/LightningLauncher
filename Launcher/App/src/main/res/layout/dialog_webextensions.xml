@@ -21,17 +21,18 @@
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="-8dp">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
     </ListView>
 
     <TextView
+        android:id="@+id/getMoreButton"
         style="@style/SettingsText"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_marginTop="10dp"
-        android:alpha="0.5"
+        android:background="@drawable/bkg_button"
         android:gravity="center"
         android:text="@string/extension_prompt_hint" />
 

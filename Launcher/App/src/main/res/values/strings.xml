@@ -41,7 +41,8 @@
     <string name="group_mode">Enable Groups</string>
     <string name="clear_cache">Reset All Icons</string>
     <string name="clear_labels">Reset All Labels</string>
-    <string name="group_defaults_button">Default Group Settings</string>
+    <string name="group_defaults_button">Default Groups</string>
+    <string name="icons_settings_button">Reset/Update Icons</string>
 
     <string name="long_press">Long Press to Edit</string>
     <string name="hide_empty">Hide Empty Groups</string>
@@ -186,6 +187,21 @@
 
     <string name="toast_cant_unset_group">Set another group as default to unset this one</string>
 
+    <string name="clear_icons_title">Icon Update/Clear Settings</string>
+    <string name="clear_icons_info">LightningLauncher caches icons and banners for apps for faster loading.\n
+        \nYou can clear this cache to refresh any icons which might have changed.</string>
+    <string name="clear_icons_info_quest">LightningLauncher will download icons for official Quest Games and app from the internet.\n
+        \nBy clearing the icon cache, you can also redownload all such icons. This is useful if they seem to be missing!</string>
+    <string name="clear_icons_info_custom">You can also set custom icons for apps by placing them in a folder ON THIS DEVICE, then pressing on the icon in the app info popup.\n
+    \nIf you want, you can also clear all of these. Doing so will also clear the cache.</string>
+
+    <string name="clear_icons_clear_cache">Clear Icon Cache</string>
+    <string name="clear_icons_clear_all">Clear Custom Icons</string>
+    <string name="clear_icons_cancel">Go Back, Don\'t do Anything</string>
+
+    <string name="toast_cleared_icon_cache">Icon cache has been cleared</string>
+    <string name="toast_cleared_icon_all">All icons have been reset to default</string>
+
     <!--  Tooltips  -->
     <string name="tip_kill_process">Stop Running in the Background</string>
     <string name="tip_launch_out">Launch in Own Window Once</string>
@@ -291,7 +307,7 @@
     <string name="web_apk_prompt_move">Save</string>
     <string name="web_apk_prompt_delete">Delete</string>
     <string name="extension_prompt_title">Manage Web Extensions</string>
-    <string name="extension_prompt_hint">Search &quot;Firefox Addons&quot; to find more!</string>
+    <string name="extension_prompt_hint">Get Extensions from Firefox Addons</string>
 
     <!-- Gecko -->
     <string name="before_unload_message">This page is asking you to confirm that you want to leave - data you have entered may not be saved</string>
