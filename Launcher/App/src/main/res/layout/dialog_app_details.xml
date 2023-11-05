@@ -171,7 +171,7 @@
                     android:layout_marginEnd="3dp"
                     android:layout_marginBottom="-1sp"
                     android:ellipsize="end"
-                    android:maxLength="5"
+                    android:maxWidth="100dp"
                     android:singleLine="true"
                     android:textColor="#79FFFFFF"
                     tools:text="1.2.0" />
