@@ -62,7 +62,7 @@ public class Updater {
     public static final String APK_DIR = "/Content/TemporaryDownloadedApk/";
     public static boolean anyDialogVisible = false;
     public static final Addon[] addons = {
-            new Addon(TAG_FACEBOOK_SHORTCUT, "ShortcutFaceebook", "com.facebook.facebookvr", "6.2.0", false),
+            new Addon(TAG_FACEBOOK_SHORTCUT, "ShortcutFacebook", "com.facebook.facebookvr", "6.2.0", false),
             new Addon(TAG_PEOPLE_SHORTCUT, "ShortcutPeople", "com.threethan.launcher.service.people", "6.2.0", true),
             new Addon(TAG_APP_LIBRARY_SHORTCUT, "ShortcutAppLibrary", "com.threethan.launcher.service.library", "6.2.0", true),
             new Addon(TAG_HORIZON_FEED_SHORTCUT, "ShortcutHorizonFeed", "com.threethan.launcher.service.explore", "6.2.0", true),
