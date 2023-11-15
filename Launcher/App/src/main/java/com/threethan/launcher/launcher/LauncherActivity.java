@@ -341,7 +341,7 @@ public class LauncherActivity extends Activity {
                     break;
                 }
             } else getAdapterSquare().onImageSelected(null, selectedImageView);
-        } else if (requestCode == Settings.PICK_THEME_CODE) {
+        } else if (requestCode == Settings.PICK_WALLPAPER_CODE) {
             if (resultCode == RESULT_OK) {
                 for (Image image : ImagePicker.getImages(data)) {
                     try {
@@ -349,7 +349,6 @@ public class LauncherActivity extends Activity {
                         if (bitmap == null) return;
                         bitmap = ImageLib.getResizedBitmap(bitmap, 1280);
                         ImageLib.saveBitmap(bitmap, new File(getApplicationInfo().dataDir, Settings.CUSTOM_BACKGROUND_PATH));
-                        setBackground(SettingsManager.BACKGROUND_DRAWABLES.length);
                         break;
                     } catch (Exception e) {e.printStackTrace();}
                 }

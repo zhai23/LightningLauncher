@@ -19,6 +19,7 @@ import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.launcher.LauncherActivity;
+import com.threethan.launcher.lib.ImageLib;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -145,6 +146,8 @@ public abstract class SettingsDialog {
                 if (lastIndex >= SettingsManager.BACKGROUND_DRAWABLES.length || lastIndex < 0)
                     lastIndex = SettingsManager.BACKGROUND_DRAWABLES.length;
                 ImageView last = views[lastIndex];
+
+                if (index == views.length-1) ImageLib.showImagePicker(a, Settings.PICK_WALLPAPER_CODE);
                 if (last == view) return;
 
                 ValueAnimator viewAnimator = ValueAnimator.ofInt(view.getWidth(), selectedWallpaperWidthPx);
@@ -166,9 +169,11 @@ public abstract class SettingsDialog {
                 lastAnimator.start();
 
                 a.setBackground(index);
-                dark.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE));
-                hueShift.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_BACKGROUND_OVERLAY,
-                        Platform.isTv(a) ? Settings.DEFAULT_BACKGROUND_OVERLAY_TV : Settings.DEFAULT_BACKGROUND_OVERLAY_VR));
+                if (index != views.length-1) {
+                    dark.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE));
+                    hueShift.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_BACKGROUND_OVERLAY,
+                            Platform.isTv(a) ? Settings.DEFAULT_BACKGROUND_OVERLAY_TV : Settings.DEFAULT_BACKGROUND_OVERLAY_VR));
+                }
             });
         }
 
