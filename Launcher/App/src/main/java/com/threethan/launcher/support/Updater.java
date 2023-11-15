@@ -52,7 +52,8 @@ import java.util.Objects;
 public class Updater {
     private static final String UPDATE_URL = "https://api.github.com/repos/threethan/LightningLauncher/releases/latest";
     private static final String TEMPLATE_URL = "https://github.com/threethan/LightningLauncher/releases/download/%s/%s.apk";
-    private static final String NAME_MAIN = "LightningLauncher";
+    private static final String NAME_MAIN_ARM64 = "LightningLauncherArm64";
+    private static final String NAME_MAIN_COMPAT = "LightningLauncher";
     public static final String TAG_FACEBOOK_SHORTCUT = "TAG_FACEBOOK_SHORTCUT";
     public static final String TAG_APP_LIBRARY_SHORTCUT = "TAG_APP_LIBRARY_SHORTCUT";
     public static final String TAG_PEOPLE_SHORTCUT = "TAG_PEOPLE_SHORTCUT";
@@ -143,11 +144,14 @@ public class Updater {
         attempts = 3;
         downloadUpdate(addon.downloadName, ADDON_RELEASE_TAG, addon.overrideUrl);
     }
-
+    private String getUpdateName() {
+        boolean arm64 = Objects.requireNonNull(System.getProperty("ro.product.cpu.abilist")).contains("aarch64");
+        return arm64 ? NAME_MAIN_ARM64 : NAME_MAIN_COMPAT;
+    }
     public void updateAppEvenIfSkipped() {
         getSharedPreferences().edit().remove(KEY_IGNORED_UPDATE_VERSION).apply();
         attempts = 6;
-        downloadUpdate(NAME_MAIN);
+        downloadUpdate(getUpdateName());
     }
     protected void storeLatestVersionAndPrompt(String tagName) {
         PackageInfo packageInfo;
@@ -202,7 +206,7 @@ public class Updater {
             AlertDialog.Builder updateDialogBuilder = new AlertDialog.Builder(activity, android.R.style.Theme_DeviceDefault_Dialog_Alert);
             updateDialogBuilder.setTitle(R.string.update_title);
             updateDialogBuilder.setMessage(activity.getString(R.string.update_content, curName, newName));
-            updateDialogBuilder.setPositiveButton(R.string.update_button, (dialog, which) -> downloadUpdate(NAME_MAIN));
+            updateDialogBuilder.setPositiveButton(R.string.update_button, (dialog, which) -> downloadUpdate(getUpdateName()));
             updateDialogBuilder.setNegativeButton(R.string.update_skip_button, (dialog, which) -> skipUpdate(newName));
             updateDialogBuilder.setOnDismissListener(di -> Updater.anyDialogVisible = false);
             updateDialogBuilder.show();
@@ -213,7 +217,7 @@ public class Updater {
         // noinspection deprecation
         return PreferenceManager.getDefaultSharedPreferences(activity);
     }
-    public static boolean isUpdateAvailable(Context context) {
+    public static boolean isMainUpdateAvailable(Context context) {
         //noinspection deprecation
         return PreferenceManager.getDefaultSharedPreferences(context).getBoolean(KEY_UPDATE_AVAILABLE, false);
     }

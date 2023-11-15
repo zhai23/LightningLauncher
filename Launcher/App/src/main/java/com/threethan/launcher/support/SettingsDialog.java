@@ -91,7 +91,7 @@ public abstract class SettingsDialog {
         }
 
         // Update button
-        if (Updater.isUpdateAvailable(a)) {
+        if (Updater.isMainUpdateAvailable(a)) {
             View skippedUpdateButton = dialog.findViewById(R.id.updateButton);
             skippedUpdateButton.setVisibility(View.VISIBLE);
             skippedUpdateButton.setOnClickListener((view) -> new Updater(a).updateAppEvenIfSkipped());
