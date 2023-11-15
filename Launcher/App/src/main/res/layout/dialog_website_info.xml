@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:autofillHints="text"
             android:backgroundTint="@android:color/white"
-            android:minHeight="97sp"
+            android:minHeight="87sp"
             android:text="@string/website_info1"
             android:textColor="@android:color/white" />
 
@@ -55,6 +55,33 @@
             android:minHeight="157sp"
             android:text="@string/website_info2"
             android:textColor="@android:color/white" />
+
+        <LinearLayout
+            android:id="@+id/vrOnlyInfo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView2"
+                style="@style/SettingSubtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:paddingStart="0dp"
+                android:paddingEnd="0dp"
+                android:text="@string/website_subtitle3" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="text"
+                android:backgroundTint="@android:color/white"
+                android:minHeight="87sp"
+                android:text="@string/website_info3"
+                android:textColor="@android:color/white" />
+        </LinearLayout>
 
         <FrameLayout
             android:id="@+id/confirm"

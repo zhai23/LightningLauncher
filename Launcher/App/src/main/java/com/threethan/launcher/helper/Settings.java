@@ -123,6 +123,7 @@ public abstract class Settings {
     public static final String KEY_SELECTED_GROUPS = "prefSelectedGroups";
     public static final String KEY_WEBSITE_LIST = "prefWebAppNames";
     public static final String KEY_LAUNCH_SIZE = "prefLaunchSize";
+    public static final String KEY_LAUNCH_BROWSER = "prefLaunchBrowser";
 
     public static final String KEY_DEFAULT_LAUNCH_OUT = "KEY_DEFAULT_LAUNCH_OUT";
     public static final boolean DEFAULT_DEFAULT_LAUNCH_OUT = false;
@@ -135,6 +136,11 @@ public abstract class Settings {
             R.string.size_small,
             R.string.size_large,
             R.string.size_huge
+    };
+    public static final int[] launchBrowserStrings = {
+            R.string.browser_default_in,
+            R.string.browser_default_out,
+            R.string.browser_quest,
     };
     /** @noinspection rawtypes*/
     public static final Class[] launchSizeClasses = {

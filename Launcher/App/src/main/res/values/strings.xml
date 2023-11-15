@@ -94,7 +94,7 @@
     <string name="website_title">Websites in Lightning Launcher</string>
     <string name="website_subtitle1">Easily Access Websites &amp; Web Apps</string>
     <string name="website_info1">
-        Websites will appear as apps on your home screen, and will open in a custom browser in the same window. Any 2D website works.\n
+        Websites will appear as apps on your home screen. They will open in LightningLauncher\'s built-in browser.\n
         \nYou can also search Google, YouTube, or ApkPure using the search bar.
     </string>
     <string name="website_subtitle2">Audio in the Background</string>
@@ -102,6 +102,11 @@
         After being closed, websites will continue running, and can play and record audio in the background - even while in a game!\n
         \nAn indicator will be shown on the icon of any running website;\nPress the indicator to fully stop that website.\n
         \nWebsites open via a search will not run in the background unless added with the Add Page to Launcher (+) button.
+    </string>
+    <string name="website_subtitle3">Browser Selection</string>
+    <string name="website_info3">
+        On VR devices, you can select to launch in the internal LL browser in this window or in its own window.
+        \n\nYou may also select the Meta Quest browser, which supports VR web content, but not background audio.
     </string>
 
     <string name="add_website">Add a Website</string>
@@ -135,6 +140,11 @@
     <string name="size_small">Open in Small 4:3 Window</string>
     <string name="size_large">Open in Large 16:9 Window</string>
     <string name="size_huge">Open in Huge 16:9 Window</string>
+
+    <string name="browser_default_in" >Open in LL Browser, This Window</string>
+    <string name="browser_default_out">Open in LL Browser, Own Window</string>
+    <string name="browser_quest">Open in Meta Quest Browser</string>
+
 
     <string name="edit_off">Turn On Edit Mode</string>
     <string name="edit_on">Turn Off Edit Mode</string>

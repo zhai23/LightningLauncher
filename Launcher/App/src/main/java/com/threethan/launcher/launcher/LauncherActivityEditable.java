@@ -318,6 +318,7 @@ public class LauncherActivityEditable extends LauncherActivity {
     void showWebsiteInfo() {
         AlertDialog subDialog = Dialog.build(this, R.layout.dialog_website_info);
         if (subDialog == null) return;
+        subDialog.findViewById(R.id.vrOnlyInfo).setVisibility(Platform.isVr(this) ? View.VISIBLE : View.GONE);
         subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
             sharedPreferenceEditor.putBoolean(Settings.KEY_SEEN_WEBSITE_POPUP, true).apply();
             addWebsite(this);

@@ -119,7 +119,7 @@ public abstract class Launch {
             else return null;
         }
 
-        // Detect websites
+        // Detect shortcuts (must check before websites)
         if (App.isShortcut(app)) {
             Intent intent = new Intent(ACTION_ACTUALLY_SHORTCUT);
             intent.putExtra("json", app.packageName.replaceFirst("json://", ""));
@@ -130,12 +130,22 @@ public abstract class Launch {
         if (App.isWebsite(app)) {
             Intent intent;
             if (app.packageName.startsWith("http://") || (app.packageName.startsWith("https://"))) {
-                // Actual Website
-                intent = new Intent(activity, (SettingsManager.getAppLaunchOut(app.packageName)
-                        ? BrowserActivitySeparate.class
-                        : BrowserActivity.class));
+                int browserIndex
+                        = activity.sharedPreferences.getInt(Settings.KEY_LAUNCH_BROWSER + app.packageName, 0);
+                if (browserIndex == 2) {
+                    // Open in MQ browser
+                    intent = new Intent(Intent.ACTION_VIEW, Uri.parse(app.packageName));
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.setPackage("com.oculus.browser");
+                    intent.setComponent(new ComponentName("com.oculus.browser", "com.oculus.browser.PanelActivity"));
+                } else {
+                    // Open in internal browseer
+                    intent = new Intent(activity, (SettingsManager.getAppLaunchOut(app.packageName)
+                            ? BrowserActivitySeparate.class
+                            : BrowserActivity.class));
 
-                intent.putExtra("url", app.packageName);
+                    intent.putExtra("url", app.packageName);
+                }
             } else {
                 // Non-web intent
                 intent = new Intent(Intent.ACTION_VIEW);

@@ -378,9 +378,12 @@ public class AppsAdapter extends BaseAdapter{
         final View launchModeSection = dialog.findViewById(R.id.launchModeSection);
         final View refreshIconButton = dialog.findViewById(R.id.refreshIconButton);
 
-        // Launch Mode Toggle
+        // Launch Mode Selection
         final View launchSizeSpinner = dialog.findViewById(R.id.launchSizeSpinner);
         final TextView launchSizeSpinnerText = dialog.findViewById(R.id.launchSizeSpinnerText);
+        // Launch Browser Selection
+        final View launchBrowserSpinner = dialog.findViewById(R.id.launchBrowserSpinner);
+        final TextView launchBrowserSpinnerText = dialog.findViewById(R.id.launchBrowserSpinnerText);
 
         // Load Icon
         PackageManager packageManager = launcherActivity.getPackageManager();
@@ -441,8 +444,26 @@ public class AppsAdapter extends BaseAdapter{
                 }
             });
 
+            // Browser settings
+            if (appType == App.Type.TYPE_WEB && Platform.isQuest(launcherActivity)) {
+                launchBrowserSpinner.setVisibility(View.VISIBLE);
+                launchModeSection.setVisibility(View.GONE);
+
+                final String launchBrowserKey = Settings.KEY_LAUNCH_BROWSER + currentApp.packageName;
+                final int[] launchBrowserSelection = {launcherActivity.sharedPreferences.getInt(
+                        launchBrowserKey,
+                        SettingsManager.getAppLaunchOut(currentApp.packageName) ? 0 : 1)};
+
+                launchBrowserSpinnerText.setText(Settings.launchBrowserStrings[launchBrowserSelection[0]]);
+                launchBrowserSpinner.setOnClickListener((view) -> {
+                    launchBrowserSelection[0] = (launchBrowserSelection[0] + 1) % Settings.launchBrowserStrings.length;
+                    launchBrowserSpinnerText.setText(Settings.launchBrowserStrings[launchBrowserSelection[0]]);
+                    launcherActivity.sharedPreferenceEditor.putInt(launchBrowserKey, launchBrowserSelection[0]);
+                    SettingsManager.setAppLaunchOut(currentApp.packageName, launchBrowserSelection[0] != 0);
+                });
+            }
             // Advanced size settings
-            if (SettingsManager.getAdvancedLaunching(launcherActivity)) {
+            else if (SettingsManager.getAdvancedLaunching(launcherActivity)) {
                 launchSizeSpinner.setVisibility(View.VISIBLE);
                 launchModeSection.setVisibility(View.GONE);
                 final String launchSizeKey = Settings.KEY_LAUNCH_SIZE + currentApp.packageName;
