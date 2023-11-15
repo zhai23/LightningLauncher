@@ -14,6 +14,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ServiceInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.accessibility.AccessibilityManager;
@@ -145,8 +146,8 @@ public class Updater {
         downloadUpdate(addon.downloadName, ADDON_RELEASE_TAG, addon.overrideUrl);
     }
     private String getUpdateName() {
-        boolean arm64 = Objects.requireNonNull(System.getProperty("ro.product.cpu.abilist")).contains("aarch64");
-        return arm64 ? NAME_MAIN_ARM64 : NAME_MAIN_COMPAT;
+        final boolean is64bit = Build.SUPPORTED_64_BIT_ABIS.length > 0;
+        return is64bit ? NAME_MAIN_ARM64 : NAME_MAIN_COMPAT;
     }
     public void updateAppEvenIfSkipped() {
         getSharedPreferences().edit().remove(KEY_IGNORED_UPDATE_VERSION).apply();
