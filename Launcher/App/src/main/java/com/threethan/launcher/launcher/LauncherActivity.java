@@ -191,6 +191,8 @@ public class LauncherActivity extends Activity {
             e.printStackTrace();
             Log.e(TAG, "Attempting to start with a new activity...");
         }
+
+        refreshBackground();
     }
 
     protected void init() {

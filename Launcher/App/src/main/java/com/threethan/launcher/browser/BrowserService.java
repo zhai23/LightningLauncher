@@ -269,15 +269,16 @@ public class BrowserService extends Service {
         return super.onStartCommand(intent, flags, startId);
     }
 
+    private static final int BIND_FLAGS = BIND_ABOVE_CLIENT | BIND_IMPORTANT | 0x000010000 | 0x10000000;
     public static void bind(Activity activity, ServiceConnection connection, boolean needed){
         Intent intent = new Intent(activity, BrowserService.class);
         if (amRunning(activity)) {
-            activity.bindService(intent, connection, BIND_ABOVE_CLIENT);
+            activity.bindService(intent, connection, BIND_FLAGS);
         } else if (needed) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 activity.startForegroundService(intent);
-                activity.bindService(intent, connection, BIND_ABOVE_CLIENT);
-            } else activity.bindService(intent, connection, BIND_AUTO_CREATE);
+                activity.bindService(intent, connection, BIND_FLAGS);
+            } else activity.bindService(intent, connection, BIND_AUTO_CREATE | BIND_FLAGS);
         }
     }
 
