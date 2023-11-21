@@ -4,8 +4,8 @@ android {
     defaultConfig {
         compileSdk 34
         minSdkVersion 23
-        versionCode 622
-        versionName "6.2.2"
+        versionCode 623
+        versionName "6.2.3"
         ndk {
             //noinspection ChromeOsAbiSupport
 //            abiFilters "arm64-v8a"

@@ -240,7 +240,6 @@ public abstract class SettingsDialog {
                     // Group enabled state
                     {
                         dialog.findViewById(R.id.editModeContainer).setVisibility(View.GONE);
-                        dialog.findViewById(R.id.editRequiredContaier).setVisibility(View.GONE);
                         addWebsite.setVisibility(View.VISIBLE);
                     }
                 });
@@ -252,11 +251,9 @@ public abstract class SettingsDialog {
                     // Can edit, show switch
                     editSwitch.setChecked(a.isEditing());
                     dialog.findViewById(R.id.editModeContainer).setVisibility(View.VISIBLE);
-                    dialog.findViewById(R.id.editRequiredContaier).setVisibility(View.VISIBLE);
                     addWebsite.setVisibility(View.GONE);
                 } else {
                     dialog.findViewById(R.id.editModeContainer).setVisibility(View.GONE);
-                    dialog.findViewById(R.id.editRequiredContaier).setVisibility(View.GONE);
                     addWebsite.setVisibility(View.VISIBLE);
                 }
                 a.refreshInterfaceAll();
