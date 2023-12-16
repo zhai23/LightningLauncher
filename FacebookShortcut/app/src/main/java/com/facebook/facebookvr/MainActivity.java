@@ -2,11 +2,10 @@ package com.facebook.facebookvr;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 
 public class MainActivity extends Activity {
-    private boolean openedWeb = false;
     private boolean launch() {
+        finish();
         Intent launchIntent = getPackageManager().getLaunchIntentForPackage("com.threethan.launcher");
         if (launchIntent != null) return launchIt(launchIntent);
         return false;
@@ -22,14 +21,6 @@ public class MainActivity extends Activity {
     @Override
     public void onResume() {
         super.onResume();
-        if (!launch() && !openedWeb) {
-            openedWeb = true;
-            final String downloadUrl = "https://github.com/threethan/LightningLauncher/releases/";
-            Intent browserIntent = new Intent(
-                    Intent.ACTION_VIEW,
-                    Uri.parse(downloadUrl)
-            );
-            startActivity(browserIntent);
-        }
+        launch();
     }
 }

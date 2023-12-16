@@ -3,13 +3,13 @@ plugins {
 }
 
 android {
-    namespace 'com.facebook.facebookvr'
+    namespace 'oculuspwa.auth.monday.com'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.facebook.facebookvr"
+        applicationId "oculuspwa.auth.monday.com"
         minSdk 23
-        versionCode 630 // High version number prevent auto-update with real Messenger
+        versionCode 630
         versionName "6.3.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

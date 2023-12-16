@@ -35,6 +35,9 @@ public abstract class AddonDialog {
         View addonFacebook = dialog.findViewById(R.id.addonFacebook);
         if (addonFacebook!=null) updateAddonButton(a, addonFacebook, Updater.TAG_FACEBOOK_SHORTCUT);
 
+        View addonMonday = dialog.findViewById(R.id.addonMonday);
+        if (addonMonday!=null) updateAddonButton(a, addonMonday, Updater.TAG_MONDAY_SHORTCUT);
+
         View addonExplore = dialog.findViewById(R.id.addonExplore);
         if (addonExplore!=null) {
             updateAddonButton(a, addonExplore, Updater.TAG_HORIZON_FEED_SHORTCUT);

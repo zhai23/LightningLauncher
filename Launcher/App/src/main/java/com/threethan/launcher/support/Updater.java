@@ -56,6 +56,7 @@ public class Updater {
     private static final String NAME_MAIN_ARM64 = "LightningLauncherArm64";
     private static final String NAME_MAIN_COMPAT = "LightningLauncher";
     public static final String TAG_FACEBOOK_SHORTCUT = "TAG_FACEBOOK_SHORTCUT";
+    public static final String TAG_MONDAY_SHORTCUT = "TAG_MONDAY_SHORTCUT";
     public static final String TAG_APP_LIBRARY_SHORTCUT = "TAG_APP_LIBRARY_SHORTCUT";
     public static final String TAG_PEOPLE_SHORTCUT = "TAG_PEOPLE_SHORTCUT";
     public static final String TAG_HORIZON_FEED_SHORTCUT = "TAG_FEED_SHORTCUT";
@@ -64,10 +65,11 @@ public class Updater {
     public static final String APK_DIR = "/Content/TemporaryDownloadedApk/";
     public static boolean anyDialogVisible = false;
     public static final Addon[] addons = {
-            new Addon(TAG_FACEBOOK_SHORTCUT, "ShortcutFacebook", "com.facebook.facebookvr", "6.2.0", false),
-            new Addon(TAG_PEOPLE_SHORTCUT, "ShortcutPeople", "com.threethan.launcher.service.people", "6.2.0", true),
-            new Addon(TAG_APP_LIBRARY_SHORTCUT, "ShortcutAppLibrary", "com.threethan.launcher.service.library", "6.2.0", true),
-            new Addon(TAG_HORIZON_FEED_SHORTCUT, "ShortcutHorizonFeed", "com.threethan.launcher.service.explore", "6.2.0", true),
+            new Addon(TAG_FACEBOOK_SHORTCUT, "ShortcutFacebook", "com.facebook.facebookvr", "6.3.0", false),
+            new Addon(TAG_MONDAY_SHORTCUT, "ShortcutMonday", "oculuspwa.auth.monday.com", "6.3.0", false),
+            new Addon(TAG_PEOPLE_SHORTCUT, "ShortcutPeople", "com.threethan.launcher.service.people", "6.3.0", true),
+            new Addon(TAG_APP_LIBRARY_SHORTCUT, "ShortcutAppLibrary", "com.threethan.launcher.service.library", "6.3.0", true),
+            new Addon(TAG_HORIZON_FEED_SHORTCUT, "ShortcutHorizonFeed", "com.threethan.launcher.service.explore", "6.3.0", true),
             new Addon(TAG_ANDROID_TV_SHORTCUT, "LM (ATV) - 1.0.4", "com.wolf.google.lm", "1.0.4", false,
                     "https://xdaforums.com/attachments/lm-atv-1-0-4-apk.5498333/"),
     };
