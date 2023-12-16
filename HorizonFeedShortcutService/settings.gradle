@@ -12,5 +12,5 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "Horizon Feed Redirect"
+rootProject.name = "Horizon Feed Shortcut"
 include ':app'
