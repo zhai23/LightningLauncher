@@ -19,7 +19,7 @@
 
         <View
             android:id="@+id/view"
-            android:layout_width="415dp"
+            android:layout_width="420dp"
             android:layout_height="wrap_content" />
 
         <ImageView
@@ -45,9 +45,40 @@
             android:text="@string/advanced_interface" />
 
         <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bkg_button"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/SettingButtonLabel"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:singleLine="true"
+                android:text="@string/advanced_alpha" />
+
+            <SeekBar
+                android:id="@+id/alphaSeekBar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:foreground="@drawable/bkg_hover_button"
+                android:max="255"
+                android:padding="0dp"
+                android:progressBackgroundTint="@android:color/white"
+                android:progressDrawable="@drawable/seekbar_custom"
+                android:thumb="@null" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/editRequiredContaier"
             android:layout_width="match_parent"
             android:layout_height="39dp"
+            android:layout_marginTop="10dp"
             android:baselineAligned="false"
             android:gravity="clip_vertical|center_vertical"
             android:orientation="horizontal">

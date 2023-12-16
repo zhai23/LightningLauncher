@@ -63,6 +63,8 @@ class BackgroundTask extends AsyncTask<Object, Void, Object> {
                 backgroundThemeDrawable = new BitmapDrawable(owner.getResources(), backgroundBitmap);
             } catch (Exception e) { e.printStackTrace(); }
         }
+        backgroundThemeDrawable.setAlpha(owner.sharedPreferences
+                .getInt(Settings.KEY_BACKGROUND_ALPHA, Settings.DEFAULT_ALPHA));
         ownerRef = new WeakReference<>(owner);
         return null;
     }

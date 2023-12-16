@@ -336,6 +336,26 @@ public abstract class SettingsDialog {
 
         dialog.findViewById(R.id.dismissButton).setOnClickListener(view -> dialog.dismiss());
 
+        SeekBar alpha = dialog.findViewById(R.id.alphaSeekBar);
+        alpha.setProgress(255-a.sharedPreferences.getInt(Settings.KEY_BACKGROUND_ALPHA, Settings.DEFAULT_ALPHA));
+        alpha.post(() -> alpha.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int value, boolean b) {
+                a.sharedPreferenceEditor.putInt(Settings.KEY_BACKGROUND_ALPHA, 255-value).apply();
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                a.refreshBackground();
+            }
+        }));
+
+
+
         // Group enabled state
         if (a.canEdit()) {
             // Can edit, show switch

@@ -113,7 +113,10 @@ public class LauncherActivity extends Activity {
                         : Settings.DEFAULT_BACKGROUND_VR);
         boolean custom = background < 0 || background >= SettingsManager.BACKGROUND_COLORS.length;
         int backgroundColor = custom ? Color.parseColor("#404044") : SettingsManager.BACKGROUND_COLORS[background];
-        getWindow().setBackgroundDrawable(new ColorDrawable(backgroundColor));
+        int alpha = sharedPreferences.getInt(Settings.KEY_BACKGROUND_ALPHA, Settings.DEFAULT_ALPHA);
+        Drawable cd = new ColorDrawable(backgroundColor);
+        if (alpha < 255) cd.setAlpha(alpha);
+        getWindow().setBackgroundDrawable(cd);
     }
 
     @Override
@@ -359,24 +362,41 @@ public class LauncherActivity extends Activity {
     }
     void updateToolBars() {
         BlurView[] blurViews = new BlurView[]{
+                rootView.findViewById(R.id.blurViewSearchBar),
                 rootView.findViewById(R.id.blurViewGroups),
                 rootView.findViewById(R.id.blurViewSettingsIcon),
                 rootView.findViewById(R.id.blurViewSearchIcon),
-                rootView.findViewById(R.id.blurViewSearchBar),
         };
 
         final boolean hide = !groupsEnabled;
         for (int i = 0; i<blurViews.length-1; i++) blurViews[i].setVisibility(hide ? View.GONE : View.VISIBLE);
         if (isEditing() && hide) setEditMode(false); // If groups were disabled while in edit mode
 
-        if (!hide) {
+        if (groupsEnabled || Platform.isTv(this)) {
             float blurRadiusDp = 15f;
 
             View windowDecorView = getWindow().getDecorView();
             ViewGroup rootViewGroup = (ViewGroup) windowDecorView;
             Drawable windowBackground = windowDecorView.getBackground();
 
-            for (BlurView blurView : blurViews) {
+            if (groupsEnabled) {
+                for (BlurView blurView : blurViews) {
+                    blurView.setBackgroundTintList(ColorStateList.valueOf(Color.TRANSPARENT));
+                    blurView.setOverlayColor((Color.parseColor(darkMode ? "#29000000" : "#40FFFFFF")));
+                    blurView.setupWith(rootViewGroup, new RenderScriptBlur(getApplicationContext())) // or RenderEffectBlur
+                            .setFrameClearDrawable(windowBackground) // Optional
+                            .setBlurRadius(blurRadiusDp);
+                    blurView.setOutlineProvider(ViewOutlineProvider.BACKGROUND);
+                    blurView.setClipToOutline(true);
+                }
+
+                ImageView settingsIcon = rootView.findViewById(R.id.settingsIcon);
+                settingsIcon.setImageTintList(ColorStateList.valueOf(darkMode ? Color.WHITE : Color.BLACK));
+                ImageView searchIcon = rootView.findViewById(R.id.searchIcon);
+                searchIcon.setImageTintList(ColorStateList.valueOf(darkMode ? Color.WHITE : Color.BLACK));
+            } else {
+                // Init blur on only search bar for remote-exclusive search shortcut
+                BlurView blurView = blurViews[0];
                 blurView.setBackgroundTintList(ColorStateList.valueOf(Color.TRANSPARENT));
                 blurView.setOverlayColor((Color.parseColor(darkMode ? "#29000000" : "#40FFFFFF")));
                 blurView.setupWith(rootViewGroup, new RenderScriptBlur(getApplicationContext())) // or RenderEffectBlur
@@ -385,11 +405,6 @@ public class LauncherActivity extends Activity {
                 blurView.setOutlineProvider(ViewOutlineProvider.BACKGROUND);
                 blurView.setClipToOutline(true);
             }
-
-            ImageView settingsIcon = rootView.findViewById(R.id.settingsIcon);
-            settingsIcon.setImageTintList(ColorStateList.valueOf(darkMode ? Color.WHITE : Color.BLACK));
-            ImageView searchIcon = rootView.findViewById(R.id.searchIcon);
-            searchIcon.setImageTintList(ColorStateList.valueOf(darkMode ? Color.WHITE : Color.BLACK));
         }
 
         post(this::postRefresh);

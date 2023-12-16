@@ -61,7 +61,7 @@ public class Updater {
     public static final String TAG_PEOPLE_SHORTCUT = "TAG_PEOPLE_SHORTCUT";
     public static final String TAG_HORIZON_FEED_SHORTCUT = "TAG_FEED_SHORTCUT";
     public static final String TAG_ANDROID_TV_SHORTCUT = "TAG_ANDROID_TV_SHORTCUT";
-    public static final String ADDON_RELEASE_TAG = "addons6.2.0";
+    public static final String ADDON_RELEASE_TAG = "addons6.3.0";
     public static final String APK_DIR = "/Content/TemporaryDownloadedApk/";
     public static boolean anyDialogVisible = false;
     public static final Addon[] addons = {

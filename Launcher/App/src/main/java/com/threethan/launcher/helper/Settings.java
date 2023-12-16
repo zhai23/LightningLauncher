@@ -65,12 +65,14 @@ public abstract class Settings {
     };
     // Theme/background
     public static final String KEY_BACKGROUND = "KEY_CUSTOM_THEME";
+    public static final String KEY_BACKGROUND_ALPHA = "KEY_CUSTOM_ALPHA";
     public static final String KEY_DARK_MODE = "KEY_DARK_MODE";
     public static final String KEY_GROUPS_ENABLED = "KEY_GROUPS_ENABLED";
     public static final String KEY_DETAILS_LONG_PRESS = "KEY_DETAILS_LONG_PRESS";
     public static final String KEY_AUTO_HIDE_EMPTY = "KEY_AUTO_HIDE_EMPTY";
     public static final int DEFAULT_BACKGROUND_VR = 0;
     public static final int DEFAULT_BACKGROUND_TV = 9;
+    public static final int DEFAULT_ALPHA = 255;
     public static final boolean DEFAULT_DARK_MODE = true;
     public static final boolean DEFAULT_GROUPS_ENABLED = true;
     public static boolean DEFAULT_DETAILS_LONG_PRESS = false;

@@ -39,6 +39,7 @@
     <string name="advanced_interface">Interface Options</string>
     <string name="advanced_features">Extra Features</string>
     <string name="advanced_backup">Backup &amp; Restore</string>
+    <string name="advanced_alpha">Background Transparency</string>
 
     <string name="dark_mode">Dark Mode with Light Text</string>
     <string name="background_overlay">Animated Gradient over Wallpaper</string>
