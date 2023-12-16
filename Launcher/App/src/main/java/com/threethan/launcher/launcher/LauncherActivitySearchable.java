@@ -191,6 +191,7 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
     public void refreshInterface() {
         searching = false;
 
+        hideSearchBar();
         fixState();
         super.refreshInterface();
     }

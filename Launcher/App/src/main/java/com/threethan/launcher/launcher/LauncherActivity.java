@@ -362,10 +362,10 @@ public class LauncherActivity extends Activity {
     }
     void updateToolBars() {
         BlurView[] blurViews = new BlurView[]{
-                rootView.findViewById(R.id.blurViewSearchBar),
                 rootView.findViewById(R.id.blurViewGroups),
                 rootView.findViewById(R.id.blurViewSettingsIcon),
                 rootView.findViewById(R.id.blurViewSearchIcon),
+                rootView.findViewById(R.id.blurViewSearchBar),
         };
 
         final boolean hide = !groupsEnabled;
@@ -396,7 +396,7 @@ public class LauncherActivity extends Activity {
                 searchIcon.setImageTintList(ColorStateList.valueOf(darkMode ? Color.WHITE : Color.BLACK));
             } else {
                 // Init blur on only search bar for remote-exclusive search shortcut
-                BlurView blurView = blurViews[0];
+                @SuppressLint("CutPasteId") BlurView blurView = rootView.findViewById(R.id.blurViewSearchBar);
                 blurView.setBackgroundTintList(ColorStateList.valueOf(Color.TRANSPARENT));
                 blurView.setOverlayColor((Color.parseColor(darkMode ? "#29000000" : "#40FFFFFF")));
                 blurView.setupWith(rootViewGroup, new RenderScriptBlur(getApplicationContext())) // or RenderEffectBlur
