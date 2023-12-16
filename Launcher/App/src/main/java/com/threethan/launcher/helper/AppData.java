@@ -40,6 +40,8 @@ public abstract class AppData {
         panelAppList.add(new PanelApp("Events", "systemux://events"));// Part of Explore
         panelAppList.add(new PanelApp("File Manager", "systemux://file-manager"));
 
+        panelAppList.add(new PanelApp("Remote Display", "com.oculus.remotedesktop"));
+
     }
 
     public static List<PanelApp> getFullPanelAppList() {

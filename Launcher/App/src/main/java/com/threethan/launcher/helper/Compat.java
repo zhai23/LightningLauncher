@@ -30,7 +30,7 @@ import java.util.Set;
 
 public abstract class Compat {
     public static final String KEY_COMPATIBILITY_VERSION = "KEY_COMPATIBILITY_VERSION";
-    public static final int CURRENT_COMPATIBILITY_VERSION = 8;
+    public static final int CURRENT_COMPATIBILITY_VERSION = 9;
     public static final boolean DEBUG_COMPATIBILITY = false;
     private static final String TAG = "Compatibility";
 
@@ -139,6 +139,8 @@ public abstract class Compat {
                             if (fromFile.getName().endsWith(".webp"))
                                 //noinspection ResultOfMethodCallIgnored
                                 fromFile.delete();
+                    case (9):
+                        sharedPreferenceEditor.remove(Settings.KEY_EXCLUDED_SET+App.Type.TYPE_PANEL);
                 }
             }
             Log.i(TAG, String.format("Settings Updated from v%s to v%s (Settings versions are not the same as app versions)",
