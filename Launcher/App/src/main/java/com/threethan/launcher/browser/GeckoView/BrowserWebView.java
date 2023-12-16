@@ -2,17 +2,14 @@ package com.threethan.launcher.browser.GeckoView;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.view.View;
-
-import androidx.annotation.NonNull;
 
 import com.threethan.launcher.browser.BrowserActivity;
 import com.threethan.launcher.browser.BrowserService;
 import com.threethan.launcher.browser.GeckoView.Delegate.CustomContentDelegate;
 import com.threethan.launcher.browser.GeckoView.Delegate.CustomHistoryDelgate;
 import com.threethan.launcher.browser.GeckoView.Delegate.CustomNavigationDelegate;
-import com.threethan.launcher.browser.GeckoView.Delegate.CustomProgressDelegate;
 import com.threethan.launcher.browser.GeckoView.Delegate.CustomPermissionDelegate;
+import com.threethan.launcher.browser.GeckoView.Delegate.CustomProgressDelegate;
 import com.threethan.launcher.browser.GeckoView.Delegate.CustomPromptDelegate;
 
 import org.mozilla.geckoview.GeckoSession;
@@ -31,6 +28,10 @@ public class BrowserWebView extends GeckoView {
     // Delegates
     private final CustomNavigationDelegate navigationDelegate;
     private final CustomHistoryDelgate historyDelegate;
+    private final CustomProgressDelegate progressDelegate;
+    private final CustomPromptDelegate promptDelegate;
+    private final CustomContentDelegate contentDelegate;
+    private final CustomPermissionDelegate permissionDelegate;
 
     // Functions
     public void goBack() {
@@ -90,10 +91,10 @@ public class BrowserWebView extends GeckoView {
 
         navigationDelegate = new CustomNavigationDelegate(mActivity);
         historyDelegate = new CustomHistoryDelgate(mActivity);
-        CustomProgressDelegate progressDelegate = new CustomProgressDelegate(mActivity);
-        CustomPromptDelegate promptDelegate = new CustomPromptDelegate(mActivity);
-        CustomContentDelegate contentDelegate = new CustomContentDelegate(mActivity);
-        CustomPermissionDelegate permissionDelegate = new CustomPermissionDelegate(mActivity);
+        progressDelegate = new CustomProgressDelegate(mActivity);
+        promptDelegate = new CustomPromptDelegate(mActivity);
+        contentDelegate = new CustomContentDelegate(mActivity);
+        permissionDelegate = new CustomPermissionDelegate(mActivity);
 
         session.setNavigationDelegate(navigationDelegate);
         session.setHistoryDelegate(historyDelegate);
@@ -105,6 +106,14 @@ public class BrowserWebView extends GeckoView {
         setSession(session);
         Objects.requireNonNull(mSession).getCompositorController().setClearColor(0xFF2A2A2E);
         coverUntilFirstPaint(0xFF2A2A2E);
+    }
+    
+    public void updateActivity(BrowserActivity mActivity) {
+        navigationDelegate.mActivity = mActivity;
+        progressDelegate.mActivity = mActivity;
+        promptDelegate.mActivity = mActivity;
+        contentDelegate.mActivity = mActivity;
+        permissionDelegate.mActivity = mActivity;
     }
 }
 

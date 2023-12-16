@@ -17,7 +17,7 @@ public class CustomNavigationDelegate implements GeckoSession.NavigationDelegate
     public boolean canGoForward = false;
     public String currentUrl = "";
 
-    private final BrowserActivity mActivity;
+    public BrowserActivity mActivity;
     public CustomNavigationDelegate(BrowserActivity activity) {
         super();
         this.mActivity = activity;

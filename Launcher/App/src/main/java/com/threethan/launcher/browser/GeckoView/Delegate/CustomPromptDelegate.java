@@ -56,7 +56,7 @@ import java.util.Objects;
 public final class CustomPromptDelegate implements GeckoSession.PromptDelegate {
     private static final String LOGTAG = "BasicGeckoViewPrompt";
 
-    private final Activity mActivity;
+    public Activity mActivity;
     public int filePickerRequestCode = 1;
 
     public CustomPromptDelegate(Activity mActivity) {

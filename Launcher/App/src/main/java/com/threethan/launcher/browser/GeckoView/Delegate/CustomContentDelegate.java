@@ -21,7 +21,7 @@ import org.mozilla.geckoview.GeckoSession;
 import org.mozilla.geckoview.WebResponse;
 
 public class CustomContentDelegate implements GeckoSession.ContentDelegate {
-    final BrowserActivity mActivity;
+    public BrowserActivity mActivity;
 
     public CustomContentDelegate(BrowserActivity mActivity) {
         this.mActivity = mActivity;

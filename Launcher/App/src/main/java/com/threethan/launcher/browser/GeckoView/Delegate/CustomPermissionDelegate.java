@@ -13,7 +13,7 @@ import org.mozilla.geckoview.GeckoSession;
 
 public class CustomPermissionDelegate implements GeckoSession.PermissionDelegate {
     public int androidPermissionRequestCode = 1;
-    final private Activity mActivity;
+    public Activity mActivity;
 
     public CustomPermissionDelegate(Activity mActivity) {
         this.mActivity = mActivity;

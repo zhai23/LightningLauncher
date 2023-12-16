@@ -110,12 +110,11 @@ public class BrowserService extends Service {
                 owner.finish();
                 activityByBaseUrl.put(url, activity);
             }
+            webView.updateActivity(activity);
         } else {
             if (BrowserService.sRuntime == null) {
                 initRuntime();
             }
-
-
 
             webView = new BrowserWebView(activity, activity);
             webView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
