@@ -32,7 +32,7 @@ android {
 }
 ext {
     // https://maven.mozilla.org/?prefix=maven2/org/mozilla/geckoview/
-    geckoviewVersion = "120.0.20231113165053"
+    geckoviewVersion = "121.0.20231214155439"
 }
 dependencies {
     implementation 'com.github.bkhezry:android-image-picker:1.4.0'

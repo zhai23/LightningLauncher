@@ -100,8 +100,8 @@
     </string>
     <string name="website_subtitle2">Audio in the Background</string>
     <string name="website_info2">
-        After being closed, websites will continue running, and can play and record audio in the background - even while in a game!\n
-        \nAn indicator will be shown on the icon of any running website;\nPress the indicator to fully stop that website.\n
+        After being closed, websites will continue running, and can play and record audio in the background - even while in a game! (You may experience latency or stutters in calls)\n
+        \nAn indicator will be shown on the icon of any running website; Press the indicator to fully stop that website.\n
         \nWebsites open via a search will not run in the background unless added with the Add Page to Launcher (+) button.
     </string>
     <string name="website_subtitle3">Browser Selection</string>

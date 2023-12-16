@@ -52,7 +52,7 @@
             android:layout_height="wrap_content"
             android:autofillHints="text"
             android:backgroundTint="@android:color/white"
-            android:minHeight="157sp"
+            android:minHeight="145sp"
             android:text="@string/website_info2"
             android:textColor="@android:color/white" />
 
