@@ -97,7 +97,10 @@ public class LauncherService extends Service {
         clearViewsWithoutActiveActivities();
     }
     public void refreshAppDisplayListsAll() {
-        for (LauncherActivity activity: activityByIndex.keySet()) activity.refreshAppDisplayLists();
+        for (LauncherActivity activity: activityByIndex.keySet()) {
+            activity.refreshAppDisplayLists();
+            activity.refreshInterface();
+        }
         clearViewsWithoutActiveActivities();
     }
     public void refreshBackgroundAll() {

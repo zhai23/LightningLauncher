@@ -76,6 +76,9 @@ public class SettingsManager extends Settings {
         setAppLabel(app, name);
         return name;
     }
+    public static String getSortableAppLabel(ApplicationInfo app) {
+        return  (App.isBanner(anyLauncherActivityRef.get(), app) ? "0" : "1") + StringLib.forSort(getAppLabel(app));
+    }
     private static String checkAppLabel(ApplicationInfo app) {
         String name = sharedPreferences.getString(app.packageName, "");
         if (!name.isEmpty()) return name;
@@ -170,9 +173,9 @@ public class SettingsManager extends Settings {
 
         // Create new list of apps
         ArrayList<ApplicationInfo> sortedApps = new ArrayList<>(appMap.values());
-        // Compare on app label
+//         Compare on app label
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-            sortedApps.sort(Comparator.comparing(a -> StringLib.forSort(getAppLabel(a))));
+            sortedApps.sort(Comparator.comparing(SettingsManager::getSortableAppLabel));
         else
             Log.w("OLD API", "Your android version is too old so apps will not be sorted.");
 

@@ -27,16 +27,16 @@ import android.view.ViewOutlineProvider;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.esafirm.imagepicker.features.ImagePicker;
 import com.esafirm.imagepicker.model.Image;
 import com.threethan.launcher.R;
 import com.threethan.launcher.adapter.AppsAdapter;
 import com.threethan.launcher.adapter.GroupsAdapter;
-import com.threethan.launcher.helper.App;
 import com.threethan.launcher.helper.AppData;
 import com.threethan.launcher.helper.Compat;
 import com.threethan.launcher.helper.Dialog;
@@ -46,11 +46,12 @@ import com.threethan.launcher.helper.Keyboard;
 import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.lib.ImageLib;
+import com.threethan.launcher.support.AppDetailsDialog;
 import com.threethan.launcher.support.SafeSharedPreferenceEditor;
 import com.threethan.launcher.support.SettingsDialog;
 import com.threethan.launcher.support.SettingsManager;
 import com.threethan.launcher.support.Updater;
-import com.threethan.launcher.view.DynamicHeightGridView;
+import com.threethan.launcher.view.MarginDecoration;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -78,9 +79,7 @@ import eightbitlab.com.blurview.RenderScriptBlur;
 public class LauncherActivity extends Activity {
     public boolean darkMode = true;
     public boolean groupsEnabled = true;
-    DynamicHeightGridView appGridViewSquare;
-    DynamicHeightGridView appGridViewBanner;
-    ScrollView scrollView;
+    RecyclerView appsView;
     public ApplicationInfo currentTopSearchResult = null;
     public Set<String> clearFocusPackageNames = new HashSet<>();
     GridView groupGridView;
@@ -96,6 +95,10 @@ public class LauncherActivity extends Activity {
     public LauncherService launcherService;
     protected static String TAG = "LightningLauncher";
     private int groupHeight;
+    private RecyclerView.ItemDecoration marginDecoration;
+    public static boolean namesBanner;
+    public static boolean namesSquare;
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -163,9 +166,9 @@ public class LauncherActivity extends Activity {
         refreshInterface();
 
         // Animate in the apps
-        ValueAnimator an = android.animation.ObjectAnimator.ofFloat(scrollView, "alpha", 1f);
-        an.setDuration(150);
-        scrollView.post(an::start);
+        ValueAnimator an = android.animation.ObjectAnimator.ofFloat(appsView, "alpha", 1f);
+        an.setDuration(350);
+        appsView.post(an::start);
     }
     protected void startWithExistingActivity() {
         Log.v(TAG, "Starting with existing view");
@@ -177,11 +180,10 @@ public class LauncherActivity extends Activity {
         try {
             init();
 
-            scrollView.setAlpha(1f); // Just in case the app was closed before it faded in
+            appsView.setAlpha(1f); // Just in case the app was closed before it faded in
 
             // Take ownership of adapters (which are currently referencing a dead activity)
-            Objects.requireNonNull(getAdapterSquare()).setLauncherActivity(this);
-            Objects.requireNonNull(getAdapterBanner()).setLauncherActivity(this);
+            Objects.requireNonNull(getAppAdapter()).setLauncherActivity(this);
             Objects.requireNonNull(getAdapterGroups()).setLauncherActivity(this);
             recheckPackages(); // Just check, don't force it
 
@@ -204,9 +206,7 @@ public class LauncherActivity extends Activity {
 
         mainView = rootView.findViewById(R.id.mainLayout);
         mainView.addOnLayoutChangeListener(this::onLayoutChaged);
-        appGridViewSquare = rootView.findViewById(R.id.appsViewSquare);
-        appGridViewBanner = rootView.findViewById(R.id.appsViewBanner);
-        scrollView = rootView.findViewById(R.id.mainScrollView);
+        appsView = rootView.findViewById(R.id.apps);
         groupGridView = rootView.findViewById(R.id.groupsView);
 
         // Set logo button
@@ -224,7 +224,7 @@ public class LauncherActivity extends Activity {
     protected void onLayoutChaged(View v, int left, int top, int right, int bottom,
                                   int oldLeft, int oldTop, int oldRight, int oldBottom) {
         if (Math.abs(oldBottom-bottom) > 10 || Math.abs(oldRight-right) > 10) { // Only on significant diff
-            new BackgroundTask().execute(this);
+            new WallpaperExecutor().execute(this);
             updateGridViews();
         }
     }
@@ -338,14 +338,14 @@ public class LauncherActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == Settings.PICK_ICON_CODE) {
-            if (getAdapterSquare() == null) return;
+            if (getAppAdapter() == null) return;
             if (resultCode == RESULT_OK) {
                 for (Image image : ImagePicker.getImages(data)) {
                     IconRepo.dontDownloadIconFor(this, selectedPackageName);
-                    getAdapterSquare().onImageSelected(image.getPath(), selectedImageView);
+                    AppDetailsDialog.onImageSelected(image.getPath(), selectedImageView, this);
                     break;
                 }
-            } else getAdapterSquare().onImageSelected(null, selectedImageView);
+            } else AppDetailsDialog.onImageSelected(null, selectedImageView, this);
         } else if (requestCode == Settings.PICK_WALLPAPER_CODE) {
             if (resultCode == RESULT_OK) {
                 for (Image image : ImagePicker.getImages(data)) {
@@ -459,47 +459,46 @@ public class LauncherActivity extends Activity {
     public void refreshAdapters() {
         updatePadding();
 
-        final int marginPx = dp(sharedPreferences.getInt(Settings.KEY_MARGIN, Settings.DEFAULT_MARGIN));
+        final int margin = sharedPreferences.getInt(Settings.KEY_MARGIN, Settings.DEFAULT_MARGIN);
 
-        boolean namesSquare = sharedPreferences.getBoolean(Settings.KEY_SHOW_NAMES_SQUARE, Settings.DEFAULT_SHOW_NAMES_SQUARE);
-        boolean namesBanner = sharedPreferences.getBoolean(Settings.KEY_SHOW_NAMES_BANNER, Settings.DEFAULT_SHOW_NAMES_BANNER);
+        namesSquare = sharedPreferences.getBoolean(Settings.KEY_SHOW_NAMES_SQUARE, Settings.DEFAULT_SHOW_NAMES_SQUARE);
+        namesBanner = sharedPreferences.getBoolean(Settings.KEY_SHOW_NAMES_BANNER, Settings.DEFAULT_SHOW_NAMES_BANNER);
 
-        appGridViewSquare.setMargin(marginPx, namesSquare, dp(22));
-        appGridViewBanner.setMargin(marginPx, namesBanner, dp(22));
-
-        setAdapters(namesSquare, namesBanner);
+        // Margins
+        if (marginDecoration != null) appsView.removeItemDecoration(marginDecoration);
+        int m = margin-22*2;
+        // Height of a square icon. May be useful in the future...
+        // int h = dp((groupGridView.getMeasuredWidth() - (m * (columns-1))*2))/(columns*2)-22*3;
+        marginDecoration = new MarginDecoration(m);
+        appsView.addItemDecoration(marginDecoration);
 
         groupGridView.setAdapter(new GroupsAdapter(this, isEditing()));
 
         prevViewWidth = -1;
         updateGridViews();
+        setAdapters();
 
         post(this::updateToolBars);
     }
     protected void resetScroll() {
-        scrollView.scrollTo(0,0); // Reset scroll
-        scrollView.smoothScrollTo(0,0); // Cancel inertia
+        appsView.scrollToPosition(0);
     }
-    protected void setAdapters(boolean namesSquare, boolean namesBanner) {
-        if (getAdapterSquare() == null)
-            appGridViewSquare.setAdapter(
-                    new AppsAdapter(this, namesSquare, false, Platform.appListSquare));
-        else {
-            getAdapterSquare().updateAppList(this);
-            appGridViewSquare.setAdapter(appGridViewSquare.getAdapter());
-        }
-        if (getAdapterBanner() == null)
-            appGridViewBanner.setAdapter(
-                    new AppsAdapter(this, namesBanner, true, Platform.appListBanner));
-        else {
-            getAdapterBanner().updateAppList(this);
-            appGridViewBanner.setAdapter(appGridViewBanner.getAdapter());
+    protected void setAdapters() {
+
+        if (getAppAdapter() == null) {
+            appsView.setAdapter(
+                    new AppsAdapter(this, null));
+            refreshAppDisplayLists();
+        }else {
+            getAppAdapter().updateAppList(this);
+            appsView.setAdapter(appsView.getAdapter());
         }
     }
 
     // Updates the heights and layouts of grid views
     // group grid view, square app grid view & banner app grid view
     public void updateGridViews() {
+
         if (mainView.getWidth() == prevViewWidth) return;
         prevViewWidth = mainView.getWidth();
 
@@ -524,10 +523,21 @@ public class LauncherActivity extends Activity {
         }
         updatePadding();
 
-        int targetSizePx = dp(sharedPreferences.getInt(Settings.KEY_SCALE, Settings.DEFAULT_SCALE));
+        int targetSize = dp(sharedPreferences.getInt(Settings.KEY_SCALE, Settings.DEFAULT_SCALE)) / 2;
         int estimatedWidth = prevViewWidth;
-        appGridViewSquare.setNumColumns((int) Math.round((double) estimatedWidth/targetSizePx));
-        appGridViewBanner.setNumColumns((int) Math.round((double) estimatedWidth/targetSizePx/2));
+
+        final int nCol = estimatedWidth/(targetSize*2) * 2; // To nearest 2
+        if (nCol <= 0) return;
+
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, nCol);
+        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                return Objects.requireNonNull(appsView.getAdapter()).getItemViewType(position);
+            }
+        });
+        appsView.setLayoutManager(gridLayoutManager);
+
         groupGridView.post(() -> groupGridView.setVisibility(View.VISIBLE));
     }
 
@@ -538,23 +548,19 @@ public class LauncherActivity extends Activity {
     // - Side padding to account for icon margins (otherwise icons would touch window edges)
     // - Bottom padding to account for icon margin, as well as the edit mode footer if applicable
     protected void updatePadding() {
-        final int marginPx = dp(sharedPreferences.getInt(Settings.KEY_MARGIN, Settings.DEFAULT_MARGIN));
+        final int margin = 22+ sharedPreferences.getInt(Settings.KEY_MARGIN, Settings.DEFAULT_MARGIN);
         final boolean groupsVisible = getAdapterGroups() != null && groupsEnabled && !getSearching();
-        final int topAdd = groupsVisible ? dp(23 + 22) + groupHeight : 0;
-        final int bottomAdd = groupsVisible ? getBottomBarHeight() : marginPx/2+getBottomBarHeight();
+        final int topAdd = groupsVisible ? dp(23) + 22 + groupHeight : 0;
+        final int bottomAdd = groupsVisible ? getBottomBarHeight() : margin/2+getBottomBarHeight();
 
-        appGridViewBanner.setPadding(
-                marginPx,
-                Math.max(0,marginPx+(groupsVisible ? 0 : dp(22)))+topAdd,
-                marginPx,
-                0);
-        appGridViewSquare.setPadding(
-                marginPx,
-                dp(5), // Margin top is -5dp
-                marginPx,
+        appsView.setClipToPadding(false);
+        appsView.setPadding(
+                margin,
+                topAdd,
+                margin,
                 bottomAdd);
 
-        scrollView.setFadingEdgeLength(groupsVisible ? dp(23 + 22) + groupHeight : 0);
+        appsView.setFadingEdgeLength(groupsVisible ? dp(23 + 22) + groupHeight : 0);
     }
     // Accounts for the height of the edit mode footer when visible, actual function in child class
     protected int getBottomBarHeight() {
@@ -584,46 +590,29 @@ public class LauncherActivity extends Activity {
         getWindow().setNavigationBarColor(backgroundColor);
         getWindow().setStatusBarColor(backgroundColor);
 
-        new BackgroundTask().execute(this);
+        new WallpaperExecutor().execute(this);
     }
 
 
     public void refreshAppDisplayLists() {
-        refreshAppDisplayListsWithoutInterface();
-        refreshInterface();
-    }
-    protected void refreshAppDisplayListsWithoutInterface() {
         sharedPreferenceEditor.apply();
 
-        Platform.appListSquare = Collections.synchronizedList(new ArrayList<>());
-        Platform.appListBanner = Collections.synchronizedList(new ArrayList<>());
+        Platform.appList = Collections.synchronizedList(new ArrayList<>());
 
-        for (ApplicationInfo app: Platform.installedApps) {
-            if (App.isBanner(this, app)) Platform.appListBanner.add(app);
-            else Platform.appListSquare.add(app);
-        }
+        Platform.appList.addAll(Platform.installedApps);
         // Add web apps
         Set<String> webApps = sharedPreferences.getStringSet(Settings.KEY_WEBSITE_LIST, Collections.emptySet());
         for (String url:webApps) {
             ApplicationInfo applicationInfo = new ApplicationInfo();
             applicationInfo.packageName = url;
-            (App.typeIsBanner(App.Type.TYPE_WEB) ?
-                    Platform.appListBanner : Platform.appListSquare)
-                    .add(applicationInfo);
+            Platform.appList.add(applicationInfo);
         }
         // Add panel apps (Quest Only)
-        if (Platform.isQuest(this)) {
-            for (ApplicationInfo panelApp : AppData.getFullPanelAppList()) {
-                (App.typeIsBanner(App.Type.TYPE_PANEL) ?
-                        Platform.appListBanner : Platform.appListSquare)
-                        .add(panelApp);
-            }
-        }
+        if (Platform.isQuest(this))
+            Platform.appList.addAll(AppData.getFullPanelAppList());
 
-        if (getAdapterSquare() != null)
-            getAdapterSquare().setFullAppList(Platform.appListSquare);
-        if (getAdapterBanner() != null)
-            getAdapterBanner().setFullAppList(Platform.appListBanner);
+        if (getAppAdapter() != null)
+            getAppAdapter().setFullAppList(Platform.appList);
     }
 
     // Utility functions
@@ -640,11 +629,8 @@ public class LauncherActivity extends Activity {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, getResources().getDisplayMetrics());
     }
 
-    public @Nullable AppsAdapter getAdapterSquare() {
-        return (AppsAdapter) appGridViewSquare.getAdapter();
-    }
-    public @Nullable AppsAdapter getAdapterBanner() {
-        return (AppsAdapter) appGridViewBanner.getAdapter();
+    public @Nullable AppsAdapter getAppAdapter() {
+        return (AppsAdapter) appsView.getAdapter();
     }
     public @Nullable GroupsAdapter getAdapterGroups() {
         return (GroupsAdapter) groupGridView.getAdapter();
@@ -693,9 +679,9 @@ public class LauncherActivity extends Activity {
         public void onServiceDisconnected(ComponentName arg0) {}
     };
 
+    @SuppressLint("NotifyDataSetChanged")
     public void clearAdapterCaches() {
-        if (getAdapterSquare() != null) getAdapterSquare().clearViewCache();
-        if (getAdapterBanner() != null) getAdapterBanner().clearViewCache();
+        if (getAppAdapter() != null) getAppAdapter().notifyDataSetChanged();
     }
 
     // Edit mode stubs, to be overridden by child

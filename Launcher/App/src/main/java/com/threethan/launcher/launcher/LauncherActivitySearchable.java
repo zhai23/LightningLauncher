@@ -38,15 +38,10 @@ import eightbitlab.com.blurview.RenderScriptBlur;
 public class LauncherActivitySearchable extends LauncherActivityEditable {
     private boolean searching = false;
     protected void searchFor(String text) {
-        final AppsAdapter squareAdapter = getAdapterSquare();
-        final AppsAdapter bannerAdapter = getAdapterBanner();
+        final AppsAdapter squareAdapter = getAppAdapter();
         if (squareAdapter != null) {
             squareAdapter.filterBy(text);
-            appGridViewSquare.setAdapter(squareAdapter);
-        }
-        if (bannerAdapter != null) {
-            bannerAdapter.filterBy(text);
-            appGridViewBanner.setAdapter(bannerAdapter);
+            appsView.setAdapter(squareAdapter);
         }
         updateTopSearchResult();
         resetScroll();
@@ -120,13 +115,14 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
             }, 50);
 
 
-            if (groupsEnabled) updatePadding();
-            View scrollInterior = findViewById(R.id.mainScrollInterior);
-            ValueAnimator padAnimator = ValueAnimator.ofInt(scrollInterior.getPaddingTop(), dp(64));
+//            if (groupsEnabled) updatePadding();
+            ValueAnimator padAnimator = ValueAnimator.ofInt(appsView.getPaddingTop(), dp(64));
             padAnimator.setDuration(200);
             padAnimator.setInterpolator(new DecelerateInterpolator());
             padAnimator.addUpdateListener(animation -> {
-                scrollInterior.setPadding(0, (Integer) animation.getAnimatedValue(), 0,0);
+                appsView.setPadding(appsView.getPaddingLeft(),
+                        (Integer) animation.getAnimatedValue(),
+                        appsView.getPaddingRight(),appsView.getPaddingBottom());
                 resetScroll();
             });
             padAnimator.start();
@@ -158,14 +154,14 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
             topBar.setVisibility(View.VISIBLE);
             refreshAdapters();
 
-            View scrollInterior = findViewById(R.id.mainScrollInterior);
-            ValueAnimator padAnimator = ValueAnimator.ofInt(scrollInterior.getPaddingTop(), 0);
-            padAnimator.setDuration(groupsEnabled ? 0 : 300);
-            padAnimator.setInterpolator(new DecelerateInterpolator());
-            padAnimator.addUpdateListener(animation ->
-                    scrollInterior.setPadding(0, (Integer) animation.getAnimatedValue(), 0,0));
-
-            padAnimator.start();
+//            View scrollInterior = findViewById(R.id.mainScrollInterior);
+//            ValueAnimator padAnimator = ValueAnimator.ofInt(scrollInterior.getPaddingTop(), 0);
+//            padAnimator.setDuration(groupsEnabled ? 0 : 300);
+//            padAnimator.setInterpolator(new DecelerateInterpolator());
+//            padAnimator.addUpdateListener(animation ->
+//                    scrollInterior.setPadding(0, (Integer) animation.getAnimatedValue(), 0,0));
+//
+//            padAnimator.start();
 
         } catch (NullPointerException ignored) {}
         clearTopSearchResult();
@@ -181,9 +177,9 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
             topBar.setVisibility(!searching ? View.VISIBLE : View.GONE);
             searchBar.setAlpha(searching ? 1F : 0F);
             topBar.post(() -> topBar.setAlpha(1F)); // Prevent flicker on start
-            View scrollInterior = findViewById(R.id.mainScrollInterior);
-            scrollInterior.setPadding(0, searching ? dp(64):0, 0, 0);
-            scrollInterior.post(this::resetScroll);
+//            View scrollInterior = findViewById(R.id.mainScrollInterior);
+//            scrollInterior.setPadding(0, searching ? dp(64):0, 0, 0);
+//            scrollInterior.post(this::resetScroll);
         } catch (NullPointerException ignored) {}
     }
 
@@ -261,10 +257,8 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
         else if (searchText.getText().toString().isEmpty()) clearTopSearchResult();
         else {
             // Highlight top result
-            if (getAdapterBanner() != null && getAdapterBanner().getCount() > 0)
-                changeTopSearchResult((ApplicationInfo) getAdapterBanner().getItem(0));
-            else if (getAdapterSquare() != null && getAdapterSquare().getCount() > 0)
-                changeTopSearchResult((ApplicationInfo) getAdapterSquare().getItem(0));
+            if (getAppAdapter() != null && getAppAdapter().getItemCount() > 0)
+                changeTopSearchResult(getAppAdapter().getItem(0));
             else clearTopSearchResult();
         }
     }

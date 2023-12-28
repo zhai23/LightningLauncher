@@ -41,7 +41,7 @@ public abstract class SettingsDialog {
     private static boolean clearedIconCustom;
     private static boolean clearedSort;
     private static boolean clearedGroups;
-    @SuppressLint("UseSwitchCompatOrMaterialCode")
+    @SuppressLint({"UseSwitchCompatOrMaterialCode", "NotifyDataSetChanged"})
     public static void showSettings(LauncherActivity a) {
         AlertDialog dialog = Dialog.build(a, R.layout.dialog_settings);
 
@@ -313,17 +313,16 @@ public abstract class SettingsDialog {
         Switch names = dialog.findViewById(R.id.nameSquareSwitch);
         names.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_SHOW_NAMES_SQUARE, Settings.DEFAULT_SHOW_NAMES_SQUARE));
         names.setOnCheckedChangeListener((compoundButton, value) -> {
-            a.sharedPreferenceEditor.putBoolean(Settings.KEY_SHOW_NAMES_SQUARE, value);
-            a.refreshInterfaceAll();
-            if (a.getAdapterSquare() != null) a.getAdapterSquare().setShowNames(value);
+            a.sharedPreferenceEditor.putBoolean(Settings.KEY_SHOW_NAMES_SQUARE, value).apply();
+            LauncherActivity.namesSquare = value;
+            Objects.requireNonNull(a.getAppAdapter()).notifyDataSetChanged();
         });
         Switch wideNames = dialog.findViewById(R.id.nameBannerSwitch);
         wideNames.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_SHOW_NAMES_BANNER, Settings.DEFAULT_SHOW_NAMES_BANNER));
         wideNames.setOnCheckedChangeListener((compoundButton, value) -> {
-            a.sharedPreferenceEditor.putBoolean(Settings.KEY_SHOW_NAMES_BANNER, value);
-            a.refreshInterfaceAll();
-            if (a.getAdapterBanner() != null) a.getAdapterBanner().setShowNames(value);
-            if (a.getAdapterBanner() != null) a.getAdapterBanner().setShowNames(value);
+            a.sharedPreferenceEditor.putBoolean(Settings.KEY_SHOW_NAMES_BANNER, value).apply();
+            LauncherActivity.namesBanner = value;
+            Objects.requireNonNull(a.getAppAdapter()).notifyDataSetChanged();
         });
 
         // Advanced button

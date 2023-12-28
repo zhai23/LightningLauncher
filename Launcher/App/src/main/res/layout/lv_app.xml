@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:descendantFocusability="blocksDescendants"
     android:focusable="true"
     android:gravity="center"
@@ -14,7 +14,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clip"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:background="@drawable/bkg_app"
         android:elevation="4dp"
@@ -43,12 +43,27 @@
             android:focusable="false"
             android:focusableInTouchMode="false"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/imageLabel"
+            app:layout_constraintBottom_toBottomOf="@id/imageLabelSquare"
             app:layout_constraintEnd_toEndOf="parent"
             tools:visibility="visible" />
 
         <ImageView
-            android:id="@+id/imageLabel"
+            android:id="@+id/imageLabelBanner"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:outlineProvider="background"
+            android:scaleType="centerCrop"
+            android:scaleX="1.005"
+            android:scaleY="1.005"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="16:9"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/imageLabelSquare"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:scaleType="fitCenter"

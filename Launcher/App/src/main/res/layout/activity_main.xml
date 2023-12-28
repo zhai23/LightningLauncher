@@ -15,59 +15,11 @@
         android:background="@drawable/anim_combined"
         android:visibility="gone" />
 
-    <com.threethan.launcher.view.FadingTopScrollView
-        android:id="@+id/mainScrollView"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/apps"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:alpha="0"
-        android:fadingEdge="vertical"
-        android:fadingEdgeLength="65dp"
-        android:requiresFadingEdge="vertical"
-        android:scrollbars="none"
-        tools:visibility="gone">
-
-        <LinearLayout
-            android:id="@+id/mainScrollInterior"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <com.threethan.launcher.view.DynamicHeightGridView
-                android:id="@+id/appsViewBanner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="-22dp"
-                android:layout_marginBottom="-22dp"
-                android:clipChildren="true"
-                android:clipToPadding="false"
-                android:descendantFocusability="afterDescendants"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:gravity="center"
-                android:horizontalSpacing="15dp"
-                android:numColumns="auto_fit"
-                android:scrollbars="none"
-                android:stretchMode="columnWidth"
-                android:verticalSpacing="15dp" />
-
-            <com.threethan.launcher.view.DynamicHeightGridView
-                android:id="@+id/appsViewSquare"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="-5dp"
-                android:clipChildren="true"
-                android:clipToPadding="false"
-                android:descendantFocusability="afterDescendants"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:gravity="center"
-                android:horizontalSpacing="15dp"
-                android:numColumns="auto_fit"
-                android:scrollbars="none"
-                android:stretchMode="columnWidth"
-                android:verticalSpacing="15dp" />
-        </LinearLayout>
-    </com.threethan.launcher.view.FadingTopScrollView>
+        android:alpha="0" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/topBarLayout"

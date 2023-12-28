@@ -1,13 +1,8 @@
 package com.threethan.launcher.adapter;
 
 import android.animation.ObjectAnimator;
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
@@ -15,35 +10,29 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
-import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.Switch;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.threethan.launcher.R;
 import com.threethan.launcher.helper.App;
-import com.threethan.launcher.helper.Compat;
-import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.helper.Icon;
 import com.threethan.launcher.helper.Launch;
 import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.launcher.LauncherActivity;
-import com.threethan.launcher.lib.ImageLib;
 import com.threethan.launcher.lib.StringLib;
+import com.threethan.launcher.support.AppDetailsDialog;
 import com.threethan.launcher.support.SettingsManager;
 
-import java.io.File;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 
 /*
     AppsAdapter
@@ -58,29 +47,22 @@ import java.util.concurrent.ConcurrentHashMap;
     This class also handles clicking and long clicking apps, including the app settings dialog.
     It also handles displaying/updating the views of an app (hover interactions, background website)
  */
-public class AppsAdapter extends BaseAdapter{
-    private static Drawable iconDrawable;
-    private static File customIconFile;
-    private static String packageName;
+public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.AppViewHolder> {
     private LauncherActivity launcherActivity;
     private List<ApplicationInfo> currentAppList;
     private List<ApplicationInfo> fullAppList;
-    private final boolean isBanner;
     private boolean getEditMode() {
         return launcherActivity.isEditing();
     }
     public @Nullable View firstView;
-    private boolean showTextLabels;
-    public AppsAdapter(LauncherActivity activity, boolean names, boolean banner, List<ApplicationInfo> myApps) {
+    public AppsAdapter(LauncherActivity activity, List<ApplicationInfo> myApps) {
         launcherActivity = activity;
-        showTextLabels = names;
         SettingsManager settingsManager = SettingsManager.getInstance(launcherActivity);
 
         firstView = null;
         currentAppList = Collections.synchronizedList(settingsManager
                 .getInstalledApps(activity, settingsManager.getAppGroupsSorted(false), myApps));
         fullAppList = myApps;
-        isBanner = banner;
     }
     public void setFullAppList(List<ApplicationInfo> myApps) {
         fullAppList = myApps;
@@ -92,10 +74,6 @@ public class AppsAdapter extends BaseAdapter{
         SettingsManager settingsManager = SettingsManager.getInstance(activity);
         currentAppList = Collections.synchronizedList(settingsManager
                 .getInstalledApps(activity, settingsManager.getAppGroupsSorted(true), fullAppList));
-    }
-    public void setShowNames(boolean names) {
-        showTextLabels = names;
-        clearViewCache();
     }
     public synchronized void filterBy(String text) {
         SettingsManager settingsManager = SettingsManager.getInstance(launcherActivity);
@@ -109,7 +87,7 @@ public class AppsAdapter extends BaseAdapter{
                 currentAppList.add(app);
 
         // Add search queries
-        if (!isBanner && !text.isEmpty() && !launcherActivity.isEditing()) {
+        if (!text.isEmpty() && !launcherActivity.isEditing()) {
 
             final ApplicationInfo googleProxy = new ApplicationInfo();
             googleProxy.packageName = StringLib.googleSearchForUrl(text);
@@ -132,95 +110,53 @@ public class AppsAdapter extends BaseAdapter{
         launcherActivity = val;
     }
 
-    private static class ViewHolder {
+    protected static class AppViewHolder extends RecyclerView.ViewHolder {
         View view;
         ImageView imageView;
+        ImageView imageViewSquare;
+        ImageView imageViewBanner;
         View clip;
-        ImageView imageViewBg;
         TextView textView;
         Button moreButton;
         Button killButton;
         ApplicationInfo app;
-    }
 
-    @Override
-    public int getCount() { return currentAppList.size(); }
-
-    @Override
-    public Object getItem(int position) { return currentAppList.get(position); }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    Map<ApplicationInfo, ViewHolder> viewCacheSquare = new ConcurrentHashMap<>();
-    Map<ApplicationInfo, ViewHolder> viewCacheBanner = new ConcurrentHashMap<>();
-    private Map<ApplicationInfo, ViewHolder> getViewCache() {
-        return isBanner ? viewCacheBanner : viewCacheSquare;
-    }
-
-    /** @noinspection deprecation*/
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        final ApplicationInfo currentApp = currentAppList.get(position);
-
-        if (getViewCache().containsKey(currentApp)) {
-            ViewHolder holder = getViewCache().get(currentApp);
-            if (holder != null) {
-                if (firstView == null) firstView = holder.view;
-                holder.app = currentApp;
-                return holder.view;
-            }
+        public AppViewHolder(@NonNull View itemView) {
+            super(itemView);
         }
+    }
 
-        ViewHolder holder;
-
+    public ApplicationInfo getItem(int position) { return currentAppList.get(position); }
+    @NonNull
+    @Override
+    public AppViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = (LayoutInflater) launcherActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View itemView = layoutInflater.inflate(R.layout.lv_app, parent, false);
+        AppViewHolder holder =  new AppViewHolder(itemView);
+        itemView.findViewById(R.id.clip).setClipToOutline(true);
 
-        if (convertView == null) {
-            // Create a new ViewHolder and inflate the view
-            int layout = App.isBanner(launcherActivity, currentApp) ? R.layout.lv_app_wide : R.layout.lv_app_icon;
+        holder.view = itemView;
+        holder.imageViewSquare = itemView.findViewById(R.id.imageLabelSquare);
+        holder.imageViewBanner = itemView.findViewById(R.id.imageLabelBanner);
+        holder.clip = itemView.findViewById(R.id.clip);
+        holder.textView = itemView.findViewById(R.id.textLabel);
+        holder.moreButton = itemView.findViewById(R.id.moreButton);
+        holder.killButton = itemView.findViewById(R.id.killButton);
 
-            convertView = layoutInflater.inflate(layout, parent, false);
-            if (currentApp.packageName == null) return convertView;
+        setActions(holder);
 
-            holder = new ViewHolder();
-            holder.view = convertView;
-            holder.imageView = convertView.findViewById(R.id.imageLabel);
-            holder.clip = convertView.findViewById(R.id.clip);
-            holder.textView = convertView.findViewById(R.id.textLabel);
-            holder.moreButton = convertView.findViewById(R.id.moreButton);
-            holder.killButton = convertView.findViewById(R.id.killButton);
-            holder.app = currentApp;
-
-            // Set clipToOutline to true on imageView
-            convertView.findViewById(R.id.clip).setClipToOutline(true);
-            convertView.setTag(holder);
-            if (position == 0) launcherActivity.updateGridViews();
-
-        } else holder = (ViewHolder) convertView.getTag();
-
-        // set value into textview
-        if (showTextLabels) {
-            String name = SettingsManager.getAppLabel(currentApp);
-            holder.textView.setVisibility(View.VISIBLE);
-            holder.textView.setText(name);
-            holder.textView.setTextColor(Color.parseColor(launcherActivity.darkMode ? "#FFFFFF" : "#000000"));
-            holder.textView.setShadowLayer(6, 0, 0, Color.parseColor(launcherActivity.darkMode ? "#000000" : "#20FFFFFF"));
-        } else holder.textView.setVisibility(View.GONE);
-
-        new LoadIconTask().execute(this, currentApp, launcherActivity, holder.imageView, holder.imageViewBg);
-        holder.view.post(() -> updateView(holder));
-
-        getViewCache().put(currentApp, holder);
-        return convertView;
+        return holder;
     }
-    public void clearViewCache() {
-        getViewCache().clear();
-    }
+    private void setActions(AppViewHolder holder) {
+        // Sub-buttons
+        holder.moreButton.setOnClickListener(view -> AppDetailsDialog.showAppDetails(holder.app, launcherActivity));
 
-    private void updateView(ViewHolder holder) {
+        holder.killButton.setOnClickListener(view -> {
+            SettingsManager.stopRunning(holder.app.packageName);
+            view.setVisibility(View.GONE);
+        });
+
+        // Click
         holder.view.setOnClickListener(view -> {
             if (getEditMode()) {
                 boolean selected = launcherActivity.selectApp(holder.app.packageName);
@@ -238,8 +174,9 @@ public class AppsAdapter extends BaseAdapter{
         holder.view.setOnLongClickListener(view -> {
             if (getEditMode() || !launcherActivity.canEdit() || launcherActivity.sharedPreferences
                     .getBoolean(Settings.KEY_DETAILS_LONG_PRESS, Settings.DEFAULT_DETAILS_LONG_PRESS)) {
-                if (holder.killButton.getVisibility() == View.VISIBLE) holder.killButton.callOnClick();
-                else showAppDetails(holder.app);
+                if (holder.killButton.getVisibility() == View.VISIBLE)
+                    holder.killButton.callOnClick();
+                else AppDetailsDialog.showAppDetails(holder.app, launcherActivity);
             } else {
                 launcherActivity.setEditMode(true);
                 launcherActivity.selectApp(holder.app.packageName);
@@ -247,42 +184,13 @@ public class AppsAdapter extends BaseAdapter{
             return true;
         });
 
-        // A list of selected apps and background-running websites is stored in the launcher activity,
-        // then periodically checked by each app's view here.
-        Runnable periodicUpdate = new Runnable() {
-            @Override
-            public void run() {
-                holder.moreButton.setVisibility(holder.view.isHovered() || holder.moreButton.isHovered() ? View.VISIBLE : View.GONE);
-                boolean selected = launcherActivity.isSelected(holder.app.packageName);
-                if (selected != holder.view.getAlpha() < 0.9) {
-                    ObjectAnimator an = ObjectAnimator.ofFloat(holder.view, "alpha", selected ? 0.5F : 1.0F);
-                    an.setDuration(150);
-                    an.start();
-                }
-                holder.killButton.setVisibility(SettingsManager.getRunning(holder.app.packageName) ? View.VISIBLE : View.GONE);
-                // Top search result
-                if (launcherActivity.currentTopSearchResult != null &&
-                        Objects.equals(
-                            Icon.cacheName(launcherActivity.currentTopSearchResult.packageName),
-                            Icon.cacheName(holder.app.packageName))) {
-                        updateHover(holder, true);
-                } else if (launcherActivity.clearFocusPackageNames.contains(Icon.cacheName(holder.app.packageName))) {
-                    updateHover(holder, false);
-                    launcherActivity.clearFocusPackageNames.remove(Icon.cacheName(holder.app.packageName));
-                }
-                // Post self again
-                holder.view.postDelayed(this, 250);
-            }
-        };
-        periodicUpdate.run();
-
+        // Hover
         View.OnHoverListener hoverListener = (view, event) -> {
             boolean hovered;
             if (event.getAction() == MotionEvent.ACTION_HOVER_ENTER) hovered = true;
             else if (event.getAction() == MotionEvent.ACTION_HOVER_EXIT) {
                 for (View subView : new View[] {holder.moreButton, holder.killButton})
                     if (view != subView && subView != null && subView.isHovered()) return false;
-
                 hovered = false;
             } else return false;
             updateHover(holder, hovered);
@@ -294,15 +202,75 @@ public class AppsAdapter extends BaseAdapter{
 
         holder.moreButton.setOnHoverListener(hoverListener);
         holder.killButton.setOnHoverListener(hoverListener);
-
-        holder.moreButton.setOnClickListener(view -> showAppDetails(holder.app));
-
-        holder.killButton.setOnClickListener(view -> {
-            SettingsManager.stopRunning(holder.app.packageName);
-            view.setVisibility(View.GONE);
-        });
     }
-    public void updateHover(ViewHolder holder, boolean hovered) {
+
+    @Override
+    public void onBindViewHolder(@NonNull AppViewHolder holder, int position) {
+        ApplicationInfo app = getItem(position);
+
+        // Square vs Banner
+        final boolean banner = App.isBanner(launcherActivity, app);
+        holder.imageViewSquare.setVisibility(banner ? View.GONE : View.VISIBLE);
+        holder.imageViewBanner.setVisibility(banner ? View.VISIBLE : View.GONE);
+        holder.imageView = banner ? holder.imageViewBanner : holder.imageViewSquare;
+
+
+
+        // set value into textview
+        if (banner && LauncherActivity.namesBanner || !banner && LauncherActivity.namesSquare) {
+            String name = SettingsManager.getAppLabel(app);
+            holder.textView.setVisibility(View.VISIBLE);
+            holder.textView.setText(name);
+            holder.textView.setTextColor(Color.parseColor(launcherActivity.darkMode ? "#FFFFFF" : "#000000"));
+            holder.textView.setShadowLayer(6, 0, 0, Color.parseColor(launcherActivity.darkMode ? "#000000" : "#20FFFFFF"));
+        } else holder.textView.setVisibility(View.GONE);
+
+        holder.app = app;
+
+        //Load Icon
+        Drawable appIcon = Icon.loadIcon(launcherActivity, holder.app, holder.imageView);
+        launcherActivity.runOnUiThread(() -> holder.imageView.setImageDrawable(appIcon));
+
+        updateSelected(holder);
+
+    }
+
+    public void notifySelectionChange(String packageName) {
+        for (int i=0; i<currentAppList.size(); i++)
+            if (Objects.equals(currentAppList.get(i).packageName, packageName))
+                notifyItemChanged(i, currentAppList.get(i));
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemCount() {
+        return currentAppList.size();
+    }
+    private void updateSelected(AppViewHolder holder) {
+        holder.moreButton.setVisibility(holder.view.isHovered() || holder.moreButton.isHovered() ? View.VISIBLE : View.GONE);
+        boolean selected = launcherActivity.isSelected(holder.app.packageName);
+        if (selected != holder.view.getAlpha() < 0.9) {
+            ObjectAnimator an = ObjectAnimator.ofFloat(holder.view, "alpha", selected ? 0.5F : 1.0F);
+            an.setDuration(150);
+            an.start();
+        }
+        holder.killButton.setVisibility(SettingsManager.getRunning(holder.app.packageName) ? View.VISIBLE : View.GONE);
+        // Top search result
+        if (launcherActivity.currentTopSearchResult != null &&
+                Objects.equals(
+                        Icon.cacheName(launcherActivity.currentTopSearchResult.packageName),
+                        Icon.cacheName(holder.app.packageName))) {
+            updateHover(holder, true);
+        } else if (launcherActivity.clearFocusPackageNames.contains(Icon.cacheName(holder.app.packageName))) {
+            updateHover(holder, false);
+            launcherActivity.clearFocusPackageNames.remove(Icon.cacheName(holder.app.packageName));
+        }
+    }
+    public void updateHover(AppViewHolder holder, boolean hovered) {
         holder.killButton.setBackgroundResource(hovered ? R.drawable.ic_circ_running_kb : R.drawable.ic_running_ns);
 
         final float newScaleInner = hovered ? 1.055f : 1.005f;
@@ -329,223 +297,14 @@ public class AppsAdapter extends BaseAdapter{
             holder.clip.setElevation(newElevation);
         }, 250);
     }
-
-    public void onImageSelected(String path, ImageView selectedImageView) {
-        Compat.clearIconCache(launcherActivity);
-        if (path != null) {
-            Bitmap bitmap = ImageLib.bitmapFromFile(launcherActivity, new File(path));
-            if (bitmap == null) return;
-            bitmap = ImageLib.getResizedBitmap(bitmap, 450);
-            ImageLib.saveBitmap(bitmap, customIconFile);
-            selectedImageView.setImageBitmap(bitmap);
-        } else {
-            selectedImageView.setImageDrawable(iconDrawable);
-            Icon.updateIcon(customIconFile, packageName, null);
-            // No longer sets icon here but that should be fine
-        }
+    @Override
+    public int getItemViewType(int position) {
+        return App.isBanner(launcherActivity, currentAppList.get(position)) ? 2 : 1;
     }
-    @SuppressLint("SetTextI18n")
-    private void showAppDetails(ApplicationInfo currentApp) {
-        // Set View
-        AlertDialog dialog = Dialog.build(launcherActivity, R.layout.dialog_app_details);
-        if (dialog == null) return;
-        // Package Name
-        ((TextView) dialog.findViewById(R.id.packageName)).setText(currentApp.packageName);
-
-        PackageInfo packageInfo;
-        try {
-            packageInfo = launcherActivity.getPackageManager().getPackageInfo(currentApp.packageName, 0);
-            ((TextView) dialog.findViewById(R.id.packageVersion)).setText("v"+packageInfo.versionName);
-        } catch (PackageManager.NameNotFoundException ignored) {}
-        // Info Action
-        dialog.findViewById(R.id.info).setOnClickListener(view -> App.openInfo(launcherActivity, currentApp.packageName));
-        dialog.findViewById(R.id.uninstall).setOnClickListener(view -> {
-            App.uninstall(launcherActivity, currentApp.packageName); dialog.dismiss();});
-
-
-        dialog.findViewById(R.id.kill).setVisibility(
-                SettingsManager.getRunning(currentApp.packageName) ? View.VISIBLE : View.GONE);
-        dialog.findViewById(R.id.kill).setOnClickListener((view) -> {
-            SettingsManager.stopRunning(currentApp.packageName);
-            view.setVisibility(View.GONE);
-        });
-
-
-        // Launch Mode Toggle
-        @SuppressLint("UseSwitchCompatOrMaterialCode")
-        final Switch launchModeSwitch = dialog.findViewById(R.id.launchModeSwitch);
-        final View launchOutButton = dialog.findViewById(R.id.launchOut);
-        final View launchModeSection = dialog.findViewById(R.id.launchModeSection);
-        final View refreshIconButton = dialog.findViewById(R.id.refreshIconButton);
-
-        // Launch Mode Selection
-        final View launchSizeSpinner = dialog.findViewById(R.id.launchSizeSpinner);
-        final TextView launchSizeSpinnerText = dialog.findViewById(R.id.launchSizeSpinnerText);
-        // Launch Browser Selection
-        final View launchBrowserSpinner = dialog.findViewById(R.id.launchBrowserSpinner);
-        final TextView launchBrowserSpinnerText = dialog.findViewById(R.id.launchBrowserSpinnerText);
-
-        // Load Icon
-        PackageManager packageManager = launcherActivity.getPackageManager();
-        ImageView iconImageView = dialog.findViewById(R.id.appIcon);
-        iconImageView.setImageDrawable(Icon.loadIcon(launcherActivity, currentApp, null));
-
-        iconImageView.setClipToOutline(true);
-        if (App.isBanner(launcherActivity, currentApp)) iconImageView.getLayoutParams().width = launcherActivity.dp(150);
-
-        iconImageView.setOnClickListener(iconPickerView -> {
-            iconDrawable = currentApp.loadIcon(packageManager);
-            packageName = currentApp.packageName;
-
-            customIconFile = Icon.iconCustomFileForPackage(launcherActivity, currentApp.packageName);
-            if (customIconFile.exists()) //noinspection ResultOfMethodCallIgnored
-                customIconFile.delete();
-            launcherActivity.setSelectedIconImage(iconImageView, currentApp.packageName);
-            ImageLib.showImagePicker(launcherActivity, Settings.PICK_ICON_CODE);
-        });
-
-        App.Type appType = App.getType(launcherActivity, currentApp);
-        dialog.findViewById(R.id.info).setVisibility(currentApp.packageName.contains("://")
-                ? View.GONE : View.VISIBLE);
-        if (appType == App.Type.TYPE_VR || appType == App.Type.TYPE_PANEL
-                || Platform.isTv(launcherActivity)) {
-            // VR apps MUST launch out, so just hide the option and replace it with another
-            // Also hide it on TV where it is useless
-            launchModeSection.setVisibility(View.GONE);
-            refreshIconButton.setVisibility(View.VISIBLE);
-            launchOutButton.setVisibility(View.GONE);
-
-            refreshIconButton.setOnClickListener(view -> Icon.reloadIcon(launcherActivity, currentApp, iconImageView));
-        } else {
-            launchModeSection.setVisibility(View.VISIBLE);
-            refreshIconButton.setVisibility(View.GONE);
-
-            launchOutButton.setVisibility(View.VISIBLE);
-            launchOutButton.setOnClickListener((view) -> {
-                final boolean prevLaunchOut = SettingsManager.getAppLaunchOut(currentApp.packageName);
-                SettingsManager.setAppLaunchOut(currentApp.packageName, true);
-                Launch.launchApp(launcherActivity, currentApp);
-                SettingsManager.setAppLaunchOut(currentApp.packageName, prevLaunchOut);
-            });
-
-            // Normal size settings
-            launchModeSwitch.setChecked(SettingsManager.getAppLaunchOut(currentApp.packageName));
-            launchModeSwitch.setOnCheckedChangeListener((sw, value) -> {
-                SettingsManager.setAppLaunchOut(currentApp.packageName, value);
-
-                if (!launcherActivity.sharedPreferences.getBoolean(Settings.KEY_SEEN_LAUNCH_OUT_POPUP, false)) {
-                    AlertDialog subDialog = Dialog.build(launcherActivity, R.layout.dialog_launch_out_info);
-                    if (subDialog == null) return;
-                    subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
-                        launcherActivity.sharedPreferenceEditor
-                                .putBoolean(Settings.KEY_SEEN_LAUNCH_OUT_POPUP, true).apply();
-                        subDialog.dismiss();
-                    });
-                }
-            });
-
-            // Browser settings
-            if (appType == App.Type.TYPE_WEB && Platform.isQuest(launcherActivity)) {
-                launchBrowserSpinner.setVisibility(View.VISIBLE);
-                launchModeSection.setVisibility(View.GONE);
-
-                final String launchBrowserKey = Settings.KEY_LAUNCH_BROWSER + currentApp.packageName;
-                final int[] launchBrowserSelection = {launcherActivity.sharedPreferences.getInt(
-                        launchBrowserKey,
-                        SettingsManager.getAppLaunchOut(currentApp.packageName) ? 0 : 1)};
-
-                launchBrowserSpinnerText.setText(Settings.launchBrowserStrings[launchBrowserSelection[0]]);
-                launchBrowserSpinner.setOnClickListener((view) -> {
-                    launchBrowserSelection[0] = (launchBrowserSelection[0] + 1) % Settings.launchBrowserStrings.length;
-                    launchBrowserSpinnerText.setText(Settings.launchBrowserStrings[launchBrowserSelection[0]]);
-                    launcherActivity.sharedPreferenceEditor.putInt(launchBrowserKey, launchBrowserSelection[0]);
-                    SettingsManager.setAppLaunchOut(currentApp.packageName, launchBrowserSelection[0] != 0);
-                });
-            }
-            // Advanced size settings
-            else if (SettingsManager.getAdvancedLaunching(launcherActivity)) {
-                launchSizeSpinner.setVisibility(View.VISIBLE);
-                launchModeSection.setVisibility(View.GONE);
-                final String launchSizeKey = Settings.KEY_LAUNCH_SIZE + currentApp.packageName;
-                final int[] launchSizeSelection = {launcherActivity.sharedPreferences.getInt(
-                        launchSizeKey,
-                        SettingsManager.getAppLaunchOut(currentApp.packageName) ? 0 : 1)};
-
-                launchSizeSpinnerText.setText(Settings.launchSizeStrings[launchSizeSelection[0]]);
-                launchSizeSpinner.setOnClickListener((view) -> {
-                    launchSizeSelection[0] = (launchSizeSelection[0] + 1) % Settings.launchSizeStrings.length;
-                    launchSizeSpinnerText.setText(Settings.launchSizeStrings[launchSizeSelection[0]]);
-                    launcherActivity.sharedPreferenceEditor.putInt(launchSizeKey, launchSizeSelection[0]);
-                    SettingsManager.setAppLaunchOut(currentApp.packageName, launchSizeSelection[0] != 0);
-                });
-            }
-        }
-
-        // Show/hide button
-        final View showButton = dialog.findViewById(R.id.show);
-        final View hideButton = dialog.findViewById(R.id.hide);
-        String unhideGroup = SettingsManager.getAppGroupMap().get(currentApp.packageName);
-        if (Objects.equals(unhideGroup, Settings.HIDDEN_GROUP))
-            unhideGroup = App.getDefaultGroupFor(App.getType(launcherActivity, currentApp));
-        if (Objects.equals(unhideGroup, Settings.HIDDEN_GROUP))
-            try {
-                unhideGroup = (String) SettingsManager.getAppGroups().toArray()[0];
-            } catch (AssertionError | IndexOutOfBoundsException ignored) {
-                unhideGroup = Settings.HIDDEN_GROUP;
-                Dialog.toast("Could not find a group to unhide app to!");
-            }
-        String finalUnhideGroup = unhideGroup;
-
-        boolean amHidden = Objects.equals(SettingsManager.getAppGroupMap()
-                .get(currentApp.packageName), Settings.HIDDEN_GROUP);
-        showButton.setVisibility( amHidden ? View.VISIBLE : View.GONE);
-        hideButton.setVisibility(!amHidden ? View.VISIBLE : View.GONE);
-        showButton.setOnClickListener(v -> {
-            launcherActivity.settingsManager.setAppGroup(currentApp.packageName,
-                    finalUnhideGroup);
-            boolean nowHidden = Objects.equals(SettingsManager.getAppGroupMap()
-                    .get(currentApp.packageName), Settings.HIDDEN_GROUP);
-            showButton.setVisibility( nowHidden ? View.VISIBLE : View.GONE);
-            hideButton.setVisibility(!nowHidden ? View.VISIBLE : View.GONE);
-            Dialog.toast(launcherActivity.getString(R.string.moved_shown), finalUnhideGroup, false);
-        });
-        hideButton.setOnClickListener(v -> {
-            launcherActivity.settingsManager.setAppGroup(currentApp.packageName,
-                    Settings.HIDDEN_GROUP);
-            boolean nowHidden = Objects.equals(SettingsManager.getAppGroupMap()
-                    .get(currentApp.packageName), Settings.HIDDEN_GROUP);
-            showButton.setVisibility( nowHidden ? View.VISIBLE : View.GONE);
-            hideButton.setVisibility(!nowHidden ? View.VISIBLE : View.GONE);
-            Dialog.toast(launcherActivity.getString(R.string.moved_hidden),
-                    launcherActivity.getString(R.string.moved_hidden_bold), false);
-
-        });
-
-        // Set Label (don't show star)
-        String label = SettingsManager.getAppLabel(currentApp);
-        final EditText appNameEditText = dialog.findViewById(R.id.appLabel);
-        appNameEditText.setText(StringLib.withoutStar(label));
-        // Star (actually changes label)
-        final ImageView starButton = dialog.findViewById(R.id.star);
-        final boolean[] isStarred = {StringLib.hasStar(label)};
-        starButton.setImageResource(isStarred[0] ? R.drawable.ic_star_on : R.drawable.ic_star_off);
-        starButton.setOnClickListener((view) -> {
-            isStarred[0] = !isStarred[0];
-            starButton.setImageResource(isStarred[0] ? R.drawable.ic_star_on : R.drawable.ic_star_off);
-        });
-        // Save Label & Reload on Confirm
-        dialog.findViewById(R.id.confirm).setOnClickListener(view -> {
-            SettingsManager.setAppLabel(currentApp, StringLib.setStarred(appNameEditText.getText().toString(), isStarred[0]));
-            clearViewCache();
-            launcherActivity.refreshInterfaceAll();
-            dialog.dismiss();
-        });
-    }
-
 
     // Animation
 
-    private void animateOpen(ViewHolder holder) {
+    private void animateOpen(AppViewHolder holder) {
 
         int[] l = new int[2];
         View clip = holder.view.findViewById(R.id.clip);

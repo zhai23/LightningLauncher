@@ -278,13 +278,11 @@ public class BrowserActivity extends Activity {
     protected boolean isEphemeral() {
         if (w != null && /*w.getUrl() != null &&*/
             StringLib.isSearchUrl(baseUrl)) {
-            for (ApplicationInfo app : Platform.appListBanner)
-                if (Objects.equals(app.packageName, baseUrl)) return true;
-            for (ApplicationInfo app : Platform.appListSquare)
-                if (Objects.equals(app.packageName, baseUrl)) return true;
+            for (ApplicationInfo app : Platform.appList)
+                if (Objects.equals(app.packageName, baseUrl)) return false;
         }
 
-        return false;
+        return true;
     }
     public void loadUrl(String url) {
         w.loadUrl(url);

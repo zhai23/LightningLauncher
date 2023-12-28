@@ -3,13 +3,11 @@ package com.threethan.launcher.launcher;
 import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -47,7 +45,26 @@ import eightbitlab.com.blurview.RenderScriptBlur;
 public class LauncherActivityEditable extends LauncherActivity {
     @Nullable
     Boolean editMode = null;
-    public HashSet<String> currentSelectedApps = new HashSet<>();
+    /** @noinspection DataFlowIssue*/
+    private class ConnectedHashSet extends HashSet<String> {
+        @Override
+        public boolean add(String s) {
+            getAppAdapter().notifySelectionChange(s);
+            return super.add(s);
+        }
+        @Override
+        public boolean remove(@Nullable Object o) {
+            getAppAdapter().notifySelectionChange((String) o);
+            return super.remove(o);
+        }
+
+        @Override
+        public void clear() {
+            for (String s : this) getAppAdapter().notifySelectionChange(s);
+            super.clear();
+        }
+    }
+    public HashSet<String> currentSelectedApps = new ConnectedHashSet();
     @Override
     public void onBackPressed() {
         if (AppsAdapter.animateClose(this)) return;
@@ -90,14 +107,10 @@ public class LauncherActivityEditable extends LauncherActivity {
 
             selectionHintText.setOnClickListener((view) -> {
                 if (currentSelectedApps.isEmpty()) {
-                    final Adapter adapterSquare = getAdapterSquare();
-                    if (adapterSquare != null)
-                        for (int i=0; i<adapterSquare.getCount(); i++)
-                            currentSelectedApps.add(((ApplicationInfo) adapterSquare.getItem(i)).packageName);
-                    final Adapter adapterBanner = getAdapterBanner();
-                    if (adapterBanner != null)
-                        for (int i=0; i<adapterBanner.getCount(); i++)
-                            currentSelectedApps.add(((ApplicationInfo) adapterBanner.getItem(i)).packageName);
+                    final AppsAdapter adapter = getAppAdapter();
+                    if (adapter != null)
+                        for (int i=0; i<adapter.getItemCount(); i++)
+                            currentSelectedApps.add(adapter.getItem(i).packageName);
                     selectionHintText.setText(R.string.selection_hint_all);
                 } else {
                     currentSelectedApps.clear();
@@ -108,14 +121,10 @@ public class LauncherActivityEditable extends LauncherActivity {
             });
             selectionHintText.setOnClickListener((view) -> {
                 if (currentSelectedApps.isEmpty()) {
-                    final Adapter adapterSquare = getAdapterSquare();
-                    if (adapterSquare != null)
-                        for (int i=0; i<adapterSquare.getCount(); i++)
-                            currentSelectedApps.add(((ApplicationInfo) adapterSquare.getItem(i)).packageName);
-                    final Adapter adapterBanner = getAdapterBanner();
-                    if (adapterBanner != null)
-                        for (int i=0; i<adapterBanner.getCount(); i++)
-                            currentSelectedApps.add(((ApplicationInfo) adapterBanner.getItem(i)).packageName);
+                    final AppsAdapter adapter = getAppAdapter();
+                    if (adapter != null)
+                        for (int i=0; i<adapter.getItemCount(); i++)
+                            currentSelectedApps.add(adapter.getItem(i).packageName);
                     selectionHintText.setText(R.string.selection_hint_all);
                 } else {
                     currentSelectedApps.clear();
@@ -156,7 +165,7 @@ public class LauncherActivityEditable extends LauncherActivity {
 
         // If the new group button was selected, create and select a new group
         if (position >= groupsSorted.size()) {
-            final String newName = settingsManager.addGroup();
+            final String ignored = settingsManager.addGroup();
             super.clickGroup(position-1); //Auto-move selection and select new group
             refreshInterface();
             postDelayed(() -> clickGroup(position-1), 500); //Auto-move selection
@@ -226,6 +235,7 @@ public class LauncherActivityEditable extends LauncherActivity {
     @Override
     public void refreshAppDisplayLists() {
         super.refreshAppDisplayLists();
+        super.refreshInterface();
 
         Set<String> webApps = sharedPreferences.getStringSet(Settings.KEY_WEBSITE_LIST, new HashSet<>());
         Set<String> packages = getAllPackages();
