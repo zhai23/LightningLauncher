@@ -3,9 +3,7 @@ package com.threethan.launcher.launcher;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
-import android.os.Build;
 
 import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
@@ -13,7 +11,6 @@ import com.threethan.launcher.lib.ImageLib;
 import com.threethan.launcher.support.SettingsManager;
 
 import java.io.File;
-import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -39,13 +36,9 @@ class WallpaperExecutor {
                 // Create a cropped image asset for the window background
                 Bitmap imageBitmap = BitmapFactory.decodeResource(owner.getResources(), SettingsManager.BACKGROUND_DRAWABLES[background]);
 
-                float aspectScreen = 1;
-
-                Point point = new Point();
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    Objects.requireNonNull(owner.getDisplay()).getRealSize(point);
-                    aspectScreen = point.x / (float) point.y;
-                }
+                int heightPixels = Resources.getSystem().getDisplayMetrics().heightPixels;
+                int widthPixels  = Resources.getSystem().getDisplayMetrics().widthPixels ;
+                float aspectScreen = widthPixels / (float) heightPixels;
 
                 float aspectImage  = imageBitmap.getWidth() / (float) imageBitmap.getHeight();
                 int cropWidth = imageBitmap.getWidth();

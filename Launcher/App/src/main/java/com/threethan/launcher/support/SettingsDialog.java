@@ -106,10 +106,6 @@ public abstract class SettingsDialog {
             a.clearAdapterCaches();
             a.refreshInterfaceAll();
         });
-        Switch hueShift = dialog.findViewById(R.id.hueShiftSwitch);
-        hueShift.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_BACKGROUND_OVERLAY,
-                Platform.isTv(a) ? Settings.DEFAULT_BACKGROUND_OVERLAY_TV : Settings.DEFAULT_BACKGROUND_OVERLAY_VR));
-        hueShift.setOnCheckedChangeListener((compoundButton, value) -> a.setBackgroundOverlay(value));
         ImageView[] views = {
                 dialog.findViewById(R.id.background0),
                 dialog.findViewById(R.id.background1),
@@ -171,8 +167,6 @@ public abstract class SettingsDialog {
                 a.setBackground(index);
                 if (index != views.length-1) {
                     dark.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE));
-                    hueShift.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_BACKGROUND_OVERLAY,
-                            Platform.isTv(a) ? Settings.DEFAULT_BACKGROUND_OVERLAY_TV : Settings.DEFAULT_BACKGROUND_OVERLAY_VR));
                 }
             });
         }

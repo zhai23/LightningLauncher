@@ -13,7 +13,6 @@ import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -39,7 +38,6 @@ import com.threethan.launcher.adapter.GroupsAdapter;
 import com.threethan.launcher.helper.AppData;
 import com.threethan.launcher.helper.Compat;
 import com.threethan.launcher.helper.Dialog;
-import com.threethan.launcher.helper.Icon;
 import com.threethan.launcher.helper.IconRepo;
 import com.threethan.launcher.helper.Keyboard;
 import com.threethan.launcher.helper.Platform;
@@ -216,12 +214,6 @@ public class LauncherActivity extends Activity {
         settingsImageView.setOnClickListener(view -> {
             if (!settingsVisible) SettingsDialog.showSettings(this);
         });
-        if (sharedPreferences.getBoolean(Settings.KEY_BACKGROUND_OVERLAY,
-                Platform.isTv(this) ? Settings.DEFAULT_BACKGROUND_OVERLAY_TV
-                                            : Settings.DEFAULT_BACKGROUND_OVERLAY_VR))
-            startBackgroundOverlay();
-
-        Icon.init(this);
     }
     protected void onLayoutChaged(View v, int left, int top, int right, int bottom,
                                   int oldLeft, int oldTop, int oldRight, int oldBottom) {
@@ -702,18 +694,4 @@ public class LauncherActivity extends Activity {
     public boolean canEdit() { return false; }
     public void addWebsite(Context context) {}
     protected boolean getSearching() { return false; }
-    // Wallpaper Animated Gradient Overlay
-    protected void startBackgroundOverlay() {
-        findViewById(R.id.overlayGradient).setVisibility(View.VISIBLE);
-        final View gradView = findViewById(R.id.overlayGradient);
-        AnimationDrawable anim = ((AnimationDrawable) gradView.getBackground());
-        anim.setExitFadeDuration(15000);
-        anim.setEnterFadeDuration(10);
-        anim.start();
-    }
-    public void setBackgroundOverlay(boolean val) {
-        sharedPreferenceEditor.putBoolean(Settings.KEY_BACKGROUND_OVERLAY, val).apply();
-        if (val) startBackgroundOverlay();
-        else findViewById(R.id.overlayGradient).setVisibility(View.GONE);
-    }
 }

@@ -108,11 +108,6 @@ public abstract class Settings {
     }
     public static final String DONT_DOWNLOAD_ICONS = "DONT_DOWNLOAD_ICONS";
 
-    // extra pizzazz
-    public static final String KEY_BACKGROUND_OVERLAY = "KEY_BACKGROUND_OVERLAY";
-    public static final boolean DEFAULT_BACKGROUND_OVERLAY_VR = false;
-    public static final boolean DEFAULT_BACKGROUND_OVERLAY_TV = true;
-
     // show names by display type
     public static final String KEY_SHOW_NAMES_SQUARE = "KEY_CUSTOM_NAMES";
     public static final String KEY_SHOW_NAMES_BANNER = "KEY_CUSTOM_NAMES_WIDE";
