@@ -78,9 +78,7 @@
             android:configChanges="density|keyboard|keyboardHidden|navigation|orientation|screenLayout|screenSize|uiMode"
             android:windowSoftInputMode="adjustNothing"
             android:exported="true"
-            android:launchMode="singleInstance"
-            android:clearTaskOnLaunch="true"
-            android:resizeableActivity="true">
+            android:launchMode="singleTask">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

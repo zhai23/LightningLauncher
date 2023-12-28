@@ -33,7 +33,7 @@
     <string name="background_header">Wallpaper &amp; Style</string>
     <string name="icon_header">Icons &amp; Layout</string>
     <string name="wide_header">Display as Banner</string>
-    <string name="name_header">Show Names</string>
+    <string name="name_header">Always Show Names</string>
     <string name="advanced_header">Advanced Settings</string>
     <string name="advanced_button">Open Advanced Settings for More Options</string>
     <string name="advanced_interface">Interface Options</string>

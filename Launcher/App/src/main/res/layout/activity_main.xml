@@ -19,6 +19,7 @@
         android:id="@+id/apps"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:scrollbars="none"
         android:alpha="0" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -81,23 +82,16 @@
             tools:layout_conversion_absoluteHeight="32dp"
             tools:layout_conversion_absoluteWidth="263dp">
 
-            <GridView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/groupsView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:descendantFocusability="afterDescendants"
-                android:divider="#00000000"
-                android:dividerHeight="0dp"
                 android:focusable="false"
                 android:layerType="hardware"
                 android:minWidth="100dp"
                 android:padding="0dp"
-                android:stretchMode="columnWidth"
-                android:visibility="gone"
-                tools:layout_conversion_absoluteHeight="0dp"
-                tools:layout_conversion_absoluteWidth="0dp"
-                tools:layout_editor_absoluteX="22dp"
-                tools:layout_editor_absoluteY="22dp" />
+                android:visibility="gone" />
 
         </eightbitlab.com.blurview.BlurView>
 

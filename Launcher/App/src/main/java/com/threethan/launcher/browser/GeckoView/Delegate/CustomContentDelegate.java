@@ -51,6 +51,7 @@ public class CustomContentDelegate implements GeckoSession.ContentDelegate {
         DownloadManager manager = (DownloadManager) mActivity.getSystemService(DOWNLOAD_SERVICE);
 
         mActivity.registerReceiver(mActivity.wService.onDownloadComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+
         final long id = manager.enqueue(request);
         BrowserService.downloadFilenameById.put(id, filename);
         BrowserService.downloadActivityById.put(id, mActivity);

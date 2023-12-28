@@ -1,5 +1,6 @@
 package com.threethan.launcher.helper;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -264,5 +265,10 @@ public abstract class Compat {
         launcherActivity.reloadPackages();
         launcherActivity.refreshInterfaceAll();
         SettingsManager.readValues();
+    }
+    // Get default shared preferences without deprecated methods
+    public static SharedPreferences getSharedPreferences(Context context) {
+            return context.getSharedPreferences(
+                    context.getPackageName() + "_preferences", Context.MODE_PRIVATE);
     }
 }

@@ -9,7 +9,6 @@ import android.content.pm.ApplicationInfo;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -18,6 +17,7 @@ import android.widget.TextView;
 
 import com.threethan.launcher.R;
 import com.threethan.launcher.browser.GeckoView.BrowserWebView;
+import com.threethan.launcher.helper.Compat;
 import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.helper.Keyboard;
 import com.threethan.launcher.helper.Platform;
@@ -61,8 +61,7 @@ public class BrowserActivity extends Activity {
         setContentView(R.layout.activity_browser);
         getWindow().setStatusBarColor(Color.parseColor("#11181f"));
 
-        //noinspection deprecation
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        sharedPreferences = Compat.getSharedPreferences(this);
 
         background = findViewById(R.id.container);
         loading = findViewById(R.id.loading);

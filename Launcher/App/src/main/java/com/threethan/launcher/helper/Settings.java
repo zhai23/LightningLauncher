@@ -49,7 +49,7 @@ public abstract class Settings {
             Color.parseColor("#74575c"),
             Color.parseColor("#202a36"),
             Color.parseColor("#c6d1df"),
-            Color.parseColor("#412d4e"),
+            Color.parseColor("#140123"),
     };
     public static final boolean[] BACKGROUND_DARK = {
             true,
@@ -117,7 +117,7 @@ public abstract class Settings {
     public static final String KEY_SHOW_NAMES_SQUARE = "KEY_CUSTOM_NAMES";
     public static final String KEY_SHOW_NAMES_BANNER = "KEY_CUSTOM_NAMES_WIDE";
     public static final boolean DEFAULT_SHOW_NAMES_SQUARE = true;
-    public static final boolean DEFAULT_SHOW_NAMES_BANNER = true;
+    public static final boolean DEFAULT_SHOW_NAMES_BANNER = false;
 
     public static final String KEY_GROUPS = "prefAppGroups";
     public static final String KEY_GROUP_APP_LIST = "prefAppList";

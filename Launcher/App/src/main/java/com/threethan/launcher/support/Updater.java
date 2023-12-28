@@ -15,7 +15,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.ServiceInfo;
 import android.net.Uri;
 import android.os.Build;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.accessibility.AccessibilityManager;
 
@@ -29,6 +28,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.threethan.launcher.R;
+import com.threethan.launcher.helper.Compat;
 import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.launcher.LauncherActivity;
 import com.threethan.launcher.lib.FileLib;
@@ -217,12 +217,10 @@ public class Updater {
         } catch (Exception ignored) {}
     }
     private SharedPreferences getSharedPreferences() {
-        // noinspection deprecation
-        return PreferenceManager.getDefaultSharedPreferences(activity);
+        return Compat.getSharedPreferences(activity);
     }
     public static boolean isMainUpdateAvailable(Context context) {
-        //noinspection deprecation
-        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean(KEY_UPDATE_AVAILABLE, false);
+        return Compat.getSharedPreferences(context).getBoolean(KEY_UPDATE_AVAILABLE, false);
     }
     public void skipUpdate(String versionTag) {
         AlertDialog.Builder skipDialogBuilder = new AlertDialog.Builder(activity, android.R.style.Theme_DeviceDefault_Dialog_Alert);

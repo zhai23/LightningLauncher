@@ -305,6 +305,10 @@ public class SettingsManager extends Settings {
         else writeValues();
     }
     private static void queueStoreValuesStatic() {
+        if (anyLauncherActivityRef == null) {
+            Log.w("SettingsManager", "queueValues called too soon");
+            return;
+        }
         if (anyLauncherActivityRef.get() != null && anyLauncherActivityRef.get().mainView != null) {
             anyLauncherActivityRef.get().post(SettingsManager::writeValues);
         }

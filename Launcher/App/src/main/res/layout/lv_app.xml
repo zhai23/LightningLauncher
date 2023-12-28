@@ -5,6 +5,7 @@
     android:id="@+id/layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_gravity="top"
     android:descendantFocusability="blocksDescendants"
     android:focusable="true"
     android:gravity="center"
@@ -17,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:background="@drawable/bkg_app"
-        android:elevation="4dp"
+        android:elevation="3dp"
         android:focusable="false"
         android:focusableInTouchMode="false">
 
@@ -78,13 +79,17 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
+        android:id="@+id/textSpacer"
+        android:layout_width="match_parent"
+        android:layout_height="10dp" />
+
+    <TextView
         android:id="@+id/textLabel"
         android:layout_width="match_parent"
         android:layout_height="35sp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="-23dp"
+        android:layout_marginTop="-35dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="3dp"
         android:elevation="100dp"
         android:ellipsize="end"
         android:focusable="false"
@@ -95,5 +100,11 @@
         android:singleLine="false"
         android:textColor="@android:color/white"
         android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/bumpSpacer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
 </LinearLayout>

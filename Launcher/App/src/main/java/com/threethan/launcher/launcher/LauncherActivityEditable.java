@@ -5,9 +5,9 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.preference.PreferenceManager;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,6 +22,7 @@ import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.lib.StringLib;
+import com.threethan.launcher.support.SafeSharedPreferenceEditor;
 import com.threethan.launcher.support.SettingsDialog;
 import com.threethan.launcher.support.SettingsManager;
 
@@ -32,7 +33,6 @@ import java.util.List;
 import java.util.Set;
 
 import eightbitlab.com.blurview.BlurView;
-import eightbitlab.com.blurview.RenderScriptBlur;
 
 /*
     LauncherActivityEditable
@@ -86,6 +86,14 @@ public class LauncherActivityEditable extends LauncherActivity {
 
     @Override
     protected void refreshInternal() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            sharedPreferences = getSharedPreferences(PreferenceManager.getDefaultSharedPreferencesName(this),
+                    Context.MODE_PRIVATE);
+        } else {
+            sharedPreferences = this.getSharedPreferences( getPackageName() + "_preferences", Context.MODE_PRIVATE);
+        }
+        sharedPreferenceEditor = new SafeSharedPreferenceEditor(sharedPreferences.edit());
+
         if (editMode == null) editMode = sharedPreferences.getBoolean(Settings.KEY_EDIT_MODE, false);
 
         super.refreshInternal();
@@ -344,20 +352,9 @@ public class LauncherActivityEditable extends LauncherActivity {
         BlurView blurViewE = rootView.findViewById(R.id.editFooter);
         blurViewE.setOverlayColor(Color.parseColor(darkMode ? "#2A000000" : "#45FFFFFF"));
 
-        float blurRadiusDp = 25f;
+        setupBlurView(blurViewE);
 
-        View windowDecorView = getWindow().getDecorView();
-        ViewGroup rootViewGroup = (ViewGroup) windowDecorView;
-
-        Drawable windowBackground = windowDecorView.getBackground();
-        //noinspection deprecation
-        blurViewE.setupWith(rootViewGroup, new RenderScriptBlur(getApplicationContext())) // or RenderEffectBlur
-                .setFrameClearDrawable(windowBackground) // Optional
-                .setBlurRadius(blurRadiusDp);
-
-        // Update then deactivate bv
         blurViewE.setActivated(false);
         blurViewE.setActivated(true);
-        blurViewE.setActivated(false);
     }
 }

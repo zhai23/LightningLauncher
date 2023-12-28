@@ -16,16 +16,15 @@ import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
 import android.widget.FrameLayout;
-import android.widget.GridView;
 import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
@@ -62,6 +61,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import eightbitlab.com.blurview.BlurView;
+import eightbitlab.com.blurview.RenderEffectBlur;
 import eightbitlab.com.blurview.RenderScriptBlur;
 
 /*
@@ -75,14 +75,13 @@ import eightbitlab.com.blurview.RenderScriptBlur;
     It contains functions for initializing, refreshing, and updating various parts of the interface.
  */
 
-/** @noinspection deprecation*/
 public class LauncherActivity extends Activity {
     public boolean darkMode = true;
     public boolean groupsEnabled = true;
     RecyclerView appsView;
     public ApplicationInfo currentTopSearchResult = null;
     public Set<String> clearFocusPackageNames = new HashSet<>();
-    GridView groupGridView;
+    RecyclerView groupsView;
     public SharedPreferences sharedPreferences;
     public SafeSharedPreferenceEditor sharedPreferenceEditor;
     public View mainView;
@@ -100,26 +99,37 @@ public class LauncherActivity extends Activity {
     public static boolean namesSquare;
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        isKillable = false;
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_container);
 
-        // Bind to Launcher Service
+        sharedPreferences = Compat.getSharedPreferences(this);
+
         Intent intent = new Intent(this, LauncherService.class);
         bindService(intent, launcherServiceConnection, Context.BIND_AUTO_CREATE);
 
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-
         int background = sharedPreferences.getInt(Settings.KEY_BACKGROUND,
-                Platform.isTv(this)
-                        ? Settings.DEFAULT_BACKGROUND_TV
-                        : Settings.DEFAULT_BACKGROUND_VR);
+        Platform.isTv(this)
+            ? Settings.DEFAULT_BACKGROUND_TV
+            : Settings.DEFAULT_BACKGROUND_VR);
         boolean custom = background < 0 || background >= SettingsManager.BACKGROUND_COLORS.length;
         int backgroundColor = custom ? Color.parseColor("#404044") : SettingsManager.BACKGROUND_COLORS[background];
         int alpha = sharedPreferences.getInt(Settings.KEY_BACKGROUND_ALPHA, Settings.DEFAULT_ALPHA);
         Drawable cd = new ColorDrawable(backgroundColor);
         if (alpha < 255) cd.setAlpha(alpha);
-        getWindow().setBackgroundDrawable(cd);
+        post(() -> getWindow().setBackgroundDrawable(cd));
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        // Bind to Launcher Service
+
+
+
+
+        isKillable = false;
     }
 
     @Override
@@ -127,15 +137,7 @@ public class LauncherActivity extends Activity {
         isKillable = true;
         super.onStop();
     }
-
-    @SuppressLint("UnspecifiedRegisterReceiverFlag") // Can't be fixed on this android API
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_container);
-    }
     public View rootView;
-
 
     private void onBound() {
         hasBound = true;
@@ -207,7 +209,7 @@ public class LauncherActivity extends Activity {
         mainView = rootView.findViewById(R.id.mainLayout);
         mainView.addOnLayoutChangeListener(this::onLayoutChaged);
         appsView = rootView.findViewById(R.id.apps);
-        groupGridView = rootView.findViewById(R.id.groupsView);
+        groupsView = rootView.findViewById(R.id.groupsView);
 
         // Set logo button
         ImageView settingsImageView = rootView.findViewById(R.id.settingsIcon);
@@ -320,7 +322,7 @@ public class LauncherActivity extends Activity {
         int myPlatformChangeIndex = 0;
         if (Platform.changeIndex > myPlatformChangeIndex) reloadPackages();
         else try {
-            new RecheckPackagesTask().execute(this);
+            new RecheckPackagesExecutor().execute(this);
         } catch (Exception ignore) {
             reloadPackages();
             Log.w("LightningLauncher", "Exception while starting recheck package task");
@@ -373,41 +375,40 @@ public class LauncherActivity extends Activity {
         if (isEditing() && hide) setEditMode(false); // If groups were disabled while in edit mode
 
         if (groupsEnabled || Platform.isTv(this)) {
-            float blurRadiusDp = 15f;
+            for (BlurView blurView : (groupsEnabled
+                    ? blurViews
+                    : new BlurView[]{rootView.findViewById(R.id.blurViewSearchBar)})
+            ) {
+                blurView.setBackgroundTintList(ColorStateList.valueOf(Color.TRANSPARENT));
+                blurView.setOverlayColor((Color.parseColor(darkMode ? "#29000000" : "#40FFFFFF")));
+                setupBlurView(blurView);
 
-            View windowDecorView = getWindow().getDecorView();
-            ViewGroup rootViewGroup = (ViewGroup) windowDecorView;
-            Drawable windowBackground = windowDecorView.getBackground();
+                blurView.setOutlineProvider(ViewOutlineProvider.BACKGROUND);
+                blurView.setClipToOutline(true);
+            }
 
             if (groupsEnabled) {
-                for (BlurView blurView : blurViews) {
-                    blurView.setBackgroundTintList(ColorStateList.valueOf(Color.TRANSPARENT));
-                    blurView.setOverlayColor((Color.parseColor(darkMode ? "#29000000" : "#40FFFFFF")));
-                    blurView.setupWith(rootViewGroup, new RenderScriptBlur(getApplicationContext())) // or RenderEffectBlur
-                            .setFrameClearDrawable(windowBackground) // Optional
-                            .setBlurRadius(blurRadiusDp);
-                    blurView.setOutlineProvider(ViewOutlineProvider.BACKGROUND);
-                    blurView.setClipToOutline(true);
-                }
-
                 ImageView settingsIcon = rootView.findViewById(R.id.settingsIcon);
                 settingsIcon.setImageTintList(ColorStateList.valueOf(darkMode ? Color.WHITE : Color.BLACK));
                 ImageView searchIcon = rootView.findViewById(R.id.searchIcon);
                 searchIcon.setImageTintList(ColorStateList.valueOf(darkMode ? Color.WHITE : Color.BLACK));
-            } else {
-                // Init blur on only search bar for remote-exclusive search shortcut
-                @SuppressLint("CutPasteId") BlurView blurView = rootView.findViewById(R.id.blurViewSearchBar);
-                blurView.setBackgroundTintList(ColorStateList.valueOf(Color.TRANSPARENT));
-                blurView.setOverlayColor((Color.parseColor(darkMode ? "#29000000" : "#40FFFFFF")));
-                blurView.setupWith(rootViewGroup, new RenderScriptBlur(getApplicationContext())) // or RenderEffectBlur
-                        .setFrameClearDrawable(windowBackground) // Optional
-                        .setBlurRadius(blurRadiusDp);
-                blurView.setOutlineProvider(ViewOutlineProvider.BACKGROUND);
-                blurView.setClipToOutline(true);
             }
         }
 
         post(this::postRefresh);
+    }
+    protected void setupBlurView(BlurView blurView) {
+        View windowDecorView = getWindow().getDecorView();
+        ViewGroup rootViewGroup = (ViewGroup) windowDecorView;
+        Drawable windowBackground = windowDecorView.getBackground();
+
+        //noinspection deprecation
+        blurView.setupWith(rootViewGroup,
+                        Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+                                ? new RenderEffectBlur()
+                                : new RenderScriptBlur(this))
+                .setFrameClearDrawable(windowBackground) // Optional
+                .setBlurRadius(15f);
     }
     protected void postRefresh(){
         com.threethan.launcher.browser.BrowserService.bind(this, browserServiceConnection, false);
@@ -437,8 +438,8 @@ public class LauncherActivity extends Activity {
         if (sharedPreferenceEditor != null) sharedPreferenceEditor.apply();
         try {
             post(this::refreshInternal);
-        } catch (Exception ignored) {
-            Log.w(TAG, "Failed to post refreshInternal. Called by something else?");
+        } catch (Exception e) {
+            Log.w(TAG, "Failed to post refreshInternal. Called too soon?");
         }
     }
     protected void refreshInternal() {
@@ -459,7 +460,7 @@ public class LauncherActivity extends Activity {
     public void refreshAdapters() {
         updatePadding();
 
-        final int margin = sharedPreferences.getInt(Settings.KEY_MARGIN, Settings.DEFAULT_MARGIN);
+        final int margin = sharedPreferences.getInt(Settings.KEY_MARGIN, Settings.DEFAULT_MARGIN) + 11;
 
         namesSquare = sharedPreferences.getBoolean(Settings.KEY_SHOW_NAMES_SQUARE, Settings.DEFAULT_SHOW_NAMES_SQUARE);
         namesBanner = sharedPreferences.getBoolean(Settings.KEY_SHOW_NAMES_BANNER, Settings.DEFAULT_SHOW_NAMES_BANNER);
@@ -472,7 +473,7 @@ public class LauncherActivity extends Activity {
         marginDecoration = new MarginDecoration(m);
         appsView.addItemDecoration(marginDecoration);
 
-        groupGridView.setAdapter(new GroupsAdapter(this, isEditing()));
+        groupsView.setAdapter(new GroupsAdapter(this, isEditing()));
 
         prevViewWidth = -1;
         updateGridViews();
@@ -504,26 +505,27 @@ public class LauncherActivity extends Activity {
 
         // Group rows and relevant values
         if (getAdapterGroups() != null && groupsEnabled) {
+            if (prevViewWidth < 1) return;
             final int group_columns =
                     Math.min(getAdapterGroups().getCount(), prevViewWidth / dp(Settings.GROUP_WIDTH_DP));
-            groupGridView.setNumColumns(group_columns);
+            groupsView.setLayoutManager(new GridLayoutManager(this, Math.max(1,group_columns)));
             final int groupRows = (int) Math.ceil((double) getAdapterGroups().getCount() / group_columns);
             groupHeight = dp(40) * groupRows;
 
             if (groupHeight > mainView.getMeasuredHeight() / 3) {
                 // Scroll groups if more than 1/3 the screen
                 groupHeight = mainView.getMeasuredHeight() / 3;
-                groupGridView.setLayoutParams(new FrameLayout.LayoutParams
+                groupsView.setLayoutParams(new FrameLayout.LayoutParams
                         (ViewGroup.LayoutParams.MATCH_PARENT,groupHeight));
             } else {
                 // Otherwise don't
-                groupGridView.setLayoutParams(new FrameLayout.LayoutParams
+                groupsView.setLayoutParams(new FrameLayout.LayoutParams
                         (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             }
         }
         updatePadding();
 
-        int targetSize = dp(sharedPreferences.getInt(Settings.KEY_SCALE, Settings.DEFAULT_SCALE)) / 2;
+        int targetSize = dp(sharedPreferences.getInt(Settings.KEY_SCALE, Settings.DEFAULT_SCALE));
         int estimatedWidth = prevViewWidth;
 
         final int nCol = estimatedWidth/(targetSize*2) * 2; // To nearest 2
@@ -538,7 +540,7 @@ public class LauncherActivity extends Activity {
         });
         appsView.setLayoutManager(gridLayoutManager);
 
-        groupGridView.post(() -> groupGridView.setVisibility(View.VISIBLE));
+        groupsView.post(() -> groupsView.setVisibility(View.VISIBLE));
     }
 
 
@@ -550,7 +552,7 @@ public class LauncherActivity extends Activity {
     protected void updatePadding() {
         final int margin = 22+ sharedPreferences.getInt(Settings.KEY_MARGIN, Settings.DEFAULT_MARGIN);
         final boolean groupsVisible = getAdapterGroups() != null && groupsEnabled && !getSearching();
-        final int topAdd = groupsVisible ? dp(23) + 22 + groupHeight : 0;
+        final int topAdd = groupsVisible ? dp(23) + 22 + groupHeight : dp(23);
         final int bottomAdd = groupsVisible ? getBottomBarHeight() : margin/2+getBottomBarHeight();
 
         appsView.setClipToPadding(false);
@@ -633,7 +635,8 @@ public class LauncherActivity extends Activity {
         return (AppsAdapter) appsView.getAdapter();
     }
     public @Nullable GroupsAdapter getAdapterGroups() {
-        return (GroupsAdapter) groupGridView.getAdapter();
+        if (groupsView == null) return null;
+        return (GroupsAdapter) groupsView.getAdapter();
     }
 
     public HashSet<String> getAllPackages() {

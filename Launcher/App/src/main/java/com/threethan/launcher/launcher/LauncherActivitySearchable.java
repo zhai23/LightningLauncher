@@ -5,11 +5,9 @@ import android.animation.ValueAnimator;
 import android.content.pm.ApplicationInfo;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -22,7 +20,6 @@ import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.view.EditTextWatched;
 
 import eightbitlab.com.blurview.BlurView;
-import eightbitlab.com.blurview.RenderScriptBlur;
 
 /*
     LauncherActivitySearchable
@@ -70,22 +67,7 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
 
             searchBar.setOverlayColor(Color.parseColor(darkMode ? "#4A000000" : "#50FFFFFF"));
 
-            float blurRadiusDp = 15f;
             searchBar.setClipToOutline(true);
-
-            View windowDecorView = getWindow().getDecorView();
-            ViewGroup rootViewGroup = (ViewGroup) windowDecorView;
-
-            Drawable windowBackground = windowDecorView.getBackground();
-            //noinspection deprecation
-            searchBar.setupWith(rootViewGroup, new RenderScriptBlur(getApplicationContext())) // or RenderEffectBlur
-                    .setFrameClearDrawable(windowBackground) // Optional
-                    .setBlurRadius(blurRadiusDp);
-
-            // Update then deactivate bv
-            searchBar.setActivated(false);
-            searchBar.setActivated(true);
-            searchBar.setActivated(false);
 
             rootView.findViewById(R.id.blurViewSearchBar).setVisibility(View.VISIBLE);
 
@@ -101,7 +83,7 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
             viewAnimator.setInterpolator(new DecelerateInterpolator());
             viewAnimator.addUpdateListener(animation -> {
                 FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) searchBar.getLayoutParams();
-                lp.setMargins((int) animation.getAnimatedValue() + dp(24), 0, (int) animation.getAnimatedValue() + dp(25), 0);
+                lp.setMargins((int) animation.getAnimatedValue() + dp(25), 0, (int) animation.getAnimatedValue() + dp(25), 0);
                 searchBar.setLayoutParams(lp);
                 searchBar.requestLayout();
             });
@@ -116,7 +98,7 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
 
 
 //            if (groupsEnabled) updatePadding();
-            ValueAnimator padAnimator = ValueAnimator.ofInt(appsView.getPaddingTop(), dp(64));
+            ValueAnimator padAnimator = ValueAnimator.ofInt(appsView.getPaddingTop(), dp(66));
             padAnimator.setDuration(200);
             padAnimator.setInterpolator(new DecelerateInterpolator());
             padAnimator.addUpdateListener(animation -> {
@@ -154,15 +136,6 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
             topBar.setVisibility(View.VISIBLE);
             refreshAdapters();
 
-//            View scrollInterior = findViewById(R.id.mainScrollInterior);
-//            ValueAnimator padAnimator = ValueAnimator.ofInt(scrollInterior.getPaddingTop(), 0);
-//            padAnimator.setDuration(groupsEnabled ? 0 : 300);
-//            padAnimator.setInterpolator(new DecelerateInterpolator());
-//            padAnimator.addUpdateListener(animation ->
-//                    scrollInterior.setPadding(0, (Integer) animation.getAnimatedValue(), 0,0));
-//
-//            padAnimator.start();
-
         } catch (NullPointerException ignored) {}
         clearTopSearchResult();
 
@@ -177,9 +150,6 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
             topBar.setVisibility(!searching ? View.VISIBLE : View.GONE);
             searchBar.setAlpha(searching ? 1F : 0F);
             topBar.post(() -> topBar.setAlpha(1F)); // Prevent flicker on start
-//            View scrollInterior = findViewById(R.id.mainScrollInterior);
-//            scrollInterior.setPadding(0, searching ? dp(64):0, 0, 0);
-//            scrollInterior.post(this::resetScroll);
         } catch (NullPointerException ignored) {}
     }
 
@@ -279,7 +249,7 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
             post(this::postRefresh);
             return;
         }
-//        searchShortcutView.setFocusable(true);
+        searchShortcutView.setFocusable(!groupsEnabled);
         // Secret focusable element off the top of the screen to allow search on android tv by pressing up
         searchShortcutView.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus && !searching) showSearchBar();

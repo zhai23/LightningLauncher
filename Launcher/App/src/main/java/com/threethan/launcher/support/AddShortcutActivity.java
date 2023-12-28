@@ -8,7 +8,6 @@ import android.content.pm.ShortcutInfo;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -20,6 +19,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import com.threethan.launcher.helper.Compat;
 import com.threethan.launcher.helper.Icon;
 import com.threethan.launcher.helper.Platform;
 
@@ -66,8 +66,7 @@ public class AddShortcutActivity extends Activity {
         }
 
         String json = getFixedGsonWriter().toJson(shortcutInfo);
-        //noinspection deprecation
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        SharedPreferences sharedPreferences = Compat.getSharedPreferences(this);
         String url = Platform.addWebsite(sharedPreferences, json, label);
         Icon.saveIconDrawableExternal(this, iconDrawable, url);
         this.finish();

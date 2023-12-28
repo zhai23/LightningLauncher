@@ -72,7 +72,6 @@ public class LauncherService extends Service {
         return viewByIndex.containsKey(getNewActivityIndex());
     }
     protected int getNewActivityIndex() {
-        if (Platform.isTv()) return 0; // Always return 0 on ATV
         int i = 0;
         while(activityByIndex.containsValue(i)) i++;
         return i;
@@ -114,6 +113,7 @@ public class LauncherService extends Service {
     // Clear the views & finish the activities of any activities which are currently inactive
     // This will force any applicable activities to be restarted with brand new views
     private void clearViewsWithoutActiveActivities() {
+        if (Platform.isTv()) return;
         for (int index: viewByIndex.keySet())
             if (!activityByIndex.containsValue(index)) {
                 viewByIndex.remove(index);
@@ -121,7 +121,7 @@ public class LauncherService extends Service {
             } else {
                 LauncherActivity activity = keyByValue(activityByIndex, index);
                 if (activity == null) continue;
-                if (activity.isKillable) activity.finish();
+                if (activity.isKillable) activity.finishAndRemoveTask();
             }
     }
     /** @noinspection SameParameterValue*/

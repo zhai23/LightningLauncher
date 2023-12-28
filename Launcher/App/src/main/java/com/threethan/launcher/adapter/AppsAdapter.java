@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -116,6 +117,8 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.AppViewHolder>
         ImageView imageViewSquare;
         ImageView imageViewBanner;
         View clip;
+        View textSpacer;
+        View bumpSpacer;
         TextView textView;
         Button moreButton;
         Button killButton;
@@ -139,9 +142,12 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.AppViewHolder>
         holder.imageViewSquare = itemView.findViewById(R.id.imageLabelSquare);
         holder.imageViewBanner = itemView.findViewById(R.id.imageLabelBanner);
         holder.clip = itemView.findViewById(R.id.clip);
+        holder.textSpacer = itemView.findViewById(R.id.textSpacer);
+        holder.bumpSpacer = itemView.findViewById(R.id.bumpSpacer);
         holder.textView = itemView.findViewById(R.id.textLabel);
         holder.moreButton = itemView.findViewById(R.id.moreButton);
         holder.killButton = itemView.findViewById(R.id.killButton);
+        if (Platform.isTv()) holder.clip.setBackgroundResource(R.drawable.bkg_app_atv);
 
         setActions(holder);
 
@@ -214,17 +220,26 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.AppViewHolder>
         holder.imageViewBanner.setVisibility(banner ? View.VISIBLE : View.GONE);
         holder.imageView = banner ? holder.imageViewBanner : holder.imageViewSquare;
 
+        holder.textView.setText(SettingsManager.getAppLabel(app));
+        holder.textView.setTextColor(Color.parseColor(launcherActivity.darkMode ? "#FFFFFF" : "#000000"));
+        holder.textView.setShadowLayer(6, 0, 0, Color.parseColor(launcherActivity.darkMode ? "#000000" : "#FFFFFF"));
 
+        holder.textSpacer.setVisibility(!banner && LauncherActivity.namesSquare ? View.VISIBLE : View.GONE);
 
         // set value into textview
         if (banner && LauncherActivity.namesBanner || !banner && LauncherActivity.namesSquare) {
-            String name = SettingsManager.getAppLabel(app);
             holder.textView.setVisibility(View.VISIBLE);
-            holder.textView.setText(name);
-            holder.textView.setTextColor(Color.parseColor(launcherActivity.darkMode ? "#FFFFFF" : "#000000"));
-            holder.textView.setShadowLayer(6, 0, 0, Color.parseColor(launcherActivity.darkMode ? "#000000" : "#20FFFFFF"));
-        } else holder.textView.setVisibility(View.GONE);
-
+            holder.textSpacer.setVisibility(View.VISIBLE);
+            holder.bumpSpacer.setVisibility(View.VISIBLE);
+            holder.textView.setTranslationY(7);
+            holder.textView.setMaxLines(2);
+        } else {
+            holder.textView.setVisibility(View.GONE);
+            holder.textSpacer.setVisibility(View.GONE);
+            holder.bumpSpacer.setVisibility(View.GONE);
+            holder.textView.setTranslationY(18);
+            holder.textView.setMaxLines(1);
+        }
         holder.app = app;
 
         //Load Icon
@@ -232,7 +247,6 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.AppViewHolder>
         launcherActivity.runOnUiThread(() -> holder.imageView.setImageDrawable(appIcon));
 
         updateSelected(holder);
-
     }
 
     public void notifySelectionChange(String packageName) {
@@ -273,9 +287,12 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.AppViewHolder>
     public void updateHover(AppViewHolder holder, boolean hovered) {
         holder.killButton.setBackgroundResource(hovered ? R.drawable.ic_circ_running_kb : R.drawable.ic_running_ns);
 
-        final float newScaleInner = hovered ? 1.055f : 1.005f;
-        final float newScaleOuter = hovered ? 1.055f : 1.000f;
-        final float newElevation = hovered ? 15f : 4f;
+        final boolean tv = Platform.isTv(launcherActivity);
+        final float newScaleInner = hovered ? (tv ? 1.040f : 1.055f) : 1.005f;
+        final float newScaleOuter = hovered ? (tv ? 1.275f : 1.055f) : 1.000f;
+        final float newElevation = hovered ? (tv ? 10f : 15f) : 3f;
+
+
         ObjectAnimator aXi = ObjectAnimator.ofFloat(holder.imageView, "scaleX", newScaleInner);
         ObjectAnimator aXv = ObjectAnimator.ofFloat(holder.view, "scaleX", newScaleOuter);
         ObjectAnimator aYi = ObjectAnimator.ofFloat(holder.imageView, "scaleY", newScaleInner);
@@ -283,19 +300,30 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.AppViewHolder>
         ObjectAnimator aAm = ObjectAnimator.ofFloat(holder.moreButton, "alpha", hovered ? 1f : 0f);
         ObjectAnimator aAe = ObjectAnimator.ofFloat(holder.clip, "elevation", newElevation);
 
-        final ObjectAnimator[] animators = new ObjectAnimator[] {aXi, aXv, aYi, aYv, aAm, aAe};
-        for (ObjectAnimator animator:animators) animator.setInterpolator(new OvershootInterpolator());
-        for (ObjectAnimator animator:animators) animator.setDuration(250);
+        ObjectAnimator aTx = ObjectAnimator.ofFloat(holder.textView, "scaleX", 1-(1-(1/newScaleOuter))*0.7f);
+        ObjectAnimator aTy = ObjectAnimator.ofFloat(holder.textView, "scaleY", 1-(1-(1/newScaleOuter))*0.7f);
+
+        boolean banner = holder.imageView == holder.imageViewBanner;
+        if (banner && !LauncherActivity.namesBanner || !banner && !LauncherActivity.namesSquare)
+            holder.textView.setVisibility(hovered ? View.VISIBLE : View.GONE);
+
+        final ObjectAnimator[] animators = new ObjectAnimator[] {aXi, aXv, aYi, aYv, aAm, aAe, aTx, aTy};
+        for (ObjectAnimator animator:animators) animator.setInterpolator(
+                tv ? new DecelerateInterpolator() : new OvershootInterpolator());
+        for (ObjectAnimator animator:animators) animator.setDuration(tv ? 175 : 225);
         for (ObjectAnimator animator:animators) animator.start();
 
         // Force correct state, even if interrupted
-        holder.view.postDelayed(() -> {
-            holder.imageView.setScaleX(newScaleInner);
-            holder.imageView.setScaleY(newScaleInner);
-            holder.view.setScaleX(newScaleOuter);
-            holder.view.setScaleY(newScaleOuter);
-            holder.clip.setElevation(newElevation);
-        }, 250);
+        if (!hovered) {
+            holder.view.postDelayed(() -> {
+                holder.imageView.setScaleX(newScaleInner);
+                holder.imageView.setScaleY(newScaleInner);
+                holder.view.setScaleX(newScaleOuter);
+                holder.view.setScaleY(newScaleOuter);
+                holder.clip.setElevation(newElevation);
+            }, 250);
+        }
+        holder.view.setZ(hovered ? 2 : 1);
     }
     @Override
     public int getItemViewType(int position) {
@@ -313,16 +341,16 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.AppViewHolder>
         int h = clip.getHeight();
 
         View openAnim = launcherActivity.rootView.findViewById(R.id.openAnim);
-        openAnim.setX(l[0]);
-        openAnim.setY(l[1]);
+        openAnim.setX(l[0] + (Platform.isTv() ? 30 : 0));
+        openAnim.setY(l[1] + (Platform.isTv() ? 30 : 0));
         ViewGroup.LayoutParams layoutParams = new FrameLayout.LayoutParams(w, h);
         openAnim.setLayoutParams(layoutParams);
 
         openAnim.setVisibility(View.VISIBLE);
         openAnim.setAlpha(1F);
         openAnim.setClipToOutline(true);
-        openAnim.setScaleX(1.08F);
-        openAnim.setScaleY(1.08F);
+        openAnim.setScaleX(Platform.isTv() ? 1.40F : 1.08F);
+        openAnim.setScaleY(Platform.isTv() ? 1.40F : 1.08F);
 
         ImageView animIcon = openAnim.findViewById(R.id.openIcon);
         ImageView animIconBg = openAnim.findViewById(R.id.openIconBg);
