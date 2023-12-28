@@ -33,7 +33,7 @@ public class ChainLoadActivity extends Activity {
 
     @Override
     protected void onDestroy() {
-        activityList.remove(this);
+        if (isFinishing()) activityList.remove(this);
         super.onDestroy();
     }
 }

@@ -41,11 +41,12 @@ public class StringLib {
     }
     public static String toValidFilename(String string) {
         if (string.startsWith("json://")) // Hash json that would otherwise be too long
-            return  "shortcut-json-hash-"+String.valueOf(string.hashCode());
+            return  "shortcut-json-hash-" + string.hashCode();
 
         string = string.replace("/","").replace("&","")
                 .replace("=","").replace(":","");
-        return string.substring(0, Math.min(string.length()-1, 100));
+        if (string.length()>50) return string.substring(0, 10) + string.hashCode();
+        return string;
     }
     public static String toTitleCase(String string) {
         if (string == null) return null;

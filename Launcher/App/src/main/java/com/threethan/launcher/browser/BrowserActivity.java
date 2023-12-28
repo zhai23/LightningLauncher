@@ -262,7 +262,8 @@ public class BrowserActivity extends Activity {
     }
 
     @Override
-    protected void onDestroy() {
+    protected void
+    onDestroy() {
         if (isFinishing()) {
             // Don't keep search views in background
             if (isEphemeral())

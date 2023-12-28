@@ -77,6 +77,9 @@ public abstract class Platform {
         isTv = uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION;
         return isTv;
     }
+    public static boolean isTv() {
+        return isTv;
+    }
 
     // Get a list of valid app types depending on platform
     private static List<App.Type> cachedSupportedAppTypes;

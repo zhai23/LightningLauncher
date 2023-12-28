@@ -30,7 +30,7 @@ import java.util.Set;
 
 public abstract class Compat {
     public static final String KEY_COMPATIBILITY_VERSION = "KEY_COMPATIBILITY_VERSION";
-    public static final int CURRENT_COMPATIBILITY_VERSION = 9;
+    public static final int CURRENT_COMPATIBILITY_VERSION = 10;
     public static final boolean DEBUG_COMPATIBILITY = false;
     private static final String TAG = "Compatibility";
 
@@ -131,7 +131,7 @@ public abstract class Compat {
                         recheckSupported(launcherActivity);
                         break;
                     case (7):
-                        break; // This bump was to fix an issue with clearIconCache()
+                        clearIconCache(launcherActivity);
                     case (8):
                         // Clear old icon cache
                         for (File fromFile : Objects.requireNonNull(
@@ -141,6 +141,9 @@ public abstract class Compat {
                                 fromFile.delete();
                     case (9):
                         sharedPreferenceEditor.remove(Settings.KEY_EXCLUDED_SET+App.Type.TYPE_PANEL);
+                    case (10):
+                        clearIconCache(launcherActivity);
+                        clearIcons(launcherActivity);
                 }
             }
             Log.i(TAG, String.format("Settings Updated from v%s to v%s (Settings versions are not the same as app versions)",

@@ -4,8 +4,8 @@ android {
     defaultConfig {
         compileSdk 34
         minSdkVersion 23
-        versionCode 623
-        versionName "6.2.3"
+        versionCode 630
+        versionName "6.3.0"
         ndk {
             //noinspection ChromeOsAbiSupport
 //            abiFilters "arm64-v8a"
@@ -38,7 +38,6 @@ dependencies {
     implementation 'com.github.bkhezry:android-image-picker:1.4.0'
     implementation 'com.github.Dimezis:BlurView:version-2.0.4'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation "androidx.core:core:1.12.0"
     implementation 'com.android.volley:volley:1.2.1'
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation "org.mozilla.geckoview:geckoview:${geckoviewVersion}"

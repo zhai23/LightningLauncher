@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 
 import com.threethan.launcher.R;
 import com.threethan.launcher.browser.BrowserActivitySeparate;
+import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.launcher.chainload.ChainLoadActivity;
 
 import java.lang.ref.WeakReference;
@@ -71,11 +72,12 @@ public class LauncherService extends Service {
         return viewByIndex.containsKey(getNewActivityIndex());
     }
     protected int getNewActivityIndex() {
+        if (Platform.isTv()) return 0; // Always return 0 on ATV
         int i = 0;
         while(activityByIndex.containsValue(i)) i++;
         return i;
     }
-    public void destroyed(LauncherActivity activity) {
+    public void finished(LauncherActivity activity) {
         activityByIndex.remove(activity);
     }
 

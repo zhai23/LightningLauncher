@@ -1,17 +1,16 @@
 package com.threethan.launcher.helper;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
-import androidx.core.content.res.ResourcesCompat;
 
 import com.threethan.launcher.R;
 import com.threethan.launcher.launcher.LauncherActivity;
@@ -76,6 +75,7 @@ public abstract class Icon {
             Log.w("Icon", "Error when loading icon drawable from path "+iconFile.getAbsolutePath());
         }
     }
+    @SuppressLint("UseCompatLoadingForDrawables")
     @Nullable
     public static Drawable loadIcon(LauncherActivity activity, ApplicationInfo app, ImageView imageView) {
         // Try to load from memory
@@ -111,8 +111,7 @@ public abstract class Icon {
                 if (app.banner != 0 && App.isBanner(activity, app)) iconId = app.banner;
 
                 if (iconId == 0) iconId = android.R.drawable.sym_def_app_icon;
-                appIcon = ResourcesCompat.getDrawableForDensity(resources, iconId,
-                        DisplayMetrics.DENSITY_XXXHIGH, null);
+                appIcon = resources.getDrawable(iconId, activity.getTheme());
 
                 // Saves the drawable to a webp,
                 // which is faster to load than trying to get the drawable every time
