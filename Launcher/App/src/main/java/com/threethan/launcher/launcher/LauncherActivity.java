@@ -26,7 +26,6 @@ import android.view.ViewOutlineProvider;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -119,6 +118,7 @@ public class LauncherActivity extends Activity {
     public View rootView;
 
     private void onBound() {
+        if (hasBound) return;
         hasBound = true;
         final boolean hasView = launcherService.checkForExistingView();
 
@@ -127,8 +127,6 @@ public class LauncherActivity extends Activity {
 
         AppsAdapter.shouldAnimateClose = false;
         AppsAdapter.animateClose(this);
-
-        postDelayed(() -> new Updater(this).checkForAppUpdate(), 1000);
     }
     protected void startWithNewView() {
         Log.v(TAG, "Starting with new view");
@@ -139,7 +137,6 @@ public class LauncherActivity extends Activity {
         Compat.checkCompatibilityUpdate(this);
 
         reloadPackages();
-        // Load Interface
         refreshBackground();
         refreshInterface();
 
@@ -159,9 +156,8 @@ public class LauncherActivity extends Activity {
             appsView.setAlpha(1f); // Just in case the app was closed before it faded in
 
             // Take ownership of adapters (which are currently referencing a dead activity)
-            Objects.requireNonNull(getAppAdapter()).setLauncherActivity(this);
-            Objects.requireNonNull(getAdapterGroups()).setLauncherActivity(this);
-            recheckPackages(); // Just check, don't force it
+            getAppAdapter().setLauncherActivity(this);
+            getAdapterGroups().setLauncherActivity(this);
 
             groupsEnabled = sharedPreferences.getBoolean(Settings.KEY_GROUPS_ENABLED, Settings.DEFAULT_GROUPS_ENABLED);
             post(this::updateToolBars); // Fix visual bugs with the blur views
@@ -195,7 +191,7 @@ public class LauncherActivity extends Activity {
                                   int oldLeft, int oldTop, int oldRight, int oldBottom) {
         if (Math.abs(oldBottom-bottom) > 10 || Math.abs(oldRight-right) > 10) { // Only on significant diff
             new WallpaperExecutor().execute(this);
-            updateGridViews();
+            updateGridLayouts();
         }
     }
 
@@ -260,30 +256,26 @@ public class LauncherActivity extends Activity {
             // Hide KB
             Keyboard.hide(this, mainView);
 
-            // Bind service
+            // Bind browser service
             AppsAdapter.animateClose(this);
             com.threethan.launcher.browser.BrowserService.bind(this, browserServiceConnection, false);
-        } catch (Exception ignored) {} // Will fail if service hasn't bound yet
+        } catch (Exception ignored) {} // Will fail if service hasn't started yet
 
         Dialog.setActivityContext(this);
 
-        post(this::recheckPackages);
-        postDelayed(this::recheckPackages, 1000);
+        if (Platform.installedApps != null) // Will be null only on initial load
+            postDelayed(this::recheckPackages, 1000);
 
         postDelayed(() -> new Updater(this).checkForAppUpdate(), 1000);
 
     }
 
     public void reloadPackages() {
-        if (sharedPreferenceEditor == null) return;
-
-        sharedPreferenceEditor.apply();
         Platform.clearPackageLists(this);
         PackageManager packageManager = getPackageManager();
         Platform.installedApps = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);
         Platform.installedApps = Collections.synchronizedList(Platform.installedApps);
         Compat.recheckSupported(this);
-        refreshAppDisplayListsAll();
     }
 
     public void recheckPackages() {
@@ -399,17 +391,7 @@ public class LauncherActivity extends Activity {
         }
     }
     public int lastSelectedGroup;
-
     public void refreshInterface() {
-        // Fix focus
-        if (sharedPreferenceEditor != null) sharedPreferenceEditor.apply();
-        try {
-            post(this::refreshInternal);
-        } catch (Exception e) {
-            Log.w(TAG, "Failed to post refreshInternal. Called too soon?");
-        }
-    }
-    protected void refreshInternal() {
         sharedPreferenceEditor.apply();
 
         darkMode = sharedPreferences.getBoolean(Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE);
@@ -435,7 +417,6 @@ public class LauncherActivity extends Activity {
 
         final float marginScale = (float) (sharedPreferences.getInt(Settings.KEY_SCALE, Settings.DEFAULT_SCALE)
                 - Settings.MIN_SCALE) / (Settings.MAX_SCALE - Settings.MIN_SCALE) + 1f + dCol/2;
-        Log.v(TAG, "marginScale" + marginScale);
         return (dp((float) (sharedPreferences.getInt(Settings.KEY_MARGIN, Settings.DEFAULT_MARGIN))* marginScale/2f));
     }
     public void refreshAdapters() {
@@ -451,35 +432,29 @@ public class LauncherActivity extends Activity {
         marginDecoration = new MarginDecoration(getAdjustedMargin() - dp(11f));
         appsView.addItemDecoration(marginDecoration);
 
-        groupsView.setAdapter(new GroupsAdapter(this, isEditing()));
-
         prevViewWidth = -1;
-        updateGridViews();
-        setAdapters();
-
-        post(this::updateToolBars);
-    }
-    protected void resetScroll() {
-        appsView.scrollToPosition(0);
-    }
-    protected void setAdapters() {
+        updateGridLayouts();
 
         if (getAppAdapter() == null) {
             appsView.setAdapter(
-                    new AppsAdapter(this, null));
+                    new AppsAdapter(this));
             refreshAppDisplayLists();
         }else {
             getAppAdapter().updateAppList(this);
             appsView.setAdapter(appsView.getAdapter());
         }
+
+        groupsView.setAdapter(new GroupsAdapter(this, isEditing()));
+        post(this::updateToolBars);
+    }
+    protected void resetScroll() {
+        appsView.scrollToPosition(0);
     }
 
-    // Updates the heights and layouts of grid views
-    // group grid view, square app grid view & banner app grid view
-    public void updateGridViews() {
-
-        if (mainView.getWidth() == prevViewWidth) return;
-        prevViewWidth = mainView.getWidth();
+    // Updates the heights and layouts of grid layout managers
+    public void updateGridLayouts() {
+        if (mainView.getMeasuredWidth() == prevViewWidth) return;
+        prevViewWidth = mainView.getMeasuredWidth();
 
         // Group rows and relevant values
         if (getAdapterGroups() != null && groupsEnabled) {
@@ -506,8 +481,8 @@ public class LauncherActivity extends Activity {
         int targetSize = dp(sharedPreferences.getInt(Settings.KEY_SCALE, Settings.DEFAULT_SCALE));
         int estimatedWidth = prevViewWidth;
 
-        final int nCol = estimatedWidth/(targetSize*2) * 2; // To nearest 2
-        if (nCol <= 0) return;
+        int nCol = estimatedWidth/(targetSize*2) * 2; // To nearest 2
+        if (nCol <= 2) nCol = 2;
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, nCol);
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
@@ -606,10 +581,10 @@ public class LauncherActivity extends Activity {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, getResources().getDisplayMetrics());
     }
 
-    public @Nullable AppsAdapter getAppAdapter() {
+    public AppsAdapter getAppAdapter() {
         return (AppsAdapter) appsView.getAdapter();
     }
-    public @Nullable GroupsAdapter getAdapterGroups() {
+    public GroupsAdapter getAdapterGroups() {
         if (groupsView == null) return null;
         return (GroupsAdapter) groupsView.getAdapter();
     }
@@ -639,7 +614,7 @@ public class LauncherActivity extends Activity {
             // We've bound to LocalService, cast the IBinder and get LocalService instance.
             LauncherService.LocalBinder binder = (LauncherService.LocalBinder) service;
             launcherService = binder.getService();
-            if (!hasBound) onBound();
+            onBound();
         }
 
         @Override

@@ -45,7 +45,6 @@ import eightbitlab.com.blurview.BlurView;
 public class LauncherActivityEditable extends LauncherActivity {
     @Nullable
     Boolean editMode = null;
-    /** @noinspection DataFlowIssue*/
     private class ConnectedHashSet extends HashSet<String> {
         @Override
         public boolean add(String s) {
@@ -85,7 +84,7 @@ public class LauncherActivityEditable extends LauncherActivity {
     }
 
     @Override
-    protected void refreshInternal() {
+    public void refreshInterface() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             sharedPreferences = getSharedPreferences(PreferenceManager.getDefaultSharedPreferencesName(this),
                     Context.MODE_PRIVATE);
@@ -96,7 +95,7 @@ public class LauncherActivityEditable extends LauncherActivity {
 
         if (editMode == null) editMode = sharedPreferences.getBoolean(Settings.KEY_EDIT_MODE, false);
 
-        super.refreshInternal();
+        super.refreshInterface();
 
         final View editFooter = rootView.findViewById(R.id.editFooter);
         if (editMode) {
@@ -243,7 +242,6 @@ public class LauncherActivityEditable extends LauncherActivity {
     @Override
     public void refreshAppDisplayLists() {
         super.refreshAppDisplayLists();
-        super.refreshInterface();
 
         Set<String> webApps = sharedPreferences.getStringSet(Settings.KEY_WEBSITE_LIST, new HashSet<>());
         Set<String> packages = getAllPackages();

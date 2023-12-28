@@ -548,7 +548,7 @@
                 android:id="@+id/iconSettingsButton"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginEnd="3dp"
+                android:layout_marginStart="5dp"
                 android:layout_weight="2"
                 android:background="@drawable/bkg_button">
 

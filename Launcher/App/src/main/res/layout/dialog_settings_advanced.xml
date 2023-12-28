@@ -45,6 +45,7 @@
             android:text="@string/advanced_interface" />
 
         <LinearLayout
+            android:id="@+id/alphaLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/bkg_button"
@@ -198,7 +199,8 @@
             android:background="@drawable/bkg_button"
             android:gravity="clip_vertical|center_vertical"
             android:orientation="horizontal"
-            android:tooltipText="@string/tip_advanced_sizing">
+            android:tooltipText="@string/tip_advanced_sizing"
+            tools:ignore="UnusedAttribute">
 
             <TextView
                 style="@style/SettingButtonLabel"

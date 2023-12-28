@@ -5,7 +5,6 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -50,7 +49,6 @@ public class LauncherService extends Service {
     }
     public View getNewView(LauncherActivity activity, ViewGroup root) {
         final int index = getNewActivityIndex();
-        Log.v("New Activity Index", String.valueOf(index));
 
         View view = View.inflate(activity, R.layout.activity_main, root);
         viewByIndex.put(index, view);
@@ -118,7 +116,6 @@ public class LauncherService extends Service {
         for (int index: viewByIndex.keySet())
             if (!activityByIndex.containsValue(index)) {
                 viewByIndex.remove(index);
-                Log.v("LauncherService", "Removed inactive view with index: "+index);
             }
     }
 }

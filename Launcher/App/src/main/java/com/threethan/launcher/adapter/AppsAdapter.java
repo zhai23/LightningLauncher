@@ -17,7 +17,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.threethan.launcher.R;
@@ -55,23 +54,14 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.AppViewHolder>
     private boolean getEditMode() {
         return launcherActivity.isEditing();
     }
-    public @Nullable View firstView;
-    public AppsAdapter(LauncherActivity activity, List<ApplicationInfo> myApps) {
+    public AppsAdapter(LauncherActivity activity) {
         launcherActivity = activity;
-        SettingsManager settingsManager = SettingsManager.getInstance(launcherActivity);
-
-        firstView = null;
-        currentAppList = Collections.synchronizedList(settingsManager
-                .getInstalledApps(activity, settingsManager.getAppGroupsSorted(false), myApps));
-        fullAppList = myApps;
     }
     public void setFullAppList(List<ApplicationInfo> myApps) {
         fullAppList = myApps;
     }
     public void updateAppList(LauncherActivity activity) {
         launcherActivity = activity;
-
-        firstView = null;
         SettingsManager settingsManager = SettingsManager.getInstance(activity);
         currentAppList = Collections.synchronizedList(settingsManager
                 .getInstalledApps(activity, settingsManager.getAppGroupsSorted(true), fullAppList));
@@ -81,7 +71,6 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.AppViewHolder>
         final List<ApplicationInfo> tempAppList =
                 settingsManager.getInstalledApps(launcherActivity, settingsManager.getAppGroupsSorted(false), fullAppList);
 
-        firstView = null;
         currentAppList.clear();
         for (final ApplicationInfo app : tempAppList)
             if (StringLib.forSort(SettingsManager.getAppLabel(app)).contains(StringLib.forSort(text)))

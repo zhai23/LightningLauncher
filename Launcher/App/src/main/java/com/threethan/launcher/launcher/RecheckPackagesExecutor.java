@@ -2,6 +2,7 @@ package com.threethan.launcher.launcher;
 
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.util.Log;
 
 import com.threethan.launcher.helper.Platform;
 
@@ -25,12 +26,16 @@ class RecheckPackagesExecutor {
             PackageManager packageManager = owner.getPackageManager();
             List<ApplicationInfo> foundApps = packageManager.getInstalledApplications(0);
 
-            boolean changeFound = Platform.installedApps == null ||
-                    Platform.installedApps.size() != foundApps.size();
-            if (changeFound) {
+            if (Platform.installedApps == null) {
+                Log.v("LightningLauncher", "Package check called before initial load, " +
+                        "will be ignored");
+                return;
+            }
+            if (Platform.installedApps.size() != foundApps.size()) {
                 owner.runOnUiThread(() -> {
+                    Log.v("LightningLauncher", "Package change detected!");
                     owner.reloadPackages();
-                    owner.refreshInterface();
+                    owner.refreshAppDisplayListsAll();
                 });
             }
         });
