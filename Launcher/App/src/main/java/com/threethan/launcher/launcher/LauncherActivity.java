@@ -84,7 +84,6 @@ public class LauncherActivity extends Activity {
     public SafeSharedPreferenceEditor sharedPreferenceEditor;
     public View mainView;
     private int prevViewWidth;
-    public boolean isKillable = false;
     public boolean needsUpdateCleanup = false;
     // Settings
     public SettingsManager settingsManager;
@@ -117,45 +116,24 @@ public class LauncherActivity extends Activity {
         if (alpha < 255) cd.setAlpha(alpha);
         post(() -> getWindow().setBackgroundDrawable(cd));
     }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        // Bind to Launcher Service
-
-
-
-
-        isKillable = false;
-    }
-
-    @Override
-    protected void onStop() {
-        isKillable = true;
-        super.onStop();
-    }
     public View rootView;
 
     private void onBound() {
         hasBound = true;
-        isKillable = false;
         final boolean hasView = launcherService.checkForExistingView();
 
-        if (hasView) startWithExistingActivity();
-        else         startWithNewActivity();
+        if (hasView) startWithExistingView();
+        else         startWithNewView();
 
         AppsAdapter.shouldAnimateClose = false;
         AppsAdapter.animateClose(this);
 
         postDelayed(() -> new Updater(this).checkForAppUpdate(), 1000);
     }
-    protected void startWithNewActivity() {
+    protected void startWithNewView() {
         Log.v(TAG, "Starting with new view");
-        rootView = launcherService.getNewView(this);
-
         ViewGroup containerView = findViewById(R.id.container);
-        containerView.addView(rootView);
+        rootView = launcherService.getNewView(this, containerView);
 
         init();
         Compat.checkCompatibilityUpdate(this);
@@ -170,12 +148,10 @@ public class LauncherActivity extends Activity {
         an.setDuration(350);
         appsView.post(an::start);
     }
-    protected void startWithExistingActivity() {
+    protected void startWithExistingView() {
         Log.v(TAG, "Starting with existing view");
-        rootView = launcherService.getExistingView(this);
-
         ViewGroup containerView = findViewById(R.id.container);
-        containerView.addView(rootView);
+        rootView = launcherService.getExistingView(this, containerView);
 
         try {
             init();
@@ -261,8 +237,9 @@ public class LauncherActivity extends Activity {
     protected void onDestroy() {
         Log.v(TAG, "Activity is being destroyed - "
                 + (isFinishing() ? "Finishing" : "Not Finishing"));
+        launcherService.destroyed(this);
+
         if (isFinishing()) try {
-            launcherService.finished(this);
             unbindService(launcherServiceConnection); // Should rarely cause exception
             unbindService(browserServiceConnection); // Will ofter cause an exception if uncaught
             // For the GC & easier debugging
@@ -278,7 +255,6 @@ public class LauncherActivity extends Activity {
 
     @Override
     protected void onResume() {
-        isKillable = false;
         super.onResume();
         try {
             // Hide KB
@@ -408,7 +384,6 @@ public class LauncherActivity extends Activity {
     }
 
     public void refreshInterfaceAll() {
-        isKillable = false;
         if (sharedPreferenceEditor != null) sharedPreferenceEditor.apply();
         try {
             launcherService.refreshInterfaceAll();
@@ -449,20 +424,31 @@ public class LauncherActivity extends Activity {
             if (focused != null && getCurrentFocus() == null) focused.requestFocus();
         });
     }
+    private int getAdjustedMargin() {
+
+        int targetSize = dp(sharedPreferences.getInt(Settings.KEY_SCALE, Settings.DEFAULT_SCALE));
+        int estimatedWidth = prevViewWidth;
+
+        final int nCol = estimatedWidth/(targetSize*2) * 2; // To nearest 2
+        final float fCol = (float)(estimatedWidth)/(targetSize*2) * 2;
+        final float dCol = fCol - nCol;
+
+        final float marginScale = (float) (sharedPreferences.getInt(Settings.KEY_SCALE, Settings.DEFAULT_SCALE)
+                - Settings.MIN_SCALE) / (Settings.MAX_SCALE - Settings.MIN_SCALE) + 1f + dCol/2;
+        Log.v(TAG, "marginScale" + marginScale);
+        return (dp((float) (sharedPreferences.getInt(Settings.KEY_MARGIN, Settings.DEFAULT_MARGIN))* marginScale/2f));
+    }
     public void refreshAdapters() {
         updatePadding();
-
-        final int margin = sharedPreferences.getInt(Settings.KEY_MARGIN, Settings.DEFAULT_MARGIN) + 11;
 
         namesSquare = sharedPreferences.getBoolean(Settings.KEY_SHOW_NAMES_SQUARE, Settings.DEFAULT_SHOW_NAMES_SQUARE);
         namesBanner = sharedPreferences.getBoolean(Settings.KEY_SHOW_NAMES_BANNER, Settings.DEFAULT_SHOW_NAMES_BANNER);
 
         // Margins
         if (marginDecoration != null) appsView.removeItemDecoration(marginDecoration);
-        int m = margin-22*2;
         // Height of a square icon. May be useful in the future...
-        // int h = dp((groupGridView.getMeasuredWidth() - (m * (columns-1))*2))/(columns*2)-22*3;
-        marginDecoration = new MarginDecoration(m);
+        // int h = dp((groupGridView.getMeasuredWidth() - (margin * (columns-1))*2))/(columns*2)-22*3;
+        marginDecoration = new MarginDecoration(getAdjustedMargin() - dp(11f));
         appsView.addItemDecoration(marginDecoration);
 
         groupsView.setAdapter(new GroupsAdapter(this, isEditing()));
@@ -542,10 +528,10 @@ public class LauncherActivity extends Activity {
     // - Side padding to account for icon margins (otherwise icons would touch window edges)
     // - Bottom padding to account for icon margin, as well as the edit mode footer if applicable
     protected void updatePadding() {
-        final int margin = 22+ sharedPreferences.getInt(Settings.KEY_MARGIN, Settings.DEFAULT_MARGIN);
+        final int margin = getAdjustedMargin() + dp(11f);
         final boolean groupsVisible = getAdapterGroups() != null && groupsEnabled && !getSearching();
-        final int topAdd = groupsVisible ? dp(23) + 22 + groupHeight : dp(23);
-        final int bottomAdd = groupsVisible ? getBottomBarHeight() : margin/2+getBottomBarHeight();
+        final int topAdd = groupsVisible ? dp(32) + groupHeight : dp(23);
+        final int bottomAdd = groupsVisible ? getBottomBarHeight() + dp(11) : margin/2+getBottomBarHeight() + dp(11);
 
         appsView.setClipToPadding(false);
         appsView.setPadding(
@@ -553,8 +539,6 @@ public class LauncherActivity extends Activity {
                 topAdd,
                 margin,
                 bottomAdd);
-
-        appsView.setFadingEdgeLength(groupsVisible ? dp(23 + 22) + groupHeight : 0);
     }
     // Accounts for the height of the edit mode footer when visible, actual function in child class
     protected int getBottomBarHeight() {
@@ -565,7 +549,6 @@ public class LauncherActivity extends Activity {
         if (index >= SettingsManager.BACKGROUND_DRAWABLES.length || index < 0) index = -1;
         else sharedPreferenceEditor.putBoolean(Settings.KEY_DARK_MODE, SettingsManager.BACKGROUND_DARK[index]);
         sharedPreferenceEditor.putInt(Settings.KEY_BACKGROUND, index);
-        isKillable = false;
         launcherService.refreshBackgroundAll();
     }
     // Sets a background color based on your chosen background,

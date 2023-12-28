@@ -44,7 +44,7 @@
             android:focusable="false"
             android:focusableInTouchMode="false"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/imageLabelSquare"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             tools:visibility="visible" />
 

@@ -96,9 +96,7 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
                 Keyboard.show(this);
             }, 50);
 
-
-//            if (groupsEnabled) updatePadding();
-            ValueAnimator padAnimator = ValueAnimator.ofInt(appsView.getPaddingTop(), dp(66));
+            ValueAnimator padAnimator = ValueAnimator.ofInt(appsView.getPaddingTop(), dp(75));
             padAnimator.setDuration(200);
             padAnimator.setInterpolator(new DecelerateInterpolator());
             padAnimator.addUpdateListener(animation -> {

@@ -231,13 +231,13 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.AppViewHolder>
             holder.textView.setVisibility(View.VISIBLE);
             holder.textSpacer.setVisibility(View.VISIBLE);
             holder.bumpSpacer.setVisibility(View.VISIBLE);
-            holder.textView.setTranslationY(7);
+            holder.textView.setTranslationY(launcherActivity.dp(2));
             holder.textView.setMaxLines(2);
         } else {
             holder.textView.setVisibility(View.GONE);
             holder.textSpacer.setVisibility(View.GONE);
             holder.bumpSpacer.setVisibility(View.GONE);
-            holder.textView.setTranslationY(18);
+            holder.textView.setTranslationY(launcherActivity.dp(7));
             holder.textView.setMaxLines(1);
         }
         holder.app = app;
@@ -265,7 +265,6 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.AppViewHolder>
         return currentAppList.size();
     }
     private void updateSelected(AppViewHolder holder) {
-        holder.moreButton.setVisibility(holder.view.isHovered() || holder.moreButton.isHovered() ? View.VISIBLE : View.GONE);
         boolean selected = launcherActivity.isSelected(holder.app.packageName);
         if (selected != holder.view.getAlpha() < 0.9) {
             ObjectAnimator an = ObjectAnimator.ofFloat(holder.view, "alpha", selected ? 0.5F : 1.0F);
@@ -285,13 +284,16 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.AppViewHolder>
         }
     }
     public void updateHover(AppViewHolder holder, boolean hovered) {
-        holder.killButton.setBackgroundResource(hovered ? R.drawable.ic_circ_running_kb : R.drawable.ic_running_ns);
+        if (!Platform.isTv(launcherActivity))
+            holder.moreButton.setVisibility(hovered ? View.VISIBLE : View.GONE);
+        holder.killButton.setBackgroundResource(hovered
+            ? R.drawable.ic_circ_running_kb
+            : R.drawable.ic_running_ns);
 
         final boolean tv = Platform.isTv(launcherActivity);
-        final float newScaleInner = hovered ? (tv ? 1.040f : 1.055f) : 1.005f;
-        final float newScaleOuter = hovered ? (tv ? 1.275f : 1.055f) : 1.000f;
-        final float newElevation = hovered ? (tv ? 10f : 15f) : 3f;
-
+        final float newScaleInner = hovered ? (tv ? 1.040f : 1.060f) : 1.005f;
+        final float newScaleOuter = hovered ? (tv ? 1.275f : 1.060f) : 1.000f;
+        final float newElevation = hovered ? (tv ? 15f : 20f) : 3f;
 
         ObjectAnimator aXi = ObjectAnimator.ofFloat(holder.imageView, "scaleX", newScaleInner);
         ObjectAnimator aXv = ObjectAnimator.ofFloat(holder.view, "scaleX", newScaleOuter);
@@ -310,7 +312,7 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.AppViewHolder>
         final ObjectAnimator[] animators = new ObjectAnimator[] {aXi, aXv, aYi, aYv, aAm, aAe, aTx, aTy};
         for (ObjectAnimator animator:animators) animator.setInterpolator(
                 tv ? new DecelerateInterpolator() : new OvershootInterpolator());
-        for (ObjectAnimator animator:animators) animator.setDuration(tv ? 175 : 225);
+        for (ObjectAnimator animator:animators) animator.setDuration(tv ? 175 : 250);
         for (ObjectAnimator animator:animators) animator.start();
 
         // Force correct state, even if interrupted
@@ -321,7 +323,7 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.AppViewHolder>
                 holder.view.setScaleX(newScaleOuter);
                 holder.view.setScaleY(newScaleOuter);
                 holder.clip.setElevation(newElevation);
-            }, 250);
+            }, tv ? 175 : 250);
         }
         holder.view.setZ(hovered ? 2 : 1);
     }

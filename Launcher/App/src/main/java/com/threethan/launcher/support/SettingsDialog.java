@@ -191,8 +191,8 @@ public abstract class SettingsDialog {
                 a.refreshInterfaceAll();
             }
         }));
-        scale.setMax(150);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) scale.setMin(80);
+        scale.setMax(Settings.MAX_SCALE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) scale.setMin(Settings.MIN_SCALE);
 
         SeekBar margin = dialog.findViewById(R.id.marginSeekBar);
         margin.setProgress(a.sharedPreferences.getInt(Settings.KEY_MARGIN, Settings.DEFAULT_MARGIN));
@@ -213,7 +213,6 @@ public abstract class SettingsDialog {
             }
         }));
         margin.setMax(40);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) margin.setMin(0);
 
         Switch groups = dialog.findViewById(R.id.groupSwitch);
         groups.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_GROUPS_ENABLED, Settings.DEFAULT_GROUPS_ENABLED));

@@ -212,7 +212,6 @@ public abstract class Compat {
         Log.i(TAG, "Icon cache is being cleared");
         FileLib.delete(launcherActivity.getApplicationInfo().dataDir + Icon.ICON_CACHE_FOLDER);
 
-        launcherActivity.isKillable = false;
         launcherActivity.launcherService.clearAdapterCachesAll();
 
         IconRepo.downloadExemptPackages.clear();

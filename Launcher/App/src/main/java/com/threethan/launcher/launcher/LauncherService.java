@@ -20,7 +20,6 @@ import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /*
@@ -49,16 +48,17 @@ public class LauncherService extends Service {
     public IBinder onBind(Intent intent) {
         return binder;
     }
-    public View getNewView(LauncherActivity activity) {
+    public View getNewView(LauncherActivity activity, ViewGroup root) {
         final int index = getNewActivityIndex();
+        Log.v("New Activity Index", String.valueOf(index));
 
-        View view = View.inflate(activity, R.layout.activity_main, null);
+        View view = View.inflate(activity, R.layout.activity_main, root);
         viewByIndex.put(index, view);
         activityByIndex.put(activity, index);
 
         return view;
     }
-    public View getExistingView(LauncherActivity activity) {
+    public View getExistingView(LauncherActivity activity, ViewGroup root) {
         final int index = getNewActivityIndex();
         View view = viewByIndex.get(index);
 
@@ -66,6 +66,8 @@ public class LauncherService extends Service {
         ViewGroup parent = (ViewGroup) view.getParent();
         if (parent != null) parent.removeView(view);
         activityByIndex.put(activity, index);
+
+        root.addView(view);
         return view;
     }
     public boolean checkForExistingView() {
@@ -76,7 +78,7 @@ public class LauncherService extends Service {
         while(activityByIndex.containsValue(i)) i++;
         return i;
     }
-    public void finished(LauncherActivity activity) {
+    public void destroyed(LauncherActivity activity) {
         activityByIndex.remove(activity);
     }
 
@@ -93,42 +95,30 @@ public class LauncherService extends Service {
     // if a launcher activity is inactive and unable to respond (rare), it will lose it's stored view
     public void refreshInterfaceAll() {
         for (LauncherActivity activity: activityByIndex.keySet()) activity.refreshInterface();
-        clearViewsWithoutActiveActivities();
+        cleanup();
     }
     public void refreshAppDisplayListsAll() {
         for (LauncherActivity activity: activityByIndex.keySet()) {
             activity.refreshAppDisplayLists();
             activity.refreshInterface();
         }
-        clearViewsWithoutActiveActivities();
+        cleanup();
     }
     public void refreshBackgroundAll() {
         for (LauncherActivity activity: activityByIndex.keySet()) activity.refreshBackground();
-        clearViewsWithoutActiveActivities();
+        cleanup();
     }
     public void clearAdapterCachesAll() {
         for (LauncherActivity activity: activityByIndex.keySet()) activity.clearAdapterCaches();
-        clearViewsWithoutActiveActivities();
+        cleanup();
     }
     // Clear the views & finish the activities of any activities which are currently inactive
-    // This will force any applicable activities to be restarted with brand new views
-    private void clearViewsWithoutActiveActivities() {
+    private void cleanup() {
         if (Platform.isTv()) return;
         for (int index: viewByIndex.keySet())
             if (!activityByIndex.containsValue(index)) {
                 viewByIndex.remove(index);
                 Log.v("LauncherService", "Removed inactive view with index: "+index);
-            } else {
-                LauncherActivity activity = keyByValue(activityByIndex, index);
-                if (activity == null) continue;
-                if (activity.isKillable) activity.finishAndRemoveTask();
             }
-    }
-    /** @noinspection SameParameterValue*/
-    static <T, E> T keyByValue(Map<T, E> map, E value) {
-        for (Map.Entry<T, E> entry : map.entrySet())
-            if (Objects.equals(value, entry.getValue()))
-                return entry.getKey();
-        return null;
     }
 }

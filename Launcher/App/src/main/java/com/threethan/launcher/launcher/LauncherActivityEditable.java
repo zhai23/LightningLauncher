@@ -233,8 +233,8 @@ public class LauncherActivityEditable extends LauncherActivity {
     }
 
     @Override
-    protected void startWithExistingActivity() {
-        super.startWithExistingActivity();
+    protected void startWithExistingView() {
+        super.startWithExistingView();
         // Load edit things if loading from an existing activity
         final View editFooter = rootView.findViewById(R.id.editFooter);
         if (editFooter.getVisibility() == View.VISIBLE) refreshInterfaceAll();
