@@ -54,12 +54,12 @@ public abstract class SettingsDialog {
         // Addons
         View addonsButton = dialog.findViewById(R.id.addonsButton);
         addonsButton.setOnClickListener(view -> AddonDialog.showAddons(a));
-        if (!a.sharedPreferences.getBoolean(Settings.KEY_SEEN_ADDONS, false)) {
+        if (!a.dataStoreEditor.getBoolean(Settings.KEY_SEEN_ADDONS, false)) {
             View addonsButtonAttract = dialog.findViewById(R.id.addonsButtonAttract);
             addonsButtonAttract.setVisibility(View.VISIBLE);
             addonsButton.setVisibility(View.GONE);
             addonsButtonAttract.setOnClickListener(view -> {
-                a.sharedPreferenceEditor.putBoolean(Settings.KEY_SEEN_ADDONS, true).apply();
+                a.dataStoreEditor.putBoolean(Settings.KEY_SEEN_ADDONS, true);
                 AddonDialog.showAddons(a);
             });
         }
@@ -99,9 +99,9 @@ public abstract class SettingsDialog {
 
         // Wallpaper and style
         Switch dark = dialog.findViewById(R.id.darkModeSwitch);
-        dark.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE));
+        dark.setChecked(a.dataStoreEditor.getBoolean(Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE));
         dark.setOnCheckedChangeListener((compoundButton, value) -> {
-            a.sharedPreferenceEditor.putBoolean(Settings.KEY_DARK_MODE, value);
+            a.dataStoreEditor.putBoolean(Settings.KEY_DARK_MODE, value);
             a.darkMode = value;
             a.clearAdapterCaches();
             a.refreshInterfaceAll();
@@ -119,7 +119,7 @@ public abstract class SettingsDialog {
                 dialog.findViewById(R.id.background9),
                 dialog.findViewById(R.id.background_custom)
         };
-        int background = a.sharedPreferences.getInt(Settings.KEY_BACKGROUND,
+        int background = a.dataStoreEditor.getInt(Settings.KEY_BACKGROUND,
                 Platform.isTv(a)
                         ? Settings.DEFAULT_BACKGROUND_TV
                         : Settings.DEFAULT_BACKGROUND_VR);
@@ -135,7 +135,7 @@ public abstract class SettingsDialog {
         for (int i = 0; i < views.length; i++) {
             int index = i;
             views[i].setOnClickListener(view -> {
-                int lastIndex = a.sharedPreferences.getInt(Settings.KEY_BACKGROUND,
+                int lastIndex = a.dataStoreEditor.getInt(Settings.KEY_BACKGROUND,
                         Platform.isTv(a)
                                 ? Settings.DEFAULT_BACKGROUND_TV
                                 : Settings.DEFAULT_BACKGROUND_VR);
@@ -166,19 +166,19 @@ public abstract class SettingsDialog {
 
                 a.setBackground(index);
                 if (index != views.length-1) {
-                    dark.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE));
+                    dark.setChecked(a.dataStoreEditor.getBoolean(Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE));
                 }
             });
         }
 
         // Icons & Layout
         SeekBar scale = dialog.findViewById(R.id.scaleSeekBar);
-        scale.setProgress(a.sharedPreferences.getInt(Settings.KEY_SCALE, Settings.DEFAULT_SCALE));
+        scale.setProgress(a.dataStoreEditor.getInt(Settings.KEY_SCALE, Settings.DEFAULT_SCALE));
 
         scale.post(() -> scale.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int value, boolean b) {
-                a.sharedPreferenceEditor.putInt(Settings.KEY_SCALE, value);
+                a.dataStoreEditor.putInt(Settings.KEY_SCALE, value);
                 a.refreshInterface();
             }
 
@@ -195,11 +195,11 @@ public abstract class SettingsDialog {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) scale.setMin(Settings.MIN_SCALE);
 
         SeekBar margin = dialog.findViewById(R.id.marginSeekBar);
-        margin.setProgress(a.sharedPreferences.getInt(Settings.KEY_MARGIN, Settings.DEFAULT_MARGIN));
+        margin.setProgress(a.dataStoreEditor.getInt(Settings.KEY_SPACING, Settings.DEFAULT_SPACING));
         margin.post(() -> margin.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int value, boolean b) {
-                a.sharedPreferenceEditor.putInt(Settings.KEY_MARGIN, value);
+                a.dataStoreEditor.putInt(Settings.KEY_SPACING, value);
                 a.refreshInterface();
             }
 
@@ -215,18 +215,17 @@ public abstract class SettingsDialog {
         margin.setMax(40);
 
         Switch groups = dialog.findViewById(R.id.groupSwitch);
-        groups.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_GROUPS_ENABLED, Settings.DEFAULT_GROUPS_ENABLED));
+        groups.setChecked(a.dataStoreEditor.getBoolean(Settings.KEY_GROUPS_ENABLED, Settings.DEFAULT_GROUPS_ENABLED));
         groups.setOnCheckedChangeListener((sw, value) -> {
-            if (!a.sharedPreferences.getBoolean(Settings.KEY_SEEN_HIDDEN_GROUPS_POPUP, false) && value != Settings.DEFAULT_GROUPS_ENABLED) {
+            if (!a.dataStoreEditor.getBoolean(Settings.KEY_SEEN_HIDDEN_GROUPS_POPUP, false) && value != Settings.DEFAULT_GROUPS_ENABLED) {
                 groups.setChecked(Settings.DEFAULT_GROUPS_ENABLED); // Revert switch
                 AlertDialog subDialog = Dialog.build(a, R.layout.dialog_hide_groups_info_tv);
                 if (subDialog == null) return;
                 subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
                     final boolean newValue = !Settings.DEFAULT_GROUPS_ENABLED;
-                    a.sharedPreferenceEditor
+                    a.dataStoreEditor
                             .putBoolean(Settings.KEY_SEEN_HIDDEN_GROUPS_POPUP, true)
-                            .putBoolean(Settings.KEY_GROUPS_ENABLED, newValue)
-                            .apply();
+                            .putBoolean(Settings.KEY_GROUPS_ENABLED, newValue);
                     groups.setChecked(!Settings.DEFAULT_GROUPS_ENABLED);
                     a.refreshInterfaceAll();
                     subDialog.dismiss();
@@ -238,7 +237,7 @@ public abstract class SettingsDialog {
                 });
                 subDialog.findViewById(R.id.cancel).setOnClickListener(view -> subDialog.dismiss());
             } else {
-                a.sharedPreferenceEditor.putBoolean(Settings.KEY_GROUPS_ENABLED, value);
+                a.dataStoreEditor.putBoolean(Settings.KEY_GROUPS_ENABLED, value);
                 // Group enabled state
                 if (value) {
                     // Can edit, show switch
@@ -292,8 +291,7 @@ public abstract class SettingsDialog {
                 if (bSwitch == null) continue;
                 bSwitch.setChecked(App.typeIsBanner(type));
                 bSwitch.setOnCheckedChangeListener((switchView, value) -> {
-                    a.sharedPreferenceEditor.putBoolean(Settings.KEY_BANNER + type, value).apply();
-                    Compat.clearIconCache(a);
+                    a.dataStoreEditor.putBoolean(Settings.KEY_BANNER + type, value);
                     a.refreshAppDisplayListsAll();
                 });
 
@@ -304,16 +302,16 @@ public abstract class SettingsDialog {
 
         // Names
         Switch names = dialog.findViewById(R.id.nameSquareSwitch);
-        names.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_SHOW_NAMES_SQUARE, Settings.DEFAULT_SHOW_NAMES_SQUARE));
+        names.setChecked(a.dataStoreEditor.getBoolean(Settings.KEY_SHOW_NAMES_SQUARE, Settings.DEFAULT_SHOW_NAMES_SQUARE));
         names.setOnCheckedChangeListener((compoundButton, value) -> {
-            a.sharedPreferenceEditor.putBoolean(Settings.KEY_SHOW_NAMES_SQUARE, value).apply();
+            a.dataStoreEditor.putBoolean(Settings.KEY_SHOW_NAMES_SQUARE, value);
             LauncherActivity.namesSquare = value;
             Objects.requireNonNull(a.getAppAdapter()).notifyDataSetChanged();
         });
         Switch wideNames = dialog.findViewById(R.id.nameBannerSwitch);
-        wideNames.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_SHOW_NAMES_BANNER, Settings.DEFAULT_SHOW_NAMES_BANNER));
+        wideNames.setChecked(a.dataStoreEditor.getBoolean(Settings.KEY_SHOW_NAMES_BANNER, Settings.DEFAULT_SHOW_NAMES_BANNER));
         wideNames.setOnCheckedChangeListener((compoundButton, value) -> {
-            a.sharedPreferenceEditor.putBoolean(Settings.KEY_SHOW_NAMES_BANNER, value).apply();
+            a.dataStoreEditor.putBoolean(Settings.KEY_SHOW_NAMES_BANNER, value);
             LauncherActivity.namesBanner = value;
             Objects.requireNonNull(a.getAppAdapter()).notifyDataSetChanged();
         });
@@ -328,23 +326,25 @@ public abstract class SettingsDialog {
 
         dialog.findViewById(R.id.dismissButton).setOnClickListener(view -> dialog.dismiss());
 
-        SeekBar alpha = dialog.findViewById(R.id.alphaSeekBar);
-        alpha.setProgress(255 - a.sharedPreferences.getInt(Settings.KEY_BACKGROUND_ALPHA, Settings.DEFAULT_ALPHA));
-        alpha.post(() -> alpha.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int value, boolean b) {
-                a.sharedPreferenceEditor.putInt(Settings.KEY_BACKGROUND_ALPHA, 255 - value).apply();
-            }
+        if (Platform.isQuest(a)) {
+            SeekBar alpha = dialog.findViewById(R.id.alphaSeekBar);
+            alpha.setProgress(255 - a.dataStoreEditor.getInt(Settings.KEY_BACKGROUND_ALPHA, Settings.DEFAULT_ALPHA));
+            alpha.post(() -> alpha.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int value, boolean b) {
+                    a.dataStoreEditor.putInt(Settings.KEY_BACKGROUND_ALPHA, 255 - value);
+                }
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+                }
 
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                a.refreshBackground();
-            }
-        }));
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+                    a.refreshBackground();
+                }
+            }));
+        } else dialog.findViewById(R.id.alphaLayout).setVisibility(View.GONE);
 
         // Group enabled state
         if (a.canEdit()) {
@@ -356,52 +356,51 @@ public abstract class SettingsDialog {
 
         // Advanced
         Switch longPressEdit = dialog.findViewById(R.id.longPressEditSwitch);
-        longPressEdit.setChecked(!a.sharedPreferences.getBoolean(Settings.KEY_DETAILS_LONG_PRESS, Settings.DEFAULT_DETAILS_LONG_PRESS));
+        longPressEdit.setChecked(!a.dataStoreEditor.getBoolean(Settings.KEY_DETAILS_LONG_PRESS, Settings.DEFAULT_DETAILS_LONG_PRESS));
         longPressEdit.setOnCheckedChangeListener((compoundButton, value) -> {
-            a.sharedPreferenceEditor.putBoolean(Settings.KEY_DETAILS_LONG_PRESS, !value);
+            a.dataStoreEditor.putBoolean(Settings.KEY_DETAILS_LONG_PRESS, !value);
             a.refreshInterfaceAll();
         });
         Switch hideEmpty = dialog.findViewById(R.id.hideEmptySwitch);
-        hideEmpty.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_AUTO_HIDE_EMPTY, Settings.DEFAULT_AUTO_HIDE_EMPTY));
+        hideEmpty.setChecked(a.dataStoreEditor.getBoolean(Settings.KEY_AUTO_HIDE_EMPTY, Settings.DEFAULT_AUTO_HIDE_EMPTY));
         hideEmpty.setOnCheckedChangeListener((compoundButton, value) -> {
-            a.sharedPreferenceEditor.putBoolean(Settings.KEY_AUTO_HIDE_EMPTY, value);
+            a.dataStoreEditor.putBoolean(Settings.KEY_AUTO_HIDE_EMPTY, value);
             a.refreshInterfaceAll();
         });
 
         if (Platform.isVr(a)) {
             Switch defaultLaunchOut = dialog.findViewById(R.id.defaultLaunchOutSwitch);
-            defaultLaunchOut.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_DEFAULT_LAUNCH_OUT, Settings.DEFAULT_DEFAULT_LAUNCH_OUT));
+            defaultLaunchOut.setChecked(a.dataStoreEditor.getBoolean(Settings.KEY_DEFAULT_LAUNCH_OUT, Settings.DEFAULT_DEFAULT_LAUNCH_OUT));
             defaultLaunchOut.setOnCheckedChangeListener((compoundButton, value) -> {
-                a.sharedPreferenceEditor.putBoolean(Settings.KEY_DEFAULT_LAUNCH_OUT, value);
+                a.dataStoreEditor.putBoolean(Settings.KEY_DEFAULT_LAUNCH_OUT, value);
                 a.refreshInterfaceAll();
-                if (!a.sharedPreferences.getBoolean(Settings.KEY_SEEN_LAUNCH_OUT_POPUP, false)) {
+                if (!a.dataStoreEditor.getBoolean(Settings.KEY_SEEN_LAUNCH_OUT_POPUP, false)) {
                     AlertDialog subDialog = Dialog.build(a, R.layout.dialog_launch_out_info);
                     if (subDialog == null) return;
                     subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
-                        a.sharedPreferenceEditor
-                                .putBoolean(Settings.KEY_SEEN_LAUNCH_OUT_POPUP, true).apply();
+                        a.dataStoreEditor
+                                .putBoolean(Settings.KEY_SEEN_LAUNCH_OUT_POPUP, true);
                         subDialog.dismiss();
                     });
                 }
             });
 
             Switch advancedSizingSwitch = dialog.findViewById(R.id.advancedSizingSwitch);
-            advancedSizingSwitch.setChecked(a.sharedPreferences.getBoolean(Settings.KEY_ADVANCED_SIZING, Settings.DEFAULT_ADVANCED_SIZING));
+            advancedSizingSwitch.setChecked(a.dataStoreEditor.getBoolean(Settings.KEY_ADVANCED_SIZING, Settings.DEFAULT_ADVANCED_SIZING));
             advancedSizingSwitch.setOnCheckedChangeListener((compoundButton, value) -> {
-                a.sharedPreferenceEditor.putBoolean(Settings.KEY_ADVANCED_SIZING, value).apply();
-                if (!a.sharedPreferences.getBoolean(Settings.KEY_SEEN_LAUNCH_SIZE_POPUP, false)) {
+                a.dataStoreEditor.putBoolean(Settings.KEY_ADVANCED_SIZING, value);
+                if (!a.dataStoreEditor.getBoolean(Settings.KEY_SEEN_LAUNCH_SIZE_POPUP, false)) {
                     AlertDialog subDialog = Dialog.build(a, R.layout.dialog_launch_size_info);
                     if (subDialog == null) return;
                     subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
-                        a.sharedPreferenceEditor
-                                .putBoolean(Settings.KEY_SEEN_LAUNCH_SIZE_POPUP, true).apply();
+                        a.dataStoreEditor
+                                .putBoolean(Settings.KEY_SEEN_LAUNCH_SIZE_POPUP, true);
                         subDialog.dismiss();
                     });
                 }
             });
 
             View defaultSettingsButton = dialog.findViewById(R.id.defaultLauncherSettingsButton);
-            defaultSettingsButton.setVisibility(Platform.isTv(a) ? View.GONE : View.VISIBLE);
             defaultSettingsButton.setOnClickListener((view) -> {
                 AlertDialog minDialog = Dialog.build(a, R.layout.dialog_set_default_launcher_info);
                 assert minDialog != null;

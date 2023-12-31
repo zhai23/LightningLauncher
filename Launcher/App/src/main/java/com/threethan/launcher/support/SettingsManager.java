@@ -7,8 +7,11 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+
 import com.threethan.launcher.helper.App;
 import com.threethan.launcher.helper.AppData;
+import com.threethan.launcher.helper.DataStoreEditor;
 import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.launcher.LauncherActivity;
@@ -46,8 +49,7 @@ public class SettingsManager extends Settings {
     }
 
     //storage
-    private static SharedPreferences sharedPreferences = null;
-    private static SharedPreferences.Editor sharedPreferenceEditor = null;
+    private static DataStoreEditor dataStoreEditor = null;
     private final WeakReference<LauncherActivity> myLauncherActivityRef;
     private static WeakReference<LauncherActivity> anyLauncherActivityRef = null;
     private static ConcurrentHashMap<String, String> appGroupMap = new ConcurrentHashMap<>();
@@ -57,10 +59,12 @@ public class SettingsManager extends Settings {
     private SettingsManager(LauncherActivity activity) {
         myLauncherActivityRef = new WeakReference<>(activity);
         anyLauncherActivityRef = new WeakReference<>(activity);
-        sharedPreferences = activity.sharedPreferences;
-        sharedPreferenceEditor = activity.sharedPreferenceEditor;
+        dataStoreEditor = activity.dataStoreEditor;
         // Conditional defaults (hacky)
         Settings.DEFAULT_DETAILS_LONG_PRESS = Platform.isTv(activity);
+    }
+    public static LauncherActivity getAnyLauncherActivity() {
+        return anyLauncherActivityRef.get();
     }
 
     public static synchronized SettingsManager getInstance(LauncherActivity context) {
@@ -72,15 +76,18 @@ public class SettingsManager extends Settings {
     public static HashMap<ApplicationInfo, String> appLabelCache = new HashMap<>();
     public static String getAppLabel(ApplicationInfo app) {
         if (appLabelCache.containsKey(app)) return appLabelCache.get(app);
-        String name = checkAppLabel(app);
-        setAppLabel(app, name);
-        return name;
+        return checkAppLabel(app);
     }
     public static String getSortableAppLabel(ApplicationInfo app) {
-        return  (App.isBanner(anyLauncherActivityRef.get(), app) ? "0" : "1") + StringLib.forSort(getAppLabel(app));
+        return  (App.isBanner(app) ? "0" : "1") + StringLib.forSort(getAppLabel(app));
     }
     private static String checkAppLabel(ApplicationInfo app) {
-        String name = sharedPreferences.getString(app.packageName, "");
+        dataStoreEditor.getString(app.packageName, "",
+                name -> setAppLabel(app, processAppLabel(app, name)));
+
+        return app.packageName;
+    }
+    private static @Nullable String processAppLabel(ApplicationInfo app, String name) {
         if (!name.isEmpty()) return name;
         if (AppData.labelOverrides.containsKey(app.packageName))
             return AppData.labelOverrides.get(app.packageName);
@@ -96,28 +103,32 @@ public class SettingsManager extends Settings {
                     name += " Search";
 
                 if (!name.isEmpty()) return StringLib.toTitleCase(name);
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
         }
         try {
-            PackageManager pm =anyLauncherActivityRef.get().getPackageManager();
+            PackageManager pm = anyLauncherActivityRef.get().getPackageManager();
             String label = app.loadLabel(pm).toString();
             if (!label.isEmpty()) return label;
             // Try to load this app's real app info
             label = (String) app.loadLabel(pm);
             if (!label.isEmpty()) return label;
         } catch (NullPointerException ignored) {}
-        return app.packageName;
+        return null;
     }
+
     public static void setAppLabel(ApplicationInfo app, String newName) {
+        if (newName == null) return;
+        getAnyLauncherActivity().getAppAdapter().notifyAppChanged(app);
         appLabelCache.put(app, newName);
-        sharedPreferenceEditor.putString(app.packageName, newName);
+        dataStoreEditor.putString(app.packageName, newName);
     }
     public static boolean getAppLaunchOut(String pkg) {
-        return sharedPreferences.getBoolean(Settings.KEY_LAUNCH_OUT_PREFIX+pkg,
-                sharedPreferences.getBoolean(Settings.KEY_DEFAULT_LAUNCH_OUT, DEFAULT_DEFAULT_LAUNCH_OUT));
+        return dataStoreEditor.getBoolean(Settings.KEY_LAUNCH_OUT_PREFIX+pkg,
+                dataStoreEditor.getBoolean(Settings.KEY_DEFAULT_LAUNCH_OUT, DEFAULT_DEFAULT_LAUNCH_OUT));
     }
     public static void setAppLaunchOut(String pkg, boolean shouldLaunchOut) {
-        sharedPreferenceEditor.putBoolean(Settings.KEY_LAUNCH_OUT_PREFIX+pkg, shouldLaunchOut).apply();
+        dataStoreEditor.putBoolean(Settings.KEY_LAUNCH_OUT_PREFIX+pkg, shouldLaunchOut);
     }
     public static Map<String, String> getAppGroupMap() {
         if (appGroupMap.isEmpty()) readValues();
@@ -146,7 +157,7 @@ public class SettingsManager extends Settings {
 
         // Sort into groups
         for (ApplicationInfo app : myApps) {
-            if (!App.isSupported(app, launcherActivity))
+            if (!App.isSupported(app))
                 appGroupMap.put(app.packageName, Settings.UNSUPPORTED_GROUP);
             else if (!appGroupMap.containsKey(app.packageName) ||
                     Objects.equals(appGroupMap.get(app.packageName), Settings.UNSUPPORTED_GROUP)){
@@ -205,14 +216,14 @@ public class SettingsManager extends Settings {
     }
     public Set<String> getSelectedGroups() {
         if (selectedGroupsSet.isEmpty()) {
-            selectedGroupsSet.addAll(sharedPreferences.getStringSet(KEY_SELECTED_GROUPS, getDefaultGroupsSet()));
+            selectedGroupsSet.addAll(dataStoreEditor.getStringSet(KEY_SELECTED_GROUPS, getDefaultGroupsSet()));
         }
         if (myLauncherActivityRef.get() != null &&
                 myLauncherActivityRef.get().groupsEnabled || myLauncherActivityRef.get().isEditing()) {
 
             // Deselect hidden
             if (myLauncherActivityRef.get() != null && !myLauncherActivityRef.get().isEditing()
-                    && sharedPreferences.getBoolean(Settings.KEY_AUTO_HIDE_EMPTY, Settings.DEFAULT_AUTO_HIDE_EMPTY)) {
+                    && dataStoreEditor.getBoolean(Settings.KEY_AUTO_HIDE_EMPTY, Settings.DEFAULT_AUTO_HIDE_EMPTY)) {
                 for (Object group : selectedGroupsSet.toArray()) {
                     if (!appGroupMap.containsValue((String) group))
                         selectedGroupsSet.remove((String) group);
@@ -251,7 +262,7 @@ public class SettingsManager extends Settings {
         sortedGroupList.remove(Settings.UNSUPPORTED_GROUP);
 
         if (myLauncherActivityRef.get() != null && !myLauncherActivityRef.get().isEditing()
-                && sharedPreferences.getBoolean(Settings.KEY_AUTO_HIDE_EMPTY, Settings.DEFAULT_AUTO_HIDE_EMPTY)) {
+                && dataStoreEditor.getBoolean(Settings.KEY_AUTO_HIDE_EMPTY, Settings.DEFAULT_AUTO_HIDE_EMPTY)) {
             for (Object group: sortedGroupList.toArray()) {
                 if (!appGroupMap.containsValue((String) group)) sortedGroupList.remove((String) group);
             }
@@ -261,7 +272,7 @@ public class SettingsManager extends Settings {
     }
 
     public void resetGroups(){
-        SharedPreferences.Editor editor = sharedPreferenceEditor;
+        SharedPreferences.Editor editor = dataStoreEditor;
         for (String group : appGroupsSet) editor.remove(KEY_GROUP_APP_LIST + group);
         appGroupsSet.clear();
         appGroupMap.clear();
@@ -269,8 +280,6 @@ public class SettingsManager extends Settings {
         editor.remove(KEY_SELECTED_GROUPS);
         for (String group : getAppGroups())
             editor.remove(group);
-
-        editor.apply();
 
         readValues();
         writeValues();
@@ -281,7 +290,7 @@ public class SettingsManager extends Settings {
     public static synchronized void readValues() {
         try {
             appGroupsSet.clear();
-            appGroupsSet.addAll(sharedPreferences.getStringSet(KEY_GROUPS, getDefaultGroupsSet()));
+            appGroupsSet.addAll(dataStoreEditor.getStringSet(KEY_GROUPS, getDefaultGroupsSet()));
 
             appGroupMap.clear();
 
@@ -289,7 +298,7 @@ public class SettingsManager extends Settings {
             appGroupsSet.add(Settings.UNSUPPORTED_GROUP);
             for (String group : appGroupsSet) {
                 Set<String> appListSet = new HashSet<>();
-                appListSet = sharedPreferences.getStringSet(KEY_GROUP_APP_LIST + group, appListSet);
+                appListSet = dataStoreEditor.getStringSet(KEY_GROUP_APP_LIST + group, appListSet);
                 for (String app : appListSet) appGroupMap.put(app, group);
             }
 
@@ -300,7 +309,7 @@ public class SettingsManager extends Settings {
     synchronized private void queueStoreValues() {
         if (myLauncherActivityRef.get() != null && myLauncherActivityRef.get().mainView != null) {
             myLauncherActivityRef.get().post(SettingsManager::writeValues);
-            sharedPreferenceEditor.putStringSet(KEY_SELECTED_GROUPS, selectedGroupsSet);
+            dataStoreEditor.putStringSet(KEY_SELECTED_GROUPS, selectedGroupsSet);
         }
         else writeValues();
     }
@@ -316,7 +325,7 @@ public class SettingsManager extends Settings {
     }
     public synchronized static void writeValues() {
         try {
-            SharedPreferences.Editor editor = sharedPreferenceEditor;
+            SharedPreferences.Editor editor = dataStoreEditor;
             editor.putStringSet(KEY_GROUPS, appGroupsSet);
 
             Map<String, Set<String>> appListSetMap = new HashMap<>();
@@ -334,7 +343,6 @@ public class SettingsManager extends Settings {
             for (String group : appGroupsSet) {
                 editor.putStringSet(KEY_GROUP_APP_LIST + group, appListSetMap.get(group));
             }
-            editor.apply();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -373,16 +381,15 @@ public class SettingsManager extends Settings {
         if (!Settings.FALLBACK_GROUPS.containsKey(type)) type = App.Type.TYPE_PHONE;
         String def = Settings.FALLBACK_GROUPS.get(type);
 
-        //        if (!appGroupsSet.isEmpty() && appGroupsSet.contains(group)) return Settings.HIDDEN_GROUP;
-        return SettingsManager.sharedPreferences.getString(key, def);
+        return SettingsManager.dataStoreEditor.getString(key, def);
     }
 
     public static boolean isTypeBanner(App.Type type) {
         String key = Settings.KEY_BANNER + type;
         if (!Settings.FALLBACK_BANNER.containsKey(type)) type = App.Type.TYPE_PHONE;
-        Boolean def = Settings.FALLBACK_BANNER.get(type);
+        boolean def = Boolean.TRUE.equals(Settings.FALLBACK_BANNER.get(type));
 
-        return SettingsManager.sharedPreferences.getBoolean(key, Boolean.TRUE.equals(def));
+        return SettingsManager.dataStoreEditor.getBoolean(key, def);
     }
 
     public static boolean getRunning(String pkgName) {
@@ -400,7 +407,7 @@ public class SettingsManager extends Settings {
     }
 
     public static boolean getAdvancedLaunching(LauncherActivity activity) {
-        return activity.sharedPreferences.getBoolean(Settings.KEY_ADVANCED_SIZING,
+        return activity.dataStoreEditor.getBoolean(Settings.KEY_ADVANCED_SIZING,
                 Settings.DEFAULT_ADVANCED_SIZING);
     }
  }

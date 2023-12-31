@@ -7,7 +7,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
@@ -36,6 +35,7 @@ import com.threethan.launcher.adapter.AppsAdapter;
 import com.threethan.launcher.adapter.GroupsAdapter;
 import com.threethan.launcher.helper.AppData;
 import com.threethan.launcher.helper.Compat;
+import com.threethan.launcher.helper.DataStoreEditor;
 import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.helper.IconRepo;
 import com.threethan.launcher.helper.Keyboard;
@@ -43,7 +43,6 @@ import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.lib.ImageLib;
 import com.threethan.launcher.support.AppDetailsDialog;
-import com.threethan.launcher.support.SafeSharedPreferenceEditor;
 import com.threethan.launcher.support.SettingsDialog;
 import com.threethan.launcher.support.SettingsManager;
 import com.threethan.launcher.support.Updater;
@@ -79,8 +78,7 @@ public class LauncherActivity extends Activity {
     public ApplicationInfo currentTopSearchResult = null;
     public Set<String> clearFocusPackageNames = new HashSet<>();
     RecyclerView groupsView;
-    public SharedPreferences sharedPreferences;
-    public SafeSharedPreferenceEditor sharedPreferenceEditor;
+    public DataStoreEditor dataStoreEditor;
     public View mainView;
     private int prevViewWidth;
     public boolean needsUpdateCleanup = false;
@@ -99,20 +97,20 @@ public class LauncherActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_container);
 
-        sharedPreferences = Compat.getSharedPreferences(this);
+        dataStoreEditor = Compat.getDataStore(this);
 
         Intent intent = new Intent(this, LauncherService.class);
         bindService(intent, launcherServiceConnection, Context.BIND_AUTO_CREATE);
 
-        int background = sharedPreferences.getInt(Settings.KEY_BACKGROUND,
+        int background = dataStoreEditor.getInt(Settings.KEY_BACKGROUND,
         Platform.isTv(this)
             ? Settings.DEFAULT_BACKGROUND_TV
             : Settings.DEFAULT_BACKGROUND_VR);
         boolean custom = background < 0 || background >= SettingsManager.BACKGROUND_COLORS.length;
         int backgroundColor = custom ? Color.parseColor("#404044") : SettingsManager.BACKGROUND_COLORS[background];
-        int alpha = sharedPreferences.getInt(Settings.KEY_BACKGROUND_ALPHA, Settings.DEFAULT_ALPHA);
+        int alpha = dataStoreEditor.getInt(Settings.KEY_BACKGROUND_ALPHA, Settings.DEFAULT_ALPHA);
         Drawable cd = new ColorDrawable(backgroundColor);
-        if (alpha < 255) cd.setAlpha(alpha);
+        if (alpha < 255 && Platform.isQuest(this)) cd.setAlpha(alpha);
         post(() -> getWindow().setBackgroundDrawable(cd));
     }
     public View rootView;
@@ -159,7 +157,7 @@ public class LauncherActivity extends Activity {
             getAppAdapter().setLauncherActivity(this);
             getAdapterGroups().setLauncherActivity(this);
 
-            groupsEnabled = sharedPreferences.getBoolean(Settings.KEY_GROUPS_ENABLED, Settings.DEFAULT_GROUPS_ENABLED);
+            groupsEnabled = dataStoreEditor.getBoolean(Settings.KEY_GROUPS_ENABLED, Settings.DEFAULT_GROUPS_ENABLED);
             post(this::updateToolBars); // Fix visual bugs with the blur views
 
         } catch (Exception e) {
@@ -173,7 +171,6 @@ public class LauncherActivity extends Activity {
     }
 
     protected void init() {
-        sharedPreferenceEditor = new SafeSharedPreferenceEditor(sharedPreferences.edit());
         settingsManager = SettingsManager.getInstance(this);
 
         mainView = rootView.findViewById(R.id.mainLayout);
@@ -376,7 +373,6 @@ public class LauncherActivity extends Activity {
     }
 
     public void refreshInterfaceAll() {
-        if (sharedPreferenceEditor != null) sharedPreferenceEditor.apply();
         try {
             launcherService.refreshInterfaceAll();
         } catch (Exception ignored) {
@@ -392,10 +388,8 @@ public class LauncherActivity extends Activity {
     }
     public int lastSelectedGroup;
     public void refreshInterface() {
-        sharedPreferenceEditor.apply();
-
-        darkMode = sharedPreferences.getBoolean(Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE);
-        groupsEnabled = sharedPreferences.getBoolean(Settings.KEY_GROUPS_ENABLED, Settings.DEFAULT_GROUPS_ENABLED);
+        darkMode = dataStoreEditor.getBoolean(Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE);
+        groupsEnabled = dataStoreEditor.getBoolean(Settings.KEY_GROUPS_ENABLED, Settings.DEFAULT_GROUPS_ENABLED);
 
         refreshAdapters();
 
@@ -408,22 +402,22 @@ public class LauncherActivity extends Activity {
     }
     private int getAdjustedMargin() {
 
-        int targetSize = dp(sharedPreferences.getInt(Settings.KEY_SCALE, Settings.DEFAULT_SCALE));
+        int targetSize = dp(dataStoreEditor.getInt(Settings.KEY_SCALE, Settings.DEFAULT_SCALE));
         int estimatedWidth = prevViewWidth;
 
         final int nCol = estimatedWidth/(targetSize*2) * 2; // To nearest 2
         final float fCol = (float)(estimatedWidth)/(targetSize*2) * 2;
         final float dCol = fCol - nCol;
 
-        final float marginScale = (float) (sharedPreferences.getInt(Settings.KEY_SCALE, Settings.DEFAULT_SCALE)
+        final float marginScale = (float) (dataStoreEditor.getInt(Settings.KEY_SCALE, Settings.DEFAULT_SCALE)
                 - Settings.MIN_SCALE) / (Settings.MAX_SCALE - Settings.MIN_SCALE) + 1f + dCol/2;
-        return (dp((float) (sharedPreferences.getInt(Settings.KEY_MARGIN, Settings.DEFAULT_MARGIN))* marginScale/2f));
+        return (dp((float) (dataStoreEditor.getInt(Settings.KEY_SPACING, Settings.DEFAULT_SPACING))* marginScale/2f));
     }
     public void refreshAdapters() {
         updatePadding();
 
-        namesSquare = sharedPreferences.getBoolean(Settings.KEY_SHOW_NAMES_SQUARE, Settings.DEFAULT_SHOW_NAMES_SQUARE);
-        namesBanner = sharedPreferences.getBoolean(Settings.KEY_SHOW_NAMES_BANNER, Settings.DEFAULT_SHOW_NAMES_BANNER);
+        namesSquare = dataStoreEditor.getBoolean(Settings.KEY_SHOW_NAMES_SQUARE, Settings.DEFAULT_SHOW_NAMES_SQUARE);
+        namesBanner = dataStoreEditor.getBoolean(Settings.KEY_SHOW_NAMES_BANNER, Settings.DEFAULT_SHOW_NAMES_BANNER);
 
         // Margins
         if (marginDecoration != null) appsView.removeItemDecoration(marginDecoration);
@@ -478,7 +472,7 @@ public class LauncherActivity extends Activity {
         }
         updatePadding();
 
-        int targetSize = dp(sharedPreferences.getInt(Settings.KEY_SCALE, Settings.DEFAULT_SCALE));
+        int targetSize = dp(dataStoreEditor.getInt(Settings.KEY_SCALE, Settings.DEFAULT_SCALE));
         int estimatedWidth = prevViewWidth;
 
         int nCol = estimatedWidth/(targetSize*2) * 2; // To nearest 2
@@ -522,38 +516,38 @@ public class LauncherActivity extends Activity {
     // Sets the background value in the settings, then refreshes the background for all views
     public void setBackground(int index) {
         if (index >= SettingsManager.BACKGROUND_DRAWABLES.length || index < 0) index = -1;
-        else sharedPreferenceEditor.putBoolean(Settings.KEY_DARK_MODE, SettingsManager.BACKGROUND_DARK[index]);
-        sharedPreferenceEditor.putInt(Settings.KEY_BACKGROUND, index);
+        else dataStoreEditor.putBoolean(Settings.KEY_DARK_MODE, SettingsManager.BACKGROUND_DARK[index]);
+        dataStoreEditor.putInt(Settings.KEY_BACKGROUND, index);
         launcherService.refreshBackgroundAll();
     }
     // Sets a background color based on your chosen background,
     // then calls an async task to actually load the background
     public void refreshBackground() {
-        sharedPreferenceEditor.apply();
-
         // Set initial color, execute background task
-        int background = sharedPreferences.getInt(Settings.KEY_BACKGROUND,
+        dataStoreEditor.getInt(Settings.KEY_BACKGROUND,
                 Platform.isTv(this)
                         ? Settings.DEFAULT_BACKGROUND_TV
-                        : Settings.DEFAULT_BACKGROUND_VR);
-        boolean custom = background < 0 || background >= SettingsManager.BACKGROUND_COLORS.length;
-        int backgroundColor = custom ? Color.parseColor("#404044") : SettingsManager.BACKGROUND_COLORS[background];
+                        : Settings.DEFAULT_BACKGROUND_VR,
+        background -> {
+            boolean custom = background < 0 || background >= SettingsManager.BACKGROUND_COLORS.length;
+            int backgroundColor = custom ? Color.parseColor("#404044") : SettingsManager.BACKGROUND_COLORS[background];
 
-        getWindow().setNavigationBarColor(backgroundColor);
-        getWindow().setStatusBarColor(backgroundColor);
+            getWindow().setNavigationBarColor(backgroundColor);
+            getWindow().setStatusBarColor(backgroundColor);
 
-        new WallpaperExecutor().execute(this);
+            new WallpaperExecutor().execute(this);
+        });
     }
 
 
     public void refreshAppDisplayLists() {
-        sharedPreferenceEditor.apply();
+        
 
         Platform.appList = Collections.synchronizedList(new ArrayList<>());
 
         Platform.appList.addAll(Platform.installedApps);
         // Add web apps
-        Set<String> webApps = sharedPreferences.getStringSet(Settings.KEY_WEBSITE_LIST, Collections.emptySet());
+        Set<String> webApps = dataStoreEditor.getStringSet(Settings.KEY_WEBSITE_LIST, Collections.emptySet());
         for (String url:webApps) {
             ApplicationInfo applicationInfo = new ApplicationInfo();
             applicationInfo.packageName = url;
@@ -592,7 +586,7 @@ public class LauncherActivity extends Activity {
     public HashSet<String> getAllPackages() {
         HashSet<String> setAll = new HashSet<>();
         for (ApplicationInfo app : Platform.installedApps) setAll.add(app.packageName);
-        Set<String> webApps = sharedPreferences.getStringSet(Settings.KEY_WEBSITE_LIST, new HashSet<>());
+        Set<String> webApps = dataStoreEditor.getStringSet(Settings.KEY_WEBSITE_LIST, new HashSet<>());
         setAll.addAll(webApps);
         if (Platform.isQuest(this)) {
             for (ApplicationInfo panelApp : AppData.getFullPanelAppList())

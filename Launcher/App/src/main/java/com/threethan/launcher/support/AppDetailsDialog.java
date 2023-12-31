@@ -31,7 +31,8 @@ import java.util.Objects;
 public abstract class AppDetailsDialog {
     private static Drawable iconDrawable;
     private static File customIconFile;
-    private static String packageName;
+    private static ApplicationInfo imageApp;
+
     @SuppressLint("SetTextI18n")
     public static void showAppDetails(ApplicationInfo currentApp, LauncherActivity launcherActivity) {
         // Set View
@@ -79,16 +80,17 @@ public abstract class AppDetailsDialog {
         iconImageView.setImageDrawable(Icon.loadIcon(launcherActivity, currentApp, null));
 
         iconImageView.setClipToOutline(true);
-        if (App.isBanner(launcherActivity, currentApp)) iconImageView.getLayoutParams().width = launcherActivity.dp(150);
+        if (App.isBanner(currentApp)) iconImageView.getLayoutParams().width = launcherActivity.dp(150);
 
         iconImageView.setOnClickListener(iconPickerView -> {
             iconDrawable = currentApp.loadIcon(packageManager);
-            packageName = currentApp.packageName;
 
-            customIconFile = Icon.iconCustomFileForPackage(launcherActivity, currentApp.packageName);
+            customIconFile = Icon.iconCustomFileForApp(launcherActivity, currentApp);
             if (customIconFile.exists()) //noinspection ResultOfMethodCallIgnored
                 customIconFile.delete();
             launcherActivity.setSelectedIconImage(iconImageView, currentApp.packageName);
+
+            imageApp = currentApp;
             ImageLib.showImagePicker(launcherActivity, Settings.PICK_ICON_CODE);
         });
 
@@ -121,12 +123,12 @@ public abstract class AppDetailsDialog {
             launchModeSwitch.setOnCheckedChangeListener((sw, value) -> {
                 SettingsManager.setAppLaunchOut(currentApp.packageName, value);
 
-                if (!launcherActivity.sharedPreferences.getBoolean(Settings.KEY_SEEN_LAUNCH_OUT_POPUP, false)) {
+                if (!launcherActivity.dataStoreEditor.getBoolean(Settings.KEY_SEEN_LAUNCH_OUT_POPUP, false)) {
                     AlertDialog subDialog = Dialog.build(launcherActivity, R.layout.dialog_launch_out_info);
                     if (subDialog == null) return;
                     subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
-                        launcherActivity.sharedPreferenceEditor
-                                .putBoolean(Settings.KEY_SEEN_LAUNCH_OUT_POPUP, true).apply();
+                        launcherActivity.dataStoreEditor
+                                .putBoolean(Settings.KEY_SEEN_LAUNCH_OUT_POPUP, true);
                         subDialog.dismiss();
                     });
                 }
@@ -138,7 +140,7 @@ public abstract class AppDetailsDialog {
                 launchModeSection.setVisibility(View.GONE);
 
                 final String launchBrowserKey = Settings.KEY_LAUNCH_BROWSER + currentApp.packageName;
-                final int[] launchBrowserSelection = {launcherActivity.sharedPreferences.getInt(
+                final int[] launchBrowserSelection = {launcherActivity.dataStoreEditor.getInt(
                         launchBrowserKey,
                         SettingsManager.getAppLaunchOut(currentApp.packageName) ? 0 : 1)};
 
@@ -146,7 +148,7 @@ public abstract class AppDetailsDialog {
                 launchBrowserSpinner.setOnClickListener((view) -> {
                     launchBrowserSelection[0] = (launchBrowserSelection[0] + 1) % Settings.launchBrowserStrings.length;
                     launchBrowserSpinnerText.setText(Settings.launchBrowserStrings[launchBrowserSelection[0]]);
-                    launcherActivity.sharedPreferenceEditor.putInt(launchBrowserKey, launchBrowserSelection[0]);
+                    launcherActivity.dataStoreEditor.putInt(launchBrowserKey, launchBrowserSelection[0]);
                     SettingsManager.setAppLaunchOut(currentApp.packageName, launchBrowserSelection[0] != 0);
                 });
             }
@@ -155,7 +157,7 @@ public abstract class AppDetailsDialog {
                 launchSizeSpinner.setVisibility(View.VISIBLE);
                 launchModeSection.setVisibility(View.GONE);
                 final String launchSizeKey = Settings.KEY_LAUNCH_SIZE + currentApp.packageName;
-                final int[] launchSizeSelection = {launcherActivity.sharedPreferences.getInt(
+                final int[] launchSizeSelection = {launcherActivity.dataStoreEditor.getInt(
                         launchSizeKey,
                         SettingsManager.getAppLaunchOut(currentApp.packageName) ? 0 : 1)};
 
@@ -163,7 +165,7 @@ public abstract class AppDetailsDialog {
                 launchSizeSpinner.setOnClickListener((view) -> {
                     launchSizeSelection[0] = (launchSizeSelection[0] + 1) % Settings.launchSizeStrings.length;
                     launchSizeSpinnerText.setText(Settings.launchSizeStrings[launchSizeSelection[0]]);
-                    launcherActivity.sharedPreferenceEditor.putInt(launchSizeKey, launchSizeSelection[0]);
+                    launcherActivity.dataStoreEditor.putInt(launchSizeKey, launchSizeSelection[0]);
                     SettingsManager.setAppLaunchOut(currentApp.packageName, launchSizeSelection[0] != 0);
                 });
             }
@@ -224,7 +226,7 @@ public abstract class AppDetailsDialog {
         // Save Label & Reload on Confirm
         dialog.findViewById(R.id.confirm).setOnClickListener(view -> {
             SettingsManager.setAppLabel(currentApp, StringLib.setStarred(appNameEditText.getText().toString(), isStarred[0]));
-            launcherActivity.refreshInterfaceAll();
+            launcherActivity.getAppAdapter().notifyAppChanged(currentApp);
             dialog.dismiss();
         });
     }
@@ -238,7 +240,7 @@ public abstract class AppDetailsDialog {
             selectedImageView.setImageBitmap(bitmap);
         } else {
             selectedImageView.setImageDrawable(iconDrawable);
-            Icon.updateIcon(customIconFile, packageName, null);
+            Icon.updateIcon(customIconFile, imageApp, null);
             // No longer sets icon here but that should be fine
         }
     }

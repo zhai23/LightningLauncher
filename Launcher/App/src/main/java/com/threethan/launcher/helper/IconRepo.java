@@ -67,7 +67,7 @@ public abstract class IconRepo {
     public static synchronized boolean shouldDownload(LauncherActivity activity, ApplicationInfo app) {
         if (App.isShortcut(app)) return false;
         if (downloadExemptPackages.isEmpty()) {
-            downloadExemptPackages.addAll(activity.sharedPreferences
+            downloadExemptPackages.addAll(activity.dataStoreEditor
                     .getStringSet(SettingsManager.DONT_DOWNLOAD_ICONS, downloadExemptPackages));
         }
         return !downloadExemptPackages.contains(app.packageName);
@@ -75,13 +75,12 @@ public abstract class IconRepo {
 
     public static synchronized void dontDownloadIconFor(LauncherActivity activity, String packageName) {
         if (downloadExemptPackages.isEmpty())
-            downloadExemptPackages = activity.sharedPreferences
+            downloadExemptPackages = activity.dataStoreEditor
                     .getStringSet(SettingsManager.DONT_DOWNLOAD_ICONS, downloadExemptPackages);
         downloadExemptPackages.add(packageName);
         if (hasInternet) {
-            activity.sharedPreferenceEditor
+            activity.dataStoreEditor
                     .putStringSet(SettingsManager.DONT_DOWNLOAD_ICONS, downloadExemptPackages);
-            activity.sharedPreferenceEditor.apply();
         }
         else shouldSaveDownloadExemptPackagesIfConnected = true;
     }
@@ -90,8 +89,8 @@ public abstract class IconRepo {
     public static void download(final LauncherActivity activity, ApplicationInfo app, final Runnable callback) {
         final String pkgName = app.packageName;
 
-        final boolean isWide = App.isBanner(activity, app);
-        final File iconFile = Icon.iconCacheFileForPackage(activity, pkgName);
+        final boolean isWide = App.isBanner(app);
+        final File iconFile = Icon.iconCacheFileForPackage(activity, app);
 
         new Thread(() -> {
             Object lock = locks.putIfAbsent(pkgName, new Object());
@@ -195,9 +194,8 @@ public abstract class IconRepo {
             try {
                 hasInternet = checkInternet();
                 if (shouldSaveDownloadExemptPackagesIfConnected) {
-                    activity.sharedPreferenceEditor
+                    activity.dataStoreEditor
                             .putStringSet(SettingsManager.DONT_DOWNLOAD_ICONS, downloadExemptPackages);
-                    activity.sharedPreferenceEditor.apply();
                 }
             } catch (Exception e) {
                 e.printStackTrace();

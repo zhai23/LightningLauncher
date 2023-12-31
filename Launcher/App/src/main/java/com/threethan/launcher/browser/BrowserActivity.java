@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -18,6 +17,7 @@ import android.widget.TextView;
 import com.threethan.launcher.R;
 import com.threethan.launcher.browser.GeckoView.BrowserWebView;
 import com.threethan.launcher.helper.Compat;
+import com.threethan.launcher.helper.DataStoreEditor;
 import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.helper.Keyboard;
 import com.threethan.launcher.helper.Platform;
@@ -50,7 +50,7 @@ public class BrowserActivity extends Activity {
     View background;
     View loading;
     View addHome;
-    public SharedPreferences sharedPreferences;
+    public DataStoreEditor dataStoreEditor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +61,7 @@ public class BrowserActivity extends Activity {
         setContentView(R.layout.activity_browser);
         getWindow().setStatusBarColor(Color.parseColor("#11181f"));
 
-        sharedPreferences = Compat.getSharedPreferences(this);
+        dataStoreEditor = Compat.getDataStore(this);
 
         background = findViewById(R.id.container);
         loading = findViewById(R.id.loading);
@@ -154,7 +154,7 @@ public class BrowserActivity extends Activity {
 
         addHome = findViewById(R.id.addHome);
         addHome.setOnClickListener(view -> {
-            Platform.addWebsite(sharedPreferences, currentUrl);
+            Platform.addWebsite(dataStoreEditor, currentUrl);
             addHome.setVisibility(View.GONE);
         });
 
@@ -218,7 +218,7 @@ public class BrowserActivity extends Activity {
         if (StringLib.isInvalidUrl(url)) addHome.setVisibility(View.GONE);
         else if (StringLib.compareUrl(baseUrl, url) && !isEphemeral()) addHome.setVisibility(View.GONE);
         else {
-            Set<String> webList = sharedPreferences.getStringSet(Settings.KEY_WEBSITE_LIST, new HashSet<>());
+            Set<String> webList = dataStoreEditor.getStringSet(Settings.KEY_WEBSITE_LIST, new HashSet<>());
             for (String webUrl : webList) {
                 if (StringLib.compareUrl(webUrl, url)) {
                     addHome.setVisibility(View.GONE);

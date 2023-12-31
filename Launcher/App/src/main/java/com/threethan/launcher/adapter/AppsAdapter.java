@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -31,6 +32,7 @@ import com.threethan.launcher.support.AppDetailsDialog;
 import com.threethan.launcher.support.SettingsManager;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -167,7 +169,7 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.AppViewHolder>
             }
         });
         holder.view.setOnLongClickListener(view -> {
-            if (getEditMode() || !launcherActivity.canEdit() || launcherActivity.sharedPreferences
+            if (getEditMode() || !launcherActivity.canEdit() || launcherActivity.dataStoreEditor
                     .getBoolean(Settings.KEY_DETAILS_LONG_PRESS, Settings.DEFAULT_DETAILS_LONG_PRESS)) {
                 if (holder.killButton.getVisibility() == View.VISIBLE)
                     holder.killButton.callOnClick();
@@ -204,7 +206,7 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.AppViewHolder>
         ApplicationInfo app = getItem(position);
 
         // Square vs Banner
-        final boolean banner = App.isBanner(launcherActivity, app);
+        final boolean banner = App.isBanner(app);
         holder.imageViewSquare.setVisibility(banner ? View.GONE : View.VISIBLE);
         holder.imageViewBanner.setVisibility(banner ? View.VISIBLE : View.GONE);
         holder.imageView = banner ? holder.imageViewBanner : holder.imageViewSquare;
@@ -264,12 +266,12 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.AppViewHolder>
         // Top search result
         if (launcherActivity.currentTopSearchResult != null &&
                 Objects.equals(
-                        Icon.cacheName(launcherActivity.currentTopSearchResult.packageName),
-                        Icon.cacheName(holder.app.packageName))) {
+                        Icon.cacheName(launcherActivity.currentTopSearchResult),
+                        Icon.cacheName(holder.app))) {
             updateHover(holder, true);
-        } else if (launcherActivity.clearFocusPackageNames.contains(Icon.cacheName(holder.app.packageName))) {
+        } else if (launcherActivity.clearFocusPackageNames.contains(Icon.cacheName(holder.app))) {
             updateHover(holder, false);
-            launcherActivity.clearFocusPackageNames.remove(Icon.cacheName(holder.app.packageName));
+            launcherActivity.clearFocusPackageNames.remove(Icon.cacheName(holder.app));
         }
     }
     public void updateHover(AppViewHolder holder, boolean hovered) {
@@ -318,7 +320,7 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.AppViewHolder>
     }
     @Override
     public int getItemViewType(int position) {
-        return App.isBanner(launcherActivity, currentAppList.get(position)) ? 2 : 1;
+        return App.isBanner(currentAppList.get(position)) ? 2 : 1;
     }
 
     // Animation
@@ -410,5 +412,16 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.AppViewHolder>
             shouldAnimateClose = false;
         }
         return rv;
+    }
+    public void notifyAppChanged(ApplicationInfo app) {
+        if (currentAppList != null && currentAppList.contains(app)) {
+            int i = currentAppList.indexOf(app);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                currentAppList.sort(Comparator.comparing(SettingsManager::getSortableAppLabel));
+                int j = currentAppList.indexOf(app);
+                if (i != j) notifyItemMoved(i, j);
+                notifyItemChanged(j);
+            }
+        }
     }
 }

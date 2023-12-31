@@ -33,7 +33,6 @@ public abstract class Launch {
     protected static final String ACTION_ACTUALLY_SHORTCUT = "ACTION_ACTUALLY_SHORTCUT";
     public static boolean launchApp(LauncherActivity launcherActivity, ApplicationInfo app) {
         // Apply any pending preference changes before launching
-        launcherActivity.sharedPreferenceEditor.apply();
         try {
             // This is unlikely to fail, but it shouldn't stop us from launching if it somehow does
             Keyboard.hide(launcherActivity, launcherActivity.mainView);
@@ -131,7 +130,7 @@ public abstract class Launch {
             Intent intent;
             if (app.packageName.startsWith("http://") || (app.packageName.startsWith("https://"))) {
                 int browserIndex
-                        = activity.sharedPreferences.getInt(Settings.KEY_LAUNCH_BROWSER + app.packageName, 0);
+                        = activity.dataStoreEditor.getInt(Settings.KEY_LAUNCH_BROWSER + app.packageName, 0);
                 if (browserIndex == 2) {
                     // Open in MQ browser
                     intent = new Intent(Intent.ACTION_VIEW, Uri.parse(app.packageName));
@@ -168,7 +167,7 @@ public abstract class Launch {
                 && App.getType(activity, app) == App.Type.TYPE_PHONE &&
                 SettingsManager.getAppLaunchOut(app.packageName)) {
 
-            int index = activity.sharedPreferences.getInt(Settings.KEY_LAUNCH_SIZE + app.packageName, 1);
+            int index = activity.dataStoreEditor.getInt(Settings.KEY_LAUNCH_SIZE + app.packageName, 1);
             // Index of 1 is normal launch own
             if (index != 1) {
                 Intent chainIntent = new Intent(activity, Settings.launchSizeClasses[index]);

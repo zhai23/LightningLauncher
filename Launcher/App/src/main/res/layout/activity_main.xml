@@ -379,7 +379,6 @@
         android:alpha="0"
         android:indeterminate="true"
         android:indeterminateTint="#AAAAAA"
-        android:theme="@style/ThemeOverlay.Material"
         android:visibility="gone" />
 
 </FrameLayout>

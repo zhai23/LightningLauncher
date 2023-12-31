@@ -28,7 +28,7 @@ class WallpaperExecutor {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.execute(() -> {
             // Do fetching of data
-            int background = owner.sharedPreferences.getInt(Settings.KEY_BACKGROUND,
+            int background = owner.dataStoreEditor.getInt(Settings.KEY_BACKGROUND,
                     Platform.isTv(owner)
                             ? Settings.DEFAULT_BACKGROUND_TV
                             : Settings.DEFAULT_BACKGROUND_VR);
@@ -72,9 +72,11 @@ class WallpaperExecutor {
                 } catch (Exception e) { e.printStackTrace(); }
             }
             if (backgroundThemeDrawable == null) return;
-            backgroundThemeDrawable.setAlpha(owner.sharedPreferences
-                    .getInt(Settings.KEY_BACKGROUND_ALPHA, Settings.DEFAULT_ALPHA));
 
+            if (Platform.isQuest(owner)) {
+                backgroundThemeDrawable.setAlpha(owner.dataStoreEditor
+                        .getInt(Settings.KEY_BACKGROUND_ALPHA, Settings.DEFAULT_ALPHA));
+            }
             // Apply
             BitmapDrawable finalBackgroundThemeDrawable = backgroundThemeDrawable;
             if (executorService.isShutdown()) return;

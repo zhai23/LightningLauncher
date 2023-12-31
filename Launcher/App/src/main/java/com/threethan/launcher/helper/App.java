@@ -3,7 +3,6 @@ package com.threethan.launcher.helper;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -38,7 +37,7 @@ public abstract class App {
     public enum Type {
         TYPE_PHONE, TYPE_VR, TYPE_TV, TYPE_PANEL, TYPE_WEB, TYPE_SUPPORTED, TYPE_UNSUPPORTED
     }
-    private static boolean checkVirtualReality(ApplicationInfo applicationInfo, Activity activity) {
+    private static boolean checkVirtualReality(ApplicationInfo applicationInfo) {
         if (applicationInfo.metaData == null) return false;
         if (applicationInfo.metaData.containsKey("com.oculus.supportedDevices")) return true;
         if (applicationInfo.metaData.containsKey("com.oculus.ossplash")) return true;
@@ -61,10 +60,10 @@ public abstract class App {
 
     }
     protected synchronized static boolean isAppOfType
-            (ApplicationInfo applicationInfo, App.Type appType, LauncherActivity launcherActivity) {
+            (ApplicationInfo applicationInfo, App.Type appType) {
 
-            final SharedPreferences sharedPreferences = launcherActivity.sharedPreferences;
-            final SharedPreferences.Editor sharedPreferenceEditor = launcherActivity.sharedPreferenceEditor;
+            final LauncherActivity launcherActivity = SettingsManager.getAnyLauncherActivity();
+            final DataStoreEditor sharedPreferences = launcherActivity.dataStoreEditor;
 
             if (!categoryIncludedApps.containsKey(appType)) {
                 // Create new hashsets for cache
@@ -86,42 +85,29 @@ public abstract class App {
 
 
 
-            boolean isType = false;
+            boolean isType = switch (appType) {
+                case TYPE_VR -> checkVirtualReality(applicationInfo);
+                case TYPE_TV -> checkAndroidTv(applicationInfo, launcherActivity);
+                case TYPE_PANEL -> checkPanelApp(applicationInfo, launcherActivity);
+                case TYPE_WEB -> isWebsite(applicationInfo);
+                case TYPE_PHONE -> true;
+                case TYPE_SUPPORTED -> checkSupported(applicationInfo, launcherActivity);
+                default -> false;
 
-            // this function shouldn't be called until checking higher priorities first
-            switch (appType) {
-                case TYPE_VR:
-                    isType = checkVirtualReality(applicationInfo, launcherActivity);
-                    break;
-                case TYPE_TV:
-                    isType = checkAndroidTv(applicationInfo, launcherActivity);
-                    break;
-                case TYPE_PANEL:
-                    isType = checkPanelApp(applicationInfo, launcherActivity);
-                    break;
-                case TYPE_WEB:
-                    isType = isWebsite(applicationInfo);
-                    break;
-                case TYPE_PHONE:
-                    isType = true;
-                    break;
-                case TYPE_SUPPORTED:
-                    isType = checkSupported(applicationInfo, launcherActivity);
-                    break;
-            }
+                // this function shouldn't be called until checking higher priorities first
+            };
 
-            if (isType) {
+        if (isType) {
                 Objects.requireNonNull(categoryIncludedApps.get(appType))
                         .add(applicationInfo.packageName);
-                sharedPreferenceEditor.putStringSet(Settings.KEY_INCLUDED_SET + appType,
+                sharedPreferences.putStringSet(Settings.KEY_INCLUDED_SET + appType,
                         categoryIncludedApps.get(appType));
             } else {
                 Objects.requireNonNull(categoryExcludedApps.get(appType))
                         .add(applicationInfo.packageName);
-                sharedPreferenceEditor.putStringSet(Settings.KEY_EXCLUDED_SET + appType,
+                sharedPreferences.putStringSet(Settings.KEY_EXCLUDED_SET + appType,
                         categoryIncludedApps.get(appType));
             }
-            sharedPreferenceEditor.apply();
 
             return isType;
     }
@@ -140,15 +126,15 @@ public abstract class App {
         } else return false;
     }
 
-    synchronized public static boolean isSupported(ApplicationInfo app, LauncherActivity launcherActivity) {
-        return isAppOfType(app, Type.TYPE_SUPPORTED, launcherActivity);
+    synchronized public static boolean isSupported(ApplicationInfo app) {
+        return isAppOfType(app, Type.TYPE_SUPPORTED);
     }
     private static String[] unsupportedPrefixes;
     private static boolean checkSupported(ApplicationInfo app, LauncherActivity launcherActivity) {
         if (isWebsite(app)) return true;
 
         if (app.metaData != null) {
-            boolean isVr = isAppOfType(app, Type.TYPE_VR, launcherActivity);
+            boolean isVr = isAppOfType(app, Type.TYPE_VR);
             if (!isVr && app.metaData.keySet().contains("com.oculus.environmentVersion")) return false;
         }
         if (Launch.getLaunchIntent(launcherActivity, app) == null) return false;
@@ -159,8 +145,9 @@ public abstract class App {
                 return false;
         return true;
     }
-
-    public static boolean isBanner(LauncherActivity launcherActivity, ApplicationInfo applicationInfo) {
+    public static boolean isBanner(ApplicationInfo applicationInfo) {
+        LauncherActivity launcherActivity = SettingsManager.getAnyLauncherActivity();
+        if (launcherActivity == null) return false;
         return typeIsBanner(getType(launcherActivity, applicationInfo));
     }
     /** @noinspection SuspiciousMethodCalls*/
@@ -184,11 +171,9 @@ public abstract class App {
         categoryExcludedApps = new HashMap<>();
 
         for (App.Type type : App.Type.values())
-            launcherActivity.sharedPreferenceEditor
-                    .remove(Settings.KEY_INCLUDED_SET + type)
-                    .remove(Settings.KEY_EXCLUDED_SET + type);
-
-        launcherActivity.sharedPreferenceEditor.apply();
+            launcherActivity.dataStoreEditor
+                    .removeStringSet(Settings.KEY_INCLUDED_SET + type)
+                    .removeStringSet(Settings.KEY_EXCLUDED_SET + type);
     }
     // Opens the app info settings pane
     public static void openInfo(Context context, String packageName) {
@@ -200,11 +185,11 @@ public abstract class App {
     // Requests to uninstall the app
     public static void uninstall(LauncherActivity launcher, String packageName) {
         if (App.isWebsite(packageName)) {
-            Set<String> webApps = launcher.sharedPreferences.getStringSet(Settings.KEY_WEBSITE_LIST, Collections.emptySet());
+            Set<String> webApps = launcher.dataStoreEditor.getStringSet(Settings.KEY_WEBSITE_LIST, Collections.emptySet());
             webApps = new HashSet<>(webApps); // Copy since we're not supposed to modify directly
             if (launcher.browserService != null) launcher.browserService.killWebView(packageName); // Kill web view if running
             webApps.remove(packageName);
-            launcher.sharedPreferenceEditor
+            launcher.dataStoreEditor
                     .putString(packageName, null) // set display name
                     .putStringSet(Settings.KEY_WEBSITE_LIST, webApps);
             launcher.refreshAppDisplayListsAll();
@@ -217,26 +202,20 @@ public abstract class App {
 
     public static App.Type getType(LauncherActivity launcherActivity, ApplicationInfo app) {
         for (Type type : Platform.getSupportedAppTypes(launcherActivity)) {
-            if (isAppOfType(app, type, launcherActivity)) return type;
+            if (isAppOfType(app, type)) return type;
         }
         return Type.TYPE_UNSUPPORTED;
     }
 
     public static String getTypeString(Activity a, Type type) {
-        switch (type) {
-            case TYPE_PHONE:
-                return a.getString(R.string.apps_phone);
-            case TYPE_VR:
-                return a.getString(R.string.apps_vr);
-            case TYPE_TV:
-                return a.getString(R.string.apps_tv);
-            case TYPE_WEB:
-                return a.getString(R.string.apps_web);
-            case TYPE_PANEL:
-                return a.getString(R.string.apps_panel);
-            default:
-                return "Invalid type";
-        }
+        return switch (type) {
+            case TYPE_PHONE -> a.getString(R.string.apps_phone);
+            case TYPE_VR -> a.getString(R.string.apps_vr);
+            case TYPE_TV -> a.getString(R.string.apps_tv);
+            case TYPE_WEB -> a.getString(R.string.apps_web);
+            case TYPE_PANEL -> a.getString(R.string.apps_panel);
+            default -> "Invalid type";
+        };
     }
     public static String getDefaultGroupFor(App.Type type) {
         return SettingsManager.getDefaultGroupFor(type);
@@ -255,7 +234,8 @@ public abstract class App {
     }
     public static boolean doesPackageExist(Activity activity, String packageName) {
         try {
-            ApplicationInfo ai = activity.getPackageManager().getApplicationInfo(packageName,0);
+            ApplicationInfo ignored
+                    = activity.getPackageManager().getApplicationInfo(packageName,0);
             return true;
         } catch (PackageManager.NameNotFoundException e) {
             return false;

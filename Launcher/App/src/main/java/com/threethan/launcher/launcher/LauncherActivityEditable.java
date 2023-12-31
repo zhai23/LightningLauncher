@@ -5,8 +5,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.os.Build;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -18,11 +16,11 @@ import com.threethan.launcher.R;
 import com.threethan.launcher.adapter.AppsAdapter;
 import com.threethan.launcher.adapter.GroupsAdapter;
 import com.threethan.launcher.helper.App;
+import com.threethan.launcher.helper.DataStoreEditor;
 import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.lib.StringLib;
-import com.threethan.launcher.support.SafeSharedPreferenceEditor;
 import com.threethan.launcher.support.SettingsDialog;
 import com.threethan.launcher.support.SettingsManager;
 
@@ -85,15 +83,9 @@ public class LauncherActivityEditable extends LauncherActivity {
 
     @Override
     public void refreshInterface() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            sharedPreferences = getSharedPreferences(PreferenceManager.getDefaultSharedPreferencesName(this),
-                    Context.MODE_PRIVATE);
-        } else {
-            sharedPreferences = this.getSharedPreferences( getPackageName() + "_preferences", Context.MODE_PRIVATE);
-        }
-        sharedPreferenceEditor = new SafeSharedPreferenceEditor(sharedPreferences.edit());
+        dataStoreEditor = new DataStoreEditor(this);
 
-        if (editMode == null) editMode = sharedPreferences.getBoolean(Settings.KEY_EDIT_MODE, false);
+        if (editMode == null) editMode = dataStoreEditor.getBoolean(Settings.KEY_EDIT_MODE, false);
 
         super.refreshInterface();
 
@@ -208,8 +200,8 @@ public class LauncherActivityEditable extends LauncherActivity {
     public void setEditMode(boolean value) {
         editMode = value;
         if (!editMode) currentSelectedApps.clear();
-        if (sharedPreferenceEditor == null) return;
-        sharedPreferenceEditor.putBoolean(Settings.KEY_EDIT_MODE, editMode);
+        if (dataStoreEditor == null) return;
+        dataStoreEditor.putBoolean(Settings.KEY_EDIT_MODE, editMode);
         final View focused = getCurrentFocus();
         refreshInterface();
         if (focused != null) {
@@ -243,7 +235,7 @@ public class LauncherActivityEditable extends LauncherActivity {
     public void refreshAppDisplayLists() {
         super.refreshAppDisplayLists();
 
-        Set<String> webApps = sharedPreferences.getStringSet(Settings.KEY_WEBSITE_LIST, new HashSet<>());
+        Set<String> webApps = dataStoreEditor.getStringSet(Settings.KEY_WEBSITE_LIST, new HashSet<>());
         Set<String> packages = getAllPackages();
 
         try {
@@ -276,7 +268,7 @@ public class LauncherActivityEditable extends LauncherActivity {
     }
 
     public void addWebsite(Context context) {
-        sharedPreferenceEditor.apply();
+        
         AlertDialog dialog = Dialog.build(this, R.layout.dialog_new_website);
 
         // Set group to (one of) selected
@@ -304,14 +296,14 @@ public class LauncherActivityEditable extends LauncherActivity {
                 usedUrl.setVisibility(View.GONE);
                 return;
             }
-            String foundGroup = Platform.findWebsite(sharedPreferences, url);
+            String foundGroup = Platform.findWebsite(dataStoreEditor, url);
             if (foundGroup != null) {
                 badUrl.setVisibility(View.GONE);
                 usedUrl.setVisibility(View.VISIBLE);
                 usedUrl.setText(context.getString(R.string.add_website_used_url, foundGroup));
                 return;
             }
-            Platform.addWebsite(sharedPreferences, url);
+            Platform.addWebsite(dataStoreEditor, url);
             settingsManager.setAppGroup(StringLib.fixUrl(url), group);
             dialog.cancel();
             refreshAppDisplayListsAll();
@@ -336,7 +328,7 @@ public class LauncherActivityEditable extends LauncherActivity {
         if (subDialog == null) return;
         subDialog.findViewById(R.id.vrOnlyInfo).setVisibility(Platform.isVr(this) ? View.VISIBLE : View.GONE);
         subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
-            sharedPreferenceEditor.putBoolean(Settings.KEY_SEEN_WEBSITE_POPUP, true).apply();
+            dataStoreEditor.putBoolean(Settings.KEY_SEEN_WEBSITE_POPUP, true);
             addWebsite(this);
             subDialog.dismiss();
         });

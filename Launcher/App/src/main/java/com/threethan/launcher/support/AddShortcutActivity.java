@@ -2,7 +2,7 @@ package com.threethan.launcher.support;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherApps;
 import android.content.pm.ShortcutInfo;
 import android.graphics.drawable.Drawable;
@@ -20,6 +20,7 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.threethan.launcher.helper.Compat;
+import com.threethan.launcher.helper.DataStoreEditor;
 import com.threethan.launcher.helper.Icon;
 import com.threethan.launcher.helper.Platform;
 
@@ -66,9 +67,12 @@ public class AddShortcutActivity extends Activity {
         }
 
         String json = getFixedGsonWriter().toJson(shortcutInfo);
-        SharedPreferences sharedPreferences = Compat.getSharedPreferences(this);
-        String url = Platform.addWebsite(sharedPreferences, json, label);
-        Icon.saveIconDrawableExternal(this, iconDrawable, url);
+        DataStoreEditor dataStoreEditor = Compat.getDataStore(this);
+        String url = Platform.addWebsite(dataStoreEditor, json, label);
+
+        ApplicationInfo app = new ApplicationInfo();
+        app.packageName = url;
+        Icon.saveIconDrawableExternal(this, iconDrawable, app);
         this.finish();
     }
     public static void launchShortcut(Activity activity, String json) {

@@ -67,7 +67,7 @@ public abstract class GroupDetailsDialog {
                     String newDefault = value ? groupName : Settings.FALLBACK_GROUPS.get(type);
                     if ((!value && groupName.equals(newDefault)) || !appGroupsSet.contains(newDefault))
                         newDefault = null;
-                    launcherActivity.sharedPreferenceEditor.putString(Settings.KEY_DEFAULT_GROUP + type, newDefault).apply();
+                    launcherActivity.dataStoreEditor.putString(Settings.KEY_DEFAULT_GROUP + type, newDefault);
                     final boolean newChecked = App.getDefaultGroupFor(type).equals(groupName);
                     if (newChecked && !value) Dialog.toast(launcherActivity.getString(R.string.toast_cant_unset_group));
                     cSwitch.setChecked(newChecked);
@@ -84,7 +84,7 @@ public abstract class GroupDetailsDialog {
             // Move the default group when we rename
             for (App.Type type : Platform.getSupportedAppTypes(launcherActivity))
                 if (App.getDefaultGroupFor(type).equals(groupName))
-                    launcherActivity.sharedPreferenceEditor.putString(Settings.KEY_DEFAULT_GROUP + type, newGroupName);
+                    launcherActivity.dataStoreEditor.putString(Settings.KEY_DEFAULT_GROUP + type, newGroupName);
 
             if (newGroupName.length() > 0) {
                 appGroupsSet.remove(groupName);

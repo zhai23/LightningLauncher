@@ -9,7 +9,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ServiceInfo;
@@ -152,7 +151,7 @@ public class Updater {
         return is64bit ? NAME_MAIN_ARM64 : NAME_MAIN_COMPAT;
     }
     public void updateAppEvenIfSkipped() {
-        getSharedPreferences().edit().remove(KEY_IGNORED_UPDATE_VERSION).apply();
+        Compat.getDataStore(activity).removeString(KEY_IGNORED_UPDATE_VERSION);
         attempts = 6;
         downloadUpdate(getUpdateName());
     }
@@ -170,12 +169,12 @@ public class Updater {
 
         if (appHasUpdate) {
             Log.v(TAG, "New version available!");
-            getSharedPreferences().edit().putBoolean(KEY_UPDATE_AVAILABLE, true).apply();
-            if (tagName.equals(getSharedPreferences().getString(KEY_IGNORED_UPDATE_VERSION, null))) return;
+            Compat.getDataStore(activity).putBoolean(KEY_UPDATE_AVAILABLE, true);
+            if (tagName.equals(Compat.getDataStore(activity).getString(KEY_IGNORED_UPDATE_VERSION, null))) return;
             showAppUpdateDialog(packageInfo.versionName, tagName);
         } else {
             Log.i(TAG, "App is up to date :)");
-            getSharedPreferences().edit().putBoolean(KEY_UPDATE_AVAILABLE, false).apply();
+            Compat.getDataStore(activity).putBoolean(KEY_UPDATE_AVAILABLE, false);
         }
     }
 
@@ -216,18 +215,16 @@ public class Updater {
             anyDialogVisible = true;
         } catch (Exception ignored) {}
     }
-    private SharedPreferences getSharedPreferences() {
-        return Compat.getSharedPreferences(activity);
-    }
+
     public static boolean isMainUpdateAvailable(Context context) {
-        return Compat.getSharedPreferences(context).getBoolean(KEY_UPDATE_AVAILABLE, false);
+        return Compat.getDataStore(context).getBoolean(KEY_UPDATE_AVAILABLE, false);
     }
     public void skipUpdate(String versionTag) {
         AlertDialog.Builder skipDialogBuilder = new AlertDialog.Builder(activity, android.R.style.Theme_DeviceDefault_Dialog_Alert);
         skipDialogBuilder.setTitle(activity.getString(R.string.update_skip_title, versionTag));
         skipDialogBuilder.setMessage(R.string.update_skip_content);
         skipDialogBuilder.setPositiveButton(R.string.update_skip_confirm_button, (dialog, i) -> {
-            getSharedPreferences().edit().putString(KEY_IGNORED_UPDATE_VERSION, versionTag).apply();
+            Compat.getDataStore(activity).putString(KEY_IGNORED_UPDATE_VERSION, versionTag);
             Dialog.toast(activity.getString(R.string.update_skip_toast), versionTag, false);
             dialog.dismiss();
         });

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.util.Log;
 
 import com.threethan.launcher.launcher.LauncherActivity;
@@ -37,10 +38,15 @@ public abstract class Compat {
 
     public static synchronized void checkCompatibilityUpdate(LauncherActivity launcherActivity) {
         if (DEBUG_COMPATIBILITY) Log.e(TAG, "CRITICAL WARNING: DEBUG_COMPATIBILITY IS ON");
-        SharedPreferences sharedPreferences = launcherActivity.sharedPreferences;
-        SharedPreferences.Editor sharedPreferenceEditor = launcherActivity.sharedPreferences.edit();
+        DataStoreEditor sharedPreferences = launcherActivity.dataStoreEditor;
         int storedVersion = DEBUG_COMPATIBILITY ? 0 : sharedPreferences.getInt(Compat.KEY_COMPATIBILITY_VERSION, -1);
         if (storedVersion == -1) {
+            // Attempt migration
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                new DataStoreEditor(launcherActivity).migrateDefault(launcherActivity);
+            }
+
+            // Continue
             if (sharedPreferences.getInt(Settings.KEY_BACKGROUND, -1) == -1) return; // return if fresh install
             storedVersion = 0; // set version to 0 if coming from a version before this system was added
         }
@@ -59,9 +65,9 @@ public abstract class Compat {
                                     : Settings.DEFAULT_BACKGROUND_VR);
 
                     if (backgroundIndex >= 0 && backgroundIndex < SettingsManager.BACKGROUND_DARK.length)
-                        sharedPreferenceEditor.putBoolean(Settings.KEY_DARK_MODE, SettingsManager.BACKGROUND_DARK[backgroundIndex]);
+                        sharedPreferences.putBoolean(Settings.KEY_DARK_MODE, SettingsManager.BACKGROUND_DARK[backgroundIndex]);
                     else if (storedVersion == 0)
-                        sharedPreferenceEditor.putBoolean(Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE);
+                        sharedPreferences.putBoolean(Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE);
                 }
                 switch (version) {
                     case (0):
@@ -69,7 +75,7 @@ public abstract class Compat {
                                 Platform.isTv(launcherActivity)
                                         ? Settings.DEFAULT_BACKGROUND_TV
                                         : Settings.DEFAULT_BACKGROUND_VR) == 6)
-                            sharedPreferenceEditor.putInt(Settings.KEY_BACKGROUND, -1);
+                            sharedPreferences.putInt(Settings.KEY_BACKGROUND, -1);
                         // Rename group to new default
                         renameGroup(launcherActivity, "Tools", "Apps");
                         break;
@@ -78,7 +84,7 @@ public abstract class Compat {
                                 Platform.isTv(launcherActivity)
                                         ? Settings.DEFAULT_BACKGROUND_TV
                                         : Settings.DEFAULT_BACKGROUND_VR);
-                        if (bg > 2) sharedPreferenceEditor.putInt(Settings.KEY_BACKGROUND, bg + 1);
+                        if (bg > 2) sharedPreferences.putInt(Settings.KEY_BACKGROUND, bg + 1);
                         recheckSupported(launcherActivity);
                         break;
                     case (2):
@@ -92,14 +98,14 @@ public abstract class Compat {
                         // App launch out conversion, may not work well but isn't really important
                         final String KEY_OLD_LAUNCH_OUT = "prefLaunchOutList";
                         final Set<String> launchOutSet = sharedPreferences.getStringSet(KEY_OLD_LAUNCH_OUT, Collections.emptySet());
-                        for (String app : launchOutSet) sharedPreferenceEditor.putBoolean(Settings.KEY_LAUNCH_OUT_PREFIX + app, true);
+                        for (String app : launchOutSet) sharedPreferences.putBoolean(Settings.KEY_LAUNCH_OUT_PREFIX + app, true);
                         // Wallpaper remap
                         int backgroundIndex = sharedPreferences.getInt(Settings.KEY_BACKGROUND,
                                 Platform.isTv(launcherActivity)
                                         ? Settings.DEFAULT_BACKGROUND_TV
                                         : Settings.DEFAULT_BACKGROUND_VR);
                         if (backgroundIndex > 2)
-                            sharedPreferenceEditor.putInt(Settings.KEY_BACKGROUND, backgroundIndex - 1);
+                            sharedPreferences.putInt(Settings.KEY_BACKGROUND, backgroundIndex - 1);
                     case (6):
                         // Remap old default group settings
                         final Map<String, App.Type> oldDefKeyToType = new HashMap<>();
@@ -111,8 +117,8 @@ public abstract class Compat {
                         for (String key : oldDefKeyToType.keySet()) {
                             String val = sharedPreferences.getString(key, null);
                             if (val != null) {
-                                sharedPreferenceEditor.putString(Settings.KEY_DEFAULT_GROUP + oldDefKeyToType.get(key), val);
-                                sharedPreferenceEditor.remove(key);
+                                sharedPreferences.putString(Settings.KEY_DEFAULT_GROUP + oldDefKeyToType.get(key), val);
+                                sharedPreferences.removeBoolean(key);
                             }
                         }
 
@@ -125,8 +131,8 @@ public abstract class Compat {
                         for (String key : oldWideKeyToType.keySet()) {
                             if (sharedPreferences.contains(key)) {
                                 boolean val = sharedPreferences.getBoolean(key, false);
-                                sharedPreferenceEditor.putBoolean(Settings.KEY_BANNER + oldDefKeyToType.get(key), val);
-                                sharedPreferenceEditor.remove(key);
+                                sharedPreferences.putBoolean(Settings.KEY_BANNER + oldDefKeyToType.get(key), val);
+                                sharedPreferences.removeBoolean(key);
                             }
                         }
                         recheckSupported(launcherActivity);
@@ -141,7 +147,7 @@ public abstract class Compat {
                                 //noinspection ResultOfMethodCallIgnored
                                 fromFile.delete();
                     case (9):
-                        sharedPreferenceEditor.remove(Settings.KEY_EXCLUDED_SET+App.Type.TYPE_PANEL);
+                        sharedPreferences.removeStringSet(Settings.KEY_EXCLUDED_SET+App.Type.TYPE_PANEL);
                     case (10):
                         clearIconCache(launcherActivity);
                         clearIcons(launcherActivity);
@@ -158,8 +164,7 @@ public abstract class Compat {
         launcherActivity.needsUpdateCleanup = true;
 
         // Store the updated version
-        sharedPreferenceEditor.putInt(Compat.KEY_COMPATIBILITY_VERSION, Compat.CURRENT_COMPATIBILITY_VERSION);
-        sharedPreferenceEditor.apply();
+        sharedPreferences.putInt(Compat.KEY_COMPATIBILITY_VERSION, Compat.CURRENT_COMPATIBILITY_VERSION);
     }
     public static void doUpdateCleanup(LauncherActivity launcherActivity) {
         clearIconCache(launcherActivity);
@@ -192,7 +197,7 @@ public abstract class Compat {
         List<ApplicationInfo> apps = launcherActivity.getPackageManager().getInstalledApplications(PackageManager.GET_META_DATA);
         App.invalidateCaches(launcherActivity);
         for (ApplicationInfo app: apps) {
-            final boolean supported = App.isSupported(app, launcherActivity);
+            final boolean supported = App.isSupported(app);
             if(!supported) appGroupMap.put(app.packageName, Settings.UNSUPPORTED_GROUP);
             else if (Objects.equals(appGroupMap.get(app.packageName), Settings.UNSUPPORTED_GROUP))
                 appGroupMap.remove(app.packageName);
@@ -204,7 +209,7 @@ public abstract class Compat {
     public static void clearIcons(LauncherActivity launcherActivity) {
         Log.i(TAG, "Icons are being cleared");
         FileLib.delete(launcherActivity.getApplicationInfo().dataDir + Icon.ICON_CUSTOM_FOLDER);
-        launcherActivity.sharedPreferenceEditor.remove(SettingsManager.DONT_DOWNLOAD_ICONS); 
+        launcherActivity.dataStoreEditor.removeStringSet(SettingsManager.DONT_DOWNLOAD_ICONS);
         clearIconCache(launcherActivity);
     }
     // Clears all icons, except for custom icons, and sets them to be re-downloaded
@@ -215,8 +220,8 @@ public abstract class Compat {
         launcherActivity.launcherService.clearAdapterCachesAll();
 
         IconRepo.downloadExemptPackages.clear();
-        launcherActivity.sharedPreferenceEditor.putStringSet(
-                SettingsManager.DONT_DOWNLOAD_ICONS, Collections.emptySet()).apply();
+        launcherActivity.dataStoreEditor.putStringSet(
+                SettingsManager.DONT_DOWNLOAD_ICONS, Collections.emptySet());
 
         Icon.cachedIcons.clear();
 
@@ -228,7 +233,7 @@ public abstract class Compat {
         Log.i(TAG, "Labels are being cleared");
         SettingsManager.appLabelCache.clear();
         HashSet<String> setAll = launcherActivity.getAllPackages();
-        SharedPreferences.Editor editor = launcherActivity.sharedPreferenceEditor;
+        SharedPreferences.Editor editor = launcherActivity.dataStoreEditor;
         for (String packageName : setAll) editor.remove(packageName);
         storeAndReload(launcherActivity);
         if (launcherActivity.launcherService != null)
@@ -238,9 +243,9 @@ public abstract class Compat {
     public static void clearSort(LauncherActivity launcherActivity) {
         Log.i(TAG, "App sort is being cleared");
         SettingsManager.getAppGroupMap().clear();
-        Set<String> appGroupsSet = launcherActivity.sharedPreferences.getStringSet(Settings.KEY_GROUPS, null);
+        Set<String> appGroupsSet = launcherActivity.dataStoreEditor.getStringSet(Settings.KEY_GROUPS, null);
         if (appGroupsSet == null) return;
-        SharedPreferences.Editor editor = launcherActivity.sharedPreferenceEditor;
+        SharedPreferences.Editor editor = launcherActivity.dataStoreEditor;
         for (String groupName : appGroupsSet) editor.remove(Settings.KEY_GROUP_APP_LIST+groupName);
         storeAndReload(launcherActivity);
         launcherActivity.refreshAppDisplayListsAll();
@@ -249,7 +254,7 @@ public abstract class Compat {
     // Resets the group list to default, including default groups for sorting
     public static void resetDefaultGroups(LauncherActivity launcherActivity) {
         for (App.Type type : Platform.getSupportedAppTypes(launcherActivity))
-            launcherActivity.sharedPreferenceEditor.remove(Settings.KEY_DEFAULT_GROUP + type);
+            launcherActivity.dataStoreEditor.removeString(Settings.KEY_DEFAULT_GROUP + type);
 
         launcherActivity.settingsManager.resetGroups();
         clearSort(launcherActivity);
@@ -258,16 +263,13 @@ public abstract class Compat {
     }
     // Stores any settings which may have been changed then refreshes any extant launcher activities
     private static void storeAndReload(LauncherActivity launcherActivity) {
-        launcherActivity.sharedPreferenceEditor.apply();
         Compat.recheckSupported(launcherActivity);
         SettingsManager.writeValues();
         launcherActivity.reloadPackages();
         launcherActivity.refreshInterfaceAll();
         SettingsManager.readValues();
     }
-    // Get default shared preferences without deprecated methods
-    public static SharedPreferences getSharedPreferences(Context context) {
-            return context.getSharedPreferences(
-                    context.getPackageName() + "_preferences", Context.MODE_PRIVATE);
+    public static DataStoreEditor getDataStore(Context context) {
+            return new DataStoreEditor(context);
     }
 }
