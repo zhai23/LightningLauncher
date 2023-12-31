@@ -30,14 +30,12 @@ import com.threethan.launcher.R;
 import com.threethan.launcher.helper.Compat;
 import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.launcher.LauncherActivity;
-import com.threethan.launcher.lib.FileLib;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.util.List;
-import java.util.Objects;
 
 /*
     Updater
@@ -95,9 +93,6 @@ public class Updater {
         this.requestQueue = Volley.newRequestQueue(activity);
         this.packageManager = activity.getPackageManager();
 
-        // Clear update files if just updated
-        Log.v(TAG, "Clearing Temporary Apk Dir");
-        FileLib.delete(Objects.requireNonNull(activity.getExternalFilesDir(APK_DIR)));
     }
     public void checkForAppUpdate() {
         checkLatestVersion(this::storeLatestVersionAndPrompt);
@@ -185,7 +180,6 @@ public class Updater {
                 (response -> handleUpdateResponse(response, callback)),
                 (this::handleUpdateError));
         requestQueue.add(updateRequest);
-        requestQueue.start();
     }
 
     private void handleUpdateResponse(String response, @Nullable Response.Listener<String> callback) {

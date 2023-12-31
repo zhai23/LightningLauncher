@@ -21,5 +21,8 @@
         <item>com.oculus.tv</item>
         <!-- This does work, but can be accessed more easily through quick settings -->
         <item>com.oculus.xrstreamingclient</item>
+        <item>com.oculus.environmentVersion</item>
+        <!-- No need to launch the app we're already in -->
+        <item>com.threethan.launcher</item>
     </string-array>
 </resources>

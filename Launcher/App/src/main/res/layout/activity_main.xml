@@ -11,8 +11,7 @@
         android:id="@+id/apps"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="none"
-        android:alpha="0" />
+        android:scrollbars="none" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/topBarLayout"
@@ -66,6 +65,7 @@
             android:background="@drawable/bkg_blur_view"
             android:elevation="12dp"
             android:minHeight="40dp"
+            android:nextFocusUp="@id/blurViewGroups"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/blurViewSearchIcon"
@@ -97,6 +97,7 @@
             android:elevation="12dp"
             android:focusable="true"
             android:foreground="@drawable/bkg_hover_button_bar"
+            android:nextFocusUp="@id/blurViewSearchIcon"
             android:visibility="visible"
             app:layout_constraintEnd_toStartOf="@id/blurViewSettingsIcon"
             app:layout_constraintTop_toTopOf="parent"
@@ -129,6 +130,7 @@
             android:layout_marginEnd="25dp"
             android:background="@drawable/bkg_blur_view"
             android:elevation="12dp"
+            android:nextFocusUp="@id/blurViewSettingsIcon"
             android:visibility="visible"
             app:blurOverlayColor="#4A000000"
             app:layout_constraintEnd_toEndOf="parent"
@@ -143,6 +145,7 @@
                 android:layout_height="match_parent"
                 android:alpha="0.5"
                 android:foreground="@drawable/bkg_hover_button_bar"
+                android:nextFocusUp="@id/settingsIcon"
                 android:padding="8dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/ic_config"

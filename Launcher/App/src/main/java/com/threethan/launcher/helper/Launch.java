@@ -100,7 +100,7 @@ public abstract class Launch {
         PackageManager pm = activity.getPackageManager();
 
         // Detect panel apps
-        if (App.getType(activity, app) == App.Type.TYPE_PANEL) {
+        if (App.isAppOfType(app, App.Type.TYPE_PANEL)) {
             String uri = app.packageName;
             if (uri.startsWith(PanelApp.packagePrefix))
                 uri = uri.replace(PanelApp.packagePrefix, "");
@@ -180,5 +180,25 @@ public abstract class Launch {
         final Intent normalIntent = pm.getLaunchIntentForPackage(app.packageName);
         if (normalIntent == null && tvIntent != null) return tvIntent;
         return normalIntent;
+    }
+
+
+    public static boolean checkLaunchable(LauncherActivity activity, ApplicationInfo app) {
+
+        // Ignore apps which don't work or should be excluded
+        if (app.packageName.startsWith(activity.getPackageName())) return true;
+        if (AppData.invalidAppsList.contains(app.packageName)) return true;
+
+        PackageManager pm = activity.getPackageManager();
+
+        if (App.isAppOfType(app, App.Type.TYPE_PANEL)) return true;
+        if (App.isAppOfType(app, App.Type.TYPE_WEB)) return true;
+
+        // Special case
+        if (Objects.equals(app.packageName, "com.android.tv.settings")) return true;
+
+        // Actually check now
+        if (pm.getLaunchIntentForPackage(app.packageName) != null) return true;
+        return pm.getLeanbackLaunchIntentForPackage(app.packageName) != null;
     }
 }

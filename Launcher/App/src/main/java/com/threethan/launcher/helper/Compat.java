@@ -1,7 +1,6 @@
 package com.threethan.launcher.helper;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -11,6 +10,7 @@ import com.threethan.launcher.launcher.LauncherActivity;
 import com.threethan.launcher.lib.FileLib;
 import com.threethan.launcher.lib.StringLib;
 import com.threethan.launcher.support.SettingsManager;
+import com.threethan.launcher.support.Updater;
 
 import java.io.File;
 import java.util.Collections;
@@ -69,6 +69,9 @@ public abstract class Compat {
                     else if (storedVersion == 0)
                         sharedPreferences.putBoolean(Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE);
                 }
+                // Clear update files if just updated
+                FileLib.delete(Objects.requireNonNull(launcherActivity.getExternalFilesDir(Updater.APK_DIR)));
+
                 switch (version) {
                     case (0):
                         if (sharedPreferences.getInt(Settings.KEY_BACKGROUND,
@@ -233,11 +236,10 @@ public abstract class Compat {
         Log.i(TAG, "Labels are being cleared");
         SettingsManager.appLabelCache.clear();
         HashSet<String> setAll = launcherActivity.getAllPackages();
-        SharedPreferences.Editor editor = launcherActivity.dataStoreEditor;
-        for (String packageName : setAll) editor.remove(packageName);
-        storeAndReload(launcherActivity);
-        if (launcherActivity.launcherService != null)
-            launcherActivity.launcherService.clearAdapterCachesAll();
+        for (String packageName : setAll) launcherActivity.dataStoreEditor.removeString(packageName);
+        Log.i(TAG, "Done clearing");
+
+        launcherActivity.launcherService.clearAdapterCachesAll();
     }
     // Clears the categorization of apps & resets everything to selected default groups
     public static void clearSort(LauncherActivity launcherActivity) {
@@ -245,11 +247,12 @@ public abstract class Compat {
         SettingsManager.getAppGroupMap().clear();
         Set<String> appGroupsSet = launcherActivity.dataStoreEditor.getStringSet(Settings.KEY_GROUPS, null);
         if (appGroupsSet == null) return;
-        SharedPreferences.Editor editor = launcherActivity.dataStoreEditor;
-        for (String groupName : appGroupsSet) editor.remove(Settings.KEY_GROUP_APP_LIST+groupName);
+        for (String groupName : appGroupsSet)
+            launcherActivity.dataStoreEditor.removeStringSet(Settings.KEY_GROUP_APP_LIST+groupName);
         storeAndReload(launcherActivity);
-        launcherActivity.refreshAppDisplayListsAll();
 
+        launcherActivity.launcherService.clearAdapterCachesAll();
+        launcherActivity.launcherService.refreshInterfaceAll();
     }
     // Resets the group list to default, including default groups for sorting
     public static void resetDefaultGroups(LauncherActivity launcherActivity) {
@@ -259,15 +262,15 @@ public abstract class Compat {
         launcherActivity.settingsManager.resetGroups();
         clearSort(launcherActivity);
 
-        launcherActivity.refreshInterfaceAll();
+        launcherActivity.launcherService.clearAdapterCachesAll();
+        launcherActivity.launcherService.refreshInterfaceAll();
     }
-    // Stores any settings which may have been changed then refreshes any extant launcher activities
+    // Stores any settings which may have been changed then refreshes any extent launcher activities
     private static void storeAndReload(LauncherActivity launcherActivity) {
         Compat.recheckSupported(launcherActivity);
         SettingsManager.writeValues();
         launcherActivity.reloadPackages();
         launcherActivity.refreshInterfaceAll();
-        SettingsManager.readValues();
     }
     public static DataStoreEditor getDataStore(Context context) {
             return new DataStoreEditor(context);

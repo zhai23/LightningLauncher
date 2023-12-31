@@ -1,6 +1,5 @@
 package com.threethan.launcher.launcher;
 
-import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ComponentName;
@@ -32,6 +31,7 @@ import com.esafirm.imagepicker.features.ImagePicker;
 import com.esafirm.imagepicker.model.Image;
 import com.threethan.launcher.R;
 import com.threethan.launcher.adapter.AppsAdapter;
+import com.threethan.launcher.adapter.CustomItemAnimator;
 import com.threethan.launcher.adapter.GroupsAdapter;
 import com.threethan.launcher.helper.AppData;
 import com.threethan.launcher.helper.Compat;
@@ -49,12 +49,15 @@ import com.threethan.launcher.support.Updater;
 import com.threethan.launcher.view.MarginDecoration;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import eightbitlab.com.blurview.BlurView;
 import eightbitlab.com.blurview.RenderEffectBlur;
@@ -72,8 +75,8 @@ import eightbitlab.com.blurview.RenderScriptBlur;
  */
 
 public class LauncherActivity extends Activity {
-    public boolean darkMode = true;
-    public boolean groupsEnabled = true;
+    public static Boolean darkMode = null;
+    public static Boolean groupsEnabled = true;
     RecyclerView appsView;
     public ApplicationInfo currentTopSearchResult = null;
     public Set<String> clearFocusPackageNames = new HashSet<>();
@@ -131,17 +134,19 @@ public class LauncherActivity extends Activity {
         ViewGroup containerView = findViewById(R.id.container);
         rootView = launcherService.getNewView(this, containerView);
 
+        Log.v(TAG, "Init/compat staring");
         init();
         Compat.checkCompatibilityUpdate(this);
+        Log.v(TAG, "Init/compat done");
 
+        Log.v(TAG, "RP");
         reloadPackages();
+        Log.v(TAG, "RB");
         refreshBackground();
+        Log.v(TAG, "RI");
         refreshInterface();
-
-        // Animate in the apps
-        ValueAnimator an = android.animation.ObjectAnimator.ofFloat(appsView, "alpha", 1f);
-        an.setDuration(350);
-        appsView.post(an::start);
+        Log.v(TAG, "RX");
+        post(() -> Log.v(TAG, "post"));
     }
     protected void startWithExistingView() {
         Log.v(TAG, "Starting with existing view");
@@ -155,7 +160,7 @@ public class LauncherActivity extends Activity {
 
             // Take ownership of adapters (which are currently referencing a dead activity)
             getAppAdapter().setLauncherActivity(this);
-            getAdapterGroups().setLauncherActivity(this);
+            getGroupAdapter().setLauncherActivity(this);
 
             groupsEnabled = dataStoreEditor.getBoolean(Settings.KEY_GROUPS_ENABLED, Settings.DEFAULT_GROUPS_ENABLED);
             post(this::updateToolBars); // Fix visual bugs with the blur views
@@ -263,16 +268,20 @@ public class LauncherActivity extends Activity {
         if (Platform.installedApps != null) // Will be null only on initial load
             postDelayed(this::recheckPackages, 1000);
 
-        postDelayed(() -> new Updater(this).checkForAppUpdate(), 1000);
+        postDelayed(() -> new Updater(this).checkForAppUpdate(), 5000);
 
     }
 
     public void reloadPackages() {
-        Platform.clearPackageLists(this);
-        PackageManager packageManager = getPackageManager();
-        Platform.installedApps = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);
-        Platform.installedApps = Collections.synchronizedList(Platform.installedApps);
-        Compat.recheckSupported(this);
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.execute(() -> {
+            Platform.clearPackageLists(this);
+            PackageManager packageManager = getPackageManager();
+            Platform.installedApps = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);
+            Platform.installedApps = Collections.synchronizedList(Platform.installedApps);
+            Compat.recheckSupported(this);
+            refreshAppDisplayListsAll();
+        });
     }
 
     public void recheckPackages() {
@@ -388,10 +397,16 @@ public class LauncherActivity extends Activity {
     }
     public int lastSelectedGroup;
     public void refreshInterface() {
-        darkMode = dataStoreEditor.getBoolean(Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE);
-        groupsEnabled = dataStoreEditor.getBoolean(Settings.KEY_GROUPS_ENABLED, Settings.DEFAULT_GROUPS_ENABLED);
+        if (darkMode == null || groupsEnabled == null) {
+            dataStoreEditor.getBoolean(Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE, darkModeSet ->
+                    dataStoreEditor.getBoolean(Settings.KEY_GROUPS_ENABLED, Settings.DEFAULT_GROUPS_ENABLED, groupsEnabledSet
+                            -> {
+                        if (darkMode == null) darkMode = darkModeSet;
+                        if (groupsEnabled == null) groupsEnabled = groupsEnabledSet;
 
-        refreshAdapters();
+                        refreshAdapters();
+                    }));
+        } else refreshAdapters();
 
         // Fix some focus issues
         final View focused = getCurrentFocus();
@@ -400,46 +415,26 @@ public class LauncherActivity extends Activity {
             if (focused != null && getCurrentFocus() == null) focused.requestFocus();
         });
     }
-    private int getAdjustedMargin() {
-
-        int targetSize = dp(dataStoreEditor.getInt(Settings.KEY_SCALE, Settings.DEFAULT_SCALE));
-        int estimatedWidth = prevViewWidth;
-
-        final int nCol = estimatedWidth/(targetSize*2) * 2; // To nearest 2
-        final float fCol = (float)(estimatedWidth)/(targetSize*2) * 2;
-        final float dCol = fCol - nCol;
-
-        final float marginScale = (float) (dataStoreEditor.getInt(Settings.KEY_SCALE, Settings.DEFAULT_SCALE)
-                - Settings.MIN_SCALE) / (Settings.MAX_SCALE - Settings.MIN_SCALE) + 1f + dCol/2;
-        return (dp((float) (dataStoreEditor.getInt(Settings.KEY_SPACING, Settings.DEFAULT_SPACING))* marginScale/2f));
-    }
     public void refreshAdapters() {
         updatePadding();
 
-        namesSquare = dataStoreEditor.getBoolean(Settings.KEY_SHOW_NAMES_SQUARE, Settings.DEFAULT_SHOW_NAMES_SQUARE);
-        namesBanner = dataStoreEditor.getBoolean(Settings.KEY_SHOW_NAMES_BANNER, Settings.DEFAULT_SHOW_NAMES_BANNER);
-
-        // Margins
-        if (marginDecoration != null) appsView.removeItemDecoration(marginDecoration);
-        // Height of a square icon. May be useful in the future...
-        // int h = dp((groupGridView.getMeasuredWidth() - (margin * (columns-1))*2))/(columns*2)-22*3;
-        marginDecoration = new MarginDecoration(getAdjustedMargin() - dp(11f));
-        appsView.addItemDecoration(marginDecoration);
-
         prevViewWidth = -1;
+
+        dataStoreEditor.getBoolean(Settings.KEY_SHOW_NAMES_SQUARE, Settings.DEFAULT_SHOW_NAMES_SQUARE, namesSquareSet
+        -> dataStoreEditor.getBoolean(Settings.KEY_SHOW_NAMES_BANNER, Settings.DEFAULT_SHOW_NAMES_BANNER, namesBannerSet -> {
+            namesSquare = namesSquareSet;
+            namesBanner = namesBannerSet;
+            if (getAppAdapter() == null) {
+                appsView.setAdapter(
+                        new AppsAdapter(this));
+                appsView.setItemAnimator(new CustomItemAnimator());
+            } else {
+                getAppAdapter().setAppList(this);
+            }
+            groupsView.setAdapter(new GroupsAdapter(this, isEditing()));
+        }));
+
         updateGridLayouts();
-
-        if (getAppAdapter() == null) {
-            appsView.setAdapter(
-                    new AppsAdapter(this));
-            refreshAppDisplayLists();
-        }else {
-            getAppAdapter().updateAppList(this);
-            appsView.setAdapter(appsView.getAdapter());
-        }
-
-        groupsView.setAdapter(new GroupsAdapter(this, isEditing()));
-        post(this::updateToolBars);
     }
     protected void resetScroll() {
         appsView.scrollToPosition(0);
@@ -447,16 +442,18 @@ public class LauncherActivity extends Activity {
 
     // Updates the heights and layouts of grid layout managers
     public void updateGridLayouts() {
-        if (mainView.getMeasuredWidth() == prevViewWidth) return;
-        prevViewWidth = mainView.getMeasuredWidth();
+        if (mainView.getWidth() == prevViewWidth) return;
+        prevViewWidth = mainView.getWidth();
 
         // Group rows and relevant values
-        if (getAdapterGroups() != null && groupsEnabled) {
+        if (getGroupAdapter() != null && groupsEnabled) {
             if (prevViewWidth < 1) return;
             final int group_columns =
-                    Math.min(getAdapterGroups().getCount(), prevViewWidth / dp(Settings.GROUP_WIDTH_DP));
+                    Math.min(getGroupAdapter().getCount(), prevViewWidth / dp(Settings.GROUP_WIDTH_DP));
+
             groupsView.setLayoutManager(new GridLayoutManager(this, Math.max(1,group_columns)));
-            final int groupRows = (int) Math.ceil((double) getAdapterGroups().getCount() / group_columns);
+
+            final int groupRows = (int) Math.ceil((double) getGroupAdapter().getCount() / group_columns);
             groupHeight = dp(40) * groupRows;
 
             if (groupHeight > mainView.getMeasuredHeight() / 3) {
@@ -472,22 +469,30 @@ public class LauncherActivity extends Activity {
         }
         updatePadding();
 
-        int targetSize = dp(dataStoreEditor.getInt(Settings.KEY_SCALE, Settings.DEFAULT_SCALE));
-        int estimatedWidth = prevViewWidth;
+        GridLayoutManager gridLayoutManager = (GridLayoutManager) appsView.getLayoutManager();
+        if (gridLayoutManager == null) {
+            gridLayoutManager = new GridLayoutManager(this, 3);
+            gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                @Override
+                public int getSpanSize(int position) {
+                    return Objects.requireNonNull(appsView.getAdapter()).getItemViewType(position);
+                }
+            });
+            appsView.setLayoutManager(gridLayoutManager);
+        }
 
-        int nCol = estimatedWidth/(targetSize*2) * 2; // To nearest 2
-        if (nCol <= 2) nCol = 2;
+        GridLayoutManager finalGridLayoutManager = gridLayoutManager;
+        dataStoreEditor.getInt(Settings.KEY_SCALE, Settings.DEFAULT_SCALE, scale -> {
+            int estimatedWidth = prevViewWidth;
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, nCol);
-        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                return Objects.requireNonNull(appsView.getAdapter()).getItemViewType(position);
-            }
+            int nCol = estimatedWidth/(dp(scale)*2) * 2; // To nearest 2
+            if (nCol <= 2) nCol = 2;
+
+            finalGridLayoutManager.setSpanCount(nCol);
         });
-        appsView.setLayoutManager(gridLayoutManager);
 
         groupsView.post(() -> groupsView.setVisibility(View.VISIBLE));
+
     }
 
 
@@ -497,17 +502,38 @@ public class LauncherActivity extends Activity {
     // - Side padding to account for icon margins (otherwise icons would touch window edges)
     // - Bottom padding to account for icon margin, as well as the edit mode footer if applicable
     protected void updatePadding() {
-        final int margin = getAdjustedMargin() + dp(11f);
-        final boolean groupsVisible = getAdapterGroups() != null && groupsEnabled && !getSearching();
-        final int topAdd = groupsVisible ? dp(32) + groupHeight : dp(23);
-        final int bottomAdd = groupsVisible ? getBottomBarHeight() + dp(11) : margin/2+getBottomBarHeight() + dp(11);
+        dataStoreEditor.getInt(Settings.KEY_SCALE, Settings.DEFAULT_SCALE, scale
+        -> dataStoreEditor.getInt(Settings.KEY_SPACING, Settings.DEFAULT_SPACING, spacing -> {
+            int targetSize = dp(scale);
+            int estimatedWidth = prevViewWidth;
 
-        appsView.setClipToPadding(false);
-        appsView.setPadding(
-                margin,
-                topAdd,
-                margin,
-                bottomAdd);
+            final int nCol = estimatedWidth / (targetSize * 2) * 2; // To nearest 2
+            final float fCol = (float) (estimatedWidth) / (targetSize * 2) * 2;
+            final float dCol = fCol - nCol;
+
+            final float marginScale = (float) (scale
+                    - Settings.MIN_SCALE) / (Settings.MAX_SCALE - Settings.MIN_SCALE) + 1f + dCol / 2;
+            final int margin = dp(11f + (float) (spacing) * marginScale / 4f);
+
+            final boolean groupsVisible = getGroupAdapter() != null && groupsEnabled && !getSearching();
+            final int topAdd = groupsVisible ? dp(32) + groupHeight : dp(23);
+            final int bottomAdd = groupsVisible ? getBottomBarHeight() + dp(11) : margin / 2 + getBottomBarHeight() + dp(11);
+
+            appsView.setClipToPadding(false);
+            appsView.setPadding(
+                    margin,
+                    topAdd,
+                    margin,
+                    bottomAdd);
+
+            // Margins
+            if (marginDecoration != null) appsView.removeItemDecoration(marginDecoration);
+            // Height of a square icon. May be useful in the future...
+            // int h = dp((groupGridView.getMeasuredWidth() - (margin * (columns-1))*2))/(columns*2)-22*3;
+            marginDecoration = new MarginDecoration(margin - dp(22f));
+            appsView.addItemDecoration(marginDecoration);
+
+        }));
     }
     // Accounts for the height of the edit mode footer when visible, actual function in child class
     protected int getBottomBarHeight() {
@@ -518,47 +544,59 @@ public class LauncherActivity extends Activity {
         if (index >= SettingsManager.BACKGROUND_DRAWABLES.length || index < 0) index = -1;
         else dataStoreEditor.putBoolean(Settings.KEY_DARK_MODE, SettingsManager.BACKGROUND_DARK[index]);
         dataStoreEditor.putInt(Settings.KEY_BACKGROUND, index);
+        LauncherActivity.background = index;
         launcherService.refreshBackgroundAll();
     }
     // Sets a background color based on your chosen background,
     // then calls an async task to actually load the background
     public void refreshBackground() {
-        // Set initial color, execute background task
-        dataStoreEditor.getInt(Settings.KEY_BACKGROUND,
-                Platform.isTv(this)
-                        ? Settings.DEFAULT_BACKGROUND_TV
-                        : Settings.DEFAULT_BACKGROUND_VR,
-        background -> {
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+            executorService.execute(() -> {
+            // Set initial color, execute background task
+            if (background == -2) {
+                background = dataStoreEditor.getInt(Settings.KEY_BACKGROUND,
+                        Platform.isTv(this)
+                                ? Settings.DEFAULT_BACKGROUND_TV
+                                : Settings.DEFAULT_BACKGROUND_VR);
+            }
+
             boolean custom = background < 0 || background >= SettingsManager.BACKGROUND_COLORS.length;
             int backgroundColor = custom ? Color.parseColor("#404044") : SettingsManager.BACKGROUND_COLORS[background];
 
-            getWindow().setNavigationBarColor(backgroundColor);
-            getWindow().setStatusBarColor(backgroundColor);
+            runOnUiThread(() -> {
+                getWindow().setNavigationBarColor(backgroundColor);
+                getWindow().setStatusBarColor(backgroundColor);
+                getWindow().setBackgroundDrawable(new ColorDrawable(backgroundColor));
+            });
 
             new WallpaperExecutor().execute(this);
+
         });
     }
-
+    static int background = -2;
 
     public void refreshAppDisplayLists() {
-        
+        runOnUiThread(this::refreshAdapters);
 
-        Platform.appList = Collections.synchronizedList(new ArrayList<>());
-
-        Platform.appList.addAll(Platform.installedApps);
+        if (Platform.installedApps == null) return;
+        Platform.apps.clear();
+        Platform.apps.addAll(Platform.installedApps);
         // Add web apps
         Set<String> webApps = dataStoreEditor.getStringSet(Settings.KEY_WEBSITE_LIST, Collections.emptySet());
         for (String url:webApps) {
             ApplicationInfo applicationInfo = new ApplicationInfo();
             applicationInfo.packageName = url;
-            Platform.appList.add(applicationInfo);
+            Platform.apps.add(applicationInfo);
         }
         // Add panel apps (Quest Only)
         if (Platform.isQuest(this))
-            Platform.appList.addAll(AppData.getFullPanelAppList());
+            Platform.apps.addAll(AppData.getFullPanelAppList());
 
         if (getAppAdapter() != null)
-            getAppAdapter().setFullAppList(Platform.appList);
+            getAppAdapter().setFullAppSet(Platform.apps);
+
+        runOnUiThread(() -> getAppAdapter().setAppList(this));
     }
 
     // Utility functions
@@ -567,7 +605,12 @@ public class LauncherActivity extends Activity {
         else mainView.post(action);
     }
     public void postDelayed(Runnable action, int ms) {
-        if (mainView == null) action.run();
+        if (mainView == null) new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                mainView.post(action);
+            }
+        }, ms);
         else mainView.postDelayed(action, ms);
     }
 
@@ -578,13 +621,14 @@ public class LauncherActivity extends Activity {
     public AppsAdapter getAppAdapter() {
         return (AppsAdapter) appsView.getAdapter();
     }
-    public GroupsAdapter getAdapterGroups() {
+    public GroupsAdapter getGroupAdapter() {
         if (groupsView == null) return null;
         return (GroupsAdapter) groupsView.getAdapter();
     }
 
     public HashSet<String> getAllPackages() {
         HashSet<String> setAll = new HashSet<>();
+        if (Platform.installedApps == null) return new HashSet<>();
         for (ApplicationInfo app : Platform.installedApps) setAll.add(app.packageName);
         Set<String> webApps = dataStoreEditor.getStringSet(Settings.KEY_WEBSITE_LIST, new HashSet<>());
         setAll.addAll(webApps);
@@ -629,6 +673,7 @@ public class LauncherActivity extends Activity {
     @SuppressLint("NotifyDataSetChanged")
     public void clearAdapterCaches() {
         if (getAppAdapter() != null) getAppAdapter().notifyDataSetChanged();
+        if (getGroupAdapter() != null) getGroupAdapter().notifyDataSetChanged();
     }
 
     // Edit mode stubs, to be overridden by child

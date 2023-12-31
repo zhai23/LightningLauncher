@@ -13,7 +13,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.threethan.launcher.R;
-import com.threethan.launcher.adapter.AppsAdapter;
 import com.threethan.launcher.helper.Keyboard;
 import com.threethan.launcher.helper.Launch;
 import com.threethan.launcher.helper.Platform;
@@ -35,11 +34,7 @@ import eightbitlab.com.blurview.BlurView;
 public class LauncherActivitySearchable extends LauncherActivityEditable {
     private boolean searching = false;
     protected void searchFor(String text) {
-        final AppsAdapter squareAdapter = getAppAdapter();
-        if (squareAdapter != null) {
-            squareAdapter.filterBy(text);
-            appsView.setAdapter(squareAdapter);
-        }
+        getAppAdapter().filterBy(text);
         updateTopSearchResult();
         resetScroll();
     }

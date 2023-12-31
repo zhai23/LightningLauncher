@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,7 +26,6 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 
 import io.reactivex.rxjava3.core.Single;
-import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.functions.Consumer;
 import kotlin.NotImplementedError;
 
@@ -118,13 +116,13 @@ public class DataStoreEditor implements SharedPreferences, SharedPreferences.Edi
         Preferences.Key<T> prefKey = getKey(key, tClass);
         Single<T> value = dataStoreRX.data().firstOrError()
                 .map(prefs -> prefs.get(prefKey)).onErrorReturn(throwable -> def);
-        Disposable subscribe = value.subscribe(consumer);
+        value.blockingSubscribe(consumer);
     }
     public <T> void getValue(String key, @NonNull T def, Consumer<T> consumer) {
         Preferences.Key<T> prefKey = getKey(key, def);
         Single<T> value = dataStoreRX.data().firstOrError()
                 .map(prefs -> prefs.get(prefKey)).onErrorReturn(throwable -> def);
-        Disposable subscribe = value.subscribe(consumer);
+        value.blockingSubscribe(consumer);
     }
     public <T> void putValue(String key, @Nullable T value, Class<T> tClass) {
         boolean returnvalue;
@@ -134,10 +132,6 @@ public class DataStoreEditor implements SharedPreferences, SharedPreferences.Edi
             MutablePreferences mutablePreferences = prefsIn.toMutablePreferences();
             mutablePreferences.set(prefKey, value);
             return Single.just(mutablePreferences);
-        }).doOnError(t -> {
-            // Retry on error
-            Log.i(TAG, "Error writing value, retrying..."+ t.toString());
-            putValue(key, value, tClass);
         });
     }
     public <T> void putValue(String key, @NonNull T value) {
@@ -148,10 +142,6 @@ public class DataStoreEditor implements SharedPreferences, SharedPreferences.Edi
             MutablePreferences mutablePreferences = prefsIn.toMutablePreferences();
             mutablePreferences.set(prefKey, value);
             return Single.just(mutablePreferences);
-        }).doOnError(t -> {
-            // Retry on error
-            Log.i(TAG, "Error writing value, retrying..."+ t.toString());
-            putValue(key, value);
         });
     }
 
@@ -299,7 +289,7 @@ public class DataStoreEditor implements SharedPreferences, SharedPreferences.Edi
 
     // Compat
     /**
-     * This is included for compatiblity, but is slow!
+     * This is included for compatiblity, but is slow and unreliable!
      * recommended to use removeType functions instead.
      * @noinspection rawtypes
      */
@@ -339,7 +329,6 @@ public class DataStoreEditor implements SharedPreferences, SharedPreferences.Edi
      */
     @Deprecated
     public void apply() {}
-
 
     // Compat (sharedpref)
 

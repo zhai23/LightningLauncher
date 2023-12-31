@@ -41,7 +41,7 @@ public abstract class SettingsDialog {
     private static boolean clearedIconCustom;
     private static boolean clearedSort;
     private static boolean clearedGroups;
-    @SuppressLint({"UseSwitchCompatOrMaterialCode", "NotifyDataSetChanged"})
+    @SuppressLint({"UseSwitchCompatOrMaterialCode"})
     public static void showSettings(LauncherActivity a) {
         AlertDialog dialog = Dialog.build(a, R.layout.dialog_settings);
 
@@ -102,7 +102,7 @@ public abstract class SettingsDialog {
         dark.setChecked(a.dataStoreEditor.getBoolean(Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE));
         dark.setOnCheckedChangeListener((compoundButton, value) -> {
             a.dataStoreEditor.putBoolean(Settings.KEY_DARK_MODE, value);
-            a.darkMode = value;
+            LauncherActivity.darkMode = value;
             a.clearAdapterCaches();
             a.refreshInterfaceAll();
         });
@@ -226,7 +226,6 @@ public abstract class SettingsDialog {
                     a.dataStoreEditor
                             .putBoolean(Settings.KEY_SEEN_HIDDEN_GROUPS_POPUP, true)
                             .putBoolean(Settings.KEY_GROUPS_ENABLED, newValue);
-                    groups.setChecked(!Settings.DEFAULT_GROUPS_ENABLED);
                     a.refreshInterfaceAll();
                     subDialog.dismiss();
                     // Group enabled state
@@ -306,14 +305,14 @@ public abstract class SettingsDialog {
         names.setOnCheckedChangeListener((compoundButton, value) -> {
             a.dataStoreEditor.putBoolean(Settings.KEY_SHOW_NAMES_SQUARE, value);
             LauncherActivity.namesSquare = value;
-            Objects.requireNonNull(a.getAppAdapter()).notifyDataSetChanged();
+            Objects.requireNonNull(a.getAppAdapter()).notifyAllChanged();
         });
         Switch wideNames = dialog.findViewById(R.id.nameBannerSwitch);
         wideNames.setChecked(a.dataStoreEditor.getBoolean(Settings.KEY_SHOW_NAMES_BANNER, Settings.DEFAULT_SHOW_NAMES_BANNER));
         wideNames.setOnCheckedChangeListener((compoundButton, value) -> {
             a.dataStoreEditor.putBoolean(Settings.KEY_SHOW_NAMES_BANNER, value);
             LauncherActivity.namesBanner = value;
-            Objects.requireNonNull(a.getAppAdapter()).notifyDataSetChanged();
+            Objects.requireNonNull(a.getAppAdapter()).notifyAllChanged();
         });
 
         // Advanced button
@@ -425,11 +424,12 @@ public abstract class SettingsDialog {
             if (SettingsSaver.canLoad(a)) {
                 dialog.dismiss();
                 SettingsSaver.load(a);
+            } else {
+                Dialog.toast("Failed to find file!");
             }
         });
 
         View saveSettings = dialog.findViewById(R.id.saveSettingsButton);
-        saveSettings.setOnClickListener((view) -> SettingsSaver.save(a));
         saveSettings.setOnClickListener((view) -> {
             SettingsSaver.save(a);
             loadSettings.setAlpha(1F);

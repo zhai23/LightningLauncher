@@ -174,7 +174,7 @@ public class LauncherActivityEditable extends LauncherActivity {
 
         // Move apps if any are selected
         if (!currentSelectedApps.isEmpty()) {
-            GroupsAdapter groupsAdapter = getAdapterGroups();
+            GroupsAdapter groupsAdapter = getGroupAdapter();
             if (groupsAdapter != null)
                 for (String app : currentSelectedApps)
                     groupsAdapter.setGroup(app, group);
@@ -208,6 +208,7 @@ public class LauncherActivityEditable extends LauncherActivity {
             focused.clearFocus();
             focused.post(focused::requestFocus);
         }
+        updateToolBars();
     }
 
     @Override
@@ -339,7 +340,8 @@ public class LauncherActivityEditable extends LauncherActivity {
         super.updateToolBars();
         if (!isEditing()) return;
 
-        BlurView blurViewE = rootView.findViewById(R.id.editFooter);
+        BlurView blurViewE = rootView.findViewById(R.id.
+                editFooter);
         blurViewE.setOverlayColor(Color.parseColor(darkMode ? "#2A000000" : "#45FFFFFF"));
 
         setupBlurView(blurViewE);

@@ -19,6 +19,7 @@ import com.threethan.launcher.lib.StringLib;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -84,7 +85,6 @@ public class SettingsManager extends Settings {
     private static String checkAppLabel(ApplicationInfo app) {
         dataStoreEditor.getString(app.packageName, "",
                 name -> setAppLabel(app, processAppLabel(app, name)));
-
         return app.packageName;
     }
     private static @Nullable String processAppLabel(ApplicationInfo app, String name) {
@@ -119,9 +119,9 @@ public class SettingsManager extends Settings {
 
     public static void setAppLabel(ApplicationInfo app, String newName) {
         if (newName == null) return;
-        getAnyLauncherActivity().getAppAdapter().notifyAppChanged(app);
         appLabelCache.put(app, newName);
         dataStoreEditor.putString(app.packageName, newName);
+        getAnyLauncherActivity().post(() -> getAnyLauncherActivity().getAppAdapter().updateItem(app));
     }
     public static boolean getAppLaunchOut(String pkg) {
         return dataStoreEditor.getBoolean(Settings.KEY_LAUNCH_OUT_PREFIX+pkg,
@@ -130,7 +130,7 @@ public class SettingsManager extends Settings {
     public static void setAppLaunchOut(String pkg, boolean shouldLaunchOut) {
         dataStoreEditor.putBoolean(Settings.KEY_LAUNCH_OUT_PREFIX+pkg, shouldLaunchOut);
     }
-    public static Map<String, String> getAppGroupMap() {
+    public static ConcurrentHashMap<String, String> getAppGroupMap() {
         if (appGroupMap.isEmpty()) readValues();
         return appGroupMap;
     }
@@ -144,11 +144,10 @@ public class SettingsManager extends Settings {
         appGroupMap = new ConcurrentHashMap<>(value);
         queueStoreValuesStatic();
     }
-
-    public List<ApplicationInfo> getInstalledApps(LauncherActivity launcherActivity, List<String> selectedGroups, List<ApplicationInfo> myApps) {
+    public List<ApplicationInfo> getInstalledApps(LauncherActivity launcherActivity, List<String> selectedGroups, Collection<ApplicationInfo> myApps) {
 
         // Get list of installed apps
-        Map<String, String> apps = getAppGroupMap();
+        ConcurrentHashMap<String, String> apps = getAppGroupMap();
 
         if (myApps == null) {
             Log.e("LightningLauncher", "Got null app list");
@@ -156,42 +155,30 @@ public class SettingsManager extends Settings {
         }
 
         // Sort into groups
-        for (ApplicationInfo app : myApps) {
+        for (ApplicationInfo app : new ArrayList<>(myApps)) {
             if (!App.isSupported(app))
-                appGroupMap.put(app.packageName, Settings.UNSUPPORTED_GROUP);
-            else if (!appGroupMap.containsKey(app.packageName) ||
-                    Objects.equals(appGroupMap.get(app.packageName), Settings.UNSUPPORTED_GROUP)){
-                appGroupMap.put(app.packageName, App.getDefaultGroupFor(App.getType(launcherActivity, app)));
+                apps.put(app.packageName, Settings.UNSUPPORTED_GROUP);
+            else if (!apps.containsKey(app.packageName) ||
+                    Objects.equals(apps.get(app.packageName), Settings.UNSUPPORTED_GROUP)){
+                apps.put(app.packageName, App.getDefaultGroupFor(App.getType(launcherActivity, app)));
             }
         }
 
         // Save changes to app list
-        setAppGroupMap(appGroupMap);
+        setAppGroupMap(apps);
 
-        // Map Packages
-        Map<String, ApplicationInfo> appMap = new ConcurrentHashMap<>();
-        for (ApplicationInfo applicationInfo : myApps) {
-            String pkg = applicationInfo.packageName;
-            if (apps.containsKey(pkg) && selectedGroups.contains(apps.get(pkg))) {
-                try {
-                    appMap.put(pkg, applicationInfo);
-                }
-                catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+        List<ApplicationInfo> currentApps = new ArrayList<>(myApps);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            Log.w("OLD API", "Your android version is too old so things won't work right.");
+            for (ApplicationInfo app : Collections.unmodifiableCollection(myApps))
+                if (!(apps.containsKey(app.packageName) && selectedGroups.contains(apps.get(app.packageName))))
+                    currentApps.remove(app);
+            return currentApps;
         }
-
-        // Create new list of apps
-        ArrayList<ApplicationInfo> sortedApps = new ArrayList<>(appMap.values());
-//         Compare on app label
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-            sortedApps.sort(Comparator.comparing(SettingsManager::getSortableAppLabel));
-        else
-            Log.w("OLD API", "Your android version is too old so apps will not be sorted.");
-
+        currentApps.removeIf(app -> !(apps.containsKey(app.packageName) && selectedGroups.contains(apps.get(app.packageName))));
+        currentApps.sort(Comparator.comparing(SettingsManager::getSortableAppLabel));
         // Sort Done!
-        return sortedApps;
+        return currentApps;
     }
 
     public static Set<String> getAppGroups() {
@@ -219,7 +206,7 @@ public class SettingsManager extends Settings {
             selectedGroupsSet.addAll(dataStoreEditor.getStringSet(KEY_SELECTED_GROUPS, getDefaultGroupsSet()));
         }
         if (myLauncherActivityRef.get() != null &&
-                myLauncherActivityRef.get().groupsEnabled || myLauncherActivityRef.get().isEditing()) {
+                LauncherActivity.groupsEnabled || myLauncherActivityRef.get().isEditing()) {
 
             // Deselect hidden
             if (myLauncherActivityRef.get() != null && !myLauncherActivityRef.get().isEditing()
@@ -336,8 +323,9 @@ public class SettingsManager extends Settings {
                         App.getDefaultGroupFor(App.Type.TYPE_SUPPORTED));
                 if (group == null) {
                     Log.e("Group was null", pkg);
-                    return;
+                    group = appListSetMap.get(HIDDEN_GROUP);
                 }
+                assert group != null;
                 group.add(pkg);
             }
             for (String group : appGroupsSet) {

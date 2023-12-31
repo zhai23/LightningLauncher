@@ -277,7 +277,7 @@ public class BrowserActivity extends Activity {
     protected boolean isEphemeral() {
         if (w != null && /*w.getUrl() != null &&*/
             StringLib.isSearchUrl(baseUrl)) {
-            for (ApplicationInfo app : Platform.appList)
+            for (ApplicationInfo app : Platform.apps)
                 if (Objects.equals(app.packageName, baseUrl)) return false;
         }
 

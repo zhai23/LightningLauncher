@@ -35,7 +35,6 @@ class RecheckPackagesExecutor {
                 owner.runOnUiThread(() -> {
                     Log.v("LightningLauncher", "Package change detected!");
                     owner.reloadPackages();
-                    owner.refreshAppDisplayListsAll();
                 });
             }
         });

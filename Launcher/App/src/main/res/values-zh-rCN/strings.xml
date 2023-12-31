@@ -143,6 +143,7 @@
     <string name="update_skip_cancel_button">忽略</string>
 
     <string name="saved_settings">保存配置到</string>
+    <string name="saved_settings_error">复制文件时出错！</string>
     <string name="loaded_settings1">导入配置</string>
     <string name="loaded_settings2">现在必须关闭启动器！</string>
 

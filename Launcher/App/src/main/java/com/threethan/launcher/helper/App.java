@@ -59,22 +59,22 @@ public abstract class App {
         return (tvIntent.resolveActivity(pm) != null);
 
     }
-    protected synchronized static boolean isAppOfType
+    protected static boolean isAppOfType
             (ApplicationInfo applicationInfo, App.Type appType) {
 
             final LauncherActivity launcherActivity = SettingsManager.getAnyLauncherActivity();
             final DataStoreEditor sharedPreferences = launcherActivity.dataStoreEditor;
 
-            if (!categoryIncludedApps.containsKey(appType)) {
+            if (!categoryIncludedApps.containsKey(appType) || categoryIncludedApps.get(appType) == null) {
                 // Create new hashsets for cache
                 categoryIncludedApps.put(appType, Collections.synchronizedSet(new HashSet<>()));
                 categoryExcludedApps.put(appType, Collections.synchronizedSet(new HashSet<>()));
-                Objects.requireNonNull(categoryIncludedApps.get(appType))
-                        .addAll(sharedPreferences.getStringSet(Settings.KEY_INCLUDED_SET + appType
-                                , new HashSet<>()));
-                Objects.requireNonNull(categoryExcludedApps.get(appType))
-                        .addAll(sharedPreferences.getStringSet(Settings.KEY_EXCLUDED_SET + appType
-                                , new HashSet<>()));
+
+                // Async load (it's nice to store this data, but it's faster to check initially)
+                sharedPreferences.getStringSet(Settings.KEY_INCLUDED_SET + appType, new HashSet<>(),
+                        includedSet -> Objects.requireNonNull(categoryIncludedApps.get(appType)).addAll(includedSet));
+                sharedPreferences.getStringSet(Settings.KEY_EXCLUDED_SET + appType, new HashSet<>(),
+                        includedSet -> Objects.requireNonNull(categoryExcludedApps.get(appType)).addAll(includedSet));
             }
 
             // Check cache
@@ -82,8 +82,6 @@ public abstract class App {
                     .contains(applicationInfo.packageName)) return true;
             if (Objects.requireNonNull(categoryExcludedApps.get(appType))
                     .contains(applicationInfo.packageName)) return false;
-
-
 
             boolean isType = switch (appType) {
                 case TYPE_VR -> checkVirtualReality(applicationInfo);
@@ -133,17 +131,17 @@ public abstract class App {
     private static boolean checkSupported(ApplicationInfo app, LauncherActivity launcherActivity) {
         if (isWebsite(app)) return true;
 
-        if (app.metaData != null) {
-            boolean isVr = isAppOfType(app, Type.TYPE_VR);
-            if (!isVr && app.metaData.keySet().contains("com.oculus.environmentVersion")) return false;
-        }
-        if (Launch.getLaunchIntent(launcherActivity, app) == null) return false;
-
-        if (unsupportedPrefixes == null) unsupportedPrefixes = launcherActivity.getResources().getStringArray(R.array.unsupported_app_prefixes);
+        if (unsupportedPrefixes == null)
+            unsupportedPrefixes = launcherActivity.getResources().getStringArray(R.array.unsupported_app_prefixes);
         for (String prefix : unsupportedPrefixes)
             if (app.packageName.startsWith(prefix))
                 return false;
-        return true;
+
+        if (app.metaData != null)
+            if (app.metaData.keySet().contains("com.oculus.environmentVersion"))
+                return isAppOfType(app, Type.TYPE_VR);
+
+        return Launch.checkLaunchable(launcherActivity, app);
     }
     public static boolean isBanner(ApplicationInfo applicationInfo) {
         LauncherActivity launcherActivity = SettingsManager.getAnyLauncherActivity();

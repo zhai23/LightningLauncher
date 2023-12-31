@@ -1,7 +1,5 @@
 package com.threethan.launcher.lib;
 
-import android.util.Log;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -26,7 +24,7 @@ public class FileLib {
     }
 
     /** @noinspection IOStreamConstructor*/ // Fix requires higher API
-    public static void copy(File fIn, File fOut) {
+    public static boolean copy(File fIn, File fOut) {
         try {
             InputStream in = new FileInputStream(fIn);
             //noinspection ResultOfMethodCallIgnored
@@ -37,9 +35,10 @@ public class FileLib {
             while ((len = in.read(buf)) > 0) out.write(buf, 0, len);
             in.close();
             out.close();
+            return true;
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
-        Log.v("PATH", fOut.getAbsolutePath());
     }
 }

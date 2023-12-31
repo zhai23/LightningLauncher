@@ -26,7 +26,7 @@ import java.util.Set;
 
 public abstract class Platform {
     public static List<ApplicationInfo> installedApps;
-    public static List<ApplicationInfo> appList;
+    public static Set<ApplicationInfo> apps = Collections.synchronizedSet(new HashSet<>());
     public static int changeIndex = 0; //Used to track changes, specifically adding websites
     public static void clearPackageLists(LauncherActivity launcherActivity) {
         App.invalidateCaches(launcherActivity);

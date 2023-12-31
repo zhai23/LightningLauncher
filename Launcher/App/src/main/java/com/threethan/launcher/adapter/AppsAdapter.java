@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.BaseInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.Button;
@@ -35,6 +36,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /*
     AppsAdapter
@@ -49,54 +51,57 @@ import java.util.Objects;
     This class also handles clicking and long clicking apps, including the app settings dialog.
     It also handles displaying/updating the views of an app (hover interactions, background website)
  */
-public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.AppViewHolder> {
+public class AppsAdapter extends ArrayListAdapter<ApplicationInfo, AppsAdapter.AppViewHolder> {
     private LauncherActivity launcherActivity;
-    private List<ApplicationInfo> currentAppList;
-    private List<ApplicationInfo> fullAppList;
+    private Set<ApplicationInfo> fullAppSet;
     private boolean getEditMode() {
         return launcherActivity.isEditing();
     }
     public AppsAdapter(LauncherActivity activity) {
         launcherActivity = activity;
     }
-    public void setFullAppList(List<ApplicationInfo> myApps) {
-        fullAppList = myApps;
+    public void setFullAppSet(Set<ApplicationInfo> myApps) {
+        fullAppSet = myApps;
     }
-    public void updateAppList(LauncherActivity activity) {
-        launcherActivity = activity;
+    public synchronized void setAppList(LauncherActivity activity) {
         SettingsManager settingsManager = SettingsManager.getInstance(activity);
-        currentAppList = Collections.synchronizedList(settingsManager
-                .getInstalledApps(activity, settingsManager.getAppGroupsSorted(true), fullAppList));
+        launcherActivity = activity;
+
+        setItems(Collections.unmodifiableList(settingsManager
+                .getInstalledApps(activity, settingsManager.getAppGroupsSorted(true), fullAppSet)));
     }
+
     public synchronized void filterBy(String text) {
         SettingsManager settingsManager = SettingsManager.getInstance(launcherActivity);
-        final List<ApplicationInfo> tempAppList =
-                settingsManager.getInstalledApps(launcherActivity, settingsManager.getAppGroupsSorted(false), fullAppList);
+        final List<ApplicationInfo> newItems =
+                settingsManager.getInstalledApps(launcherActivity, settingsManager.getAppGroupsSorted(false), fullAppSet);
 
-        currentAppList.clear();
-        for (final ApplicationInfo app : tempAppList)
-            if (StringLib.forSort(SettingsManager.getAppLabel(app)).contains(StringLib.forSort(text)))
-                currentAppList.add(app);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            newItems.removeIf(item -> !StringLib.forSort(SettingsManager.getAppLabel(item)).contains(StringLib.forSort(text)));
+        }
 
         // Add search queries
         if (!text.isEmpty() && !launcherActivity.isEditing()) {
 
             final ApplicationInfo googleProxy = new ApplicationInfo();
             googleProxy.packageName = StringLib.googleSearchForUrl(text);
-            currentAppList.add(googleProxy);
+            newItems.add(googleProxy);
 
             final ApplicationInfo youTubeProxy = new ApplicationInfo();
             youTubeProxy.packageName = StringLib.youTubeSearchForUrl(text);
-            currentAppList.add(youTubeProxy);
+            newItems.add(youTubeProxy);
 
             final ApplicationInfo apkPureProxy = new ApplicationInfo();
             apkPureProxy.packageName = StringLib.apkPureSearchForUrl(text);
-            currentAppList.add(apkPureProxy);
+            newItems.add(apkPureProxy);
 
             final ApplicationInfo apkMirrorProxy = new ApplicationInfo();
             apkMirrorProxy.packageName = StringLib.apkMirrorSearchForUrl(text);
-            currentAppList.add(apkMirrorProxy);
+            newItems.add(apkMirrorProxy);
         }
+
+        setItems(newItems);
     }
     public void setLauncherActivity(LauncherActivity val) {
         launcherActivity = val;
@@ -120,7 +125,7 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.AppViewHolder>
         }
     }
 
-    public ApplicationInfo getItem(int position) { return currentAppList.get(position); }
+    public ApplicationInfo getItem(int position) { return items.get(position); }
     @NonNull
     @Override
     public AppViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -157,9 +162,7 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.AppViewHolder>
         holder.view.setOnClickListener(view -> {
             if (getEditMode()) {
                 boolean selected = launcherActivity.selectApp(holder.app.packageName);
-                ObjectAnimator an = ObjectAnimator.ofFloat(holder.view, "alpha", selected ? 0.5F : 1.0F);
-                an.setDuration(150);
-                an.start();
+                holder.view.animate().alpha(selected ? 0.5f : 1).setDuration(150).start();
             } else {
                 if (Launch.launchApp(launcherActivity, holder.app)) animateOpen(holder);
 
@@ -177,6 +180,7 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.AppViewHolder>
             } else {
                 launcherActivity.setEditMode(true);
                 launcherActivity.selectApp(holder.app.packageName);
+                holder.view.animate().alpha(0.5f).setDuration(300).start();
             }
             return true;
         });
@@ -212,8 +216,8 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.AppViewHolder>
         holder.imageView = banner ? holder.imageViewBanner : holder.imageViewSquare;
 
         holder.textView.setText(SettingsManager.getAppLabel(app));
-        holder.textView.setTextColor(Color.parseColor(launcherActivity.darkMode ? "#FFFFFF" : "#000000"));
-        holder.textView.setShadowLayer(6, 0, 0, Color.parseColor(launcherActivity.darkMode ? "#000000" : "#FFFFFF"));
+        holder.textView.setTextColor(Color.parseColor(LauncherActivity.darkMode ? "#FFFFFF" : "#000000"));
+        holder.textView.setShadowLayer(6, 0, 0, Color.parseColor(LauncherActivity.darkMode ? "#000000" : "#FFFFFF"));
 
         holder.textSpacer.setVisibility(!banner && LauncherActivity.namesSquare ? View.VISIBLE : View.GONE);
 
@@ -241,9 +245,9 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.AppViewHolder>
     }
 
     public void notifySelectionChange(String packageName) {
-        for (int i=0; i<currentAppList.size(); i++)
-            if (Objects.equals(currentAppList.get(i).packageName, packageName))
-                notifyItemChanged(i, currentAppList.get(i));
+        for (int i=0; i<items.size(); i++)
+            if (Objects.equals(items.get(i).packageName, packageName))
+                notifyItemChanged(i, items.get(i));
     }
 
     @Override
@@ -253,7 +257,7 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.AppViewHolder>
 
     @Override
     public int getItemCount() {
-        return currentAppList.size();
+        return items.size();
     }
     private void updateSelected(AppViewHolder holder) {
         boolean selected = launcherActivity.isSelected(holder.app.packageName);
@@ -285,26 +289,25 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.AppViewHolder>
         final float newScaleInner = hovered ? (tv ? 1.040f : 1.060f) : 1.005f;
         final float newScaleOuter = hovered ? (tv ? 1.275f : 1.060f) : 1.000f;
         final float newElevation = hovered ? (tv ? 15f : 20f) : 3f;
+        final float textScale = 1-(1-(1/newScaleOuter))*0.7f;
+        final int duration = tv ? 175 : 250;
+        BaseInterpolator intepolator = tv ? new DecelerateInterpolator() : new OvershootInterpolator();
 
-        ObjectAnimator aXi = ObjectAnimator.ofFloat(holder.imageView, "scaleX", newScaleInner);
-        ObjectAnimator aXv = ObjectAnimator.ofFloat(holder.view, "scaleX", newScaleOuter);
-        ObjectAnimator aYi = ObjectAnimator.ofFloat(holder.imageView, "scaleY", newScaleInner);
-        ObjectAnimator aYv = ObjectAnimator.ofFloat(holder.view, "scaleY", newScaleOuter);
-        ObjectAnimator aAm = ObjectAnimator.ofFloat(holder.moreButton, "alpha", hovered ? 1f : 0f);
-        ObjectAnimator aAe = ObjectAnimator.ofFloat(holder.clip, "elevation", newElevation);
+        holder.imageView.animate().scaleX(newScaleInner).scaleY(newScaleInner)
+                .setDuration(duration).setInterpolator(intepolator).start();
+        holder.view     .animate().scaleX(newScaleOuter).scaleY(newScaleOuter)
+                .setDuration(duration).setInterpolator(intepolator).start();
+        holder.moreButton.animate().alpha(hovered ? 1f : 0f)
+                .setDuration(duration).setInterpolator(intepolator).start();
+        holder.textView .animate().scaleX(textScale).scaleY(textScale)
+                .setDuration(duration).setInterpolator(intepolator).start();
 
-        ObjectAnimator aTx = ObjectAnimator.ofFloat(holder.textView, "scaleX", 1-(1-(1/newScaleOuter))*0.7f);
-        ObjectAnimator aTy = ObjectAnimator.ofFloat(holder.textView, "scaleY", 1-(1-(1/newScaleOuter))*0.7f);
+        ObjectAnimator aE = ObjectAnimator.ofFloat(holder.clip, "elevation", newElevation);
+        aE.setDuration(duration).start();
 
         boolean banner = holder.imageView == holder.imageViewBanner;
         if (banner && !LauncherActivity.namesBanner || !banner && !LauncherActivity.namesSquare)
             holder.textView.setVisibility(hovered ? View.VISIBLE : View.GONE);
-
-        final ObjectAnimator[] animators = new ObjectAnimator[] {aXi, aXv, aYi, aYv, aAm, aAe, aTx, aTy};
-        for (ObjectAnimator animator:animators) animator.setInterpolator(
-                tv ? new DecelerateInterpolator() : new OvershootInterpolator());
-        for (ObjectAnimator animator:animators) animator.setDuration(tv ? 175 : 250);
-        for (ObjectAnimator animator:animators) animator.start();
 
         // Force correct state, even if interrupted
         if (!hovered) {
@@ -320,7 +323,7 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.AppViewHolder>
     }
     @Override
     public int getItemViewType(int position) {
-        return App.isBanner(currentAppList.get(position)) ? 2 : 1;
+        return App.isBanner(items.get(position)) ? 2 : 1;
     }
 
     // Animation
@@ -413,15 +416,23 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.AppViewHolder>
         }
         return rv;
     }
-    public void notifyAppChanged(ApplicationInfo app) {
-        if (currentAppList != null && currentAppList.contains(app)) {
-            int i = currentAppList.indexOf(app);
+
+    @Override
+    public void updateItem(ApplicationInfo app) {
+        if (items != null && items.contains(app)) {
+            int i = items.indexOf(app);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                currentAppList.sort(Comparator.comparing(SettingsManager::getSortableAppLabel));
-                int j = currentAppList.indexOf(app);
-                if (i != j) notifyItemMoved(i, j);
-                notifyItemChanged(j);
+                items.sort(Comparator.comparing(SettingsManager::getSortableAppLabel));
+                int j = items.indexOf(app);
+                try {
+                    if (i != j) notifyItemMoved(i, j);
+                    notifyItemChanged(j);
+                } catch (IllegalStateException ignored) {}
             }
         }
+    }
+
+    public void notifyAllChanged() {
+        notifyItemRangeChanged(0, getItemCount());
     }
 }

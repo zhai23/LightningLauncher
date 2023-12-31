@@ -28,10 +28,7 @@ class WallpaperExecutor {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.execute(() -> {
             // Do fetching of data
-            int background = owner.dataStoreEditor.getInt(Settings.KEY_BACKGROUND,
-                    Platform.isTv(owner)
-                            ? Settings.DEFAULT_BACKGROUND_TV
-                            : Settings.DEFAULT_BACKGROUND_VR);
+            int background = LauncherActivity.background;
             BitmapDrawable backgroundThemeDrawable = null;
             if (background >= 0 && background < SettingsManager.BACKGROUND_DRAWABLES.length) {
 

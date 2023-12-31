@@ -183,6 +183,7 @@
     <string name="update_skip_cancel_button">Just Dismiss</string>
 
     <string name="saved_settings">Saved configuration to</string>
+    <string name="saved_settings_error">Error while copying file!</string>
     <string name="loaded_settings1">Imported configuration,</string>
     <string name="loaded_settings2">the launcher must now close!</string>
 

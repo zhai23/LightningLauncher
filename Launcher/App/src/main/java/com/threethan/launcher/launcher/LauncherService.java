@@ -98,7 +98,6 @@ public class LauncherService extends Service {
     public void refreshAppDisplayListsAll() {
         for (LauncherActivity activity: activityByIndex.keySet()) {
             activity.refreshAppDisplayLists();
-            activity.refreshInterface();
         }
         cleanup();
     }

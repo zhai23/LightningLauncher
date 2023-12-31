@@ -226,7 +226,7 @@ public abstract class AppDetailsDialog {
         // Save Label & Reload on Confirm
         dialog.findViewById(R.id.confirm).setOnClickListener(view -> {
             SettingsManager.setAppLabel(currentApp, StringLib.setStarred(appNameEditText.getText().toString(), isStarred[0]));
-            launcherActivity.getAppAdapter().notifyAppChanged(currentApp);
+            launcherActivity.getAppAdapter().updateItem(currentApp);
             dialog.dismiss();
         });
     }
@@ -240,7 +240,7 @@ public abstract class AppDetailsDialog {
             selectedImageView.setImageBitmap(bitmap);
         } else {
             selectedImageView.setImageDrawable(iconDrawable);
-            Icon.updateIcon(customIconFile, imageApp, null);
+            Icon.saveIcon(imageApp, customIconFile);
             // No longer sets icon here but that should be fine
         }
     }

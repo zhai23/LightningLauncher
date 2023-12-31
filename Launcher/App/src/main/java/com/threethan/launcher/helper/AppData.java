@@ -49,7 +49,7 @@ public abstract class AppData {
     }
 
     // Whether we should try to detect additional panel apps that are not explicitly set
-    public static boolean AUTO_DETECT_PANEL_APPS = true;
+    public static boolean AUTO_DETECT_PANEL_APPS = false;
 
     public static final Map<String, String> labelOverrides = new HashMap<>();
     static {

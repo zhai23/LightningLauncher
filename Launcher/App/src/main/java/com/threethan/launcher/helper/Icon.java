@@ -3,8 +3,6 @@ package com.threethan.launcher.helper;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
@@ -21,6 +19,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /*
@@ -71,66 +70,25 @@ public abstract class Icon {
         }
         return StringLib.toValidFilename(cacheName);
     }
-    public static void updateIcon(File iconFile, ApplicationInfo app, ImageView imageView) {
+    public static void saveIcon(ApplicationInfo app, File iconFile) {
         try {
             Drawable newIconDrawable = Drawable.createFromPath(iconFile.getAbsolutePath());
             if (newIconDrawable != null) {
                 cachedIcons.put(cacheName(app), newIconDrawable); // Success
-                if (imageView != null) imageView.setImageDrawable(newIconDrawable);
             }
         } catch (Exception ignored) {
             Log.w("Icon", "Error when loading icon drawable from path "+iconFile.getAbsolutePath());
         }
     }
+    public static void cacheIcon(ApplicationInfo app, Drawable iconDrawable) {
+        cachedIcons.put(cacheName(app), iconDrawable);
+    }
     @SuppressLint("UseCompatLoadingForDrawables")
     @Nullable
     public static Drawable loadIcon(LauncherActivity activity, ApplicationInfo app, ImageView imageView) {
-        // Try to load from memory
-        if (cachedIcons.containsKey(cacheName(app))) return cachedIcons.get(cacheName(app));
-
-        Drawable appIcon = null;
-
-        // Try to load from custom icon file
-        final File iconCustomFile = iconCustomFileForApp(activity, app);
-        if (iconCustomFile.exists()) {
-            updateIcon(iconCustomFile, app, null);
-            appIcon = Drawable.createFromPath(iconCustomFile.getAbsolutePath());
-            if (appIcon != null) return appIcon; // No need to download if we have a custom icon
-        }
-        // Try to load from cached icon file
-        final File iconCacheFile = iconCacheFileForPackage(activity, app);
-        if (iconCacheFile.exists()) {
-            updateIcon(iconCacheFile, app, null);
-            appIcon = Drawable.createFromPath(iconCacheFile.getAbsolutePath());
-        }
-
-        if (appIcon == null) {
-            // Try to load from package manager
-            if (cachedIcons.containsKey(cacheName(app)))
-                appIcon = cachedIcons.get(cacheName(app));
-            else try {
-                PackageManager packageManager = activity.getPackageManager();
-                Resources resources = packageManager.getResourcesForApplication(app);
-
-                // Check Icon
-                int iconId = app.icon;
-                // Check AndroidTV banner
-                if (app.banner != 0 && App.isBanner(app)) iconId = app.banner;
-
-                if (iconId == 0) iconId = android.R.drawable.sym_def_app_icon;
-                appIcon = resources.getDrawable(iconId, activity.getTheme());
-
-                // Saves the drawable to a webp,
-                // which is faster to load than trying to get the drawable every time
-                saveIconDrawable(activity, appIcon, app);
-            } catch (Exception ignored) {
-            } // Fails on web apps, possibly also on invalid packages
-        }
-        // Attempt to download the icon for this app from an online repo
-        // Done AFTER saving the drawable version to prevent a race condition)
-        IconRepo.check(activity, app, () -> updateIcon(iconCacheFile, app, imageView));
-
-        return appIcon; // May rarely be null
+        if (Icon.cachedIcons.containsKey(Icon.cacheName(app))) return Icon.cachedIcons.get(Icon.cacheName(app));
+        IconExecutor.execute(activity, app, imageView);
+        return null;
     }
 
     public static void reloadIcon(LauncherActivity activity, ApplicationInfo app, ImageView downloadImageView) {
@@ -138,23 +96,8 @@ public abstract class Icon {
         final File iconFile = iconCacheFileForPackage(activity, app);
         final boolean ignored1 = iconFile.delete();
         downloadImageView.setImageDrawable(loadIcon(activity, app, downloadImageView));
-        IconRepo.download(activity, app, () -> updateIcon(iconFile, app, downloadImageView));
+        IconRepo.download(activity, app, () -> saveIcon(app, iconFile));
         Dialog.toast(activity.getString(R.string.refreshed_icon));
-    }
-
-    protected static void saveIconDrawable(LauncherActivity activity, Drawable icon, ApplicationInfo app) {
-        try {
-            Bitmap bitmap = ImageLib.bitmapFromDrawable(icon);
-            if (bitmap == null)
-                Log.i("Icon", "Failed to load drawable bitmap for "+app.packageName);
-            else {
-                compressAndSaveBitmap(iconCacheFileForPackage(activity, app), bitmap);
-                Log.i("Icon", "Saved drawable bitmap for "+app.packageName);
-            }
-        } catch (Exception e) {
-            Log.i("AbstractPlatform", "Exception while converting file "+app.packageName);
-            e.printStackTrace();
-        }
     }
     public static void saveIconDrawableExternal(Activity activity, Drawable icon, ApplicationInfo app) {
         try {
@@ -189,6 +132,8 @@ public abstract class Icon {
     }
     public static void compressAndSaveBitmap(File file, Bitmap bitmap) {
         try {
+            //noinspection ResultOfMethodCallIgnored
+            Objects.requireNonNull(file.getParentFile()).mkdirs();
             FileOutputStream fileOutputStream = new FileOutputStream(file.getAbsolutePath());
             bitmap = scaleBitmap(bitmap);
             bitmap.compress(Bitmap.CompressFormat.WEBP, ICON_QUALITY, fileOutputStream);
