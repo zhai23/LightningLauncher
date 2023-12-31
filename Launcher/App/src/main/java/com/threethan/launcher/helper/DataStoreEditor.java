@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -78,7 +79,7 @@ public class DataStoreEditor implements SharedPreferences, SharedPreferences.Edi
     }
 
     // Utility Functions
-
+    private static int a = 0;
     /** @noinspection unchecked*/
     public static  <T> Preferences.Key<T> getKey(String key, Class<T> tClass) {
         if (tClass == String.class ) return (Preferences.Key<T>) PreferencesKeys.stringKey   (key);
@@ -127,44 +128,54 @@ public class DataStoreEditor implements SharedPreferences, SharedPreferences.Edi
     public <T> void putValue(String key, @Nullable T value, Class<T> tClass) {
         boolean returnvalue;
         Preferences.Key<T> prefKey = getKey(key, tClass);
-
+        a++;
         Single<Preferences> updateResult =  dataStoreRX.updateDataAsync(prefsIn -> {
             MutablePreferences mutablePreferences = prefsIn.toMutablePreferences();
             mutablePreferences.set(prefKey, value);
             return Single.just(mutablePreferences);
         });
+        updateResult.blockingSubscribe(v -> a--);
     }
     public <T> void putValue(String key, @NonNull T value) {
         boolean returnvalue;
         Preferences.Key<T> prefKey = getKey(key, value);
-
+        a++;
         Single<Preferences> updateResult =  dataStoreRX.updateDataAsync(prefsIn -> {
             MutablePreferences mutablePreferences = prefsIn.toMutablePreferences();
             mutablePreferences.set(prefKey, value);
             return Single.just(mutablePreferences);
         });
+        updateResult.blockingSubscribe(v -> a--);
     }
 
     public <T> void removeValue(String key, Class<T> tClass){
         boolean returnvalue;
         Preferences.Key<T> prefKey = getKey(key, tClass);
+        a++;
         @SuppressLint("UnsafeOptInUsageWarning")
         Single<Preferences> updateResult =  dataStoreRX.updateDataAsync(prefsIn -> {
             MutablePreferences mutablePreferences = prefsIn.toMutablePreferences();
             T remove = mutablePreferences.remove(prefKey);
-            return null;
+            return Single.just(mutablePreferences);
         });
+        updateResult.blockingSubscribe(v -> a--);
     }
 
     public DataStoreEditor clear(){
         boolean returnvalue;
+        a++;
         @SuppressLint("UnsafeOptInUsageWarning")
         Single<Preferences> updateResult =  dataStoreRX.updateDataAsync(prefsIn -> {
             MutablePreferences mutablePreferences = prefsIn.toMutablePreferences();
             mutablePreferences.clear();
-            return null;
+            return Single.just(mutablePreferences);
         });
+        updateResult.blockingSubscribe(v -> a--);
         return this;
+    }
+
+    public void waitForWrites() {
+        while (a > 0) Log.v(TAG, "Waiting on "+a+" writes");
     }
 
     // String

@@ -49,7 +49,9 @@ public abstract class SettingsDialog {
         a.settingsVisible = true;
 
         dialog.setOnDismissListener(dialogInterface -> a.settingsVisible = false);
-        dialog.findViewById(R.id.dismissButton).setOnClickListener(view -> dialog.dismiss());
+        View dismiss = dialog.findViewById(R.id.dismissButton);
+        dismiss.setOnClickListener(view -> dialog.dismiss());
+        dismiss.post(dismiss::requestFocus);
 
         // Addons
         View addonsButton = dialog.findViewById(R.id.addonsButton);

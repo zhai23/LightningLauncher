@@ -133,6 +133,7 @@ public abstract class AppDetailsDialog {
                     });
                 }
             });
+            launchModeSwitch.setVisibility(Platform.isVr(launcherActivity) ? View.VISIBLE : View.GONE);
 
             // Browser settings
             if (appType == App.Type.TYPE_WEB && Platform.isQuest(launcherActivity)) {

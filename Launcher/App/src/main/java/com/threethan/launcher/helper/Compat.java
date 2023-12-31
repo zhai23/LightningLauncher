@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /*
     Compat
@@ -237,8 +238,8 @@ public abstract class Compat {
         SettingsManager.appLabelCache.clear();
         HashSet<String> setAll = launcherActivity.getAllPackages();
         for (String packageName : setAll) launcherActivity.dataStoreEditor.removeString(packageName);
-        Log.i(TAG, "Done clearing");
 
+        launcherActivity.dataStoreEditor.waitForWrites();
         launcherActivity.launcherService.clearAdapterCachesAll();
     }
     // Clears the categorization of apps & resets everything to selected default groups
@@ -247,10 +248,11 @@ public abstract class Compat {
         SettingsManager.getAppGroupMap().clear();
         Set<String> appGroupsSet = launcherActivity.dataStoreEditor.getStringSet(Settings.KEY_GROUPS, null);
         if (appGroupsSet == null) return;
-        for (String groupName : appGroupsSet)
-            launcherActivity.dataStoreEditor.removeStringSet(Settings.KEY_GROUP_APP_LIST+groupName);
+        for (String groupName : appGroupsSet) {
+            launcherActivity.dataStoreEditor.removeStringSet(Settings.KEY_GROUP_APP_LIST + groupName);
+        }
         storeAndReload(launcherActivity);
-
+        launcherActivity.dataStoreEditor.waitForWrites();
         launcherActivity.launcherService.clearAdapterCachesAll();
         launcherActivity.launcherService.refreshInterfaceAll();
     }
@@ -261,12 +263,14 @@ public abstract class Compat {
 
         launcherActivity.settingsManager.resetGroups();
         clearSort(launcherActivity);
-
+        launcherActivity.dataStoreEditor.waitForWrites();
         launcherActivity.launcherService.clearAdapterCachesAll();
         launcherActivity.launcherService.refreshInterfaceAll();
     }
     // Stores any settings which may have been changed then refreshes any extent launcher activities
     private static void storeAndReload(LauncherActivity launcherActivity) {
+        SettingsManager.setAppGroupMap(new ConcurrentHashMap<>());
+
         Compat.recheckSupported(launcherActivity);
         SettingsManager.writeValues();
         launcherActivity.reloadPackages();

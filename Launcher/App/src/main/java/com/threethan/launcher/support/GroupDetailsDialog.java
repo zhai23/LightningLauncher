@@ -67,10 +67,13 @@ public abstract class GroupDetailsDialog {
                     String newDefault = value ? groupName : Settings.FALLBACK_GROUPS.get(type);
                     if ((!value && groupName.equals(newDefault)) || !appGroupsSet.contains(newDefault))
                         newDefault = null;
-                    launcherActivity.dataStoreEditor.putString(Settings.KEY_DEFAULT_GROUP + type, newDefault);
-                    final boolean newChecked = App.getDefaultGroupFor(type).equals(groupName);
-                    if (newChecked && !value) Dialog.toast(launcherActivity.getString(R.string.toast_cant_unset_group));
-                    cSwitch.setChecked(newChecked);
+                    SettingsManager.setDefaultGroupFor(type, newDefault);
+                    final boolean newChecked = SettingsManager.getDefaultGroupFor(type).equals(groupName);
+                    if (newChecked && !value) {
+                        cSwitch.setChecked(true);
+                        Dialog.toast(launcherActivity.getString(R.string.toast_cant_unset_group));
+                    }
+                    else cSwitch.setChecked(newChecked);
                 });
             } else {
                 Objects.requireNonNull(switchContainerByType.get(type)).setVisibility(View.GONE);

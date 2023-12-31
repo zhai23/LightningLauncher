@@ -150,7 +150,7 @@ public class SettingsManager extends Settings {
         ConcurrentHashMap<String, String> apps = getAppGroupMap();
 
         if (myApps == null) {
-            Log.e("LightningLauncher", "Got null app list");
+            Log.w("LightningLauncher", "Got null app list");
             return new ArrayList<>();
         }
 
@@ -322,8 +322,9 @@ public class SettingsManager extends Settings {
                 if (group == null) group = appListSetMap.get(
                         App.getDefaultGroupFor(App.Type.TYPE_SUPPORTED));
                 if (group == null) {
-                    Log.e("Group was null", pkg);
+                    Log.w("Group was null", pkg);
                     group = appListSetMap.get(HIDDEN_GROUP);
+                    appGroupMap.put(pkg, HIDDEN_GROUP);
                 }
                 assert group != null;
                 group.add(pkg);
@@ -364,7 +365,19 @@ public class SettingsManager extends Settings {
         return true;
     }
 
+    final private static Map<App.Type, String> defaultGroupCache = new ConcurrentHashMap<>();
+    public static void setDefaultGroupFor(App.Type type, String newDefault) {
+        if (newDefault == null) return;
+        defaultGroupCache.put(type, newDefault);
+        SettingsManager.getAnyLauncherActivity().dataStoreEditor.putString(Settings.KEY_DEFAULT_GROUP + type, newDefault);
+    }
     public static String getDefaultGroupFor(App.Type type) {
+        if (defaultGroupCache.containsKey(type)) return defaultGroupCache.get(type);
+        String def = checkDefaultGroupFor(type);
+        defaultGroupCache.put(type, def);
+        return def;
+    }
+    private static String checkDefaultGroupFor(App.Type type) {
         String key = Settings.KEY_DEFAULT_GROUP + type;
         if (!Settings.FALLBACK_GROUPS.containsKey(type)) type = App.Type.TYPE_PHONE;
         String def = Settings.FALLBACK_GROUPS.get(type);

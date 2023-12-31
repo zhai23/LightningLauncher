@@ -134,19 +134,12 @@ public class LauncherActivity extends Activity {
         ViewGroup containerView = findViewById(R.id.container);
         rootView = launcherService.getNewView(this, containerView);
 
-        Log.v(TAG, "Init/compat staring");
         init();
         Compat.checkCompatibilityUpdate(this);
-        Log.v(TAG, "Init/compat done");
 
-        Log.v(TAG, "RP");
         reloadPackages();
-        Log.v(TAG, "RB");
         refreshBackground();
-        Log.v(TAG, "RI");
         refreshInterface();
-        Log.v(TAG, "RX");
-        post(() -> Log.v(TAG, "post"));
     }
     protected void startWithExistingView() {
         Log.v(TAG, "Starting with existing view");

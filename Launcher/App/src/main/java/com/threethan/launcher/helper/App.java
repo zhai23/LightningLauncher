@@ -15,7 +15,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 /*
@@ -59,28 +58,32 @@ public abstract class App {
         return (tvIntent.resolveActivity(pm) != null);
 
     }
+    private static Set<String> nonNull(Set<String> set) {
+        if (set == null) return new HashSet<>();
+        else return set;
+    }
     protected static boolean isAppOfType
             (ApplicationInfo applicationInfo, App.Type appType) {
 
             final LauncherActivity launcherActivity = SettingsManager.getAnyLauncherActivity();
             final DataStoreEditor sharedPreferences = launcherActivity.dataStoreEditor;
 
-            if (!categoryIncludedApps.containsKey(appType) || categoryIncludedApps.get(appType) == null) {
+            if (!categoryIncludedApps.containsKey(appType)) {
                 // Create new hashsets for cache
                 categoryIncludedApps.put(appType, Collections.synchronizedSet(new HashSet<>()));
                 categoryExcludedApps.put(appType, Collections.synchronizedSet(new HashSet<>()));
 
                 // Async load (it's nice to store this data, but it's faster to check initially)
                 sharedPreferences.getStringSet(Settings.KEY_INCLUDED_SET + appType, new HashSet<>(),
-                        includedSet -> Objects.requireNonNull(categoryIncludedApps.get(appType)).addAll(includedSet));
+                        includedSet -> nonNull(categoryIncludedApps.get(appType)).addAll(includedSet));
                 sharedPreferences.getStringSet(Settings.KEY_EXCLUDED_SET + appType, new HashSet<>(),
-                        includedSet -> Objects.requireNonNull(categoryExcludedApps.get(appType)).addAll(includedSet));
+                        includedSet -> nonNull(categoryExcludedApps.get(appType)).addAll(includedSet));
             }
 
             // Check cache
-            if (Objects.requireNonNull(categoryIncludedApps.get(appType))
+            if (nonNull(categoryIncludedApps.get(appType))
                     .contains(applicationInfo.packageName)) return true;
-            if (Objects.requireNonNull(categoryExcludedApps.get(appType))
+            if (nonNull(categoryExcludedApps.get(appType))
                     .contains(applicationInfo.packageName)) return false;
 
             boolean isType = switch (appType) {
@@ -96,12 +99,12 @@ public abstract class App {
             };
 
         if (isType) {
-                Objects.requireNonNull(categoryIncludedApps.get(appType))
+                nonNull(categoryIncludedApps.get(appType))
                         .add(applicationInfo.packageName);
                 sharedPreferences.putStringSet(Settings.KEY_INCLUDED_SET + appType,
                         categoryIncludedApps.get(appType));
             } else {
-                Objects.requireNonNull(categoryExcludedApps.get(appType))
+                nonNull(categoryExcludedApps.get(appType))
                         .add(applicationInfo.packageName);
                 sharedPreferences.putStringSet(Settings.KEY_EXCLUDED_SET + appType,
                         categoryIncludedApps.get(appType));
@@ -215,6 +218,7 @@ public abstract class App {
             default -> "Invalid type";
         };
     }
+
     public static String getDefaultGroupFor(App.Type type) {
         return SettingsManager.getDefaultGroupFor(type);
     }
