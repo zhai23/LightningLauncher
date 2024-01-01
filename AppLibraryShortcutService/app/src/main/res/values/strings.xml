@@ -3,5 +3,6 @@
     <string name="app_name">Library ➔ Lightning Launcher</string>
     <string name="accessibility_event_name">[App Library]</string>
     <string name="accessibility_event_name_untranslated">[Library]</string>
+    <string name="accessibility_event_name_alternate">[App library]</string>
     <string name="service_desc">Enable this service using the switch up top to open Lightning Launcher when you hover over the &quot;Library&quot; button on the dock</string>
 </resources>

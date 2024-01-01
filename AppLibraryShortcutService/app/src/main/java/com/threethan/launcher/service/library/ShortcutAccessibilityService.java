@@ -14,9 +14,11 @@ public class ShortcutAccessibilityService extends AccessibilityService {
         if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
             String eventText = event.getText().toString();
             String exploreAccessibilityEventNameT  = getResources().getString(R.string.accessibility_event_name);
+            String exploreAccessibilityEventNameA  = getResources().getString(R.string.accessibility_event_name_alternate);
             String exploreAccessibilityEventNameU = getResources().getString(R.string.accessibility_event_name_untranslated);
             if (exploreAccessibilityEventNameU.compareTo(eventText) == 0 ||
-                exploreAccessibilityEventNameT.compareTo(eventText) == 0) {
+                exploreAccessibilityEventNameA.compareTo(eventText) == 0 ||
+                exploreAccessibilityEventNameT.compareTo(eventText) == 0 ){
 
                 Intent launchIntent = new Intent(this, MainActivity.class);
                 launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
