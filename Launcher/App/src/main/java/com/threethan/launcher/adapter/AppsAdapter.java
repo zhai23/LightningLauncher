@@ -286,8 +286,8 @@ public class AppsAdapter extends ArrayListAdapter<ApplicationInfo, AppsAdapter.A
             : R.drawable.ic_running_ns);
 
         final boolean tv = Platform.isTv(launcherActivity);
-        final float newScaleInner = hovered ? (tv ? 1.040f : 1.060f) : 1.005f;
-        final float newScaleOuter = hovered ? (tv ? 1.275f : 1.060f) : 1.000f;
+        final float newScaleInner = hovered ? (tv ? 1.075f : 1.060f) : 1.005f;
+        final float newScaleOuter = hovered ? (tv ? 1.270f : 1.075f) : 1.000f;
         final float newElevation = hovered ? (tv ? 15f : 20f) : 3f;
         final float textScale = 1-(1-(1/newScaleOuter))*0.7f;
         final int duration = tv ? 175 : 250;

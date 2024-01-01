@@ -79,7 +79,9 @@
             android:windowSoftInputMode="adjustNothing"
             android:exported="true"
             android:launchMode="singleTask"
-            android:theme="@style/ThemeOverlay.ATV">
+            android:theme="@style/ThemeOverlay.ATV"
+            android:stateNotNeeded="true"
+            android:clearTaskOnLaunch="true">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -87,32 +89,6 @@
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER"/>
             </intent-filter>
-        </activity>
-        <!-- Activity for browsers which open within the main window -->
-        <activity android:name=".browser.BrowserActivity"
-            android:screenOrientation="unspecified"
-            android:configChanges="density|keyboard|keyboardHidden|navigation|orientation|screenLayout|screenSize|uiMode"
-            android:exported="true"
-            android:resizeableActivity="true"
-            android:theme="@style/ThemeOverlay.Browser">
-
-            <layout android:defaultWidth="706dp" android:defaultHeight="442dp" android:gravity="top|end" />
-
-            <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
-            <meta-data android:name="com.oculus.vrshell.free_resizing_limits" android:value="300,2000,500,1000"/>
-        </activity>
-        <!-- Activity for browsers which open in a separate window -->
-        <activity android:name=".browser.BrowserActivitySeparate"
-            android:screenOrientation="unspecified"
-            android:configChanges="density|keyboard|keyboardHidden|navigation|orientation|screenLayout|screenSize|uiMode"
-            android:exported="true"
-            android:launchMode="singleInstancePerTask"
-            android:resizeableActivity="true"
-            android:theme="@style/ThemeOverlay.Browser">
-
-            <layout android:defaultWidth="706dp" android:defaultHeight="442dp" android:gravity="top|end" />
-            <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
-            <meta-data android:name="com.oculus.vrshell.free_resizing_limits" android:value="300,2000,500,1000"/>
         </activity>
         <!-- Custom Sizes -->
         <activity android:name=".launcher.chainload.ChainLoadActivityPhone"
@@ -181,13 +157,6 @@
             android:name=".launcher.LauncherService"
             android:exported="true"
             android:permission="com.threethan.launcher.start">
-        </service>
-        <!-- Service that provides/manages WebViews -->
-        <service
-            android:name=".browser.BrowserService"
-            android:exported="true"
-            android:foregroundServiceType="mediaPlayback|microphone"
-            android:permission="com.threethan.launcher.start_browser">
         </service>
 
         <!-- Intent received used to install shortcuts from other applications -->
