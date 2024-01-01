@@ -68,13 +68,13 @@ public class AppsAdapter extends ArrayListAdapter<ApplicationInfo, AppsAdapter.A
         launcherActivity = activity;
 
         setItems(Collections.unmodifiableList(settingsManager
-                .getInstalledApps(activity, settingsManager.getAppGroupsSorted(true), fullAppSet)));
+                .getVisibleApps(activity, settingsManager.getAppGroupsSorted(true), fullAppSet)));
     }
 
     public synchronized void filterBy(String text) {
         SettingsManager settingsManager = SettingsManager.getInstance(launcherActivity);
         final List<ApplicationInfo> newItems =
-                settingsManager.getInstalledApps(launcherActivity, settingsManager.getAppGroupsSorted(false), fullAppSet);
+                settingsManager.getVisibleApps(launcherActivity, settingsManager.getAppGroupsSorted(false), fullAppSet);
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -418,7 +418,7 @@ public class AppsAdapter extends ArrayListAdapter<ApplicationInfo, AppsAdapter.A
     }
 
     @Override
-    public void updateItem(ApplicationInfo app) {
+    public void notifyItemChanged(ApplicationInfo app) {
         if (items != null && items.contains(app)) {
             int i = items.indexOf(app);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

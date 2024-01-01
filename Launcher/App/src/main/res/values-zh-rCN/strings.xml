@@ -240,44 +240,4 @@
     <string name="addons_update">更新</string>
     <string name="addons_activate">激活</string>
     <string name="addons_uninstall">移除</string>
-
-    <!--  Browser Tooltips  -->
-    <string name="web_back">后退</string>
-    <string name="web_forward">前进</string>
-    <string name="web_reload">刷新页面</string>
-    <string name="web_exit">回到启动器</string>
-    <string name="web_add_home">添加页面到启动器</string>
-    <string name="web_cancel">关闭</string>
-    <string name="web_confirm">确认并启动</string>
-
-    <!-- Browser -->
-    <string name="web_download_started">下载中</string>
-    <string name="web_download_finished">下载完成</string>
-
-    <string name="web_apk_prompt_title">安装包已下载</string>
-    <string name="web_apk_prompt_message_pre">已下载 %1$s</string>
-    <string name="web_apk_prompt_message">您想安装它还是将它保存到您的下载文件夹？\n\n    \n注意，该文件来自互联网上，可能存在风险！</string>
-    <string name="web_apk_prompt_install">安装</string>
-    <string name="web_apk_prompt_move">保存</string>
-    <string name="web_apk_prompt_delete">删除</string>
-    <string name="extension_prompt_title">管理 Web 拓展程序</string>
-    <string name="extension_prompt_hint">从 Firefox Addons 获取扩展</string>
-
-    <!-- Gecko -->
-    <string name="before_unload_message">本页面要求您确认是否要离开 - 您输入的数据可能不会被保存</string>
-    <string name="before_unload_title">确认?</string>
-    <string name="before_unload_leave_page">离开页面</string>
-    <string name="before_unload_stay">留在页面</string>
-
-    <string name="repost_confirm_message">要显示该页面，GeckoViewExample 必须发送信息，重复之前执行的任何操作（如搜索或订单确认）。</string>
-    <string name="repost_confirm_title">确认?</string>
-    <string name="repost_confirm_resend">重新发送</string>
-    <string name="repost_confirm_cancel">关闭</string>
-
-    <string name="username">用户名</string>
-    <string name="password">密码</string>
-    <string name="clear_field">清空</string>
-
-    <string name="wait">等待</string>
-    <string name="stop">停止</string>
 </resources>

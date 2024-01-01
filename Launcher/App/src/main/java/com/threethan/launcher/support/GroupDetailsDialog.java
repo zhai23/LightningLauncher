@@ -108,7 +108,7 @@ public abstract class GroupDetailsDialog {
                 settingsManager.setSelectedGroups(selectedGroup);
                 settingsManager.setAppGroups(appGroupsSet);
                 SettingsManager.setAppGroupMap(updatedAppGroupMap);
-                launcherActivity.refreshInterfaceAll();
+                launcherActivity.launcherService.forEachActivity(LauncherActivity::refreshInterface);
             }
             dialog.cancel();
         });
@@ -130,7 +130,7 @@ public abstract class GroupDetailsDialog {
                 break;
             }
             if (!hasNormalGroup) {
-                settingsManager.resetGroups();
+                settingsManager.resetGroupsAndSort();
             } else {
                 settingsManager.setAppGroups(appGroupsSet);
                 Set<String> firstSelectedGroup = new HashSet<>();
@@ -139,7 +139,7 @@ public abstract class GroupDetailsDialog {
             }
             dialog.dismiss();
 
-            launcherActivity.refreshInterfaceAll();
+            launcherActivity.launcherService.forEachActivity(LauncherActivity::refreshInterface);
         });
     }
 }

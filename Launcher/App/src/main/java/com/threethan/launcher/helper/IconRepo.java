@@ -23,14 +23,13 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-/*
-    IconRepo
-
-    This abstract class is dedicated to downloading icons from online repositories.
-
-    It is called by the Icon class. If no downloadable icon is found, the Icon class decides instead
+/**
+ * This abstract class is dedicated to downloading icons from online repositories
+ * for apps and added websites.
+ * <p>
+ * Its functions are called by the Icon class. If no downloadable icon is found,
+ * the Icon class will then decide on the icon to be used.
  */
-
 public abstract class IconRepo {
     // Repository URLs:
     // Each URL will be tried in order: the first with a file matching the package name will be used
@@ -50,8 +49,8 @@ public abstract class IconRepo {
     };
     // Instead of matching a package name, websites match their TLD
     private static final String[] ICON_URLS_WEB = {
-            "https://logo.clearbit.com/%s", // Provides high-res icons for TLDs
-            "%s/favicon.ico", // The standard directory for an icon to be places
+            "https://www.google.com/s2/favicons?domain=%s&sz=256", // Provides high-res icons
+            "%s/favicon.ico", // The standard directory for a website's icon to be placed
     };
     private static final String TEST_URL = "https://github.com/threethan/QuestLauncherImages/blob/main/banner/com.oculus.browser.jpg";
     // If a download finishes, regardless of whether an icon is found, the app will be added to this
@@ -59,12 +58,15 @@ public abstract class IconRepo {
     protected static Set<String> downloadExemptPackages = Collections.synchronizedSet(new HashSet<>());
     private static final ConcurrentHashMap<String, Object> locks = new ConcurrentHashMap<>();
 
-    // Helper functions
+    /**
+     * Starts the download of an icon, if one should be downloaded for that app
+     * @param app App for which to download an icon image
+     * @param callback Called when the download completes successfully
+     */
     public static void check(final LauncherActivity activity, ApplicationInfo app, final Runnable callback) {
         if (shouldDownload(activity, app)) download(activity, app, callback);
     }
-
-    public static synchronized boolean shouldDownload(LauncherActivity activity, ApplicationInfo app) {
+    private static synchronized boolean shouldDownload(LauncherActivity activity, ApplicationInfo app) {
         if (App.isShortcut(app)) return false;
         if (downloadExemptPackages.isEmpty()) {
             downloadExemptPackages.addAll(activity.dataStoreEditor
@@ -85,7 +87,11 @@ public abstract class IconRepo {
         else shouldSaveDownloadExemptPackagesIfConnected = true;
     }
 
-    // Starts the download and handles threading
+    /**
+     * Starts the download of an icon and handles relevant threading
+     * @param app App for which to download an icon image
+     * @param callback Called when the download completes successfully
+     */
     public static void download(final LauncherActivity activity, ApplicationInfo app, final Runnable callback) {
         final String pkgName = app.packageName;
 
@@ -120,6 +126,10 @@ public abstract class IconRepo {
         }).start();
     }
 
+    /**
+     * Downloads an icon from a given url and saves it using saveStream()
+     * @return True unless there was an error
+     */
     private static boolean downloadIconFromUrl(Context context, String url, File iconFile) {
         try {
             InputStream inputStream = new URL(url).openStream();
@@ -131,7 +141,10 @@ public abstract class IconRepo {
         return false;
     }
 
-    // Turns the downloaded bitmap into an actual file, and applies webp compression
+    /**
+     * Saves an inputstream used to download a bitmap to an actual file, applying webp compression.
+     * @return True unless there was an error
+     */
     private static boolean saveStream(Context context, InputStream inputStream, File outputFile) {
         try {
             DataInputStream dataInputStream = new DataInputStream(inputStream);
@@ -171,7 +184,10 @@ public abstract class IconRepo {
         }
     }
 
-    // This usually returns true, but may fail if the download was interrupted or corrupt
+    /**
+     * This usually returns true, but may fail if the download was interrupted or corrupt
+     * @return True if image file is complete
+     */
     private static boolean isImageFileComplete(Context context, File imageFile) {
         boolean success = false;
         if (imageFile.length() > 0) {
@@ -187,8 +203,9 @@ public abstract class IconRepo {
         return success;
     }
 
-    public static Boolean hasInternet = false;
-    public static Boolean shouldSaveDownloadExemptPackagesIfConnected = false;
+    private static Boolean hasInternet = false;
+    private static Boolean shouldSaveDownloadExemptPackagesIfConnected = false;
+    /** Recheck if we are connected to the internet by pinging a test url */
     public static void updateInternet(LauncherActivity activity) {
         Thread thread = new Thread(() -> {
             try {
@@ -204,6 +221,7 @@ public abstract class IconRepo {
 
         thread.start();
     }
+    /** Ping a test url to check if we have an internet connection */
     private static boolean checkInternet() {
         try {
             InputStream inputStream = new URL(TEST_URL).openStream();

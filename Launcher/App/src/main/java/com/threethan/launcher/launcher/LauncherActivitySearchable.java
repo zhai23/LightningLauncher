@@ -20,9 +20,7 @@ import com.threethan.launcher.view.EditTextWatched;
 
 import eightbitlab.com.blurview.BlurView;
 
-/*
-    LauncherActivitySearchable
-
+/**
     The class handles the additional interface elements and properties related to searching.
     It sends the current search term to the GroupsAdapter when updated, and open the first app
     when enter is pressed.
@@ -38,6 +36,7 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
         updateTopSearchResult();
         resetScroll();
     }
+    BlurView searchBar;
     ObjectAnimator alphaIn;
     ObjectAnimator alphaOut;
     void showSearchBar() {
@@ -47,8 +46,6 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
 
             final int endMargin = 275;
 
-            BlurView searchBar = rootView.findViewById(R.id.blurViewSearchBar);
-            View topBar = rootView.findViewById(R.id.topBarLayout);
             if (alphaIn  != null) alphaIn .end();
             if (alphaOut != null) alphaOut.end();
             alphaIn = ObjectAnimator.ofFloat(searchBar, "alpha", 1f);
@@ -113,8 +110,6 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
             searching = false;
             Keyboard.hide(this, mainView);
 
-            View searchBar = rootView.findViewById(R.id.blurViewSearchBar);
-            View topBar = rootView.findViewById(R.id.topBarLayout);
             if (alphaIn != null) alphaIn.end();
             if (alphaOut != null) alphaOut.end();
             alphaIn = ObjectAnimator.ofFloat(topBar, "alpha", 1f);
@@ -126,7 +121,7 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
             searchBar.postDelayed(() -> searchBar.setVisibility(View.GONE), 250);
 
             searchBar.postDelayed(this::fixState, 300);
-            topBar.setVisibility(View.VISIBLE);
+            topBar.setVisibility(groupsEnabled ? View.VISIBLE : View.GONE);
             refreshAdapters();
 
         } catch (NullPointerException ignored) {}
@@ -137,10 +132,8 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
         try {
             if (alphaIn != null) alphaIn.end();
             if (alphaOut != null) alphaOut.end();
-            View searchBar = rootView.findViewById(R.id.blurViewSearchBar);
-            View topBar = rootView.findViewById(R.id.topBarLayout);
             searchBar.setVisibility(searching ? View.VISIBLE : View.GONE);
-            topBar.setVisibility(!searching ? View.VISIBLE : View.GONE);
+            topBar.setVisibility(!searching ? (groupsEnabled ? View.VISIBLE : View.GONE) : View.GONE);
             searchBar.setAlpha(searching ? 1F : 0F);
             topBar.post(() -> topBar.setAlpha(1F)); // Prevent flicker on start
         } catch (NullPointerException ignored) {}
@@ -167,6 +160,9 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
                 searchIcon.setBackground(null);
             return false;
         });
+        searchBar = rootView.findViewById(R.id.blurViewSearchBar);
+
+
         // It seems like the normal method for showing the keyboard doesn't work on quest
         // so we'll put an invisible EditText above the search button and give it a frame
         // to take focus and show the keyboard.
@@ -234,20 +230,6 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
         if (currentTopSearchResult != null)
             clearFocusPackageNames.add(currentTopSearchResult.packageName);
         currentTopSearchResult = val;
-    }
-    @Override
-    protected void postRefresh() {
-        final View searchShortcutView = findViewById(R.id.searchShortcutView);
-        if (searchShortcutView == null) {
-            post(this::postRefresh);
-            return;
-        }
-        searchShortcutView.setFocusable(!groupsEnabled);
-        // Secret focusable element off the top of the screen to allow search on android tv by pressing up
-        searchShortcutView.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus && !searching) showSearchBar();
-        });
-        super.postRefresh();
     }
 
     @Override

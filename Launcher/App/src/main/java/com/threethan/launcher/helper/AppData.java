@@ -5,11 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/** @noinspection CommentedOutCode*/ /*
-    PanelAppList
-
-    Stores a list of panel apps, invalid apps, and label overrides.
-    It's in it's own class since it doesn't really fit anywhere else.
+/** noinspection CommentedOutCode
+ * Stores a list of panel apps, invalid apps, and label overrides.
+ * It's in it's own class since it doesn't really fit anywhere else.
+ * <p>
+ * Also has the package name of the explore package.
  */
 public abstract class AppData {
     protected static final List<PanelApp> panelAppList;

@@ -16,11 +16,10 @@ import java.io.File;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/*
-    BackgroundTask
-
-    This task loads an image background asynchronously, then sets it to the specified view when done
-    Used only by LauncherActivity
+/**
+    Loads an image background asynchronously, then sets it to the specified view when done
+    It is also responsible from cropping/resizing the image for different window sizes
+    (Used only by LauncherActivity)
  */
 
 class WallpaperExecutor {

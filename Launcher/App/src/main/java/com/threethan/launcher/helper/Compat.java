@@ -22,15 +22,14 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-/*
-    Compat
-
-    checkCompatibilityUpdate is called by the launcher when it's started, and attempts to update
-    settings and other stored values to be compatible from previous versions
-
-    It also provides helper functions for resetting certain types of data
+/**
+ * checkCompatibilityUpdate is called by the launcher when it's started, and attempts to update
+ * settings and other stored values to be compatible from previous versions.
+ * <p>
+ * This includes calling the function to migrate from sharedPreferences.
+ * <p>
+ * It also provides helper functions for resetting certain types of data
  */
-
 public abstract class Compat {
     public static final String KEY_COMPATIBILITY_VERSION = "KEY_COMPATIBILITY_VERSION";
     public static final int CURRENT_COMPATIBILITY_VERSION = 10;
@@ -221,7 +220,7 @@ public abstract class Compat {
         Log.i(TAG, "Icon cache is being cleared");
         FileLib.delete(launcherActivity.getApplicationInfo().dataDir + Icon.ICON_CACHE_FOLDER);
 
-        launcherActivity.launcherService.clearAdapterCachesAll();
+        launcherActivity.launcherService.forEachActivity(LauncherActivity::clearAdapterCaches);
 
         IconRepo.downloadExemptPackages.clear();
         launcherActivity.dataStoreEditor.putStringSet(
@@ -239,8 +238,7 @@ public abstract class Compat {
         HashSet<String> setAll = launcherActivity.getAllPackages();
         for (String packageName : setAll) launcherActivity.dataStoreEditor.removeString(packageName);
 
-        launcherActivity.dataStoreEditor.waitForWrites();
-        launcherActivity.launcherService.clearAdapterCachesAll();
+        launcherActivity.launcherService.forEachActivity(LauncherActivity::clearAdapterCaches);
     }
     // Clears the categorization of apps & resets everything to selected default groups
     public static void clearSort(LauncherActivity launcherActivity) {
@@ -252,29 +250,29 @@ public abstract class Compat {
             launcherActivity.dataStoreEditor.removeStringSet(Settings.KEY_GROUP_APP_LIST + groupName);
         }
         storeAndReload(launcherActivity);
-        launcherActivity.dataStoreEditor.waitForWrites();
-        launcherActivity.launcherService.clearAdapterCachesAll();
-        launcherActivity.launcherService.refreshInterfaceAll();
+        launcherActivity.launcherService.forEachActivity(LauncherActivity::clearAdapterCaches);
+        launcherActivity.launcherService.forEachActivity(LauncherActivity::refreshInterface);
     }
     // Resets the group list to default, including default groups for sorting
     public static void resetDefaultGroups(LauncherActivity launcherActivity) {
         for (App.Type type : Platform.getSupportedAppTypes(launcherActivity))
             launcherActivity.dataStoreEditor.removeString(Settings.KEY_DEFAULT_GROUP + type);
 
-        launcherActivity.settingsManager.resetGroups();
+        launcherActivity.settingsManager.resetGroupsAndSort();
         clearSort(launcherActivity);
-        launcherActivity.dataStoreEditor.waitForWrites();
-        launcherActivity.launcherService.clearAdapterCachesAll();
-        launcherActivity.launcherService.refreshInterfaceAll();
+        launcherActivity.launcherService.forEachActivity(LauncherActivity::clearAdapterCaches);
+        launcherActivity.launcherService.forEachActivity(LauncherActivity::refreshInterface);
     }
     // Stores any settings which may have been changed then refreshes any extent launcher activities
     private static void storeAndReload(LauncherActivity launcherActivity) {
         SettingsManager.setAppGroupMap(new ConcurrentHashMap<>());
 
         Compat.recheckSupported(launcherActivity);
-        SettingsManager.writeValues();
-        launcherActivity.reloadPackages();
-        launcherActivity.refreshInterfaceAll();
+        SettingsManager.writeGroupsAndSort();
+        launcherActivity.launcherService.forEachActivity(a -> {
+            a.refreshAppList();
+            a.reloadPackages();
+        });
     }
     public static DataStoreEditor getDataStore(Context context) {
             return new DataStoreEditor(context);

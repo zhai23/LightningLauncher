@@ -17,18 +17,13 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-/*
-    App
-
-    This abstract class is provides info about applications, and helper functions for non-launching
-    intents (info, uninstall).
-
-    Functions prefixed with "check" check a property of an app using its metadata
-    Functions prefixed with "is" are wrappers around "check" functions which cache values
+/**
+ * This abstract class is provides info about applications, and helper functions for non-launching
+ * intents (info, uninstall).
+ * <p>
+ * Functions prefixed with "check" check a property of an app using its metadata
+ * Functions prefixed with "is" are wrappers around "check" functions which cache values
  */
-
-
-
 public abstract class App {
     static Map<Type, Set<String>> categoryIncludedApps = new HashMap<>();
     static Map<Type, Set<String>> categoryExcludedApps = new HashMap<>();
@@ -188,12 +183,11 @@ public abstract class App {
         if (App.isWebsite(packageName)) {
             Set<String> webApps = launcher.dataStoreEditor.getStringSet(Settings.KEY_WEBSITE_LIST, Collections.emptySet());
             webApps = new HashSet<>(webApps); // Copy since we're not supposed to modify directly
-            if (launcher.browserService != null) launcher.browserService.killWebView(packageName); // Kill web view if running
             webApps.remove(packageName);
             launcher.dataStoreEditor
                     .putString(packageName, null) // set display name
                     .putStringSet(Settings.KEY_WEBSITE_LIST, webApps);
-            launcher.refreshAppDisplayListsAll();
+            launcher.launcherService.forEachActivity(LauncherActivity::refreshAppList);
         } else {
             Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
             intent.setData(Uri.parse("package:" + packageName));

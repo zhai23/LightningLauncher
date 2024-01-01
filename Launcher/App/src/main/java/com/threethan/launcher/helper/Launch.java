@@ -10,8 +10,6 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
-import com.threethan.launcher.browser.BrowserActivity;
-import com.threethan.launcher.browser.BrowserActivitySeparate;
 import com.threethan.launcher.launcher.LauncherActivity;
 import com.threethan.launcher.support.AddShortcutActivity;
 import com.threethan.launcher.support.SettingsManager;
@@ -20,17 +18,21 @@ import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
-/*
-    Launch
-
-    This abstract class is dedicated to actually launching apps.
-
-    The helper function "getAppLaunchIntent" is also used by the App class to determine if an app
-    can possibly be launched.
+/**
+ * This abstract class is dedicated to actually launching apps.
+ * <p>
+ * The helper function "getAppLaunchable" is also used by the App class to determine if an app
+ * can possibly be launched.
  */
-
 public abstract class Launch {
     protected static final String ACTION_ACTUALLY_SHORTCUT = "ACTION_ACTUALLY_SHORTCUT";
+
+    /**
+     * Launches a given app, checking various configuration options in the process
+     * @param launcherActivity The activity to launch from
+     * @param app The app to launch
+     * @return True if the app was launched
+     */
     public static boolean launchApp(LauncherActivity launcherActivity, ApplicationInfo app) {
         // Apply any pending preference changes before launching
         try {
@@ -52,9 +54,6 @@ public abstract class Launch {
                 getAppLaunchOut(app.packageName) ||
                 appType == App.Type.TYPE_VR || appType == App.Type.TYPE_PANEL) {
 
-
-            if (launcherActivity.browserService != null)
-                launcherActivity.browserService.killActivities();
             launcherActivity.launcherService.finishAllActivities();
 
 
@@ -80,7 +79,6 @@ public abstract class Launch {
             return true;
         }
     }
-
     private static void startIntent(LauncherActivity launcherActivity, Intent intent) {
         if (Objects.equals(intent.getAction(), ACTION_ACTUALLY_SHORTCUT)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
@@ -90,8 +88,12 @@ public abstract class Launch {
         else launcherActivity.startActivity(intent);
     }
 
+    /**
+     * Gets the intent used to actually launch the given app,
+     * including workarounds for browsers & panel apps
+     */
     @Nullable
-    public static Intent getLaunchIntent(LauncherActivity activity, ApplicationInfo app) {
+    private static Intent getLaunchIntent(LauncherActivity activity, ApplicationInfo app) {
 
         // Ignore apps which don't work or should be excluded
         if (app.packageName.startsWith(activity.getPackageName())) return null;
@@ -131,20 +133,17 @@ public abstract class Launch {
             if (app.packageName.startsWith("http://") || (app.packageName.startsWith("https://"))) {
                 int browserIndex
                         = activity.dataStoreEditor.getInt(Settings.KEY_LAUNCH_BROWSER + app.packageName, 0);
+                intent = new Intent(Intent.ACTION_VIEW, Uri.parse(app.packageName));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 if (browserIndex == 2) {
                     // Open in MQ browser
-                    intent = new Intent(Intent.ACTION_VIEW, Uri.parse(app.packageName));
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.setPackage("com.oculus.browser");
                     intent.setComponent(new ComponentName("com.oculus.browser", "com.oculus.browser.PanelActivity"));
                 } else {
-                    // Open in internal browseer
-                    intent = new Intent(activity, (SettingsManager.getAppLaunchOut(app.packageName)
-                            ? BrowserActivitySeparate.class
-                            : BrowserActivity.class));
-
-                    intent.putExtra("url", app.packageName);
+                    // Open in Lightning Browser
+                    intent.setPackage("com.threethan.browser");
                 }
+                return intent;
             } else {
                 // Non-web intent
                 intent = new Intent(Intent.ACTION_VIEW);
@@ -163,7 +162,7 @@ public abstract class Launch {
         if (Platform.isTv(activity) && tvIntent != null) return tvIntent;
 
         // Chainload for advanced launch options
-        if (SettingsManager.getAdvancedLaunching(activity)
+        if (SettingsManager.getShowAdvancedSizeOptions(activity)
                 && App.getType(activity, app) == App.Type.TYPE_PHONE &&
                 SettingsManager.getAppLaunchOut(app.packageName)) {
 
@@ -182,12 +181,15 @@ public abstract class Launch {
         return normalIntent;
     }
 
-
+    /**
+     * Checks if an app can be launched. Similar to getLaunchIntent, but faster
+     * @return True if app can be launched & is supported
+     */
     public static boolean checkLaunchable(LauncherActivity activity, ApplicationInfo app) {
 
         // Ignore apps which don't work or should be excluded
-        if (app.packageName.startsWith(activity.getPackageName())) return true;
-        if (AppData.invalidAppsList.contains(app.packageName)) return true;
+        if (app.packageName.startsWith(activity.getPackageName())) return false;
+        if (AppData.invalidAppsList.contains(app.packageName)) return false;
 
         PackageManager pm = activity.getPackageManager();
 

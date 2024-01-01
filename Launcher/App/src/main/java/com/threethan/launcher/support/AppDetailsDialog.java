@@ -154,7 +154,7 @@ public abstract class AppDetailsDialog {
                 });
             }
             // Advanced size settings
-            else if (SettingsManager.getAdvancedLaunching(launcherActivity)) {
+            else if (SettingsManager.getShowAdvancedSizeOptions(launcherActivity)) {
                 launchSizeSpinner.setVisibility(View.VISIBLE);
                 launchModeSection.setVisibility(View.GONE);
                 final String launchSizeKey = Settings.KEY_LAUNCH_SIZE + currentApp.packageName;
@@ -227,7 +227,7 @@ public abstract class AppDetailsDialog {
         // Save Label & Reload on Confirm
         dialog.findViewById(R.id.confirm).setOnClickListener(view -> {
             SettingsManager.setAppLabel(currentApp, StringLib.setStarred(appNameEditText.getText().toString(), isStarred[0]));
-            launcherActivity.getAppAdapter().updateItem(currentApp);
+            launcherActivity.getAppAdapter().notifyItemChanged(currentApp);
             dialog.dismiss();
         });
     }

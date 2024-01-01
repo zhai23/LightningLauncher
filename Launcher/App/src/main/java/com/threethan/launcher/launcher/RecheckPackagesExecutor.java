@@ -10,9 +10,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/*
-    RecheckPackagesTask
-
+/**
     This task checks a list of installed packages asynchronously, then check if it differs from
     those known by the LauncherActivity which calls it. If so (package installed/uninstalled),
     it tells the LauncherActivity to reload it's list of packages with metadata.

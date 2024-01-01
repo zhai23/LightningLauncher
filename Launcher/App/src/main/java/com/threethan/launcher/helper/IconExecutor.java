@@ -15,13 +15,9 @@ import java.io.File;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/*
-    BackgroundTask
-
-    This task loads an image background asynchronously, then sets it to the specified view when done
-    Used only by LauncherActivity
+/**
+ * This executor loads app icons asyncronously
  */
-
 class IconExecutor {
 
     public static void execute(LauncherActivity activity, ApplicationInfo app, ImageView

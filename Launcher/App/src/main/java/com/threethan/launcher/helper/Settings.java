@@ -12,19 +12,16 @@ import com.threethan.launcher.lib.StringLib;
 import java.util.HashMap;
 import java.util.Map;
 
-/*
-    Settings
-
-    This abstract class just stores a number of default settings used by other classes;
-    it's a glorified text file.
-
-    Anything that's prefixed with "KEY_" is a string which is used to save/load a given setting
-    to/from sharedPreferences
-
-    It does not contain any code. Actual access of settings occurs in various other classes,
-    primarily SettingsManager
+/**
+ * This abstract class just stores a number of default settings used by other classes;
+ * it's a glorified text file.
+ * <p>
+ * Anything that's prefixed with "KEY_" is a string which is used to save/load a given setting
+ * to/from sharedPreferences
+ * <p>
+ * It does not contain any code. Actual access of settings occurs in various other classes,
+ * primarily SettingsManager
  */
-
 public abstract class Settings {
     // Backgrounds
     public static final int[] BACKGROUND_DRAWABLES = {

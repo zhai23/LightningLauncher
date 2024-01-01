@@ -105,8 +105,10 @@ public abstract class SettingsDialog {
         dark.setOnCheckedChangeListener((compoundButton, value) -> {
             a.dataStoreEditor.putBoolean(Settings.KEY_DARK_MODE, value);
             LauncherActivity.darkMode = value;
-            a.clearAdapterCaches();
-            a.refreshInterfaceAll();
+            a.launcherService.forEachActivity(la -> {
+                la.clearAdapterCaches();
+                la.refreshInterface();
+            });
         });
         ImageView[] views = {
                 dialog.findViewById(R.id.background0),
@@ -166,10 +168,11 @@ public abstract class SettingsDialog {
                 });
                 lastAnimator.start();
 
+                // Set the background
                 a.setBackground(index);
-                if (index != views.length-1) {
-                    dark.setChecked(a.dataStoreEditor.getBoolean(Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE));
-                }
+
+                // Set if dark mode is switch was automatically en/disabled
+                if (index != views.length-1) dark.setChecked(LauncherActivity.darkMode);
             });
         }
 
@@ -190,7 +193,7 @@ public abstract class SettingsDialog {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                a.refreshInterfaceAll();
+                a.launcherService.forEachActivity(LauncherActivity::refreshInterface);
             }
         }));
         scale.setMax(Settings.MAX_SCALE);
@@ -211,13 +214,13 @@ public abstract class SettingsDialog {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                a.refreshInterfaceAll();
+                a.launcherService.forEachActivity(LauncherActivity::refreshInterface);
             }
         }));
         margin.setMax(40);
 
         Switch groups = dialog.findViewById(R.id.groupSwitch);
-        groups.setChecked(a.dataStoreEditor.getBoolean(Settings.KEY_GROUPS_ENABLED, Settings.DEFAULT_GROUPS_ENABLED));
+        groups.setChecked(LauncherActivity.groupsEnabled);
         groups.setOnCheckedChangeListener((sw, value) -> {
             if (!a.dataStoreEditor.getBoolean(Settings.KEY_SEEN_HIDDEN_GROUPS_POPUP, false) && value != Settings.DEFAULT_GROUPS_ENABLED) {
                 groups.setChecked(Settings.DEFAULT_GROUPS_ENABLED); // Revert switch
@@ -228,7 +231,8 @@ public abstract class SettingsDialog {
                     a.dataStoreEditor
                             .putBoolean(Settings.KEY_SEEN_HIDDEN_GROUPS_POPUP, true)
                             .putBoolean(Settings.KEY_GROUPS_ENABLED, newValue);
-                    a.refreshInterfaceAll();
+                    LauncherActivity.groupsEnabled = newValue;
+                    a.launcherService.forEachActivity(LauncherActivity::refreshInterface);
                     subDialog.dismiss();
                     // Group enabled state
                     {
@@ -249,7 +253,12 @@ public abstract class SettingsDialog {
                     dialog.findViewById(R.id.editModeContainer).setVisibility(View.GONE);
                     addWebsite.setVisibility(View.VISIBLE);
                 }
-                a.refreshInterfaceAll();
+
+                LauncherActivity.groupsEnabled = value;
+                a.launcherService.forEachActivity(la -> {
+                    la.refreshInterface();
+                    la.setEditMode(false);
+                });
             }
         });
 
@@ -293,7 +302,7 @@ public abstract class SettingsDialog {
                 bSwitch.setChecked(App.typeIsBanner(type));
                 bSwitch.setOnCheckedChangeListener((switchView, value) -> {
                     a.dataStoreEditor.putBoolean(Settings.KEY_BANNER + type, value);
-                    a.refreshAppDisplayListsAll();
+                    a.launcherService.forEachActivity(LauncherActivity::refreshAppList);
                 });
 
             } else {
@@ -360,13 +369,13 @@ public abstract class SettingsDialog {
         longPressEdit.setChecked(!a.dataStoreEditor.getBoolean(Settings.KEY_DETAILS_LONG_PRESS, Settings.DEFAULT_DETAILS_LONG_PRESS));
         longPressEdit.setOnCheckedChangeListener((compoundButton, value) -> {
             a.dataStoreEditor.putBoolean(Settings.KEY_DETAILS_LONG_PRESS, !value);
-            a.refreshInterfaceAll();
+            a.launcherService.forEachActivity(LauncherActivity::refreshInterface);
         });
         Switch hideEmpty = dialog.findViewById(R.id.hideEmptySwitch);
         hideEmpty.setChecked(a.dataStoreEditor.getBoolean(Settings.KEY_AUTO_HIDE_EMPTY, Settings.DEFAULT_AUTO_HIDE_EMPTY));
         hideEmpty.setOnCheckedChangeListener((compoundButton, value) -> {
             a.dataStoreEditor.putBoolean(Settings.KEY_AUTO_HIDE_EMPTY, value);
-            a.refreshInterfaceAll();
+            a.launcherService.forEachActivity(LauncherActivity::refreshInterface);
         });
 
         if (Platform.isVr(a)) {
@@ -374,7 +383,7 @@ public abstract class SettingsDialog {
             defaultLaunchOut.setChecked(a.dataStoreEditor.getBoolean(Settings.KEY_DEFAULT_LAUNCH_OUT, Settings.DEFAULT_DEFAULT_LAUNCH_OUT));
             defaultLaunchOut.setOnCheckedChangeListener((compoundButton, value) -> {
                 a.dataStoreEditor.putBoolean(Settings.KEY_DEFAULT_LAUNCH_OUT, value);
-                a.refreshInterfaceAll();
+                a.launcherService.forEachActivity(LauncherActivity::refreshInterface);
                 if (!a.dataStoreEditor.getBoolean(Settings.KEY_SEEN_LAUNCH_OUT_POPUP, false)) {
                     AlertDialog subDialog = Dialog.build(a, R.layout.dialog_launch_out_info);
                     if (subDialog == null) return;

@@ -9,21 +9,17 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
+import androidx.core.util.Consumer;
 
 import com.threethan.launcher.R;
-import com.threethan.launcher.browser.BrowserActivitySeparate;
-import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.launcher.chainload.ChainLoadActivity;
 
-import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-/*
-    LauncherService
-
+/**
     This class runs as a service, but does not do anything on its own.
 
     It is used by LauncherActivity to store the view containing the main interface in memory,
@@ -35,7 +31,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class LauncherService extends Service {
     private final IBinder binder = new LocalBinder();
     private final static ConcurrentHashMap<Integer, View> viewByIndex = new ConcurrentHashMap<>();
-    @Nullable public static WeakReference<BrowserActivitySeparate> browserActivitySeparateRef = null;
     public class LocalBinder extends Binder {
         public LauncherService getService() {
             return LauncherService.this;
@@ -47,6 +42,13 @@ public class LauncherService extends Service {
     public IBinder onBind(Intent intent) {
         return binder;
     }
+
+    /**
+     * Creates an returns a new view which can be used as the main view for the launcher
+     * @param activity The activity calling this
+     * @param root The viewgroup the view will be added to
+     * @return The view itself
+     */
     public View getNewView(LauncherActivity activity, ViewGroup root) {
         final int index = getNewActivityIndex();
 
@@ -56,6 +58,14 @@ public class LauncherService extends Service {
 
         return view;
     }
+
+    /**
+     * Gets an existing inactive launcher view, which prevents the need to create a new one
+     * (Operates on a similar concept to RecyclerViews)
+     * @param activity The activity calling this
+     * @param root The viewgroup the view will be added to
+     * @return The view itself
+     */
     public View getExistingView(LauncherActivity activity, ViewGroup root) {
         final int index = getNewActivityIndex();
         View view = viewByIndex.get(index);
@@ -68,6 +78,11 @@ public class LauncherService extends Service {
         root.addView(view);
         return view;
     }
+
+    /**
+     * Checks if we can get an already existing inactive launcher view instead of making a new one
+     * @return true if we will be given an existing view
+     */
     public boolean checkForExistingView() {
         return viewByIndex.containsKey(getNewActivityIndex());
     }
@@ -76,45 +91,29 @@ public class LauncherService extends Service {
         while(activityByIndex.containsValue(i)) i++;
         return i;
     }
+
+    /**
+     * Called on destroy to remove the launcher activity from our list
+     */
     public void destroyed(LauncherActivity activity) {
         activityByIndex.remove(activity);
     }
 
+    /**
+     * Clears all activities so that Quest VR & Panel apps can run
+     * Includes chainLoadActivities as well and launcherActivities
+     */
     public void finishAllActivities() {
         for (Activity activity: activityByIndex.keySet()) activity.finishAndRemoveTask();
-        if (browserActivitySeparateRef != null && browserActivitySeparateRef.get() != null)
-            browserActivitySeparateRef.get().finishAndRemoveTask();
         for (Activity activity : ChainLoadActivity.activityList)
             activity.finishAndRemoveTask();
     }
 
-    // ______All functions
-    // calls the specified function on all launcher activities
-    // if a launcher activity is inactive and unable to respond (rare), it will lose it's stored view
-    public void refreshInterfaceAll() {
-        for (LauncherActivity activity: activityByIndex.keySet()) activity.refreshInterface();
-        cleanup();
-    }
-    public void refreshAppDisplayListsAll() {
-        for (LauncherActivity activity: activityByIndex.keySet()) {
-            activity.refreshAppDisplayLists();
-        }
-        cleanup();
-    }
-    public void refreshBackgroundAll() {
-        for (LauncherActivity activity: activityByIndex.keySet()) activity.refreshBackground();
-        cleanup();
-    }
-    public void clearAdapterCachesAll() {
-        for (LauncherActivity activity: activityByIndex.keySet()) activity.clearAdapterCaches();
-        cleanup();
-    }
-    // Clear the views & finish the activities of any activities which are currently inactive
-    private void cleanup() {
-        if (Platform.isTv()) return;
-        for (int index: viewByIndex.keySet())
-            if (!activityByIndex.containsValue(index)) {
-                viewByIndex.remove(index);
-            }
+    /**
+     * Calls the consumer for each non-null launcher activity
+     */
+    public void forEachActivity(Consumer<LauncherActivity> consumer) {
+        for (LauncherActivity activity: activityByIndex.keySet())
+            if(activity != null) consumer.accept(activity);
     }
 }

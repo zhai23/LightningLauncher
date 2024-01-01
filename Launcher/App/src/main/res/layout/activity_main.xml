@@ -33,27 +33,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <View
-            android:id="@+id/focusGrabberView"
-            android:layout_width="0dp"
-            android:layout_height="10dp"
-            android:layout_marginBottom="20dp"
-            android:focusable="true"
-            android:nextFocusDown="@id/searchShortcutView"
-            app:layout_constraintBottom_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <View
-            android:id="@+id/searchShortcutView"
-            android:layout_width="0dp"
-            android:layout_height="10dp"
-            android:layout_marginBottom="10dp"
-            android:focusable="true"
-            app:layout_constraintBottom_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
         <eightbitlab.com.blurview.BlurView
             android:id="@+id/blurViewGroups"
             android:layout_width="0dp"

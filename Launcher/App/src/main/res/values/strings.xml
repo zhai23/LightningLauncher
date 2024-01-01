@@ -303,45 +303,4 @@
     <string name="addons_update">Update</string>
     <string name="addons_activate">Activate</string>
     <string name="addons_uninstall">Remove</string>
-
-    <!--  Browser Tooltips  -->
-    <string name="web_back">Navigate Back</string>
-    <string name="web_forward">Navigate Forward</string>
-    <string name="web_reload">Refresh this Page</string>
-    <string name="web_exit">Return to Launcher</string>
-    <string name="web_add_home">Add Page to Launcher</string>
-    <string name="web_cancel">Cancel</string>
-    <string name="web_confirm">Confirm &amp; Go</string>
-
-    <!-- Browser -->
-    <string name="web_download_started">Downloading</string>
-    <string name="web_download_finished">Finished downloading</string>
-
-    <string name="web_apk_prompt_title">APK File Downloaded</string>
-    <string name="web_apk_prompt_message_pre">Finished downloading %1$s</string>
-    <string name="web_apk_prompt_message">Would you like to install it, or save it to your downloads folder?\n
-    \nNote that this file was downloaded from the internet, and may be harmful!</string>
-    <string name="web_apk_prompt_install">Install</string>
-    <string name="web_apk_prompt_move">Save</string>
-    <string name="web_apk_prompt_delete">Delete</string>
-    <string name="extension_prompt_title">Manage Web Extensions</string>
-    <string name="extension_prompt_hint">Get Extensions from Firefox Addons</string>
-
-    <!-- Gecko -->
-    <string name="before_unload_message">This page is asking you to confirm that you want to leave - data you have entered may not be saved</string>
-    <string name="before_unload_title">Are you sure?</string>
-    <string name="before_unload_leave_page">Leave Page</string>
-    <string name="before_unload_stay">Stay on Page</string>
-
-    <string name="repost_confirm_message">To display this page, GeckoViewExample must send information that will repeat any action (such as a search or order confirmation) that was performed earlier.</string>
-    <string name="repost_confirm_title">Are you sure?</string>
-    <string name="repost_confirm_resend">Resend</string>
-    <string name="repost_confirm_cancel">Cancel</string>
-
-    <string name="username">Username</string>
-    <string name="password">Password</string>
-    <string name="clear_field">Clear</string>
-
-    <string name="wait">Wait</string>
-    <string name="stop">Stop</string>
 </resources>

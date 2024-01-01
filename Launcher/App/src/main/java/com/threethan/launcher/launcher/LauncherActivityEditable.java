@@ -32,9 +32,7 @@ import java.util.Set;
 
 import eightbitlab.com.blurview.BlurView;
 
-/*
-    LauncherActivityEditable
-
+/**
     The class handles the additional interface elements and properties related to edit mode.
     This includes the bottom bar & dialog for adding websites, but not the dialogs to edit an
     individual app or group.
@@ -42,7 +40,11 @@ import eightbitlab.com.blurview.BlurView;
 
 public class LauncherActivityEditable extends LauncherActivity {
     @Nullable
-    Boolean editMode = null;
+    protected Boolean editMode = null;
+
+    /**
+     * Used to track changes in a hashset and track changes made to selected apps
+     */
     private class ConnectedHashSet extends HashSet<String> {
         @Override
         public boolean add(String s) {
@@ -189,7 +191,7 @@ public class LauncherActivityEditable extends LauncherActivity {
 
             currentSelectedApps.clear();
 
-            SettingsManager.writeValues();
+            SettingsManager.writeGroupsAndSort();
             refreshInterface();
             return false;
         } else return super.clickGroup(position);
@@ -229,12 +231,13 @@ public class LauncherActivityEditable extends LauncherActivity {
         super.startWithExistingView();
         // Load edit things if loading from an existing activity
         final View editFooter = rootView.findViewById(R.id.editFooter);
-        if (editFooter.getVisibility() == View.VISIBLE) refreshInterfaceAll();
+        if (editFooter.getVisibility() == View.VISIBLE)
+            launcherService.forEachActivity(LauncherActivity::refreshInterface);
     }
 
     @Override
-    public void refreshAppDisplayLists() {
-        super.refreshAppDisplayLists();
+    public void refreshAppList() {
+        super.refreshAppList();
 
         Set<String> webApps = dataStoreEditor.getStringSet(Settings.KEY_WEBSITE_LIST, new HashSet<>());
         Set<String> packages = getAllPackages();
@@ -307,7 +310,7 @@ public class LauncherActivityEditable extends LauncherActivity {
             Platform.addWebsite(dataStoreEditor, url);
             settingsManager.setAppGroup(StringLib.fixUrl(url), group);
             dialog.cancel();
-            refreshAppDisplayListsAll();
+            launcherService.forEachActivity(LauncherActivity::refreshAppList);
         });
         dialog.findViewById(R.id.info).setOnClickListener(view -> {
             dialog.dismiss();

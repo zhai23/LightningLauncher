@@ -30,18 +30,20 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-/*
-    SettingsManager
-
-    An instance of this class is tied to each launcher activity, and it is used to get and store
-    most (but not all) preferences. It handles the conversion of data between types that are usable
-    and types which can be stored to shared preferences.
-
-    It handles customizable properties (label, launch mode) as well grouping.
-
-    It also provides a number of static methods which are used by various other classes .
+/**
+ * An instance of this class is tied to each launcher activity, and it is used to get and store
+ * most (but not all) preferences. It handles the conversion of data between types that are usable
+ * and types which can be stored to shared preferences.
+ * <p>
+ * It handles customizable properties (label, launch mode) as well grouping.
+ * <p>
+ * It also provides a number of static methods which are used by various other classes .
  */
 public class SettingsManager extends Settings {
+
+    /**
+     * Return a list of versions where wallpapers were reordered in some way, for Compat
+     */
     public static List<Integer> getVersionsWithBackgroundChanges() {
         List<Integer> out = new ArrayList<>();
         out.add(1);
@@ -64,10 +66,18 @@ public class SettingsManager extends Settings {
         // Conditional defaults (hacky)
         Settings.DEFAULT_DETAILS_LONG_PRESS = Platform.isTv(activity);
     }
+
+    /**
+     * Gets a reference to the most recent launcher activity. Reasonably unlikely to ever be null.
+     */
     public static LauncherActivity getAnyLauncherActivity() {
         return anyLauncherActivityRef.get();
     }
 
+    /**
+     * Returns a unique instance for the given context,
+     * but always the same instance for the same context
+     */
     public static synchronized SettingsManager getInstance(LauncherActivity context) {
         if (instanceByContext.containsKey(context)) return SettingsManager.instanceByContext.get(context);
         instanceByContext.put(context, new SettingsManager(context));
@@ -75,10 +85,19 @@ public class SettingsManager extends Settings {
     }
 
     public static HashMap<ApplicationInfo, String> appLabelCache = new HashMap<>();
+
+    /**
+     * Gets the label for the given app.
+     * Returns the package name if it hasn't been cached yet, but then gets it asynchrously.
+     */
     public static String getAppLabel(ApplicationInfo app) {
         if (appLabelCache.containsKey(app)) return appLabelCache.get(app);
         return checkAppLabel(app);
     }
+
+    /**
+     * Gets the string which should be used to sort the given app
+     */
     public static String getSortableAppLabel(ApplicationInfo app) {
         return  (App.isBanner(app) ? "0" : "1") + StringLib.forSort(getAppLabel(app));
     }
@@ -121,7 +140,7 @@ public class SettingsManager extends Settings {
         if (newName == null) return;
         appLabelCache.put(app, newName);
         dataStoreEditor.putString(app.packageName, newName);
-        getAnyLauncherActivity().post(() -> getAnyLauncherActivity().getAppAdapter().updateItem(app));
+        getAnyLauncherActivity().post(() -> getAnyLauncherActivity().getAppAdapter().notifyItemChanged(app));
     }
     public static boolean getAppLaunchOut(String pkg) {
         return dataStoreEditor.getBoolean(Settings.KEY_LAUNCH_OUT_PREFIX+pkg,
@@ -131,7 +150,7 @@ public class SettingsManager extends Settings {
         dataStoreEditor.putBoolean(Settings.KEY_LAUNCH_OUT_PREFIX+pkg, shouldLaunchOut);
     }
     public static ConcurrentHashMap<String, String> getAppGroupMap() {
-        if (appGroupMap.isEmpty()) readValues();
+        if (appGroupMap.isEmpty()) readGroupsAndSort();
         return appGroupMap;
     }
     public void setAppGroup(String packageName, String group) {
@@ -139,23 +158,29 @@ public class SettingsManager extends Settings {
         appGroupMap.put(packageName, group);
         queueStoreValues();
     }
-
     public static void setAppGroupMap(Map<String, String> value) {
         appGroupMap = new ConcurrentHashMap<>(value);
         queueStoreValuesStatic();
     }
-    public List<ApplicationInfo> getInstalledApps(LauncherActivity launcherActivity, List<String> selectedGroups, Collection<ApplicationInfo> myApps) {
 
+    /**
+     * Gets the visible apps to show in the app grid
+     * @param selectedGroups If true, only return apps in currently selected groups
+     * @param allApps A collection of all apps
+     * @return Apps which should be shown
+     */
+    public List<ApplicationInfo> getVisibleApps(LauncherActivity launcherActivity,
+                                List<String> selectedGroups, Collection<ApplicationInfo> allApps) {
         // Get list of installed apps
         ConcurrentHashMap<String, String> apps = getAppGroupMap();
 
-        if (myApps == null) {
+        if (allApps == null) {
             Log.w("LightningLauncher", "Got null app list");
             return new ArrayList<>();
         }
 
         // Sort into groups
-        for (ApplicationInfo app : new ArrayList<>(myApps)) {
+        for (ApplicationInfo app : new ArrayList<>(allApps)) {
             if (!App.isSupported(app))
                 apps.put(app.packageName, Settings.UNSUPPORTED_GROUP);
             else if (!apps.containsKey(app.packageName) ||
@@ -167,10 +192,10 @@ public class SettingsManager extends Settings {
         // Save changes to app list
         setAppGroupMap(apps);
 
-        List<ApplicationInfo> currentApps = new ArrayList<>(myApps);
+        List<ApplicationInfo> currentApps = new ArrayList<>(allApps);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             Log.w("OLD API", "Your android version is too old so things won't work right.");
-            for (ApplicationInfo app : Collections.unmodifiableCollection(myApps))
+            for (ApplicationInfo app : Collections.unmodifiableCollection(allApps))
                 if (!(apps.containsKey(app.packageName) && selectedGroups.contains(apps.get(app.packageName))))
                     currentApps.remove(app);
             return currentApps;
@@ -181,16 +206,29 @@ public class SettingsManager extends Settings {
         return currentApps;
     }
 
+    /**
+     * Gets the set of all groups
+     * @return Set containing all app groups
+     */
     public static Set<String> getAppGroups() {
-        if (appGroupsSet.isEmpty()) readValues();
+        if (appGroupsSet.isEmpty()) readGroupsAndSort();
         return appGroupsSet;
     }
 
+    /**
+     * Sets the set of all groups
+     * @param appGroups The new set of app groups
+     */
     public void setAppGroups(Set<String> appGroups) {
         appGroupsSet = Collections.synchronizedSet(appGroups);
         queueStoreValues();
     }
 
+    /**
+     * Gets the set of groups which should be set when there are no groups
+     * or when things are reset to default.
+     * @return The default set of groups
+     */
     public static Set<String> getDefaultGroupsSet() {
         LauncherActivity launcherActivity = anyLauncherActivityRef.get();
         if (launcherActivity == null) return Collections.emptySet();
@@ -201,6 +239,11 @@ public class SettingsManager extends Settings {
 
         return (defaultGroupsSet);
     }
+
+    /**
+     * Gets the set of currently selected groups, in no particular order
+     * @return Set of selected groups
+     */
     public Set<String> getSelectedGroups() {
         if (selectedGroupsSet.isEmpty()) {
             selectedGroupsSet.addAll(dataStoreEditor.getStringSet(KEY_SELECTED_GROUPS, getDefaultGroupsSet()));
@@ -224,13 +267,22 @@ public class SettingsManager extends Settings {
         }
     }
 
+    /**
+     * Sets the current selection of groups, pass an empty set to clear
+     * @param appGroups New set of groups to be selected
+     */
     public void setSelectedGroups(Set<String> appGroups) {
         selectedGroupsSet = Collections.synchronizedSet(appGroups);
         queueStoreValues();
     }
 
+    /**
+     * Gets the list of groups, in order
+     * @param selected If true, only selected groups are returned
+     * @return The list of groups
+     */
     public ArrayList<String> getAppGroupsSorted(boolean selected) {
-        if ((selected ? selectedGroupsSet : appGroupsSet).isEmpty()) readValues();
+        if ((selected ? selectedGroupsSet : appGroupsSet).isEmpty()) readGroupsAndSort();
         ArrayList<String> sortedGroupList = new ArrayList<>(selected ? getSelectedGroups() : getAppGroups());
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
@@ -258,7 +310,10 @@ public class SettingsManager extends Settings {
         return sortedGroupList;
     }
 
-    public void resetGroups(){
+    /**
+     * Resets all groups and sorting
+     */
+    public void resetGroupsAndSort(){
         SharedPreferences.Editor editor = dataStoreEditor;
         for (String group : appGroupsSet) editor.remove(KEY_GROUP_APP_LIST + group);
         appGroupsSet.clear();
@@ -268,13 +323,19 @@ public class SettingsManager extends Settings {
         for (String group : getAppGroups())
             editor.remove(group);
 
-        readValues();
-        writeValues();
+        readGroupsAndSort();
+        writeGroupsAndSort();
 
         Log.i("Groups (SettingsManager)", "Groups have been reset");
     }
 
-    public static synchronized void readValues() {
+    /**
+     * Reads groups and app sorting from the datastore,
+     * make sure not to call directly after writingGroupsAndSort or there will be issues
+     * since writing is async
+     */
+    public static synchronized void readGroupsAndSort
+    () {
         try {
             appGroupsSet.clear();
             appGroupsSet.addAll(dataStoreEditor.getStringSet(KEY_GROUPS, getDefaultGroupsSet()));
@@ -295,10 +356,10 @@ public class SettingsManager extends Settings {
     }
     synchronized private void queueStoreValues() {
         if (myLauncherActivityRef.get() != null && myLauncherActivityRef.get().mainView != null) {
-            myLauncherActivityRef.get().post(SettingsManager::writeValues);
+            myLauncherActivityRef.get().post(SettingsManager::writeGroupsAndSort);
             dataStoreEditor.putStringSet(KEY_SELECTED_GROUPS, selectedGroupsSet);
         }
-        else writeValues();
+        else writeGroupsAndSort();
     }
     private static void queueStoreValuesStatic() {
         if (anyLauncherActivityRef == null) {
@@ -306,11 +367,15 @@ public class SettingsManager extends Settings {
             return;
         }
         if (anyLauncherActivityRef.get() != null && anyLauncherActivityRef.get().mainView != null) {
-            anyLauncherActivityRef.get().post(SettingsManager::writeValues);
+            anyLauncherActivityRef.get().post(SettingsManager::writeGroupsAndSort);
         }
-        else writeValues();
+        else writeGroupsAndSort();
     }
-    public synchronized static void writeValues() {
+
+    /**
+     * Writes the current sorting of apps and set of groups to the dataStore
+     */
+    public synchronized static void writeGroupsAndSort() {
         try {
             SharedPreferences.Editor editor = dataStoreEditor;
             editor.putStringSet(KEY_GROUPS, appGroupsSet);
@@ -337,6 +402,10 @@ public class SettingsManager extends Settings {
         }
     }
 
+    /**
+     * Adds a new group, which is named automatically
+     * @return Name of the new group
+     */
     public String addGroup() {
         String newGroupName = "New";
         List<String> existingGroups = getAppGroupsSorted(false);
@@ -355,6 +424,11 @@ public class SettingsManager extends Settings {
         return newGroupName;
     }
 
+    /**
+     * Select a group, adding it to the list of selected groups
+     * @param name Name of the group to select
+     * @return False only if trying to select the only group which is selected
+     */
     public boolean selectGroup(String name) {
         Set<String> selectedGroups = getSelectedGroups();
         if (selectedGroups.size() == 1 && selectedGroups.contains(name)) return false; // Cancel if clicking same group
@@ -366,11 +440,23 @@ public class SettingsManager extends Settings {
     }
 
     final private static Map<App.Type, String> defaultGroupCache = new ConcurrentHashMap<>();
+
+    /**
+     * Sets the default group for new apps of a given type
+     * @param type Type of apps
+     * @param newDefault Name of new default group
+     */
     public static void setDefaultGroupFor(App.Type type, String newDefault) {
         if (newDefault == null) return;
         defaultGroupCache.put(type, newDefault);
         SettingsManager.getAnyLauncherActivity().dataStoreEditor.putString(Settings.KEY_DEFAULT_GROUP + type, newDefault);
     }
+
+    /**
+     * Gets the current default group for apps of a given type
+     * @param type Type of apps
+     * @return Name of default group
+     */
     public static String getDefaultGroupFor(App.Type type) {
         if (defaultGroupCache.containsKey(type)) return defaultGroupCache.get(type);
         String def = checkDefaultGroupFor(type);
@@ -385,30 +471,32 @@ public class SettingsManager extends Settings {
         return SettingsManager.dataStoreEditor.getString(key, def);
     }
 
+    /**
+     * Check if a certain app type should be displayed as a banner
+     * @param type Type of app
+     * @return True if that type is set to display as banners
+     */
     public static boolean isTypeBanner(App.Type type) {
         String key = Settings.KEY_BANNER + type;
         if (!Settings.FALLBACK_BANNER.containsKey(type)) type = App.Type.TYPE_PHONE;
         boolean def = Boolean.TRUE.equals(Settings.FALLBACK_BANNER.get(type));
-
         return SettingsManager.dataStoreEditor.getBoolean(key, def);
     }
 
-    public static boolean getRunning(String pkgName) {
-        if (!App.isWebsite(pkgName)) return false;
-        try {
-            return anyLauncherActivityRef.get().browserService.hasWebView(pkgName);
-        } catch (NullPointerException ignored) {
-            return false;
-        }
-    }
-    public static void stopRunning (String pkgName) {
-        try {
-            anyLauncherActivityRef.get().browserService.killWebView(pkgName);
-        } catch (NullPointerException ignored) {}
-    }
-
-    public static boolean getAdvancedLaunching(LauncherActivity activity) {
+    /**
+     * Check if advanced chainloader size options should be show
+     * @return True if advanced size options are currently enabled
+     */
+    public static boolean getShowAdvancedSizeOptions(LauncherActivity activity) {
         return activity.dataStoreEditor.getBoolean(Settings.KEY_ADVANCED_SIZING,
                 Settings.DEFAULT_ADVANCED_SIZING);
+    }
+
+    // Unimplemented currently
+    // Need to find a way for this to work with the new brower
+    public static boolean getRunning(String ignoredPkgName) {
+        return false;
+    }
+    public static void stopRunning (String ignoredPkgName) {
     }
  }

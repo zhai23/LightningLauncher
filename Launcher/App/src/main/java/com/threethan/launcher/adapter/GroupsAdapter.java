@@ -24,13 +24,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-/*
-    GroupsAdapter
-
-    The adapter for the groups grid view.
-
-    It handles the appearance of groups and the edit group dialog.
-    Notably, it does not handle group selection; that's done in LauncherActivity
+/**
+ * The adapter for the groups grid view.
+ * <p>
+ * It handles the appearance of groups and the edit group dialog.
+ * Notably, it does not handle group selection; that's done in LauncherActivity
  */
 public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.GroupViewHolder> {
     private LauncherActivity launcherActivity;
@@ -160,16 +158,19 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.GroupViewH
                 shapeResourceId = R.drawable.tab_selected_middle;
             }
             itemView.setBackgroundResource(shapeResourceId);
-            itemView.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(launcherActivity.darkMode ? "#50000000" : "#FFFFFF")));
+            itemView.setBackgroundTintList(ColorStateList.valueOf(
+                    Color.parseColor(LauncherActivity.darkMode ? "#50000000" : "#FFFFFF")));
             TextView textView = itemView.findViewById(R.id.textLabel);
-            textView.setTextColor(Color.parseColor(launcherActivity.darkMode ? "#FFFFFFFF" : "#FF000000")); // set selected tab text color
+            textView.setTextColor(Color.parseColor(
+                    LauncherActivity.darkMode ? "#FFFFFFFF" : "#FF000000")); // set selected tab text color
 
             if (isEditMode && (position < getCount() - 2)) menu.setVisibility(View.VISIBLE);
             else                                           menu.setVisibility(View.GONE);
         } else {
             itemView.setBackgroundColor(Color.TRANSPARENT);
             TextView textView = itemView.findViewById(R.id.textLabel);
-            textView.setTextColor(Color.parseColor(launcherActivity.darkMode ? "#98FFFFFF" : "#98000000")); // set unselected tab text color
+            textView.setTextColor(Color.parseColor(
+                    LauncherActivity.darkMode ? "#98FFFFFF" : "#98000000")); // set unselected tab text color
             menu.setVisibility(View.GONE);
         }
     }

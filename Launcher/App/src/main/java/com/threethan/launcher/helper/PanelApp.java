@@ -6,13 +6,10 @@ import android.content.pm.PackageManager;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-/*
-    PanelApp
-
-    This class is used to create applicationinfo for panel apps,
-    which often do not actually have corresponding packages
+/**
+ * This class is used to create applicationinfo for panel apps,
+ * which often do not actually have corresponding packages
  */
-
 public class PanelApp extends ApplicationInfo {
     public static final String packagePrefix = "panel:";
     String label;

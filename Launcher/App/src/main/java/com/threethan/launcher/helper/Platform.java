@@ -3,7 +3,6 @@ package com.threethan.launcher.helper;
 import android.app.Activity;
 import android.app.UiModeManager;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.res.Configuration;
 
@@ -17,13 +16,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/*
-    Platform
-
-    This abstract class stores lists of apps.
-    It also provides a few helper functions for adding websites, and decides if we're in VR
+/**
+ *     This abstract class stores lists of apps.
+ *     It also provides a few helper functions for adding websites, and decides if we're in VR
  */
-
 public abstract class Platform {
     public static List<ApplicationInfo> installedApps;
     public static Set<ApplicationInfo> apps = Collections.synchronizedSet(new HashSet<>());
@@ -31,18 +27,34 @@ public abstract class Platform {
     public static void clearPackageLists(LauncherActivity launcherActivity) {
         App.invalidateCaches(launcherActivity);
     }
-    public static String findWebsite(SharedPreferences sharedPreferences, String url) {
+
+    /**
+     * Finds an existing website on the launcher
+     * @return Null if not found, else name of group website is in
+     */
+    public static String findWebsite(DataStoreEditor dataStoreEditor, String url) {
         url = StringLib.fixUrl(url);
 
-        Set<String> webApps = sharedPreferences.getStringSet(Settings.KEY_WEBSITE_LIST, Collections.emptySet());
+        Set<String> webApps = dataStoreEditor.getStringSet(Settings.KEY_WEBSITE_LIST, Collections.emptySet());
         if (!webApps.contains(url)) return null;
         else return SettingsManager.getAppGroupMap().get(url);
     }
 
+    /**
+     * Add a website to the launcher
+     * @param dataStoreEditor DataStoreEditor instance to use
+     * @param url Url to launch
+     */
     public static void addWebsite(DataStoreEditor dataStoreEditor, String url) {
         addWebsite(dataStoreEditor, url, null);
     }
 
+    /**
+     * Add a website to the launcher
+     * @param dataStoreEditor DataStoreEditor instance to use
+     * @param url Url to launch
+     * @param name Name for the website on the launcher
+     */
     public static String addWebsite(DataStoreEditor dataStoreEditor, String url, String name) {
         url = StringLib.fixUrl(url);
 
@@ -63,23 +75,38 @@ public abstract class Platform {
         // Quest reports itself as UI_MODE_NORMAL
         return !isTv(activity);
     }
+    /** Returns true if running on a Meta Quest device */
+
     public static boolean isQuest(Activity activity) {
         if (isQuest != null) return isQuest;
         isQuest = App.doesPackageExist(activity, "com.oculus.vrshell");
         return isQuest;
     }
+    /** Returns true if running on a TV */
     public static boolean isTv(Activity activity) {
         if (isTv != null) return isTv;
         UiModeManager uiModeManager = (UiModeManager) activity.getSystemService(Context.UI_MODE_SERVICE);
         isTv = uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION;
         return isTv;
     }
+    /** Returns true if we're on a tv and have already
+     * checked using the other version of this function */
     public static boolean isTv() {
         return isTv;
     }
 
     // Get a list of valid app types depending on platform
     private static List<App.Type> cachedSupportedAppTypes;
+
+    /**
+     * Returns a list of app types which are supported.
+     * <p>
+     * The Quest ignored TV apps, while TVs ignore VR apps.
+     * <p>
+     * Note that "unsupported" apps may end up being supported, but put into a different category.
+     *
+     * @return Types of apps which are supported on this device
+     */
     public static List<App.Type> getSupportedAppTypes(Activity activity) {
         if (cachedSupportedAppTypes != null) return  cachedSupportedAppTypes;
 

@@ -63,9 +63,7 @@ import eightbitlab.com.blurview.BlurView;
 import eightbitlab.com.blurview.RenderEffectBlur;
 import eightbitlab.com.blurview.RenderScriptBlur;
 
-/*
-    LauncherActivity
-
+/**
     The class handles most of what the launcher does, though it is extended by it's child classes
 
     It relies on LauncherService to provide it with the main view/layout of the launcher, but all
@@ -76,13 +74,14 @@ import eightbitlab.com.blurview.RenderScriptBlur;
 
 public class LauncherActivity extends Activity {
     public static Boolean darkMode = null;
-    public static Boolean groupsEnabled = true;
+    public static Boolean groupsEnabled = null;
     RecyclerView appsView;
     public ApplicationInfo currentTopSearchResult = null;
     public Set<String> clearFocusPackageNames = new HashSet<>();
     RecyclerView groupsView;
     public DataStoreEditor dataStoreEditor;
     public View mainView;
+    public View topBar;
     private int prevViewWidth;
     public boolean needsUpdateCleanup = false;
     // Settings
@@ -155,7 +154,6 @@ public class LauncherActivity extends Activity {
             getAppAdapter().setLauncherActivity(this);
             getGroupAdapter().setLauncherActivity(this);
 
-            groupsEnabled = dataStoreEditor.getBoolean(Settings.KEY_GROUPS_ENABLED, Settings.DEFAULT_GROUPS_ENABLED);
             post(this::updateToolBars); // Fix visual bugs with the blur views
 
         } catch (Exception e) {
@@ -172,6 +170,7 @@ public class LauncherActivity extends Activity {
         settingsManager = SettingsManager.getInstance(this);
 
         mainView = rootView.findViewById(R.id.mainLayout);
+        topBar = mainView.findViewById(R.id.topBarLayout);
         mainView.addOnLayoutChangeListener(this::onLayoutChaged);
         appsView = rootView.findViewById(R.id.apps);
         groupsView = rootView.findViewById(R.id.groupsView);
@@ -232,7 +231,6 @@ public class LauncherActivity extends Activity {
 
         if (isFinishing()) try {
             unbindService(launcherServiceConnection); // Should rarely cause exception
-            unbindService(browserServiceConnection); // Will ofter cause an exception if uncaught
             // For the GC & easier debugging
             settingsManager = null;
         } catch (RuntimeException ignored) {} //Runtime exception called when a service is invalid
@@ -253,7 +251,6 @@ public class LauncherActivity extends Activity {
 
             // Bind browser service
             AppsAdapter.animateClose(this);
-            com.threethan.launcher.browser.BrowserService.bind(this, browserServiceConnection, false);
         } catch (Exception ignored) {} // Will fail if service hasn't started yet
 
         Dialog.setActivityContext(this);
@@ -273,7 +270,7 @@ public class LauncherActivity extends Activity {
             Platform.installedApps = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);
             Platform.installedApps = Collections.synchronizedList(Platform.installedApps);
             Compat.recheckSupported(this);
-            refreshAppDisplayListsAll();
+            launcherService.forEachActivity(LauncherActivity::refreshAppList);
         });
     }
 
@@ -321,6 +318,12 @@ public class LauncherActivity extends Activity {
             }
         }
     }
+
+    /**
+     * Updates various properties relating to the top bar & search bar, including visibility
+     * & init-ing blurviews.
+     * Note that these same views are also often manipulated in LauncherActivitySearchable
+     */
     void updateToolBars() {
         BlurView[] blurViews = new BlurView[]{
                 rootView.findViewById(R.id.blurViewGroups),
@@ -370,25 +373,15 @@ public class LauncherActivity extends Activity {
                 .setBlurRadius(15f);
     }
     protected void postRefresh(){
-        com.threethan.launcher.browser.BrowserService.bind(this, browserServiceConnection, false);
         if (needsUpdateCleanup) Compat.doUpdateCleanup(this);
     }
 
-    public void refreshInterfaceAll() {
-        try {
-            launcherService.refreshInterfaceAll();
-        } catch (Exception ignored) {
-            Log.w(TAG, "Failed to call refresh on service!");
-        }
-    }
-    public void refreshAppDisplayListsAll() {
-        try {
-            launcherService.refreshAppDisplayListsAll();
-        } catch (Exception ignored) {
-            Log.w(TAG, "Failed to call refresh on service!");
-        }
-    }
     public int lastSelectedGroup;
+
+    /**
+     * Refreshes most things to do with the interface, including calling refreshAdapters();
+     * It is extended further by child classes
+     */
     public void refreshInterface() {
         if (darkMode == null || groupsEnabled == null) {
             dataStoreEditor.getBoolean(Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE, darkModeSet ->
@@ -408,9 +401,12 @@ public class LauncherActivity extends Activity {
             if (focused != null && getCurrentFocus() == null) focused.requestFocus();
         });
     }
-    public void refreshAdapters() {
-        updatePadding();
 
+    /**
+     * Refreshes the display and layout of the RecyclerViews used for the groups list and app grid.
+     * Includes a call to updateGridLayouts();
+     */
+    public void refreshAdapters() {
         prevViewWidth = -1;
 
         dataStoreEditor.getBoolean(Settings.KEY_SHOW_NAMES_SQUARE, Settings.DEFAULT_SHOW_NAMES_SQUARE, namesSquareSet
@@ -433,7 +429,9 @@ public class LauncherActivity extends Activity {
         appsView.scrollToPosition(0);
     }
 
-    // Updates the heights and layouts of grid layout managers
+    /**
+     * Updates the heights and layouts of grid layout managers used by the groups bar and app grid
+     */
     public void updateGridLayouts() {
         if (mainView.getWidth() == prevViewWidth) return;
         prevViewWidth = mainView.getWidth();
@@ -485,16 +483,16 @@ public class LauncherActivity extends Activity {
         });
 
         groupsView.post(() -> groupsView.setVisibility(View.VISIBLE));
+        topBar.setVisibility(groupsEnabled ? View.VISIBLE : View.GONE);
 
     }
-
-
-
-    // Updates padding on the app grid views:
-    // - Top padding to account for the groups bar
-    // - Side padding to account for icon margins (otherwise icons would touch window edges)
-    // - Bottom padding to account for icon margin, as well as the edit mode footer if applicable
-    protected void updatePadding() {
+    /**
+     * Called by updateGridLayouts, updates padding on the app grid views:
+     * - Top padding to account for the groups bar
+     * - Side padding to account for icon margins (otherwise icons would touch window edges)
+     * - Bottom padding to account for icon margin, as well as the edit mode footer if applicable
+     */
+    private void updatePadding() {
         dataStoreEditor.getInt(Settings.KEY_SCALE, Settings.DEFAULT_SCALE, scale
         -> dataStoreEditor.getInt(Settings.KEY_SPACING, Settings.DEFAULT_SPACING, spacing -> {
             int targetSize = dp(scale);
@@ -512,12 +510,14 @@ public class LauncherActivity extends Activity {
             final int topAdd = groupsVisible ? dp(32) + groupHeight : dp(23);
             final int bottomAdd = groupsVisible ? getBottomBarHeight() + dp(11) : margin / 2 + getBottomBarHeight() + dp(11);
 
+            final int ex = dp(11f);
+
             appsView.setClipToPadding(false);
             appsView.setPadding(
-                    margin,
-                    topAdd,
-                    margin,
-                    bottomAdd);
+                    margin+ex,
+                    topAdd+ex,
+                    margin+ex,
+                    bottomAdd+ex);
 
             // Margins
             if (marginDecoration != null) appsView.removeItemDecoration(marginDecoration);
@@ -528,20 +528,20 @@ public class LauncherActivity extends Activity {
 
         }));
     }
-    // Accounts for the height of the edit mode footer when visible, actual function in child class
+
+    /**
+     * Accounts for the height of the edit mode footer when visible.
+     * Actual function in child class, as the base LauncherActivity is not editable.
+     * @return Height of the bottom bar in px
+     */
     protected int getBottomBarHeight() {
         return 0;
     }
-    // Sets the background value in the settings, then refreshes the background for all views
-    public void setBackground(int index) {
-        if (index >= SettingsManager.BACKGROUND_DRAWABLES.length || index < 0) index = -1;
-        else dataStoreEditor.putBoolean(Settings.KEY_DARK_MODE, SettingsManager.BACKGROUND_DARK[index]);
-        dataStoreEditor.putInt(Settings.KEY_BACKGROUND, index);
-        LauncherActivity.background = index;
-        launcherService.refreshBackgroundAll();
-    }
-    // Sets a background color based on your chosen background,
-    // then calls an async task to actually load the background
+
+    /**
+     * Sets a background color to the window, navbar & statusbar  based on your chosen background,
+     * then calls an additional Executor to actually load the background image
+     */
     public void refreshBackground() {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
 
@@ -567,9 +567,24 @@ public class LauncherActivity extends Activity {
 
         });
     }
-    static int background = -2;
+    static int background = -2; // -2 indicated the setting needs to be loaded
 
-    public void refreshAppDisplayLists() {
+    /**
+     * Sets the background to the given index, automatically setting dark mode on/off if applicable
+     * @param index of the new background
+     */
+    public void setBackground(int index) {
+        if (index >= SettingsManager.BACKGROUND_DRAWABLES.length || index < 0) index = -1;
+        else dataStoreEditor.putBoolean(Settings.KEY_DARK_MODE, SettingsManager.BACKGROUND_DARK[index]);
+        dataStoreEditor.putInt(Settings.KEY_BACKGROUND, index);
+        LauncherActivity.background = index;
+        launcherService.forEachActivity(LauncherActivity::refreshBackground);
+    }
+
+    /**
+     * Used to update the actual content of app list used to the main app grid
+     */
+    public void refreshAppList() {
         runOnUiThread(this::refreshAdapters);
 
         if (Platform.installedApps == null) return;
@@ -633,7 +648,6 @@ public class LauncherActivity extends Activity {
     }
 
     // Services
-    public com.threethan.launcher.browser.BrowserService browserService;
     private boolean hasBound = false;
 
     /** Defines callbacks for service binding, passed to bindService(). */
@@ -648,17 +662,6 @@ public class LauncherActivity extends Activity {
             onBound();
         }
 
-        @Override
-        public void onServiceDisconnected(ComponentName arg0) {}
-    };
-    private final ServiceConnection browserServiceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName className,
-                                       IBinder service) {
-            // We've bound to LocalService, cast the IBinder and get LocalService instance.
-            com.threethan.launcher.browser.BrowserService.LocalBinder binder = (com.threethan.launcher.browser.BrowserService.LocalBinder) service;
-            browserService = binder.getService();
-        }
         @Override
         public void onServiceDisconnected(ComponentName arg0) {}
     };
