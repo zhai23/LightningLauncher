@@ -213,6 +213,13 @@ public class CustomItemAnimator extends SimpleItemAnimator {
                     }
 
                     @Override
+                    public void onAnimationCancel(Animator animation) {
+                        view.setAlpha(1);
+                        view.setScaleX(1);
+                        view.setScaleY(1);
+                    }
+
+                    @Override
                     public void onAnimationEnd(Animator animator) {
                         animation.setListener(null);
                         view.setAlpha(1);

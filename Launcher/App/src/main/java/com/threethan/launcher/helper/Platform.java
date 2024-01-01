@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.res.Configuration;
 
-import com.threethan.launcher.launcher.LauncherActivity;
 import com.threethan.launcher.lib.StringLib;
 import com.threethan.launcher.support.SettingsManager;
 
@@ -24,9 +23,6 @@ public abstract class Platform {
     public static List<ApplicationInfo> installedApps;
     public static Set<ApplicationInfo> apps = Collections.synchronizedSet(new HashSet<>());
     public static int changeIndex = 0; //Used to track changes, specifically adding websites
-    public static void clearPackageLists(LauncherActivity launcherActivity) {
-        App.invalidateCaches(launcherActivity);
-    }
 
     /**
      * Finds an existing website on the launcher

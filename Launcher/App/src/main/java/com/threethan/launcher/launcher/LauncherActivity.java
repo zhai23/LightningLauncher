@@ -33,6 +33,7 @@ import com.threethan.launcher.R;
 import com.threethan.launcher.adapter.AppsAdapter;
 import com.threethan.launcher.adapter.CustomItemAnimator;
 import com.threethan.launcher.adapter.GroupsAdapter;
+import com.threethan.launcher.helper.App;
 import com.threethan.launcher.helper.AppData;
 import com.threethan.launcher.helper.Compat;
 import com.threethan.launcher.helper.DataStoreEditor;
@@ -265,7 +266,7 @@ public class LauncherActivity extends Activity {
     public void reloadPackages() {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.execute(() -> {
-            Platform.clearPackageLists(this);
+            App.invalidateCaches();
             PackageManager packageManager = getPackageManager();
 
             Platform.installedApps = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);
@@ -462,12 +463,12 @@ public class LauncherActivity extends Activity {
         GridLayoutManager gridLayoutManager = (GridLayoutManager) appsView.getLayoutManager();
         if (gridLayoutManager == null) {
             gridLayoutManager = new GridLayoutManager(this, 3);
-//            gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-//                @Override
-//                public int getSpanSize(int position) {
-//                    return Objects.requireNonNull(appsView.getAdapter()).getItemViewType(position);
-//                }
-//            });
+            gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                @Override
+                public int getSpanSize(int position) {
+                    return Objects.requireNonNull(appsView.getAdapter()).getItemViewType(position);
+                }
+            });
             appsView.setLayoutManager(gridLayoutManager);
         }
 
