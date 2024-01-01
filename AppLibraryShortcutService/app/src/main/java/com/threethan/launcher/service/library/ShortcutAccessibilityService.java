@@ -15,9 +15,11 @@ public class ShortcutAccessibilityService extends AccessibilityService {
             String eventText = event.getText().toString();
             String exploreAccessibilityEventNameT  = getResources().getString(R.string.accessibility_event_name);
             String exploreAccessibilityEventNameA  = getResources().getString(R.string.accessibility_event_name_alternate);
+            String exploreAccessibilityEventNameB  = getResources().getString(R.string.accessibility_event_name_alternate2);
             String exploreAccessibilityEventNameU = getResources().getString(R.string.accessibility_event_name_untranslated);
             if (exploreAccessibilityEventNameU.compareTo(eventText) == 0 ||
                 exploreAccessibilityEventNameA.compareTo(eventText) == 0 ||
+                exploreAccessibilityEventNameB.compareTo(eventText) == 0 ||
                 exploreAccessibilityEventNameT.compareTo(eventText) == 0 ){
 
                 Intent launchIntent = new Intent(this, MainActivity.class);
