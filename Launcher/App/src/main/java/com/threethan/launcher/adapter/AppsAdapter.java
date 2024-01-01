@@ -209,7 +209,6 @@ public class AppsAdapter extends ArrayListAdapter<ApplicationInfo, AppsAdapter.A
     public void onBindViewHolder(@NonNull AppViewHolder holder, int position) {
         ApplicationInfo app = getItem(position);
 
-        // Square vs Banner
         final boolean banner = App.isBanner(app);
         holder.imageViewSquare.setVisibility(banner ? View.GONE : View.VISIBLE);
         holder.imageViewBanner.setVisibility(banner ? View.VISIBLE : View.GONE);
@@ -421,18 +420,36 @@ public class AppsAdapter extends ArrayListAdapter<ApplicationInfo, AppsAdapter.A
     public void notifyItemChanged(ApplicationInfo app) {
         if (items != null && items.contains(app)) {
             int i = items.indexOf(app);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                items.sort(Comparator.comparing(SettingsManager::getSortableAppLabel));
-                int j = items.indexOf(app);
-                try {
-                    if (i != j) notifyItemMoved(i, j);
-                    notifyItemChanged(j);
-                } catch (IllegalStateException ignored) {}
+            int j = 0;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                j = sortIntoList(items, app, Comparator.comparing(item -> StringLib.forSort(SettingsManager.getAppLabel(item))));
             }
+            if (i != j) notifyItemMoved(i, j);
         }
     }
 
+
     public void notifyAllChanged() {
         notifyItemRangeChanged(0, getItemCount());
+    }
+
+    // Uses binary tree search to find where an item belongs in a list which is otherwise sorted
+    // It's an asynchronous sorting algorithm!
+    private <T> int sortIntoList(List<T> list, T changedItem, Comparator<T> c) {
+        list.remove(changedItem);
+        int firstIndex = 0;
+        int lastIndex = list.size()-1;
+        int prevIndex = -1;
+        while (true) {
+            final int currentIndex = (firstIndex+lastIndex)/2;
+            final int res = c.compare(changedItem, list.get(currentIndex));
+            if (res == 0 || currentIndex == prevIndex) {
+                list.add(currentIndex, changedItem);
+                return currentIndex;
+            }
+            if (res > 0) firstIndex = currentIndex;
+            else         lastIndex  = currentIndex;
+            prevIndex = currentIndex;
+        }
     }
 }

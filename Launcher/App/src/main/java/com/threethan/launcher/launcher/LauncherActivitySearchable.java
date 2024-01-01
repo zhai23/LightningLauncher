@@ -34,7 +34,6 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
     protected void searchFor(String text) {
         getAppAdapter().filterBy(text);
         updateTopSearchResult();
-        resetScroll();
     }
     BlurView searchBar;
     ObjectAnimator alphaIn;
@@ -91,12 +90,9 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
             ValueAnimator padAnimator = ValueAnimator.ofInt(appsView.getPaddingTop(), dp(75));
             padAnimator.setDuration(200);
             padAnimator.setInterpolator(new DecelerateInterpolator());
-            padAnimator.addUpdateListener(animation -> {
-                appsView.setPadding(appsView.getPaddingLeft(),
-                        (Integer) animation.getAnimatedValue(),
-                        appsView.getPaddingRight(),appsView.getPaddingBottom());
-                resetScroll();
-            });
+            padAnimator.addUpdateListener(animation -> appsView.setPadding(appsView.getPaddingLeft(),
+                    (Integer) animation.getAnimatedValue(),
+                    appsView.getPaddingRight(),appsView.getPaddingBottom()));
             padAnimator.start();
 
 

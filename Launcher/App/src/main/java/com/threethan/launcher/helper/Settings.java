@@ -93,9 +93,6 @@ public abstract class Settings {
     public static final String KEY_SEEN_HIDDEN_GROUPS_POPUP = "KEY_SEEN_HIDDEN_GROUPS_POPUP";
     public static final String KEY_SEEN_WEBSITE_POPUP = "KEY_SEEN_WEBSITE_POPUP";
     public static final String KEY_SEEN_ADDONS = "KEY_SEEN_ADDONS";
-    public static final String KEY_INCLUDED_SET = "prefIncludedIn";
-    public static final String KEY_EXCLUDED_SET = "prefExcludedFrom";
-
 
     // banner-style display by app type
     public static final String KEY_BANNER = "prefTypeIsWide";

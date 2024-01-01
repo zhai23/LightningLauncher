@@ -267,9 +267,12 @@ public class LauncherActivity extends Activity {
         executorService.execute(() -> {
             Platform.clearPackageLists(this);
             PackageManager packageManager = getPackageManager();
+
             Platform.installedApps = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);
             Platform.installedApps = Collections.synchronizedList(Platform.installedApps);
-            Compat.recheckSupported(this);
+
+            Log.v(TAG, "Package Reload - Found "+ Platform.installedApps.size() +" packages");
+
             launcherService.forEachActivity(LauncherActivity::refreshAppList);
         });
     }
@@ -389,10 +392,9 @@ public class LauncherActivity extends Activity {
                             -> {
                         if (darkMode == null) darkMode = darkModeSet;
                         if (groupsEnabled == null) groupsEnabled = groupsEnabledSet;
-
                         refreshAdapters();
                     }));
-        } else refreshAdapters();
+        }
 
         // Fix some focus issues
         final View focused = getCurrentFocus();
@@ -424,9 +426,6 @@ public class LauncherActivity extends Activity {
         }));
 
         updateGridLayouts();
-    }
-    protected void resetScroll() {
-        appsView.scrollToPosition(0);
     }
 
     /**
@@ -463,12 +462,12 @@ public class LauncherActivity extends Activity {
         GridLayoutManager gridLayoutManager = (GridLayoutManager) appsView.getLayoutManager();
         if (gridLayoutManager == null) {
             gridLayoutManager = new GridLayoutManager(this, 3);
-            gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-                @Override
-                public int getSpanSize(int position) {
-                    return Objects.requireNonNull(appsView.getAdapter()).getItemViewType(position);
-                }
-            });
+//            gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+//                @Override
+//                public int getSpanSize(int position) {
+//                    return Objects.requireNonNull(appsView.getAdapter()).getItemViewType(position);
+//                }
+//            });
             appsView.setLayoutManager(gridLayoutManager);
         }
 
@@ -585,9 +584,11 @@ public class LauncherActivity extends Activity {
      * Used to update the actual content of app list used to the main app grid
      */
     public void refreshAppList() {
+        if (Platform.installedApps == null) return;
+
+        SettingsManager.readGroupsAndSort();
         runOnUiThread(this::refreshAdapters);
 
-        if (Platform.installedApps == null) return;
         Platform.apps.clear();
         Platform.apps.addAll(Platform.installedApps);
         // Add web apps

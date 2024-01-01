@@ -186,7 +186,6 @@ public abstract class Launch {
      * @return True if app can be launched & is supported
      */
     public static boolean checkLaunchable(LauncherActivity activity, ApplicationInfo app) {
-
         // Ignore apps which don't work or should be excluded
         if (app.packageName.startsWith(activity.getPackageName())) return false;
         if (AppData.invalidAppsList.contains(app.packageName)) return false;

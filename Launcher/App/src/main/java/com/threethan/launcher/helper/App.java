@@ -58,54 +58,40 @@ public abstract class App {
         else return set;
     }
     protected static boolean isAppOfType
-            (ApplicationInfo applicationInfo, App.Type appType) {
+        (ApplicationInfo applicationInfo, App.Type appType) {
 
-            final LauncherActivity launcherActivity = SettingsManager.getAnyLauncherActivity();
-            final DataStoreEditor sharedPreferences = launcherActivity.dataStoreEditor;
+        final LauncherActivity launcherActivity = SettingsManager.getAnyLauncherActivity();
 
-            if (!categoryIncludedApps.containsKey(appType)) {
-                // Create new hashsets for cache
-                categoryIncludedApps.put(appType, Collections.synchronizedSet(new HashSet<>()));
-                categoryExcludedApps.put(appType, Collections.synchronizedSet(new HashSet<>()));
+        if (!categoryIncludedApps.containsKey(appType)) {
+            // Create new hashsets for cache
+            categoryIncludedApps.put(appType, Collections.synchronizedSet(new HashSet<>()));
+            categoryExcludedApps.put(appType, Collections.synchronizedSet(new HashSet<>()));
+        }
 
-                // Async load (it's nice to store this data, but it's faster to check initially)
-                sharedPreferences.getStringSet(Settings.KEY_INCLUDED_SET + appType, new HashSet<>(),
-                        includedSet -> nonNull(categoryIncludedApps.get(appType)).addAll(includedSet));
-                sharedPreferences.getStringSet(Settings.KEY_EXCLUDED_SET + appType, new HashSet<>(),
-                        includedSet -> nonNull(categoryExcludedApps.get(appType)).addAll(includedSet));
-            }
+        // Check cache
+        if (nonNull(categoryIncludedApps.get(appType))
+                .contains(applicationInfo.packageName)) return true;
+        if (nonNull(categoryExcludedApps.get(appType))
+                .contains(applicationInfo.packageName)) return false;
 
-            // Check cache
-            if (nonNull(categoryIncludedApps.get(appType))
-                    .contains(applicationInfo.packageName)) return true;
-            if (nonNull(categoryExcludedApps.get(appType))
-                    .contains(applicationInfo.packageName)) return false;
+        boolean isType = switch (appType) {
+            case TYPE_VR -> checkVirtualReality(applicationInfo);
+            case TYPE_TV -> checkAndroidTv(applicationInfo, launcherActivity);
+            case TYPE_PANEL -> checkPanelApp(applicationInfo, launcherActivity);
+            case TYPE_WEB -> isWebsite(applicationInfo);
+            case TYPE_PHONE -> true;
+            case TYPE_SUPPORTED -> checkSupported(applicationInfo, launcherActivity);
+            default -> false;
 
-            boolean isType = switch (appType) {
-                case TYPE_VR -> checkVirtualReality(applicationInfo);
-                case TYPE_TV -> checkAndroidTv(applicationInfo, launcherActivity);
-                case TYPE_PANEL -> checkPanelApp(applicationInfo, launcherActivity);
-                case TYPE_WEB -> isWebsite(applicationInfo);
-                case TYPE_PHONE -> true;
-                case TYPE_SUPPORTED -> checkSupported(applicationInfo, launcherActivity);
-                default -> false;
+            // this function shouldn't be called until checking higher priorities first
+        };
 
-                // this function shouldn't be called until checking higher priorities first
-            };
+        if (isType)
+            nonNull(categoryIncludedApps.get(appType)).add(applicationInfo.packageName);
+        else
+            nonNull(categoryExcludedApps.get(appType)).add(applicationInfo.packageName);
 
-        if (isType) {
-                nonNull(categoryIncludedApps.get(appType))
-                        .add(applicationInfo.packageName);
-                sharedPreferences.putStringSet(Settings.KEY_INCLUDED_SET + appType,
-                        categoryIncludedApps.get(appType));
-            } else {
-                nonNull(categoryExcludedApps.get(appType))
-                        .add(applicationInfo.packageName);
-                sharedPreferences.putStringSet(Settings.KEY_EXCLUDED_SET + appType,
-                        categoryIncludedApps.get(appType));
-            }
-
-            return isType;
+        return isType;
     }
 
 
@@ -161,15 +147,10 @@ public abstract class App {
         return packageName.startsWith("{\"mActivity\"") || packageName.startsWith("json://");
     }
 
-        // Invalidate the values caches for isBlank functions
-    public static synchronized void invalidateCaches(LauncherActivity launcherActivity) {
+    // Invalidate the values caches for isBlank functions
+    public static synchronized void invalidateCaches() {
         categoryIncludedApps = new HashMap<>();
         categoryExcludedApps = new HashMap<>();
-
-        for (App.Type type : App.Type.values())
-            launcherActivity.dataStoreEditor
-                    .removeStringSet(Settings.KEY_INCLUDED_SET + type)
-                    .removeStringSet(Settings.KEY_EXCLUDED_SET + type);
     }
     // Opens the app info settings pane
     public static void openInfo(Context context, String packageName) {

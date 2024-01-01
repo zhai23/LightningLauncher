@@ -108,6 +108,7 @@ public class SettingsManager extends Settings {
     }
     private static @Nullable String processAppLabel(ApplicationInfo app, String name) {
         if (!name.isEmpty()) return name;
+
         if (AppData.labelOverrides.containsKey(app.packageName))
             return AppData.labelOverrides.get(app.packageName);
         if (App.isWebsite(app) || StringLib.isSearchUrl(app.packageName)) {
@@ -201,7 +202,13 @@ public class SettingsManager extends Settings {
             return currentApps;
         }
         currentApps.removeIf(app -> !(apps.containsKey(app.packageName) && selectedGroups.contains(apps.get(app.packageName))));
-        currentApps.sort(Comparator.comparing(SettingsManager::getSortableAppLabel));
+
+        // Must be set here, else labels might async load during sort which causes crashes
+        Map<ApplicationInfo, String> labels = new HashMap<>();
+        for (ApplicationInfo app : currentApps)
+            labels.put(app, SettingsManager.getSortableAppLabel(app));
+
+        currentApps.sort(Comparator.comparing(labels::get));
         // Sort Done!
         return currentApps;
     }

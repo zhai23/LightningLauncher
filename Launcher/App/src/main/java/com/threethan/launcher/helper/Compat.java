@@ -1,8 +1,6 @@
 package com.threethan.launcher.helper;
 
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.Log;
 
@@ -16,7 +14,6 @@ import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -39,7 +36,9 @@ public abstract class Compat {
     public static synchronized void checkCompatibilityUpdate(LauncherActivity launcherActivity) {
         if (DEBUG_COMPATIBILITY) Log.e(TAG, "CRITICAL WARNING: DEBUG_COMPATIBILITY IS ON");
         DataStoreEditor sharedPreferences = launcherActivity.dataStoreEditor;
+
         int storedVersion = DEBUG_COMPATIBILITY ? 0 : sharedPreferences.getInt(Compat.KEY_COMPATIBILITY_VERSION, -1);
+
         if (storedVersion == -1) {
             // Attempt migration
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -88,7 +87,6 @@ public abstract class Compat {
                                         ? Settings.DEFAULT_BACKGROUND_TV
                                         : Settings.DEFAULT_BACKGROUND_VR);
                         if (bg > 2) sharedPreferences.putInt(Settings.KEY_BACKGROUND, bg + 1);
-                        recheckSupported(launcherActivity);
                         break;
                     case (2):
                         String from = sharedPreferences.getString("KEY_DEFAULT_GROUP_VR", Settings.FALLBACK_GROUPS.get(App.Type.TYPE_VR));
@@ -138,7 +136,6 @@ public abstract class Compat {
                                 sharedPreferences.removeBoolean(key);
                             }
                         }
-                        recheckSupported(launcherActivity);
                         break;
                     case (7):
                         clearIconCache(launcherActivity);
@@ -149,8 +146,6 @@ public abstract class Compat {
                             if (fromFile.getName().endsWith(".webp"))
                                 //noinspection ResultOfMethodCallIgnored
                                 fromFile.delete();
-                    case (9):
-                        sharedPreferences.removeStringSet(Settings.KEY_EXCLUDED_SET+App.Type.TYPE_PANEL);
                     case (10):
                         clearIconCache(launcherActivity);
                         clearIcons(launcherActivity);
@@ -194,18 +189,6 @@ public abstract class Compat {
         settingsManager.setSelectedGroups(selectedGroups);
         settingsManager.setAppGroups(appGroupsList);
         SettingsManager.setAppGroupMap(updatedAppList);
-    }
-    public static void recheckSupported(LauncherActivity launcherActivity) {
-        final Map<String, String> appGroupMap = SettingsManager.getAppGroupMap();
-        List<ApplicationInfo> apps = launcherActivity.getPackageManager().getInstalledApplications(PackageManager.GET_META_DATA);
-        App.invalidateCaches(launcherActivity);
-        for (ApplicationInfo app: apps) {
-            final boolean supported = App.isSupported(app);
-            if(!supported) appGroupMap.put(app.packageName, Settings.UNSUPPORTED_GROUP);
-            else if (Objects.equals(appGroupMap.get(app.packageName), Settings.UNSUPPORTED_GROUP))
-                appGroupMap.remove(app.packageName);
-        }
-        SettingsManager.setAppGroupMap(appGroupMap);
     }
 
     // Clears all icons, including custom icons
@@ -267,7 +250,6 @@ public abstract class Compat {
     private static void storeAndReload(LauncherActivity launcherActivity) {
         SettingsManager.setAppGroupMap(new ConcurrentHashMap<>());
 
-        Compat.recheckSupported(launcherActivity);
         SettingsManager.writeGroupsAndSort();
         launcherActivity.launcherService.forEachActivity(a -> {
             a.refreshAppList();

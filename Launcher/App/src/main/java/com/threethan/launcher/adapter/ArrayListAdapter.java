@@ -1,5 +1,7 @@
 package com.threethan.launcher.adapter;
 
+import android.annotation.SuppressLint;
+
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -28,6 +30,7 @@ public abstract class ArrayListAdapter<T, H extends RecyclerView.ViewHolder> ext
      * notifyDataSetChanged()
      * @param newItems the new list of items
      */
+    @SuppressLint("NotifyDataSetChanged")
     public void setItems(List<T> newItems) {
         for(T item : new ArrayList<>(items)) {
             if (!newItems.contains(item)) {
