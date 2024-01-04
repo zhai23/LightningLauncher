@@ -195,7 +195,6 @@ public abstract class Compat {
     public static void clearIcons(LauncherActivity launcherActivity) {
         Log.i(TAG, "Icons are being cleared");
         FileLib.delete(launcherActivity.getApplicationInfo().dataDir + Icon.ICON_CUSTOM_FOLDER);
-        launcherActivity.dataStoreEditor.removeStringSet(SettingsManager.DONT_DOWNLOAD_ICONS);
         clearIconCache(launcherActivity);
     }
     // Clears all icons, except for custom icons, and sets them to be re-downloaded
@@ -203,16 +202,11 @@ public abstract class Compat {
         Log.i(TAG, "Icon cache is being cleared");
         FileLib.delete(launcherActivity.getApplicationInfo().dataDir + Icon.ICON_CACHE_FOLDER);
 
-        launcherActivity.launcherService.forEachActivity(LauncherActivity::clearAdapterCaches);
-
-        IconRepo.downloadExemptPackages.clear();
-        launcherActivity.dataStoreEditor.putStringSet(
-                SettingsManager.DONT_DOWNLOAD_ICONS, Collections.emptySet());
-
         Icon.cachedIcons.clear();
+        IconRepo.downloadExemptPackages.clear();
 
         Icon.init(launcherActivity); // Recreate folders
-        storeAndReload(launcherActivity);
+        launcherActivity.launcherService.forEachActivity(a -> a.getAppAdapter().notifyAllChanged());
     }
     // Clears any custom labels assigned to apps, including whether they've been starred
     public static void clearLabels(LauncherActivity launcherActivity) {
@@ -221,7 +215,7 @@ public abstract class Compat {
         HashSet<String> setAll = launcherActivity.getAllPackages();
         for (String packageName : setAll) launcherActivity.dataStoreEditor.removeString(packageName);
 
-        launcherActivity.launcherService.forEachActivity(LauncherActivity::clearAdapterCaches);
+        launcherActivity.launcherService.forEachActivity(a -> a.getAppAdapter().notifyAllChanged());
     }
     // Clears the categorization of apps & resets everything to selected default groups
     public static void clearSort(LauncherActivity launcherActivity) {
@@ -233,8 +227,7 @@ public abstract class Compat {
             launcherActivity.dataStoreEditor.removeStringSet(Settings.KEY_GROUP_APP_LIST + groupName);
         }
         storeAndReload(launcherActivity);
-        launcherActivity.launcherService.forEachActivity(LauncherActivity::clearAdapterCaches);
-        launcherActivity.launcherService.forEachActivity(LauncherActivity::refreshInterface);
+        launcherActivity.launcherService.forEachActivity(LauncherActivity::resetAdapters);
     }
     // Resets the group list to default, including default groups for sorting
     public static void resetDefaultGroups(LauncherActivity launcherActivity) {
@@ -243,8 +236,7 @@ public abstract class Compat {
 
         launcherActivity.settingsManager.resetGroupsAndSort();
         clearSort(launcherActivity);
-        launcherActivity.launcherService.forEachActivity(LauncherActivity::clearAdapterCaches);
-        launcherActivity.launcherService.forEachActivity(LauncherActivity::refreshInterface);
+        launcherActivity.launcherService.forEachActivity(LauncherActivity::resetAdapters);
     }
     // Stores any settings which may have been changed then refreshes any extent launcher activities
     private static void storeAndReload(LauncherActivity launcherActivity) {

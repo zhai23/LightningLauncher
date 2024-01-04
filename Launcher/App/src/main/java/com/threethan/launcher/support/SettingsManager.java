@@ -92,7 +92,8 @@ public class SettingsManager extends Settings {
      */
     public static String getAppLabel(ApplicationInfo app) {
         if (appLabelCache.containsKey(app)) return appLabelCache.get(app);
-        return checkAppLabel(app);
+        final String customLabel = dataStoreEditor.getString(app.packageName, "");
+        return processAppLabel(app, customLabel);
     }
 
     /**
@@ -101,11 +102,7 @@ public class SettingsManager extends Settings {
     public static String getSortableAppLabel(ApplicationInfo app) {
         return  (App.isBanner(app) ? "0" : "1") + StringLib.forSort(getAppLabel(app));
     }
-    private static String checkAppLabel(ApplicationInfo app) {
-        dataStoreEditor.getString(app.packageName, "",
-                name -> setAppLabel(app, processAppLabel(app, name)));
-        return app.packageName;
-    }
+
     private static @Nullable String processAppLabel(ApplicationInfo app, String name) {
         if (!name.isEmpty()) return name;
 
@@ -141,7 +138,7 @@ public class SettingsManager extends Settings {
         if (newName == null) return;
         appLabelCache.put(app, newName);
         dataStoreEditor.putString(app.packageName, newName);
-        getAnyLauncherActivity().post(() -> getAnyLauncherActivity().getAppAdapter().notifyItemChanged(app));
+        getAnyLauncherActivity().launcherService.forEachActivity(LauncherActivity::refreshAppList);
     }
     public static boolean getAppLaunchOut(String pkg) {
         return dataStoreEditor.getBoolean(Settings.KEY_LAUNCH_OUT_PREFIX+pkg,
@@ -341,7 +338,7 @@ public class SettingsManager extends Settings {
      * make sure not to call directly after writingGroupsAndSort or there will be issues
      * since writing is async
      */
-    public static synchronized void readGroupsAndSort
+    private static synchronized void readGroupsAndSort
     () {
         try {
             appGroupsSet.clear();

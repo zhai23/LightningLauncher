@@ -104,7 +104,6 @@ public abstract class Settings {
         FALLBACK_BANNER.put(App.Type.TYPE_TV, true);
         FALLBACK_BANNER.put(App.Type.TYPE_PANEL, false);
     }
-    public static final String DONT_DOWNLOAD_ICONS = "DONT_DOWNLOAD_ICONS";
 
     // show names by display type
     public static final String KEY_SHOW_NAMES_SQUARE = "KEY_CUSTOM_NAMES";

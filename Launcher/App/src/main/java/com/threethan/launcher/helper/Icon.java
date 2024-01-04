@@ -48,13 +48,13 @@ public abstract class Icon {
         ApplicationInfo tempApp = new ApplicationInfo();
         tempApp.packageName = cachename;
         final boolean wide = App.isBanner(tempApp);
+        final boolean oneIcon = custom || App.isWebsite(tempApp) || App.isShortcut(tempApp);
         return new File(launcherActivity.getApplicationInfo().dataDir +
                 (custom ? ICON_CUSTOM_FOLDER : ICON_CACHE_FOLDER),
-                cachename + (wide && !custom ? "-wide" : "") + ".webp");
+                cachename + (wide && !oneIcon ? "-wide" : "") + ".webp");
     }
     public static void init(LauncherActivity launcherActivity) {
         // Icon init
-        IconRepo.updateInternet(launcherActivity);
         File cacheDir = new File(launcherActivity.getApplicationInfo().dataDir + Icon.ICON_CACHE_FOLDER);
         boolean ignored1 = cacheDir.mkdir();
         File customDir = new File(launcherActivity.getApplicationInfo().dataDir + Icon.ICON_CUSTOM_FOLDER);
@@ -63,7 +63,8 @@ public abstract class Icon {
 
     public static String cacheName(ApplicationInfo app) {
         String cacheName;
-        if (App.isWebsite(app)) return StringLib.baseUrlWithScheme(app.packageName);
+        if (App.isWebsite(app))
+            return StringLib.toValidFilename(StringLib.baseUrlWithScheme(app.packageName));
         else {
             cacheName = app.packageName;
             if (App.isBanner(app)) cacheName += BANNER_SUFFIX;
@@ -96,7 +97,7 @@ public abstract class Icon {
         final File iconFile = iconCacheFileForPackage(activity, app);
         final boolean ignored1 = iconFile.delete();
         downloadImageView.setImageDrawable(loadIcon(activity, app, downloadImageView));
-        IconRepo.download(activity, app, () -> saveIcon(app, iconFile));
+        IconRepo.download(activity, app, null);
         Dialog.toast(activity.getString(R.string.refreshed_icon));
     }
     public static void saveIconDrawableExternal(Activity activity, Drawable icon, ApplicationInfo app) {

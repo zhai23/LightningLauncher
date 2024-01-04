@@ -9,7 +9,6 @@ import android.util.Log;
 import com.threethan.launcher.launcher.LauncherActivity;
 import com.threethan.launcher.lib.ImageLib;
 import com.threethan.launcher.lib.StringLib;
-import com.threethan.launcher.support.SettingsManager;
 
 import java.io.DataInputStream;
 import java.io.File;
@@ -52,7 +51,6 @@ public abstract class IconRepo {
             "https://www.google.com/s2/favicons?domain=%s&sz=256", // Provides high-res icons
             "%s/favicon.ico", // The standard directory for a website's icon to be placed
     };
-    private static final String TEST_URL = "https://github.com/threethan/QuestLauncherImages/blob/main/banner/com.oculus.browser.jpg";
     // If a download finishes, regardless of whether an icon is found, the app will be added to this
     // list, and will not be downloaded again unless manually requested.
     protected static Set<String> downloadExemptPackages = Collections.synchronizedSet(new HashSet<>());
@@ -64,27 +62,15 @@ public abstract class IconRepo {
      * @param callback Called when the download completes successfully
      */
     public static void check(final LauncherActivity activity, ApplicationInfo app, final Runnable callback) {
-        if (shouldDownload(activity, app)) download(activity, app, callback);
+        if (shouldDownload(app)) download(activity, app, callback);
     }
-    private static synchronized boolean shouldDownload(LauncherActivity activity, ApplicationInfo app) {
+    private static synchronized boolean shouldDownload(ApplicationInfo app) {
         if (App.isShortcut(app)) return false;
-        if (downloadExemptPackages.isEmpty()) {
-            downloadExemptPackages.addAll(activity.dataStoreEditor
-                    .getStringSet(SettingsManager.DONT_DOWNLOAD_ICONS, downloadExemptPackages));
-        }
         return !downloadExemptPackages.contains(app.packageName);
     }
 
-    public static synchronized void dontDownloadIconFor(LauncherActivity activity, String packageName) {
-        if (downloadExemptPackages.isEmpty())
-            downloadExemptPackages = activity.dataStoreEditor
-                    .getStringSet(SettingsManager.DONT_DOWNLOAD_ICONS, downloadExemptPackages);
+    public static synchronized void dontDownloadIconFor(String packageName) {
         downloadExemptPackages.add(packageName);
-        if (hasInternet) {
-            activity.dataStoreEditor
-                    .putStringSet(SettingsManager.DONT_DOWNLOAD_ICONS, downloadExemptPackages);
-        }
-        else shouldSaveDownloadExemptPackagesIfConnected = true;
     }
 
     /**
@@ -100,9 +86,7 @@ public abstract class IconRepo {
 
         new Thread(() -> {
             Object lock = locks.putIfAbsent(pkgName, new Object());
-            if (lock == null) {
-                lock = locks.get(pkgName);
-            }
+            if (lock == null) lock = locks.get(pkgName);
             synchronized (Objects.requireNonNull(lock)) {
                 try {
                     for (final String url : App.isWebsite(app) ? ICON_URLS_WEB : (isWide ? ICON_URLS_BANNER : ICON_URLS_SQUARE)) {
@@ -110,6 +94,7 @@ public abstract class IconRepo {
                                 StringLib.baseUrlWithScheme(pkgName) :
                                 pkgName.replace("://","").replace(PanelApp.packagePrefix, "");
                         if (downloadIconFromUrl(activity, String.format(url, urlTLD), iconFile)) {
+                            Icon.saveIcon(app, iconFile);
                             activity.runOnUiThread(callback);
                             break;
                         }
@@ -120,7 +105,7 @@ public abstract class IconRepo {
                     // Set the icon to now download if we either successfully downloaded it, or the download tried and failed
                     locks.remove(pkgName);
                     // ..and if we have internet
-                    dontDownloadIconFor(activity, pkgName);
+                    dontDownloadIconFor(pkgName);
                 }
             }
         }).start();
@@ -201,35 +186,5 @@ public abstract class IconRepo {
 
         if (!success) Log.e("AbstractPlatform", "Failed to validate image file: " + imageFile);
         return success;
-    }
-
-    private static Boolean hasInternet = false;
-    private static Boolean shouldSaveDownloadExemptPackagesIfConnected = false;
-    /** Recheck if we are connected to the internet by pinging a test url */
-    public static void updateInternet(LauncherActivity activity) {
-        Thread thread = new Thread(() -> {
-            try {
-                hasInternet = checkInternet();
-                if (shouldSaveDownloadExemptPackagesIfConnected) {
-                    activity.dataStoreEditor
-                            .putStringSet(SettingsManager.DONT_DOWNLOAD_ICONS, downloadExemptPackages);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-
-        thread.start();
-    }
-    /** Ping a test url to check if we have an internet connection */
-    private static boolean checkInternet() {
-        try {
-            InputStream inputStream = new URL(TEST_URL).openStream();
-            if (inputStream == null) return false;
-            inputStream.close();
-            return true;
-        } catch (IOException e) {
-            return false;
-        }
     }
 }

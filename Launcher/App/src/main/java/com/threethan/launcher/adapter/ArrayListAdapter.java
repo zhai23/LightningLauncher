@@ -1,12 +1,12 @@
 package com.threethan.launcher.adapter;
 
-import android.annotation.SuppressLint;
-
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * An extension of {@link RecyclerView} which provides functions for using and manipulating
@@ -30,21 +30,29 @@ public abstract class ArrayListAdapter<T, H extends RecyclerView.ViewHolder> ext
      * notifyDataSetChanged()
      * @param newItems the new list of items
      */
-    @SuppressLint("NotifyDataSetChanged")
     public void setItems(List<T> newItems) {
-        for(T item : new ArrayList<>(items)) {
+        final Map<Integer, Integer> movedPrevByNew = new HashMap<>(); // to -> from
+        for (T item : new ArrayList<>(items)) {
             if (!newItems.contains(item)) {
                 int i = items.indexOf(item);
                 items.remove(i);
                 notifyItemRemoved(i);
             }
         }
-        for(T item : newItems) {
+        for (T item : newItems) {
             if (!items.contains(item)) {
                 int i = newItems.indexOf(item);
                 items.add(i, item);
                 notifyItemInserted(i);
             }
+        }
+        final List<T> oldItems = new ArrayList<>(items);
+        items.clear();
+        items.addAll(newItems);
+        for (T item : oldItems) {
+            final int oldIndex = oldItems.indexOf(item);
+            final int newIndex = newItems.indexOf(item);
+            if (oldIndex != newIndex) notifyItemMoved(oldIndex, newIndex);
         }
     }
 

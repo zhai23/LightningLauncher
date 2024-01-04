@@ -303,7 +303,7 @@ public class LauncherActivity extends Activity {
             if (getAppAdapter() == null) return;
             if (resultCode == RESULT_OK) {
                 for (Image image : ImagePicker.getImages(data)) {
-                    IconRepo.dontDownloadIconFor(this, selectedPackageName);
+                    IconRepo.dontDownloadIconFor(selectedPackageName);
                     AppDetailsDialog.onImageSelected(image.getPath(), selectedImageView, this);
                     break;
                 }
@@ -387,15 +387,9 @@ public class LauncherActivity extends Activity {
      * It is extended further by child classes
      */
     public void refreshInterface() {
-        if (darkMode == null || groupsEnabled == null) {
-            dataStoreEditor.getBoolean(Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE, darkModeSet ->
-                    dataStoreEditor.getBoolean(Settings.KEY_GROUPS_ENABLED, Settings.DEFAULT_GROUPS_ENABLED, groupsEnabledSet
-                            -> {
-                        if (darkMode == null) darkMode = darkModeSet;
-                        if (groupsEnabled == null) groupsEnabled = groupsEnabledSet;
-                        refreshAdapters();
-                    }));
-        }
+        darkMode = dataStoreEditor.getBoolean(Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE);
+        groupsEnabled = dataStoreEditor.getBoolean(Settings.KEY_GROUPS_ENABLED, Settings.DEFAULT_GROUPS_ENABLED);
+        refreshAdapters();
 
         // Fix some focus issues
         final View focused = getCurrentFocus();
@@ -587,7 +581,6 @@ public class LauncherActivity extends Activity {
     public void refreshAppList() {
         if (Platform.installedApps == null) return;
 
-        SettingsManager.readGroupsAndSort();
         runOnUiThread(this::refreshAdapters);
 
         Platform.apps.clear();
@@ -669,9 +662,14 @@ public class LauncherActivity extends Activity {
     };
 
     @SuppressLint("NotifyDataSetChanged")
-    public void clearAdapterCaches() {
-        if (getAppAdapter() != null) getAppAdapter().notifyDataSetChanged();
+    public void resetAdapters() {
+        if (getAppAdapter() != null) {
+            refreshAppList();
+            getAppAdapter().notifyDataSetChanged();
+            getAppAdapter().notifyAllChanged();
+        }
         if (getGroupAdapter() != null) getGroupAdapter().notifyDataSetChanged();
+        refreshInterface();
     }
 
     // Edit mode stubs, to be overridden by child

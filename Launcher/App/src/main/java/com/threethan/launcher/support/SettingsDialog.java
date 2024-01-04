@@ -105,10 +105,7 @@ public abstract class SettingsDialog {
         dark.setOnCheckedChangeListener((compoundButton, value) -> {
             a.dataStoreEditor.putBoolean(Settings.KEY_DARK_MODE, value);
             LauncherActivity.darkMode = value;
-            a.launcherService.forEachActivity(la -> {
-                la.clearAdapterCaches();
-                la.refreshInterface();
-            });
+            a.launcherService.forEachActivity(LauncherActivity::resetAdapters);
         });
         ImageView[] views = {
                 dialog.findViewById(R.id.background0),
@@ -302,7 +299,7 @@ public abstract class SettingsDialog {
                 bSwitch.setChecked(App.typeIsBanner(type));
                 bSwitch.setOnCheckedChangeListener((switchView, value) -> {
                     a.dataStoreEditor.putBoolean(Settings.KEY_BANNER + type, value);
-                    a.launcherService.forEachActivity(LauncherActivity::refreshAppList);
+                    a.launcherService.forEachActivity(LauncherActivity::resetAdapters);
                 });
 
             } else {

@@ -22,7 +22,7 @@
 
     <uses-permission android:name="com.oculus.permission.HAND_TRACKING"/>
 
-    <!-- Allows the app to play/record audio in background, which is used for the WebView activity -->
+    <!-- Allows the app to play/record audio in backgroundy -->
     <uses-permission android:name="com.oculus.permission.PLAY_AUDIO_BACKGROUND"/>
     <uses-permission android:name="com.oculus.permission.RECORD_AUDIO_BACKGROUND"/>
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
@@ -59,6 +59,7 @@
             android:exported="true"
             android:documentLaunchMode="always"
             android:resizeableActivity="true"
+            android:stateNotNeeded="true"
             android:excludeFromRecents="true">
 
             <layout android:defaultWidth="706dp" android:defaultHeight="442dp" android:gravity="top|end" />

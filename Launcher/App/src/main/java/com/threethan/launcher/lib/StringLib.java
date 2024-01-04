@@ -28,13 +28,7 @@ public class StringLib {
         if (!url.contains("://")) url = "https://" + url;
         return url;
     }
-    public static boolean compareUrl(String url1, String url2) {
-        return stripUrl(url1).compareTo(stripUrl(url2)) == 0;
-    }
-    private static String stripUrl(String url) {
-        return url.replace("/","").replace("http:","")
-                .replace("https:","").replace("www.","");
-    }
+
     public static boolean isInvalidUrl(String url) {
         if (url.startsWith("about:")) return false;
         return ((!url.contains("://") || !url.contains(".")));
@@ -43,8 +37,8 @@ public class StringLib {
         if (string.startsWith("json://")) // Hash json that would otherwise be too long
             return  "shortcut-json-hash-" + string.hashCode();
 
-        string = string.replace("/","").replace("&","")
-                .replace("=","").replace(":","");
+        string = string.replaceAll("[^A-Za-z0-9.]", "");
+
         if (string.length()>50) return string.substring(0, 10) + string.hashCode();
         return string;
     }

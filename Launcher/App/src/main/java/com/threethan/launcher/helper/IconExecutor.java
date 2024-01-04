@@ -44,7 +44,7 @@ class IconExecutor {
 
         // Try to load from cached icon file
         final File iconCacheFile = Icon.iconCacheFileForPackage(activity, app);
-        if (iconCacheFile.exists()) appIcon = Drawable.createFromPath(iconCustomFile.getAbsolutePath());
+        if (iconCacheFile.exists()) appIcon = Drawable.createFromPath(iconCacheFile.getAbsolutePath());
         if (appIcon != null) return appIcon;
 
         // Try to load from package manager
@@ -61,11 +61,14 @@ class IconExecutor {
             appIcon = resources.getDrawable(iconId, activity.getTheme());
 
             return appIcon;
-        } catch (Exception ignored) {} // Fails on web apps, possibly also on invalid packages
-
-        // Attempt to download the icon for this app from an online repo
-        // Done AFTER saving the drawable version to prevent a race condition)
-        IconRepo.check(activity, app, () -> loadIcon(activity, app, imageView));
-        return null;
+        } catch (Exception ignored) { // Fails on web apps, possibly also on invalid packages
+            return null;
+        }  finally {
+            // Attempt to download the icon for this app from an online repo
+            // Done AFTER saving the drawable version to prevent a race condition)
+            IconRepo.check(activity, app, () ->
+                    activity.launcherService.forEachActivity(a ->
+                            a.getAppAdapter().notifyItemChanged(app)));
+        }
     }
 }

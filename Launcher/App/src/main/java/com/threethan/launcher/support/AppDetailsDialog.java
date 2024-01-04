@@ -199,6 +199,8 @@ public abstract class AppDetailsDialog {
             showButton.setVisibility( nowHidden ? View.VISIBLE : View.GONE);
             hideButton.setVisibility(!nowHidden ? View.VISIBLE : View.GONE);
             Dialog.toast(launcherActivity.getString(R.string.moved_shown), finalUnhideGroup, false);
+            launcherActivity.launcherService.forEachActivity(LauncherActivity::refreshAppList);
+
         });
         hideButton.setOnClickListener(v -> {
             launcherActivity.settingsManager.setAppGroup(currentApp.packageName,
@@ -209,7 +211,7 @@ public abstract class AppDetailsDialog {
             hideButton.setVisibility(!nowHidden ? View.VISIBLE : View.GONE);
             Dialog.toast(launcherActivity.getString(R.string.moved_hidden),
                     launcherActivity.getString(R.string.moved_hidden_bold), false);
-
+            launcherActivity.launcherService.forEachActivity(LauncherActivity::refreshAppList);
         });
 
         // Set Label (don't show star)
@@ -227,7 +229,7 @@ public abstract class AppDetailsDialog {
         // Save Label & Reload on Confirm
         dialog.findViewById(R.id.confirm).setOnClickListener(view -> {
             SettingsManager.setAppLabel(currentApp, StringLib.setStarred(appNameEditText.getText().toString(), isStarred[0]));
-            launcherActivity.getAppAdapter().notifyItemChanged(currentApp);
+            launcherActivity.launcherService.forEachActivity(LauncherActivity::refreshAppList);
             dialog.dismiss();
         });
     }

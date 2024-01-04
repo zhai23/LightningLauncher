@@ -95,7 +95,7 @@
         android:focusable="false"
         android:focusableInTouchMode="false"
         android:gravity="center"
-        android:lineSpacingExtra="-2dp"
+        android:lineSpacingExtra="-2.5dp"
         android:maxLines="2"
         android:singleLine="false"
         android:textColor="@android:color/white"

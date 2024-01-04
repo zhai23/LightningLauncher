@@ -33,7 +33,6 @@ import com.threethan.launcher.support.AppDetailsDialog;
 import com.threethan.launcher.support.SettingsManager;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -416,40 +415,7 @@ public class AppsAdapter extends ArrayListAdapter<ApplicationInfo, AppsAdapter.A
         return rv;
     }
 
-    @Override
-    public void notifyItemChanged(ApplicationInfo app) {
-        if (items != null && items.contains(app)) {
-            int i = items.indexOf(app);
-            int j = 0;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                j = sortIntoList(items, app, Comparator.comparing(item -> StringLib.forSort(SettingsManager.getAppLabel(item))));
-            }
-            if (i != j) notifyItemMoved(i, j);
-        }
-    }
-
-
     public void notifyAllChanged() {
         notifyItemRangeChanged(0, getItemCount());
-    }
-
-    // Uses binary tree search to find where an item belongs in a list which is otherwise sorted
-    // It's an asynchronous sorting algorithm!
-    private <T> int sortIntoList(List<T> list, T changedItem, Comparator<T> c) {
-        list.remove(changedItem);
-        int firstIndex = 0;
-        int lastIndex = list.size()-1;
-        int prevIndex = -1;
-        while (true) {
-            final int currentIndex = (firstIndex+lastIndex)/2;
-            final int res = c.compare(changedItem, list.get(currentIndex));
-            if (res == 0 || currentIndex == prevIndex) {
-                list.add(currentIndex, changedItem);
-                return currentIndex;
-            }
-            if (res > 0) firstIndex = currentIndex;
-            else         lastIndex  = currentIndex;
-            prevIndex = currentIndex;
-        }
     }
 }
