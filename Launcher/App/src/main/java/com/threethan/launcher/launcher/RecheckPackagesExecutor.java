@@ -25,13 +25,13 @@ class RecheckPackagesExecutor {
             List<ApplicationInfo> foundApps = packageManager.getInstalledApplications(0);
 
             if (Platform.installedApps == null) {
-                Log.v("LightningLauncher", "Package check called before initial load, " +
+                Log.v("Lightning Launcher", "Package check called before initial load, " +
                         "will be ignored");
                 return;
             }
             if (Platform.installedApps.size() != foundApps.size()) {
                 owner.runOnUiThread(() -> {
-                    Log.v("LightningLauncher", "Package change detected!");
+                    Log.v("Lightning Launcher", "Package change detected!");
                     owner.reloadPackages();
                 });
             }

@@ -8,7 +8,7 @@
     android:padding="20dp">
 
     <View
-        android:layout_width="250dp"
+        android:layout_width="280dp"
         android:layout_height="0dp" />
 
     <TextView
@@ -19,18 +19,19 @@
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="132sp"
+        android:layout_height="186sp"
         android:layout_marginBottom="10dp"
         android:autofillHints="text"
         android:backgroundTint="@android:color/white"
-        android:text="@string/hidden_groups_message_vr"
+        android:text="@string/set_default_launcher_message"
         android:textColor="@android:color/white" />
 
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:baselineAligned="false">
 
         <FrameLayout
             android:id="@+id/cancel"

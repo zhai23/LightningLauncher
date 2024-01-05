@@ -36,6 +36,7 @@
     <string name="advanced_header">高级设置</string>
     <string name="advanced_button">打开高级设置获取更多选项</string>
     <string name="advanced_interface">界面选项</string>
+    <string name="advanced_launching">启动选项</string>
     <string name="advanced_features">附加特性</string>
     <string name="advanced_backup">备份恢复</string>
     <string name="advanced_alpha">背景透明度</string>
@@ -54,7 +55,7 @@
     <string name="settings_save">导出配置</string>
     <string name="settings_load">导入配置</string>
     <string name="settings_default_launcher">设置默认主页以启用第三方快捷方式</string>
-    <string name="tip_settings_default_launcher">设置 LightningLauncher，让其他应用程序添加快捷方式</string>
+    <string name="tip_settings_default_launcher">设置 Lightning Launcher，让其他应用程序添加快捷方式</string>
 
     <string name="advanced_sizing">允许手机应用使用自身的窗口大小</string>
     <string name="tip_advanced_sizing">允许在不同大小的窗口中打开应用，可能会导致问题</string>
@@ -66,10 +67,13 @@
     <string name="reload_icon">刷新图标/横幅</string>
 
     <string name="launch_out_message">在应用自身的窗口中启动 2D 应用程序或网站可让 Quest 设备上的多任务处理变得更轻松，但会导致某些应用程序无法启动。\n\n如果有任何问题，请禁用此选项！</string>
-    <string name="launch_size_message">在应用自身的窗口中启动 2D 应用程序或网站可让 Quest 设备上的多任务处理变得更轻松、但会导致某些应用程序无法启动。\n\n        \n设置自定义窗口大小可以解决应用程序无法启动的问题，使某些应用程序显示得更清晰，并允许在平面视图中使用不同的窗口大小。\n        \n不过，偶尔也会导致窗口卡住或 LightningLauncher 崩溃。\n\n        \n所有这些选项都只能按应用程序设置。\n\n        \n如果遇到问题，请关闭该选项，并确保任何应用程序都未设置为在自己的窗口中启动。重启以修复卡死的窗口。</string>
+    <string name="launch_size_message">在应用自身的窗口中启动 2D 应用程序或网站可让 Quest 设备上的多任务处理变得更轻松、但会导致某些应用程序无法启动。\n\n        \n设置自定义窗口大小可以解决应用程序无法启动的问题，使某些应用程序显示得更清晰，并允许在平面视图中使用不同的窗口大小。\n        \n不过，偶尔也会导致窗口卡住或 Lightning Launcher 崩溃。\n\n        \n所有这些选项都只能按应用程序设置。\n\n        \n如果遇到问题，请关闭该选项，并确保任何应用程序都未设置为在自己的窗口中启动。重启以修复卡死的窗口。</string>
     <string name="hidden_groups_message_tv">"关闭该选项将在不进入编辑模式时隐藏顶栏。\n\n        \n不在编辑模式下时，设置按钮也将隐藏。\n\n        \n取而代之的是，按遥控器上的返回按钮打开设置。\n\n        \n您仍然可以通过导航到顶行，然后按向上键进行搜索。\n    "</string>
     <string name="hidden_groups_message_vr">"关闭该选项将在不进入编辑模式时隐藏顶栏。\n\n        \n不在编辑模式下时，设置按钮也将隐藏。\n\n        \n相反，按下窗口顶部的返回按钮或控制器上的 B 键即可打开设置。\n    "</string>
-    <string name="set_default_launcher_message">"将 LightningLauncher 设置为默认的安卓主应用程序，其他应用程序就可以在主屏幕上添加快捷图标。\n        \n只需执行一次。\n\n        \n它不会取代VR设备上的实际默认启动器，也不会改变LightningLauncher本身的操作。\n\n\n        如果你想这样做，请查看设置快捷方式/快捷方式设置以获取LightningLauncher的快捷方式。\n    "</string>
+    <string name="set_default_launcher_message">"将 Lightning Launcher 设置为默认的安卓主应用程序，其他应用程序就可以在主屏幕上添加快捷图标。\n        \n只需执行一次。\n\n        \n它不会取代VR设备上的实际默认启动器，也不会改变Lightning Launcher本身的操作。\n\n\n        如果你想这样做，请查看设置快捷方式/快捷方式设置以获取Lightning Launcher的快捷方式。\n    "</string>
+    <string name="download_browser_message">为了获得最佳体验，您必须安装 Lightning Browser 才能在 Lightning Launcher 中打开网站。\n\n（或者，您可以尝试在“高级设置”中更改浏览器，但这可能无法按预期工作</string>
+    <string name="download_browser_toast_main">安装完成后再</string>
+    <string name="download_browser_toast_bold">次打开网站</string>
 
     <string name="website_title">显示标题</string>
     <string name="website_subtitle1">快速访问网站和Web应用</string>
@@ -81,7 +85,7 @@
     <string name="add_website">添加网站</string>
     <string name="add_website_tip">添加网站到启动器</string>
     <string name="add_website_url_label">输入网站 URL</string>
-    <string name="add_website_bad_url">输入有效的 URL 并重试</string>
+    <string name="add_website_bad_url">输入有效的 URL</string>
     <string name="add_website_used_url">该网站已存在与 %1$s</string>
     <string name="add_website_audio_info">添加可播放背景音频的网站</string>
     <string name="add_website_group">添加到 %s</string>
@@ -106,10 +110,11 @@
     <string name="size_large">在 16:9 大窗口中打开</string>
     <string name="size_huge">在 16:9 超大窗口中打开</string>
 
+    <string name="browser_default_setting">网站的默认设置:</string>
     <string name="browser_default_in" >在浏览器当前窗口中打开</string>
     <string name="browser_default_out">在浏览器自身窗口中打开</string>
     <string name="browser_quest">在 Quest 浏览器中打开</string>
-
+    <string name="browser_system">尝试系统默认操作</string>
 
     <string name="edit_off">开启编辑模式</string>
     <string name="edit_on">关闭编辑模式</string>
@@ -137,7 +142,7 @@
     <string name="update_failed_content">请确保网络连接良好，稍后再试</string>
 
     <string name="update_skip_title">跳过更新到 %1$s 版本？</string>
-    <string name="update_skip_content">您将不会再收到有关此更新的通知。\n\n        \n请记住，我们强烈建议进行更新，更新可能包括重要的修复。\n\n        \n如果你因该更新导致的问题而回避该更新，请在 github.com/threethan/LightningLauncher 上报告你的问题。\n\n        \n你可以稍后从设置中更新！</string>
+    <string name="update_skip_content">您将不会再收到有关此更新的通知。\n\n        \n请记住，我们强烈建议进行更新，更新可能包括重要的修复。\n\n        \n如果你因该更新导致的问题而回避该更新，请在 github.com/threethan/Lightning Launcher 上报告你的问题。\n\n        \n你可以稍后从设置中更新！</string>
     <string name="update_skip_confirm_button">我已了解，跳过</string>
     <string name="update_skip_cancel_button">忽略</string>
 
@@ -153,15 +158,15 @@
     <string name="default_groups_resort_only">全部移动到默认分组</string>
     <string name="default_groups_cancel">返回</string>
     <string name="default_groups_reset_groups_toast_main">重置分组</string>
-    <string name="default_groups_reset_groups_toast_bold">全部!</string>
+    <string name="default_groups_reset_groups_toast_bold">全部！</string>
     <string name="default_groups_resort_only_toast_main">应用已经移动到</string>
     <string name="default_groups_resort_only_toast_bold">您选择的默认分组</string>
 
     <string name="toast_cant_unset_group">将另一组设置为默认分组以取消此组的默认设置</string>
 
     <string name="clear_icons_title">图标更新/清理设置</string>
-    <string name="clear_icons_info">LightningLauncher会缓存应用程序的图标和横幅，以加快加载速度。\n\n        \n你可以清除缓存来刷新任何可能已更改的图标。</string>
-    <string name="clear_icons_info_quest">LightningLauncher 会从互联网上下载官方 Quest Games 和应用程序的图标。\n\n        \n通过清除图标缓存，你还可以重新下载所有这些图标。如果图标疑似丢失了，这将非常有用！</string>
+    <string name="clear_icons_info">Lightning Launcher会缓存应用程序的图标和横幅，以加快加载速度。\n\n        \n你可以清除缓存来刷新任何可能已更改的图标。</string>
+    <string name="clear_icons_info_quest">Lightning Launcher 会从互联网上下载官方 Quest Games 和应用程序的图标。\n\n        \n通过清除图标缓存，你还可以重新下载所有这些图标。如果图标疑似丢失了，这将非常有用！</string>
     <string name="clear_icons_info_custom">你还可以为应用程序设置自定义图标，方法是将它们放在此设备的中，然后在弹出的应用程序信息中点击图标。      如果你愿意，还可以清除所有这些图标。这样做还会清除缓存。</string>
 
     <string name="clear_icons_clear_cache">清除图标缓存</string>
@@ -197,9 +202,9 @@
     <string name="moved_shown">移动到</string>
     <string name="refreshed_icon">刷新图标.....</string>
 
-    <string name="notification_title_n">LightningLauncher: 没有网站在运行</string>
-    <string name="notification_title_s">LightningLauncher: 一个网站正在运行</string>
-    <string name="notification_title_p">LightningLauncher: %1$d 个网站正在运行</string>
+    <string name="notification_title_n">Lightning Launcher: 没有网站在运行</string>
+    <string name="notification_title_s">Lightning Launcher: 一个网站正在运行</string>
+    <string name="notification_title_p">Lightning Launcher: %1$d 个网站正在运行</string>
     <string name="notification_content">这条通知可以确保网站背景音频顺利运行</string>
 
     <!-- Addons -->
@@ -213,7 +218,7 @@
     <string name="addons_androidtv_desc">安装一个第三方应用程序，它可以让你更改 Android TV 上的默认主页。\n    \n这需要启用 ADB 调试，而且可能无法在每台设备上运行。\n    \n\n    \n如果无法通过此处安装，请查找 &quot;Android TV Launcher Manager XDA&quot;，然后手动下载并安装。</string>
 
     <string name="addons_androidtv_alt">或直接使用返回按钮</string>
-    <string name="addons_androidtv_alt_desc">如果你只使用遥控器上的返回键，而不是主页键，你将始终回到 LightningLauncher。\n    \n\n    \n进入启动器后再按返回键，只会切换编辑模式，避免意外返回默认启动器。</string>
+    <string name="addons_androidtv_alt_desc">如果你只使用遥控器上的返回键，而不是主页键，你将始终回到 Lightning Launcher。\n    \n\n    \n进入启动器后再按返回键，只会切换编辑模式，避免意外返回默认启动器。</string>
 
     <string name="addons_facebook">Facebook 应用快捷方式</string>
     <string name="addons_facebook_desc">添加一个图标，你可以把它固定在 dock 上，它看起来像 Facebook 但实际上会打开启动器。\n\n(如果已安装真正的 Messenger 应用程序，则不会安装该图标）</string>

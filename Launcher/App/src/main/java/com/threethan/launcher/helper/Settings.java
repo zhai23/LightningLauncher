@@ -118,7 +118,7 @@ public abstract class Settings {
     public static final String KEY_WEBSITE_LIST = "prefWebAppNames";
     public static final String KEY_LAUNCH_SIZE = "prefLaunchSize";
     public static final String KEY_LAUNCH_BROWSER = "prefLaunchBrowser";
-
+    public static final String KEY_DEFAULT_BROWSER = "KEY_DEFAULT_BROWSER";
     public static final String KEY_DEFAULT_LAUNCH_OUT = "KEY_DEFAULT_LAUNCH_OUT";
     public static final boolean DEFAULT_DEFAULT_LAUNCH_OUT = false;
     public static final String KEY_ADVANCED_SIZING = "KEY_ADVANCED_SIZING";
@@ -135,6 +135,7 @@ public abstract class Settings {
             R.string.browser_default_in,
             R.string.browser_default_out,
             R.string.browser_quest,
+            R.string.browser_system,
     };
     /** @noinspection rawtypes*/
     public static final Class[] launchSizeClasses = {

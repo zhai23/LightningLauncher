@@ -26,12 +26,11 @@ import com.threethan.launcher.helper.Platform;
 
 import java.io.IOException;
 
-/*
-    AddShortcutActivity
-
-    Allows 3rd party apps to add shortcuts to the launcher. Not well tested!
+/**
+    Allows 3rd party apps to add shortcuts to the launcher. Not extensively tested!
  */
 public class AddShortcutActivity extends Activity {
+    /** Creates the activity and adds the shortcut to the launcher's DataStore */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return;
@@ -75,6 +74,7 @@ public class AddShortcutActivity extends Activity {
         Icon.saveIconDrawableExternal(this, iconDrawable, app);
         this.finish();
     }
+    /** Launches a given shortcut (if supported by the system) */
     public static void launchShortcut(Activity activity, String json) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N_MR1) return;
 
@@ -83,33 +83,15 @@ public class AddShortcutActivity extends Activity {
         ShortcutInfo shortcutInfo = getFixedGsonReader().fromJson(json, ShortcutInfo.class);
         launcherApps.startShortcut(shortcutInfo, null, null);
     }
+    /** Gets a Gson writer that works around duplicate field errors */
     protected static Gson getFixedGsonWriter() {
         return new GsonBuilder()
-                .setExclusionStrategies(new ExclusionStrategy() {
-                    @Override
-                    public boolean shouldSkipField(FieldAttributes f) {
-                        return f.getName().equals("mChangingConfigurations");
-                    }
-
-                    @Override
-                    public boolean shouldSkipClass(Class<?> clazz) {
-                        return false;
-                    }
-                }).create();
+                .setExclusionStrategies(getExclusionStrategy()).create();
     }
+    /** Gets a Gson reader that works around duplicate field & unwritable value errors */
     protected static Gson getFixedGsonReader() {
         return new GsonBuilder()
-                .setExclusionStrategies(new ExclusionStrategy() {
-                    @Override
-                    public boolean shouldSkipField(FieldAttributes f) {
-                        return f.getName().equals("mChangingConfigurations");
-                    }
-
-                    @Override
-                    public boolean shouldSkipClass(Class<?> clazz) {
-                        return false;
-                    }
-                })
+                .setExclusionStrategies(getExclusionStrategy())
                 .registerTypeAdapter(CharSequence.class, new TypeAdapter<CharSequence>() {
                     @Override
                     public void write(JsonWriter out, CharSequence value) throws IOException {
@@ -121,5 +103,19 @@ public class AddShortcutActivity extends Activity {
                         return in.nextString();
                     }
                 }).create();
+    }
+    /** Gets the exclusion strategy for working Gson reader/writer */
+    protected static ExclusionStrategy getExclusionStrategy() {
+        return new ExclusionStrategy() {
+            @Override
+            public boolean shouldSkipField(FieldAttributes f) {
+                return f.getName().equals("mChangingConfigurations");
+            }
+
+            @Override
+            public boolean shouldSkipClass(Class<?> clazz) {
+                return false;
+            }
+        };
     }
 }

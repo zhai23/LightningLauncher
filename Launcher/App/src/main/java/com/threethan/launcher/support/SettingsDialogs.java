@@ -35,7 +35,7 @@ import java.util.Set;
     and making sure settings are correctly applied to launcher activities
  */
 
-public abstract class SettingsDialog {
+public abstract class SettingsDialogs {
     private static boolean clearedLabel;
     private static boolean clearedIconCache;
     private static boolean clearedIconCustom;
@@ -221,7 +221,7 @@ public abstract class SettingsDialog {
         groups.setOnCheckedChangeListener((sw, value) -> {
             if (!a.dataStoreEditor.getBoolean(Settings.KEY_SEEN_HIDDEN_GROUPS_POPUP, false) && value != Settings.DEFAULT_GROUPS_ENABLED) {
                 groups.setChecked(Settings.DEFAULT_GROUPS_ENABLED); // Revert switch
-                AlertDialog subDialog = Dialog.build(a, R.layout.dialog_hide_groups_info_tv);
+                AlertDialog subDialog = Dialog.build(a, R.layout.dialog_info_hide_groups_tv);
                 if (subDialog == null) return;
                 subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
                     final boolean newValue = !Settings.DEFAULT_GROUPS_ENABLED;
@@ -271,7 +271,7 @@ public abstract class SettingsDialog {
             }
         });
         View iconSettings = dialog.findViewById(R.id.iconSettingsButton);
-        iconSettings.setOnClickListener(view -> SettingsDialog.showIconSettings(a));
+        iconSettings.setOnClickListener(view -> SettingsDialogs.showIconSettings(a));
 
         View groupSettings = dialog.findViewById(R.id.groupDefaultsInfoButton);
         groupSettings.setOnClickListener(view -> showGroupSettings(a));
@@ -324,7 +324,7 @@ public abstract class SettingsDialog {
         });
 
         // Advanced button
-        dialog.findViewById(R.id.advancedSettingsButton).setOnClickListener(view -> SettingsDialog.showAdvancedSettings(a));
+        dialog.findViewById(R.id.advancedSettingsButton).setOnClickListener(view -> SettingsDialogs.showAdvancedSettings(a));
     }
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     public static void showAdvancedSettings(LauncherActivity a) {
@@ -382,7 +382,7 @@ public abstract class SettingsDialog {
                 a.dataStoreEditor.putBoolean(Settings.KEY_DEFAULT_LAUNCH_OUT, value);
                 a.launcherService.forEachActivity(LauncherActivity::refreshInterface);
                 if (!a.dataStoreEditor.getBoolean(Settings.KEY_SEEN_LAUNCH_OUT_POPUP, false)) {
-                    AlertDialog subDialog = Dialog.build(a, R.layout.dialog_launch_out_info);
+                    AlertDialog subDialog = Dialog.build(a, R.layout.dialog_info_launch_out);
                     if (subDialog == null) return;
                     subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
                         a.dataStoreEditor
@@ -397,7 +397,7 @@ public abstract class SettingsDialog {
             advancedSizingSwitch.setOnCheckedChangeListener((compoundButton, value) -> {
                 a.dataStoreEditor.putBoolean(Settings.KEY_ADVANCED_SIZING, value);
                 if (!a.dataStoreEditor.getBoolean(Settings.KEY_SEEN_LAUNCH_SIZE_POPUP, false)) {
-                    AlertDialog subDialog = Dialog.build(a, R.layout.dialog_launch_size_info);
+                    AlertDialog subDialog = Dialog.build(a, R.layout.dialog_info_launch_size);
                     if (subDialog == null) return;
                     subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
                         a.dataStoreEditor
@@ -406,10 +406,9 @@ public abstract class SettingsDialog {
                     });
                 }
             });
-
             View defaultSettingsButton = dialog.findViewById(R.id.defaultLauncherSettingsButton);
             defaultSettingsButton.setOnClickListener((view) -> {
-                AlertDialog minDialog = Dialog.build(a, R.layout.dialog_set_default_launcher_info);
+                AlertDialog minDialog = Dialog.build(a, R.layout.dialog_info_set_default_launcher);
                 assert minDialog != null;
                 minDialog.findViewById(R.id.confirm).setOnClickListener(view1 -> {
                     final Intent intent = new Intent(android.provider.Settings.ACTION_HOME_SETTINGS);
@@ -420,10 +419,37 @@ public abstract class SettingsDialog {
                 minDialog.findViewById(R.id.cancel).setOnClickListener(view1 -> minDialog.cancel());
             });
         } else {
+            dialog.findViewById(R.id.extraFeaturesTitle).setVisibility(View.GONE);
             dialog.findViewById(R.id.defaultLauncherSettingsButton).setVisibility(View.GONE);
             dialog.findViewById(R.id.defaultLaunchOutSection).setVisibility(View.GONE);
             dialog.findViewById(R.id.advancedSizingSection).setVisibility(View.GONE);
         }
+
+        // Default Browser Selection
+        // Browser selection spinner
+        final View launchBrowserSpinner = dialog.findViewById(R.id.launchBrowserSpinner);
+        final TextView launchBrowserSpinnerText = dialog.findViewById(R.id.launchBrowserSpinnerText);
+
+        launchBrowserSpinner.setVisibility(View.VISIBLE);
+
+        final int[] defaultBrowserSelection = {a.dataStoreEditor.getInt(
+                Settings.KEY_DEFAULT_BROWSER,
+                SettingsManager.getDefaultBrowser()
+        )};
+        launchBrowserSpinnerText.setText(Settings.launchBrowserStrings[defaultBrowserSelection[0]]);
+        launchBrowserSpinner.setOnClickListener((view) -> {
+            // Cycle selection
+            int index = defaultBrowserSelection[0];
+            index = (index + 1) % Settings.launchBrowserStrings.length;
+            // Skip quest browser if not on quest
+            if (Settings.launchBrowserStrings[index] == R.string.browser_quest
+                    && !Platform.isQuest(a)) index++;
+            // Update text & store setting
+            final int stringRes = Settings.launchBrowserStrings[index];
+            launchBrowserSpinnerText.setText(stringRes);
+            a.dataStoreEditor.putInt(Settings.KEY_DEFAULT_BROWSER, index);
+            defaultBrowserSelection[0] = index;
+        });
 
         // Save/load settings
         View loadSettings = dialog.findViewById(R.id.loadSettingsButton);

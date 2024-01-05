@@ -28,6 +28,10 @@ import com.threethan.launcher.lib.StringLib;
 import java.io.File;
 import java.util.Objects;
 
+/**
+ * Provides the dialog which appears when pressing the three-dots icon on an app,
+ * or when long-pressing an app in edit mode
+ */
 public abstract class AppDetailsDialog {
     private static Drawable iconDrawable;
     private static File customIconFile;
@@ -36,7 +40,7 @@ public abstract class AppDetailsDialog {
     @SuppressLint("SetTextI18n")
     public static void showAppDetails(ApplicationInfo currentApp, LauncherActivity launcherActivity) {
         // Set View
-        AlertDialog dialog = Dialog.build(launcherActivity, R.layout.dialog_app_details);
+        AlertDialog dialog = Dialog.build(launcherActivity, R.layout.dialog_details_app);
         if (dialog == null) return;
         // Package Name
         ((TextView) dialog.findViewById(R.id.packageName)).setText(currentApp.packageName);
@@ -50,15 +54,6 @@ public abstract class AppDetailsDialog {
         dialog.findViewById(R.id.info).setOnClickListener(view -> App.openInfo(launcherActivity, currentApp.packageName));
         dialog.findViewById(R.id.uninstall).setOnClickListener(view -> {
             App.uninstall(launcherActivity, currentApp.packageName); dialog.dismiss();});
-
-
-        dialog.findViewById(R.id.kill).setVisibility(
-                SettingsManager.getRunning(currentApp.packageName) ? View.VISIBLE : View.GONE);
-        dialog.findViewById(R.id.kill).setOnClickListener((view) -> {
-            SettingsManager.stopRunning(currentApp.packageName);
-            view.setVisibility(View.GONE);
-        });
-
 
         // Launch Mode Toggle
         @SuppressLint("UseSwitchCompatOrMaterialCode")
@@ -124,7 +119,7 @@ public abstract class AppDetailsDialog {
                 SettingsManager.setAppLaunchOut(currentApp.packageName, value);
 
                 if (!launcherActivity.dataStoreEditor.getBoolean(Settings.KEY_SEEN_LAUNCH_OUT_POPUP, false)) {
-                    AlertDialog subDialog = Dialog.build(launcherActivity, R.layout.dialog_launch_out_info);
+                    AlertDialog subDialog = Dialog.build(launcherActivity, R.layout.dialog_info_launch_out);
                     if (subDialog == null) return;
                     subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
                         launcherActivity.dataStoreEditor
@@ -135,22 +130,30 @@ public abstract class AppDetailsDialog {
             });
             launchModeSwitch.setVisibility(Platform.isVr(launcherActivity) ? View.VISIBLE : View.GONE);
 
-            // Browser settings
-            if (appType == App.Type.TYPE_WEB && Platform.isQuest(launcherActivity)) {
+            // Browser selection spinner
+            if (appType == App.Type.TYPE_WEB) {
                 launchBrowserSpinner.setVisibility(View.VISIBLE);
                 launchModeSection.setVisibility(View.GONE);
 
                 final String launchBrowserKey = Settings.KEY_LAUNCH_BROWSER + currentApp.packageName;
                 final int[] launchBrowserSelection = {launcherActivity.dataStoreEditor.getInt(
                         launchBrowserKey,
-                        SettingsManager.getAppLaunchOut(currentApp.packageName) ? 0 : 1)};
+                        SettingsManager.getDefaultBrowser()
+                )};
 
                 launchBrowserSpinnerText.setText(Settings.launchBrowserStrings[launchBrowserSelection[0]]);
                 launchBrowserSpinner.setOnClickListener((view) -> {
-                    launchBrowserSelection[0] = (launchBrowserSelection[0] + 1) % Settings.launchBrowserStrings.length;
-                    launchBrowserSpinnerText.setText(Settings.launchBrowserStrings[launchBrowserSelection[0]]);
-                    launcherActivity.dataStoreEditor.putInt(launchBrowserKey, launchBrowserSelection[0]);
-                    SettingsManager.setAppLaunchOut(currentApp.packageName, launchBrowserSelection[0] != 0);
+                    // Cycle selection
+                    int index = launchBrowserSelection[0];
+                    index = (index + 1) % Settings.launchBrowserStrings.length;
+                    // Skip quest browser if not on quest
+                    if (Settings.launchBrowserStrings[index] == R.string.browser_quest
+                        && !Platform.isQuest(launcherActivity)) index++;
+                    // Update text & store setting
+                    final int stringRes = Settings.launchBrowserStrings[index];
+                    launchBrowserSpinnerText.setText(stringRes);
+                    launcherActivity.dataStoreEditor.putInt(launchBrowserKey, index);
+                    launchBrowserSelection[0] = index;
                 });
             }
             // Advanced size settings

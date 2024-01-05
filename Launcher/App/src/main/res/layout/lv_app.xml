@@ -35,19 +35,6 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:visibility="visible" />
 
-        <Button
-            android:id="@+id/killButton"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_margin="3dp"
-            android:background="@drawable/ic_running_ns"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            tools:visibility="visible" />
-
         <ImageView
             android:id="@+id/imageLabelBanner"
             android:layout_width="0dp"

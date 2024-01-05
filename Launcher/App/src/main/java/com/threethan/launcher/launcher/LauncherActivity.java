@@ -44,7 +44,7 @@ import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.lib.ImageLib;
 import com.threethan.launcher.support.AppDetailsDialog;
-import com.threethan.launcher.support.SettingsDialog;
+import com.threethan.launcher.support.SettingsDialogs;
 import com.threethan.launcher.support.SettingsManager;
 import com.threethan.launcher.support.Updater;
 import com.threethan.launcher.view.MarginDecoration;
@@ -89,7 +89,7 @@ public class LauncherActivity extends Activity {
     public SettingsManager settingsManager;
     public boolean settingsVisible;
     public LauncherService launcherService;
-    protected static String TAG = "LightningLauncher";
+    protected static String TAG = "Lightning Launcher";
     private int groupHeight;
     private RecyclerView.ItemDecoration marginDecoration;
     public static boolean namesBanner;
@@ -179,7 +179,7 @@ public class LauncherActivity extends Activity {
         // Set logo button
         ImageView settingsImageView = rootView.findViewById(R.id.settingsIcon);
         settingsImageView.setOnClickListener(view -> {
-            if (!settingsVisible) SettingsDialog.showSettings(this);
+            if (!settingsVisible) SettingsDialogs.showSettings(this);
         });
     }
     protected void onLayoutChaged(View v, int left, int top, int right, int bottom,
@@ -240,7 +240,7 @@ public class LauncherActivity extends Activity {
     @Override
     public void onBackPressed() {
         if (AppsAdapter.animateClose(this)) return;
-        if (!settingsVisible) SettingsDialog.showSettings(this);
+        if (!settingsVisible) SettingsDialogs.showSettings(this);
     }
 
     @Override
@@ -285,7 +285,7 @@ public class LauncherActivity extends Activity {
             new RecheckPackagesExecutor().execute(this);
         } catch (Exception ignore) {
             reloadPackages();
-            Log.w("LightningLauncher", "Exception while starting recheck package task");
+            Log.w("Lightning Launcher", "Exception while starting recheck package task");
         }
     }
 

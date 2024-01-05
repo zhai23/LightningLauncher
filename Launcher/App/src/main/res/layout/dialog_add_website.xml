@@ -56,7 +56,8 @@
             android:textColor="@android:color/white"
             android:tooltipText="@string/tip_info_website"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:targetApi="o" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -189,7 +190,7 @@
 
     </LinearLayout>
 
-    <EditText
+    <com.threethan.launcher.view.EditTextWatched
         android:id="@+id/appUrl"
         android:layout_width="match_parent"
         android:layout_height="40sp"

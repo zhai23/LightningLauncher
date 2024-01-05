@@ -45,11 +45,11 @@ import java.util.List;
  * Credit to @Basti for code which checks github for updates
  */
 public class Updater {
-    private static final String UPDATE_URL = "https://api.github.com/repos/threethan/LightningLauncher/releases/latest";
-    private static final String TEMPLATE_URL = "https://github.com/threethan/LightningLauncher/releases/download/%s/%s.apk";
+    private static final String UPDATE_URL = "https://api.github.com/repos/threethan/Lightning Launcher/releases/latest";
+    private static final String TEMPLATE_URL = "https://github.com/threethan/Lightning Launcher/releases/download/%s/%s.apk";
     public static final String ADDON_RELEASE_TAG = "addons6.3.0";
     public static final String BROWSER_VERSION = "1.0.0";
-    private static final String UPDATE_NAME = "LightningLauncher";
+    private static final String UPDATE_NAME = "Lightning Launcher";
     public static final String TAG_FACEBOOK_SHORTCUT = "TAG_FACEBOOK_SHORTCUT";
     public static final String TAG_MONDAY_SHORTCUT = "TAG_MONDAY_SHORTCUT";
     public static final String TAG_APP_LIBRARY_SHORTCUT = "TAG_APP_LIBRARY_SHORTCUT";
@@ -66,11 +66,11 @@ public class Updater {
             new Addon(TAG_APP_LIBRARY_SHORTCUT, "ShortcutAppLibrary", "com.threethan.launcher.service.library", "6.3.0", true),
             new Addon(TAG_HORIZON_FEED_SHORTCUT, "ShortcutHorizonFeed", "com.threethan.launcher.service.explore", "6.3.0", true),
             new Addon(TAG_BROWSER, "LightningBrowser", "com.threethan.browser", BROWSER_VERSION, false,
-                    "https://github.com/threethan/LightningBrowser/releases/download/"+BROWSER_VERSION+"/LightningBrowser.apk"), // TODO: give a deticated view and such
+                    "https://github.com/threethan/LightningBrowser/releases/download/"+BROWSER_VERSION+"/LightningBrowser.apk", true),
             new Addon(TAG_ANDROID_TV_SHORTCUT, "LM (ATV) - 1.0.4", "com.wolf.google.lm", "1.0.4", false,
                     "https://xdaforums.com/attachments/lm-atv-1-0-4-apk.5498333/"),
     };
-    private static final String TAG = "LightningLauncher Updater";
+    private static final String TAG = "Lightning Launcher Updater";
     private final RequestQueue requestQueue;
     private final PackageManager packageManager;
     private final Activity activity;
@@ -92,7 +92,6 @@ public class Updater {
         this.activity = activity;
         this.requestQueue = Volley.newRequestQueue(activity);
         this.packageManager = activity.getPackageManager();
-
     }
     public void checkForAppUpdate() {
         checkLatestVersion(this::storeLatestVersionAndPrompt);
@@ -247,7 +246,7 @@ public class Updater {
         Log.v(TAG, "Downloading from url "+url);
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
         request.setDescription("Downloading Update");   //appears the same in Notification bar while downloading
-        request.setTitle("LightningLauncher Auto-Updater");
+        request.setTitle("Lightning Launcher Auto-Updater");
 
         request.setDestinationInExternalFilesDir(activity, APK_DIR, apkName+latestVersionTag+".apk");
 

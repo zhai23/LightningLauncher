@@ -116,7 +116,6 @@ public class AppsAdapter extends ArrayListAdapter<ApplicationInfo, AppsAdapter.A
         View bumpSpacer;
         TextView textView;
         Button moreButton;
-        Button killButton;
         ApplicationInfo app;
 
         public AppViewHolder(@NonNull View itemView) {
@@ -141,7 +140,6 @@ public class AppsAdapter extends ArrayListAdapter<ApplicationInfo, AppsAdapter.A
         holder.bumpSpacer = itemView.findViewById(R.id.bumpSpacer);
         holder.textView = itemView.findViewById(R.id.textLabel);
         holder.moreButton = itemView.findViewById(R.id.moreButton);
-        holder.killButton = itemView.findViewById(R.id.killButton);
         if (Platform.isTv()) holder.clip.setBackgroundResource(R.drawable.bkg_app_atv);
 
         setActions(holder);
@@ -152,11 +150,6 @@ public class AppsAdapter extends ArrayListAdapter<ApplicationInfo, AppsAdapter.A
         // Sub-buttons
         holder.moreButton.setOnClickListener(view -> AppDetailsDialog.showAppDetails(holder.app, launcherActivity));
 
-        holder.killButton.setOnClickListener(view -> {
-            SettingsManager.stopRunning(holder.app.packageName);
-            view.setVisibility(View.GONE);
-        });
-
         // Click
         holder.view.setOnClickListener(view -> {
             if (getEditMode()) {
@@ -166,16 +159,13 @@ public class AppsAdapter extends ArrayListAdapter<ApplicationInfo, AppsAdapter.A
                 if (Launch.launchApp(launcherActivity, holder.app)) animateOpen(holder);
 
                 boolean isWeb = App.isWebsite(holder.app);
-                if (isWeb) holder.killButton.setVisibility(View.VISIBLE);
                 shouldAnimateClose = isWeb || Platform.isTv(launcherActivity);
             }
         });
         holder.view.setOnLongClickListener(view -> {
             if (getEditMode() || !launcherActivity.canEdit() || launcherActivity.dataStoreEditor
                     .getBoolean(Settings.KEY_DETAILS_LONG_PRESS, Settings.DEFAULT_DETAILS_LONG_PRESS)) {
-                if (holder.killButton.getVisibility() == View.VISIBLE)
-                    holder.killButton.callOnClick();
-                else AppDetailsDialog.showAppDetails(holder.app, launcherActivity);
+                AppDetailsDialog.showAppDetails(holder.app, launcherActivity);
             } else {
                 launcherActivity.setEditMode(true);
                 launcherActivity.selectApp(holder.app.packageName);
@@ -189,7 +179,7 @@ public class AppsAdapter extends ArrayListAdapter<ApplicationInfo, AppsAdapter.A
             boolean hovered;
             if (event.getAction() == MotionEvent.ACTION_HOVER_ENTER) hovered = true;
             else if (event.getAction() == MotionEvent.ACTION_HOVER_EXIT) {
-                for (View subView : new View[] {holder.moreButton, holder.killButton})
+                for (View subView : new View[] {holder.moreButton})
                     if (view != subView && subView != null && subView.isHovered()) return false;
                 hovered = false;
             } else return false;
@@ -201,7 +191,6 @@ public class AppsAdapter extends ArrayListAdapter<ApplicationInfo, AppsAdapter.A
         holder.view.setOnFocusChangeListener((view, hasFocus) -> updateHover(holder, hasFocus));
 
         holder.moreButton.setOnHoverListener(hoverListener);
-        holder.killButton.setOnHoverListener(hoverListener);
     }
 
     @Override
@@ -264,7 +253,6 @@ public class AppsAdapter extends ArrayListAdapter<ApplicationInfo, AppsAdapter.A
             an.setDuration(150);
             an.start();
         }
-        holder.killButton.setVisibility(SettingsManager.getRunning(holder.app.packageName) ? View.VISIBLE : View.GONE);
         // Top search result
         if (launcherActivity.currentTopSearchResult != null &&
                 Objects.equals(
@@ -279,9 +267,6 @@ public class AppsAdapter extends ArrayListAdapter<ApplicationInfo, AppsAdapter.A
     public void updateHover(AppViewHolder holder, boolean hovered) {
         if (!Platform.isTv(launcherActivity))
             holder.moreButton.setVisibility(hovered ? View.VISIBLE : View.GONE);
-        holder.killButton.setBackgroundResource(hovered
-            ? R.drawable.ic_circ_running_kb
-            : R.drawable.ic_running_ns);
 
         final boolean tv = Platform.isTv(launcherActivity);
         final float newScaleInner = hovered ? (tv ? 1.075f : 1.060f) : 1.005f;

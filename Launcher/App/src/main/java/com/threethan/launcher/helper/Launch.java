@@ -1,5 +1,6 @@
 package com.threethan.launcher.helper;
 
+import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -10,9 +11,11 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import com.threethan.launcher.R;
 import com.threethan.launcher.launcher.LauncherActivity;
 import com.threethan.launcher.support.AddShortcutActivity;
 import com.threethan.launcher.support.SettingsManager;
+import com.threethan.launcher.support.Updater;
 
 import java.util.Objects;
 import java.util.Timer;
@@ -50,9 +53,16 @@ public abstract class Launch {
         } else if (Objects.equals(intent.getPackage(), Platform.BROWSER_PACKAGE)
             && !Platform.hasBrowser(launcherActivity)) {
             // If browser is required, but not installed
-            // TODO: Prompt installation
-            Dialog.toast("Lightning Browser is required!!!");
-            // TODO: Launch after installation (Check periodically?)
+            // Prompt installation
+            AlertDialog dialog = Dialog.build(launcherActivity, R.layout.dialog_prompt_download_browser);
+            if (dialog == null) return false;
+            dialog.findViewById(R.id.cancel).setOnClickListener((view) -> dialog.dismiss());
+            dialog.findViewById(R.id.install).setOnClickListener((view) -> {
+                    new Updater(launcherActivity).installAddon(Updater.TAG_BROWSER);
+                    dialog.dismiss();
+                    Dialog.toast(launcherActivity.getString(R.string.download_browser_toast_main),
+                            launcherActivity.getString(R.string.download_browser_toast_bold), true);
+            });
             return false;
         }
 
@@ -138,17 +148,23 @@ public abstract class Launch {
         if (App.isWebsite(app)) {
             Intent intent;
             if (app.packageName.startsWith("http://") || (app.packageName.startsWith("https://"))) {
-                int browserIndex
+                final int browserIndex
                         = activity.dataStoreEditor.getInt(Settings.KEY_LAUNCH_BROWSER + app.packageName, 0);
                 intent = new Intent(Intent.ACTION_VIEW, Uri.parse(app.packageName));
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                if (browserIndex == 2) {
-                    // Open in MQ browser
-                    intent.setPackage("com.oculus.browser");
-                    intent.setComponent(new ComponentName("com.oculus.browser", "com.oculus.browser.PanelActivity"));
-                } else {
-                    // Open in Lightning Browser
-                    intent.setPackage(Platform.BROWSER_PACKAGE);
+                final int browserStringRes = Settings.launchBrowserStrings[browserIndex];
+                switch (browserStringRes) {
+                    case (R.string.browser_quest):
+                        intent.setPackage("com.oculus.browser");
+                        intent.setComponent(
+                                new ComponentName("com.oculus.browser",
+                                        "com.oculus.browser.PanelActivity"));
+                        break;
+                    case (R.string.browser_system):
+                        break;
+                    default:
+                        intent.setPackage(Platform.BROWSER_PACKAGE);
+                        break;
                 }
                 return intent;
             } else {

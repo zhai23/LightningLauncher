@@ -20,7 +20,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-
+/**
+ * Provides the dialog which appears when pressing the three-dots icon on a group,
+ * or when long-pressing the single selected group in edit mode
+ */
 public abstract class GroupDetailsDialog {
     public static void showGroupDetails(int groupPosition, LauncherActivity launcherActivity) {
         final Map<String, String> apps = SettingsManager.getAppGroupMap();
@@ -29,7 +32,7 @@ public abstract class GroupDetailsDialog {
         final String groupName = settingsManager.getAppGroupsSorted(false).get(groupPosition);
         if (groupName == null) return;
 
-        AlertDialog dialog = Dialog.build(launcherActivity, R.layout.dialog_group_details);
+        AlertDialog dialog = Dialog.build(launcherActivity, R.layout.dialog_details_group);
         if (dialog == null) return;
 
         final EditText groupNameInput = dialog.findViewById(R.id.groupName);

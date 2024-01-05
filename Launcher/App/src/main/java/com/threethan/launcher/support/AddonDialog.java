@@ -113,7 +113,7 @@ public abstract class AddonDialog {
     protected static void showAccessibilityDialog() {
         Activity a = activityRef.get();
         if (a==null) return;
-        AlertDialog subDialog = Dialog.build(a, R.layout.dialog_service_info);
+        AlertDialog subDialog = Dialog.build(a, R.layout.dialog_info_service);
         if (subDialog == null) return;
         subDialog.findViewById(R.id.confirm).setOnClickListener(view1 -> {
             // Navigate to accessibility settings

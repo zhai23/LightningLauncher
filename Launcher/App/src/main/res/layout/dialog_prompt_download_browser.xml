@@ -8,7 +8,7 @@
     android:padding="20dp">
 
     <View
-        android:layout_width="300dp"
+        android:layout_width="250dp"
         android:layout_height="0dp" />
 
     <TextView
@@ -19,37 +19,22 @@
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="112sp"
         android:layout_marginBottom="10dp"
         android:autofillHints="text"
         android:backgroundTint="@android:color/white"
-        android:minHeight="90sp"
-        android:text="@string/launch_out_message"
+        android:text="@string/download_browser_message"
         android:textColor="@android:color/white" />
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:baselineAligned="false">
 
         <FrameLayout
             android:id="@+id/cancel"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/bkg_button"
-            android:visibility="gone">
-
-            <TextView
-                style="@style/SettingButtonLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/cancel" />
-
-        </FrameLayout>
-
-        <FrameLayout
-            android:id="@+id/confirm"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -59,7 +44,25 @@
                 style="@style/SettingButtonLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/understood" />
+                android:layout_gravity="center"
+                android:text="@string/cancel" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/install"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/bkg_button">
+
+            <TextView
+                style="@style/SettingButtonLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/addons_install" />
 
         </FrameLayout>
     </LinearLayout>

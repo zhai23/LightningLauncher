@@ -9,6 +9,7 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import com.threethan.launcher.R;
 import com.threethan.launcher.helper.App;
 import com.threethan.launcher.helper.AppData;
 import com.threethan.launcher.helper.DataStoreEditor;
@@ -141,11 +142,25 @@ public class SettingsManager extends Settings {
         getAnyLauncherActivity().launcherService.forEachActivity(LauncherActivity::refreshAppList);
     }
     public static boolean getAppLaunchOut(String pkg) {
+        if (App.isWebsite(pkg)) {
+            // If website, select based on browser selection
+            final String launchBrowserKey = Settings.KEY_LAUNCH_BROWSER + pkg;
+            final int launchBrowserSelection = getAnyLauncherActivity().dataStoreEditor.getInt(
+                    launchBrowserKey,
+                    SettingsManager.getDefaultBrowser()
+            );
+            final int stringRes = Settings.launchBrowserStrings[launchBrowserSelection];
+            return (stringRes == R.string.browser_default_out || stringRes == R.string.browser_quest);
+        }
+        // Else use saved setting
         return dataStoreEditor.getBoolean(Settings.KEY_LAUNCH_OUT_PREFIX+pkg,
                 dataStoreEditor.getBoolean(Settings.KEY_DEFAULT_LAUNCH_OUT, DEFAULT_DEFAULT_LAUNCH_OUT));
     }
     public static void setAppLaunchOut(String pkg, boolean shouldLaunchOut) {
         dataStoreEditor.putBoolean(Settings.KEY_LAUNCH_OUT_PREFIX+pkg, shouldLaunchOut);
+    }
+    public static int getDefaultBrowser() {
+        return dataStoreEditor.getInt(Settings.KEY_DEFAULT_BROWSER, 0);
     }
     public static ConcurrentHashMap<String, String> getAppGroupMap() {
         if (appGroupMap.isEmpty()) readGroupsAndSort();
@@ -173,7 +188,7 @@ public class SettingsManager extends Settings {
         ConcurrentHashMap<String, String> apps = getAppGroupMap();
 
         if (allApps == null) {
-            Log.w("LightningLauncher", "Got null app list");
+            Log.w("Lightning Launcher", "Got null app list");
             return new ArrayList<>();
         }
 
@@ -494,13 +509,5 @@ public class SettingsManager extends Settings {
     public static boolean getShowAdvancedSizeOptions(LauncherActivity activity) {
         return activity.dataStoreEditor.getBoolean(Settings.KEY_ADVANCED_SIZING,
                 Settings.DEFAULT_ADVANCED_SIZING);
-    }
-
-    // Unimplemented currently
-    // Need to find a way for this to work with the new brower
-    public static boolean getRunning(String ignoredPkgName) {
-        return false;
-    }
-    public static void stopRunning (String ignoredPkgName) {
     }
  }

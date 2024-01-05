@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,8 +20,9 @@ import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.lib.StringLib;
-import com.threethan.launcher.support.SettingsDialog;
+import com.threethan.launcher.support.SettingsDialogs;
 import com.threethan.launcher.support.SettingsManager;
+import com.threethan.launcher.view.EditTextWatched;
 
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
@@ -69,7 +69,7 @@ public class LauncherActivityEditable extends LauncherActivity {
         if (AppsAdapter.animateClose(this)) return;
         if (!settingsVisible) {
             if (groupsEnabled) setEditMode(Boolean.FALSE.equals(editMode));
-            else try { SettingsDialog.showSettings(this); } catch (Exception ignored) {}
+            else try { SettingsDialogs.showSettings(this); } catch (Exception ignored) {}
         }
     }
 
@@ -273,7 +273,7 @@ public class LauncherActivityEditable extends LauncherActivity {
 
     public void addWebsite(Context context) {
         
-        AlertDialog dialog = Dialog.build(this, R.layout.dialog_new_website);
+        AlertDialog dialog = Dialog.build(this, R.layout.dialog_add_website);
 
         // Set group to (one of) selected
         String group;
@@ -286,27 +286,28 @@ public class LauncherActivityEditable extends LauncherActivity {
 
         dialog.findViewById(R.id.cancel).setOnClickListener(view -> dialog.cancel());
         ((TextView) dialog.findViewById(R.id.addText)).setText(getString(R.string.add_website_group, group));
-        EditText urlEdit = dialog.findViewById(R.id.appUrl);
+        EditTextWatched urlEdit = dialog.findViewById(R.id.appUrl);
         urlEdit.post(urlEdit::requestFocus);
 
         TextView badUrl  = dialog.findViewById(R.id.badUrl);
         TextView usedUrl = dialog.findViewById(R.id.usedUrl);
+        urlEdit.setOnEdited(url -> {
+            if (StringLib.isInvalidUrl(url)) url = "https://" + url;
+            badUrl .setVisibility(StringLib.isInvalidUrl(url)
+                    ? View.VISIBLE : View.GONE);
+
+            String foundGroup = Platform.findWebsite(dataStoreEditor, url);
+            usedUrl.setVisibility(foundGroup != null
+                    ? View.VISIBLE : View.GONE);
+            if (foundGroup != null)
+                usedUrl.setText(context.getString(R.string.add_website_used_url, foundGroup));
+        });
 
         dialog.findViewById(R.id.confirm).setOnClickListener(view -> {
             String url  = urlEdit.getText().toString().toLowerCase();
             if (StringLib.isInvalidUrl(url)) url = "https://" + url;
-            if (StringLib.isInvalidUrl(url)) {
-                badUrl .setVisibility(View.VISIBLE);
-                usedUrl.setVisibility(View.GONE);
-                return;
-            }
-            String foundGroup = Platform.findWebsite(dataStoreEditor, url);
-            if (foundGroup != null) {
-                badUrl.setVisibility(View.GONE);
-                usedUrl.setVisibility(View.VISIBLE);
-                usedUrl.setText(context.getString(R.string.add_website_used_url, foundGroup));
-                return;
-            }
+            if (StringLib.isInvalidUrl(url)) return;
+            if (Platform.findWebsite(dataStoreEditor, url) != null) return;
             Platform.addWebsite(dataStoreEditor, url);
             settingsManager.setAppGroup(StringLib.fixUrl(url), group);
             dialog.cancel();
@@ -331,7 +332,7 @@ public class LauncherActivityEditable extends LauncherActivity {
     }
 
     void showWebsiteInfo() {
-        AlertDialog subDialog = Dialog.build(this, R.layout.dialog_website_info);
+        AlertDialog subDialog = Dialog.build(this, R.layout.dialog_info_websites);
         if (subDialog == null) return;
         subDialog.findViewById(R.id.vrOnlyInfo).setVisibility(Platform.isVr(this) ? View.VISIBLE : View.GONE);
         subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
