@@ -6,11 +6,6 @@ I've also provided specific documentation in a comment at the top of every class
 ## Adapter
 Adapters for grid views; provide the views for app icons and group buttons.
 
-## Browser
-Everything related to the integrated browser, built to enable easy background audio.
-The BrowserService provides WebViews which contain the website content, which are then operated on
-by instances of BrowserActivity. These views are kept in memory and active for background audio.
-
 ## Helper
 Abstract classes which provide helper functions which are used by the launcher.
 

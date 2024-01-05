@@ -9,8 +9,8 @@ android {
     defaultConfig {
         applicationId "com.threethan.launcher.service.explore"
         minSdk 23
-        versionCode 630
-        versionName "6.3.0"
+        versionCode 700
+        versionName "7.0.0"
     }
 
     buildTypes {

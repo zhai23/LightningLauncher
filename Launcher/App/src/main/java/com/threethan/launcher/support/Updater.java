@@ -49,7 +49,7 @@ import java.util.Objects;
 public class Updater {
     private static final String UPDATE_URL = "https://api.github.com/repos/threethan/LightningLauncher/releases/latest";
     private static final String TEMPLATE_URL = "https://github.com/threethan/LightningLauncher/releases/download/%s/%s.apk";
-    public static final String ADDON_RELEASE_TAG = "addons6.3.0";
+    public static final String ADDON_RELEASE_TAG = "addons7.0.0";
     public static final String EXCLUDE_VERSION = "6.3.0"; // Ignored by the updater
     public static final String BROWSER_VERSION = "1.0.0";
     private static final String UPDATE_NAME = "Lightning Launcher";
@@ -65,9 +65,9 @@ public class Updater {
     public static final Addon[] addons = {
             new Addon(TAG_FACEBOOK_SHORTCUT, "ShortcutFacebook", "com.facebook.facebookvr", "6.3.0", false),
             new Addon(TAG_MONDAY_SHORTCUT, "ShortcutMonday", "oculuspwa.auth.monday.com", "6.3.0", false),
-            new Addon(TAG_PEOPLE_SHORTCUT, "ShortcutPeople", "com.threethan.launcher.service.people", "6.3.0", true),
-            new Addon(TAG_APP_LIBRARY_SHORTCUT, "ShortcutAppLibrary", "com.threethan.launcher.service.library", "6.3.0", true),
-            new Addon(TAG_HORIZON_FEED_SHORTCUT, "ShortcutHorizonFeed", "com.threethan.launcher.service.explore", "6.3.0", true),
+            new Addon(TAG_PEOPLE_SHORTCUT, "ShortcutPeople", "com.threethan.launcher.service.people", "7.0.0", true),
+            new Addon(TAG_APP_LIBRARY_SHORTCUT, "ShortcutAppLibrary", "com.threethan.launcher.service.library", "7.0.0", true),
+            new Addon(TAG_HORIZON_FEED_SHORTCUT, "ShortcutHorizonFeed", "com.threethan.launcher.service.explore", "7.0.0", true),
             new Addon(TAG_BROWSER, "LightningBrowser", "com.threethan.browser", BROWSER_VERSION, false,
                     "https://github.com/threethan/LightningBrowser/releases/download/"+BROWSER_VERSION+"/LightningBrowser.apk", true),
             new Addon(TAG_ANDROID_TV_SHORTCUT, "LM (ATV) - 1.0.4", "com.wolf.google.lm", "1.0.4", false,

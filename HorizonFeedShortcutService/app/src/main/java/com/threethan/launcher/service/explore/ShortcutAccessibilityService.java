@@ -2,22 +2,26 @@ package com.threethan.launcher.service.explore;
 
 import android.accessibilityservice.AccessibilityService;
 import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 
+import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class ShortcutAccessibilityService extends AccessibilityService {
-
+    private final String[] alternateNames = new String[] {"[Explore]","[Horizon Feed]"};
     public void onAccessibilityEvent(AccessibilityEvent event) {
         if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
-            String eventText = event.getText().toString();
-            String exploreAccessibilityEventName = getResources().getString(R.string.accessibility_event_name_old);
-            String exploreAccessibilityEventNameNew = getResources().getString(R.string.accessibility_event_name_new);
-            if ("[Oculus Explore]".compareTo(eventText) == 0 ||
-                    exploreAccessibilityEventName.compareTo(eventText) == 0 ||
-                    exploreAccessibilityEventNameNew.compareTo(eventText) == 0) {
+            String eventTextLc = event.getText().toString().toLowerCase();
+            String exploreAccessibilityEventNameN = getResources().getString(R.string.accessibility_event_name_new);
+            String exploreAccessibilityEventNameO = getResources().getString(R.string.accessibility_event_name_old);
+
+            if (exploreAccessibilityEventNameN.toLowerCase().compareTo(eventTextLc) == 0 ||
+                exploreAccessibilityEventNameO.toLowerCase().compareTo(eventTextLc) == 0 ||
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
+                            && Arrays.stream(alternateNames).anyMatch(s -> s.toLowerCase().compareTo(eventTextLc)==0)) {
 
                 Intent launchIntent = new Intent(this, MainActivity.class);
                 launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
@@ -33,5 +37,6 @@ public class ShortcutAccessibilityService extends AccessibilityService {
             }
         }
     }
+
     public void onInterrupt() {}
 }

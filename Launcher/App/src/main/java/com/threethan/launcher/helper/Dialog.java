@@ -6,9 +6,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Paint;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 

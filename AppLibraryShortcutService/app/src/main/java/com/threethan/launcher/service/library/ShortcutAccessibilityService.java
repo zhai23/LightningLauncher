@@ -2,25 +2,24 @@ package com.threethan.launcher.service.library;
 
 import android.accessibilityservice.AccessibilityService;
 import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 
+import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class ShortcutAccessibilityService extends AccessibilityService {
-
+    private final String[] alternateNames = new String[] {"[Library]","[App Library]"};
     public void onAccessibilityEvent(AccessibilityEvent event) {
         if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
-            String eventText = event.getText().toString();
-            String exploreAccessibilityEventNameT  = getResources().getString(R.string.accessibility_event_name);
-            String exploreAccessibilityEventNameA  = getResources().getString(R.string.accessibility_event_name_alternate);
-            String exploreAccessibilityEventNameB  = getResources().getString(R.string.accessibility_event_name_alternate2);
-            String exploreAccessibilityEventNameU = getResources().getString(R.string.accessibility_event_name_untranslated);
-            if (exploreAccessibilityEventNameU.compareTo(eventText) == 0 ||
-                exploreAccessibilityEventNameA.compareTo(eventText) == 0 ||
-                exploreAccessibilityEventNameB.compareTo(eventText) == 0 ||
-                exploreAccessibilityEventNameT.compareTo(eventText) == 0 ){
+            String eventTextLc = event.getText().toString().toLowerCase();
+            String exploreAccessibilityEventName  = getResources().getString(R.string.accessibility_event_name);
+
+            if (exploreAccessibilityEventName.toLowerCase().compareTo(eventTextLc) == 0 ||
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
+                            && Arrays.stream(alternateNames).anyMatch(s -> s.toLowerCase().compareTo(eventTextLc)==0)) {
 
                 Intent launchIntent = new Intent(this, MainActivity.class);
                 launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
@@ -36,5 +35,6 @@ public class ShortcutAccessibilityService extends AccessibilityService {
             }
         }
     }
+
     public void onInterrupt() {}
 }
