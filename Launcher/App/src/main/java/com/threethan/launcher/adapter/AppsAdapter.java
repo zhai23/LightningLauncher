@@ -196,6 +196,7 @@ public class AppsAdapter extends ArrayListAdapter<ApplicationInfo, AppsAdapter.A
     @Override
     public void onBindViewHolder(@NonNull AppViewHolder holder, int position) {
         ApplicationInfo app = getItem(position);
+        holder.textView.setText(SettingsManager.getAppLabel(app));
 
         //noinspection WrapperTypeMayBePrimitive
         final Boolean banner = App.isBanner(app);
@@ -207,7 +208,6 @@ public class AppsAdapter extends ArrayListAdapter<ApplicationInfo, AppsAdapter.A
             holder.banner = banner;
         }
         if (LauncherActivity.darkMode != holder.darkMode) {
-            holder.textView.setText(SettingsManager.getAppLabel(app));
             holder.textView.setTextColor(Color.parseColor(LauncherActivity.darkMode ? "#FFFFFF" : "#000000"));
             holder.textView.setShadowLayer(6, 0, 0, Color.parseColor(LauncherActivity.darkMode ? "#000000" : "#FFFFFF"));
             holder.darkMode = LauncherActivity.darkMode;
