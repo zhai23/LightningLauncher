@@ -411,6 +411,7 @@ public class LauncherActivity extends Activity {
             namesSquare = namesSquareSet;
             namesBanner = namesBannerSet;
             if (getAppAdapter() == null) {
+                appsView.setItemViewCacheSize(128);
                 appsView.setAdapter(
                         new AppsAdapter(this));
                 appsView.setItemAnimator(new CustomItemAnimator());
