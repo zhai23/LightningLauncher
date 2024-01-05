@@ -73,12 +73,11 @@
 
     <string name="website_title">显示标题</string>
     <string name="website_subtitle1">快速访问网站和Web应用</string>
-    <string name="website_info1">"\n        网站将以应用程序的形式出现在主屏幕上。它们将在 LightningLauncher 的内置浏览器中打开。\n\n        \n你还可以使用搜索栏搜索 Google、YouTube 或 ApkPure。\n    "</string>
+    <string name="website_info1">"\n        网站将以应用程序的形式出现在主屏幕上。它们将在 Lightning Browser (须安装的东西)\n\n        \n你还可以使用搜索栏搜索 Google、YouTube 或 ApkPure。\n    "</string>
     <string name="website_subtitle2">背景音乐</string>
-    <string name="website_info2">"\n        关闭后，网站将继续运行，并可在后台播放和录制音频，即使在游戏中也会生效！(通话时可能会出现延迟或卡顿现象）\n\n        \n任何正在运行的网站图标上都会显示一个指示器；按下指示器即可完全停止该网站。\n\n        \n通过搜索打开的网站不会在后台运行，除非使用添加页面到启动器 (+) 按钮进行添加。\n    "</string>
+    <string name="website_info2">"\n        关闭后，网站将继续运行，并可在后台播放和录制音频，即使在游戏中也会生效！(通话时可能会出现延迟或卡顿现象）\n\n        \n通过搜索打开的网站不会在后台运行，除非使用添加页面到启动器 (+) 按钮进行添加。\n    "</string>
     <string name="website_subtitle3">浏览器选择</string>
-    <string name="website_info3">"\n        在 VR 设备上，您可以选择在本窗口或其自身窗口中启动内部 LL 浏览器。\n        \n\n您也可以选择 Meta Quest 浏览器，它支持 VR 网页内容，但不支持背景音频。\n    "</string>
-
+    <string name="website_info3">在 Quest 设备上，您可以选择在 Meta Quest 浏览器中启动，该浏览器支持 VR 网页内容，但不支持背景音频。</string>
     <string name="add_website">添加网站</string>
     <string name="add_website_tip">添加网站到启动器</string>
     <string name="add_website_url_label">输入网站 URL</string>

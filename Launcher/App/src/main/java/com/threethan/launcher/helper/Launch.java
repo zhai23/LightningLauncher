@@ -47,6 +47,13 @@ public abstract class Launch {
                     +app.packageName);
             launcherActivity.reloadPackages();
             return false;
+        } else if (Objects.equals(intent.getPackage(), Platform.BROWSER_PACKAGE)
+            && !Platform.hasBrowser(launcherActivity)) {
+            // If browser is required, but not installed
+            // TODO: Prompt installation
+            Dialog.toast("Lightning Browser is required!!!");
+            // TODO: Launch after installation (Check periodically?)
+            return false;
         }
 
         final App.Type appType = App.getType(launcherActivity, app);
@@ -141,7 +148,7 @@ public abstract class Launch {
                     intent.setComponent(new ComponentName("com.oculus.browser", "com.oculus.browser.PanelActivity"));
                 } else {
                     // Open in Lightning Browser
-                    intent.setPackage("com.threethan.browser");
+                    intent.setPackage(Platform.BROWSER_PACKAGE);
                 }
                 return intent;
             } else {

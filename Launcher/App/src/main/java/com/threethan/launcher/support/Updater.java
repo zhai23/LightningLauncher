@@ -13,7 +13,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ServiceInfo;
 import android.net.Uri;
-import android.os.Build;
 import android.util.Log;
 import android.view.accessibility.AccessibilityManager;
 
@@ -48,15 +47,16 @@ import java.util.List;
 public class Updater {
     private static final String UPDATE_URL = "https://api.github.com/repos/threethan/LightningLauncher/releases/latest";
     private static final String TEMPLATE_URL = "https://github.com/threethan/LightningLauncher/releases/download/%s/%s.apk";
-    private static final String NAME_MAIN_ARM64 = "LightningLauncherArm64";
-    private static final String NAME_MAIN_COMPAT = "LightningLauncher";
+    public static final String ADDON_RELEASE_TAG = "addons6.3.0";
+    public static final String BROWSER_VERSION = "1.0.0";
+    private static final String UPDATE_NAME = "LightningLauncher";
     public static final String TAG_FACEBOOK_SHORTCUT = "TAG_FACEBOOK_SHORTCUT";
     public static final String TAG_MONDAY_SHORTCUT = "TAG_MONDAY_SHORTCUT";
     public static final String TAG_APP_LIBRARY_SHORTCUT = "TAG_APP_LIBRARY_SHORTCUT";
     public static final String TAG_PEOPLE_SHORTCUT = "TAG_PEOPLE_SHORTCUT";
     public static final String TAG_HORIZON_FEED_SHORTCUT = "TAG_FEED_SHORTCUT";
+    public static final String TAG_BROWSER = "TAG_BROWSER";
     public static final String TAG_ANDROID_TV_SHORTCUT = "TAG_ANDROID_TV_SHORTCUT";
-    public static final String ADDON_RELEASE_TAG = "addons6.3.0";
     public static final String APK_DIR = "/Content/TemporaryDownloadedApk/";
     public static boolean anyDialogVisible = false;
     public static final Addon[] addons = {
@@ -65,6 +65,8 @@ public class Updater {
             new Addon(TAG_PEOPLE_SHORTCUT, "ShortcutPeople", "com.threethan.launcher.service.people", "6.3.0", true),
             new Addon(TAG_APP_LIBRARY_SHORTCUT, "ShortcutAppLibrary", "com.threethan.launcher.service.library", "6.3.0", true),
             new Addon(TAG_HORIZON_FEED_SHORTCUT, "ShortcutHorizonFeed", "com.threethan.launcher.service.explore", "6.3.0", true),
+            new Addon(TAG_BROWSER, "LightningBrowser", "com.threethan.browser", BROWSER_VERSION, false,
+                    "https://github.com/threethan/LightningBrowser/releases/download/"+BROWSER_VERSION+"/LightningBrowser.apk"), // TODO: give a deticated view and such
             new Addon(TAG_ANDROID_TV_SHORTCUT, "LM (ATV) - 1.0.4", "com.wolf.google.lm", "1.0.4", false,
                     "https://xdaforums.com/attachments/lm-atv-1-0-4-apk.5498333/"),
     };
@@ -139,14 +141,10 @@ public class Updater {
         attempts = 3;
         downloadUpdate(addon.downloadName, ADDON_RELEASE_TAG, addon.overrideUrl);
     }
-    private String getUpdateName() {
-        final boolean is64bit = Build.SUPPORTED_64_BIT_ABIS.length > 0;
-        return is64bit ? NAME_MAIN_ARM64 : NAME_MAIN_COMPAT;
-    }
     public void updateAppEvenIfSkipped() {
         Compat.getDataStore(activity).removeString(KEY_IGNORED_UPDATE_VERSION);
         attempts = 6;
-        downloadUpdate(getUpdateName());
+        downloadUpdate(UPDATE_NAME);
     }
     protected void storeLatestVersionAndPrompt(String tagName) {
         PackageInfo packageInfo;
@@ -166,6 +164,8 @@ public class Updater {
             if (tagName.equals(Compat.getDataStore(activity).getString(KEY_IGNORED_UPDATE_VERSION, null))) return;
             showAppUpdateDialog(packageInfo.versionName, tagName);
         } else {
+            //TODO: If there's no main app updates, check each addon for updates
+
             Log.i(TAG, "App is up to date :)");
             Compat.getDataStore(activity).putBoolean(KEY_UPDATE_AVAILABLE, false);
         }
@@ -200,7 +200,7 @@ public class Updater {
             AlertDialog.Builder updateDialogBuilder = new AlertDialog.Builder(activity, android.R.style.Theme_DeviceDefault_Dialog_Alert);
             updateDialogBuilder.setTitle(R.string.update_title);
             updateDialogBuilder.setMessage(activity.getString(R.string.update_content, curName, newName));
-            updateDialogBuilder.setPositiveButton(R.string.update_button, (dialog, which) -> downloadUpdate(getUpdateName()));
+            updateDialogBuilder.setPositiveButton(R.string.update_button, (dialog, which) -> downloadUpdate(UPDATE_NAME));
             updateDialogBuilder.setNegativeButton(R.string.update_skip_button, (dialog, which) -> skipUpdate(newName));
             updateDialogBuilder.setOnDismissListener(di -> Updater.anyDialogVisible = false);
             updateDialogBuilder.show();

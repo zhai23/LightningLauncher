@@ -72,11 +72,16 @@ public abstract class Platform {
         return !isTv(activity);
     }
     /** Returns true if running on a Meta Quest device */
-
     public static boolean isQuest(Activity activity) {
         if (isQuest != null) return isQuest;
         isQuest = App.doesPackageExist(activity, "com.oculus.vrshell");
         return isQuest;
+    }
+
+    public static final String BROWSER_PACKAGE = "com.threethan.browser";
+    /** Returns true if Lightning Browser is installed */
+    public static boolean hasBrowser(Activity activity) {
+        return App.doesPackageExist(activity, BROWSER_PACKAGE);
     }
     /** Returns true if running on a TV */
     public static boolean isTv(Activity activity) {

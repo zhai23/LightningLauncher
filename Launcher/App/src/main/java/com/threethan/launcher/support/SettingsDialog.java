@@ -55,14 +55,14 @@ public abstract class SettingsDialog {
 
         // Addons
         View addonsButton = dialog.findViewById(R.id.addonsButton);
-        addonsButton.setOnClickListener(view -> AddonDialog.showAddons(a));
+        addonsButton.setOnClickListener(view -> AddonDialog.showShortcutAddons(a));
         if (!a.dataStoreEditor.getBoolean(Settings.KEY_SEEN_ADDONS, false)) {
             View addonsButtonAttract = dialog.findViewById(R.id.addonsButtonAttract);
             addonsButtonAttract.setVisibility(View.VISIBLE);
             addonsButton.setVisibility(View.GONE);
             addonsButtonAttract.setOnClickListener(view -> {
                 a.dataStoreEditor.putBoolean(Settings.KEY_SEEN_ADDONS, true);
-                AddonDialog.showAddons(a);
+                AddonDialog.showShortcutAddons(a);
             });
         }
 

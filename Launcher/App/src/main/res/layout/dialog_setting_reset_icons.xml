@@ -50,7 +50,6 @@
             android:id="@+id/clearCache"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:background="@drawable/bkg_button"
             android:nextFocusDown="@id/resortOnly">
 
@@ -68,7 +67,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:layout_weight="1"
             android:background="@drawable/bkg_button"
             android:nextFocusUp="@id/resetGroups"
             android:nextFocusDown="@id/cancel">
@@ -87,7 +85,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:layout_weight="1"
             android:background="@drawable/bkg_button"
             android:nextFocusUp="@id/resortOnly">
 

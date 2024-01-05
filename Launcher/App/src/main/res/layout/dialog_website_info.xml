@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:autofillHints="text"
             android:backgroundTint="@android:color/white"
-            android:minHeight="87sp"
+            android:minHeight="100sp"
             android:text="@string/website_info1"
             android:textColor="@android:color/white" />
 
@@ -52,7 +52,7 @@
             android:layout_height="wrap_content"
             android:autofillHints="text"
             android:backgroundTint="@android:color/white"
-            android:minHeight="145sp"
+            android:minHeight="100sp"
             android:text="@string/website_info2"
             android:textColor="@android:color/white" />
 
@@ -78,7 +78,7 @@
                 android:layout_height="wrap_content"
                 android:autofillHints="text"
                 android:backgroundTint="@android:color/white"
-                android:minHeight="87sp"
+                android:minHeight="60sp"
                 android:text="@string/website_info3"
                 android:textColor="@android:color/white" />
         </LinearLayout>

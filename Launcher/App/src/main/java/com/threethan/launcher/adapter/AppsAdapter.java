@@ -414,8 +414,4 @@ public class AppsAdapter extends ArrayListAdapter<ApplicationInfo, AppsAdapter.A
         }
         return rv;
     }
-
-    public void notifyAllChanged() {
-        notifyItemRangeChanged(0, getItemCount());
-    }
 }

@@ -90,4 +90,11 @@ public abstract class ArrayListAdapter<T, H extends RecyclerView.ViewHolder> ext
         items.add(item);
         notifyItemInserted(items.indexOf(item));
     }
+
+    /**
+     * Calls notifyItemRangeChanged on the whole list
+     */
+    public void notifyAllChanged() {
+        notifyItemRangeChanged(0, getItemCount());
+    }
 }

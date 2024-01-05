@@ -27,7 +27,7 @@ import java.util.Objects;
 public abstract class AddonDialog {
     private static WeakReference<Updater> updaterRef;
     private static WeakReference<LauncherActivity> activityRef;
-    public static void showAddons(LauncherActivity a) {
+    public static void showShortcutAddons(LauncherActivity a) {
         AlertDialog dialog = Dialog.build(a, Platform.isVr(a) ? R.layout.dialog_addons_vr : R.layout.dialog_addons_tv);
         if (dialog == null) return;
         activityRef = new WeakReference<>(a);

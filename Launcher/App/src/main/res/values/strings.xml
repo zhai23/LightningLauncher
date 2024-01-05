@@ -95,19 +95,17 @@
     <string name="website_title">Websites in Lightning Launcher</string>
     <string name="website_subtitle1">Easily Access Websites &amp; Web Apps</string>
     <string name="website_info1">
-        Websites will appear as apps on your home screen. They will open in LightningLauncher\'s built-in browser.\n
+        Websites will appear as apps on your home screen. They will open in Lightning Browser (a separate app which you will be prompted to install).\n
         \nYou can also search Google, YouTube, or ApkPure using the search bar.
     </string>
     <string name="website_subtitle2">Audio in the Background</string>
     <string name="website_info2">
-        After being closed, websites will continue running, and can play and record audio in the background - even while in a game! (You may experience latency or stutters in calls)\n
-        \nAn indicator will be shown on the icon of any running website; Press the indicator to fully stop that website.\n
+        After being minimized, websites can continue running, and can play and record audio in the background - even while in a game! (You may experience latency or stutters in calls)\n
         \nWebsites open via a search will not run in the background unless added with the Add Page to Launcher (+) button.
     </string>
     <string name="website_subtitle3">Browser Selection</string>
     <string name="website_info3">
-        On VR devices, you can select to launch in the internal LL browser in this window or in its own window.
-        \n\nYou may also select the Meta Quest browser, which supports VR web content, but not background audio.
+        On Quest devices, you can select to launch in the Meta Quest browser, which supports VR web content, but not background audio.
     </string>
 
     <string name="add_website">Add a Website</string>

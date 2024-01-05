@@ -320,7 +320,10 @@ public class LauncherActivityEditable extends LauncherActivity {
         // Presets
         dialog.findViewById(R.id.presetGoogle).setOnClickListener(view -> urlEdit.setText(R.string.preset_google));
         dialog.findViewById(R.id.presetYoutube).setOnClickListener(view -> urlEdit.setText(R.string.preset_youtube));
-        dialog.findViewById(R.id.presetDiscord).setOnClickListener(view -> urlEdit.setText(R.string.preset_discord));
+        dialog.findViewById(R.id.presetDiscord).setOnClickListener(view -> {
+            //TODO: Prompt ppl to use the patcher
+            urlEdit.setText(R.string.preset_discord);
+        });
         dialog.findViewById(R.id.presetSpotify).setOnClickListener(view -> urlEdit.setText(R.string.preset_spotify));
         dialog.findViewById(R.id.presetTidal).setOnClickListener(view -> urlEdit.setText(R.string.preset_tidal));
         dialog.findViewById(R.id.presetApkMirror).setOnClickListener(view -> urlEdit.setText(R.string.preset_apkmirror));
