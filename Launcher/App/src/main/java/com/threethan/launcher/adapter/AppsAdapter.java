@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.threethan.launcher.R;
@@ -37,18 +38,15 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-/*
-    AppsAdapter
-
-    The adapter for app grid views. A separate instance is used for square and banner apps, as well
-    as for each activity.
-
-    Only app views matching the current search term or group filter will be shown.
-    When a view is requested for an app, it gets cached, and will be reused if displayed again.
-    This massively speeds up group-switching and makes search possible without immense lag.
-
-    This class also handles clicking and long clicking apps, including the app settings dialog.
-    It also handles displaying/updating the views of an app (hover interactions, background website)
+/**
+ *     The adapter for the main app grid.
+ * <p>
+ *     Only app views matching the current search term or group filter will be shown.
+ *     When a view is requested for an app, it gets cached, and will be reused if displayed again.
+ *     This massively speeds up group-switching and makes search possible without immense lag.
+ * <p>
+ *     This class also handles clicking and long clicking apps, including the app settings dialog.
+ *     It also handles displaying/updating the views of an app (hover interactions, background website)
  */
 public class AppsAdapter extends ArrayListAdapter<ApplicationInfo, AppsAdapter.AppViewHolder> {
     private LauncherActivity launcherActivity;
@@ -117,7 +115,9 @@ public class AppsAdapter extends ArrayListAdapter<ApplicationInfo, AppsAdapter.A
         TextView textView;
         Button moreButton;
         ApplicationInfo app;
-
+        @Nullable Boolean banner = null;
+        @Nullable Boolean darkMode = null;
+        @Nullable Boolean showName = null;
         public AppViewHolder(@NonNull View itemView) {
             super(itemView);
         }
@@ -197,31 +197,41 @@ public class AppsAdapter extends ArrayListAdapter<ApplicationInfo, AppsAdapter.A
     public void onBindViewHolder(@NonNull AppViewHolder holder, int position) {
         ApplicationInfo app = getItem(position);
 
-        final boolean banner = App.isBanner(app);
-        holder.imageViewSquare.setVisibility(banner ? View.GONE : View.VISIBLE);
-        holder.imageViewBanner.setVisibility(banner ? View.VISIBLE : View.GONE);
-        holder.imageView = banner ? holder.imageViewBanner : holder.imageViewSquare;
-
-        holder.textView.setText(SettingsManager.getAppLabel(app));
-        holder.textView.setTextColor(Color.parseColor(LauncherActivity.darkMode ? "#FFFFFF" : "#000000"));
-        holder.textView.setShadowLayer(6, 0, 0, Color.parseColor(LauncherActivity.darkMode ? "#000000" : "#FFFFFF"));
-
-        holder.textSpacer.setVisibility(!banner && LauncherActivity.namesSquare ? View.VISIBLE : View.GONE);
+        //noinspection WrapperTypeMayBePrimitive
+        final Boolean banner = App.isBanner(app);
+        if (banner != holder.banner) {
+            holder.imageViewSquare.setVisibility(banner ? View.GONE : View.VISIBLE);
+            holder.imageViewBanner.setVisibility(banner ? View.VISIBLE : View.GONE);
+            holder.imageView = banner ? holder.imageViewBanner : holder.imageViewSquare;
+            holder.textSpacer.setVisibility(!banner && LauncherActivity.namesSquare ? View.VISIBLE : View.GONE);
+            holder.banner = banner;
+        }
+        if (LauncherActivity.darkMode != holder.darkMode) {
+            holder.textView.setText(SettingsManager.getAppLabel(app));
+            holder.textView.setTextColor(Color.parseColor(LauncherActivity.darkMode ? "#FFFFFF" : "#000000"));
+            holder.textView.setShadowLayer(6, 0, 0, Color.parseColor(LauncherActivity.darkMode ? "#000000" : "#FFFFFF"));
+            holder.darkMode = LauncherActivity.darkMode;
+        }
+        //noinspection WrapperTypeMayBePrimitive
+        final Boolean showName = banner && LauncherActivity.namesBanner || !banner && LauncherActivity.namesSquare;
+        if (showName != holder.showName) {
+            if (banner && LauncherActivity.namesBanner || !banner && LauncherActivity.namesSquare) {
+                holder.textView.setVisibility(View.VISIBLE);
+                holder.textSpacer.setVisibility(View.VISIBLE);
+                holder.bumpSpacer.setVisibility(View.VISIBLE);
+                holder.textView.setTranslationY(launcherActivity.dp(2));
+                holder.textView.setMaxLines(2);
+            } else {
+                holder.textView.setVisibility(View.GONE);
+                holder.textSpacer.setVisibility(View.GONE);
+                holder.bumpSpacer.setVisibility(View.GONE);
+                holder.textView.setTranslationY(launcherActivity.dp(7));
+                holder.textView.setMaxLines(1);
+            }
+            holder.showName = showName;
+        }
 
         // set value into textview
-        if (banner && LauncherActivity.namesBanner || !banner && LauncherActivity.namesSquare) {
-            holder.textView.setVisibility(View.VISIBLE);
-            holder.textSpacer.setVisibility(View.VISIBLE);
-            holder.bumpSpacer.setVisibility(View.VISIBLE);
-            holder.textView.setTranslationY(launcherActivity.dp(2));
-            holder.textView.setMaxLines(2);
-        } else {
-            holder.textView.setVisibility(View.GONE);
-            holder.textSpacer.setVisibility(View.GONE);
-            holder.bumpSpacer.setVisibility(View.GONE);
-            holder.textView.setTranslationY(launcherActivity.dp(7));
-            holder.textView.setMaxLines(1);
-        }
         holder.app = app;
 
         //Load Icon

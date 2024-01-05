@@ -12,24 +12,23 @@ import androidx.annotation.Nullable;
 import com.threethan.launcher.launcher.LauncherActivity;
 
 import java.io.File;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
- * This executor loads app icons asyncronously
+ * Loads app icons asyncronously
  */
-class IconExecutor {
+public class IconExecutor {
 
     public static void execute(LauncherActivity activity, ApplicationInfo app, ImageView
             imageView) {
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
-        executorService.execute(() -> {
+        Thread thread = new Thread(() -> {
             Drawable appIcon = loadIcon(activity, app, imageView);
             if (appIcon != null) {
                 Icon.cacheIcon(app, appIcon);
-                activity.runOnUiThread(() -> imageView.setImageDrawable(appIcon));
+                if (imageView != null) activity.runOnUiThread(() -> imageView.setImageDrawable(appIcon));
             }
         });
+        thread.setPriority(Thread.MIN_PRIORITY);
+        thread.start();
     }
     @SuppressLint("UseCompatLoadingForDrawables")
     @Nullable
@@ -58,7 +57,7 @@ class IconExecutor {
             if (app.banner != 0 && App.isBanner(app)) iconId = app.banner;
 
             if (iconId == 0) iconId = android.R.drawable.sym_def_app_icon;
-            appIcon = resources.getDrawable(iconId, activity.getTheme());
+            appIcon = resources.getDrawable(iconId, null);
 
             return appIcon;
         } catch (Exception ignored) { // Fails on web apps, possibly also on invalid packages

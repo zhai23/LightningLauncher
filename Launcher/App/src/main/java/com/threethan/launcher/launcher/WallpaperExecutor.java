@@ -13,8 +13,6 @@ import com.threethan.launcher.lib.ImageLib;
 import com.threethan.launcher.support.SettingsManager;
 
 import java.io.File;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
     Loads an image background asynchronously, then sets it to the specified view when done
@@ -24,8 +22,7 @@ import java.util.concurrent.Executors;
 
 class WallpaperExecutor {
     public void execute(LauncherActivity owner) {
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
-        executorService.execute(() -> {
+        Thread thread = new Thread(() -> {
             // Do fetching of data
             int background = LauncherActivity.background;
             BitmapDrawable backgroundThemeDrawable = null;
@@ -75,11 +72,12 @@ class WallpaperExecutor {
             }
             // Apply
             BitmapDrawable finalBackgroundThemeDrawable = backgroundThemeDrawable;
-            if (executorService.isShutdown()) return;
             owner.runOnUiThread(() -> {
                 owner.getWindow().setBackgroundDrawable(finalBackgroundThemeDrawable);
                 owner.updateToolBars();
             });
         });
+        thread.setPriority(Thread.MIN_PRIORITY);
+        thread.start();
     }
 }

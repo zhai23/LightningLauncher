@@ -84,7 +84,7 @@ public abstract class IconRepo {
         final boolean isWide = App.isBanner(app);
         final File iconFile = Icon.iconCacheFileForPackage(activity, app);
 
-        new Thread(() -> {
+        Thread thread = new Thread(() -> {
             Object lock = locks.putIfAbsent(pkgName, new Object());
             if (lock == null) lock = locks.get(pkgName);
             synchronized (Objects.requireNonNull(lock)) {
@@ -108,7 +108,9 @@ public abstract class IconRepo {
                     dontDownloadIconFor(pkgName);
                 }
             }
-        }).start();
+        });
+        thread.setPriority(Thread.MIN_PRIORITY);
+        thread.start();
     }
 
     /**

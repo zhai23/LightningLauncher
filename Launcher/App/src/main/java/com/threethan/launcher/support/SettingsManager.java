@@ -478,16 +478,20 @@ public class SettingsManager extends Settings {
         return SettingsManager.dataStoreEditor.getString(key, def);
     }
 
+    private static final Map<App.Type, Boolean> isBannerCache = new ConcurrentHashMap<>();
     /**
      * Check if a certain app type should be displayed as a banner
      * @param type Type of app
      * @return True if that type is set to display as banners
      */
     public static boolean isTypeBanner(App.Type type) {
+        if (isBannerCache.containsKey(type)) return Boolean.TRUE.equals(isBannerCache.get(type));
         String key = Settings.KEY_BANNER + type;
         if (!Settings.FALLBACK_BANNER.containsKey(type)) type = App.Type.TYPE_PHONE;
         boolean def = Boolean.TRUE.equals(Settings.FALLBACK_BANNER.get(type));
-        return SettingsManager.dataStoreEditor.getBoolean(key, def);
+        boolean val = SettingsManager.dataStoreEditor.getBoolean(key, def);
+        isBannerCache.put(type, val);
+        return val;
     }
 
     /**

@@ -41,7 +41,7 @@ public abstract class SettingsDialogs {
     private static boolean clearedIconCustom;
     private static boolean clearedSort;
     private static boolean clearedGroups;
-    @SuppressLint({"UseSwitchCompatOrMaterialCode"})
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
     public static void showSettings(LauncherActivity a) {
         AlertDialog dialog = Dialog.build(a, R.layout.dialog_settings);
 

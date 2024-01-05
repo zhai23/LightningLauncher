@@ -7,8 +7,6 @@ import android.util.Log;
 import com.threethan.launcher.helper.Platform;
 
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
     This task checks a list of installed packages asynchronously, then check if it differs from
@@ -18,9 +16,7 @@ import java.util.concurrent.Executors;
 
 class RecheckPackagesExecutor {
     public void execute(LauncherActivity owner) {
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
-        executorService.execute(() -> {
-
+        Thread thread = new Thread(() -> {
             PackageManager packageManager = owner.getPackageManager();
             List<ApplicationInfo> foundApps = packageManager.getInstalledApplications(0);
 
@@ -36,5 +32,7 @@ class RecheckPackagesExecutor {
                 });
             }
         });
+        thread.setPriority(Thread.MIN_PRIORITY);
+        thread.start();
     }
 }
