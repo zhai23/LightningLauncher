@@ -29,12 +29,14 @@ import com.threethan.launcher.R;
 import com.threethan.launcher.helper.Compat;
 import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.launcher.LauncherActivity;
+import com.threethan.launcher.lib.FileLib;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * The automatic updater, instanced and called on launch. It handles update checks, downloads, and
@@ -45,9 +47,10 @@ import java.util.List;
  * Credit to @Basti for code which checks github for updates
  */
 public class Updater {
-    private static final String UPDATE_URL = "https://api.github.com/repos/threethan/Lightning Launcher/releases/latest";
-    private static final String TEMPLATE_URL = "https://github.com/threethan/Lightning Launcher/releases/download/%s/%s.apk";
+    private static final String UPDATE_URL = "https://api.github.com/repos/threethan/LightningLauncher/releases/latest";
+    private static final String TEMPLATE_URL = "https://github.com/threethan/LightningLauncher/releases/download/%s/%s.apk";
     public static final String ADDON_RELEASE_TAG = "addons6.3.0";
+    public static final String EXCLUDE_VERSION = "6.3.0"; // Ignored by the updater
     public static final String BROWSER_VERSION = "1.0.0";
     private static final String UPDATE_NAME = "Lightning Launcher";
     public static final String TAG_FACEBOOK_SHORTCUT = "TAG_FACEBOOK_SHORTCUT";
@@ -155,7 +158,8 @@ public class Updater {
             return;
         }
 
-        boolean appHasUpdate = !(packageInfo.versionName).equals(tagName);
+        boolean appHasUpdate = !(packageInfo.versionName).equals(tagName) &&
+                !(EXCLUDE_VERSION).equals(tagName);
 
         if (appHasUpdate) {
             Log.v(TAG, "New version available!");
@@ -163,10 +167,10 @@ public class Updater {
             if (tagName.equals(Compat.getDataStore(activity).getString(KEY_IGNORED_UPDATE_VERSION, null))) return;
             showAppUpdateDialog(packageInfo.versionName, tagName);
         } else {
-            //TODO: If there's no main app updates, check each addon for updates
-
             Log.i(TAG, "App is up to date :)");
             Compat.getDataStore(activity).putBoolean(KEY_UPDATE_AVAILABLE, false);
+            // Clear downloaded APKs
+            FileLib.delete(Objects.requireNonNull(activity.getExternalFilesDir(Updater.APK_DIR)));
         }
     }
 
@@ -312,6 +316,5 @@ public class Updater {
                 anyDialogVisible = true;
             }
         }
-
     }
 }

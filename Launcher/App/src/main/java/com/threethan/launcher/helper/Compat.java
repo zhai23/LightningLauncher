@@ -9,7 +9,6 @@ import com.threethan.launcher.launcher.LauncherActivity;
 import com.threethan.launcher.lib.FileLib;
 import com.threethan.launcher.lib.StringLib;
 import com.threethan.launcher.support.SettingsManager;
-import com.threethan.launcher.support.Updater;
 
 import java.io.File;
 import java.util.Collections;
@@ -78,8 +77,6 @@ public abstract class Compat {
                     else if (storedVersion == 0)
                         sharedPreferences.putBoolean(Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE);
                 }
-                // Clear update files if just updated
-                FileLib.delete(Objects.requireNonNull(launcherActivity.getExternalFilesDir(Updater.APK_DIR)));
 
                 switch (version) {
                     case (0):
