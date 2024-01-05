@@ -1,7 +1,6 @@
 package com.threethan.launcher.support;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -54,6 +53,7 @@ public class SettingsManager extends Settings {
 
     //storage
     private static DataStoreEditor dataStoreEditor = null;
+    private static DataStoreEditor dataStoreEditorSort = null;
     private final WeakReference<LauncherActivity> myLauncherActivityRef;
     private static WeakReference<LauncherActivity> anyLauncherActivityRef = null;
     private static ConcurrentHashMap<String, String> appGroupMap = new ConcurrentHashMap<>();
@@ -64,6 +64,7 @@ public class SettingsManager extends Settings {
         myLauncherActivityRef = new WeakReference<>(activity);
         anyLauncherActivityRef = new WeakReference<>(activity);
         dataStoreEditor = activity.dataStoreEditor;
+        dataStoreEditorSort = new DataStoreEditor(activity, "sort");
         // Conditional defaults (hacky)
         Settings.DEFAULT_DETAILS_LONG_PRESS = Platform.isTv(activity);
     }
@@ -169,11 +170,11 @@ public class SettingsManager extends Settings {
     public void setAppGroup(String packageName, String group) {
         getAppGroupMap();
         appGroupMap.put(packageName, group);
-        queueStoreValues();
+        storeValues();
     }
     public static void setAppGroupMap(Map<String, String> value) {
         appGroupMap = new ConcurrentHashMap<>(value);
-        queueStoreValuesStatic();
+        writeGroupsAndSort();
     }
 
     /**
@@ -240,7 +241,7 @@ public class SettingsManager extends Settings {
      */
     public void setAppGroups(Set<String> appGroups) {
         appGroupsSet = Collections.synchronizedSet(appGroups);
-        queueStoreValues();
+        storeValues();
     }
 
     /**
@@ -292,7 +293,7 @@ public class SettingsManager extends Settings {
      */
     public void setSelectedGroups(Set<String> appGroups) {
         selectedGroupsSet = Collections.synchronizedSet(appGroups);
-        queueStoreValues();
+        storeValues();
     }
 
     /**
@@ -333,14 +334,14 @@ public class SettingsManager extends Settings {
      * Resets all groups and sorting
      */
     public void resetGroupsAndSort(){
-        SharedPreferences.Editor editor = dataStoreEditor;
-        for (String group : appGroupsSet) editor.remove(KEY_GROUP_APP_LIST + group);
+        for (String group : appGroupsSet)
+            dataStoreEditorSort.removeStringSet(KEY_GROUP_APP_LIST + group);
         appGroupsSet.clear();
         appGroupMap.clear();
-        editor.remove(KEY_GROUPS);
-        editor.remove(KEY_SELECTED_GROUPS);
+        dataStoreEditorSort.removeStringSet(KEY_GROUPS);
+        dataStoreEditor.removeStringSet(KEY_SELECTED_GROUPS);
         for (String group : getAppGroups())
-            editor.remove(group);
+            dataStoreEditorSort.removeStringSet(group);
 
         readGroupsAndSort();
         writeGroupsAndSort();
@@ -357,7 +358,7 @@ public class SettingsManager extends Settings {
     () {
         try {
             appGroupsSet.clear();
-            appGroupsSet.addAll(dataStoreEditor.getStringSet(KEY_GROUPS, getDefaultGroupsSet()));
+            appGroupsSet.addAll(dataStoreEditorSort.getStringSet(KEY_GROUPS, getDefaultGroupsSet()));
 
             appGroupMap.clear();
 
@@ -365,7 +366,7 @@ public class SettingsManager extends Settings {
             appGroupsSet.add(Settings.UNSUPPORTED_GROUP);
             for (String group : appGroupsSet) {
                 Set<String> appListSet = new HashSet<>();
-                appListSet = dataStoreEditor.getStringSet(KEY_GROUP_APP_LIST + group, appListSet);
+                appListSet = dataStoreEditorSort.getStringSet(KEY_GROUP_APP_LIST + group, appListSet);
                 for (String app : appListSet) appGroupMap.put(app, group);
             }
 
@@ -373,22 +374,9 @@ public class SettingsManager extends Settings {
             e.printStackTrace();
         }
     }
-    synchronized private void queueStoreValues() {
-        if (myLauncherActivityRef.get() != null && myLauncherActivityRef.get().mainView != null) {
-            myLauncherActivityRef.get().post(SettingsManager::writeGroupsAndSort);
-            dataStoreEditor.putStringSet(KEY_SELECTED_GROUPS, selectedGroupsSet);
-        }
-        else writeGroupsAndSort();
-    }
-    private static void queueStoreValuesStatic() {
-        if (anyLauncherActivityRef == null) {
-            Log.w("SettingsManager", "queueValues called too soon");
-            return;
-        }
-        if (anyLauncherActivityRef.get() != null && anyLauncherActivityRef.get().mainView != null) {
-            anyLauncherActivityRef.get().post(SettingsManager::writeGroupsAndSort);
-        }
-        else writeGroupsAndSort();
+    synchronized private void storeValues() {
+        dataStoreEditor.putStringSet(KEY_SELECTED_GROUPS, selectedGroupsSet);
+        writeGroupsAndSort();
     }
 
     /**
@@ -396,7 +384,7 @@ public class SettingsManager extends Settings {
      */
     public synchronized static void writeGroupsAndSort() {
         try {
-            SharedPreferences.Editor editor = dataStoreEditor;
+            DataStoreEditor editor = dataStoreEditorSort;
             editor.putStringSet(KEY_GROUPS, appGroupsSet);
 
             Map<String, Set<String>> appListSetMap = new HashMap<>();

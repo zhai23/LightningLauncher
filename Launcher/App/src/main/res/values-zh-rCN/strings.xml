@@ -5,6 +5,7 @@
     <string name="edit_group">编辑分组</string>
     <string name="app_details">应用详情</string>
     <string name="apps_hidden">- 隐藏</string>
+    <string name="migrated">旧设置移至新版本</string>
 
     <string name="edit_mode">编辑模式</string>
     <string name="edit_mode_disabled">只有主窗口可以编辑</string>

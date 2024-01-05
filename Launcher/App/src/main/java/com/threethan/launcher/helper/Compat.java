@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 
+import com.threethan.launcher.R;
 import com.threethan.launcher.launcher.LauncherActivity;
 import com.threethan.launcher.lib.FileLib;
 import com.threethan.launcher.lib.StringLib;
@@ -42,9 +43,18 @@ public abstract class Compat {
         if (storedVersion == -1) {
             // Attempt migration
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                new DataStoreEditor(launcherActivity).migrateDefault(launcherActivity);
+                Dialog.toast(launcherActivity.getString(R.string.migrated));
+                DataStoreEditor dse1 = new DataStoreEditor(launcherActivity);
+                dse1.asyncWrite = false;
+                dse1.migrateDefault(launcherActivity);
+                DataStoreEditor dse2 = new DataStoreEditor(launcherActivity, "sort");
+                dse2.asyncWrite = false;
+                dse2.migrateDefault(launcherActivity);
             }
+        }
 
+        // Update stored version in case it was migrated
+        if (storedVersion == -1) {
             // Continue
             if (sharedPreferences.getInt(Settings.KEY_BACKGROUND, -1) == -1) return; // return if fresh install
             storedVersion = 0; // set version to 0 if coming from a version before this system was added

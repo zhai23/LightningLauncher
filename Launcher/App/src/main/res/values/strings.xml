@@ -6,6 +6,7 @@
     <string name="edit_group">Edit Group</string>
     <string name="app_details">App Details</string>
     <string name="apps_hidden">- Hidden</string>
+    <string name="migrated">Old settings have been migrated</string>
 
     <string name="edit_mode">Edit Mode</string>
     <string name="edit_mode_disabled">Only main window can edit</string>
