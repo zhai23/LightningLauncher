@@ -35,27 +35,33 @@ public abstract class Compat {
 
     public static synchronized void checkCompatibilityUpdate(LauncherActivity launcherActivity) {
         if (DEBUG_COMPATIBILITY) Log.e(TAG, "CRITICAL WARNING: DEBUG_COMPATIBILITY IS ON");
-        DataStoreEditor sharedPreferences = launcherActivity.dataStoreEditor;
+        DataStoreEditor dataStoreEditor = launcherActivity.dataStoreEditor;
 
-        int storedVersion = DEBUG_COMPATIBILITY ? 0 : sharedPreferences.getInt(Compat.KEY_COMPATIBILITY_VERSION, -1);
+        int storedVersion = DEBUG_COMPATIBILITY ? 0 : dataStoreEditor.getInt(Compat.KEY_COMPATIBILITY_VERSION, -1);
 
         if (storedVersion == -1) {
             // Attempt migration
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                Dialog.toast(launcherActivity.getString(R.string.migrated));
                 DataStoreEditor dse1 = new DataStoreEditor(launcherActivity);
                 dse1.asyncWrite = false;
                 dse1.migrateDefault(launcherActivity);
                 DataStoreEditor dse2 = new DataStoreEditor(launcherActivity, "sort");
                 dse2.asyncWrite = false;
                 dse2.migrateDefault(launcherActivity);
+                if (dataStoreEditor.getInt(Settings.KEY_BACKGROUND, -1) != -1)
+                    Dialog.toast(launcherActivity.getString(R.string.migrated));
+
             }
         }
 
         // Update stored version in case it was migrated
         if (storedVersion == -1) {
             // Continue
-            if (sharedPreferences.getInt(Settings.KEY_BACKGROUND, -1) == -1) return; // return if fresh install
+            if (dataStoreEditor.getInt(Settings.KEY_BACKGROUND, -1) == -1) {
+                // Store the updated version
+                dataStoreEditor.putInt(Compat.KEY_COMPATIBILITY_VERSION, Compat.CURRENT_COMPATIBILITY_VERSION);
+                return; // return if fresh install
+            }
             storedVersion = 0; // set version to 0 if coming from a version before this system was added
         }
 
@@ -67,36 +73,36 @@ public abstract class Compat {
             // If updated
             for (int version = 0; version <= Compat.CURRENT_COMPATIBILITY_VERSION; version++) {
                 if (SettingsManager.getVersionsWithBackgroundChanges().contains(version)) {
-                    int backgroundIndex = sharedPreferences.getInt(Settings.KEY_BACKGROUND,
+                    int backgroundIndex = dataStoreEditor.getInt(Settings.KEY_BACKGROUND,
                             Platform.isTv(launcherActivity)
                                     ? Settings.DEFAULT_BACKGROUND_TV
                                     : Settings.DEFAULT_BACKGROUND_VR);
 
                     if (backgroundIndex >= 0 && backgroundIndex < SettingsManager.BACKGROUND_DARK.length)
-                        sharedPreferences.putBoolean(Settings.KEY_DARK_MODE, SettingsManager.BACKGROUND_DARK[backgroundIndex]);
+                        dataStoreEditor.putBoolean(Settings.KEY_DARK_MODE, SettingsManager.BACKGROUND_DARK[backgroundIndex]);
                     else if (storedVersion == 0)
-                        sharedPreferences.putBoolean(Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE);
+                        dataStoreEditor.putBoolean(Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE);
                 }
 
                 switch (version) {
                     case (0):
-                        if (sharedPreferences.getInt(Settings.KEY_BACKGROUND,
+                        if (dataStoreEditor.getInt(Settings.KEY_BACKGROUND,
                                 Platform.isTv(launcherActivity)
                                         ? Settings.DEFAULT_BACKGROUND_TV
                                         : Settings.DEFAULT_BACKGROUND_VR) == 6)
-                            sharedPreferences.putInt(Settings.KEY_BACKGROUND, -1);
+                            dataStoreEditor.putInt(Settings.KEY_BACKGROUND, -1);
                         // Rename group to new default
                         renameGroup(launcherActivity, "Tools", "Apps");
                         break;
                     case (1):
-                        int bg = sharedPreferences.getInt(Settings.KEY_BACKGROUND,
+                        int bg = dataStoreEditor.getInt(Settings.KEY_BACKGROUND,
                                 Platform.isTv(launcherActivity)
                                         ? Settings.DEFAULT_BACKGROUND_TV
                                         : Settings.DEFAULT_BACKGROUND_VR);
-                        if (bg > 2) sharedPreferences.putInt(Settings.KEY_BACKGROUND, bg + 1);
+                        if (bg > 2) dataStoreEditor.putInt(Settings.KEY_BACKGROUND, bg + 1);
                         break;
                     case (2):
-                        String from = sharedPreferences.getString("KEY_DEFAULT_GROUP_VR", Settings.FALLBACK_GROUPS.get(App.Type.TYPE_VR));
+                        String from = dataStoreEditor.getString("KEY_DEFAULT_GROUP_VR", Settings.FALLBACK_GROUPS.get(App.Type.TYPE_VR));
                         String to = StringLib.setStarred(from, true);
                         renameGroup(launcherActivity, from, to);
                         break;
@@ -105,15 +111,15 @@ public abstract class Compat {
                     case (4):
                         // App launch out conversion, may not work well but isn't really important
                         final String KEY_OLD_LAUNCH_OUT = "prefLaunchOutList";
-                        final Set<String> launchOutSet = sharedPreferences.getStringSet(KEY_OLD_LAUNCH_OUT, Collections.emptySet());
-                        for (String app : launchOutSet) sharedPreferences.putBoolean(Settings.KEY_LAUNCH_OUT_PREFIX + app, true);
+                        final Set<String> launchOutSet = dataStoreEditor.getStringSet(KEY_OLD_LAUNCH_OUT, Collections.emptySet());
+                        for (String app : launchOutSet) dataStoreEditor.putBoolean(Settings.KEY_LAUNCH_OUT_PREFIX + app, true);
                         // Wallpaper remap
-                        int backgroundIndex = sharedPreferences.getInt(Settings.KEY_BACKGROUND,
+                        int backgroundIndex = dataStoreEditor.getInt(Settings.KEY_BACKGROUND,
                                 Platform.isTv(launcherActivity)
                                         ? Settings.DEFAULT_BACKGROUND_TV
                                         : Settings.DEFAULT_BACKGROUND_VR);
                         if (backgroundIndex > 2)
-                            sharedPreferences.putInt(Settings.KEY_BACKGROUND, backgroundIndex - 1);
+                            dataStoreEditor.putInt(Settings.KEY_BACKGROUND, backgroundIndex - 1);
                     case (6):
                         // Remap old default group settings
                         final Map<String, App.Type> oldDefKeyToType = new HashMap<>();
@@ -123,10 +129,10 @@ public abstract class Compat {
                         oldDefKeyToType.put("KEY_DEFAULT_GROUP_WEB", App.Type.TYPE_WEB);
 
                         for (String key : oldDefKeyToType.keySet()) {
-                            String val = sharedPreferences.getString(key, null);
+                            String val = dataStoreEditor.getString(key, null);
                             if (val != null) {
-                                sharedPreferences.putString(Settings.KEY_DEFAULT_GROUP + oldDefKeyToType.get(key), val);
-                                sharedPreferences.removeBoolean(key);
+                                dataStoreEditor.putString(Settings.KEY_DEFAULT_GROUP + oldDefKeyToType.get(key), val);
+                                dataStoreEditor.removeBoolean(key);
                             }
                         }
 
@@ -137,10 +143,10 @@ public abstract class Compat {
                         oldWideKeyToType.put("KEY_WIDE_WEB", App.Type.TYPE_WEB);
 
                         for (String key : oldWideKeyToType.keySet()) {
-                            if (sharedPreferences.contains(key)) {
-                                boolean val = sharedPreferences.getBoolean(key, false);
-                                sharedPreferences.putBoolean(Settings.KEY_BANNER + oldDefKeyToType.get(key), val);
-                                sharedPreferences.removeBoolean(key);
+                            if (dataStoreEditor.contains(key)) {
+                                boolean val = dataStoreEditor.getBoolean(key, false);
+                                dataStoreEditor.putBoolean(Settings.KEY_BANNER + oldDefKeyToType.get(key), val);
+                                dataStoreEditor.removeBoolean(key);
                             }
                         }
                         break;
@@ -169,7 +175,7 @@ public abstract class Compat {
         launcherActivity.needsUpdateCleanup = true;
 
         // Store the updated version
-        sharedPreferences.putInt(Compat.KEY_COMPATIBILITY_VERSION, Compat.CURRENT_COMPATIBILITY_VERSION);
+        dataStoreEditor.putInt(Compat.KEY_COMPATIBILITY_VERSION, Compat.CURRENT_COMPATIBILITY_VERSION);
     }
     public static void doUpdateCleanup(LauncherActivity launcherActivity) {
         clearIconCache(launcherActivity);

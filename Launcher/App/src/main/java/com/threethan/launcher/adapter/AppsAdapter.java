@@ -67,7 +67,6 @@ public class AppsAdapter extends ArrayListAdapter<ApplicationInfo, AppsAdapter.A
         setItems(Collections.unmodifiableList(settingsManager
                 .getVisibleApps(activity, settingsManager.getAppGroupsSorted(true), fullAppSet)));
     }
-
     public synchronized void filterBy(String text) {
         SettingsManager settingsManager = SettingsManager.getInstance(launcherActivity);
         final List<ApplicationInfo> newItems =
