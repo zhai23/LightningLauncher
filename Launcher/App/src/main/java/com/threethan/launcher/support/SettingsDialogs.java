@@ -298,10 +298,9 @@ public abstract class SettingsDialogs {
                 if (bSwitch == null) continue;
                 bSwitch.setChecked(App.typeIsBanner(type));
                 bSwitch.setOnCheckedChangeListener((switchView, value) -> {
-                    a.dataStoreEditor.putBoolean(Settings.KEY_BANNER + type, value);
+                    SettingsManager.setTypeBanner(type, value);
                     a.launcherService.forEachActivity(LauncherActivity::resetAdapters);
                 });
-
             } else {
                 Objects.requireNonNull(switchContainerByType.get(type)).setVisibility(View.GONE);
             }

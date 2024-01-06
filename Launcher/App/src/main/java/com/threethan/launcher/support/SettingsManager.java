@@ -494,6 +494,12 @@ public class SettingsManager extends Settings {
         return val;
     }
 
+    /** Signal a change in the types which should be displayed as banners */
+    public static void setTypeBanner(App.Type type, boolean banner) {
+        isBannerCache.put(type, banner);
+        dataStoreEditor.putBoolean(Settings.KEY_BANNER + type, banner);
+    }
+
     /**
      * Check if advanced chainloader size options should be show
      * @return True if advanced size options are currently enabled
