@@ -214,17 +214,13 @@ public class CustomItemAnimator extends SimpleItemAnimator {
 
                     @Override
                     public void onAnimationCancel(Animator animation) {
-                        view.setAlpha(1);
-                        view.setScaleX(1);
-                        view.setScaleY(1);
+                        resetView(view);
                     }
 
                     @Override
                     public void onAnimationEnd(Animator animator) {
                         animation.setListener(null);
-                        view.setAlpha(1);
-                        view.setScaleX(1);
-                        view.setScaleY(1);
+                        resetView(view);
                         dispatchRemoveFinished(holder);
                         mRemoveAnimations.remove(holder);
                         dispatchFinishedWhenDone();
@@ -256,9 +252,7 @@ public class CustomItemAnimator extends SimpleItemAnimator {
 
                     @Override
                     public void onAnimationCancel(Animator animator) {
-                        view.setAlpha(1);
-                        view.setScaleX(1);
-                        view.setScaleY(1);
+                        resetView(view);
                     }
 
                     @Override
@@ -463,11 +457,11 @@ public class CustomItemAnimator extends SimpleItemAnimator {
         }
         endChangeAnimation(mPendingChanges, item);
         if (mPendingRemovals.remove(item)) {
-            view.setAlpha(1);
+            resetView(view);
             dispatchRemoveFinished(item);
         }
         if (mPendingAdditions.remove(item)) {
-            view.setAlpha(1);
+            resetView(view);
             dispatchAddFinished(item);
         }
 
@@ -497,7 +491,7 @@ public class CustomItemAnimator extends SimpleItemAnimator {
         for (int i = mAdditionsList.size() - 1; i >= 0; i--) {
             ArrayList<RecyclerView.ViewHolder> additions = mAdditionsList.get(i);
             if (additions.remove(item)) {
-                view.setAlpha(1);
+                resetView(view);
                 dispatchAddFinished(item);
                 if (additions.isEmpty()) {
                     mAdditionsList.remove(i);
@@ -539,6 +533,12 @@ public class CustomItemAnimator extends SimpleItemAnimator {
         }
         holder.itemView.animate().setInterpolator(sDefaultInterpolator);
         endAnimation(holder);
+    }
+
+    private void resetView(View view) {
+        view.setAlpha(1);
+        view.setScaleX(1);
+        view.setScaleY(1);
     }
 
     @Override
@@ -587,7 +587,7 @@ public class CustomItemAnimator extends SimpleItemAnimator {
         count = mPendingAdditions.size();
         for (int i = count - 1; i >= 0; i--) {
             RecyclerView.ViewHolder item = mPendingAdditions.get(i);
-            item.itemView.setAlpha(1);
+            resetView(item.itemView);
             dispatchAddFinished(item);
             mPendingAdditions.remove(i);
         }
@@ -624,7 +624,7 @@ public class CustomItemAnimator extends SimpleItemAnimator {
             for (int j = count - 1; j >= 0; j--) {
                 RecyclerView.ViewHolder item = additions.get(j);
                 View view = item.itemView;
-                view.setAlpha(1);
+                resetView(view);
                 dispatchAddFinished(item);
                 additions.remove(j);
                 if (additions.isEmpty()) {
