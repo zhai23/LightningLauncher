@@ -232,7 +232,10 @@ public abstract class AppDetailsDialog {
         // Save Label & Reload on Confirm
         dialog.findViewById(R.id.confirm).setOnClickListener(view -> {
             SettingsManager.setAppLabel(currentApp, StringLib.setStarred(appNameEditText.getText().toString(), isStarred[0]));
-            launcherActivity.launcherService.forEachActivity(LauncherActivity::refreshAppList);
+            launcherActivity.launcherService.forEachActivity(a -> {
+                a.getAppAdapter().notifyItemChanged(currentApp);
+                a.refreshAppList();
+            });
             dialog.dismiss();
         });
     }

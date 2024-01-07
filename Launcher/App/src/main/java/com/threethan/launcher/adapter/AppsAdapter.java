@@ -72,7 +72,6 @@ public class AppsAdapter extends ArrayListAdapter<ApplicationInfo, AppsAdapter.A
         final List<ApplicationInfo> newItems =
                 settingsManager.getVisibleApps(launcherActivity, settingsManager.getAppGroupsSorted(false), fullAppSet);
 
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             newItems.removeIf(item -> !StringLib.forSort(SettingsManager.getAppLabel(item)).contains(StringLib.forSort(text)));
         }

@@ -66,8 +66,10 @@ public class IconExecutor {
             // Attempt to download the icon for this app from an online repo
             // Done AFTER saving the drawable version to prevent a race condition)
             IconRepo.check(activity, app, () ->
-                    activity.launcherService.forEachActivity(a ->
-                            a.getAppAdapter().notifyItemChanged(app)));
+                    activity.launcherService.forEachActivity(a -> {
+                            a.getAppAdapter().notifyItemChanged(app);
+                            a.refreshAppList();
+                    }));
         }
     }
 }
