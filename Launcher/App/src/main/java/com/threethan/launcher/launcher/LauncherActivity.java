@@ -91,7 +91,7 @@ public class LauncherActivity extends Activity {
     public LauncherService launcherService;
     protected static String TAG = "Lightning Launcher";
     private int groupHeight;
-    private RecyclerView.ItemDecoration marginDecoration;
+    private MarginDecoration marginDecoration;
     public static int iconMargin = -1;
     public static int iconScale = -1;
     public static boolean namesBanner;
@@ -189,6 +189,7 @@ public class LauncherActivity extends Activity {
         if (Math.abs(oldBottom-bottom) > 10 || Math.abs(oldRight-right) > 10) { // Only on significant diff
             new WallpaperExecutor().execute(this);
             updateGridLayouts();
+            post(this::updateToolBars);
         }
     }
 
@@ -408,22 +409,21 @@ public class LauncherActivity extends Activity {
     public void refreshAdapters() {
         prevViewWidth = -1;
 
-        dataStoreEditor.getBoolean(Settings.KEY_SHOW_NAMES_SQUARE, Settings.DEFAULT_SHOW_NAMES_SQUARE, namesSquareSet
-        -> dataStoreEditor.getBoolean(Settings.KEY_SHOW_NAMES_BANNER, Settings.DEFAULT_SHOW_NAMES_BANNER, namesBannerSet -> {
-            namesSquare = namesSquareSet;
-            namesBanner = namesBannerSet;
-            if (getAppAdapter() == null) {
-                appsView.setItemViewCacheSize(128);
-                appsView.setAdapter(
-                        new AppsAdapter(this));
-                appsView.setItemAnimator(new CustomItemAnimator());
-            } else {
-                getAppAdapter().setAppList(this);
-            }
-            groupsView.setAdapter(new GroupsAdapter(this, isEditing()));
-        }));
-
         updateGridLayouts();
+
+        namesSquare = dataStoreEditor
+                .getBoolean(Settings.KEY_SHOW_NAMES_SQUARE, Settings.DEFAULT_SHOW_NAMES_SQUARE);
+        namesBanner = dataStoreEditor
+                .getBoolean(Settings.KEY_SHOW_NAMES_BANNER, Settings.DEFAULT_SHOW_NAMES_BANNER);
+        if (getAppAdapter() == null) {
+            appsView.setItemViewCacheSize(128);
+            appsView.setAdapter(
+                    new AppsAdapter(this));
+            appsView.setItemAnimator(new CustomItemAnimator());
+        } else {
+            getAppAdapter().setAppList(this);
+        }
+        groupsView.setAdapter(new GroupsAdapter(this, isEditing()));
     }
 
     /**
@@ -518,12 +518,10 @@ public class LauncherActivity extends Activity {
                 bottomAdd);
 
         // Margins
-        if (marginDecoration != null) appsView.removeItemDecoration(marginDecoration);
-        // Height of a square icon. May be useful in the future...
-        // int h = dp((groupGridView.getMeasuredWidth() - (margin * (columns-1))*2))/(columns*2)-22*3;
-        marginDecoration = new MarginDecoration(margin);
-        appsView.addItemDecoration(marginDecoration);
-
+        if (marginDecoration == null) {
+            marginDecoration = new MarginDecoration(margin);
+            appsView.addItemDecoration(marginDecoration);
+        } else marginDecoration.setMargin(margin);
     }
 
     /**

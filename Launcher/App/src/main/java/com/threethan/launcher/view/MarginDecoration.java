@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
  * given uniform margins
  */
 public class MarginDecoration extends RecyclerView.ItemDecoration {
-    private final int margin;
+    private int margin;
 
     /**
      * Creates the MarginDecoration item decoration which can be added to a {@link RecyclerView}
@@ -27,5 +27,10 @@ public class MarginDecoration extends RecyclerView.ItemDecoration {
         outRect.right = margin;
         outRect.bottom = margin;
         outRect.top = margin;
+    }
+
+    /** Updates the margin of the decorator */
+    public void setMargin(int margin) {
+        this.margin = margin;
     }
 }
