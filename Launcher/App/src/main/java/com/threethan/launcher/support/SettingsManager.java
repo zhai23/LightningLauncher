@@ -189,8 +189,8 @@ public class SettingsManager extends Settings {
         ConcurrentHashMap<String, String> apps = getAppGroupMap();
 
         if (allApps == null) {
-            Log.w("Lightning Launcher", "Got null app list, will try reload");
-            launcherActivity.post(launcherActivity::reloadPackages);
+            Log.w("Lightning Launcher", "Got null app list");
+//            launcherActivity.post(launcherActivity::reloadPackages);
             return new ArrayList<>();
         }
 

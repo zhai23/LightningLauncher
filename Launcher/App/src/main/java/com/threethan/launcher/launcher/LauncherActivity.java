@@ -267,18 +267,15 @@ public class LauncherActivity extends Activity {
     }
 
     public void reloadPackages() {
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
-        executorService.execute(() -> {
-            App.invalidateCaches();
-            PackageManager packageManager = getPackageManager();
+        App.invalidateCaches();
+        PackageManager packageManager = getPackageManager();
 
-            Platform.installedApps = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);
-            Platform.installedApps = Collections.synchronizedList(Platform.installedApps);
+        Platform.installedApps = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);
+        Platform.installedApps = Collections.synchronizedList(Platform.installedApps);
 
-            Log.v(TAG, "Package Reload - Found "+ Platform.installedApps.size() +" packages");
+        Log.v(TAG, "Package Reload - Found "+ Platform.installedApps.size() +" packages");
 
-            launcherService.forEachActivity(LauncherActivity::refreshAppList);
-        });
+        launcherService.forEachActivity(LauncherActivity::refreshAppList);
     }
 
     public void recheckPackages() {
@@ -390,8 +387,6 @@ public class LauncherActivity extends Activity {
      * It is extended further by child classes
      */
     public void refreshInterface() {
-        darkMode = dataStoreEditor.getBoolean(Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE);
-        groupsEnabled = dataStoreEditor.getBoolean(Settings.KEY_GROUPS_ENABLED, Settings.DEFAULT_GROUPS_ENABLED);
         refreshAdapters();
 
         // Fix some focus issues
@@ -409,8 +404,10 @@ public class LauncherActivity extends Activity {
     public void refreshAdapters() {
         prevViewWidth = -1;
 
-        updateGridLayouts();
-
+        if (darkMode == null     ) darkMode      =
+                dataStoreEditor.getBoolean(Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE);
+        if (groupsEnabled == null) groupsEnabled =
+                dataStoreEditor.getBoolean(Settings.KEY_GROUPS_ENABLED, Settings.DEFAULT_GROUPS_ENABLED);
         namesSquare = dataStoreEditor
                 .getBoolean(Settings.KEY_SHOW_NAMES_SQUARE, Settings.DEFAULT_SHOW_NAMES_SQUARE);
         namesBanner = dataStoreEditor
@@ -424,6 +421,8 @@ public class LauncherActivity extends Activity {
             getAppAdapter().setAppList(this);
         }
         groupsView.setAdapter(new GroupsAdapter(this, isEditing()));
+
+        updateGridLayouts();
     }
 
     /**
@@ -481,7 +480,6 @@ public class LauncherActivity extends Activity {
 
         groupsView.post(() -> groupsView.setVisibility(View.VISIBLE));
         topBar.setVisibility(groupsEnabled ? View.VISIBLE : View.GONE);
-
     }
     /**
      * Called by updateGridLayouts, updates padding on the app grid views:
@@ -582,7 +580,7 @@ public class LauncherActivity extends Activity {
     public void refreshAppList() {
         if (Platform.installedApps == null) return;
 
-        runOnUiThread(this::refreshAdapters);
+        refreshAdapters();
 
         Platform.apps.clear();
         Platform.apps.addAll(Platform.installedApps);

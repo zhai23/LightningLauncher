@@ -266,9 +266,11 @@ public class LauncherActivityEditable extends LauncherActivity {
         uninstallButton.setVisibility(currentSelectedApps.isEmpty() ? View.GONE : View.VISIBLE);
 
         final int size = currentSelectedApps.size();
-        if (size == 0)      selectionHintText.setText(R.string.selection_hint_none);
-        else if (size == 1) selectionHintText.setText(R.string.selection_hint_single);
-        else selectionHintText.setText(getString(R.string.selection_hint_multiple, size));
+        runOnUiThread(() -> {
+            if (size == 0)      selectionHintText.setText(R.string.selection_hint_none);
+            else if (size == 1) selectionHintText.setText(R.string.selection_hint_single);
+            else selectionHintText.setText(getString(R.string.selection_hint_multiple, size));
+        });
     }
 
     public void addWebsite(Context context) {
