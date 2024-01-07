@@ -92,6 +92,8 @@ public class LauncherActivity extends Activity {
     protected static String TAG = "Lightning Launcher";
     private int groupHeight;
     private RecyclerView.ItemDecoration marginDecoration;
+    public static int iconMargin = -1;
+    public static int iconScale = -1;
     public static boolean namesBanner;
     public static boolean namesSquare;
 
@@ -488,40 +490,40 @@ public class LauncherActivity extends Activity {
      * - Bottom padding to account for icon margin, as well as the edit mode footer if applicable
      */
     private void updatePadding() {
-        dataStoreEditor.getInt(Settings.KEY_SCALE, Settings.DEFAULT_SCALE, scale
-        -> dataStoreEditor.getInt(Settings.KEY_SPACING, Settings.DEFAULT_SPACING, spacing -> {
-            int targetSize = dp(scale);
-            int estimatedWidth = prevViewWidth;
+        if (iconMargin == -1) iconMargin = dataStoreEditor.getInt(Settings.KEY_MARGIN, Settings.DEFAULT_MARGIN);
+        if (iconScale  == -1) iconScale  = dataStoreEditor.getInt(Settings.KEY_SCALE , Settings.DEFAULT_SCALE );
 
-            final int nCol = estimatedWidth / (targetSize * 2) * 2; // To nearest 2
-            final float fCol = (float) (estimatedWidth) / (targetSize * 2) * 2;
-            final float dCol = fCol - nCol;
+        int targetSize = dp(iconScale);
+        int estimatedWidth = prevViewWidth;
 
-            final float marginScale = (float) (scale
-                    - Settings.MIN_SCALE) / (Settings.MAX_SCALE - Settings.MIN_SCALE) + 1f + dCol / 2;
-            final int margin = dp(11f + (float) (spacing) * marginScale / 4f);
+        final int nCol = estimatedWidth / (targetSize * 2) * 2; // To nearest 2
+        final float fCol = (float) (estimatedWidth) / (targetSize * 2) * 2;
+        final float dCol = fCol - nCol;
 
-            final boolean groupsVisible = getGroupAdapter() != null && groupsEnabled && !getSearching();
-            final int topAdd = groupsVisible ? dp(32) + groupHeight : dp(23);
-            final int bottomAdd = groupsVisible ? getBottomBarHeight() + dp(11) : margin / 2 + getBottomBarHeight() + dp(11);
+        final float normScale = (float) (iconScale - Settings.MIN_SCALE) / (Settings.MAX_SCALE - Settings.MIN_SCALE);
+        int margin = (int) ((iconMargin) * (normScale+0.5f)/1.5f);
+        margin += (dCol-0.5) * 50 / nCol;
+        margin -= 11;
+        if (margin < -11) margin = -11;
 
-            final int ex = dp(11f);
+        final boolean groupsVisible = getGroupAdapter() != null && groupsEnabled && !getSearching();
+        final int topAdd = groupsVisible ? dp(32) + groupHeight : dp(23);
+        final int bottomAdd = groupsVisible ? getBottomBarHeight() + dp(11) : margin / 2 + getBottomBarHeight() + dp(11);
 
-            appsView.setClipToPadding(false);
-            appsView.setPadding(
-                    margin+ex,
-                    topAdd+ex,
-                    margin+ex,
-                    bottomAdd+ex);
+        appsView.setClipToPadding(false);
+        appsView.setPadding(
+                dp(margin+11),
+                topAdd,
+                dp(margin+11),
+                bottomAdd);
 
-            // Margins
-            if (marginDecoration != null) appsView.removeItemDecoration(marginDecoration);
-            // Height of a square icon. May be useful in the future...
-            // int h = dp((groupGridView.getMeasuredWidth() - (margin * (columns-1))*2))/(columns*2)-22*3;
-            marginDecoration = new MarginDecoration(margin - dp(22f));
-            appsView.addItemDecoration(marginDecoration);
+        // Margins
+        if (marginDecoration != null) appsView.removeItemDecoration(marginDecoration);
+        // Height of a square icon. May be useful in the future...
+        // int h = dp((groupGridView.getMeasuredWidth() - (margin * (columns-1))*2))/(columns*2)-22*3;
+        marginDecoration = new MarginDecoration(margin);
+        appsView.addItemDecoration(marginDecoration);
 
-        }));
     }
 
     /**

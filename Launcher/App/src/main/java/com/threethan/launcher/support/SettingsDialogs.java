@@ -181,6 +181,7 @@ public abstract class SettingsDialogs {
             @Override
             public void onProgressChanged(SeekBar seekBar, int value, boolean b) {
                 a.dataStoreEditor.putInt(Settings.KEY_SCALE, value);
+                LauncherActivity.iconScale = value;
                 a.refreshInterface();
             }
 
@@ -197,11 +198,12 @@ public abstract class SettingsDialogs {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) scale.setMin(Settings.MIN_SCALE);
 
         SeekBar margin = dialog.findViewById(R.id.marginSeekBar);
-        margin.setProgress(a.dataStoreEditor.getInt(Settings.KEY_SPACING, Settings.DEFAULT_SPACING));
+        margin.setProgress(a.dataStoreEditor.getInt(Settings.KEY_MARGIN, Settings.DEFAULT_MARGIN));
         margin.post(() -> margin.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int value, boolean b) {
-                a.dataStoreEditor.putInt(Settings.KEY_SPACING, value);
+                a.dataStoreEditor.putInt(Settings.KEY_MARGIN, value);
+                LauncherActivity.iconMargin = value;
                 a.refreshInterface();
             }
 

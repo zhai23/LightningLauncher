@@ -80,11 +80,11 @@ public abstract class Settings {
 
     // Basic UI keys
     public static final String KEY_SCALE = "KEY_CUSTOM_SCALE";
-    public static final String KEY_SPACING = "KEY_CUSTOM_MARGIN";
+    public static final String KEY_MARGIN = "KEY_CUSTOM_MARGIN";
     public static final int DEFAULT_SCALE = 110;
     public static final int MAX_SCALE = 160;
     public static final int MIN_SCALE = 60;
-    public static final int DEFAULT_SPACING = 20;
+    public static final int DEFAULT_MARGIN = 20;
 
 
     public static final String KEY_EDIT_MODE = "KEY_EDIT_MODE";
