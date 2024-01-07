@@ -190,6 +190,9 @@ public class LauncherActivity extends Activity {
             new WallpaperExecutor().execute(this);
             updateGridLayouts();
             post(this::updateToolBars);
+            postDelayed(this::updateToolBars, 1000);
+            while (appsView.getItemDecorationCount() > 1)
+                appsView.removeItemDecorationAt(appsView.getItemDecorationCount()-1);
         }
     }
 
@@ -198,14 +201,9 @@ public class LauncherActivity extends Activity {
         // This method is replaced with a greatly expanded one in the child class
         final List<String> groupsSorted = settingsManager.getAppGroupsSorted(false);
         final String group = groupsSorted.get(position);
-
-        if (settingsManager.selectGroup(group)) {
-            refreshInterface();
-            return false;
-        } else {
-            recheckPackages();
-            return isEditing() && !Objects.equals(group, Settings.HIDDEN_GROUP);
-        }
+        settingsManager.selectGroup(group);
+        refreshInterface();
+        return false;
     }
     public boolean longClickGroup(int position) {
         lastSelectedGroup = position;
@@ -231,7 +229,7 @@ public class LauncherActivity extends Activity {
     protected void onDestroy() {
         Log.v(TAG, "Activity is being destroyed - "
                 + (isFinishing() ? "Finishing" : "Not Finishing"));
-        launcherService.destroyed(this);
+        if (launcherService != null) launcherService.destroyed(this);
 
         if (isFinishing()) try {
             unbindService(launcherServiceConnection); // Should rarely cause exception
@@ -249,6 +247,7 @@ public class LauncherActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+
         try {
             // Hide KB
             Keyboard.hide(this, mainView);
@@ -366,14 +365,12 @@ public class LauncherActivity extends Activity {
     protected void setupBlurView(BlurView blurView) {
         View windowDecorView = getWindow().getDecorView();
         ViewGroup rootViewGroup = (ViewGroup) windowDecorView;
-        Drawable windowBackground = windowDecorView.getBackground();
 
         //noinspection deprecation
         blurView.setupWith(rootViewGroup,
                         Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
                                 ? new RenderEffectBlur()
                                 : new RenderScriptBlur(this))
-                .setFrameClearDrawable(windowBackground) // Optional
                 .setBlurRadius(15f);
     }
     protected void postRefresh(){
@@ -520,6 +517,9 @@ public class LauncherActivity extends Activity {
             marginDecoration = new MarginDecoration(margin);
             appsView.addItemDecoration(marginDecoration);
         } else marginDecoration.setMargin(margin);
+        appsView.invalidateItemDecorations();
+        while (appsView.getItemDecorationCount() > 1)
+            appsView.removeItemDecorationAt(appsView.getItemDecorationCount()-1);
     }
 
     /**
@@ -610,7 +610,7 @@ public class LauncherActivity extends Activity {
         if (mainView == null) new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                mainView.post(action);
+                action.run();
             }
         }, ms);
         else mainView.postDelayed(action, ms);

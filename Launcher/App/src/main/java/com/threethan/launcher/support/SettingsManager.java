@@ -435,16 +435,11 @@ public class SettingsManager extends Settings {
     /**
      * Select a group, adding it to the list of selected groups
      * @param name Name of the group to select
-     * @return False only if trying to select the only group which is selected
      */
-    public boolean selectGroup(String name) {
-        Set<String> selectedGroups = getSelectedGroups();
-        if (selectedGroups.size() == 1 && selectedGroups.contains(name)) return false; // Cancel if clicking same group
-
+    public void selectGroup(String name) {
         Set<String> selectFirst = new HashSet<>();
         selectFirst.add(name);
         setSelectedGroups(selectFirst);
-        return true;
     }
 
     final private static Map<App.Type, String> defaultGroupCache = new ConcurrentHashMap<>();
