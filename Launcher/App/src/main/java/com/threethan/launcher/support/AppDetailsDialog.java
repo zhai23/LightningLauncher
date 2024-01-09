@@ -232,8 +232,10 @@ public abstract class AppDetailsDialog {
         dialog.findViewById(R.id.confirm).setOnClickListener(view -> {
             SettingsManager.setAppLabel(currentApp, StringLib.setStarred(appNameEditText.getText().toString(), isStarred[0]));
             launcherActivity.launcherService.forEachActivity(a -> {
-                a.getAppAdapter().notifyItemChanged(currentApp);
-                a.refreshAppList();
+                if (a.getAppAdapter() != null) {
+                    a.getAppAdapter().notifyItemChanged(currentApp);
+                    a.refreshAppList();
+                }
             });
             dialog.dismiss();
         });
@@ -250,7 +252,8 @@ public abstract class AppDetailsDialog {
             Icon.saveIcon(imageApp, customIconFile);
         }
         Icon.cachedIcons.remove(Icon.cacheName(imageApp));
-        launcherActivity.launcherService.forEachActivity(a
-                -> a.getAppAdapter().notifyItemChanged(imageApp));
+        launcherActivity.launcherService.forEachActivity(a -> {
+            if (a.getAppAdapter() != null) a.getAppAdapter().notifyItemChanged(imageApp);
+        });
     }
 }

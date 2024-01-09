@@ -50,7 +50,7 @@ public abstract class Compat {
                 dse2.migrateDefault(launcherActivity);
                 if (dataStoreEditor.getInt(Settings.KEY_BACKGROUND, -1) != -1)
                     Dialog.toast(launcherActivity.getString(R.string.migrated));
-
+                clearIconCache(launcherActivity);
             }
         }
 
@@ -218,7 +218,9 @@ public abstract class Compat {
         Icon.cachedIcons.clear();
 
         Icon.init(launcherActivity); // Recreate folders
-        launcherActivity.launcherService.forEachActivity(a -> a.getAppAdapter().notifyAllChanged());
+        launcherActivity.launcherService.forEachActivity(a -> {
+            if (a.getAppAdapter() != null) a.getAppAdapter().notifyAllChanged();
+        });
     }
     // Clears any custom labels assigned to apps, including whether they've been starred
     public static void clearLabels(LauncherActivity launcherActivity) {
@@ -227,7 +229,9 @@ public abstract class Compat {
         HashSet<String> setAll = launcherActivity.getAllPackages();
         for (String packageName : setAll) launcherActivity.dataStoreEditor.removeString(packageName);
 
-        launcherActivity.launcherService.forEachActivity(a -> a.getAppAdapter().notifyAllChanged());
+        launcherActivity.launcherService.forEachActivity(a -> {
+            if (a.getAppAdapter() != null) a.getAppAdapter().notifyAllChanged();
+        });
     }
     // Clears the categorization of apps & resets everything to selected default groups
     public static void clearSort(LauncherActivity launcherActivity) {

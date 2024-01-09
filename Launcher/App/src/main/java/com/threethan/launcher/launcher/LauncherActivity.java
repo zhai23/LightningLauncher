@@ -24,6 +24,7 @@ import android.view.ViewOutlineProvider;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -153,8 +154,8 @@ public class LauncherActivity extends Activity {
             appsView.setAlpha(1f); // Just in case the app was closed before it faded in
 
             // Take ownership of adapters (which are currently referencing a dead activity)
-            getAppAdapter().setLauncherActivity(this);
-            getGroupAdapter().setLauncherActivity(this);
+            Objects.requireNonNull(getAppAdapter()).setLauncherActivity(this);
+            Objects.requireNonNull(getGroupAdapter()).setLauncherActivity(this);
 
             post(this::updateToolBars); // Fix visual bugs with the blur views
 
@@ -616,9 +617,11 @@ public class LauncherActivity extends Activity {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, getResources().getDisplayMetrics());
     }
 
+    @Nullable
     public AppsAdapter getAppAdapter() {
         return (AppsAdapter) appsView.getAdapter();
     }
+    @Nullable
     public GroupsAdapter getGroupAdapter() {
         if (groupsView == null) return null;
         return (GroupsAdapter) groupsView.getAdapter();

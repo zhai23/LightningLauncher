@@ -314,14 +314,14 @@ public abstract class SettingsDialogs {
         names.setOnCheckedChangeListener((compoundButton, value) -> {
             a.dataStoreEditor.putBoolean(Settings.KEY_SHOW_NAMES_SQUARE, value);
             LauncherActivity.namesSquare = value;
-            Objects.requireNonNull(a.getAppAdapter()).notifyAllChanged();
+            if(a.getAppAdapter() != null) a.getAppAdapter().notifyAllChanged();
         });
         Switch wideNames = dialog.findViewById(R.id.nameBannerSwitch);
         wideNames.setChecked(a.dataStoreEditor.getBoolean(Settings.KEY_SHOW_NAMES_BANNER, Settings.DEFAULT_SHOW_NAMES_BANNER));
         wideNames.setOnCheckedChangeListener((compoundButton, value) -> {
             a.dataStoreEditor.putBoolean(Settings.KEY_SHOW_NAMES_BANNER, value);
             LauncherActivity.namesBanner = value;
-            Objects.requireNonNull(a.getAppAdapter()).notifyAllChanged();
+            if(a.getAppAdapter() != null) a.getAppAdapter().notifyAllChanged();
         });
 
         // Advanced button
@@ -381,15 +381,14 @@ public abstract class SettingsDialogs {
             defaultLaunchOut.setChecked(a.dataStoreEditor.getBoolean(Settings.KEY_DEFAULT_LAUNCH_OUT, Settings.DEFAULT_DEFAULT_LAUNCH_OUT));
             defaultLaunchOut.setOnCheckedChangeListener((compoundButton, value) -> {
                 a.dataStoreEditor.putBoolean(Settings.KEY_DEFAULT_LAUNCH_OUT, value);
-                a.launcherService.forEachActivity(LauncherActivity::refreshInterface);
                 if (!a.dataStoreEditor.getBoolean(Settings.KEY_SEEN_LAUNCH_OUT_POPUP, false)) {
                     AlertDialog subDialog = Dialog.build(a, R.layout.dialog_info_launch_out);
-                    if (subDialog == null) return;
-                    subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
-                        a.dataStoreEditor
-                                .putBoolean(Settings.KEY_SEEN_LAUNCH_OUT_POPUP, true);
-                        subDialog.dismiss();
-                    });
+                    if (subDialog != null)
+                        subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
+                            a.dataStoreEditor
+                                    .putBoolean(Settings.KEY_SEEN_LAUNCH_OUT_POPUP, true);
+                            subDialog.dismiss();
+                        });
                 }
             });
 
