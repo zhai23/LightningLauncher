@@ -16,10 +16,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -51,9 +48,6 @@ public abstract class IconRepo {
             "https://www.google.com/s2/favicons?domain=%s&sz=256", // Provides high-res icons
             "%s/favicon.ico", // The standard directory for a website's icon to be placed
     };
-    // If a download finishes, regardless of whether an icon is found, the app will be added to this
-    // list, and will not be downloaded again unless manually requested.
-    protected static Set<String> downloadExemptPackages = Collections.synchronizedSet(new HashSet<>());
     private static final ConcurrentHashMap<String, Object> locks = new ConcurrentHashMap<>();
 
     /**
@@ -65,12 +59,7 @@ public abstract class IconRepo {
         if (shouldDownload(app)) download(activity, app, callback);
     }
     private static synchronized boolean shouldDownload(ApplicationInfo app) {
-        if (App.isShortcut(app)) return false;
-        return !downloadExemptPackages.contains(app.packageName);
-    }
-
-    public static synchronized void dontDownloadIconFor(String packageName) {
-        downloadExemptPackages.add(packageName);
+        return !App.isShortcut(app);
     }
 
     /**
@@ -104,8 +93,6 @@ public abstract class IconRepo {
                 } finally {
                     // Set the icon to now download if we either successfully downloaded it, or the download tried and failed
                     locks.remove(pkgName);
-                    // ..and if we have internet
-                    dontDownloadIconFor(pkgName);
                 }
             }
         });

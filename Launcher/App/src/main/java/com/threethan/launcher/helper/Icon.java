@@ -87,9 +87,9 @@ public abstract class Icon {
     @SuppressLint("UseCompatLoadingForDrawables")
     @Nullable
     public static Drawable loadIcon(LauncherActivity activity, ApplicationInfo app, ImageView imageView) {
-        if (Icon.cachedIcons.containsKey(Icon.cacheName(app))) return Icon.cachedIcons.get(Icon.cacheName(app));
         IconExecutor.execute(activity, app, imageView);
-        return null;
+        if (Icon.cachedIcons.containsKey(Icon.cacheName(app))) return Icon.cachedIcons.get(Icon.cacheName(app));
+        else return null;
     }
 
     public static void reloadIcon(LauncherActivity activity, ApplicationInfo app, ImageView downloadImageView) {

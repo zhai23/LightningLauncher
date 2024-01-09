@@ -234,7 +234,7 @@ public class AppsAdapter extends ArrayListAdapter<ApplicationInfo, AppsAdapter.A
 
         //Load Icon
         Drawable appIcon = Icon.loadIcon(launcherActivity, holder.app, holder.imageView);
-        launcherActivity.runOnUiThread(() -> holder.imageView.setImageDrawable(appIcon));
+        holder.imageView.setImageDrawable(appIcon);
 
         updateSelected(holder);
     }

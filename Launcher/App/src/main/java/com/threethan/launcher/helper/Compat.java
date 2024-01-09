@@ -216,7 +216,6 @@ public abstract class Compat {
         FileLib.delete(launcherActivity.getApplicationInfo().dataDir + Icon.ICON_CACHE_FOLDER);
 
         Icon.cachedIcons.clear();
-        IconRepo.downloadExemptPackages.clear();
 
         Icon.init(launcherActivity); // Recreate folders
         launcherActivity.launcherService.forEachActivity(a -> a.getAppAdapter().notifyAllChanged());

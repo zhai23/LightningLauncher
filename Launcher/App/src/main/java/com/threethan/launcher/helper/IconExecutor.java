@@ -17,7 +17,6 @@ import java.io.File;
  * Loads app icons asyncronously
  */
 public class IconExecutor {
-
     public static void execute(LauncherActivity activity, ApplicationInfo app, ImageView
             imageView) {
         Thread thread = new Thread(() -> {

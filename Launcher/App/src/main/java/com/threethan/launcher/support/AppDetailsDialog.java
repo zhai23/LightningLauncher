@@ -15,7 +15,6 @@ import android.widget.TextView;
 
 import com.threethan.launcher.R;
 import com.threethan.launcher.helper.App;
-import com.threethan.launcher.helper.Compat;
 import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.helper.Icon;
 import com.threethan.launcher.helper.Launch;
@@ -83,7 +82,7 @@ public abstract class AppDetailsDialog {
             customIconFile = Icon.iconCustomFileForApp(launcherActivity, currentApp);
             if (customIconFile.exists()) //noinspection ResultOfMethodCallIgnored
                 customIconFile.delete();
-            launcherActivity.setSelectedIconImage(iconImageView, currentApp.packageName);
+            launcherActivity.setSelectedIconImage(iconImageView);
 
             imageApp = currentApp;
             ImageLib.showImagePicker(launcherActivity, Settings.PICK_ICON_CODE);
@@ -240,7 +239,6 @@ public abstract class AppDetailsDialog {
         });
     }
     public static void onImageSelected(String path, ImageView selectedImageView, LauncherActivity launcherActivity) {
-        Compat.clearIconCache(launcherActivity);
         if (path != null) {
             Bitmap bitmap = ImageLib.bitmapFromFile(launcherActivity, new File(path));
             if (bitmap == null) return;
@@ -250,7 +248,9 @@ public abstract class AppDetailsDialog {
         } else {
             selectedImageView.setImageDrawable(iconDrawable);
             Icon.saveIcon(imageApp, customIconFile);
-            // No longer sets icon here but that should be fine
         }
+        Icon.cachedIcons.remove(Icon.cacheName(imageApp));
+        launcherActivity.launcherService.forEachActivity(a
+                -> a.getAppAdapter().notifyItemChanged(imageApp));
     }
 }

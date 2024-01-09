@@ -38,7 +38,6 @@ import com.threethan.launcher.helper.AppData;
 import com.threethan.launcher.helper.Compat;
 import com.threethan.launcher.helper.DataStoreEditor;
 import com.threethan.launcher.helper.Dialog;
-import com.threethan.launcher.helper.IconRepo;
 import com.threethan.launcher.helper.Keyboard;
 import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
@@ -288,11 +287,9 @@ public class LauncherActivity extends Activity {
         }
     }
 
-    private String selectedPackageName;
     private ImageView selectedImageView;
-    public void setSelectedIconImage(ImageView imageView, String packageName) {
+    public void setSelectedIconImage(ImageView imageView) {
         selectedImageView = imageView;
-        selectedPackageName = packageName;
     }
 
     @Override
@@ -302,7 +299,6 @@ public class LauncherActivity extends Activity {
             if (getAppAdapter() == null) return;
             if (resultCode == RESULT_OK) {
                 for (Image image : ImagePicker.getImages(data)) {
-                    IconRepo.dontDownloadIconFor(selectedPackageName);
                     AppDetailsDialog.onImageSelected(image.getPath(), selectedImageView, this);
                     break;
                 }
