@@ -66,6 +66,11 @@
             <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
             <meta-data android:name="com.oculus.vrshell.free_resizing_limits" android:value="300,2000,500,1000"/>
 
+            <meta-data android:name="com.oculus.vrshell.supports_multi_instance" android:value="true" />
+            <meta-data android:name="com.oculus.vrshell.supports_multi_cursor" android:value="true" />
+            <meta-data android:name="com.oculus.lazy_gpumem_allocation" android:value="true" />
+
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

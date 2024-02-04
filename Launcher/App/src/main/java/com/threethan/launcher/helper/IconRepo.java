@@ -30,18 +30,18 @@ public abstract class IconRepo {
     // Repository URLs:
     // Each URL will be tried in order: the first with a file matching the package name will be used
     private static final String[] ICON_URLS_SQUARE = {
+            "https://raw.githubusercontent.com/basti564/LauncherIcons/main/oculus_square/%s.jpg",
+            "https://raw.githubusercontent.com/basti564/LauncherIcons/main/pico_square/%s.png",
+            "https://raw.githubusercontent.com/basti564/LauncherIcons/main/viveport_square/%s.webp",
             "https://raw.githubusercontent.com/threethan/QuestLauncherImages/main/icon/%s.jpg",
             "https://raw.githubusercontent.com/veticia/binaries/main/icons/%s.png",
-            "https://raw.githubusercontent.com/basti564/LauncherIcons/main/oculus_square/%s.jpg",
-            "https://raw.githubusercontent.com/basti564/LauncherIcons/main/pico_square/%s.jpg",
-            "https://raw.githubusercontent.com/basti564/LauncherIcons/main/viveport_square/%s.jpg"
     };
     private static final String[] ICON_URLS_BANNER = {
+            "https://raw.githubusercontent.com/basti564/LauncherIcons/main/oculus_landscape/%s.jpg",
+            "https://raw.githubusercontent.com/basti564/LauncherIcons/main/pico_landscape/%s.png",
+            "https://raw.githubusercontent.com/basti564/LauncherIcons/main/viveport_landscape/%s.webp",
             "https://raw.githubusercontent.com/threethan/QuestLauncherImages/main/banner/%s.jpg",
             "https://raw.githubusercontent.com/veticia/binaries/main/banners/%s.png",
-            "https://raw.githubusercontent.com/basti564/LauncherIcons/main/oculus_landscape/%s.jpg",
-            "https://raw.githubusercontent.com/basti564/LauncherIcons/main/pico_landscape/%s.jpg",
-            "https://raw.githubusercontent.com/basti564/LauncherIcons/main/viveport_landscape/%s.jpg"
     };
     // Instead of matching a package name, websites match their TLD
     private static final String[] ICON_URLS_WEB = {
