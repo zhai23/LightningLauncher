@@ -12,7 +12,7 @@
         <item>com.oculus.os.clearactivity</item>
         <item>com.oculus.integrity</item>
         <item>com.meta.AccountsCenter.pwa</item>
-        <item>com.oculus.identitymanager</item>
+        <item>com.oculus.identitymanage</item>
         <!-- Shortcuts -->
         <item>com.facebook.facebookvr</item>
         <item>oculuspwa.auth.monday.com</item>
