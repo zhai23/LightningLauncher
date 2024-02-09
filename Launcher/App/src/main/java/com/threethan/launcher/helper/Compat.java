@@ -221,6 +221,8 @@ public abstract class Compat {
         launcherActivity.launcherService.forEachActivity(a -> {
             if (a.getAppAdapter() != null) a.getAppAdapter().notifyAllChanged();
         });
+
+        IconRepo.clearDelays();
     }
     // Clears any custom labels assigned to apps, including whether they've been starred
     public static void clearLabels(LauncherActivity launcherActivity) {

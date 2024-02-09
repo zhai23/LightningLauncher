@@ -74,6 +74,13 @@ public abstract class IconRepo {
     }
 
     /**
+     * Clears all icon download delays, letting icons be redownloaded when needed
+     */
+    public static void clearDelays() {
+        nextCheckByPackageMs.clear();
+    }
+
+    /**
      * Check if an icon should be downloaded for a particular app
      * @param app Application info of the app (currently only requires packageName)
      * @return True if the icon should be downloaded
