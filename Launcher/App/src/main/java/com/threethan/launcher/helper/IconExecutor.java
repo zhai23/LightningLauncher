@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import com.threethan.launcher.launcher.LauncherActivity;
 
 import java.io.File;
+import java.util.Objects;
 
 /**
  * Loads app icons asyncronously
@@ -40,13 +41,14 @@ public class IconExecutor {
         if (iconCustomFile.exists()) appIcon = Drawable.createFromPath(iconCustomFile.getAbsolutePath());
         if (appIcon != null) return appIcon;
 
-        // Try to load from cached icon file
-        final File iconCacheFile = Icon.iconCacheFileForPackage(activity, app);
-        if (iconCacheFile.exists()) appIcon = Drawable.createFromPath(iconCacheFile.getAbsolutePath());
-        if (appIcon != null) return appIcon;
-
-        // Try to load from package manager
+        // Everything in the try will still attempt to download an icon
         try {
+            // Try to load from cached icon file
+            final File iconCacheFile = Icon.iconCacheFileForPackage(activity, app);
+            if (iconCacheFile.exists()) appIcon = Drawable.createFromPath(iconCacheFile.getAbsolutePath());
+            if (appIcon != null) return appIcon;
+
+            // Try to load from package manager
             PackageManager packageManager = activity.getPackageManager();
             Resources resources = packageManager.getResourcesForApplication(app);
 
@@ -66,7 +68,7 @@ public class IconExecutor {
             // Done AFTER saving the drawable version to prevent a race condition)
             IconRepo.check(activity, app, () ->
                     activity.launcherService.forEachActivity(a -> {
-                            a.getAppAdapter().notifyItemChanged(app);
+                            Objects.requireNonNull(a.getAppAdapter()).notifyItemChanged(app);
                             a.refreshAppList();
                     }));
         }

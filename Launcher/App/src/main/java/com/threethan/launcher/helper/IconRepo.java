@@ -51,6 +51,23 @@ public abstract class IconRepo {
     private static final ConcurrentHashMap<String, Object> locks = new ConcurrentHashMap<>();
 
     /**
+     * Stores the time when we're next allowed to try to download an icon for a package.
+     * <p>
+     * Downloads are NOT automatically called at this time, but will be called asynchronously
+     * when the icon is next checked/displayed.
+     * <p>
+     * Since this isn't stored persistently, all icons will be rechecked when the app is fully quit.
+     * This is a non-issue since the LauncherService stays open persitently.
+     */
+    //
+    private static final ConcurrentHashMap<String, Long> nextCheckByPackage = new ConcurrentHashMap<>();
+
+    // How many minutes before we can recheck an icon that hasn't downloaded
+    private static final long ICON_CHECK_TIME_MINUTES = 5;
+    // How many minutes before we can recheck an icon that has downloaded for updates
+    private static final long ICON_UPDATE_TIME_MINUTES = 60;
+
+    /**
      * Starts the download of an icon, if one should be downloaded for that app
      * @param app App for which to download an icon image
      * @param callback Called when the download completes successfully
@@ -58,8 +75,18 @@ public abstract class IconRepo {
     public static void check(final LauncherActivity activity, ApplicationInfo app, final Runnable callback) {
         if (shouldDownload(app)) download(activity, app, callback);
     }
+
+    /**
+     * Check if an icon should be downloaded for a particular app
+     * @param app Application info of the app (currently only requires packageName)
+     * @return True if the icon should be downloaded
+     */
     private static synchronized boolean shouldDownload(ApplicationInfo app) {
-        return !App.isShortcut(app);
+        if (App.isShortcut(app)) return false; // Shortcut icons are only provided on add
+        if (!nextCheckByPackage.containsKey(app.packageName)) return true; // Download if not done yet
+        // Check time since last download
+        final long nextCheckMs = Objects.requireNonNull(nextCheckByPackage.get(app.packageName));
+        return System.currentTimeMillis() > nextCheckMs;
     }
 
     /**
@@ -68,21 +95,23 @@ public abstract class IconRepo {
      * @param callback Called when the download completes successfully
      */
     public static void download(final LauncherActivity activity, ApplicationInfo app, final Runnable callback) {
-        final String pkgName = app.packageName;
+        final String packageName = app.packageName;
+        nextCheckByPackage.put(packageName, ICON_CHECK_TIME_MINUTES);
 
         final boolean isWide = App.isBanner(app);
         final File iconFile = Icon.iconCacheFileForPackage(activity, app);
 
         Thread thread = new Thread(() -> {
-            Object lock = locks.putIfAbsent(pkgName, new Object());
-            if (lock == null) lock = locks.get(pkgName);
+            Object lock = locks.putIfAbsent(packageName, new Object());
+            if (lock == null) lock = locks.get(packageName);
             synchronized (Objects.requireNonNull(lock)) {
                 try {
                     for (final String url : App.isWebsite(app) ? ICON_URLS_WEB : (isWide ? ICON_URLS_BANNER : ICON_URLS_SQUARE)) {
                         final String urlTLD = App.isWebsite(app) ?
-                                StringLib.baseUrlWithScheme(pkgName) :
-                                pkgName.replace("://","").replace(PanelApp.packagePrefix, "");
+                                StringLib.baseUrlWithScheme(packageName) :
+                                packageName.replace("://","").replace(PanelApp.packagePrefix, "");
                         if (downloadIconFromUrl(activity, String.format(url, urlTLD), iconFile)) {
+                            nextCheckByPackage.put(packageName, ICON_UPDATE_TIME_MINUTES);
                             Icon.saveIcon(app, iconFile);
                             activity.runOnUiThread(callback);
                             break;
@@ -92,7 +121,7 @@ public abstract class IconRepo {
                     e.printStackTrace();
                 } finally {
                     // Set the icon to now download if we either successfully downloaded it, or the download tried and failed
-                    locks.remove(pkgName);
+                    locks.remove(packageName);
                 }
             }
         });
@@ -125,7 +154,7 @@ public abstract class IconRepo {
 
             int length;
             byte[] buffer = new byte[65536];
-            FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
+            FileOutputStream fileOutputStream = new FileOutputStream(outputFile, false);
             while ((length = dataInputStream.read(buffer)) > 0) {
                 fileOutputStream.write(buffer, 0, length);
             }
