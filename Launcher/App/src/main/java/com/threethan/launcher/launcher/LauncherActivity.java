@@ -43,10 +43,10 @@ import com.threethan.launcher.helper.Keyboard;
 import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.lib.ImageLib;
+import com.threethan.launcher.updater.LauncherUpdater;
 import com.threethan.launcher.support.AppDetailsDialog;
 import com.threethan.launcher.support.SettingsDialogs;
 import com.threethan.launcher.support.SettingsManager;
-import com.threethan.launcher.support.Updater;
 import com.threethan.launcher.view.MarginDecoration;
 
 import java.io.File;
@@ -261,7 +261,7 @@ public class LauncherActivity extends Activity {
         if (Platform.installedApps != null) // Will be null only on initial load
             postDelayed(this::recheckPackages, 1000);
 
-        postDelayed(() -> new Updater(this).checkForAppUpdate(), 5000);
+        postDelayed(() -> new LauncherUpdater(this).checkAppUpdateInteractive(), 1000);
 
     }
 

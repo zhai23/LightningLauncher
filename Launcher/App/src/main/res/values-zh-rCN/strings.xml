@@ -137,7 +137,7 @@
     <string name="update_skip_button">跳过本次更新</string>
     <string name="update_skip_toast">跳过版本</string>
 
-    <string name="update_downloading_title">下载最新版本......</string>
+    <string name="update_downloading_title">下载最新版本 (%s)</string>
     <string name="update_downloading_content">很快就会出现安装提示\n\n    \n如果你不小心将其删除、未授予权限或出现错误、\n    你可以从设置中再试一次。</string>
     <string name="update_hide_button">隐藏</string>
 

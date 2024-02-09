@@ -15,7 +15,7 @@ import com.threethan.launcher.R;
 import com.threethan.launcher.launcher.LauncherActivity;
 import com.threethan.launcher.support.AddShortcutActivity;
 import com.threethan.launcher.support.SettingsManager;
-import com.threethan.launcher.support.Updater;
+import com.threethan.launcher.updater.BrowserUpdater;
 
 import java.util.Objects;
 import java.util.Timer;
@@ -58,10 +58,9 @@ public abstract class Launch {
             if (dialog == null) return false;
             dialog.findViewById(R.id.cancel).setOnClickListener((view) -> dialog.dismiss());
             dialog.findViewById(R.id.install).setOnClickListener((view) -> {
-                    new Updater(launcherActivity).installAddon(Updater.TAG_BROWSER);
-                    dialog.dismiss();
-                    Dialog.toast(launcherActivity.getString(R.string.download_browser_toast_main),
-                            launcherActivity.getString(R.string.download_browser_toast_bold), true);
+                new BrowserUpdater(launcherActivity).checkAppUpdateAndInstall();
+                Dialog.toast(launcherActivity.getString(R.string.download_browser_toast_main),
+                        launcherActivity.getString(R.string.download_browser_toast_bold), true);
             });
             return false;
         }
@@ -72,7 +71,6 @@ public abstract class Launch {
                 appType == App.Type.TYPE_VR || appType == App.Type.TYPE_PANEL) {
 
             launcherActivity.launcherService.finishAllActivities();
-
 
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                     Intent.FLAG_ACTIVITY_NEW_DOCUMENT |

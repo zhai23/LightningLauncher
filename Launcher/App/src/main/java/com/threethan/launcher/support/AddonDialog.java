@@ -14,6 +14,7 @@ import com.threethan.launcher.helper.AppData;
 import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.launcher.LauncherActivity;
+import com.threethan.launcher.updater.AddonUpdater;
 
 import java.lang.ref.WeakReference;
 import java.util.Objects;
@@ -25,7 +26,7 @@ import java.util.Objects;
     It handles related popups, and updates buttons according to the state returned by Addon
  */
 public abstract class AddonDialog {
-    private static WeakReference<Updater> updaterRef;
+    private static WeakReference<AddonUpdater> updaterRef;
     private static WeakReference<LauncherActivity> activityRef;
     public static void showShortcutAddons(LauncherActivity a) {
         AlertDialog dialog = Dialog.build(a, Platform.isVr(a) ? R.layout.dialog_addons_vr : R.layout.dialog_addons_tv);
@@ -33,14 +34,14 @@ public abstract class AddonDialog {
         activityRef = new WeakReference<>(a);
 
         View addonFacebook = dialog.findViewById(R.id.addonFacebook);
-        if (addonFacebook!=null) updateAddonButton(a, addonFacebook, Updater.TAG_FACEBOOK_SHORTCUT);
+        if (addonFacebook!=null) updateAddonButton(a, addonFacebook, AddonUpdater.TAG_FACEBOOK);
 
         View addonMonday = dialog.findViewById(R.id.addonMonday);
-        if (addonMonday!=null) updateAddonButton(a, addonMonday, Updater.TAG_MONDAY_SHORTCUT);
+        if (addonMonday!=null) updateAddonButton(a, addonMonday, AddonUpdater.TAG_MONDAY);
 
         View addonExplore = dialog.findViewById(R.id.addonExplore);
         if (addonExplore!=null) {
-            updateAddonButton(a, addonExplore, Updater.TAG_HORIZON_FEED_SHORTCUT);
+            updateAddonButton(a, addonExplore, AddonUpdater.TAG_FEED);
             dialog.findViewById(R.id.disableExplore).setOnClickListener(v -> App.openInfo(a, AppData.EXPLORE_PACKAGE));
             ((TextView) dialog.findViewById(R.id.disableExploreWhy)).setText(
                     App.isPackageEnabled(a, AppData.EXPLORE_PACKAGE) ?
@@ -51,13 +52,13 @@ public abstract class AddonDialog {
         }
 
         View addonLibrary = dialog.findViewById(R.id.addonLibrary);
-        if (addonLibrary!=null) updateAddonButton(a, addonLibrary, Updater.TAG_APP_LIBRARY_SHORTCUT);
+        if (addonLibrary!=null) updateAddonButton(a, addonLibrary, AddonUpdater.TAG_LIBRARY);
 
         View addonPeople = dialog.findViewById(R.id.addonPeople);
-        if (addonLibrary!=null) updateAddonButton(a, addonPeople, Updater.TAG_PEOPLE_SHORTCUT);
+        if (addonLibrary!=null) updateAddonButton(a, addonPeople, AddonUpdater.TAG_PEOPLE);
 
         View addonAndroidTv = dialog.findViewById(R.id.addonAndroidTv);
-        if (addonAndroidTv!=null) updateAddonButton(a, addonAndroidTv, Updater.TAG_ANDROID_TV_SHORTCUT);
+        if (addonAndroidTv!=null) updateAddonButton(a, addonAndroidTv, AddonUpdater.TAG_ATV_LM);
 
         dialog.findViewById(R.id.exitButton).setOnClickListener(v -> dialog.dismiss());
     }
@@ -77,14 +78,15 @@ public abstract class AddonDialog {
                 updateButton.setVisibility(View.GONE);
                 activateButton.setVisibility(View.GONE);
 
-                Updater updater = getUpdater();
+                AddonUpdater updater = getUpdater();
                 if (updater == null) return;
 
-                switch (updater.getAddonState(tag)) {
-                    case Updater.STATE_ACTIVE -> uninstallButton.setVisibility(View.VISIBLE);
-                    case Updater.STATE_NOT_INSTALLED -> installButton.setVisibility(View.VISIBLE);
-                    case Updater.STATE_HAS_UPDATE -> updateButton.setVisibility(View.VISIBLE);
-                    case Updater.STATE_INACTIVE -> activateButton.setVisibility(View.VISIBLE);
+                switch (updater.getAddonState(updater.getAddon(tag))) {
+                    case INSTALLED_SERVICE_INACTIVE -> activateButton.setVisibility(View.VISIBLE);
+                    case INSTALLED_ACTIVE -> uninstallButton.setVisibility(View.VISIBLE);
+                    case INSTALLED_HAS_UPDATE       -> updateButton.setVisibility(View.VISIBLE);
+                    case NOT_INSTALLED              -> installButton.setVisibility(View.VISIBLE);
+
                 }
                 outerView.postDelayed(this, 100);
             }
@@ -97,13 +99,13 @@ public abstract class AddonDialog {
         activateButton.setOnClickListener((v -> showAccessibilityDialog()));
     }
     @Nullable
-    protected static Updater getUpdater() {
-        Updater updater = null;
+    protected static AddonUpdater getUpdater() {
+        AddonUpdater updater = null;
         if (updaterRef != null) updater = updaterRef.get();
         if (updater != null) return updater;
         LauncherActivity activity = activityRef.get();
         if (activity != null) {
-            updater = new Updater(activity);
+            updater = new AddonUpdater(activity);
             updaterRef = new WeakReference<>(updater);
             return updater;
         }

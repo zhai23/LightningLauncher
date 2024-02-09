@@ -20,6 +20,7 @@ import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.launcher.LauncherActivity;
 import com.threethan.launcher.lib.ImageLib;
+import com.threethan.launcher.updater.LauncherUpdater;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -93,10 +94,10 @@ public abstract class SettingsDialogs {
         }
 
         // Update button
-        if (Updater.isMainUpdateAvailable(a)) {
+        if (LauncherUpdater.isAppUpdateAvailible()) {
             View skippedUpdateButton = dialog.findViewById(R.id.updateButton);
             skippedUpdateButton.setVisibility(View.VISIBLE);
-            skippedUpdateButton.setOnClickListener((view) -> new Updater(a).updateAppEvenIfSkipped());
+            skippedUpdateButton.setOnClickListener((view) -> new LauncherUpdater(a).checkAppUpdateAndInstall());
         }
 
         // Wallpaper and style
