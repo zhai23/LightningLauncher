@@ -28,7 +28,7 @@ class RecheckPackagesExecutor {
             if (Platform.installedApps.size() != foundApps.size()) {
                 owner.runOnUiThread(() -> {
                     Log.v("Lightning Launcher", "Package change detected!");
-                    owner.reloadPackages();
+                    owner.refreshPackages();
                 });
             }
         });

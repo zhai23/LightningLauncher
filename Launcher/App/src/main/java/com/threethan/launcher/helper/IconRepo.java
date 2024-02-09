@@ -1,9 +1,7 @@
 package com.threethan.launcher.helper;
 
-import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import com.threethan.launcher.launcher.LauncherActivity;
@@ -59,8 +57,7 @@ public abstract class IconRepo {
      * Since this isn't stored persistently, all icons will be rechecked when the app is fully quit.
      * This is a non-issue since the LauncherService stays open persitently.
      */
-    //
-    private static final ConcurrentHashMap<String, Long> nextCheckByPackage = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, Long> nextCheckByPackageMs = new ConcurrentHashMap<>();
 
     // How many minutes before we can recheck an icon that hasn't downloaded
     private static final long ICON_CHECK_TIME_MINUTES = 5;
@@ -70,7 +67,7 @@ public abstract class IconRepo {
     /**
      * Starts the download of an icon, if one should be downloaded for that app
      * @param app App for which to download an icon image
-     * @param callback Called when the download completes successfully
+     * @param callback Called when the download completes successfully and the icon is changed
      */
     public static void check(final LauncherActivity activity, ApplicationInfo app, final Runnable callback) {
         if (shouldDownload(app)) download(activity, app, callback);
@@ -83,9 +80,9 @@ public abstract class IconRepo {
      */
     private static synchronized boolean shouldDownload(ApplicationInfo app) {
         if (App.isShortcut(app)) return false; // Shortcut icons are only provided on add
-        if (!nextCheckByPackage.containsKey(app.packageName)) return true; // Download if not done yet
+        if (!nextCheckByPackageMs.containsKey(app.packageName)) return true; // Download if not done yet
         // Check time since last download
-        final long nextCheckMs = Objects.requireNonNull(nextCheckByPackage.get(app.packageName));
+        final long nextCheckMs = Objects.requireNonNull(nextCheckByPackageMs.get(app.packageName));
         return System.currentTimeMillis() > nextCheckMs;
     }
 
@@ -96,7 +93,7 @@ public abstract class IconRepo {
      */
     public static void download(final LauncherActivity activity, ApplicationInfo app, final Runnable callback) {
         final String packageName = app.packageName;
-        nextCheckByPackage.put(packageName, ICON_CHECK_TIME_MINUTES);
+        nextCheckByPackageMs.put(packageName, System.currentTimeMillis() + ICON_CHECK_TIME_MINUTES*1000*60);
 
         final boolean isWide = App.isBanner(app);
         final File iconFile = Icon.iconCacheFileForPackage(activity, app);
@@ -106,21 +103,23 @@ public abstract class IconRepo {
             if (lock == null) lock = locks.get(packageName);
             synchronized (Objects.requireNonNull(lock)) {
                 try {
+                    final String file = App.isWebsite(app) ?
+                            StringLib.baseUrlWithScheme(packageName) :
+                            packageName.replace("://","").replace(PanelApp.packagePrefix, "");
                     for (final String url : App.isWebsite(app) ? ICON_URLS_WEB : (isWide ? ICON_URLS_BANNER : ICON_URLS_SQUARE)) {
-                        final String urlTLD = App.isWebsite(app) ?
-                                StringLib.baseUrlWithScheme(packageName) :
-                                packageName.replace("://","").replace(PanelApp.packagePrefix, "");
-                        if (downloadIconFromUrl(activity, String.format(url, urlTLD), iconFile)) {
-                            nextCheckByPackage.put(packageName, ICON_UPDATE_TIME_MINUTES);
-                            Icon.saveIcon(app, iconFile);
-                            activity.runOnUiThread(callback);
-                            break;
+                        if (downloadIconFromUrl(String.format(url, file), iconFile)) {
+                                nextCheckByPackageMs.put(packageName,
+                                        System.currentTimeMillis() + ICON_UPDATE_TIME_MINUTES * 1000 * 60);
+                                Icon.saveIcon(app, iconFile);
+                                activity.runOnUiThread(callback);
+                                return;
                         }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
-                    // Set the icon to now download if we either successfully downloaded it, or the download tried and failed
+                    // Set the icon to now download if we either successfully downloaded it,
+                    // or the download tried and failed
                     locks.remove(packageName);
                 }
             }
@@ -131,42 +130,41 @@ public abstract class IconRepo {
 
     /**
      * Downloads an icon from a given url and saves it using saveStream()
-     * @return True unless there was an error
+     * @return True if icon was downloaded
      */
-    private static boolean downloadIconFromUrl(Context context, String url, File iconFile) {
-        try {
-            InputStream inputStream = new URL(url).openStream();
-            if (saveStream(context, inputStream, iconFile)) {
+    private static boolean downloadIconFromUrl(String url, File iconFile) {
+        try (InputStream inputStream = new URL(url).openStream()) {
+            // Try to save
+            if (saveStream(inputStream, iconFile)) {
                 inputStream.close();
                 return true;
-            } else inputStream.close();
+            }
         } catch (IOException ignored) {}
         return false;
     }
 
     /**
      * Saves an inputstream used to download a bitmap to an actual file, applying webp compression.
-     * @return True unless there was an error
+     * @return True if the stream was different and has been saved
      */
-    private static boolean saveStream(Context context, InputStream inputStream, File outputFile) {
+    private static boolean saveStream(InputStream inputStream, File outputFile) {
         try {
             DataInputStream dataInputStream = new DataInputStream(inputStream);
 
             int length;
             byte[] buffer = new byte[65536];
+
+            //noinspection ResultOfMethodCallIgnored
+            Objects.requireNonNull(outputFile.getParentFile()).mkdirs();
             FileOutputStream fileOutputStream = new FileOutputStream(outputFile, false);
-            while ((length = dataInputStream.read(buffer)) > 0) {
+
+            while ((length = dataInputStream.read(buffer)) > 0)
                 fileOutputStream.write(buffer, 0, length);
-            }
+
             fileOutputStream.flush();
             fileOutputStream.close();
 
-            if (!isImageFileComplete(context, outputFile)) {
-                Log.i("IconRepo", "Image file not complete" + outputFile.getAbsolutePath());
-                return false;
-            }
-
-            Bitmap bitmap = ImageLib.bitmapFromFile(context, outputFile);
+            Bitmap bitmap = ImageLib.bitmapFromFile(outputFile);
 
             if (bitmap != null) {
                 Icon.compressAndSaveBitmap(outputFile, bitmap);
@@ -185,24 +183,5 @@ public abstract class IconRepo {
                 } catch (IOException ignored) {}
             }
         }
-    }
-
-    /**
-     * This usually returns true, but may fail if the download was interrupted or corrupt
-     * @return True if image file is complete
-     */
-    private static boolean isImageFileComplete(Context context, File imageFile) {
-        boolean success = false;
-        if (imageFile.length() > 0) {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
-            if (ImageLib.bitmapFromFile(context, imageFile, options) == null) {
-                Log.i("IconRepo", "Failed to get valid bitmap from "+imageFile.getAbsolutePath());
-            }
-            success = (options.outWidth > 0 && options.outHeight > 0);
-        }
-
-        if (!success) Log.e("AbstractPlatform", "Failed to validate image file: " + imageFile);
-        return success;
     }
 }

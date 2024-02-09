@@ -1,7 +1,6 @@
 package com.threethan.launcher.launcher;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -24,12 +23,15 @@ import android.view.ViewOutlineProvider;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import androidx.activity.ComponentActivity;
+import androidx.activity.OnBackPressedCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.esafirm.imagepicker.features.ImagePicker;
-import com.esafirm.imagepicker.model.Image;
 import com.threethan.launcher.R;
 import com.threethan.launcher.adapter.AppsAdapter;
 import com.threethan.launcher.adapter.CustomItemAnimator;
@@ -43,13 +45,14 @@ import com.threethan.launcher.helper.Keyboard;
 import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.lib.ImageLib;
-import com.threethan.launcher.updater.LauncherUpdater;
 import com.threethan.launcher.support.AppDetailsDialog;
 import com.threethan.launcher.support.SettingsDialogs;
 import com.threethan.launcher.support.SettingsManager;
+import com.threethan.launcher.updater.LauncherUpdater;
 import com.threethan.launcher.view.MarginDecoration;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -73,7 +76,7 @@ import eightbitlab.com.blurview.RenderScriptBlur;
     It contains functions for initializing, refreshing, and updating various parts of the interface.
  */
 
-public class LauncherActivity extends Activity {
+public class LauncherActivity extends ComponentActivity {
     public static Boolean darkMode = null;
     public static Boolean groupsEnabled = null;
     RecyclerView appsView;
@@ -117,6 +120,16 @@ public class LauncherActivity extends Activity {
         Drawable cd = new ColorDrawable(backgroundColor);
         if (alpha < 255 && Platform.isQuest(this)) cd.setAlpha(alpha);
         post(() -> getWindow().setBackgroundDrawable(cd));
+
+        // Set back action
+        final LauncherActivity la = this;
+        getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (AppsAdapter.animateClose(la)) return;
+                if (!settingsVisible) SettingsDialogs.showSettings(la);
+            }
+        });
     }
     public View rootView;
 
@@ -139,7 +152,7 @@ public class LauncherActivity extends Activity {
         init();
         Compat.checkCompatibilityUpdate(this);
 
-        reloadPackages();
+        refreshPackages();
         refreshBackground();
         refreshInterface();
     }
@@ -184,6 +197,7 @@ public class LauncherActivity extends Activity {
             if (!settingsVisible) SettingsDialogs.showSettings(this);
         });
     }
+
     protected void onLayoutChaged(View v, int left, int top, int right, int bottom,
                                   int oldLeft, int oldTop, int oldRight, int oldBottom) {
         if (Math.abs(oldBottom-bottom) > 10 || Math.abs(oldRight-right) > 10) { // Only on significant diff
@@ -194,35 +208,6 @@ public class LauncherActivity extends Activity {
             while (appsView.getItemDecorationCount() > 1)
                 appsView.removeItemDecorationAt(appsView.getItemDecorationCount()-1);
         }
-    }
-
-    public boolean clickGroup(int position) {
-        lastSelectedGroup = position;
-        // This method is replaced with a greatly expanded one in the child class
-        final List<String> groupsSorted = settingsManager.getAppGroupsSorted(false);
-        final String group = groupsSorted.get(position);
-        settingsManager.selectGroup(group);
-        refreshInterface();
-        return false;
-    }
-    public boolean longClickGroup(int position) {
-        lastSelectedGroup = position;
-
-        List<String> groups = settingsManager.getAppGroupsSorted(false);
-        Set<String> selectedGroups = settingsManager.getSelectedGroups();
-
-        if (position >= groups.size() || position < 0) return false;
-
-        String item = groups.get(position);
-        if (selectedGroups.contains(item)) selectedGroups.remove(item);
-        else selectedGroups.add(item);
-        if (selectedGroups.isEmpty()) {
-            selectedGroups.add(item);
-            return true;
-        }
-        settingsManager.setSelectedGroups(selectedGroups);
-        refreshInterface();
-        return false;
     }
 
     @Override
@@ -238,11 +223,47 @@ public class LauncherActivity extends Activity {
         } catch (RuntimeException ignored) {} //Runtime exception called when a service is invalid
         super.onDestroy();
     }
-    @Override
-    public void onBackPressed() {
-        if (AppsAdapter.animateClose(this)) return;
-        if (!settingsVisible) SettingsDialogs.showSettings(this);
+
+    public enum ImagePickerTarget {ICON, WALLPAPER}
+    private ImagePickerTarget imagePickerTarget;
+    public void showImagePicker(ImagePickerTarget target) {
+        imagePickerTarget = target;
+        imagePicker.launch(new PickVisualMediaRequest.Builder()
+                .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                .build());
     }
+
+    private ImageView selectedImageView;
+    public void setSelectedIconImage(ImageView imageView) {
+        selectedImageView = imageView;
+    }
+    // Registers a photo picker activity launcher in single-select mode.
+    private final ActivityResultLauncher<PickVisualMediaRequest> imagePicker =
+            registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
+                // Callback is invoked after the user selects a media item or closes the photo picker.
+                if (uri != null) {
+                    Bitmap bitmap;
+                    try {
+                        bitmap = ImageLib.bitmapFromStream(getContentResolver().openInputStream(uri));
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                        return;
+                    }
+                    if (bitmap == null) return;
+                    switch (imagePickerTarget) {
+                        case ICON -> AppDetailsDialog.onImageSelected(
+                                bitmap, selectedImageView, this);
+                        case WALLPAPER -> {
+                            bitmap = ImageLib.getResizedBitmap(bitmap, 1280);
+                            ImageLib.saveBitmap(bitmap,
+                                    new File(getApplicationInfo().dataDir, Settings.CUSTOM_BACKGROUND_PATH));
+                            refreshBackground();
+                        }
+                    }
+                } else {
+                    Log.d("PhotoPicker", "No media selected");
+                }
+            });
 
     @Override
     protected void onResume() {
@@ -262,10 +283,13 @@ public class LauncherActivity extends Activity {
             postDelayed(this::recheckPackages, 1000);
 
         postDelayed(() -> new LauncherUpdater(this).checkAppUpdateInteractive(), 1000);
-
     }
 
-    public void reloadPackages() {
+    /**
+     * Reloads and refreshes the current list of packages,
+     * and then the resulting app list for every activity
+     */
+    public void refreshPackages() {
         App.invalidateCaches();
         PackageManager packageManager = getPackageManager();
 
@@ -277,45 +301,18 @@ public class LauncherActivity extends Activity {
         launcherService.forEachActivity(LauncherActivity::refreshAppList);
     }
 
+    /**
+     * Checks for packages ansycrhnously using a RecheckPackagesExecutor,
+     * calls refreshPackages() if a change was detected
+     */
     public void recheckPackages() {
         int myPlatformChangeIndex = 0;
-        if (Platform.changeIndex > myPlatformChangeIndex) reloadPackages();
+        if (Platform.changeIndex > myPlatformChangeIndex) refreshPackages();
         else try {
             new RecheckPackagesExecutor().execute(this);
         } catch (Exception ignore) {
-            reloadPackages();
+            refreshPackages();
             Log.w("Lightning Launcher", "Exception while starting recheck package task");
-        }
-    }
-
-    private ImageView selectedImageView;
-    public void setSelectedIconImage(ImageView imageView) {
-        selectedImageView = imageView;
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == Settings.PICK_ICON_CODE) {
-            if (getAppAdapter() == null) return;
-            if (resultCode == RESULT_OK) {
-                for (Image image : ImagePicker.getImages(data)) {
-                    AppDetailsDialog.onImageSelected(image.getPath(), selectedImageView, this);
-                    break;
-                }
-            } else AppDetailsDialog.onImageSelected(null, selectedImageView, this);
-        } else if (requestCode == Settings.PICK_WALLPAPER_CODE) {
-            if (resultCode == RESULT_OK) {
-                for (Image image : ImagePicker.getImages(data)) {
-                    try {
-                        Bitmap bitmap = ImageLib.bitmapFromFile(this, new File(image.getPath()));
-                        if (bitmap == null) return;
-                        bitmap = ImageLib.getResizedBitmap(bitmap, 1280);
-                        ImageLib.saveBitmap(bitmap, new File(getApplicationInfo().dataDir, Settings.CUSTOM_BACKGROUND_PATH));
-                        break;
-                    } catch (Exception e) {e.printStackTrace();}
-                }
-            }
         }
     }
 
@@ -343,7 +340,7 @@ public class LauncherActivity extends Activity {
             ) {
                 blurView.setBackgroundTintList(ColorStateList.valueOf(Color.TRANSPARENT));
                 blurView.setOverlayColor((Color.parseColor(darkMode ? "#29000000" : "#40FFFFFF")));
-                setupBlurView(blurView);
+                initBlurView(blurView);
 
                 blurView.setOutlineProvider(ViewOutlineProvider.BACKGROUND);
                 blurView.setClipToOutline(true);
@@ -357,9 +354,14 @@ public class LauncherActivity extends Activity {
             }
         }
 
-        post(this::postRefresh);
+        post(() -> { if (needsUpdateCleanup) Compat.doUpdateCleanup(this); });
     }
-    protected void setupBlurView(BlurView blurView) {
+
+    /**
+     * Initializes an eightbitlabs BlurView
+     * @param blurView BlurView to setup
+     */
+    protected final void initBlurView(BlurView blurView) {
         View windowDecorView = getWindow().getDecorView();
         ViewGroup rootViewGroup = (ViewGroup) windowDecorView;
 
@@ -369,9 +371,6 @@ public class LauncherActivity extends Activity {
                                 ? new RenderEffectBlur()
                                 : new RenderScriptBlur(this))
                 .setBlurRadius(15f);
-    }
-    protected void postRefresh(){
-        if (needsUpdateCleanup) Compat.doUpdateCleanup(this);
     }
 
     public int lastSelectedGroup;
@@ -598,6 +597,43 @@ public class LauncherActivity extends Activity {
         runOnUiThread(() -> getAppAdapter().setAppList(this));
     }
 
+    /**
+     * Perform the action for clicking a group
+     * @param position Index of the group
+     */
+    public void clickGroup(int position) {
+        lastSelectedGroup = position;
+        // This method is replaced with a greatly expanded one in the child class
+        final List<String> groupsSorted = settingsManager.getAppGroupsSorted(false);
+        final String group = groupsSorted.get(position);
+        settingsManager.selectGroup(group);
+        refreshInterface();
+    }
+    /**
+     * Perform the action for long clicking a group
+     * @param position Index of the group
+     * @return True if this is the only selected group and should therefor show a menu
+     */
+    public boolean longClickGroup(int position) {
+        lastSelectedGroup = position;
+
+        List<String> groups = settingsManager.getAppGroupsSorted(false);
+        Set<String> selectedGroups = settingsManager.getSelectedGroups();
+
+        if (position >= groups.size() || position < 0) return false;
+
+        String item = groups.get(position);
+        if (selectedGroups.contains(item)) selectedGroups.remove(item);
+        else selectedGroups.add(item);
+        if (selectedGroups.isEmpty()) {
+            selectedGroups.add(item);
+            return true;
+        }
+        settingsManager.setSelectedGroups(selectedGroups);
+        refreshInterface();
+        return false;
+    }
+
     // Utility functions
     public void post(Runnable action) {
         if (mainView == null) action.run();
@@ -613,12 +649,18 @@ public class LauncherActivity extends Activity {
         else mainView.postDelayed(action, ms);
     }
 
+    /**
+     * Converts a value from display pixels to pixels
+     * @param dip display pixel value
+     * @return Pixel value
+     */
     public int dp(float dip) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, getResources().getDisplayMetrics());
     }
 
     @Nullable
     public AppsAdapter getAppAdapter() {
+        if (appsView == null) return null;
         return (AppsAdapter) appsView.getAdapter();
     }
     @Nullable
@@ -627,7 +669,11 @@ public class LauncherActivity extends Activity {
         return (GroupsAdapter) groupsView.getAdapter();
     }
 
-    public HashSet<String> getAllPackages() {
+    /**
+     * Gets a set of the packageName of every package
+     * @return Set of packageNames
+     */
+    public Set<String> getAllPackages() {
         HashSet<String> setAll = new HashSet<>();
         if (Platform.installedApps == null) return new HashSet<>();
         for (ApplicationInfo app : Platform.installedApps) setAll.add(app.packageName);
@@ -659,6 +705,9 @@ public class LauncherActivity extends Activity {
         public void onServiceDisconnected(ComponentName arg0) {}
     };
 
+    /**
+     * Calls a full update of group and app adapters (slow!)
+     */
     @SuppressLint("NotifyDataSetChanged")
     public void resetAdapters() {
         if (getAppAdapter() != null) {

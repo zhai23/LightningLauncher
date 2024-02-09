@@ -61,16 +61,14 @@ public class IconExecutor {
             appIcon = resources.getDrawable(iconId, null);
 
             return appIcon;
-        } catch (Exception ignored) { // Fails on web apps, possibly also on invalid packages
+        } catch (PackageManager.NameNotFoundException ignored) { // Fails on websites
             return null;
         }  finally {
             // Attempt to download the icon for this app from an online repo
             // Done AFTER saving the drawable version to prevent a race condition)
             IconRepo.check(activity, app, () ->
-                    activity.launcherService.forEachActivity(a -> {
-                            Objects.requireNonNull(a.getAppAdapter()).notifyItemChanged(app);
-                            a.refreshAppList();
-                    }));
+                    activity.launcherService.forEachActivity(a ->
+                            Objects.requireNonNull(a.getAppAdapter()).notifyItemChanged(app)));
         }
     }
 }

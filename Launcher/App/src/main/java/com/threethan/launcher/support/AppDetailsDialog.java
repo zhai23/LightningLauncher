@@ -6,12 +6,13 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 
 import com.threethan.launcher.R;
 import com.threethan.launcher.helper.App;
@@ -32,7 +33,6 @@ import java.util.Objects;
  * or when long-pressing an app in edit mode
  */
 public abstract class AppDetailsDialog {
-    private static Drawable iconDrawable;
     private static File customIconFile;
     private static ApplicationInfo imageApp;
 
@@ -69,7 +69,6 @@ public abstract class AppDetailsDialog {
         final TextView launchBrowserSpinnerText = dialog.findViewById(R.id.launchBrowserSpinnerText);
 
         // Load Icon
-        PackageManager packageManager = launcherActivity.getPackageManager();
         ImageView iconImageView = dialog.findViewById(R.id.appIcon);
         iconImageView.setImageDrawable(Icon.loadIcon(launcherActivity, currentApp, null));
 
@@ -77,15 +76,13 @@ public abstract class AppDetailsDialog {
         if (App.isBanner(currentApp)) iconImageView.getLayoutParams().width = launcherActivity.dp(150);
 
         iconImageView.setOnClickListener(iconPickerView -> {
-            iconDrawable = currentApp.loadIcon(packageManager);
-
             customIconFile = Icon.iconCustomFileForApp(launcherActivity, currentApp);
             if (customIconFile.exists()) //noinspection ResultOfMethodCallIgnored
                 customIconFile.delete();
             launcherActivity.setSelectedIconImage(iconImageView);
 
             imageApp = currentApp;
-            ImageLib.showImagePicker(launcherActivity, Settings.PICK_ICON_CODE);
+            launcherActivity.showImagePicker(LauncherActivity.ImagePickerTarget.ICON);
         });
 
         App.Type appType = App.getType(launcherActivity, currentApp);
@@ -240,17 +237,12 @@ public abstract class AppDetailsDialog {
             dialog.dismiss();
         });
     }
-    public static void onImageSelected(String path, ImageView selectedImageView, LauncherActivity launcherActivity) {
-        if (path != null) {
-            Bitmap bitmap = ImageLib.bitmapFromFile(launcherActivity, new File(path));
-            if (bitmap == null) return;
-            bitmap = ImageLib.getResizedBitmap(bitmap, 450);
-            ImageLib.saveBitmap(bitmap, customIconFile);
-            selectedImageView.setImageBitmap(bitmap);
-        } else {
-            selectedImageView.setImageDrawable(iconDrawable);
-            Icon.saveIcon(imageApp, customIconFile);
-        }
+    public static void onImageSelected(@NonNull Bitmap bitmap,
+                                       ImageView selectedImageView, LauncherActivity launcherActivity) {
+        bitmap = ImageLib.getResizedBitmap(bitmap, 450);
+        ImageLib.saveBitmap(bitmap, customIconFile);
+        selectedImageView.setImageBitmap(bitmap);
+
         Icon.cachedIcons.remove(Icon.cacheName(imageApp));
         launcherActivity.launcherService.forEachActivity(a -> {
             if (a.getAppAdapter() != null) a.getAppAdapter().notifyItemChanged(imageApp);

@@ -226,7 +226,7 @@ public abstract class Compat {
     public static void clearLabels(LauncherActivity launcherActivity) {
         Log.i(TAG, "Labels are being cleared");
         SettingsManager.appLabelCache.clear();
-        HashSet<String> setAll = launcherActivity.getAllPackages();
+        Set<String> setAll = launcherActivity.getAllPackages();
         for (String packageName : setAll) launcherActivity.dataStoreEditor.removeString(packageName);
 
         launcherActivity.launcherService.forEachActivity(a -> {
@@ -261,7 +261,7 @@ public abstract class Compat {
         SettingsManager.writeGroupsAndSort();
         launcherActivity.launcherService.forEachActivity(a -> {
             a.refreshAppList();
-            a.reloadPackages();
+            a.refreshPackages();
         });
     }
     public static DataStoreEditor getDataStore(Context context) {

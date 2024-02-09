@@ -19,7 +19,6 @@ import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.launcher.LauncherActivity;
-import com.threethan.launcher.lib.ImageLib;
 import com.threethan.launcher.updater.LauncherUpdater;
 
 import java.util.ArrayList;
@@ -145,7 +144,7 @@ public abstract class SettingsDialogs {
                     lastIndex = SettingsManager.BACKGROUND_DRAWABLES.length;
                 ImageView last = views[lastIndex];
 
-                if (index == views.length-1) ImageLib.showImagePicker(a, Settings.PICK_WALLPAPER_CODE);
+                if (index == views.length-1) a.showImagePicker(LauncherActivity.ImagePickerTarget.WALLPAPER);
                 if (last == view) return;
 
                 ValueAnimator viewAnimator = ValueAnimator.ofInt(view.getWidth(), selectedWallpaperWidthPx);

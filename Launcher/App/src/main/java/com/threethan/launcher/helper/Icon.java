@@ -135,7 +135,7 @@ public abstract class Icon {
         try {
             //noinspection ResultOfMethodCallIgnored
             Objects.requireNonNull(file.getParentFile()).mkdirs();
-            FileOutputStream fileOutputStream = new FileOutputStream(file.getAbsolutePath());
+            FileOutputStream fileOutputStream = new FileOutputStream(file.getAbsolutePath(), false);
             bitmap = scaleBitmap(bitmap);
             bitmap.compress(Bitmap.CompressFormat.WEBP, ICON_QUALITY, fileOutputStream);
             fileOutputStream.close();

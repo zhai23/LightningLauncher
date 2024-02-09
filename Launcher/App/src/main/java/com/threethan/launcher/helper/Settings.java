@@ -74,8 +74,6 @@ public abstract class Settings {
     public static final boolean DEFAULT_GROUPS_ENABLED = true;
     public static boolean DEFAULT_DETAILS_LONG_PRESS = false;
     public static final boolean DEFAULT_AUTO_HIDE_EMPTY = true;
-    public static final int PICK_ICON_CODE = 450;
-    public static final int PICK_WALLPAPER_CODE = 95;
     public static final String CUSTOM_BACKGROUND_PATH = "background.png";
 
     // Basic UI keys

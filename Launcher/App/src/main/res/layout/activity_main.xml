@@ -258,7 +258,6 @@
                 android:paddingEnd="5dp"
                 android:paddingBottom="10dp"
                 android:text="@string/selection_hint_none"
-                android:textColor="@color/ef_colorTextPrimary"
                 android:textSize="16sp"
                 tools:ignore="NestedWeights" />
 
@@ -298,7 +297,6 @@
                 android:paddingBottom="10dp"
                 android:singleLine="false"
                 android:text="@string/add_website"
-                android:textColor="@color/ef_colorTextPrimary"
                 android:textSize="16sp" />
 
             <TextView
@@ -318,7 +316,6 @@
                 android:paddingEnd="15dp"
                 android:paddingBottom="10dp"
                 android:text="@string/edit_mode_stop"
-                android:textColor="@color/ef_colorTextPrimary"
                 android:textSize="16sp" />
         </LinearLayout>
 

@@ -20,7 +20,6 @@ import com.threethan.launcher.helper.Dialog;
 import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.lib.StringLib;
-import com.threethan.launcher.support.SettingsDialogs;
 import com.threethan.launcher.support.SettingsManager;
 import com.threethan.launcher.view.EditTextWatched;
 
@@ -28,6 +27,7 @@ import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import eightbitlab.com.blurview.BlurView;
@@ -48,31 +48,22 @@ public class LauncherActivityEditable extends LauncherActivity {
     private class ConnectedHashSet extends HashSet<String> {
         @Override
         public boolean add(String s) {
-            getAppAdapter().notifySelectionChange(s);
+            Objects.requireNonNull(getAppAdapter()).notifySelectionChange(s);
             return super.add(s);
         }
         @Override
         public boolean remove(@Nullable Object o) {
-            getAppAdapter().notifySelectionChange((String) o);
+            Objects.requireNonNull(getAppAdapter()).notifySelectionChange((String) o);
             return super.remove(o);
         }
 
         @Override
         public void clear() {
-            for (String s : this) getAppAdapter().notifySelectionChange(s);
+            for (String s : this) Objects.requireNonNull(getAppAdapter()).notifySelectionChange(s);
             super.clear();
         }
     }
     public HashSet<String> currentSelectedApps = new ConnectedHashSet();
-    @Override
-    public void onBackPressed() {
-        if (AppsAdapter.animateClose(this)) return;
-        if (!settingsVisible) {
-            if (groupsEnabled) setEditMode(Boolean.FALSE.equals(editMode));
-            else try { SettingsDialogs.showSettings(this); } catch (Exception ignored) {}
-        }
-    }
-
     // Startup
     @Override
     protected void init() {
@@ -160,7 +151,7 @@ public class LauncherActivityEditable extends LauncherActivity {
     }
 
     @Override
-    public boolean clickGroup(int position) {
+    public void clickGroup(int position) {
         lastSelectedGroup = position;
         final List<String> groupsSorted = settingsManager.getAppGroupsSorted(false);
 
@@ -170,7 +161,7 @@ public class LauncherActivityEditable extends LauncherActivity {
             super.clickGroup(position-1); //Auto-move selection and select new group
             refreshInterface();
             postDelayed(() -> clickGroup(position-1), 500); //Auto-move selection
-            return false;
+            return;
         }
         final String group = groupsSorted.get(position);
 
@@ -193,8 +184,7 @@ public class LauncherActivityEditable extends LauncherActivity {
 
             SettingsManager.writeGroupsAndSort();
             refreshInterface();
-            return false;
-        } else return super.clickGroup(position);
+        } else super.clickGroup(position);
     }
 
     // Function overrides
@@ -323,10 +313,7 @@ public class LauncherActivityEditable extends LauncherActivity {
         // Presets
         dialog.findViewById(R.id.presetGoogle).setOnClickListener(view -> urlEdit.setText(R.string.preset_google));
         dialog.findViewById(R.id.presetYoutube).setOnClickListener(view -> urlEdit.setText(R.string.preset_youtube));
-        dialog.findViewById(R.id.presetDiscord).setOnClickListener(view -> {
-            //TODO: Prompt ppl to use the patcher
-            urlEdit.setText(R.string.preset_discord);
-        });
+        dialog.findViewById(R.id.presetDiscord).setOnClickListener(view -> urlEdit.setText(R.string.preset_discord));
         dialog.findViewById(R.id.presetSpotify).setOnClickListener(view -> urlEdit.setText(R.string.preset_spotify));
         dialog.findViewById(R.id.presetTidal).setOnClickListener(view -> urlEdit.setText(R.string.preset_tidal));
         dialog.findViewById(R.id.presetApkMirror).setOnClickListener(view -> urlEdit.setText(R.string.preset_apkmirror));
@@ -353,7 +340,7 @@ public class LauncherActivityEditable extends LauncherActivity {
                 editFooter);
         blurViewE.setOverlayColor(Color.parseColor(darkMode ? "#2A000000" : "#45FFFFFF"));
 
-        setupBlurView(blurViewE);
+        initBlurView(blurViewE);
 
         blurViewE.setActivated(false);
         blurViewE.setActivated(true);

@@ -48,7 +48,7 @@ public abstract class Launch {
         if (intent == null) {
             Log.w("AppLaunch", "Package could not be launched (Uninstalled?): "
                     +app.packageName);
-            launcherActivity.reloadPackages();
+            launcherActivity.refreshPackages();
             return false;
         } else if (Objects.equals(intent.getPackage(), Platform.BROWSER_PACKAGE)
             && !Platform.hasBrowser(launcherActivity)) {

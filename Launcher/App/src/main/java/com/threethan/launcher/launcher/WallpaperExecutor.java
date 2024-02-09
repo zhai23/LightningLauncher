@@ -60,7 +60,7 @@ class WallpaperExecutor {
             } else {
                 File file = new File(owner.getApplicationInfo().dataDir, Settings.CUSTOM_BACKGROUND_PATH);
                 try {
-                    Bitmap backgroundBitmap = ImageLib.bitmapFromFile(owner, file);
+                    Bitmap backgroundBitmap = ImageLib.bitmapFromFile(file);
                     backgroundThemeDrawable = new BitmapDrawable(owner.getResources(), backgroundBitmap);
                 } catch (Exception e) { e.printStackTrace(); }
             }

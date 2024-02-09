@@ -1,25 +1,18 @@
 package com.threethan.launcher.lib;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 
-import com.esafirm.imagepicker.features.ImagePicker;
-import com.threethan.launcher.launcher.LauncherActivity;
-
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 
 public class ImageLib {
 
@@ -41,20 +34,15 @@ public class ImageLib {
     public static void saveBitmap(Bitmap bitmap, File destinationFile) {
         FileOutputStream fileOutputStream;
         try {
+            //noinspection ResultOfMethodCallIgnored
+            Objects.requireNonNull(destinationFile.getParentFile()).mkdirs();
             fileOutputStream = new FileOutputStream(destinationFile);
             bitmap.compress(Bitmap.CompressFormat.WEBP, 100, fileOutputStream);
             fileOutputStream.flush();
             fileOutputStream.close();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
-    }
-    public static void showImagePicker(LauncherActivity activity, int requestCode) {
-        ImagePicker imagePicker = ImagePicker.create(activity);
-        imagePicker.single();
-        imagePicker.showCamera(false);
-        imagePicker.folderMode(true);
-        imagePicker.start(requestCode);
     }
 
     public static Bitmap bitmapFromDrawable (Drawable drawable) {
@@ -69,31 +57,14 @@ public class ImageLib {
     }
 
     @Nullable
-    public static Bitmap bitmapFromFile (Context context, File file) {
-        try {
-            final InputStream stream = context.getContentResolver().openInputStream(Uri.fromFile(file));
-            final Bitmap bitmap = BitmapFactory.decodeStream(stream);
-            if (stream != null) stream.close();
-            return bitmap;
-        } catch (FileNotFoundException e) {
-            Log.w("FileLib", "Failed to get bitmap from file "+file.getAbsolutePath());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+    public static Bitmap bitmapFromFile (File file) {
+        return BitmapFactory.decodeFile(file.getPath());
     }
+
     @Nullable
-    public static Bitmap bitmapFromFile (Context context, File file, BitmapFactory.Options options) {
-        try {
-            final InputStream stream = context.getContentResolver().openInputStream(Uri.fromFile(file));
-            final Bitmap bitmap = BitmapFactory.decodeStream(stream, new Rect(), options);
-            if (stream != null) stream.close();
-            return bitmap;
-        } catch (FileNotFoundException e) {
-            Log.w("FileLib", "Failed to get bitmap from file "+file.getAbsolutePath());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+    public static Bitmap bitmapFromStream(InputStream stream) {
+        final Bitmap bitmap = BitmapFactory.decodeStream(stream);
+        try { stream.close(); } catch (IOException ignored) {}
+        return bitmap;
     }
 }

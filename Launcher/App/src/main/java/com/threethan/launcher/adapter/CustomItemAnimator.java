@@ -44,7 +44,8 @@ public class CustomItemAnimator extends SimpleItemAnimator {
     public CustomItemAnimator() {
         // Reduce Durations
         setMoveDuration(120);
-        setChangeDuration(175);
+//        setChangeDuration(175);
+        setChangeDuration(0);
         setAddDuration(80);
         setRemoveDuration(50);
     }
