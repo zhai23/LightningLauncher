@@ -60,9 +60,11 @@ public abstract class IconRepo {
     private static final ConcurrentHashMap<String, Long> nextCheckByPackageMs = new ConcurrentHashMap<>();
 
     // How many minutes before we can recheck an icon that hasn't downloaded
-    private static final long ICON_CHECK_TIME_MINUTES = 5;
+    private static final long ICON_CHECK_TIME_MINUTES_2D = 240;
+    private static final long ICON_CHECK_TIME_MINUTES_VR = 1;
     // How many minutes before we can recheck an icon that has downloaded for updates
-    private static final long ICON_UPDATE_TIME_MINUTES = 60;
+    private static final long ICON_UPDATE_TIME_MINUTES_2D = 240;
+    private static final long ICON_UPDATE_TIME_MINUTES_VR = 60;
 
     /**
      * Starts the download of an icon, if one should be downloaded for that app
@@ -100,7 +102,12 @@ public abstract class IconRepo {
      */
     public static void download(final LauncherActivity activity, ApplicationInfo app, final Runnable callback) {
         final String packageName = app.packageName;
-        nextCheckByPackageMs.put(packageName, System.currentTimeMillis() + ICON_CHECK_TIME_MINUTES*1000*60);
+        final int delayMs = (int) ((
+                        App.isAppOfType(app, App.Type.TYPE_VR)
+                        ? ICON_CHECK_TIME_MINUTES_VR
+                        : ICON_CHECK_TIME_MINUTES_2D )
+                        *1000*60);
+        nextCheckByPackageMs.put(packageName, System.currentTimeMillis() + delayMs);
 
         final boolean isWide = App.isBanner(app);
         final File iconFile = Icon.iconCacheFileForPackage(activity, app);
@@ -115,11 +122,16 @@ public abstract class IconRepo {
                             packageName.replace("://","").replace(PanelApp.packagePrefix, "");
                     for (final String url : App.isWebsite(app) ? ICON_URLS_WEB : (isWide ? ICON_URLS_BANNER : ICON_URLS_SQUARE)) {
                         if (downloadIconFromUrl(String.format(url, file), iconFile)) {
-                                nextCheckByPackageMs.put(packageName,
-                                        System.currentTimeMillis() + ICON_UPDATE_TIME_MINUTES * 1000 * 60);
-                                Icon.saveIcon(app, iconFile);
-                                activity.runOnUiThread(callback);
-                                return;
+                            final int delayMsUpd = (int) ((
+                                App.isAppOfType(app, App.Type.TYPE_VR)
+                                        ? ICON_UPDATE_TIME_MINUTES_VR
+                                        : ICON_UPDATE_TIME_MINUTES_2D )
+                                *1000*60);
+                            nextCheckByPackageMs.put(packageName,
+                                    System.currentTimeMillis() + delayMsUpd);
+                            Icon.saveIcon(app, iconFile);
+                            activity.runOnUiThread(callback);
+                            return;
                         }
                     }
                 } catch (Exception e) {
