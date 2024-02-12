@@ -27,15 +27,11 @@ import java.util.Objects;
  */
 public class RemotePackageUpdater {
     /**
-     * The id of the provider which implements/has the name of
+     * The 'android:authority' of the provider which implements/has the name of
      *  "android.support.v4.content.FileProvider"
-     * The package name is included automatically, so typically this will be "provider" -
-     * referring to "android:authorities="${applicationId}.provider"" in the manifest;
-     * but may be different if a library uses a similar provider.
-     * <p>
-     * This is the only application-specific parameter in this class
+     *  (The package name is prepended automatically)
      */
-    private static final String PROVIDER = "imagepicker.provider";
+    private static final String PROVIDER = /*packageName +*/".fileprovider";
 
     /**
      * Stores information for a package which may be downloaded using RemotePackageUpdater
@@ -77,9 +73,9 @@ public class RemotePackageUpdater {
     protected static final String TAG = "Remote Package Updater";
 
     /**
-     * Temp directory for downloaded apks (May be cleared unexpectedly0
+     * Temp directory for downloaded apks in external cache dir., may be cleared unexpectedly
      */
-    public static final String APK_FOLDER = "TemporaryDownloadedApk";
+    public static final String APK_FOLDER = "downloadedApk";
     protected final PackageManager packageManager;
     protected final Activity activity;
 
@@ -110,7 +106,7 @@ public class RemotePackageUpdater {
         request.setTitle("Lightning Launcher Auto-Updater");
 
         final String apkFileName = remotePackage+remotePackage.latestVersion+".apk";
-        final File apkFile = new File(activity.getExternalCacheDir()+APK_FOLDER, apkFileName);
+        final File apkFile = new File(activity.getExternalCacheDir()+"/"+APK_FOLDER, apkFileName);
 
         FileLib.delete(apkFile.getParent());
 
@@ -125,8 +121,8 @@ public class RemotePackageUpdater {
                 updateDialogBuilder.setTitle(activity.getString(R.string.update_downloading_title, remotePackage));
                 updateDialogBuilder.setMessage(R.string.update_downloading_content);
                 updateDialogBuilder.setNegativeButton(R.string.update_hide_button, (dialog, which) -> dialog.cancel());
-                updateDialogBuilder.show();
-                downloadingDialog = updateAlertDialog;
+                updateDialogBuilder.setOnDismissListener(d -> downloadingDialog = null);
+                downloadingDialog = updateDialogBuilder.show();
             } catch (Exception ignored) {} // May rarely fail if window is invalid
         }
 
@@ -136,7 +132,7 @@ public class RemotePackageUpdater {
         activity.registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (updateAlertDialog != null) updateAlertDialog.dismiss();
+                if (downloadingDialog != null) downloadingDialog.dismiss();
                 installApk(apkFile);
                 activity.unregisterReceiver(this);
             }
@@ -145,7 +141,6 @@ public class RemotePackageUpdater {
         // Start the download
         manager.enqueue(request);
     }
-    AlertDialog updateAlertDialog;
 
     /**
      * Installs an apk from a file. May be called externally.
@@ -156,9 +151,8 @@ public class RemotePackageUpdater {
     public void installApk(File apkFile) {
         Log.v(TAG, "Installing from apk at "+apkFile.getAbsolutePath());
         if (apkFile.exists()) {
-            // provider is already included in the imagepicker lib
             Uri apkURI = FileProvider.getUriForFile(activity,
-                    activity.getApplicationContext().getPackageName() + "." + PROVIDER,
+                    activity.getApplicationContext().getPackageName() + PROVIDER,
                     apkFile);
             Intent intent = new Intent(Intent.ACTION_VIEW);
 

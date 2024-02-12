@@ -150,7 +150,7 @@ public abstract class AppUpdater extends RemotePackageUpdater {
             Log.i(TAG, "App is up to date :)");
             updateAvailable = false;
             // Clear downloaded APKs
-            FileLib.delete(activity.getCacheDir()+APK_FOLDER);
+            FileLib.delete(activity.getExternalCacheDir()+"/"+APK_FOLDER);
         }
     }
 
