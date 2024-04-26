@@ -8,6 +8,7 @@ import com.threethan.launcher.R;
 import com.threethan.launcher.launcher.LauncherActivity;
 import com.threethan.launcher.lib.FileLib;
 import com.threethan.launcher.lib.StringLib;
+import com.threethan.launcher.updater.IconUpdater;
 import com.threethan.launcher.support.SettingsManager;
 
 import java.io.File;
@@ -222,7 +223,7 @@ public abstract class Compat {
             if (a.getAppAdapter() != null) a.getAppAdapter().notifyAllChanged();
         });
 
-        IconRepo.clearDelays();
+        IconUpdater.clearDelays();
     }
     // Clears any custom labels assigned to apps, including whether they've been starred
     public static void clearLabels(LauncherActivity launcherActivity) {

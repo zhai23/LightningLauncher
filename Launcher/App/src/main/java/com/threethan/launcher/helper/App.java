@@ -57,8 +57,8 @@ public abstract class App {
         if (set == null) return new HashSet<>();
         else return set;
     }
-    protected static boolean isAppOfType
-        (ApplicationInfo applicationInfo, App.Type appType) {
+    public static boolean isAppOfType
+            (ApplicationInfo applicationInfo, App.Type appType) {
 
         final LauncherActivity launcherActivity = SettingsManager.getAnyLauncherActivity();
 

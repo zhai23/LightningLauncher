@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import androidx.annotation.Nullable;
 
 import com.threethan.launcher.launcher.LauncherActivity;
+import com.threethan.launcher.updater.IconUpdater;
 
 import java.io.File;
 import java.util.Objects;
@@ -21,7 +22,7 @@ public class IconExecutor {
     public static void execute(LauncherActivity activity, ApplicationInfo app, ImageView
             imageView) {
         Thread thread = new Thread(() -> {
-            Drawable appIcon = loadIcon(activity, app, imageView);
+            Drawable appIcon = loadIcon(activity, app);
             if (appIcon != null) {
                 Icon.cacheIcon(app, appIcon);
                 if (imageView != null) activity.runOnUiThread(() -> imageView.setImageDrawable(appIcon));
@@ -32,8 +33,7 @@ public class IconExecutor {
     }
     @SuppressLint("UseCompatLoadingForDrawables")
     @Nullable
-    public static Drawable loadIcon(LauncherActivity activity, ApplicationInfo app, ImageView
-    imageView) {
+    public static Drawable loadIcon(LauncherActivity activity, ApplicationInfo app) {
         Drawable appIcon = null;
 
         // Try to load from custom icon file
@@ -66,7 +66,7 @@ public class IconExecutor {
         }  finally {
             // Attempt to download the icon for this app from an online repo
             // Done AFTER saving the drawable version to prevent a race condition)
-            IconRepo.check(activity, app, () ->
+            IconUpdater.check(activity, app, () ->
                     activity.launcherService.forEachActivity(a ->
                             Objects.requireNonNull(a.getAppAdapter()).notifyItemChanged(app)));
         }

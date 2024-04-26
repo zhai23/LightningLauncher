@@ -14,6 +14,7 @@ import com.threethan.launcher.R;
 import com.threethan.launcher.launcher.LauncherActivity;
 import com.threethan.launcher.lib.ImageLib;
 import com.threethan.launcher.lib.StringLib;
+import com.threethan.launcher.updater.IconUpdater;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -97,7 +98,7 @@ public abstract class Icon {
         final File iconFile = iconCacheFileForPackage(activity, app);
         final boolean ignored1 = iconFile.delete();
         downloadImageView.setImageDrawable(loadIcon(activity, app, downloadImageView));
-        IconRepo.download(activity, app, null);
+        IconUpdater.download(activity, app, null);
         Dialog.toast(activity.getString(R.string.refreshed_icon));
     }
     public static void saveIconDrawableExternal(Activity activity, Drawable icon, ApplicationInfo app) {

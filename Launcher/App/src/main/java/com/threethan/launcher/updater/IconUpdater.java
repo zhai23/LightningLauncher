@@ -1,9 +1,12 @@
-package com.threethan.launcher.helper;
+package com.threethan.launcher.updater;
 
 import android.content.pm.ApplicationInfo;
 import android.graphics.Bitmap;
 import android.util.Log;
 
+import com.threethan.launcher.helper.App;
+import com.threethan.launcher.helper.Icon;
+import com.threethan.launcher.helper.PanelApp;
 import com.threethan.launcher.launcher.LauncherActivity;
 import com.threethan.launcher.lib.ImageLib;
 import com.threethan.launcher.lib.StringLib;
@@ -24,7 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Its functions are called by the Icon class. If no downloadable icon is found,
  * the Icon class will then decide on the icon to be used.
  */
-public abstract class IconRepo {
+public abstract class IconUpdater {
     // Repository URLs:
     // Each URL will be tried in order: the first with a file matching the package name will be used
     private static final String[] ICON_URLS_SQUARE = {
@@ -101,7 +104,7 @@ public abstract class IconRepo {
      * @param callback Called when the download completes successfully
      */
     public static void download(final LauncherActivity activity, ApplicationInfo app, final Runnable callback) {
-        final String packageName = app.packageName;
+        final String packageName = getDownloadPackageName(app);
         final int delayMs = (int) ((
                         App.isAppOfType(app, App.Type.TYPE_VR)
                         ? ICON_CHECK_TIME_MINUTES_VR
@@ -145,6 +148,19 @@ public abstract class IconRepo {
         });
         thread.setPriority(Thread.MIN_PRIORITY);
         thread.start();
+    }
+
+    /**
+     * Gets the package name as it should be used for download purposes,
+     * may exclude parts of the package name used for app mods or variants
+     * which should use the base app's icon
+     * @param app ApplicationInfo of the app
+     * @return PackageID of the app, optionally modified in some way
+     */
+    private static String getDownloadPackageName(ApplicationInfo app) {
+        String packageName = app.packageName;
+        packageName = packageName.replace(".mrf.", ".");
+        return packageName;
     }
 
     /**
