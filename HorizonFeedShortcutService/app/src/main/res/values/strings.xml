@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-    <string name="app_name">Horizon Feed ➔ Lightning Launcher</string>
-    <string name="accessibility_event_name_old">[Explore]</string>
-    <string name="accessibility_event_name_new">[Horizon Feed]</string>
-    <string name="service_desc">Enable this service using the switch up top to open Lightning Launcher when you hover over the &quot;Oculus Explore&quot;/&quot;"Horizon Feed" button on the dock
-    \n\n(May not work in with certain system languages)</string>
-</resources>
