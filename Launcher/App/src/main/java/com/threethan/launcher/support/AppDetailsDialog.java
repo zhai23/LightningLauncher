@@ -76,7 +76,7 @@ public abstract class AppDetailsDialog {
         if (App.isBanner(currentApp)) iconImageView.getLayoutParams().width = launcherActivity.dp(150);
 
         iconImageView.setOnClickListener(iconPickerView -> {
-            customIconFile = Icon.iconCustomFileForApp(launcherActivity, currentApp);
+            customIconFile = Icon.iconCustomFileForApp(currentApp);
             if (customIconFile.exists()) //noinspection ResultOfMethodCallIgnored
                 customIconFile.delete();
             launcherActivity.setSelectedIconImage(iconImageView);

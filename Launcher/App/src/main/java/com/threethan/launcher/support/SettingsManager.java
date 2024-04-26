@@ -55,25 +55,16 @@ public class SettingsManager extends Settings {
     private static DataStoreEditor dataStoreEditor = null;
     private static DataStoreEditor dataStoreEditorSort = null;
     private final WeakReference<LauncherActivity> myLauncherActivityRef;
-    private static WeakReference<LauncherActivity> anyLauncherActivityRef = null;
     private static ConcurrentHashMap<String, String> appGroupMap = new ConcurrentHashMap<>();
     private static Set<String> appGroupsSet = Collections.synchronizedSet(new HashSet<>());
     private Set<String> selectedGroupsSet = Collections.synchronizedSet(new HashSet<>());
     private static final Map<Context, SettingsManager> instanceByContext = Collections.synchronizedMap(new HashMap<>());
     private SettingsManager(LauncherActivity activity) {
         myLauncherActivityRef = new WeakReference<>(activity);
-        anyLauncherActivityRef = new WeakReference<>(activity);
         dataStoreEditor = activity.dataStoreEditor;
         dataStoreEditorSort = new DataStoreEditor(activity, "sort");
         // Conditional defaults (hacky)
         Settings.DEFAULT_DETAILS_LONG_PRESS = Platform.isTv(activity);
-    }
-
-    /**
-     * Gets a reference to the most recent launcher activity. Reasonably unlikely to ever be null.
-     */
-    public static LauncherActivity getAnyLauncherActivity() {
-        return anyLauncherActivityRef.get();
     }
 
     /**
@@ -90,7 +81,7 @@ public class SettingsManager extends Settings {
 
     /**
      * Gets the label for the given app.
-     * Returns the package name if it hasn't been cached yet, but then gets it asynchrously.
+     * Returns the package name if it hasn't been cached yet, but then gets it asynchronously.
      */
     public static String getAppLabel(ApplicationInfo app) {
         if (appLabelCache.containsKey(app)) return appLabelCache.get(app);
@@ -126,7 +117,7 @@ public class SettingsManager extends Settings {
             }
         }
         try {
-            PackageManager pm = anyLauncherActivityRef.get().getPackageManager();
+            PackageManager pm = LauncherActivity.getAnyInstance().getPackageManager();
             String label = app.loadLabel(pm).toString();
             if (!label.isEmpty()) return label;
             // Try to load this app's real app info
@@ -140,13 +131,13 @@ public class SettingsManager extends Settings {
         if (newName == null) return;
         appLabelCache.put(app, newName);
         dataStoreEditor.putString(app.packageName, newName);
-        getAnyLauncherActivity().launcherService.forEachActivity(LauncherActivity::refreshAppList);
+        LauncherActivity.getAnyInstance().launcherService.forEachActivity(LauncherActivity::refreshAppList);
     }
     public static boolean getAppLaunchOut(String pkg) {
         if (App.isWebsite(pkg)) {
             // If website, select based on browser selection
             final String launchBrowserKey = Settings.KEY_LAUNCH_BROWSER + pkg;
-            final int launchBrowserSelection = getAnyLauncherActivity().dataStoreEditor.getInt(
+            final int launchBrowserSelection = LauncherActivity.getAnyInstance().dataStoreEditor.getInt(
                     launchBrowserKey,
                     SettingsManager.getDefaultBrowser()
             );
@@ -251,11 +242,8 @@ public class SettingsManager extends Settings {
      * @return The default set of groups
      */
     public static Set<String> getDefaultGroupsSet() {
-        LauncherActivity launcherActivity = anyLauncherActivityRef.get();
-        if (launcherActivity == null) return Collections.emptySet();
-
         Set<String> defaultGroupsSet = new HashSet<>();
-        for (App.Type type : Platform.getSupportedAppTypes(launcherActivity))
+        for (App.Type type : Platform.getSupportedAppTypes(LauncherActivity.getAnyInstance()))
             defaultGroupsSet.add(App.getDefaultGroupFor(type));
 
         return (defaultGroupsSet);
@@ -452,7 +440,7 @@ public class SettingsManager extends Settings {
     public static void setDefaultGroupFor(App.Type type, String newDefault) {
         if (newDefault == null) return;
         defaultGroupCache.put(type, newDefault);
-        SettingsManager.getAnyLauncherActivity().dataStoreEditor.putString(Settings.KEY_DEFAULT_GROUP + type, newDefault);
+        LauncherActivity.getAnyInstance().dataStoreEditor.putString(Settings.KEY_DEFAULT_GROUP + type, newDefault);
     }
 
     /**
@@ -497,7 +485,7 @@ public class SettingsManager extends Settings {
     }
 
     /**
-     * Check if advanced chainloader size options should be show
+     * Check if advanced chain-loader size options should be show
      * @return True if advanced size options are currently enabled
      */
     public static boolean getShowAdvancedSizeOptions(LauncherActivity activity) {

@@ -37,14 +37,14 @@ public class IconExecutor {
         Drawable appIcon = null;
 
         // Try to load from custom icon file
-        final File iconCustomFile = Icon.iconCustomFileForApp(activity, app);
+        final File iconCustomFile = Icon.iconCustomFileForApp(app);
         if (iconCustomFile.exists()) appIcon = Drawable.createFromPath(iconCustomFile.getAbsolutePath());
         if (appIcon != null) return appIcon;
 
         // Everything in the try will still attempt to download an icon
         try {
             // Try to load from cached icon file
-            final File iconCacheFile = Icon.iconCacheFileForPackage(activity, app);
+            final File iconCacheFile = Icon.iconCacheFileForPackage(app);
             if (iconCacheFile.exists()) appIcon = Drawable.createFromPath(iconCacheFile.getAbsolutePath());
             if (appIcon != null) return appIcon;
 

@@ -46,13 +46,14 @@ import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.helper.Settings;
 import com.threethan.launcher.lib.ImageLib;
 import com.threethan.launcher.support.AppDetailsDialog;
-import com.threethan.launcher.support.SettingsDialogs;
+import com.threethan.launcher.support.SettingsDialog;
 import com.threethan.launcher.support.SettingsManager;
 import com.threethan.launcher.updater.LauncherUpdater;
 import com.threethan.launcher.view.MarginDecoration;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -100,6 +101,16 @@ public class LauncherActivity extends ComponentActivity {
     public static boolean namesBanner;
     public static boolean namesSquare;
 
+    private static WeakReference<LauncherActivity> anyInstance = null;
+
+    /**
+     * Gets an instance of a LauncherActivity, not caring if it is the active instance or not
+     * @return A reference to some launcher activity
+     */
+    public static LauncherActivity getAnyInstance() {
+        return Objects.requireNonNull(anyInstance.get());
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -127,7 +138,7 @@ public class LauncherActivity extends ComponentActivity {
             @Override
             public void handleOnBackPressed() {
                 if (AppsAdapter.animateClose(la)) return;
-                if (!settingsVisible) SettingsDialogs.showSettings(la);
+                if (!settingsVisible) new SettingsDialog(la).show();
             }
         });
     }
@@ -194,7 +205,7 @@ public class LauncherActivity extends ComponentActivity {
         // Set logo button
         ImageView settingsImageView = rootView.findViewById(R.id.settingsIcon);
         settingsImageView.setOnClickListener(view -> {
-            if (!settingsVisible) SettingsDialogs.showSettings(this);
+            if (!settingsVisible) new SettingsDialog(this).show();
         });
     }
 
@@ -268,6 +279,8 @@ public class LauncherActivity extends ComponentActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        anyInstance = new WeakReference<>(this);
 
         try {
             // Hide KB

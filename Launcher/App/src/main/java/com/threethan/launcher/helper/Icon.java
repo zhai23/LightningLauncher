@@ -38,21 +38,21 @@ public abstract class Icon {
     public static final Map<String, Drawable> cachedIcons = new ConcurrentHashMap<>();
     private static final String BANNER_SUFFIX = "$banner";
 
-    public static File iconCacheFileForPackage(LauncherActivity launcherActivity, ApplicationInfo app) {
-        return iconFileForPackage(launcherActivity, app, false);
+    public static File iconCacheFileForPackage(ApplicationInfo app) {
+        return iconFileForPackage(app, false);
     }
-    public static File iconCustomFileForApp(LauncherActivity launcherActivity, ApplicationInfo app) {
-        return iconFileForPackage(launcherActivity, app, true);
+    public static File iconCustomFileForApp(ApplicationInfo app) {
+        return iconFileForPackage(app, true);
     }
-    private static File iconFileForPackage(LauncherActivity launcherActivity, ApplicationInfo app, boolean custom) {
-        String cachename = cacheName(app);
+    private static File iconFileForPackage(ApplicationInfo app, boolean custom) {
+        String cacheName = cacheName(app);
         ApplicationInfo tempApp = new ApplicationInfo();
-        tempApp.packageName = cachename;
+        tempApp.packageName = cacheName;
         final boolean wide = App.isBanner(tempApp);
         final boolean oneIcon = custom || App.isWebsite(tempApp) || App.isShortcut(tempApp);
-        return new File(launcherActivity.getApplicationInfo().dataDir +
+        return new File(LauncherActivity.getAnyInstance().getApplicationInfo().dataDir +
                 (custom ? ICON_CUSTOM_FOLDER : ICON_CACHE_FOLDER),
-                cachename + (wide && !oneIcon ? "-wide" : "") + ".webp");
+                cacheName + (wide && !oneIcon ? "-wide" : "") + ".webp");
     }
     public static void init(LauncherActivity launcherActivity) {
         // Icon init
@@ -94,8 +94,8 @@ public abstract class Icon {
     }
 
     public static void reloadIcon(LauncherActivity activity, ApplicationInfo app, ImageView downloadImageView) {
-        final boolean ignored0 = iconCustomFileForApp(activity, app).delete();
-        final File iconFile = iconCacheFileForPackage(activity, app);
+        final boolean ignored0 = iconCustomFileForApp(app).delete();
+        final File iconFile = iconCacheFileForPackage(app);
         final boolean ignored1 = iconFile.delete();
         downloadImageView.setImageDrawable(loadIcon(activity, app, downloadImageView));
         IconUpdater.download(activity, app, null);

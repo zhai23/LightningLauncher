@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Consumer;
 
 /*
     SettingsDialog
@@ -35,14 +36,23 @@ import java.util.Set;
     and making sure settings are correctly applied to launcher activities
  */
 
-public abstract class SettingsDialogs {
+public class SettingsDialog {
     private static boolean clearedLabel;
     private static boolean clearedIconCache;
     private static boolean clearedIconCustom;
     private static boolean clearedSort;
     private static boolean clearedGroups;
-    @SuppressLint("UseSwitchCompatOrMaterialCode")
-    public static void showSettings(LauncherActivity a) {
+    private final LauncherActivity a;
+
+    /**
+     * Creates a settings dialog. Make sure to call show()!
+     * @param a Parent LauncherActivity instance
+     */
+    public SettingsDialog(LauncherActivity a) {
+        this.a = a;
+    }
+
+    public void show() {
         AlertDialog dialog = Dialog.build(a, R.layout.dialog_settings);
 
         if (dialog == null) return;
@@ -100,13 +110,13 @@ public abstract class SettingsDialogs {
         }
 
         // Wallpaper and style
-        Switch dark = dialog.findViewById(R.id.darkModeSwitch);
-        dark.setChecked(a.dataStoreEditor.getBoolean(Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE));
-        dark.setOnCheckedChangeListener((compoundButton, value) -> {
-            a.dataStoreEditor.putBoolean(Settings.KEY_DARK_MODE, value);
-            LauncherActivity.darkMode = value;
-            a.launcherService.forEachActivity(LauncherActivity::resetAdapters);
-        });
+        Switch darkSwitch = dialog.findViewById(R.id.darkModeSwitch);
+        attachSwitchToSetting(darkSwitch,
+                Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE,
+                value -> {
+                    LauncherActivity.darkMode = value;
+                    a.launcherService.forEachActivity(LauncherActivity::resetAdapters);
+                });
         ImageView[] views = {
                 dialog.findViewById(R.id.background0),
                 dialog.findViewById(R.id.background1),
@@ -168,8 +178,8 @@ public abstract class SettingsDialogs {
                 // Set the background
                 a.setBackground(index);
 
-                // Set if dark mode is switch was automatically en/disabled
-                if (index != views.length-1) dark.setChecked(LauncherActivity.darkMode);
+                // Set if darkSwitch mode is switch was automatically en/disabled
+                if (index != views.length-1) darkSwitch.setChecked(LauncherActivity.darkMode);
             });
         }
 
@@ -218,48 +228,24 @@ public abstract class SettingsDialogs {
         }));
         margin.setMax(40);
 
-        Switch groups = dialog.findViewById(R.id.groupSwitch);
-        groups.setChecked(LauncherActivity.groupsEnabled);
-        groups.setOnCheckedChangeListener((sw, value) -> {
-            if (!a.dataStoreEditor.getBoolean(Settings.KEY_SEEN_HIDDEN_GROUPS_POPUP, false) && value != Settings.DEFAULT_GROUPS_ENABLED) {
-                groups.setChecked(Settings.DEFAULT_GROUPS_ENABLED); // Revert switch
-                AlertDialog subDialog = Dialog.build(a, R.layout.dialog_info_hide_groups_tv);
-                if (subDialog == null) return;
-                subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
-                    final boolean newValue = !Settings.DEFAULT_GROUPS_ENABLED;
-                    a.dataStoreEditor
-                            .putBoolean(Settings.KEY_SEEN_HIDDEN_GROUPS_POPUP, true)
-                            .putBoolean(Settings.KEY_GROUPS_ENABLED, newValue);
-                    LauncherActivity.groupsEnabled = newValue;
-                    a.launcherService.forEachActivity(LauncherActivity::refreshInterface);
-                    subDialog.dismiss();
-                    // Group enabled state
-                    {
+
+        attachSwitchToSetting(dialog.findViewById(R.id.groupSwitch),
+                Settings.KEY_GROUPS_ENABLED, Settings.DEFAULT_GROUPS_ENABLED,
+                value -> {
+                    showOneTimeWarningDialog(R.layout.dialog_info_hide_groups_tv,
+                                             Settings.KEY_SEEN_HIDDEN_GROUPS_POPUP);
+                    LauncherActivity.groupsEnabled = value;
+                    if (value) {
+                        // Can edit, show switch
+                        editSwitch.setChecked(a.isEditing());
+                        dialog.findViewById(R.id.editModeContainer).setVisibility(View.VISIBLE);
+                        addWebsite.setVisibility(View.GONE);
+                    } else {
                         dialog.findViewById(R.id.editModeContainer).setVisibility(View.GONE);
                         addWebsite.setVisibility(View.VISIBLE);
                     }
-                });
-                subDialog.findViewById(R.id.cancel).setOnClickListener(view -> subDialog.dismiss());
-            } else {
-                a.dataStoreEditor.putBoolean(Settings.KEY_GROUPS_ENABLED, value);
-                // Group enabled state
-                if (value) {
-                    // Can edit, show switch
-                    editSwitch.setChecked(a.isEditing());
-                    dialog.findViewById(R.id.editModeContainer).setVisibility(View.VISIBLE);
-                    addWebsite.setVisibility(View.GONE);
-                } else {
-                    dialog.findViewById(R.id.editModeContainer).setVisibility(View.GONE);
-                    addWebsite.setVisibility(View.VISIBLE);
                 }
-
-                LauncherActivity.groupsEnabled = value;
-                a.launcherService.forEachActivity(la -> {
-                    la.refreshInterface();
-                    la.setEditMode(false);
-                });
-            }
-        });
+        );
 
         // Clear buttons (limited to one use to prevent bugs due to spamming)
         clearedLabel = false;
@@ -273,10 +259,10 @@ public abstract class SettingsDialogs {
             }
         });
         View iconSettings = dialog.findViewById(R.id.iconSettingsButton);
-        iconSettings.setOnClickListener(view -> SettingsDialogs.showIconSettings(a));
+        iconSettings.setOnClickListener(view -> SettingsDialog.showIconSettings(a));
 
         View groupSettings = dialog.findViewById(R.id.groupDefaultsInfoButton);
-        groupSettings.setOnClickListener(view -> showGroupSettings(a));
+        groupSettings.setOnClickListener(view -> showGroupSettings());
 
         // Banner mode
         final Map<App.Type, Switch> switchByType = new HashMap<>();
@@ -309,26 +295,17 @@ public abstract class SettingsDialogs {
         }
 
         // Names
-        Switch names = dialog.findViewById(R.id.nameSquareSwitch);
-        names.setChecked(a.dataStoreEditor.getBoolean(Settings.KEY_SHOW_NAMES_SQUARE, Settings.DEFAULT_SHOW_NAMES_SQUARE));
-        names.setOnCheckedChangeListener((compoundButton, value) -> {
-            a.dataStoreEditor.putBoolean(Settings.KEY_SHOW_NAMES_SQUARE, value);
-            LauncherActivity.namesSquare = value;
-            if(a.getAppAdapter() != null) a.getAppAdapter().notifyAllChanged();
-        });
-        Switch wideNames = dialog.findViewById(R.id.nameBannerSwitch);
-        wideNames.setChecked(a.dataStoreEditor.getBoolean(Settings.KEY_SHOW_NAMES_BANNER, Settings.DEFAULT_SHOW_NAMES_BANNER));
-        wideNames.setOnCheckedChangeListener((compoundButton, value) -> {
-            a.dataStoreEditor.putBoolean(Settings.KEY_SHOW_NAMES_BANNER, value);
-            LauncherActivity.namesBanner = value;
-            if(a.getAppAdapter() != null) a.getAppAdapter().notifyAllChanged();
-        });
+        attachSwitchToSetting(dialog.findViewById(R.id.nameSquareSwitch),
+                Settings.KEY_SHOW_NAMES_SQUARE, Settings.DEFAULT_SHOW_NAMES_SQUARE);
+
+        attachSwitchToSetting(dialog.findViewById(R.id.nameBannerSwitch),
+                Settings.KEY_SHOW_NAMES_BANNER, Settings.DEFAULT_SHOW_NAMES_BANNER);
 
         // Advanced button
-        dialog.findViewById(R.id.advancedSettingsButton).setOnClickListener(view -> SettingsDialogs.showAdvancedSettings(a));
+        dialog.findViewById(R.id.advancedSettingsButton).setOnClickListener(view -> showAdvancedSettings());
     }
     @SuppressLint("UseSwitchCompatOrMaterialCode")
-    public static void showAdvancedSettings(LauncherActivity a) {
+    public void showAdvancedSettings() {
         AlertDialog dialog = Dialog.build(a, R.layout.dialog_settings_advanced);
         if (dialog == null) return;
 
@@ -363,49 +340,22 @@ public abstract class SettingsDialogs {
         }
 
         // Advanced
-        Switch longPressEdit = dialog.findViewById(R.id.longPressEditSwitch);
-        longPressEdit.setChecked(!a.dataStoreEditor.getBoolean(Settings.KEY_DETAILS_LONG_PRESS, Settings.DEFAULT_DETAILS_LONG_PRESS));
-        longPressEdit.setOnCheckedChangeListener((compoundButton, value) -> {
-            a.dataStoreEditor.putBoolean(Settings.KEY_DETAILS_LONG_PRESS, !value);
-            a.launcherService.forEachActivity(LauncherActivity::refreshInterface);
-        });
-        Switch hideEmpty = dialog.findViewById(R.id.hideEmptySwitch);
-        hideEmpty.setChecked(a.dataStoreEditor.getBoolean(Settings.KEY_AUTO_HIDE_EMPTY, Settings.DEFAULT_AUTO_HIDE_EMPTY));
-        hideEmpty.setOnCheckedChangeListener((compoundButton, value) -> {
-            a.dataStoreEditor.putBoolean(Settings.KEY_AUTO_HIDE_EMPTY, value);
-            a.launcherService.forEachActivity(LauncherActivity::refreshInterface);
-        });
+        attachSwitchToSetting(dialog.findViewById(R.id.longPressEditSwitch),
+                Settings.KEY_DETAILS_LONG_PRESS, Settings.DEFAULT_AUTO_HIDE_EMPTY);
 
         if (Platform.isVr(a)) {
-            Switch defaultLaunchOut = dialog.findViewById(R.id.defaultLaunchOutSwitch);
-            defaultLaunchOut.setChecked(a.dataStoreEditor.getBoolean(Settings.KEY_DEFAULT_LAUNCH_OUT, Settings.DEFAULT_DEFAULT_LAUNCH_OUT));
-            defaultLaunchOut.setOnCheckedChangeListener((compoundButton, value) -> {
-                a.dataStoreEditor.putBoolean(Settings.KEY_DEFAULT_LAUNCH_OUT, value);
-                if (!a.dataStoreEditor.getBoolean(Settings.KEY_SEEN_LAUNCH_OUT_POPUP, false)) {
-                    AlertDialog subDialog = Dialog.build(a, R.layout.dialog_info_launch_out);
-                    if (subDialog != null)
-                        subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
-                            a.dataStoreEditor
-                                    .putBoolean(Settings.KEY_SEEN_LAUNCH_OUT_POPUP, true);
-                            subDialog.dismiss();
-                        });
-                }
-            });
+            attachSwitchToSetting(dialog.findViewById(R.id.defaultLaunchOutSwitch),
+                    Settings.KEY_DEFAULT_LAUNCH_OUT, Settings.DEFAULT_DEFAULT_LAUNCH_OUT,
+                    value -> showOneTimeWarningDialog(R.layout.dialog_info_launch_out,
+                                                  Settings.KEY_SEEN_LAUNCH_OUT_POPUP)
+            );
 
-            Switch advancedSizingSwitch = dialog.findViewById(R.id.advancedSizingSwitch);
-            advancedSizingSwitch.setChecked(a.dataStoreEditor.getBoolean(Settings.KEY_ADVANCED_SIZING, Settings.DEFAULT_ADVANCED_SIZING));
-            advancedSizingSwitch.setOnCheckedChangeListener((compoundButton, value) -> {
-                a.dataStoreEditor.putBoolean(Settings.KEY_ADVANCED_SIZING, value);
-                if (!a.dataStoreEditor.getBoolean(Settings.KEY_SEEN_LAUNCH_SIZE_POPUP, false)) {
-                    AlertDialog subDialog = Dialog.build(a, R.layout.dialog_info_launch_size);
-                    if (subDialog == null) return;
-                    subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
-                        a.dataStoreEditor
-                                .putBoolean(Settings.KEY_SEEN_LAUNCH_SIZE_POPUP, true);
-                        subDialog.dismiss();
-                    });
-                }
-            });
+            attachSwitchToSetting(dialog.findViewById(R.id.advancedSizingSwitch),
+                    Settings.KEY_ADVANCED_SIZING, Settings.DEFAULT_ADVANCED_SIZING,
+                    value -> showOneTimeWarningDialog(R.layout.dialog_info_launch_size,
+                                                  Settings.KEY_SEEN_LAUNCH_SIZE_POPUP)
+            );
+
             View defaultSettingsButton = dialog.findViewById(R.id.defaultLauncherSettingsButton);
             defaultSettingsButton.setOnClickListener((view) -> {
                 AlertDialog minDialog = Dialog.build(a, R.layout.dialog_info_set_default_launcher);
@@ -487,7 +437,54 @@ public abstract class SettingsDialogs {
             loadGroupings.setAlpha(1F);
         });
     }
-    public static void showGroupSettings(LauncherActivity a) {
+
+
+
+    /**
+     * Attaches a toggle switch to a specific setting
+     * @param toggle Switch ui element
+     * @param setting Setting string key
+     * @param def Default setting value
+     */
+    private void attachSwitchToSetting(Switch toggle, String setting,
+                                       boolean def) {
+        attachSwitchToSetting(toggle, setting, def, null);
+    }
+
+    /**
+     * Displays a one-time warning dialog
+     * @param dialogResource ResId for the dialog; must contain a button with id of "confirm"
+     * @param keySeenDialog Key to indicate the user has seen the dialog
+     */
+    private void showOneTimeWarningDialog(int dialogResource, String keySeenDialog) {
+        if (!a.dataStoreEditor.getBoolean(keySeenDialog, false)) {
+            AlertDialog subDialog = Dialog.build(a, dialogResource);
+            if (subDialog == null) return;
+            subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
+                a.dataStoreEditor.putBoolean(keySeenDialog, true);
+                subDialog.dismiss();
+            });
+        }
+    }
+    /**
+     * Attaches a toggle switch to a specific setting
+     * @param toggle Switch ui element
+     * @param setting Setting string key
+     * @param def Default setting value
+     * @param onSwitch Consumes the new value when it is changed, after writing to the datastore
+     */
+    private void attachSwitchToSetting(Switch toggle, String setting,
+                                       boolean def, Consumer<Boolean> onSwitch) {
+        toggle.setChecked(!a.dataStoreEditor.getBoolean(setting, def));
+        toggle.setOnCheckedChangeListener((compoundButton, value) -> {
+            a.dataStoreEditor.putBoolean(setting, !value);
+            a.launcherService.forEachActivity(LauncherActivity::refreshInterface);
+            if (onSwitch != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                onSwitch.accept(value);
+        });
+    }
+
+    private void showGroupSettings() {
         clearedSort = false;
         clearedGroups = false;
 

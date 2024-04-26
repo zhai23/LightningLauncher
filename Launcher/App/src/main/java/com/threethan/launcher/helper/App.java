@@ -60,7 +60,7 @@ public abstract class App {
     public static boolean isAppOfType
             (ApplicationInfo applicationInfo, App.Type appType) {
 
-        final LauncherActivity launcherActivity = SettingsManager.getAnyLauncherActivity();
+        final LauncherActivity launcherActivity = LauncherActivity.getAnyInstance();
 
         if (!categoryIncludedApps.containsKey(appType)) {
             // Create new hashsets for cache
@@ -130,8 +130,7 @@ public abstract class App {
         return Launch.checkLaunchable(launcherActivity, app);
     }
     public static boolean isBanner(ApplicationInfo applicationInfo) {
-        LauncherActivity launcherActivity = SettingsManager.getAnyLauncherActivity();
-        if (launcherActivity == null) return false;
+        LauncherActivity launcherActivity = LauncherActivity.getAnyInstance();
         return typeIsBanner(getType(launcherActivity, applicationInfo));
     }
     /** @noinspection SuspiciousMethodCalls*/

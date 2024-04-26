@@ -113,7 +113,7 @@ public abstract class IconUpdater {
         nextCheckByPackageMs.put(packageName, System.currentTimeMillis() + delayMs);
 
         final boolean isWide = App.isBanner(app);
-        final File iconFile = Icon.iconCacheFileForPackage(activity, app);
+        final File iconFile = Icon.iconCacheFileForPackage(app);
 
         Thread thread = new Thread(() -> {
             Object lock = locks.putIfAbsent(packageName, new Object());
