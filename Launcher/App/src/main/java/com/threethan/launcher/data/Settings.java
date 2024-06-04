@@ -3,6 +3,7 @@ package com.threethan.launcher.data;
 import android.graphics.Color;
 
 import com.threethan.launcher.R;
+import com.threethan.launcher.activity.chainload.ChainLoadActivity;
 import com.threethan.launcher.activity.chainload.ChainLoadActivityHuge;
 import com.threethan.launcher.activity.chainload.ChainLoadActivityLarge;
 import com.threethan.launcher.activity.chainload.ChainLoadActivityPhone;
@@ -130,8 +131,9 @@ public abstract class Settings {
             R.string.size_own,
             R.string.size_phone,
             R.string.size_small,
+            R.string.size_medium,
             R.string.size_large,
-            R.string.size_huge
+            R.string.size_huge,
     };
     public static final int[] launchBrowserStrings = {
             R.string.browser_default_in,
@@ -145,6 +147,7 @@ public abstract class Settings {
             null,
             ChainLoadActivityPhone.class,
             ChainLoadActivitySmall.class,
+            ChainLoadActivity.class,
             ChainLoadActivityLarge.class,
             ChainLoadActivityHuge.class,
     };

@@ -115,6 +115,7 @@
     <string name="size_own">在自身窗口打开</string>
     <string name="size_phone">在手机窗口中打开</string>
     <string name="size_small">在 4:3 小窗口中打开</string>
+    <string name="size_medium">在中窗口中打开</string>
     <string name="size_large">在 16:9 大窗口中打开</string>
     <string name="size_huge">在 16:9 超大窗口中打开</string>
 
