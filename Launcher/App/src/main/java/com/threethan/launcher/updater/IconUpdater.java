@@ -4,9 +4,9 @@ import android.content.pm.ApplicationInfo;
 import android.graphics.Bitmap;
 import android.util.Log;
 
+import com.threethan.launcher.data.PanelApplicationInfo;
 import com.threethan.launcher.helper.App;
 import com.threethan.launcher.helper.Icon;
-import com.threethan.launcher.data.PanelApplicationInfo;
 import com.threethan.launcher.activity.LauncherActivity;
 import com.threethan.launcher.lib.ImageLib;
 import com.threethan.launcher.lib.StringLib;
@@ -104,7 +104,7 @@ public abstract class IconUpdater {
      * @param callback Called when the download completes successfully
      */
     public static void download(final LauncherActivity activity, ApplicationInfo app, final Runnable callback) {
-        final String packageName = getDownloadPackageName(app);
+        final String packageName = app.packageName;
         final int delayMs = (int) ((
                         App.isAppOfType(app, App.Type.TYPE_VR)
                         ? ICON_CHECK_TIME_MINUTES_VR
@@ -122,7 +122,7 @@ public abstract class IconUpdater {
                 try {
                     final String file = App.isWebsite(app) ?
                             StringLib.baseUrlWithScheme(packageName) :
-                            packageName.replace("://","").replace(PanelApplicationInfo.packagePrefix, "");
+                            getDownloadString(app);
                     for (final String url : App.isWebsite(app) ? ICON_URLS_WEB : (isWide ? ICON_URLS_BANNER : ICON_URLS_SQUARE)) {
                         if (downloadIconFromUrl(String.format(url, file), iconFile)) {
                             final int delayMsUpd = (int) ((
@@ -157,10 +157,10 @@ public abstract class IconUpdater {
      * @param app ApplicationInfo of the app
      * @return PackageID of the app, optionally modified in some way
      */
-    private static String getDownloadPackageName(ApplicationInfo app) {
-        String packageName = app.packageName;
-        packageName = packageName.replace(".mrf.", ".");
-        return packageName;
+    private static String getDownloadString(ApplicationInfo app) {
+        return app.packageName.replace(".mrf.", ".")
+                .replace("://","")
+                .replace(PanelApplicationInfo.packagePrefix, "");
     }
 
     /**
