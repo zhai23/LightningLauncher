@@ -31,6 +31,6 @@
         <!-- New duplicate of systemux://sharing -->
         <item>com.oculus.metacam</item>
         <!-- Hand tracking tutorial that probably shouldn't be opened directly -->
-        <item>com.meta.handseducation.metacam</item>
+        <item>com.meta.handseducation</item>
     </string-array>
 </resources>
