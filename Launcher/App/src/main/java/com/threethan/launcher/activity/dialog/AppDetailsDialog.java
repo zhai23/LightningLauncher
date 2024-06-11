@@ -107,10 +107,6 @@ public class AppDetailsDialog extends BasicDialog<LauncherActivity> {
             refreshIconButton.setOnClickListener(view -> Icon.reloadIcon(context, currentApp, iconImageView));
 
             launchModeSection.setVisibility(View.GONE);
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && Platform.isQuest(context) && appType == App.Type.TYPE_VR)
-//                tuningButton.setVisibility(View.VISIBLE);
-//                tuningButton.setOnClickListener(view -> new AppTuningDialog(context, currentApp));
-//                  TODO: Tuning Prompt
         } else {
             launchModeSection.setVisibility(View.VISIBLE);
             tuningButton.setVisibility(View.GONE);

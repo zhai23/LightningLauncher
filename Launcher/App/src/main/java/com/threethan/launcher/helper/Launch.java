@@ -93,9 +93,7 @@ public abstract class Launch {
         }
 
         final App.Type appType = App.getType(app);
-        if (appType == App.Type.TYPE_PHONE
-                || appType == App.Type.TYPE_TV
-                || appType == App.Type.TYPE_WEB
+        if ((appType == App.Type.TYPE_PHONE || appType == App.Type.TYPE_TV || appType == App.Type.TYPE_WEB)
                 && SettingsManager.getAppLaunchOut(app.packageName)) {
 
             launcherActivity.launcherService.finishAllActivities();
@@ -109,13 +107,7 @@ public abstract class Launch {
                 public void run() {
                     startIntent(launcherActivity, intent);
                 }
-            }, 650);
-            new Timer().schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    startIntent(launcherActivity, intent);
-                }
-            }, 800);
+            }, 700);
             return false;
         } else {
             startIntent(launcherActivity, intent);
@@ -208,7 +200,7 @@ public abstract class Launch {
         Intent tvIntent = pm.getLeanbackLaunchIntentForPackage(app.packageName);
         if (Platform.isTv(activity) && tvIntent != null) return tvIntent;
 
-        // Chainload for advanced launch options
+        // Chain-load for advanced launch options
         if (SettingsManager.getShowAdvancedSizeOptions(activity)
                 && App.getType(app) == App.Type.TYPE_PHONE &&
                 SettingsManager.getAppLaunchOut(app.packageName)) {
