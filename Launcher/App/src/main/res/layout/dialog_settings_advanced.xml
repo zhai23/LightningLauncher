@@ -179,11 +179,9 @@
 
             <Switch
                 android:id="@+id/defaultLaunchOutSwitch"
+                style="@style/customSwitch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:foreground="@drawable/bkg_hover_button"
-                android:thumb="@drawable/switch_thumb_custom"
-                android:track="@drawable/switch_track_custom"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -192,7 +190,6 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
-            android:id="@+id/launchBrowserSpinner"
             android:layout_width="match_parent"
             android:layout_height="39dp"
             android:layout_marginTop="10dp"
@@ -206,17 +203,12 @@
                 android:layout_weight="1"
                 android:text="@string/browser_default_setting" />
 
-            <TextView
-                android:id="@+id/launchBrowserSpinnerText"
-                style="@style/SettingsText"
-                android:layout_width="wrap_content"
+            <Spinner
+                android:id="@+id/launchBrowserSpinner"
+                style="@style/customSpinner"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:paddingEnd="10dp"
-                android:paddingStart="10dp"
-                android:singleLine="true"
-                android:text="@string/browser_default_in"
-                android:textStyle="italic" />
+                android:layout_weight="1" />
         </LinearLayout>
 
         <TextView
@@ -250,11 +242,9 @@
 
             <Switch
                 android:id="@+id/advancedSizingSwitch"
+                style="@style/customSwitch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:foreground="@drawable/bkg_hover_button"
-                android:thumb="@drawable/switch_thumb_custom"
-                android:track="@drawable/switch_track_custom"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -318,11 +308,9 @@
 
             <Switch
                 android:id="@+id/searchWebSwitch"
+                style="@style/customSwitch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:foreground="@drawable/bkg_hover_button"
-                android:thumb="@drawable/switch_thumb_custom"
-                android:track="@drawable/switch_track_custom"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -350,11 +338,9 @@
 
             <Switch
                 android:id="@+id/searchHiddenSwitch"
+                style="@style/customSwitch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:foreground="@drawable/bkg_hover_button"
-                android:thumb="@drawable/switch_thumb_custom"
-                android:track="@drawable/switch_track_custom"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

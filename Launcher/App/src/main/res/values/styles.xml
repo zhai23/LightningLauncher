@@ -67,10 +67,14 @@
         <item name="android:windowMinWidthMajor">100%</item>
         <item name="android:windowMinWidthMinor">100%</item>
     </style>
-    <color name="colorGradient0">#FFDD00</color>
-    <color name="colorGradient1">#FF5C00</color>
-    <color name="colorGradient2">#FF006F</color>
-    <color name="colorGradient3">#A600FF</color>
-    <color name="colorGradient4">#000EFF</color>
-    <color name="colorGradient5">#63FF00</color>
+    <style name="customSwitch">
+        <item name="android:foreground">@drawable/bkg_hover_button</item>
+        <item name="android:thumb">@drawable/switch_thumb_custom</item>
+        <item name="android:track">@drawable/switch_track_custom</item>
+    </style>
+    <style name="customSpinner">
+        <item name="android:background">@drawable/bkg_spinner</item>
+        <item name="android:foregroundGravity">center_vertical|right</item>
+        <item name="android:track">@drawable/bkg_spinner_popup</item>
+    </style>
 </resources>

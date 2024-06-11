@@ -33,6 +33,9 @@ import java.util.TimerTask;
  */
 public abstract class Launch {
     protected static final String ACTION_ACTUALLY_SHORTCUT = "ACTION_ACTUALLY_SHORTCUT";
+    // Must match: arrays.xml -> advance_launch_browsers
+    private static final int LAUNCH_BROWSER_QUEST = 2;
+    private static final int LAUNCH_BROWSER_SYSTEM = 3;
 
     /**
      * Launches a given app, checking various configuration options in the process
@@ -174,15 +177,15 @@ public abstract class Launch {
                         = activity.dataStoreEditor.getInt(Settings.KEY_LAUNCH_BROWSER + app.packageName, 0);
                 intent = new Intent(Intent.ACTION_VIEW, Uri.parse(app.packageName));
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                final int browserStringRes = Settings.launchBrowserStrings[browserIndex];
-                switch (browserStringRes) {
-                    case (R.string.browser_quest):
+                // Reference: arrays.xml -> advance_launch_browsers
+                switch (browserIndex) {
+                    case (LAUNCH_BROWSER_QUEST):
                         intent.setPackage("com.oculus.browser");
                         intent.setComponent(
                                 new ComponentName("com.oculus.browser",
                                         "com.oculus.browser.PanelActivity"));
                         break;
-                    case (R.string.browser_system):
+                    case (LAUNCH_BROWSER_SYSTEM):
                         break;
                     default:
                         intent.setPackage(Platform.BROWSER_PACKAGE);

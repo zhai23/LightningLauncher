@@ -125,22 +125,8 @@ public abstract class Settings {
     public static final String KEY_DEFAULT_LAUNCH_OUT = "KEY_DEFAULT_LAUNCH_OUT";
     public static final boolean DEFAULT_DEFAULT_LAUNCH_OUT = true;
     public static final String KEY_ADVANCED_SIZING = "KEY_ADVANCED_SIZING";
-    public static final boolean DEFAULT_ADVANCED_SIZING = false;
-    public static final int[] launchSizeStrings = {
-            R.string.size_none,
-            R.string.size_own,
-            R.string.size_phone,
-            R.string.size_small,
-            R.string.size_medium,
-            R.string.size_large,
-            R.string.size_huge,
-    };
-    public static final int[] launchBrowserStrings = {
-            R.string.browser_default_in,
-            R.string.browser_default_out,
-            R.string.browser_quest,
-            R.string.browser_system,
-    };
+    public static final boolean DEFAULT_ADVANCED_SIZING = true;
+
     /** @noinspection rawtypes*/
     public static final Class[] launchSizeClasses = {
             null,

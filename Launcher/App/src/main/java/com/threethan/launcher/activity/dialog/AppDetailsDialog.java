@@ -9,19 +9,20 @@ import android.graphics.Bitmap;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
 import com.threethan.launcher.R;
+import com.threethan.launcher.activity.LauncherActivity;
+import com.threethan.launcher.activity.support.SettingsManager;
+import com.threethan.launcher.data.Settings;
 import com.threethan.launcher.helper.App;
 import com.threethan.launcher.helper.Icon;
 import com.threethan.launcher.helper.Launch;
 import com.threethan.launcher.helper.Platform;
-import com.threethan.launcher.data.Settings;
-import com.threethan.launcher.activity.LauncherActivity;
-import com.threethan.launcher.activity.support.SettingsManager;
 import com.threethan.launcher.lib.ImageLib;
 import com.threethan.launcher.lib.StringLib;
 
@@ -69,15 +70,12 @@ public class AppDetailsDialog extends BasicDialog<LauncherActivity> {
         @SuppressLint("UseSwitchCompatOrMaterialCode")
         final Switch launchModeSwitch = dialog.findViewById(R.id.launchModeSwitch);
         final View launchOutButton = dialog.findViewById(R.id.launchOut);
+        final View refreshIconButton = dialog.findViewById(R.id.refreshIcon);
         final View launchModeSection = dialog.findViewById(R.id.launchModeSection);
-        final View refreshIconButton = dialog.findViewById(R.id.refreshIconButton);
+        final View tuningButton = dialog.findViewById(R.id.tuningButton);
 
-        // Launch Mode Selection
-        final View launchSizeSpinner = dialog.findViewById(R.id.launchSizeSpinner);
-        final TextView launchSizeSpinnerText = dialog.findViewById(R.id.launchSizeSpinnerText);
-        // Launch Browser Selection
-        final View launchBrowserSpinner = dialog.findViewById(R.id.launchBrowserSpinner);
-        final TextView launchBrowserSpinnerText = dialog.findViewById(R.id.launchBrowserSpinnerText);
+        final Spinner launchSizeSpinner = dialog.findViewById(R.id.launchSizeSpinner);
+        final Spinner launchBrowserSpinner = dialog.findViewById(R.id.launchBrowserSpinner);
 
         // Load Icon
         ImageView iconImageView = dialog.findViewById(R.id.appIcon);
@@ -103,14 +101,19 @@ public class AppDetailsDialog extends BasicDialog<LauncherActivity> {
                 || Platform.isTv(context)) {
             // VR apps MUST launch out, so just hide the option and replace it with another
             // Also hide it on TV where it is useless
-            launchModeSection.setVisibility(View.GONE);
-            refreshIconButton.setVisibility(View.VISIBLE);
-            launchOutButton.setVisibility(View.GONE);
 
+            launchOutButton.setVisibility(View.GONE);
+            refreshIconButton.setVisibility(View.VISIBLE);
             refreshIconButton.setOnClickListener(view -> Icon.reloadIcon(context, currentApp, iconImageView));
+
+            launchModeSection.setVisibility(View.GONE);
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && Platform.isQuest(context) && appType == App.Type.TYPE_VR)
+//                tuningButton.setVisibility(View.VISIBLE);
+//                tuningButton.setOnClickListener(view -> new AppTuningDialog(context, currentApp));
+//                  TODO: Tuning Prompt
         } else {
             launchModeSection.setVisibility(View.VISIBLE);
-            refreshIconButton.setVisibility(View.GONE);
+            tuningButton.setVisibility(View.GONE);
 
             launchOutButton.setVisibility(View.VISIBLE);
             launchOutButton.setOnClickListener((view) -> {
@@ -128,46 +131,32 @@ public class AppDetailsDialog extends BasicDialog<LauncherActivity> {
 
             // Browser selection spinner
             if (appType == App.Type.TYPE_WEB) {
+                final String launchBrowserKey = Settings.KEY_LAUNCH_BROWSER + currentApp.packageName;
+                final int launchBrowserSelection = context.dataStoreEditor.getInt(
+                        launchBrowserKey,
+                        SettingsManager.getAppLaunchOut(currentApp.packageName) ? 0 : 1);
+                launchBrowserSpinner.setSelection(launchBrowserSelection);
+                initSpinner(launchBrowserSpinner,
+                        Platform.isQuest(context)
+                                ? R.array.advanced_launch_browsers_quest
+                                : R.array.advanced_launch_browsers,
+                        p -> context.dataStoreEditor.putInt(launchBrowserKey, p));
                 launchBrowserSpinner.setVisibility(View.VISIBLE);
                 launchModeSection.setVisibility(View.GONE);
-
-                final String launchBrowserKey = Settings.KEY_LAUNCH_BROWSER + currentApp.packageName;
-                final int[] launchBrowserSelection = {context.dataStoreEditor.getInt(
-                        launchBrowserKey,
-                        SettingsManager.getDefaultBrowser()
-                )};
-
-                launchBrowserSpinnerText.setText(Settings.launchBrowserStrings[launchBrowserSelection[0]]);
-                launchBrowserSpinner.setOnClickListener((view) -> {
-                    // Cycle selection
-                    int index = launchBrowserSelection[0];
-                    index = (index + 1) % Settings.launchBrowserStrings.length;
-                    // Skip quest browser if not on quest
-                    if (Settings.launchBrowserStrings[index] == R.string.browser_quest
-                        && !Platform.isQuest(context)) index++;
-                    // Update text & store setting
-                    final int stringRes = Settings.launchBrowserStrings[index];
-                    launchBrowserSpinnerText.setText(stringRes);
-                    context.dataStoreEditor.putInt(launchBrowserKey, index);
-                    launchBrowserSelection[0] = index;
-                });
             }
             // Advanced size settings
             else if (SettingsManager.getShowAdvancedSizeOptions(context)) {
+                final String launchSizeKey = Settings.KEY_LAUNCH_SIZE + currentApp.packageName;
+                final int launchSizeSelection = context.dataStoreEditor.getInt(
+                        launchSizeKey,
+                        SettingsManager.getAppLaunchOut(currentApp.packageName) ? 0 : 1);
+                launchSizeSpinner.setSelection(launchSizeSelection);
+                initSpinner(launchSizeSpinner, R.array.advanced_launch_sizes, p -> {
+                        context.dataStoreEditor.putInt(launchSizeKey, p);
+                        SettingsManager.setAppLaunchOut(currentApp.packageName, p != 0);
+                });
                 launchSizeSpinner.setVisibility(View.VISIBLE);
                 launchModeSection.setVisibility(View.GONE);
-                final String launchSizeKey = Settings.KEY_LAUNCH_SIZE + currentApp.packageName;
-                final int[] launchSizeSelection = {context.dataStoreEditor.getInt(
-                        launchSizeKey,
-                        SettingsManager.getAppLaunchOut(currentApp.packageName) ? 0 : 1)};
-
-                launchSizeSpinnerText.setText(Settings.launchSizeStrings[launchSizeSelection[0]]);
-                launchSizeSpinner.setOnClickListener((view) -> {
-                    launchSizeSelection[0] = (launchSizeSelection[0] + 1) % Settings.launchSizeStrings.length;
-                    launchSizeSpinnerText.setText(Settings.launchSizeStrings[launchSizeSelection[0]]);
-                    context.dataStoreEditor.putInt(launchSizeKey, launchSizeSelection[0]);
-                    SettingsManager.setAppLaunchOut(currentApp.packageName, launchSizeSelection[0] != 0);
-                });
             }
         }
 

@@ -64,13 +64,11 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <Switch
+                <Switch style="@style/customSwitch"
                     android:id="@+id/editModeSwitch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:foreground="@drawable/bkg_hover_button"
-                    android:thumb="@drawable/switch_thumb_custom"
-                    android:track="@drawable/switch_track_custom"
+
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -369,13 +367,10 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <Switch
+            <Switch style="@style/customSwitch"
                 android:id="@+id/darkModeSwitch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:foreground="@drawable/bkg_hover_button"
-                android:thumb="@drawable/switch_thumb_custom"
-                android:track="@drawable/switch_track_custom"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -474,13 +469,11 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <Switch
+                <Switch style="@style/customSwitch"
                     android:id="@+id/groupSwitch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:foreground="@drawable/bkg_hover_button"
-                    android:thumb="@drawable/switch_thumb_custom"
-                    android:track="@drawable/switch_track_custom"
+
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -610,13 +603,11 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <Switch
+                <Switch style="@style/customSwitch"
                     android:id="@+id/bannerVrSwitch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:foreground="@drawable/bkg_hover_button"
-                    android:thumb="@drawable/switch_thumb_custom"
-                    android:track="@drawable/switch_track_custom"
+
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -643,13 +634,11 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <Switch
+                <Switch style="@style/customSwitch"
                     android:id="@+id/bannerPanelSwitch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:foreground="@drawable/bkg_hover_button"
-                    android:thumb="@drawable/switch_thumb_custom"
-                    android:track="@drawable/switch_track_custom"
+
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -676,13 +665,11 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <Switch
+                <Switch style="@style/customSwitch"
                     android:id="@+id/bannerTvSwitch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:foreground="@drawable/bkg_hover_button"
-                    android:thumb="@drawable/switch_thumb_custom"
-                    android:track="@drawable/switch_track_custom"
+
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -717,13 +704,11 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <Switch
+                <Switch style="@style/customSwitch"
                     android:id="@+id/banner2dSwitch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:foreground="@drawable/bkg_hover_button"
-                    android:thumb="@drawable/switch_thumb_custom"
-                    android:track="@drawable/switch_track_custom"
+
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -750,13 +735,11 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <Switch
+                <Switch style="@style/customSwitch"
                     android:id="@+id/bannerWebSwitch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:foreground="@drawable/bkg_hover_button"
-                    android:thumb="@drawable/switch_thumb_custom"
-                    android:track="@drawable/switch_track_custom"
+
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -795,13 +778,11 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <Switch
+                <Switch style="@style/customSwitch"
                     android:id="@+id/nameSquareSwitch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:foreground="@drawable/bkg_hover_button"
-                    android:thumb="@drawable/switch_thumb_custom"
-                    android:track="@drawable/switch_track_custom"
+
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -828,13 +809,11 @@
                     app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="TooManyViews" />
 
-                <Switch
+                <Switch style="@style/customSwitch"
                     android:id="@+id/nameBannerSwitch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:foreground="@drawable/bkg_hover_button"
-                    android:thumb="@drawable/switch_thumb_custom"
-                    android:track="@drawable/switch_track_custom"
+
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"

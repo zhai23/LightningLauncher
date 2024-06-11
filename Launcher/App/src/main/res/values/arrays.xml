@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Must match Settings.launchSizeClasses -->
+    <array name="advanced_launch_sizes">
+        <item>@string/size_none</item>
+        <item>@string/size_own</item>
+        <item>@string/size_phone</item>
+        <item>@string/size_small</item>
+        <item>@string/size_medium</item>
+        <item>@string/size_large</item>
+        <item>@string/size_huge</item>
+    </array>
+    <!-- Must match Launch.java constants -->
+    <array name="advanced_launch_browsers">
+        <item>@string/browser_default_in</item>
+        <item>@string/browser_default_out</item>
+        <item>@string/browser_system</item>
+    </array>
+    <array name="advanced_launch_browsers_quest">
+        <item>@string/browser_default_in</item>
+        <item>@string/browser_default_out</item>
+        <item>@string/browser_system</item>
+        <item>@string/browser_quest</item>
+    </array>
+</resources>

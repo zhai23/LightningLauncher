@@ -75,6 +75,7 @@
 
     <string name="launch_switch">Runs in Own Window</string>
     <string name="reload_icon">Refresh Icon / Banner</string>
+    <string name="open_tuning">Tune with Quest Tuner</string>
 
     <string name="launch_out_message">Launching 2D apps or websites in their own window allows for easier multitasking on Quest devices,
         but will cause certain apps to not always launch.\n\nIf you have any issues, disable this option!</string>

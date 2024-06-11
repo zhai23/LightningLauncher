@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -373,32 +374,18 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
             dialog.findViewById(R.id.advancedSizingSection).setVisibility(View.GONE);
         }
 
-        // Default Browser Selection
-        // Browser selection spinner
-        final View launchBrowserSpinner = dialog.findViewById(R.id.launchBrowserSpinner);
-        final TextView launchBrowserSpinnerText = dialog.findViewById(R.id.launchBrowserSpinnerText);
+        // Default browser selection spinner
+        final Spinner defaultBrowserSpinner = dialog.findViewById(R.id.launchBrowserSpinner);
 
-        launchBrowserSpinner.setVisibility(View.VISIBLE);
-
-        final int[] defaultBrowserSelection = {context.dataStoreEditor.getInt(
+        final int defaultBrowserSelection = context.dataStoreEditor.getInt(
                 Settings.KEY_DEFAULT_BROWSER,
-                SettingsManager.getDefaultBrowser()
-        )};
-        launchBrowserSpinnerText.setText(Settings.launchBrowserStrings[defaultBrowserSelection[0]]);
-        launchBrowserSpinner.setOnClickListener((view) -> {
-            // Cycle selection
-            int index = defaultBrowserSelection[0];
-            index = (index + 1) % Settings.launchBrowserStrings.length;
-            // Skip quest browser if not on quest
-            if (Settings.launchBrowserStrings[index] == R.string.browser_quest
-                    && !Platform.isQuest(context)) index++;
-            // Update text & store setting
-            final int stringRes = Settings.launchBrowserStrings[index];
-            launchBrowserSpinnerText.setText(stringRes);
-            context.dataStoreEditor.putInt(Settings.KEY_DEFAULT_BROWSER, index);
-            defaultBrowserSelection[0] = index;
-        });
-
+                SettingsManager.getDefaultBrowser());
+        defaultBrowserSpinner.setSelection(defaultBrowserSelection);
+        initSpinner(defaultBrowserSpinner,
+                Platform.isQuest(context)
+                        ? R.array.advanced_launch_browsers_quest
+                        : R.array.advanced_launch_browsers,
+                p -> context.dataStoreEditor.putInt(Settings.KEY_DEFAULT_BROWSER, p));
         // Search settings
         attachSwitchToSetting(dialog.findViewById(R.id.searchWebSwitch),
                 Settings.KEY_SEARCH_WEB, Settings.DEFAULT_SEARCH_WEB);

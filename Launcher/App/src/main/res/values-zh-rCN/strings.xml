@@ -71,6 +71,7 @@
 
     <string name="launch_switch">在应用自身窗口打开</string>
     <string name="reload_icon">刷新图标/横幅</string>
+    <string name="open_tuning">打开性能优化设置</string>
 
     <string name="launch_out_message">在应用自身的窗口中启动 2D 应用程序或网站可让 Quest 设备上的多任务处理变得更轻松，但会导致某些应用程序无法启动。\n\n如果有任何问题，请禁用此选项！</string>
     <string name="launch_size_message">在应用自身的窗口中启动 2D 应用程序或网站可让 Quest 设备上的多任务处理变得更轻松、但会导致某些应用程序无法启动。\n\n        \n设置自定义窗口大小可以解决应用程序无法启动的问题，使某些应用程序显示得更清晰，并允许在平面视图中使用不同的窗口大小。\n        \n不过，偶尔也会导致窗口卡住或 Lightning Launcher 崩溃。\n\n        \n所有这些选项都只能按应用程序设置。\n\n        \n如果遇到问题，请关闭该选项，并确保任何应用程序都未设置为在自己的窗口中启动。重启以修复卡死的窗口。</string>

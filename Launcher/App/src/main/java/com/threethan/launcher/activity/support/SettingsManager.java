@@ -8,7 +8,6 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
-import com.threethan.launcher.R;
 import com.threethan.launcher.activity.LauncherActivity;
 import com.threethan.launcher.data.AppData;
 import com.threethan.launcher.data.Settings;
@@ -140,10 +139,8 @@ public class SettingsManager extends Settings {
                     launchBrowserKey,
                     SettingsManager.getDefaultBrowser()
             );
-            final int stringRes = Settings.launchBrowserStrings[launchBrowserSelection];
-            return (stringRes == R.string.browser_default_out || stringRes == R.string.browser_quest);
+            return launchBrowserSelection != 0;
         }
-        // Else use saved setting
         return dataStoreEditor.getBoolean(Settings.KEY_LAUNCH_OUT_PREFIX+pkg,
                 dataStoreEditor.getBoolean(Settings.KEY_DEFAULT_LAUNCH_OUT, DEFAULT_DEFAULT_LAUNCH_OUT));
     }

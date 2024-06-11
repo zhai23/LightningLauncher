@@ -5,8 +5,12 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Paint;
+import android.os.Build;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,6 +21,8 @@ import com.threethan.launcher.R;
 import com.threethan.launcher.helper.Platform;
 
 import java.lang.ref.WeakReference;
+import java.util.Objects;
+import java.util.function.Consumer;
 
 /*
     Dialog
@@ -97,5 +103,24 @@ public class BasicDialog<T extends Context> extends AbstractDialog<T> {
         // Dismiss if not done automatically
         dialog.findViewById(R.id.toastTextMain).postDelayed(dialog::dismiss,
                 isLong ? 5000 : 1750);
+    }
+
+    public static void initSpinner(Spinner spinner, int array_res,
+                                   Consumer<Integer> onPositionSelected) {
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                Objects.requireNonNull(getActivityContext()),
+                array_res, R.layout.spinner_item);
+        adapter.setDropDownViewResource(R.layout.spinner_item_dropdown);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                    onPositionSelected.accept(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
     }
 }

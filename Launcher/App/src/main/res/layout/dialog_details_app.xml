@@ -58,6 +58,17 @@
                     android:tooltipText="@string/tip_launch_out"
                     tools:ignore="UnusedAttribute" />
 
+                <ImageView
+                    android:id="@+id/refreshIcon"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@drawable/bkg_hover_button"
+                    android:padding="1dp"
+                    android:src="@drawable/ic_refresh"
+                    android:tooltipText="@string/reload_icon"
+                    android:visibility="gone"
+                    tools:ignore="UnusedAttribute" />
+
                 <View
                     android:layout_width="0dp"
                     android:layout_height="0dp"
@@ -131,7 +142,7 @@
                 android:textAlignment="gravity"
                 android:textColor="@android:color/white"
                 android:textSize="24sp"
-                tools:ignore="RtlSymmetry" />
+                tools:ignore="RtlSymmetry,TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -191,44 +202,25 @@
         app:layout_constraintTop_toBottomOf="@+id/sizer"
         android:baselineAligned="false">
 
-        <FrameLayout
+        <Spinner
             android:id="@+id/launchBrowserSpinner"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+            style="@style/customSpinner"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
-            android:layout_weight="1.5"
-            android:background="@drawable/bkg_button"
-            android:visibility="gone">
+            android:visibility="gone" />
 
-            <TextView
-                android:id="@+id/launchBrowserSpinnerText"
-                style="@style/SettingButtonLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:ellipsize="end"
-                android:singleLine="true"
-                android:text="@string/browser_default_in" />
-        </FrameLayout>
-
-        <FrameLayout
+        <Spinner
             android:id="@+id/launchSizeSpinner"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+            style="@style/customSpinner"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
-            android:layout_weight="1.5"
-            android:background="@drawable/bkg_button"
-            android:visibility="gone">
-
-            <TextView
-                android:id="@+id/launchSizeSpinnerText"
-                style="@style/SettingButtonLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="@string/size_none" />
-        </FrameLayout>
+            android:visibility="gone"
+            tools:visibility="visible" />
 
         <LinearLayout
-            android:id="@+id/refreshIconButton"
+            android:id="@+id/tuningButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
@@ -241,7 +233,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
                 android:layout_marginEnd="15dp"
-                android:text="@string/reload_icon" />
+                android:text="@string/open_tuning" />
 
         </LinearLayout>
 
@@ -251,7 +243,8 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
             android:layout_weight="1"
-            android:background="@drawable/bkg_button">
+            android:background="@drawable/bkg_button"
+            tools:visibility="gone">
 
             <TextView
                 style="@style/SettingButtonLabel"
@@ -263,13 +256,10 @@
 
             <Switch
                 android:id="@+id/launchModeSwitch"
+                style="@style/customSwitch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="0dp"
-                android:foreground="@drawable/bkg_hover_button"
-                android:thumb="@drawable/switch_thumb_custom"
-                android:track="@drawable/switch_track_custom"
-                tools:ignore="UseSwitchCompatOrMaterialXml" />
+                tools:ignore="UseSwitchCompatOrMaterialXml,TouchTargetSizeCheck" />
 
         </LinearLayout>
 
