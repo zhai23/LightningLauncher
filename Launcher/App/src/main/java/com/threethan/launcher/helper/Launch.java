@@ -62,7 +62,6 @@ public abstract class Launch {
                 // Check for browser update. User probably won't see the prompt until closing, though.
                 BrowserUpdater browserUpdater = new BrowserUpdater(launcherActivity);
                 if (browserUpdater.getInstalledVersionCode() < BrowserUpdater.REQUIRED_VERSION_CODE) {
-                    Log.e("ASASDF", String.valueOf(browserUpdater.getInstalledVersionCode()));
                     // If browser is required, but not installed
                     // Prompt installation
                     AlertDialog dialog = new BasicDialog<>(launcherActivity, R.layout.dialog_prompt_browser_update).show();
@@ -91,9 +90,10 @@ public abstract class Launch {
         }
 
         final App.Type appType = App.getType(app);
-        if (SettingsManager.
-                getAppLaunchOut(app.packageName) ||
-                appType == App.Type.TYPE_VR || appType == App.Type.TYPE_PANEL) {
+        if (appType == App.Type.TYPE_PHONE
+                || appType == App.Type.TYPE_TV
+                || appType == App.Type.TYPE_WEB
+                && SettingsManager.getAppLaunchOut(app.packageName)) {
 
             launcherActivity.launcherService.finishAllActivities();
 
@@ -134,7 +134,6 @@ public abstract class Launch {
      */
     @Nullable
     private static Intent getLaunchIntent(LauncherActivity activity, ApplicationInfo app) {
-
         // Ignore apps which don't work or should be excluded
         if (app.packageName.startsWith(activity.getPackageName())) return null;
         if (AppData.invalidAppsList.contains(app.packageName)) return null;
@@ -145,7 +144,7 @@ public abstract class Launch {
         if (App.isAppOfType(app, App.Type.TYPE_PANEL)) {
             String uri = app.packageName;
             if (uri.startsWith(PanelApplicationInfo.packagePrefix))
-                uri = uri.replace(PanelApplicationInfo.packagePrefix, "");
+                uri = uri.replaceFirst(PanelApplicationInfo.packagePrefix, "");
 
             Intent panelIntent = new Intent(Intent.ACTION_VIEW);
             panelIntent.setComponent(new ComponentName(
@@ -198,8 +197,7 @@ public abstract class Launch {
             return intent;
         }
 
-
-        // Otherwise android TV settings is not recognized
+        // Otherwise android TV settings app is not recognized
         if (Objects.equals(app.packageName, "com.android.tv.settings"))
             return new Intent(android.provider.Settings.ACTION_SETTINGS);
 
@@ -224,6 +222,8 @@ public abstract class Launch {
         // Get normal launch intent
         final Intent normalIntent = pm.getLaunchIntentForPackage(app.packageName);
         if (normalIntent == null && tvIntent != null) return tvIntent;
+        if (Platform.isQuest(activity) && normalIntent != null)
+            normalIntent.setAction("com.oculus.vrshell.intent.action.LAUNCH");
         return normalIntent;
     }
 
