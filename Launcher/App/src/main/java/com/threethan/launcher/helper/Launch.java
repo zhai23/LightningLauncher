@@ -96,7 +96,7 @@ public abstract class Launch {
         if ((appType == App.Type.TYPE_PHONE || appType == App.Type.TYPE_TV || appType == App.Type.TYPE_WEB)
                 && SettingsManager.getAppLaunchOut(app.packageName)) {
 
-            launcherActivity.launcherService.finishAllActivities();
+            launcherActivity.finishAffinity();
 
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                     Intent.FLAG_ACTIVITY_NEW_DOCUMENT |

@@ -1,6 +1,5 @@
 package com.threethan.launcher;
 
-import android.app.Activity;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
@@ -12,7 +11,6 @@ import androidx.annotation.Nullable;
 import androidx.core.util.Consumer;
 
 import com.threethan.launcher.activity.LauncherActivity;
-import com.threethan.launcher.activity.chainload.ChainLoadActivity;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -97,15 +95,6 @@ public class LauncherService extends Service {
      */
     public void destroyed(LauncherActivity activity) {
         activityByIndex.remove(activity);
-    }
-
-    /**
-     * Clears all activities so that Quest VR & Panel apps can run
-     * Includes chainLoadActivities as well and launcherActivities
-     */
-    public void finishAllActivities() {
-        for (Activity activity : activityByIndex.keySet()) activity.finishAndRemoveTask();
-        for (Activity activity : ChainLoadActivity.activityList) activity.finishAndRemoveTask();
     }
 
     /**
