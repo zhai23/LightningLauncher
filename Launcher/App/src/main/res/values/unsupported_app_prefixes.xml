@@ -14,8 +14,6 @@
         <item>com.meta.AccountsCenter.pwa</item>
         <item>com.oculus.identitymanage</item>
         <!-- Shortcuts -->
-        <item>com.threethan.launcher.service.explore</item>
-        <item>com.threethan.launcher.service.library</item>
         <!-- This app only works through panel app intent -->
         <item>com.oculus.tv</item>
         <!-- This does work, but can be accessed more easily through quick settings -->
@@ -31,6 +29,6 @@
         <!-- New duplicate of systemux://sharing -->
         <item>com.oculus.metacam</item>
         <!-- Hand tracking tutorial that probably shouldn't be opened directly -->
-        <item>com.meta.handseducation</item>
+        <item>com.meta.handseducationmodule</item>
     </string-array>
 </resources>

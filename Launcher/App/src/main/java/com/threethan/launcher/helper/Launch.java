@@ -107,6 +107,12 @@ public abstract class Launch {
                 public void run() {
                     startIntent(launcherActivity, intent);
                 }
+            }, 50);
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    startIntent(launcherActivity, intent);
+                }
             }, 700);
             return false;
         } else {
