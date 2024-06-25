@@ -2,6 +2,13 @@
 ### Fully compatible with Android TV!
 ### [Available on SideQuest!](https://sidequestvr.com/app/21783)
 
+> [!NOTE]
+> **Regarding the new V67 update:**
+> 
+> Lightning Launcher already works correctly on this version. Make sure to use "open in own window" for your 2D apps *(on by default as of 7.2)* to make the most of the new multitasking features.
+>
+> *Shortcut services do NOT work correctly in this version.* You may still pin Lightning Launcher and the different shortcuts to the dock, and they will show in the recents section.
+
 Lightning Launcher is a launcher designed for Oculus Quest that supports both official and sideloaded apps and games.
 
 It has been built with a focus on speed, flexiblity, and convenience.
