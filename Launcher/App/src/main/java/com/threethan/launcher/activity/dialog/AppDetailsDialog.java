@@ -23,8 +23,8 @@ import com.threethan.launcher.helper.App;
 import com.threethan.launcher.helper.Icon;
 import com.threethan.launcher.helper.Launch;
 import com.threethan.launcher.helper.Platform;
-import com.threethan.launcher.lib.ImageLib;
-import com.threethan.launcher.lib.StringLib;
+import com.threethan.launchercore.lib.ImageLib;
+import com.threethan.launchercore.lib.StringLib;
 
 import java.io.File;
 import java.util.Objects;
@@ -146,11 +146,12 @@ public class AppDetailsDialog extends BasicDialog<LauncherActivity> {
                 final int launchSizeSelection = context.dataStoreEditor.getInt(
                         launchSizeKey,
                         SettingsManager.getAppLaunchOut(currentApp.packageName) ? 0 : 1);
-                launchSizeSpinner.setSelection(launchSizeSelection);
                 initSpinner(launchSizeSpinner, R.array.advanced_launch_sizes, p -> {
                         context.dataStoreEditor.putInt(launchSizeKey, p);
                         SettingsManager.setAppLaunchOut(currentApp.packageName, p != 0);
                 });
+                launchSizeSpinner.setSelection(launchSizeSelection);
+
                 launchSizeSpinner.setVisibility(View.VISIBLE);
                 launchModeSection.setVisibility(View.GONE);
             }
@@ -211,7 +212,7 @@ public class AppDetailsDialog extends BasicDialog<LauncherActivity> {
             starButton.setImageResource(isStarred[0] ? R.drawable.ic_star_on : R.drawable.ic_star_off);
         });
         // Save Label & Reload on Confirm
-        dialog.findViewById(R.id.confirm).setOnClickListener(view -> {
+        dialog.findViewById(R.id.install).setOnClickListener(view -> {
             SettingsManager.setAppLabel(currentApp, StringLib.setStarred(appNameEditText.getText().toString(), isStarred[0]));
             context.launcherService.forEachActivity(a -> {
                 if (a.getAppAdapter() != null) {
