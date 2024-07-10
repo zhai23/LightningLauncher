@@ -1,4 +1,4 @@
-package com.threethan.launcher.activity.adapter;
+package com.threethan.launchercore.adapter;
 
 import android.annotation.SuppressLint;
 
@@ -15,12 +15,12 @@ import java.util.Map;
  * and underlying list of item objects. Useful to enabling animations on changing data.
  *
  * @param <T> The type of object used as an item in the list, each of which may be given a view
- * @param <H> The type of {@link RecyclerView.Adapter} to use for the underlying RecyclerView
+ * @param <VH> The type of {@link RecyclerView.Adapter} to use for the underlying RecyclerView
  * @noinspection unused
  */
-public abstract class ArrayListAdapter<T, H extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<H> {
+public abstract class ArrayListAdapter<T, VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
     /**
-     * The underlying list of items. It may be manupulated directly by child classes,
+     * The underlying list of items. It may be manipulated directly by child classes,
      * but it is preferable to use functions such as addItem, removeItem, setItems
      */
     protected List<T> items = Collections.synchronizedList(new ArrayList<>());

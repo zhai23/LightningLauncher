@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/layout"
+    android:id="@+id/itemLaunch"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="top"
@@ -36,7 +36,7 @@
             tools:visibility="visible" />
 
         <ImageView
-            android:id="@+id/imageLabelBanner"
+            android:id="@+id/itemBanner"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:outlineProvider="background"
@@ -51,7 +51,7 @@
             tools:visibility="gone" />
 
         <ImageView
-            android:id="@+id/imageLabelSquare"
+            android:id="@+id/itemIcon"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:scaleType="fitCenter"
@@ -71,7 +71,7 @@
         android:layout_height="10dp" />
 
     <TextView
-        android:id="@+id/textLabel"
+        android:id="@+id/itemLabel"
         android:layout_width="match_parent"
         android:layout_height="35sp"
         android:layout_marginStart="8dp"

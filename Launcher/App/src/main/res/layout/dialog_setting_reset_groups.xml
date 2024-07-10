@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/layout"
+    android:id="@+id/itemLaunch"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/bkg_dialog"
@@ -33,59 +33,32 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <FrameLayout
+        <com.threethan.launchercore.view.LcButton
             android:id="@+id/resetGroups"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/bkg_button"
-            android:nextFocusDown="@id/resortOnly">
+            android:nextFocusDown="@id/resortOnly"
+            android:text="@string/default_groups_reset_groups" />
 
-            <TextView
-                style="@style/SettingButtonLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/default_groups_reset_groups" />
-
-        </FrameLayout>
-
-        <FrameLayout
+        <com.threethan.launchercore.view.LcButton
             android:id="@+id/resortOnly"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_weight="1"
-            android:background="@drawable/bkg_button"
-            android:nextFocusUp="@id/resetGroups"
-            android:nextFocusDown="@id/cancel">
+            android:nextFocusDown="@id/resortOnly"
+            android:text="@string/default_groups_resort_only" />
 
-            <TextView
-                style="@style/SettingButtonLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/default_groups_resort_only" />
-
-        </FrameLayout>
-
-        <FrameLayout
+        <com.threethan.launchercore.view.LcButton
             android:id="@+id/cancel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_weight="1"
-            android:background="@drawable/bkg_button"
-            android:nextFocusUp="@id/resortOnly">
+            android:nextFocusDown="@id/resortOnly"
+            android:text="@string/default_groups_cancel" />
 
-            <TextView
-                style="@style/SettingButtonLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/default_groups_cancel" />
-
-        </FrameLayout>
     </LinearLayout>
 
 </LinearLayout>

@@ -1,7 +1,7 @@
-package com.threethan.launcher.lib;
+package com.threethan.launchercore.lib;
 
-import com.threethan.launcher.helper.App;
 
+/** @noinspection unused*/
 public class StringLib {
     private static final String STAR = "★";
     public static String toggleStar(String in) {
@@ -22,11 +22,6 @@ public class StringLib {
         in = in.trim();
         if (hasStar(in) != starred) return toggleStar(in);
         else return in;
-    }
-    public static String fixUrl(String url) {
-        if (App.isShortcut(url)) return "json://" + url; //URL was actually json!
-        if (!url.contains("://")) url = "https://" + url;
-        return url;
     }
 
     public static boolean isInvalidUrl(String url) {
@@ -66,8 +61,8 @@ public class StringLib {
     }
     public static final String GOOGLE_SEARCH_PRE = "https://www.google.com/search?q=";
     public static final String YOUTUBE_SEARCH_PRE = "https://www.youtube.com/results?search_query=";
-    public static final String APKPURE_SEARCH_PRE = "https://apkpure.com/search?q=";
-    public static final String APKMIRROR_SEARCH_PRE = "https://www.apkmirror.com/?post_type=app_release&searchtype=apk&s=";
+    public static final String APK_PURE_SEARCH_PRE = "https://apkpure.com/search?q=";
+    public static final String APK_MIRROR_SEARCH_PRE = "https://www.apkmirror.com/?post_type=app_release&searchtype=apk&s=";
 
     public static String googleSearchForUrl(String string) {
         return GOOGLE_SEARCH_PRE+string;
@@ -77,12 +72,21 @@ public class StringLib {
     }
 
     public static String apkPureSearchForUrl(String string) {
-        return APKPURE_SEARCH_PRE+string;
+        return APK_PURE_SEARCH_PRE +string;
     }
     public static String apkMirrorSearchForUrl(String string) {
-        return APKMIRROR_SEARCH_PRE+string;
+        return APK_MIRROR_SEARCH_PRE +string;
     }
     public static boolean isSearchUrl(String url) {
         return url.contains("search?q=") || url.contains("?search_query=") || url.contains("&searchtype=");
+    }
+
+    public static boolean isInteger(String str) {
+        try {
+            Integer.parseInt(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 }

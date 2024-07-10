@@ -1,4 +1,4 @@
-package com.threethan.launcher.helper;
+package com.threethan.launchercore.util;
 
 import android.app.Activity;
 import android.content.Context;

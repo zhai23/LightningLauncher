@@ -3,17 +3,18 @@ package com.threethan.launcher.activity.support;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
 
 import com.threethan.launcher.activity.LauncherActivity;
-import com.threethan.launcher.data.AppData;
 import com.threethan.launcher.data.Settings;
-import com.threethan.launcher.helper.App;
-import com.threethan.launcher.helper.Platform;
-import com.threethan.launcher.lib.StringLib;
+import com.threethan.launcher.helper.AppExt;
+import com.threethan.launcher.helper.LaunchExt;
+import com.threethan.launcher.helper.PlatformExt;
+import com.threethan.launchercore.lib.StringLib;
+import com.threethan.launchercore.util.App;
+import com.threethan.launchercore.util.Platform;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -62,7 +63,7 @@ public class SettingsManager extends Settings {
         dataStoreEditor = activity.dataStoreEditor;
         dataStoreEditorSort = new DataStoreEditor(activity, "sort");
         // Conditional defaults (hacky)
-        Settings.DEFAULT_DETAILS_LONG_PRESS = Platform.isTv(activity);
+        Settings.DEFAULT_DETAILS_LONG_PRESS = Platform.isTv();
     }
 
     /**
@@ -97,9 +98,9 @@ public class SettingsManager extends Settings {
     private static @Nullable String processAppLabel(ApplicationInfo app, String name) {
         if (!name.isEmpty()) return name;
 
-        if (AppData.labelOverrides.containsKey(app.packageName))
-            return AppData.labelOverrides.get(app.packageName);
-        if (App.isWebsite(app) || StringLib.isSearchUrl(app.packageName)) {
+        if (Platform.labelOverrides.containsKey(app.packageName))
+            return Platform.labelOverrides.get(app.packageName);
+        if (App.isWebsite(app.packageName) || StringLib.isSearchUrl(app.packageName)) {
             try {
                 name = app.packageName.split("//")[1];
                 String[] split = name.split("\\.");
@@ -141,11 +142,7 @@ public class SettingsManager extends Settings {
             );
             return launchBrowserSelection != 0;
         }
-        return dataStoreEditor.getBoolean(Settings.KEY_LAUNCH_OUT_PREFIX+pkg,
-                dataStoreEditor.getBoolean(Settings.KEY_DEFAULT_LAUNCH_OUT, DEFAULT_DEFAULT_LAUNCH_OUT));
-    }
-    public static void setAppLaunchOut(String pkg, boolean shouldLaunchOut) {
-        dataStoreEditor.putBoolean(Settings.KEY_LAUNCH_OUT_PREFIX+pkg, shouldLaunchOut);
+        return App.getType(pkg) != App.Type.PANEL;
     }
     public static int getDefaultBrowser() {
         return dataStoreEditor.getInt(Settings.KEY_DEFAULT_BROWSER, 0);
@@ -182,11 +179,11 @@ public class SettingsManager extends Settings {
 
         // Sort into groups
         for (ApplicationInfo app : new ArrayList<>(allApps)) {
-            if (!App.isSupported(app))
+            if (!LaunchExt.canLaunch(app))
                 apps.put(app.packageName, Settings.UNSUPPORTED_GROUP);
             else if (!apps.containsKey(app.packageName) ||
                     Objects.equals(apps.get(app.packageName), Settings.UNSUPPORTED_GROUP)){
-                apps.put(app.packageName, App.getDefaultGroupFor(App.getType(app)));
+                apps.put(app.packageName, AppExt.getDefaultGroupFor(AppExt.getType(app)));
             }
         }
 
@@ -194,14 +191,9 @@ public class SettingsManager extends Settings {
         setAppGroupMap(apps);
 
         List<ApplicationInfo> currentApps = new ArrayList<>(allApps);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-            Log.w("OLD API", "Your android version is too old so things won't work right.");
-            for (ApplicationInfo app : Collections.unmodifiableCollection(allApps))
-                if (!(apps.containsKey(app.packageName) && selectedGroups.contains(apps.get(app.packageName))))
-                    currentApps.remove(app);
-            return currentApps;
-        }
-        currentApps.removeIf(app -> !(apps.containsKey(app.packageName) && selectedGroups.contains(apps.get(app.packageName))));
+        currentApps.removeIf(app
+                -> !(apps.containsKey(app.packageName)
+                && selectedGroups.contains(apps.get(app.packageName))));
 
         // Must be set here, else labels might async load during sort which causes crashes
         Map<ApplicationInfo, String> labels = new HashMap<>();
@@ -238,8 +230,8 @@ public class SettingsManager extends Settings {
      */
     public static Set<String> getDefaultGroupsSet() {
         Set<String> defaultGroupsSet = new HashSet<>();
-        for (App.Type type : Platform.getSupportedAppTypes(LauncherActivity.getForegroundInstance()))
-            defaultGroupsSet.add(App.getDefaultGroupFor(type));
+        for (App.Type type : PlatformExt.getSupportedAppTypes())
+            defaultGroupsSet.add(AppExt.getDefaultGroupFor(type));
 
         return (defaultGroupsSet);
     }
@@ -289,12 +281,7 @@ public class SettingsManager extends Settings {
         if ((selected ? selectedGroupsSet : appGroupsSet).isEmpty()) readGroupsAndSort();
         ArrayList<String> sortedGroupList = new ArrayList<>(selected ? getSelectedGroups() : getAppGroups());
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-            sortedGroupList.sort(Comparator.comparing(StringLib::forSort));
-        else
-            Log.e("OLD API", "Your android version is too old (<7.0) " +
-                    "so groups can not be sorted," +
-                    "which may cause serious issues!");
+        sortedGroupList.sort(Comparator.comparing(StringLib::forSort));
 
         // Move hidden group to end
         if (sortedGroupList.contains(Settings.HIDDEN_GROUP)) {
@@ -376,7 +363,7 @@ public class SettingsManager extends Settings {
             for (String pkg : appGroupMap.keySet()) {
                 Set<String> group = appListSetMap.get(appGroupMap.get(pkg));
                 if (group == null) group = appListSetMap.get(
-                        App.getDefaultGroupFor(App.Type.TYPE_SUPPORTED));
+                        AppExt.getDefaultGroupFor(App.Type.PHONE));
                 if (group == null) {
                     Log.w("Group was null", pkg);
                     group = appListSetMap.get(HIDDEN_GROUP);
@@ -451,7 +438,7 @@ public class SettingsManager extends Settings {
     }
     private static String checkDefaultGroupFor(App.Type type) {
         String key = Settings.KEY_DEFAULT_GROUP + type;
-        if (!Settings.FALLBACK_GROUPS.containsKey(type)) type = App.Type.TYPE_PHONE;
+        if (!Settings.FALLBACK_GROUPS.containsKey(type)) type = App.Type.PHONE;
         String def = Settings.FALLBACK_GROUPS.get(type);
 
         return SettingsManager.dataStoreEditor.getString(key, def);
@@ -464,9 +451,10 @@ public class SettingsManager extends Settings {
      * @return True if that type is set to display as banners
      */
     public static boolean isTypeBanner(App.Type type) {
+        if (type == App.Type.TV && !Platform.isTv()) type = App.Type.PHONE;
         if (isBannerCache.containsKey(type)) return Boolean.TRUE.equals(isBannerCache.get(type));
         String key = Settings.KEY_BANNER + type;
-        if (!Settings.FALLBACK_BANNER.containsKey(type)) type = App.Type.TYPE_PHONE;
+        if (!Settings.FALLBACK_BANNER.containsKey(type)) type = App.Type.PHONE;
         boolean def = Boolean.TRUE.equals(Settings.FALLBACK_BANNER.get(type));
         boolean val = SettingsManager.dataStoreEditor.getBoolean(key, def);
         isBannerCache.put(type, val);
@@ -477,14 +465,5 @@ public class SettingsManager extends Settings {
     public static void setTypeBanner(App.Type type, boolean banner) {
         isBannerCache.put(type, banner);
         dataStoreEditor.putBoolean(Settings.KEY_BANNER + type, banner);
-    }
-
-    /**
-     * Check if advanced chain-loader size options should be show
-     * @return True if advanced size options are currently enabled
-     */
-    public static boolean getShowAdvancedSizeOptions(LauncherActivity activity) {
-        return activity.dataStoreEditor.getBoolean(Settings.KEY_ADVANCED_SIZING,
-                Settings.DEFAULT_ADVANCED_SIZING);
     }
  }

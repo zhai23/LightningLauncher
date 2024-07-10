@@ -4,21 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/bkg_dialog"
-    android:clipChildren="true"
     android:orientation="vertical"
     android:padding="0dp"
     tools:ignore="TextSizeCheck">
 
     <LinearLayout
-        android:id="@+id/layout"
+        android:id="@+id/itemLaunch"
         android:layout_width="match_parent"
         android:layout_height="39dp"
         android:orientation="vertical"
         android:padding="20dp">
 
         <View
-            android:id="@+id/view"
             android:layout_width="415dp"
             android:layout_height="wrap_content" />
 
@@ -44,155 +41,59 @@
             android:baselineAligned="false"
             android:orientation="horizontal">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/editModeContainer"
-                android:layout_width="0dp"
+            <com.threethan.launchercore.view.LcSwitch
+                android:id="@+id/editModeSwitch"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="5dp"
-                android:layout_weight="1"
-                android:background="@drawable/bkg_button">
 
-                <TextView
-                    android:id="@+id/editModeText"
-                    style="@style/SettingButtonLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:layout_marginEnd="52dp"
-                    android:singleLine="true"
-                    android:text="@string/edit_mode"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                android:layout_marginEnd="10dp"
+                android:text="@string/edit_mode" />
 
-                <Switch style="@style/customSwitch"
-                    android:id="@+id/editModeSwitch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="UseSwitchCompatOrMaterialXml" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <TextView
+            <com.threethan.launchercore.view.LcButton
                 android:id="@+id/addWebsiteButton"
-                style="@style/SettingButtonLabel"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="5dp"
                 android:layout_weight="1"
-                android:background="@drawable/bkg_button"
-                android:gravity="center"
-                android:orientation="horizontal"
                 android:paddingStart="5dp"
                 android:paddingEnd="5dp"
                 android:singleLine="true"
                 android:text="@string/add_website"
                 android:visibility="gone">
 
-            </TextView>
+            </com.threethan.launchercore.view.LcButton>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <com.threethan.launchercore.view.LcButton
                 android:id="@+id/addonsButtonAttract"
+                style="@style/buttonHighlight"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginStart="5dp"
                 android:layout_weight="1"
-                android:background="@drawable/bkg_button_highlight"
-                android:visibility="gone">
+                android:drawableEnd="@drawable/ic_dialog"
+                android:text="@string/settings_addons_attract"
+                android:visibility="gone"
+                tools:visibility="visible" />
 
-                <TextView
-                    style="@style/SettingButtonLabel"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="1dp"
-                    android:singleLine="true"
-                    android:text="@string/settings_addons_attract"
-                    android:textColor="#000000"
-                    app:layout_constraintBottom_toBottomOf="@+id/imageView"
-                    app:layout_constraintEnd_toStartOf="@+id/imageView"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/imageView"
-                    tools:ignore="NestedWeights,RtlSymmetry" />
-
-                <ImageView
-                    android:id="@+id/imageView"
-                    android:layout_width="30dp"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_shortcut"
-                    android:tint="#000000"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="UseAppTint" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <com.threethan.launchercore.view.LcButton
                 android:id="@+id/addonsButton"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginStart="5dp"
                 android:layout_weight="1"
-                android:background="@drawable/bkg_button"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/SettingButtonLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:layout_marginEnd="52dp"
-                    android:singleLine="true"
-                    android:text="@string/settings_addons"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_shortcut"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                android:drawableEnd="@drawable/ic_dialog"
+                android:text="@string/settings_addons" />
 
         </LinearLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <com.threethan.launchercore.view.LcButton
             android:id="@+id/updateButton"
+            style="@style/buttonHighlight"
             android:layout_width="match_parent"
             android:layout_height="39dp"
             android:layout_marginTop="10dp"
-            android:background="@drawable/bkg_button_highlight"
+            android:drawableEnd="@drawable/ic_update"
+            android:text="@string/settings_update"
             android:visibility="gone"
-            tools:visibility="visible">
-
-            <TextView
-                style="@style/SettingButtonLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:singleLine="true"
-                android:text="@string/settings_update"
-                android:textColor="#000000"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_update"
-                android:tint="#000000"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="UseAppTint" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            tools:visibility="visible" />
 
         <TextView
             style="@style/SettingSubtitle"
@@ -349,34 +250,13 @@
             </LinearLayout>
         </HorizontalScrollView>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <com.threethan.launchercore.view.LcSwitch
+            android:id="@+id/darkModeSwitch"
             android:layout_width="match_parent"
-            android:layout_height="39dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:background="@drawable/bkg_button"
-            android:gravity="clip_vertical|center_vertical">
-
-            <TextView
-                style="@style/SettingButtonLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_marginEnd="52dp"
-                android:singleLine="true"
-                android:text="@string/dark_mode"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <Switch style="@style/customSwitch"
-                android:id="@+id/darkModeSwitch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="UseSwitchCompatOrMaterialXml" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            android:text="@string/dark_mode"
+            tools:ignore="UseSwitchCompatOrMaterialXml" />
 
         <TextView
             style="@style/SettingSubtitle"
@@ -451,42 +331,21 @@
             android:baselineAligned="false"
             android:orientation="horizontal">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <com.threethan.launchercore.view.LcSwitch
+                android:id="@+id/groupSwitch"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="3.4dp"
+                android:layout_height="wrap_content"
+
                 android:layout_weight="2"
-                android:background="@drawable/bkg_button">
-
-                <TextView
-                    style="@style/SettingButtonLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:layout_marginEnd="52dp"
-                    android:singleLine="true"
-                    android:text="@string/group_mode"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <Switch style="@style/customSwitch"
-                    android:id="@+id/groupSwitch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="UseSwitchCompatOrMaterialXml" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                android:text="@string/group_mode"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
 
             <TextView
                 android:id="@+id/clearLabelButton"
                 style="@style/SettingButtonLabel"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginStart="6.6dp"
+                android:layout_marginStart="10dp"
                 android:layout_weight="1"
                 android:background="@drawable/bkg_button"
                 android:gravity="center"
@@ -506,67 +365,23 @@
             android:baselineAligned="false"
             android:orientation="horizontal">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <com.threethan.launchercore.view.LcButton
                 android:id="@+id/groupDefaultsInfoButton"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="3dp"
                 android:layout_weight="2"
-                android:background="@drawable/bkg_button">
+                android:drawableEnd="@drawable/ic_dialog"
+                android:text="@string/group_defaults_button" />
 
-                <TextView
-                    style="@style/SettingButtonLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="25dp"
-                    android:singleLine="true"
-                    android:text="@string/group_defaults_button"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="20dp"
-                    android:src="@drawable/ic_launch_out"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="UseAppTint" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <com.threethan.launchercore.view.LcButton
                 android:id="@+id/iconSettingsButton"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="5dp"
                 android:layout_weight="2"
-                android:background="@drawable/bkg_button">
-
-                <TextView
-                    style="@style/SettingButtonLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="25dp"
-                    android:singleLine="true"
-                    android:text="@string/icons_settings_button"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="20dp"
-                    android:src="@drawable/ic_launch_out"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="UseAppTint" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                android:drawableEnd="@drawable/ic_dialog"
+                android:text="@string/icons_settings_button" />
 
         </LinearLayout>
 
@@ -583,99 +398,36 @@
             android:baselineAligned="false"
             android:orientation="horizontal">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/bannerVrContainer"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+            <com.threethan.launchercore.view.LcSwitch
+                android:id="@+id/bannerVrSwitch"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
 
                 android:layout_marginEnd="5dp"
                 android:layout_weight="1"
-                android:background="@drawable/bkg_button">
+                android:text="@string/apps_vr"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
 
-                <TextView
-                    style="@style/SettingButtonLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:layout_marginEnd="52dp"
-                    android:singleLine="true"
-                    android:text="@string/apps_vr"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+            <com.threethan.launchercore.view.LcSwitch
+                android:id="@+id/bannerPanelSwitch"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
 
-                <Switch style="@style/customSwitch"
-                    android:id="@+id/bannerVrSwitch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="UseSwitchCompatOrMaterialXml" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/bannerPanelContainer"
-                android:layout_width="match_parent"
-
-                android:layout_height="match_parent"
                 android:layout_marginStart="5dp"
                 android:layout_weight="1"
-                android:background="@drawable/bkg_button">
+                android:text="@string/apps_panel"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
 
-                <TextView
-                    style="@style/SettingButtonLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:singleLine="true"
-                    android:text="@string/apps_panel"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+            <com.threethan.launchercore.view.LcSwitch
+                android:id="@+id/bannerTvSwitch"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
 
-                <Switch style="@style/customSwitch"
-                    android:id="@+id/bannerPanelSwitch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="UseSwitchCompatOrMaterialXml" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/bannerTvContainer"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-
+                android:layout_marginStart="5dp"
                 android:layout_weight="1"
-                android:background="@drawable/bkg_button">
+                android:text="@string/apps_tv"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
 
-                <TextView
-                    android:id="@+id/tvOrPanelWideLabel"
-                    style="@style/SettingButtonLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:singleLine="true"
-                    android:text="@string/apps_tv"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <Switch style="@style/customSwitch"
-                    android:id="@+id/bannerTvSwitch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="UseSwitchCompatOrMaterialXml" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
 
         <LinearLayout
@@ -685,67 +437,25 @@
             android:baselineAligned="false"
             android:orientation="horizontal">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/bannerPhoneContainer"
-                android:layout_width="match_parent"
+            <com.threethan.launchercore.view.LcSwitch
+                android:id="@+id/bannerPhoneSwitch"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+
                 android:layout_marginEnd="5dp"
                 android:layout_weight="1"
-                android:background="@drawable/bkg_button">
+                android:text="@string/apps_phone"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
 
-                <TextView
-                    style="@style/SettingButtonLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:layout_marginEnd="52dp"
-                    android:singleLine="true"
-                    android:text="@string/apps_phone"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+            <com.threethan.launchercore.view.LcSwitch
+                android:id="@+id/bannerWebsiteSwitch"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
 
-                <Switch style="@style/customSwitch"
-                    android:id="@+id/banner2dSwitch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="UseSwitchCompatOrMaterialXml" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/bannerWebsiteContainer"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
                 android:layout_marginStart="5dp"
                 android:layout_weight="1"
-                android:background="@drawable/bkg_button"
-                tools:ignore="RtlSymmetry">
-
-                <TextView
-                    style="@style/SettingButtonLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:layout_marginEnd="52dp"
-                    android:singleLine="true"
-                    android:text="@string/apps_web"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <Switch style="@style/customSwitch"
-                    android:id="@+id/bannerWebSwitch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="UseSwitchCompatOrMaterialXml" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
+                android:text="@string/apps_web"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
         </LinearLayout>
 
         <TextView
@@ -760,65 +470,21 @@
             android:baselineAligned="false"
             android:orientation="horizontal">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <com.threethan.launchercore.view.LcSwitch
+                android:id="@+id/namesSquareSwitch"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="5dp"
                 android:layout_weight="1"
-                android:background="@drawable/bkg_button">
+                android:text="@string/app_name_icon" />
 
-                <TextView
-                    style="@style/SettingButtonLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:layout_marginEnd="52dp"
-                    android:singleLine="true"
-                    android:text="@string/app_name_icon"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <Switch style="@style/customSwitch"
-                    android:id="@+id/nameSquareSwitch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="UseSwitchCompatOrMaterialXml" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <com.threethan.launchercore.view.LcSwitch
+                android:id="@+id/namesBannerSwitch"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginStart="5dp"
                 android:layout_weight="1"
-                android:background="@drawable/bkg_button">
-
-                <TextView
-                    style="@style/SettingButtonLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:layout_marginEnd="52dp"
-                    android:singleLine="true"
-                    android:text="@string/app_name_wide"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="TooManyViews" />
-
-                <Switch style="@style/customSwitch"
-                    android:id="@+id/nameBannerSwitch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="UseSwitchCompatOrMaterialXml" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                android:text="@string/app_name_wide" />
 
         </LinearLayout>
 
@@ -828,35 +494,13 @@
             android:layout_height="wrap_content"
             android:text="@string/advanced_header" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <com.threethan.launchercore.view.LcButton
             android:id="@+id/advancedSettingsButton"
             android:layout_width="match_parent"
             android:layout_height="39dp"
             android:layout_marginEnd="3dp"
-            android:background="@drawable/bkg_button">
-
-            <TextView
-                style="@style/SettingButtonLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="25dp"
-                android:singleLine="true"
-                android:text="@string/advanced_button"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="20dp"
-                android:src="@drawable/ic_launch_out"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="UseAppTint" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            android:text="@string/advanced_button"
+            tools:drawableEnd="@drawable/ic_dialog" />
 
     </LinearLayout>
 </ScrollView>

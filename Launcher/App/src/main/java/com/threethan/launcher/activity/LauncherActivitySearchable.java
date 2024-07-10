@@ -13,10 +13,10 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.threethan.launcher.R;
-import com.threethan.launcher.helper.Keyboard;
-import com.threethan.launcher.helper.Launch;
-import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.activity.view.EditTextWatched;
+import com.threethan.launcher.helper.LaunchExt;
+import com.threethan.launchercore.util.Keyboard;
+import com.threethan.launchercore.util.Platform;
 
 import java.util.Objects;
 
@@ -84,7 +84,7 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
             if (getCurrentFocus() != null) getCurrentFocus().clearFocus();
             searchText.setText("");
             searchText.post(searchText::requestFocus);
-            if (Platform.isVr(this)) postDelayed(() -> {
+            if (Platform.isVr()) postDelayed(() -> {
                 Keyboard.hide(this, searchBar);
                 Keyboard.show(this);
             }, 50);
@@ -184,7 +184,7 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
                 updateTopSearchResult();
                 if (currentTopSearchResult != null) try {
                     Keyboard.hide(this, searchBg);
-                    Launch.launchApp(this, currentTopSearchResult);
+                    LaunchExt.launchApp(this, currentTopSearchResult);
                     return true;
                 } catch (Exception ignored) {
                     return false;

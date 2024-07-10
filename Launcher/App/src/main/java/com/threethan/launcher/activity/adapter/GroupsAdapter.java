@@ -61,7 +61,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.GroupViewH
     @Override
     public GroupViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.lv_group, parent, false);
+        View view = inflater.inflate(R.layout.item_group, parent, false);
 
         GroupViewHolder holder = new GroupViewHolder(view);
         setActions(holder);
@@ -92,7 +92,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.GroupViewH
     @Override
     public void onBindViewHolder(@NonNull GroupViewHolder holder, @SuppressLint("RecyclerView") int position) {
         setLook(position, holder.view, holder.menu);
-        TextView textView = holder.view.findViewById(R.id.textLabel);
+        TextView textView = holder.view.findViewById(R.id.itemLabel);
         setTextViewValue(textView, appGroups.get(position));
 
         if (Objects.equals(launcherActivity.lastSelectedGroup, position))
@@ -119,7 +119,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.GroupViewH
         GroupViewHolder(View view) {
             super(view);
             this.view = view;
-            this.textView = view.findViewById(R.id.textLabel);
+            this.textView = view.findViewById(R.id.itemLabel);
             this.menu = view.findViewById(R.id.menu);
         }
     }
@@ -156,7 +156,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.GroupViewH
             itemView.setBackgroundResource(shapeResourceId);
             itemView.setBackgroundTintList(ColorStateList.valueOf(
                     Color.parseColor(LauncherActivity.darkMode ? "#50000000" : "#FFFFFF")));
-            TextView textView = itemView.findViewById(R.id.textLabel);
+            TextView textView = itemView.findViewById(R.id.itemLabel);
             textView.setTextColor(Color.parseColor(
                     LauncherActivity.darkMode ? "#FFFFFFFF" : "#FF000000")); // set selected tab text color
 
@@ -164,7 +164,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.GroupViewH
             else                                           menu.setVisibility(View.GONE);
         } else {
             itemView.setBackgroundColor(Color.TRANSPARENT);
-            TextView textView = itemView.findViewById(R.id.textLabel);
+            TextView textView = itemView.findViewById(R.id.itemLabel);
             textView.setTextColor(Color.parseColor(
                     LauncherActivity.darkMode ? "#98FFFFFF" : "#98000000")); // set unselected tab text color
             menu.setVisibility(View.GONE);

@@ -3,248 +3,79 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/addonButtonLayout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="35dp"
     android:layout_marginStart="40dp"
     android:layout_marginBottom="10dp"
+    android:baselineAligned="false"
     android:orientation="horizontal"
-    tools:showIn="@layout/dialog_addons_vr"
-    android:baselineAligned="false">
+    tools:showIn="@layout/dialog_addons_vr">
 
-    <LinearLayout
+    <com.threethan.launchercore.view.LcButton
         android:id="@+id/addonUninstall"
         android:layout_width="0dp"
         android:layout_height="35dp"
-        android:layout_gravity="bottom"
-        android:layout_marginEnd="10dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
         android:layout_weight="1"
-        android:background="@drawable/bkg_button"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        tools:ignore="DuplicateIds"
-        tools:visibility="visible">
+        android:drawableEnd="@drawable/ic_uninstall"
+        android:text="@string/addons_uninstall" />
 
-        <TextView
-            style="@style/SettingButtonLabel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginEnd="35dp"
-            android:singleLine="true"
-            android:text="@string/addons_uninstall"
-            tools:ignore="NestedWeights,RtlSymmetry" />
-
-        <ImageView
-            android:layout_width="35dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="-35dp"
-            android:layout_marginEnd="-8dp"
-            android:src="@drawable/ic_uninstall" />
-
-    </LinearLayout>
-
-    <LinearLayout
+    <com.threethan.launchercore.view.LcButton
         android:id="@+id/addonDeactivate"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="bottom"
-        android:layout_marginEnd="10dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
         android:layout_weight="1"
-        android:background="@drawable/bkg_button_default"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        tools:ignore="DuplicateIds"
-        tools:visibility="visible">
+        android:drawableEnd="@drawable/ic_activate"
+        android:text="@string/addons_deactivate" />
 
-        <TextView
-            style="@style/SettingButtonLabel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginEnd="30dp"
-            android:singleLine="true"
-            android:text="@string/addons_deactivate"
-            android:textColor="#FFFFFF"
-            tools:ignore="NestedWeights,RtlSymmetry" />
-
-        <ImageView
-            android:layout_width="35dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="-35dp"
-            android:layout_marginEnd="-8dp"
-            android:src="@drawable/ic_activate"
-            android:tint="#FFFFFF"
-            tools:ignore="UseAppTint" />
-
-    </LinearLayout>
-
-    <LinearLayout
+    <com.threethan.launchercore.view.LcButton
         android:id="@+id/addonInstall"
+        style="@style/buttonHighlight"
         android:layout_width="0dp"
         android:layout_height="35dp"
-        android:layout_gravity="bottom"
-        android:layout_marginEnd="10dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
         android:layout_weight="1"
-        android:background="@drawable/bkg_button_highlight"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        tools:ignore="DuplicateIds"
-        tools:visibility="visible">
+        android:drawableEnd="@drawable/ic_download"
+        android:text="@string/addons_install" />
 
-        <TextView
-            style="@style/SettingButtonLabel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginEnd="35dp"
-            android:singleLine="true"
-            android:text="@string/addons_install"
-            android:textColor="#000000"
-            tools:ignore="NestedWeights,RtlSymmetry" />
-
-        <ImageView
-            android:layout_width="35dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="-35dp"
-            android:layout_marginEnd="-8dp"
-            android:src="@drawable/ic_download"
-            android:tint="#000000"
-            tools:ignore="UseAppTint" />
-
-    </LinearLayout>
-
-    <LinearLayout
+    <com.threethan.launchercore.view.LcButton
         android:id="@+id/addonUpdate"
+        style="@style/buttonHighlight"
         android:layout_width="0dp"
         android:layout_height="35dp"
-        android:layout_gravity="bottom"
-        android:layout_marginEnd="10dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
         android:layout_weight="1"
-        android:background="@drawable/bkg_button_highlight"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        tools:ignore="DuplicateIds">
+        android:drawableEnd="@drawable/ic_update"
+        android:text="@string/addons_update"
+        android:visibility="gone" />
 
-        <TextView
-            style="@style/SettingButtonLabel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginEnd="35dp"
-            android:singleLine="true"
-            android:text="@string/addons_update"
-            android:textColor="#000000"
-            tools:ignore="NestedWeights,RtlSymmetry" />
-
-        <ImageView
-            android:layout_width="35dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="-35dp"
-            android:layout_marginEnd="-8dp"
-            android:src="@drawable/ic_update"
-            android:tint="#000000"
-            tools:ignore="UseAppTint" />
-
-    </LinearLayout>
-
-    <LinearLayout
+    <com.threethan.launchercore.view.LcButton
         android:id="@+id/addonOpen"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="bottom"
-        android:layout_marginEnd="10dp"
-        android:layout_weight="1"
-        android:background="@drawable/bkg_button_highlight"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        tools:ignore="DuplicateIds">
-
-        <TextView
-            style="@style/SettingButtonLabel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginEnd="30dp"
-            android:singleLine="true"
-            android:text="@string/addons_open"
-            android:textColor="#000000"
-            tools:ignore="NestedWeights,RtlSymmetry" />
-
-        <ImageView
-            android:layout_width="35dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="-35dp"
-            android:layout_marginEnd="-8dp"
-            android:src="@drawable/ic_launch_out"
-            android:tint="#000000"
-            tools:ignore="UseAppTint" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/addonActivate"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="@drawable/bkg_button_highlight"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        tools:ignore="DuplicateIds">
-
-        <TextView
-            style="@style/SettingButtonLabel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginEnd="30dp"
-            android:singleLine="true"
-            android:text="@string/addons_activate"
-            android:textColor="#000000"
-            tools:ignore="NestedWeights,RtlSymmetry" />
-
-        <ImageView
-            android:layout_width="35dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="-35dp"
-            android:layout_marginEnd="-8dp"
-            android:src="@drawable/ic_activate"
-            android:tint="#000000"
-            tools:ignore="UseAppTint" />
-
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:id="@+id/addonActivate"
+        style="@style/buttonHighlight"
         android:layout_width="0dp"
         android:layout_height="35dp"
-        android:layout_gravity="bottom"
-        android:layout_marginEnd="10dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
         android:layout_weight="1"
-        android:background="@drawable/bkg_button_highlight"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        tools:ignore="DuplicateIds">
+        android:drawableEnd="@drawable/ic_launch_out"
+        android:text="@string/addons_open"
+        android:visibility="gone" />
 
-        <TextView
-            style="@style/SettingButtonLabel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginEnd="30dp"
-            android:singleLine="true"
-            android:text="@string/addons_activate"
-            android:textColor="#000000"
-            tools:ignore="NestedWeights,RtlSymmetry" />
+    <com.threethan.launchercore.view.LcButton
+        android:id="@+id/addonActivate"
+        style="@style/buttonHighlight"
+        android:layout_width="0dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_weight="1"
+        android:drawableEnd="@drawable/ic_activate"
+        android:text="@string/addons_activate"
+        android:visibility="gone" />
 
-        <ImageView
-            android:layout_width="35dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="-35dp"
-            android:layout_marginEnd="-8dp"
-            android:src="@drawable/ic_activate"
-            android:tint="#000000"
-            tools:ignore="UseAppTint" />
-
-    </LinearLayout>
 
 </LinearLayout>

@@ -83,18 +83,11 @@
                 android:textColor="@android:color/white" />
         </LinearLayout>
 
-        <FrameLayout
-            android:id="@+id/confirm"
+        <com.threethan.launchercore.view.LcButton
+            android:id="@+id/install"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bkg_button">
-
-            <TextView
-                style="@style/SettingButtonLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/understood" />
-        </FrameLayout>
+            android:text="@string/understood" />
 
     </LinearLayout>
 </ScrollView>

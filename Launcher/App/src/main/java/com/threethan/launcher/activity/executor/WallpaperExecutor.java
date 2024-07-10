@@ -7,11 +7,11 @@ import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 
-import com.threethan.launcher.helper.Platform;
-import com.threethan.launcher.data.Settings;
 import com.threethan.launcher.activity.LauncherActivity;
-import com.threethan.launcher.lib.ImageLib;
 import com.threethan.launcher.activity.support.SettingsManager;
+import com.threethan.launcher.data.Settings;
+import com.threethan.launchercore.lib.ImageLib;
+import com.threethan.launchercore.util.Platform;
 
 import java.io.File;
 
@@ -67,7 +67,7 @@ public class WallpaperExecutor {
             }
             if (backgroundThemeDrawable == null) return;
 
-            if (Platform.isQuest(owner)) {
+            if (Platform.isQuest()) {
                 backgroundThemeDrawable.setAlpha(owner.dataStoreEditor
                         .getInt(Settings.KEY_BACKGROUND_ALPHA, Settings.DEFAULT_ALPHA));
             }

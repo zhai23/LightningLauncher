@@ -2,7 +2,6 @@
 <resources>
     <!-- Must match Settings.launchSizeClasses -->
     <array name="advanced_launch_sizes">
-        <item>@string/size_none</item>
         <item>@string/size_own</item>
         <item>@string/size_phone</item>
         <item>@string/size_small</item>

@@ -4,26 +4,30 @@ import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import com.threethan.launcher.BuildConfig;
 import com.threethan.launcher.R;
-import com.threethan.launcher.activity.support.SettingsManager;
-import com.threethan.launcher.data.AppData;
-import com.threethan.launcher.data.PanelApplicationInfo;
-import com.threethan.launcher.data.Settings;
-import com.threethan.launcher.activity.dialog.BasicDialog;
-import com.threethan.launcher.activity.LauncherActivity;
 import com.threethan.launcher.activity.AddShortcutActivity;
+import com.threethan.launcher.activity.LauncherActivity;
+import com.threethan.launcher.activity.dialog.BasicDialog;
+import com.threethan.launcher.activity.support.SettingsManager;
+import com.threethan.launcher.data.Settings;
 import com.threethan.launcher.updater.BrowserUpdater;
+import com.threethan.launchercore.Core;
+import com.threethan.launchercore.util.App;
+import com.threethan.launchercore.util.Keyboard;
+import com.threethan.launchercore.util.Launch;
 
+import java.util.Map;
 import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * This abstract class is dedicated to actually launching apps.
@@ -31,7 +35,7 @@ import java.util.TimerTask;
  * The helper function "getAppLaunchable" is also used by the App class to determine if an app
  * can possibly be launched.
  */
-public abstract class Launch {
+public abstract class LaunchExt extends Launch {
     protected static final String ACTION_ACTUALLY_SHORTCUT = "ACTION_ACTUALLY_SHORTCUT";
     // Must match: arrays.xml -> advance_launch_browsers
     private static final int LAUNCH_BROWSER_QUEST = 2;
@@ -60,8 +64,8 @@ public abstract class Launch {
         }
 
         // Browser Check
-        if (Objects.equals(intent.getPackage(), Platform.BROWSER_PACKAGE)) {
-            if (Platform.hasBrowser(launcherActivity)) {
+        if (Objects.equals(intent.getPackage(), PlatformExt.BROWSER_PACKAGE)) {
+            if (PlatformExt.hasBrowser(launcherActivity)) {
                 // Check for browser update. User probably won't see the prompt until closing, though.
                 BrowserUpdater browserUpdater = new BrowserUpdater(launcherActivity);
                 if (browserUpdater.getInstalledVersionCode() < BrowserUpdater.REQUIRED_VERSION_CODE) {
@@ -92,10 +96,7 @@ public abstract class Launch {
             }
         }
 
-        final App.Type appType = App.getType(app);
-        if ((appType == App.Type.TYPE_PHONE || appType == App.Type.TYPE_TV || appType == App.Type.TYPE_WEB)
-                && SettingsManager.getAppLaunchOut(app.packageName)) {
-
+        if (SettingsManager.getAppLaunchOut(app.packageName)) {
             launcherActivity.finishAffinity();
 
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
@@ -107,13 +108,25 @@ public abstract class Launch {
                 public void run() {
                     startIntent(launcherActivity, intent);
                 }
-            }, 50);
+            }, 15);
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
                     startIntent(launcherActivity, intent);
                 }
-            }, 700);
+            }, 100);
+            final Intent relaunchIntent = Core.context().getPackageManager()
+                    .getLaunchIntentForPackage(BuildConfig.APPLICATION_ID);
+            assert relaunchIntent != null;
+            relaunchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    startIntent(launcherActivity, relaunchIntent);
+                }
+            }, 75);
+
+
             return false;
         } else {
             startIntent(launcherActivity, intent);
@@ -121,11 +134,9 @@ public abstract class Launch {
         }
     }
     private static void startIntent(LauncherActivity launcherActivity, Intent intent) {
-        if (Objects.equals(intent.getAction(), ACTION_ACTUALLY_SHORTCUT)) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-                AddShortcutActivity.launchShortcut(launcherActivity, intent.getStringExtra("json"));
-            }
-        }
+        if (Objects.equals(intent.getAction(), ACTION_ACTUALLY_SHORTCUT)
+                && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1)
+            AddShortcutActivity.launchShortcut(launcherActivity, intent.getStringExtra("json"));
         else launcherActivity.startActivity(intent);
     }
 
@@ -137,38 +148,9 @@ public abstract class Launch {
     private static Intent getLaunchIntent(LauncherActivity activity, ApplicationInfo app) {
         // Ignore apps which don't work or should be excluded
         if (app.packageName.startsWith(activity.getPackageName())) return null;
-        if (AppData.invalidAppsList.contains(app.packageName)) return null;
-
-        PackageManager pm = activity.getPackageManager();
-
-        // Detect panel apps
-        if (App.isAppOfType(app, App.Type.TYPE_PANEL)) {
-            String uri = app.packageName;
-            if (uri.startsWith(PanelApplicationInfo.packagePrefix))
-                uri = uri.replaceFirst(PanelApplicationInfo.packagePrefix, "");
-
-            Intent panelIntent = new Intent(Intent.ACTION_VIEW);
-            panelIntent.setComponent(new ComponentName(
-                    "com.oculus.vrshell", "com.oculus.vrshell.MainActivity"));
-            panelIntent.setData(Uri.parse(uri));
-
-            // Special case for events, which depends on explore
-            if (app.packageName.equals("systemux://events") &&
-                    !App.isPackageEnabled(activity, AppData.EXPLORE_PACKAGE)) return null;
-
-            if (pm.resolveActivity(panelIntent, 0) != null) return panelIntent;
-            else return null;
-        }
-
-        // Detect shortcuts (must check before websites)
-        if (App.isShortcut(app)) {
-            Intent intent = new Intent(ACTION_ACTUALLY_SHORTCUT);
-            intent.putExtra("json", app.packageName.replaceFirst("json://", ""));
-            return intent;
-        }
 
         // Detect websites
-        if (App.isWebsite(app)) {
+        if (App.isWebsite(app.packageName)) {
             Intent intent;
             if (app.packageName.startsWith("http://") || (app.packageName.startsWith("https://"))) {
                 final int browserIndex
@@ -186,7 +168,7 @@ public abstract class Launch {
                     case (LAUNCH_BROWSER_SYSTEM):
                         break;
                     default:
-                        intent.setPackage(Platform.BROWSER_PACKAGE);
+                        intent.setPackage(PlatformExt.BROWSER_PACKAGE);
                         break;
                 }
                 return intent;
@@ -198,55 +180,31 @@ public abstract class Launch {
             return intent;
         }
 
-        // Otherwise android TV settings app is not recognized
-        if (Objects.equals(app.packageName, "com.android.tv.settings"))
-            return new Intent(android.provider.Settings.ACTION_SETTINGS);
-
-        // Prefer launching as android TV app
-        Intent tvIntent = pm.getLeanbackLaunchIntentForPackage(app.packageName);
-        if (Platform.isTv(activity) && tvIntent != null) return tvIntent;
-
+        Intent li = getLaunchIntent(app);
         // Chain-load for advanced launch options
-        if (SettingsManager.getShowAdvancedSizeOptions(activity)
-                && App.getType(app) == App.Type.TYPE_PHONE &&
-                SettingsManager.getAppLaunchOut(app.packageName)) {
+        if (AppExt.getType(app) == App.Type.PHONE && li != null) {
 
             int index = activity.dataStoreEditor.getInt(Settings.KEY_LAUNCH_SIZE + app.packageName, 1);
-            // Index of 1 is normal launch own
-            if (index != 1) {
+            if (index > 0) {
                 Intent chainIntent = new Intent(activity, Settings.launchSizeClasses[index]);
                 chainIntent.putExtra("app", app);
                 return chainIntent;
             }
         }
 
-        // Get normal launch intent
-        final Intent normalIntent = pm.getLaunchIntentForPackage(app.packageName);
-        if (normalIntent == null && tvIntent != null) return tvIntent;
-        if (Platform.isQuest(activity) && normalIntent != null)
-            normalIntent.setAction("com.oculus.vrshell.intent.action.LAUNCH");
-        return normalIntent;
+        return li;
     }
 
+    private static final Map<String, Boolean> canLaunchCache = new ConcurrentHashMap<>();
     /**
      * Checks if an app can be launched. Similar to getLaunchIntent, but faster
      * @return True if app can be launched & is supported
      */
-    public static boolean checkLaunchable(LauncherActivity activity, ApplicationInfo app) {
-        // Ignore apps which don't work or should be excluded
-        if (app.packageName.startsWith(activity.getPackageName())) return false;
-        if (AppData.invalidAppsList.contains(app.packageName)) return false;
-
-        PackageManager pm = activity.getPackageManager();
-
-        if (App.isAppOfType(app, App.Type.TYPE_PANEL)) return true;
-        if (App.isAppOfType(app, App.Type.TYPE_WEB)) return true;
-
-        // Special case
-        if (Objects.equals(app.packageName, "com.android.tv.settings")) return true;
-
-        // Actually check now
-        if (pm.getLaunchIntentForPackage(app.packageName) != null) return true;
-        return pm.getLeanbackLaunchIntentForPackage(app.packageName) != null;
+    public static boolean canLaunch(ApplicationInfo app) {
+        if (canLaunchCache.containsKey(app.packageName))
+            return Boolean.TRUE.equals(canLaunchCache.get(app.packageName));
+        boolean canLaunch = getLaunchIntent(app) != null;
+        canLaunchCache.put(app.packageName, canLaunch);
+        return canLaunch;
     }
 }

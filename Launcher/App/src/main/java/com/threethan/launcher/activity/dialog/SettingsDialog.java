@@ -14,14 +14,16 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.threethan.launcher.R;
-import com.threethan.launcher.helper.App;
+import com.threethan.launcher.helper.AppExt;
 import com.threethan.launcher.helper.Compat;
-import com.threethan.launcher.helper.Platform;
+import com.threethan.launcher.helper.PlatformExt;
 import com.threethan.launcher.data.Settings;
 import com.threethan.launcher.activity.LauncherActivity;
 import com.threethan.launcher.activity.support.SettingsManager;
 import com.threethan.launcher.helper.SettingsSaver;
 import com.threethan.launcher.updater.LauncherUpdater;
+import com.threethan.launchercore.util.App;
+import com.threethan.launchercore.util.Platform;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,6 +39,7 @@ import java.util.function.Consumer;
     This class handles the main settings page, including setting/getting preferences, button states,
     and making sure settings are correctly applied to launcher activities
  */
+@SuppressLint("UseSwitchCompatOrMaterialCode")
 
 public class SettingsDialog extends BasicDialog<LauncherActivity> {
     private static boolean clearedLabel;
@@ -96,10 +99,10 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
         if (context.canEdit()) {
             // Can edit, show switch
             editSwitch.setChecked(context.isEditing());
-            dialog.findViewById(R.id.editModeContainer).setVisibility(View.VISIBLE);
+            editSwitch.setVisibility(View.VISIBLE);
             addWebsite.setVisibility(View.GONE);
         } else {
-            dialog.findViewById(R.id.editModeContainer).setVisibility(View.GONE);
+            editSwitch.setVisibility(View.GONE);
             addWebsite.setVisibility(View.VISIBLE);
         }
 
@@ -132,7 +135,7 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
                 dialog.findViewById(R.id.background_custom)
         };
         int background = context.dataStoreEditor.getInt(Settings.KEY_BACKGROUND,
-                Platform.isTv(context)
+                Platform.isTv()
                         ? Settings.DEFAULT_BACKGROUND_TV
                         : Settings.DEFAULT_BACKGROUND_VR);
         if (background < 0) background = views.length - 1;
@@ -148,7 +151,7 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
             int index = i;
             views[i].setOnClickListener(view -> {
                 int lastIndex = context.dataStoreEditor.getInt(Settings.KEY_BACKGROUND,
-                        Platform.isTv(context)
+                        Platform.isTv()
                                 ? Settings.DEFAULT_BACKGROUND_TV
                                 : Settings.DEFAULT_BACKGROUND_VR);
                 if (lastIndex >= SettingsManager.BACKGROUND_DRAWABLES.length || lastIndex < 0)
@@ -238,10 +241,10 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
                     if (value) {
                         // Can edit, show switch
                         editSwitch.setChecked(context.isEditing());
-                        dialog.findViewById(R.id.editModeContainer).setVisibility(View.VISIBLE);
+                        editSwitch.setVisibility(View.VISIBLE);
                         addWebsite.setVisibility(View.GONE);
                     } else {
-                        dialog.findViewById(R.id.editModeContainer).setVisibility(View.GONE);
+                        editSwitch.setVisibility(View.GONE);
                         addWebsite.setVisibility(View.VISIBLE);
                     }
                 }
@@ -266,39 +269,33 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
 
         // Banner mode
         final Map<App.Type, Switch> switchByType = new HashMap<>();
-        switchByType.put(App.Type.TYPE_PHONE, dialog.findViewById(R.id.banner2dSwitch));
-        switchByType.put(App.Type.TYPE_VR, dialog.findViewById(R.id.bannerVrSwitch));
-        switchByType.put(App.Type.TYPE_TV, dialog.findViewById(R.id.bannerTvSwitch));
-        switchByType.put(App.Type.TYPE_PANEL, dialog.findViewById(R.id.bannerPanelSwitch));
-        switchByType.put(App.Type.TYPE_WEB, dialog.findViewById(R.id.bannerWebSwitch));
-        final Map<App.Type, View> switchContainerByType = new HashMap<>();
-        switchContainerByType.put(App.Type.TYPE_PHONE, dialog.findViewById(R.id.bannerPhoneContainer));
-        switchContainerByType.put(App.Type.TYPE_VR, dialog.findViewById(R.id.bannerVrContainer));
-        switchContainerByType.put(App.Type.TYPE_TV, dialog.findViewById(R.id.bannerTvContainer));
-        switchContainerByType.put(App.Type.TYPE_PANEL, dialog.findViewById(R.id.bannerPanelContainer));
-        switchContainerByType.put(App.Type.TYPE_WEB, dialog.findViewById(R.id.bannerWebsiteContainer));
+        switchByType.put(App.Type.PHONE, dialog.findViewById(R.id.bannerPhoneSwitch));
+        switchByType.put(App.Type.VR, dialog.findViewById(R.id.bannerVrSwitch));
+        switchByType.put(App.Type.TV, dialog.findViewById(R.id.bannerTvSwitch));
+        switchByType.put(App.Type.PANEL, dialog.findViewById(R.id.bannerPanelSwitch));
+        switchByType.put(App.Type.WEB, dialog.findViewById(R.id.bannerWebsiteSwitch));
 
         for (App.Type type : switchByType.keySet()) {
-            if (Platform.getSupportedAppTypes(context).contains(type)) {
-                Objects.requireNonNull(switchContainerByType.get(type)).setVisibility(View.VISIBLE);
+            if (PlatformExt.getSupportedAppTypes().contains(type)) {
+                Objects.requireNonNull(switchByType.get(type)).setVisibility(View.VISIBLE);
 
                 final Switch bSwitch = switchByType.get(type);
                 if (bSwitch == null) continue;
-                bSwitch.setChecked(App.typeIsBanner(type));
+                bSwitch.setChecked(AppExt.typeIsBanner(type));
                 bSwitch.setOnCheckedChangeListener((switchView, value) -> {
                     SettingsManager.setTypeBanner(type, value);
                     context.launcherService.forEachActivity(LauncherActivity::resetAdapters);
                 });
             } else {
-                Objects.requireNonNull(switchContainerByType.get(type)).setVisibility(View.GONE);
+                Objects.requireNonNull(switchByType.get(type)).setVisibility(View.GONE);
             }
         }
 
         // Names
-        attachSwitchToSetting(dialog.findViewById(R.id.nameSquareSwitch),
+        attachSwitchToSetting(dialog.findViewById(R.id.namesSquareSwitch),
                 Settings.KEY_SHOW_NAMES_SQUARE, Settings.DEFAULT_SHOW_NAMES_SQUARE);
 
-        attachSwitchToSetting(dialog.findViewById(R.id.nameBannerSwitch),
+        attachSwitchToSetting(dialog.findViewById(R.id.namesBannerSwitch),
                 Settings.KEY_SHOW_NAMES_BANNER, Settings.DEFAULT_SHOW_NAMES_BANNER);
 
         // Advanced button
@@ -313,7 +310,7 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
 
         dialog.findViewById(R.id.dismissButton).setOnClickListener(view -> dialog.dismiss());
 
-        if (Platform.isQuest(context)) {
+        if (Platform.isQuest()) {
             SeekBar alpha = dialog.findViewById(R.id.alphaSeekBar);
             alpha.setProgress(255 - context.dataStoreEditor.getInt(Settings.KEY_BACKGROUND_ALPHA, Settings.DEFAULT_ALPHA));
             alpha.post(() -> alpha.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -345,21 +342,12 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
         attachSwitchToSetting(dialog.findViewById(R.id.longPressEditSwitch),
                 Settings.KEY_DETAILS_LONG_PRESS, Settings.DEFAULT_AUTO_HIDE_EMPTY);
 
-        if (Platform.isVr(context)) {
-            attachSwitchToSetting(dialog.findViewById(R.id.defaultLaunchOutSwitch),
-                    Settings.KEY_DEFAULT_LAUNCH_OUT, Settings.DEFAULT_DEFAULT_LAUNCH_OUT);
-
-            attachSwitchToSetting(dialog.findViewById(R.id.advancedSizingSwitch),
-                    Settings.KEY_ADVANCED_SIZING, Settings.DEFAULT_ADVANCED_SIZING,
-                    value -> showOneTimeWarningDialog(R.layout.dialog_info_launch_size,
-                                                  Settings.KEY_SEEN_LAUNCH_SIZE_POPUP)
-            );
-
+        if (Platform.isVr()) {
             View defaultSettingsButton = dialog.findViewById(R.id.defaultLauncherSettingsButton);
             defaultSettingsButton.setOnClickListener((view) -> {
                 AlertDialog minDialog = new BasicDialog<>(context, R.layout.dialog_info_set_default_launcher).show();
                 assert minDialog != null;
-                minDialog.findViewById(R.id.confirm).setOnClickListener(view1 -> {
+                minDialog.findViewById(R.id.install).setOnClickListener(view1 -> {
                     final Intent intent = new Intent(android.provider.Settings.ACTION_HOME_SETTINGS);
                     intent.setPackage("com.android.permissioncontroller");
                     minDialog.cancel();
@@ -370,8 +358,6 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
         } else {
             dialog.findViewById(R.id.extraFeaturesTitle).setVisibility(View.GONE);
             dialog.findViewById(R.id.defaultLauncherSettingsButton).setVisibility(View.GONE);
-            dialog.findViewById(R.id.defaultLaunchOutSection).setVisibility(View.GONE);
-            dialog.findViewById(R.id.advancedSizingSection).setVisibility(View.GONE);
         }
 
         // Default browser selection spinner
@@ -380,12 +366,12 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
         final int defaultBrowserSelection = context.dataStoreEditor.getInt(
                 Settings.KEY_DEFAULT_BROWSER,
                 SettingsManager.getDefaultBrowser());
-        defaultBrowserSpinner.setSelection(defaultBrowserSelection);
         initSpinner(defaultBrowserSpinner,
-                Platform.isQuest(context)
+                Platform.isQuest()
                         ? R.array.advanced_launch_browsers_quest
                         : R.array.advanced_launch_browsers,
                 p -> context.dataStoreEditor.putInt(Settings.KEY_DEFAULT_BROWSER, p));
+        defaultBrowserSpinner.setSelection(defaultBrowserSelection);
         // Search settings
         attachSwitchToSetting(dialog.findViewById(R.id.searchWebSwitch),
                 Settings.KEY_SEARCH_WEB, Settings.DEFAULT_SEARCH_WEB);
@@ -453,8 +439,7 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
         toggle.setChecked(context.dataStoreEditor.getBoolean(setting, def));
         toggle.setOnCheckedChangeListener((compoundButton, value) -> {
             context.dataStoreEditor.putBoolean(setting, value);
-            if (onSwitch != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-                onSwitch.accept(value);
+            if (onSwitch != null) onSwitch.accept(value);
             context.launcherService.forEachActivity(LauncherActivity::refreshInterface);
         });
     }
@@ -463,12 +448,13 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
      * Displays a one-time warning dialog
      * @param dialogResource ResId for the dialog; must contain a button with id of "confirm"
      * @param keySeenDialog Key to indicate the user has seen the dialog
+     * @noinspection SameParameterValue
      */
     private void showOneTimeWarningDialog(int dialogResource, String keySeenDialog) {
         if (!context.dataStoreEditor.getBoolean(keySeenDialog, false)) {
             AlertDialog subDialog = new BasicDialog<>(context, dialogResource).show();
             if (subDialog == null) return;
-            subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
+            subDialog.findViewById(R.id.install).setOnClickListener(view -> {
                 context.dataStoreEditor.putBoolean(keySeenDialog, true);
                 subDialog.dismiss();
             });
@@ -496,10 +482,10 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
         });
 
         StringBuilder builder = new StringBuilder();
-        for (App.Type type : Platform.getSupportedAppTypes(context)) {
-            builder.append(App.getTypeString(context, type))
+        for (App.Type type : PlatformExt.getSupportedAppTypes()) {
+            builder.append(AppExt.getTypeString(context, type))
                     .append(" : ")
-                    .append(App.getDefaultGroupFor(type))
+                    .append(AppExt.getDefaultGroupFor(type))
                     .append("\n");
         }
 
@@ -521,10 +507,10 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
                         false);
 
                 StringBuilder builder2 = new StringBuilder();
-                for (App.Type type : Platform.getSupportedAppTypes(context)) {
-                    builder2.append(App.getTypeString(context, type))
+                for (App.Type type : PlatformExt.getSupportedAppTypes()) {
+                    builder2.append(AppExt.getTypeString(context, type))
                             .append(" : ")
-                            .append(App.getDefaultGroupFor(type))
+                            .append(AppExt.getDefaultGroupFor(type))
                             .append("\n");
                 }
 

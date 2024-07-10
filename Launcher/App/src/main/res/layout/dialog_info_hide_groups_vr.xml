@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/layout"
+    android:id="@+id/itemLaunch"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/bkg_dialog"
@@ -33,38 +33,20 @@
         android:orientation="horizontal"
         android:baselineAligned="false">
 
-        <FrameLayout
+        <com.threethan.launchercore.view.LcButton
             android:id="@+id/cancel"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:layout_weight="1"
+            android:text="@string/cancel" />
+
+        <com.threethan.launchercore.view.LcButton
+            android:id="@+id/install"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/bkg_button">
-
-            <TextView
-                style="@style/SettingButtonLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/cancel" />
-
-        </FrameLayout>
-
-        <FrameLayout
-            android:id="@+id/confirm"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_weight="1"
-            android:background="@drawable/bkg_button">
-
-            <TextView
-                style="@style/SettingButtonLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/understood" />
-
-        </FrameLayout>
+            android:text="@string/understood" />
     </LinearLayout>
 
 </LinearLayout>

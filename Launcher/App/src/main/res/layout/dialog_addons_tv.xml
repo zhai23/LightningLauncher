@@ -10,7 +10,7 @@
     tools:ignore="TextSizeCheck">
 
     <LinearLayout
-        android:id="@+id/layout"
+        android:id="@+id/itemLaunch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -102,22 +102,14 @@
                 android:text="@string/addons_androidtv_alt_desc" />
         </LinearLayout>
 
-        <TextView
+        <com.threethan.launchercore.view.LcButton
             android:id="@+id/exitButton"
-            style="@style/SettingButtonLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:background="@drawable/bkg_button"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:paddingStart="5dp"
-            android:paddingEnd="5dp"
-            android:singleLine="true"
-            android:text="@string/addons_exit"
-            tools:ignore="NestedWeights">
+            android:text="@string/addons_exit">
 
-        </TextView>
+        </com.threethan.launchercore.view.LcButton>
 
     </LinearLayout>
 </ScrollView>

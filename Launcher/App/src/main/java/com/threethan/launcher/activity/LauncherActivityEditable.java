@@ -6,22 +6,25 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
 import com.threethan.launcher.R;
-import com.threethan.launcher.activity.adapter.AppsAdapter;
+import com.threethan.launcher.activity.adapter.LauncherAppsAdapter;
 import com.threethan.launcher.activity.adapter.GroupsAdapter;
-import com.threethan.launcher.helper.App;
+import com.threethan.launcher.helper.AppExt;
 import com.threethan.launcher.activity.support.DataStoreEditor;
 import com.threethan.launcher.activity.dialog.BasicDialog;
-import com.threethan.launcher.helper.Platform;
+import com.threethan.launcher.helper.PlatformExt;
 import com.threethan.launcher.data.Settings;
-import com.threethan.launcher.lib.StringLib;
 import com.threethan.launcher.activity.support.SettingsManager;
 import com.threethan.launcher.activity.view.EditTextWatched;
+import com.threethan.launchercore.lib.StringLib;
+import com.threethan.launchercore.util.App;
+import com.threethan.launchercore.util.Platform;
 
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
@@ -99,7 +102,7 @@ public class LauncherActivityEditable extends LauncherActivity {
 
             selectionHintText.setOnClickListener((view) -> {
                 if (currentSelectedApps.isEmpty()) {
-                    final AppsAdapter adapter = getAppAdapter();
+                    final LauncherAppsAdapter adapter = getAppAdapter();
                     if (adapter != null)
                         for (int i=0; i<adapter.getItemCount(); i++)
                             currentSelectedApps.add(adapter.getItem(i).packageName);
@@ -113,7 +116,7 @@ public class LauncherActivityEditable extends LauncherActivity {
             });
             selectionHintText.setOnClickListener((view) -> {
                 if (currentSelectedApps.isEmpty()) {
-                    final AppsAdapter adapter = getAppAdapter();
+                    final LauncherAppsAdapter adapter = getAppAdapter();
                     if (adapter != null)
                         for (int i=0; i<adapter.getItemCount(); i++)
                             currentSelectedApps.add(adapter.getItem(i).packageName);
@@ -128,7 +131,7 @@ public class LauncherActivityEditable extends LauncherActivity {
             uninstallButton.setOnClickListener(view -> {
                 int delay = 0;
                 for (String currentSelectedApp : currentSelectedApps) {
-                    mainView.postDelayed(() -> App.uninstall(currentSelectedApp), delay);
+                    mainView.postDelayed(() -> AppExt.uninstall(currentSelectedApp), delay);
                     if (!App.isWebsite(currentSelectedApp)) delay += 1000;
                 }
             });
@@ -233,9 +236,8 @@ public class LauncherActivityEditable extends LauncherActivity {
         Set<String> packages = getAllPackages();
 
         try {
-            for (String appPackage : currentSelectedApps)
-                if (!packages.contains(appPackage) && !webApps.contains(appPackage))
-                    currentSelectedApps.remove(appPackage);
+            currentSelectedApps.removeIf(appPackage
+                    -> !packages.contains(appPackage) && !webApps.contains(appPackage));
         } catch (ConcurrentModificationException ignored) {}
         updateSelectionHint();
     }
@@ -270,14 +272,13 @@ public class LauncherActivityEditable extends LauncherActivity {
         // Set group to (one of) selected
         String group;
         final ArrayList<String> appGroupsSorted = settingsManager.getAppGroupsSorted(true);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N && !appGroupsSorted.isEmpty())
-            group = appGroupsSorted.get(0);
-        else group = App.getDefaultGroupFor(App.Type.TYPE_PHONE);
+        if (!appGroupsSorted.isEmpty()) group = appGroupsSorted.get(0);
+        else group = AppExt.getDefaultGroupFor(App.Type.PHONE);
 
         if (dialog == null) return;
 
         dialog.findViewById(R.id.cancel).setOnClickListener(view -> dialog.cancel());
-        ((TextView) dialog.findViewById(R.id.addText)).setText(getString(R.string.add_website_group, group));
+        ((Button) dialog.findViewById(R.id.install)).setText(getString(R.string.add_website_group, group));
         EditTextWatched urlEdit = dialog.findViewById(R.id.appUrl);
         urlEdit.post(urlEdit::requestFocus);
 
@@ -288,20 +289,21 @@ public class LauncherActivityEditable extends LauncherActivity {
             badUrl .setVisibility(StringLib.isInvalidUrl(url)
                     ? View.VISIBLE : View.GONE);
 
-            String foundGroup = Platform.findWebsite(dataStoreEditor, url);
+            String foundGroup = PlatformExt.findWebsite(dataStoreEditor, url);
             usedUrl.setVisibility(foundGroup != null
                     ? View.VISIBLE : View.GONE);
             if (foundGroup != null)
                 usedUrl.setText(context.getString(R.string.add_website_used_url, foundGroup));
         });
 
-        dialog.findViewById(R.id.confirm).setOnClickListener(view -> {
+        dialog.findViewById(R.id.install).setOnClickListener(view -> {
             String url  = urlEdit.getText().toString().toLowerCase();
             if (StringLib.isInvalidUrl(url)) url = "https://" + url;
             if (StringLib.isInvalidUrl(url)) return;
-            if (Platform.findWebsite(dataStoreEditor, url) != null) return;
-            Platform.addWebsite(dataStoreEditor, url);
-            settingsManager.setAppGroup(StringLib.fixUrl(url), group);
+            if (PlatformExt.findWebsite(dataStoreEditor, url) != null) return;
+            PlatformExt.addWebsite(dataStoreEditor, url);
+            if (!url.contains("://")) url = "https://" + url;
+            settingsManager.setAppGroup(url, group);
             dialog.cancel();
             launcherService.forEachActivity(LauncherActivity::refreshAppList);
         });
@@ -323,8 +325,8 @@ public class LauncherActivityEditable extends LauncherActivity {
     void showWebsiteInfo() {
         AlertDialog subDialog = new BasicDialog<>(this, R.layout.dialog_info_websites).show();
         if (subDialog == null) return;
-        subDialog.findViewById(R.id.vrOnlyInfo).setVisibility(Platform.isVr(this) ? View.VISIBLE : View.GONE);
-        subDialog.findViewById(R.id.confirm).setOnClickListener(view -> {
+        subDialog.findViewById(R.id.vrOnlyInfo).setVisibility(Platform.isVr() ? View.VISIBLE : View.GONE);
+        subDialog.findViewById(R.id.install).setOnClickListener(view -> {
             dataStoreEditor.putBoolean(Settings.KEY_SEEN_WEBSITE_POPUP, true);
             addWebsite(this);
             subDialog.dismiss();

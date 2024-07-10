@@ -8,12 +8,13 @@ import android.widget.ImageView;
 import android.widget.Switch;
 
 import com.threethan.launcher.R;
-import com.threethan.launcher.helper.App;
-import com.threethan.launcher.helper.Platform;
+import com.threethan.launcher.helper.AppExt;
+import com.threethan.launcher.helper.PlatformExt;
 import com.threethan.launcher.data.Settings;
 import com.threethan.launcher.activity.LauncherActivity;
 import com.threethan.launcher.activity.support.SettingsManager;
-import com.threethan.launcher.lib.StringLib;
+import com.threethan.launchercore.lib.StringLib;
+import com.threethan.launchercore.util.App;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -60,25 +61,19 @@ public class GroupDetailsDialog extends BasicDialog<LauncherActivity> {
         });
 
         final Map<App.Type, Switch> switchByType = new HashMap<>();
-        switchByType.put(App.Type.TYPE_PHONE, dialog.findViewById(R.id.default2dSwitch));
-        switchByType.put(App.Type.TYPE_VR, dialog.findViewById(R.id.defaultVrSwitch));
-        switchByType.put(App.Type.TYPE_TV, dialog.findViewById(R.id.defaultTvSwitch));
-        switchByType.put(App.Type.TYPE_PANEL, dialog.findViewById(R.id.defaultPanelSwitch));
-        switchByType.put(App.Type.TYPE_WEB, dialog.findViewById(R.id.defaultWebSwitch));
-        final Map<App.Type, View> switchContainerByType = new HashMap<>();
-        switchContainerByType.put(App.Type.TYPE_PHONE, dialog.findViewById(R.id.defaultPhoneContainer));
-        switchContainerByType.put(App.Type.TYPE_VR, dialog.findViewById(R.id.defaultVrContainer));
-        switchContainerByType.put(App.Type.TYPE_TV, dialog.findViewById(R.id.defaultTvContainer));
-        switchContainerByType.put(App.Type.TYPE_PANEL, dialog.findViewById(R.id.defaultPanelContainer));
-        switchContainerByType.put(App.Type.TYPE_WEB, dialog.findViewById(R.id.defaultWebsiteContainer));
+        switchByType.put(App.Type.PHONE, dialog.findViewById(R.id.defaultPhoneSwitch));
+        switchByType.put(App.Type.VR, dialog.findViewById(R.id.defaultVrSwitch));
+        switchByType.put(App.Type.TV, dialog.findViewById(R.id.defaultTvSwitch));
+        switchByType.put(App.Type.PANEL, dialog.findViewById(R.id.defaultPanelSwitch));
+        switchByType.put(App.Type.WEB, dialog.findViewById(R.id.defaultWebsiteSwitch));
 
         for (App.Type type : switchByType.keySet()) {
-            if (Platform.getSupportedAppTypes(context).contains(type)) {
-                Objects.requireNonNull(switchContainerByType.get(type)).setVisibility(View.VISIBLE);
+            if (PlatformExt.getSupportedAppTypes().contains(type)) {
+                Objects.requireNonNull(switchByType.get(type)).setVisibility(View.VISIBLE);
 
                 @SuppressLint("UseSwitchCompatOrMaterialCode") final Switch cSwitch = switchByType.get(type);
                 if (cSwitch == null) continue;
-                cSwitch.setChecked(App.getDefaultGroupFor(type).equals(groupName));
+                cSwitch.setChecked(AppExt.getDefaultGroupFor(type).equals(groupName));
                 cSwitch.setOnCheckedChangeListener((switchView, value) -> {
                     String newDefault = value ? groupName : Settings.FALLBACK_GROUPS.get(type);
                     if ((!value && groupName.equals(newDefault)) || !appGroupsSet.contains(newDefault))
@@ -92,17 +87,17 @@ public class GroupDetailsDialog extends BasicDialog<LauncherActivity> {
                     else cSwitch.setChecked(newChecked);
                 });
             } else {
-                Objects.requireNonNull(switchContainerByType.get(type)).setVisibility(View.GONE);
+                Objects.requireNonNull(switchByType.get(type)).setVisibility(View.GONE);
             }
         }
 
-        dialog.findViewById(R.id.confirm).setOnClickListener(view1 -> {
+        dialog.findViewById(R.id.install).setOnClickListener(view1 -> {
             String newGroupName = StringLib.setStarred(groupNameInput.getText().toString(), starred[0]);
             if (newGroupName.equals(Settings.UNSUPPORTED_GROUP)) newGroupName = "UNSUPPORTED"; // Prevent permanently hiding apps
 
             // Move the default group when we rename
-            for (App.Type type : Platform.getSupportedAppTypes(context))
-                if (App.getDefaultGroupFor(type).equals(groupName))
+            for (App.Type type : PlatformExt.getSupportedAppTypes())
+                if (AppExt.getDefaultGroupFor(type).equals(groupName))
                     context.dataStoreEditor.putString(Settings.KEY_DEFAULT_GROUP + type, newGroupName);
 
             if (newGroupName.length() > 0) {

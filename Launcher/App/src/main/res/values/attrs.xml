@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="LcButton">
+        <attr name="font" format="reference" />
+        <attr name="android:gravity" />
+        <attr name="android:textSize"  format="dimension"  />
+        <attr name="android:background"  format="reference" />
+        <attr name="android:singleLine"  format="boolean" />
+    </declare-styleable>
+    <declare-styleable name="LcSwitch">
+        <attr name="android:textColor" format="color" />
+        <attr name="android:textSize" format="dimension" />
+        <attr name="android:background" format="reference" />
+    </declare-styleable>
+    <declare-styleable name="LcText">
+        <attr name="android:tooltipText" />
+    </declare-styleable>
+</resources>

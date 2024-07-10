@@ -16,7 +16,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.threethan.launcher.R;
 import com.threethan.launcher.activity.dialog.BasicDialog;
-import com.threethan.launcher.lib.FileLib;
+import com.threethan.launchercore.lib.FileLib;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,6 +25,7 @@ import java.util.Objects;
 
 /**
  * General Purpose App Updater which check for and pulls updates from GitHub
+ * @noinspection unused
  */
 public abstract class AppUpdater extends RemotePackageUpdater {
     public static final String URL_GITHUB_RELEASE_TEMPLATE =

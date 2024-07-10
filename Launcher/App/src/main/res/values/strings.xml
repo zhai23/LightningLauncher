@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name" translatable="false">Lightning Launcher</string>
+    <string name="app_name_for_list" translatable="false">- Lightning Launcher -</string>
     <string name="add_group">Add Group</string>
     <string name="delete_group">Delete Group</string>
     <string name="edit_group">Edit Group</string>
@@ -50,7 +51,7 @@
     <string name="clear_cache">Reset All Icons</string>
     <string name="clear_labels">Reset All Labels</string>
     <string name="group_defaults_button">Default Groups</string>
-    <string name="icons_settings_button">Reset/Update Icons</string>
+    <string name="icons_settings_button">Refresh Icons</string>
 
     <string name="long_press">Long Press to Edit</string>
     <string name="hide_empty">Hide Empty Groups</string>
@@ -236,9 +237,9 @@
 
     <!--  Tooltips  -->
     <string name="tip_kill_process">Stop Running in the Background</string>
-    <string name="tip_launch_out">Launch in Own Window Once</string>
+    <string name="tip_launch">Launch App</string>
 
-    <string name="tip_info_website">About Adding Websites</string>git
+    <string name="tip_info_website">About Adding Websites</string>
 
     <string name="tip_stop_editing">Turn Off Edit Mode</string>
     <string name="tip_select_all">Select/Deselect All Visible Apps</string>
@@ -269,11 +270,6 @@
     <string name="preset_apkmirror" translatable="false">apkmirror.com</string>
     <string name="preset_apkpure" translatable="false">apkpure.com</string>
 
-    <string name="notification_title_n">Lightning Launcher: No Websites Running</string>
-    <string name="notification_title_s">Lightning Launcher: Running a Website</string>
-    <string name="notification_title_p">Lightning Launcher: Running %1$d Websites</string>
-    <string name="notification_content">This notification keeps your websites\' background audio running smoothly.</string>
-
     <!-- Addons -->
     <string name="addons_main_vr">Shortcuts</string>
     <string name="addons_main_tv">Shortcut Options</string>
@@ -297,7 +293,7 @@
     <string name="addons_preamble">Each addon can be used for another window of Lighting Launcher. You may use an addon as an alternate icon on the dock with or without activating it.</string>
 
     <string name="addons_explore">Feed Shortcut</string>
-    <string name="addons_explore_desc">Install then activate to open Lightning Launcher whenever you hover over the &quot;Horizon Feed&quot;/&quot;Oculus Explore&quot; button on the dock.</string>
+    <string name="addons_explore_desc">Install then activate to open Lightning Launcher whenever you hover over the <b>Horizon Feed</b> button on the dock.</string>
 
     <string name="addons_explore_disable_why">Instead of using this shortcut, you can disable the Explore app &amp; reboot to remove the feed icon.</string>
     <string name="addons_explore_enable_why">To restore the icon &amp; fix this shortcut, re-enable the Explore app, then reboot your headset.</string>
@@ -306,13 +302,13 @@
     <string name="addons_explore_enable">Re-Enable Explore app</string>
 
     <string name="addons_library">Library Shortcut</string>
-    <string name="addons_library_desc">Install then activate to open Lightning Launcher whenever you hover over the &quot;App Library&quot; button on the dock.
+    <string name="addons_library_desc">Install then activate to open Lightning Launcher whenever you hover over the <b>App Library</b> button on the dock.
         \n(This makes it hard to open the quest\'s app library)</string>
     <string name="addons_store">Store Shortcut</string>
-    <string name="addons_store_desc">Install then activate to open Lightning Launcher whenever you hover over the &quot;Store&quot; button on the dock.
+    <string name="addons_store_desc">Install then activate to open Lightning Launcher whenever you hover over the <b>Store</b> button on the dock.
         \n(This makes it hard to open the quest\'s store)</string>
     <string name="addons_people">People Shortcut</string>
-    <string name="addons_people_desc">Install then activate to open Lightning Launcher whenever you hover over the &quot;People&quot; button on the dock.
+    <string name="addons_people_desc">Install then activate to open Lightning Launcher whenever you hover over the <b>People</b> button on the dock.
         \n(This makes it hard to open the quest\'s people app)</string>
 
     <string name="addons_install">Install</string>

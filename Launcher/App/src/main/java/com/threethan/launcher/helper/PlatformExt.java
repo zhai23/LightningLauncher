@@ -1,15 +1,14 @@
 package com.threethan.launcher.helper;
 
 import android.app.Activity;
-import android.app.UiModeManager;
-import android.content.Context;
 import android.content.pm.ApplicationInfo;
-import android.content.res.Configuration;
 
+import com.threethan.launcher.activity.LauncherActivity;
 import com.threethan.launcher.activity.support.DataStoreEditor;
 import com.threethan.launcher.activity.support.SettingsManager;
 import com.threethan.launcher.data.Settings;
-import com.threethan.launcher.lib.StringLib;
+import com.threethan.launchercore.util.App;
+import com.threethan.launchercore.util.Platform;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,7 +20,7 @@ import java.util.Set;
  *     This abstract class stores lists of apps.
  *     It also provides a few helper functions for adding websites, and decides if we're in VR
  */
-public abstract class Platform {
+public abstract class PlatformExt {
     public static List<ApplicationInfo> installedApps;
     public static Set<ApplicationInfo> apps = Collections.synchronizedSet(new HashSet<>());
     public static int changeIndex = 0; //Used to track changes, specifically adding websites
@@ -31,7 +30,7 @@ public abstract class Platform {
      * @return Null if not found, else name of group website is in
      */
     public static String findWebsite(DataStoreEditor dataStoreEditor, String url) {
-        url = StringLib.fixUrl(url);
+        if (!url.contains("://")) url = "https://" + url;
 
         Set<String> webApps = dataStoreEditor.getStringSet(Settings.KEY_WEBSITE_LIST, Collections.emptySet());
         if (!webApps.contains(url)) return null;
@@ -54,7 +53,7 @@ public abstract class Platform {
      * @param name Name for the website on the launcher
      */
     public static String addWebsite(DataStoreEditor dataStoreEditor, String url, String name) {
-        url = StringLib.fixUrl(url);
+        if (!url.contains("://")) url = "https://" + url;
 
         Set<String> webApps = dataStoreEditor.getStringSet(Settings.KEY_WEBSITE_LIST, Collections.emptySet());
         webApps = new HashSet<>(webApps); // Copy since we're not supposed to modify directly
@@ -67,35 +66,10 @@ public abstract class Platform {
         return url;
     }
 
-    protected static Boolean isTv;
-    protected static Boolean isQuest;
-    public static boolean isVr(Activity activity) {
-        // Quest reports itself as UI_MODE_NORMAL
-        return !isTv(activity);
-    }
-    /** Returns true if running on a Meta Quest device */
-    public static boolean isQuest(Activity activity) {
-        if (isQuest != null) return isQuest;
-        isQuest = App.doesPackageExist(activity, "com.oculus.vrshell");
-        return isQuest;
-    }
-
     public static final String BROWSER_PACKAGE = "com.threethan.browser";
     /** Returns true if Lightning Browser is installed */
     public static boolean hasBrowser(Activity activity) {
-        return App.doesPackageExist(activity, BROWSER_PACKAGE);
-    }
-    /** Returns true if running on a TV */
-    public static boolean isTv(Activity activity) {
-        if (isTv != null) return isTv;
-        UiModeManager uiModeManager = (UiModeManager) activity.getSystemService(Context.UI_MODE_SERVICE);
-        isTv = uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION;
-        return isTv;
-    }
-    /** Returns true if we're on a tv and have already
-     * checked using the other version of this function */
-    public static boolean isTv() {
-        return isTv;
+        return AppExt.doesPackageExist(activity, BROWSER_PACKAGE);
     }
 
     // Get a list of valid app types depending on platform
@@ -110,22 +84,37 @@ public abstract class Platform {
      *
      * @return Types of apps which are supported on this device
      */
-    public static List<App.Type> getSupportedAppTypes(Activity activity) {
+    public static List<App.Type> getSupportedAppTypes() {
         if (cachedSupportedAppTypes != null) return cachedSupportedAppTypes;
 
         final List<App.Type> validTypes = new ArrayList<>();
 
 
         // These must be in order of priority
-        if (Platform.isQuest(activity)) validTypes.add(App.Type.TYPE_PANEL);
+        if (Platform.isQuest()) validTypes.add(App.Type.PANEL);
 
-        if (Platform.isTv(activity)) validTypes.add(App.Type.TYPE_TV);
-        if (Platform.isVr(activity)) validTypes.add(App.Type.TYPE_VR);
+        if (Platform.isTv()) validTypes.add(App.Type.TV);
+        if (Platform.isVr()) validTypes.add(App.Type.VR);
 
-        validTypes.add(App.Type.TYPE_WEB);
-        validTypes.add(App.Type.TYPE_PHONE);
+        validTypes.add(App.Type.WEB);
+        validTypes.add(App.Type.PHONE);
 
         cachedSupportedAppTypes = validTypes;
         return validTypes;
+    }
+
+    public static Set<ApplicationInfo> listInstalledApps(LauncherActivity launcherActivity) {
+        apps.clear();
+        apps.addAll(Platform.listInstalledApps());
+        // Add web apps
+        Set<String> webApps = launcherActivity.dataStoreEditor
+                .getStringSet(Settings.KEY_WEBSITE_LIST, Collections.emptySet());
+        // LL Specific
+        for (String url:webApps) {
+            ApplicationInfo applicationInfo = new ApplicationInfo();
+            applicationInfo.packageName = url;
+            apps.add(applicationInfo);
+        }
+        return apps;
     }
 }

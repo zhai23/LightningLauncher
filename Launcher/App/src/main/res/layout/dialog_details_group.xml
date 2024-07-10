@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/layout"
+    android:id="@+id/itemLaunch"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginStart="2.5dp"
@@ -76,193 +76,76 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="40dp"
         android:baselineAligned="false"
         android:orientation="horizontal">
 
-        <LinearLayout
-            android:id="@+id/defaultVrContainer"
-            android:layout_width="match_parent"
+        <com.threethan.launchercore.view.LcSwitch
+            android:id="@+id/defaultVrSwitch"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+
             android:layout_marginEnd="5dp"
             android:layout_weight="1"
-            android:background="@drawable/bkg_button"
-            android:gravity="right"
-            android:orientation="horizontal"
-            android:padding="6dp"
-            tools:ignore="RtlHardcoded">
+            android:text="@string/apps_vr"
+            tools:ignore="UseSwitchCompatOrMaterialXml" />
 
-            <TextView
-                style="@style/SettingButtonLabel"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="-7dp"
-                android:layout_weight="1"
-                android:paddingStart="5dp"
-                android:singleLine="true"
-                android:text="@string/apps_vr"
-                tools:ignore="NestedWeights,RtlSymmetry" />
+        <com.threethan.launchercore.view.LcSwitch
+            android:id="@+id/defaultPanelSwitch"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
 
-            <Switch
-                android:id="@+id/defaultVrSwitch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:foreground="@drawable/bkg_hover_button"
-                android:thumb="@drawable/switch_thumb_custom"
-                android:track="@drawable/switch_track_custom"
-                tools:ignore="UseSwitchCompatOrMaterialXml" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/defaultTvContainer"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/bkg_button"
-            android:gravity="end"
-            android:orientation="horizontal"
-            android:padding="6dp"
-            tools:visibility="gone">
-
-            <TextView
-                style="@style/SettingButtonLabel"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="-7dp"
-                android:layout_weight="1"
-                android:paddingStart="5dp"
-                android:scaleX="0.95"
-                android:singleLine="true"
-                android:text="@string/apps_tv"
-                tools:ignore="NestedWeights,RtlSymmetry" />
-
-            <Switch
-                android:id="@+id/defaultTvSwitch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:foreground="@drawable/bkg_hover_button"
-                android:thumb="@drawable/switch_thumb_custom"
-                android:track="@drawable/switch_track_custom"
-                tools:ignore="UseSwitchCompatOrMaterialXml" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/defaultPanelContainer"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
             android:layout_marginStart="5dp"
             android:layout_weight="1"
-            android:background="@drawable/bkg_button"
-            android:gravity="end"
-            android:orientation="horizontal"
-            android:padding="6dp">
+            android:text="@string/apps_panel"
+            tools:ignore="UseSwitchCompatOrMaterialXml" />
 
-            <TextView
-                style="@style/SettingButtonLabel"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="-7dp"
-                android:layout_weight="1"
-                android:paddingStart="5dp"
-                android:scaleX="0.95"
-                android:singleLine="true"
-                android:text="@string/apps_panel"
-                tools:ignore="NestedWeights,RtlSymmetry" />
+        <com.threethan.launchercore.view.LcSwitch
+            android:id="@+id/defaultTvSwitch"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
 
-            <Switch
-                android:id="@+id/defaultPanelSwitch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:foreground="@drawable/bkg_hover_button"
-                android:thumb="@drawable/switch_thumb_custom"
-                android:track="@drawable/switch_track_custom"
-                tools:ignore="UseSwitchCompatOrMaterialXml" />
-        </LinearLayout>
+            android:layout_marginStart="5dp"
+            android:layout_weight="1"
+            android:text="@string/apps_tv"
+            tools:ignore="UseSwitchCompatOrMaterialXml" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="40dp"
         android:layout_marginTop="10dp"
         android:baselineAligned="false"
         android:orientation="horizontal">
 
-        <LinearLayout
-            android:id="@+id/defaultPhoneContainer"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+        <com.threethan.launchercore.view.LcSwitch
+            android:id="@+id/defaultPhoneSwitch"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
             android:layout_marginEnd="5dp"
             android:layout_weight="1"
-            android:background="@drawable/bkg_button"
-            android:gravity="end"
-            android:orientation="horizontal"
-            android:padding="6dp">
+            android:text="@string/apps_phone"
+            tools:ignore="UseSwitchCompatOrMaterialXml" />
 
-            <TextView
-                style="@style/SettingButtonLabel"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="-7dp"
-                android:layout_weight="1"
-                android:paddingStart="5dp"
-                android:scaleX="0.95"
-                android:singleLine="true"
-                android:text="@string/apps_phone"
-                tools:ignore="NestedWeights,RtlSymmetry" />
-
-            <Switch
-                android:id="@+id/default2dSwitch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:foreground="@drawable/bkg_hover_button"
-                android:thumb="@drawable/switch_thumb_custom"
-                android:track="@drawable/switch_track_custom"
-                tools:ignore="UseSwitchCompatOrMaterialXml" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/defaultWebsiteContainer"
-            android:layout_width="match_parent"
+        <com.threethan.launchercore.view.LcSwitch
+            android:id="@+id/defaultWebsiteSwitch"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+
             android:layout_marginStart="5dp"
             android:layout_weight="1"
-            android:background="@drawable/bkg_button"
-            android:gravity="end"
-            android:orientation="horizontal"
-            android:padding="6dp">
-
-            <TextView
-                style="@style/SettingButtonLabel"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="-5dp"
-                android:layout_weight="1"
-                android:paddingStart="3dp"
-                android:singleLine="true"
-                android:text="@string/apps_web"
-                tools:ignore="NestedWeights,RtlSymmetry" />
-
-            <Switch
-                android:id="@+id/defaultWebSwitch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:foreground="@drawable/bkg_hover_button"
-                android:thumb="@drawable/switch_thumb_custom"
-                android:track="@drawable/switch_track_custom"
-                tools:ignore="UseSwitchCompatOrMaterialXml" />
-        </LinearLayout>
+            android:text="@string/apps_web"
+            tools:ignore="UseSwitchCompatOrMaterialXml" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/confirm"
-        style="@style/SettingButtonLabel"
+    <com.threethan.launchercore.view.LcButton
+        android:id="@+id/install"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:layout_marginTop="13dp"
-        android:background="@drawable/bkg_button"
         android:gravity="center"
         android:text="@string/confirm" />
 
