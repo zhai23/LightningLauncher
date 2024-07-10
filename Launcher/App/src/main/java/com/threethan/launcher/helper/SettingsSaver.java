@@ -1,15 +1,14 @@
 package com.threethan.launcher.helper;
 
 import android.app.Activity;
-import android.os.Build;
 
 import androidx.datastore.DataStoreFile;
 
 import com.threethan.launcher.R;
+import com.threethan.launcher.activity.LauncherActivity;
 import com.threethan.launcher.activity.dialog.BasicDialog;
 import com.threethan.launcher.activity.support.DataStoreEditor;
-import com.threethan.launcher.activity.LauncherActivity;
-import com.threethan.launcher.lib.FileLib;
+import com.threethan.launchercore.lib.FileLib;
 
 import java.io.File;
 import java.util.Objects;
@@ -69,10 +68,6 @@ public abstract class SettingsSaver {
      * @param activity used for getting package name and data store paths
      */
     public synchronized static void load(Activity activity) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-            BasicDialog.toast("Android API too old!");
-            return;
-        }
         File exportPath = activity.getExternalFilesDir("");
         File export = new File(exportPath, EXPORT_FILE_NAME);
 
@@ -89,10 +84,6 @@ public abstract class SettingsSaver {
             }
         }, 1500);    }
     public synchronized static void loadSort(Activity activity) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-            BasicDialog.toast("Android API too old!");
-            return;
-        }
         File exportPath = activity.getExternalFilesDir("");
         File export = new File(exportPath, EXPORT_FILE_NAME_SORT);
 

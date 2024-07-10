@@ -10,7 +10,7 @@
     tools:ignore="TextSizeCheck">
 
     <LinearLayout
-        android:id="@+id/layout"
+        android:id="@+id/itemLaunch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -252,49 +252,6 @@
                 android:layout_marginBottom="8dp"
                 android:minHeight="49sp"
                 android:text="@string/addons_explore_desc" />
-
-            <TextView
-                android:id="@+id/disableExploreWhy"
-                style="@style/SettingsText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="45dp"
-                android:minHeight="42dp"
-                android:text="@string/addons_explore_enable_why"
-                android:textSize="15sp"
-                android:textStyle="bold" />
-
-            <LinearLayout
-                android:id="@+id/disableExplore"
-                android:layout_width="match_parent"
-                android:layout_height="33dp"
-                android:layout_marginStart="44dp"
-                android:layout_marginEnd="110sp"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/bkg_button"
-                android:orientation="horizontal"
-                tools:ignore="DuplicateIds">
-
-                <TextView
-                    android:id="@+id/disableExploreText"
-                    style="@style/SettingButtonLabel"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginEnd="35dp"
-                    android:singleLine="true"
-                    android:text="@string/addons_explore_disable"
-                    tools:ignore="NestedWeights,RtlSymmetry" />
-
-                <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="-25dp"
-                    android:layout_marginEnd="-8dp"
-                    android:src="@drawable/ic_launch_out"
-                    tools:ignore="UseAppTint" />
-
-            </LinearLayout>
 
         </LinearLayout>
 

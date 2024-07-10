@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/bkg_dialog"
     android:orientation="vertical"
     android:padding="20dp"
     app:layout_constraintEnd_toEndOf="parent"
@@ -242,33 +241,21 @@
         android:gravity="end"
         android:orientation="horizontal">
 
-        <FrameLayout
+        <com.threethan.launchercore.view.LcButton
             android:id="@+id/cancel"
             android:layout_width="125dp"
             android:layout_height="match_parent"
             android:layout_marginEnd="10dp"
-            android:background="@drawable/bkg_button">
+            android:background="@drawable/bkg_button"
+            android:text="@string/cancel">
 
-            <TextView
-                style="@style/SettingButtonLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="@string/cancel" />
-        </FrameLayout>
+        </com.threethan.launchercore.view.LcButton>
 
-        <FrameLayout
-            android:id="@+id/confirm"
+        <com.threethan.launchercore.view.LcButton
+            android:id="@+id/install"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/bkg_button">
-
-            <TextView
-                android:id="@+id/addText"
-                style="@style/SettingButtonLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="@string/add_website_group" />
-        </FrameLayout>
+            android:text="@string/add_website_group" />
 
     </LinearLayout>
 

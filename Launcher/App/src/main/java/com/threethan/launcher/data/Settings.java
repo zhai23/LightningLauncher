@@ -8,8 +8,8 @@ import com.threethan.launcher.activity.chainload.ChainLoadActivityHuge;
 import com.threethan.launcher.activity.chainload.ChainLoadActivityLarge;
 import com.threethan.launcher.activity.chainload.ChainLoadActivityPhone;
 import com.threethan.launcher.activity.chainload.ChainLoadActivitySmall;
-import com.threethan.launcher.helper.App;
-import com.threethan.launcher.lib.StringLib;
+import com.threethan.launchercore.lib.StringLib;
+import com.threethan.launchercore.util.App;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -92,7 +92,6 @@ public abstract class Settings {
 
 
     public static final String KEY_EDIT_MODE = "KEY_EDIT_MODE";
-    public static final String KEY_SEEN_LAUNCH_SIZE_POPUP = "KEY_SEEN_LAUNCH_SIZE_POPUP";
     public static final String KEY_SEEN_HIDDEN_GROUPS_POPUP = "KEY_SEEN_HIDDEN_GROUPS_POPUP";
     public static final String KEY_SEEN_WEBSITE_POPUP = "KEY_SEEN_WEBSITE_POPUP";
     public static final String KEY_SEEN_ADDONS = "KEY_SEEN_ADDONS";
@@ -101,11 +100,11 @@ public abstract class Settings {
     public static final String KEY_BANNER = "prefTypeIsWide";
     public static final Map<App.Type, Boolean> FALLBACK_BANNER = new HashMap<>();
     static {
-        FALLBACK_BANNER.put(App.Type.TYPE_PHONE, false);
-        FALLBACK_BANNER.put(App.Type.TYPE_WEB, false);
-        FALLBACK_BANNER.put(App.Type.TYPE_VR, true);
-        FALLBACK_BANNER.put(App.Type.TYPE_TV, true);
-        FALLBACK_BANNER.put(App.Type.TYPE_PANEL, false);
+        FALLBACK_BANNER.put(App.Type.PHONE, false);
+        FALLBACK_BANNER.put(App.Type.WEB, false);
+        FALLBACK_BANNER.put(App.Type.VR, true);
+        FALLBACK_BANNER.put(App.Type.TV, true);
+        FALLBACK_BANNER.put(App.Type.PANEL, false);
     }
 
     // show names by display type
@@ -116,20 +115,14 @@ public abstract class Settings {
 
     public static final String KEY_GROUPS = "prefAppGroups";
     public static final String KEY_GROUP_APP_LIST = "prefAppList";
-    public static final String KEY_LAUNCH_OUT_PREFIX = "prefLaunchOutPackage";
     public static final String KEY_SELECTED_GROUPS = "prefSelectedGroups";
     public static final String KEY_WEBSITE_LIST = "prefWebAppNames";
     public static final String KEY_LAUNCH_SIZE = "prefLaunchSize";
     public static final String KEY_LAUNCH_BROWSER = "prefLaunchBrowser";
     public static final String KEY_DEFAULT_BROWSER = "KEY_DEFAULT_BROWSER";
-    public static final String KEY_DEFAULT_LAUNCH_OUT = "KEY_DEFAULT_LAUNCH_OUT";
-    public static final boolean DEFAULT_DEFAULT_LAUNCH_OUT = true;
-    public static final String KEY_ADVANCED_SIZING = "KEY_ADVANCED_SIZING";
-    public static final boolean DEFAULT_ADVANCED_SIZING = true;
 
     /** @noinspection rawtypes*/
     public static final Class[] launchSizeClasses = {
-            null,
             null,
             ChainLoadActivityPhone.class,
             ChainLoadActivitySmall.class,
@@ -141,11 +134,11 @@ public abstract class Settings {
     public static final String KEY_DEFAULT_GROUP = "prefDefaultGroupForType";
     public static final Map<App.Type, String> FALLBACK_GROUPS = new HashMap<>();
     static {
-        FALLBACK_GROUPS.put(App.Type.TYPE_PHONE, "Apps");
-        FALLBACK_GROUPS.put(App.Type.TYPE_WEB, "Apps");
-        FALLBACK_GROUPS.put(App.Type.TYPE_VR, StringLib.setStarred("Games", true));
-        FALLBACK_GROUPS.put(App.Type.TYPE_TV, StringLib.setStarred("Media", true));
-        FALLBACK_GROUPS.put(App.Type.TYPE_PANEL, "Apps");
+        FALLBACK_GROUPS.put(App.Type.PHONE, "Apps");
+        FALLBACK_GROUPS.put(App.Type.WEB, "Apps");
+        FALLBACK_GROUPS.put(App.Type.VR, StringLib.setStarred("Games", true));
+        FALLBACK_GROUPS.put(App.Type.TV, StringLib.setStarred("Media", true));
+        FALLBACK_GROUPS.put(App.Type.PANEL, "Apps");
     }
 
     public static final int MAX_GROUPS = 20;

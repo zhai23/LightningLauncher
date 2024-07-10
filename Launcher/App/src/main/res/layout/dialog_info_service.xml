@@ -56,18 +56,12 @@
             android:text="@string/service_message"
             android:textColor="@android:color/white" />
 
-        <FrameLayout
-            android:id="@+id/confirm"
+        <com.threethan.launchercore.view.LcButton
+            android:id="@+id/install"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bkg_button">
-
-            <TextView
-                style="@style/SettingButtonLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/service_next" />
-        </FrameLayout>
+            android:background="@drawable/bkg_button"
+            android:text="@string/service_next" />
 
     </LinearLayout>
 </ScrollView>

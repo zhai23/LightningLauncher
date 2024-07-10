@@ -5,14 +5,11 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.view.View;
-import android.widget.TextView;
 
 import com.threethan.launcher.R;
-import com.threethan.launcher.helper.App;
-import com.threethan.launcher.data.AppData;
-import com.threethan.launcher.helper.Platform;
 import com.threethan.launcher.activity.LauncherActivity;
 import com.threethan.launcher.updater.AddonUpdater;
+import com.threethan.launchercore.util.Platform;
 
 import java.lang.ref.WeakReference;
 
@@ -32,7 +29,7 @@ public class AddonDialog extends BasicDialog<LauncherActivity> {
      * @param activity LauncherActivity Context to show the dialog
      */
     public AddonDialog(LauncherActivity activity) {
-        super(activity, Platform.isVr(activity) ? R.layout.dialog_addons_vr : R.layout.dialog_addons_tv);
+        super(activity, Platform.isVr() ? R.layout.dialog_addons_vr : R.layout.dialog_addons_tv);
     }
 
     public AlertDialog show() {
@@ -40,16 +37,7 @@ public class AddonDialog extends BasicDialog<LauncherActivity> {
         if (dialog == null) return null;
 
         View addonFeed = dialog.findViewById(R.id.addonFeed);
-        if (addonFeed!=null) {
-            updateAddonButton(context, addonFeed, AddonUpdater.TAG_FEED);
-            dialog.findViewById(R.id.disableExplore).setOnClickListener(v -> App.openInfo(context, AppData.EXPLORE_PACKAGE));
-            ((TextView) dialog.findViewById(R.id.disableExploreWhy)).setText(
-                    App.isPackageEnabled(context, AppData.EXPLORE_PACKAGE) ?
-                            R.string.addons_explore_disable_why : R.string.addons_explore_enable_why);
-            ((TextView) dialog.findViewById(R.id.disableExploreText)).setText(
-                    App.isPackageEnabled(context, AppData.EXPLORE_PACKAGE) ?
-                    R.string.addons_explore_disable : R.string.addons_explore_enable);
-        }
+        if (addonFeed!=null) updateAddonButton(context, addonFeed, AddonUpdater.TAG_FEED);
 
         View addonLibrary = dialog.findViewById(R.id.addonLibrary);
         if (addonLibrary!=null) updateAddonButton(context, addonLibrary, AddonUpdater.TAG_LIBRARY);
@@ -130,7 +118,7 @@ public class AddonDialog extends BasicDialog<LauncherActivity> {
         Activity a = LauncherActivity.getForegroundInstance();
         AlertDialog subDialog = new BasicDialog<>(a, R.layout.dialog_info_service).show();
         if (subDialog == null) return;
-        subDialog.findViewById(R.id.confirm).setOnClickListener(view1 -> {
+        subDialog.findViewById(R.id.install).setOnClickListener(view1 -> {
             // Navigate to accessibility settings
             Intent localIntent = new Intent("android.settings.ACCESSIBILITY_SETTINGS");
             localIntent.setPackage("com.android.settings");

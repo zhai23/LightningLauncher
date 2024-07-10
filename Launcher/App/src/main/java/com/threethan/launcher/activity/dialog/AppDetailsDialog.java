@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,12 +18,14 @@ import com.threethan.launcher.R;
 import com.threethan.launcher.activity.LauncherActivity;
 import com.threethan.launcher.activity.support.SettingsManager;
 import com.threethan.launcher.data.Settings;
-import com.threethan.launcher.helper.App;
-import com.threethan.launcher.helper.Icon;
-import com.threethan.launcher.helper.Launch;
-import com.threethan.launcher.helper.Platform;
+import com.threethan.launcher.helper.AppExt;
+import com.threethan.launcher.helper.LaunchExt;
+import com.threethan.launchercore.icon.IconLoader;
+import com.threethan.launchercore.icon.IconUpdater;
 import com.threethan.launchercore.lib.ImageLib;
 import com.threethan.launchercore.lib.StringLib;
+import com.threethan.launchercore.util.App;
+import com.threethan.launchercore.util.Platform;
 
 import java.io.File;
 import java.util.Objects;
@@ -62,16 +63,14 @@ public class AppDetailsDialog extends BasicDialog<LauncherActivity> {
             ((TextView) dialog.findViewById(R.id.packageVersion)).setText("v"+packageInfo.versionName);
         } catch (PackageManager.NameNotFoundException ignored) {}
         // Info Action
-        dialog.findViewById(R.id.info).setOnClickListener(view -> App.openInfo(context, currentApp.packageName));
+        dialog.findViewById(R.id.info).setOnClickListener(view -> AppExt.openInfo(context, currentApp.packageName));
         dialog.findViewById(R.id.uninstall).setOnClickListener(view -> {
-            App.uninstall(currentApp.packageName); dialog.dismiss();});
+            AppExt.uninstall(currentApp.packageName); dialog.dismiss();});
 
         // Launch Mode Toggle
         @SuppressLint("UseSwitchCompatOrMaterialCode")
-        final Switch launchModeSwitch = dialog.findViewById(R.id.launchModeSwitch);
-        final View launchOutButton = dialog.findViewById(R.id.launchOut);
+        final View launchButton = dialog.findViewById(R.id.launch);
         final View refreshIconButton = dialog.findViewById(R.id.refreshIcon);
-        final View launchModeSection = dialog.findViewById(R.id.launchModeSection);
         final View tuningButton = dialog.findViewById(R.id.tuningButton);
 
         final Spinner launchSizeSpinner = dialog.findViewById(R.id.launchSizeSpinner);
@@ -79,13 +78,18 @@ public class AppDetailsDialog extends BasicDialog<LauncherActivity> {
 
         // Load Icon
         ImageView iconImageView = dialog.findViewById(R.id.appIcon);
-        iconImageView.setImageDrawable(Icon.loadIcon(context, currentApp, null));
+        IconLoader.loadIcon(currentApp, drawable -> {
+            if (getActivityContext() == null) return;
+            getActivityContext().runOnUiThread(() ->
+                    iconImageView.setImageDrawable(drawable)
+            );
+        });
 
         iconImageView.setClipToOutline(true);
         if (App.isBanner(currentApp)) iconImageView.getLayoutParams().width = context.dp(150);
 
         iconImageView.setOnClickListener(iconPickerView -> {
-            customIconFile = Icon.iconCustomFileForApp(currentApp);
+            customIconFile = IconLoader.iconCustomFileForApp(currentApp);
             if (customIconFile.exists()) //noinspection ResultOfMethodCallIgnored
                 customIconFile.delete();
             context.setSelectedIconImage(iconImageView);
@@ -94,66 +98,56 @@ public class AppDetailsDialog extends BasicDialog<LauncherActivity> {
             context.showImagePicker(LauncherActivity.ImagePickerTarget.ICON);
         });
 
-        App.Type appType = App.getType(currentApp);
+        App.Type appType = AppExt.getType(currentApp);
         dialog.findViewById(R.id.info).setVisibility(currentApp.packageName.contains("://")
                 ? View.GONE : View.VISIBLE);
-        if (appType == App.Type.TYPE_VR || appType == App.Type.TYPE_PANEL
-                || Platform.isTv(context)) {
+        if (appType == App.Type.VR || appType == App.Type.PANEL
+                || Platform.isTv()) {
             // VR apps MUST launch out, so just hide the option and replace it with another
             // Also hide it on TV where it is useless
 
-            launchOutButton.setVisibility(View.GONE);
+            launchButton.setVisibility(View.GONE);
             refreshIconButton.setVisibility(View.VISIBLE);
-            refreshIconButton.setOnClickListener(view -> Icon.reloadIcon(context, currentApp, iconImageView));
-
-            launchModeSection.setVisibility(View.GONE);
-        } else {
-            launchModeSection.setVisibility(View.VISIBLE);
-            tuningButton.setVisibility(View.GONE);
-
-            launchOutButton.setVisibility(View.VISIBLE);
-            launchOutButton.setOnClickListener((view) -> {
-                final boolean prevLaunchOut = SettingsManager.getAppLaunchOut(currentApp.packageName);
-                SettingsManager.setAppLaunchOut(currentApp.packageName, true);
-                Launch.launchApp(context, currentApp);
-                SettingsManager.setAppLaunchOut(currentApp.packageName, prevLaunchOut);
+            refreshIconButton.setOnClickListener(view -> {
+                IconLoader.cachedIcons.remove(currentApp.packageName);
+                IconUpdater.nextCheckByPackageMs.remove(currentApp.packageName);
+                IconLoader.loadIcon(currentApp, d
+                        -> context.runOnUiThread(() -> iconImageView.setImageDrawable(d)));
             });
 
-            // Normal size settings
-            launchModeSwitch.setChecked(SettingsManager.getAppLaunchOut(currentApp.packageName));
-            launchModeSwitch.setOnCheckedChangeListener((sw, value)
-                    -> SettingsManager.setAppLaunchOut(currentApp.packageName, value));
-            launchModeSwitch.setVisibility(Platform.isVr(context) ? View.VISIBLE : View.GONE);
+            launchSizeSpinner.setVisibility(View.GONE);
+        } else {
+            tuningButton.setVisibility(View.GONE);
+
+            launchButton.setVisibility(View.VISIBLE);
+            launchButton.setOnClickListener((view) -> LaunchExt.launchApp(context, currentApp));
+
+            launchSizeSpinner.setVisibility(Platform.isVr() ? View.VISIBLE : View.GONE);
 
             // Browser selection spinner
-            if (appType == App.Type.TYPE_WEB) {
+            if (appType == App.Type.WEB) {
                 final String launchBrowserKey = Settings.KEY_LAUNCH_BROWSER + currentApp.packageName;
                 final int launchBrowserSelection = context.dataStoreEditor.getInt(
                         launchBrowserKey,
                         SettingsManager.getAppLaunchOut(currentApp.packageName) ? 0 : 1);
                 launchBrowserSpinner.setSelection(launchBrowserSelection);
                 initSpinner(launchBrowserSpinner,
-                        Platform.isQuest(context)
+                        Platform.isQuest()
                                 ? R.array.advanced_launch_browsers_quest
                                 : R.array.advanced_launch_browsers,
                         p -> context.dataStoreEditor.putInt(launchBrowserKey, p));
                 launchBrowserSpinner.setVisibility(View.VISIBLE);
-                launchModeSection.setVisibility(View.GONE);
-            }
-            // Advanced size settings
-            else if (SettingsManager.getShowAdvancedSizeOptions(context)) {
+                launchSizeSpinner.setVisibility(View.GONE);
+            } else {
                 final String launchSizeKey = Settings.KEY_LAUNCH_SIZE + currentApp.packageName;
                 final int launchSizeSelection = context.dataStoreEditor.getInt(
                         launchSizeKey,
                         SettingsManager.getAppLaunchOut(currentApp.packageName) ? 0 : 1);
-                initSpinner(launchSizeSpinner, R.array.advanced_launch_sizes, p -> {
-                        context.dataStoreEditor.putInt(launchSizeKey, p);
-                        SettingsManager.setAppLaunchOut(currentApp.packageName, p != 0);
-                });
+                initSpinner(launchSizeSpinner, R.array.advanced_launch_sizes, p ->
+                        context.dataStoreEditor.putInt(launchSizeKey, p)
+                );
                 launchSizeSpinner.setSelection(launchSizeSelection);
-
                 launchSizeSpinner.setVisibility(View.VISIBLE);
-                launchModeSection.setVisibility(View.GONE);
             }
         }
 
@@ -162,7 +156,7 @@ public class AppDetailsDialog extends BasicDialog<LauncherActivity> {
         final View hideButton = dialog.findViewById(R.id.hide);
         String unhideGroup = SettingsManager.getAppGroupMap().get(currentApp.packageName);
         if (Objects.equals(unhideGroup, Settings.HIDDEN_GROUP))
-            unhideGroup = App.getDefaultGroupFor(App.getType(currentApp));
+            unhideGroup = AppExt.getDefaultGroupFor(AppExt.getType(currentApp));
         if (Objects.equals(unhideGroup, Settings.HIDDEN_GROUP))
             try {
                 unhideGroup = (String) SettingsManager.getAppGroups().toArray()[0];
@@ -230,7 +224,7 @@ public class AppDetailsDialog extends BasicDialog<LauncherActivity> {
         ImageLib.saveBitmap(bitmap, customIconFile);
         selectedImageView.setImageBitmap(bitmap);
 
-        Icon.cachedIcons.remove(Icon.cacheName(imageApp));
+        IconLoader.cachedIcons.remove(IconLoader.cacheName(imageApp));
         launcherActivity.launcherService.forEachActivity(a -> {
             if (a.getAppAdapter() != null) a.getAppAdapter().notifyItemChanged(imageApp);
         });

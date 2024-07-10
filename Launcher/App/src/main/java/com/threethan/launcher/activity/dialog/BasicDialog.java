@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Paint;
-import android.os.Build;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -18,7 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 
 import com.threethan.launcher.R;
-import com.threethan.launcher.helper.Platform;
+import com.threethan.launchercore.util.Platform;
 
 import java.lang.ref.WeakReference;
 import java.util.Objects;
@@ -81,7 +80,7 @@ public class BasicDialog<T extends Context> extends AbstractDialog<T> {
         if (getActivityContext() == null) return;
 
         // Real toast doesn't block dpad input
-        if (!Platform.isVr(getActivityContext())) {
+        if (!Platform.isVr()) {
             Toast.makeText(getActivityContext() , stringMain + " " + stringBold,
                     (isLong ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT)).show();
             return;
@@ -115,8 +114,7 @@ public class BasicDialog<T extends Context> extends AbstractDialog<T> {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-                    onPositionSelected.accept(position);
+                onPositionSelected.accept(position);
             }
 
             @Override

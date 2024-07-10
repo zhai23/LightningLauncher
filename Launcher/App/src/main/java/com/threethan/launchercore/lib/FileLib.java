@@ -1,4 +1,4 @@
-package com.threethan.launcher.lib;
+package com.threethan.launchercore.lib;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,7 +9,7 @@ import java.io.OutputStream;
 import java.util.Objects;
 
 
-// Contains functions which are not application-specific
+/** @noinspection unused*/
 public class FileLib {
 
     public static void delete(String path) {

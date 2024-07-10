@@ -21,8 +21,8 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.threethan.launcher.helper.Compat;
 import com.threethan.launcher.activity.support.DataStoreEditor;
-import com.threethan.launcher.helper.Icon;
-import com.threethan.launcher.helper.Platform;
+import com.threethan.launcher.helper.PlatformExt;
+import com.threethan.launchercore.icon.IconLoader;
 
 import java.io.IOException;
 
@@ -67,11 +67,11 @@ public class AddShortcutActivity extends Activity {
 
         String json = getFixedGsonWriter().toJson(shortcutInfo);
         DataStoreEditor dataStoreEditor = Compat.getDataStore(this);
-        String url = Platform.addWebsite(dataStoreEditor, json, label);
+        String url = PlatformExt.addWebsite(dataStoreEditor, json, label);
 
         ApplicationInfo app = new ApplicationInfo();
         app.packageName = url;
-        Icon.saveIconDrawableExternal(this, iconDrawable, app);
+        IconLoader.saveIconDrawableExternal(iconDrawable, app);
         this.finish();
     }
     /** Launches a given shortcut (if supported by the system) */

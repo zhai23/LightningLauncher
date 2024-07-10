@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/layout"
+    android:id="@+id/itemLaunch"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/bkg_dialog"
@@ -26,21 +26,11 @@
         android:text="@string/hidden_groups_message_tv"
         android:textColor="@android:color/white" />
 
-
-    <FrameLayout
-        android:id="@+id/confirm"
+    <com.threethan.launchercore.view.LcButton
+        android:id="@+id/install"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="@drawable/bkg_button">
+        android:layout_height="wrap_content"
+        android:text="@string/understood" />
 
-        <TextView
-            style="@style/SettingButtonLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/understood" />
-
-    </FrameLayout>
 
 </LinearLayout>

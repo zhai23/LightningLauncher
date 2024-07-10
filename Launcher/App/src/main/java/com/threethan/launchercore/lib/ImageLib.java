@@ -1,4 +1,4 @@
-package com.threethan.launcher.lib;
+package com.threethan.launchercore.lib;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
 
+/** @noinspection unused*/
 public class ImageLib {
 
     public static Bitmap getResizedBitmap(Bitmap originalBitmap, int maxSize) {

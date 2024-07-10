@@ -33,19 +33,16 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.threethan.launcher.R;
-import com.threethan.launcher.activity.adapter.AppsAdapter;
+import com.threethan.launcher.activity.adapter.LauncherAppsAdapter;
 import com.threethan.launcher.activity.adapter.CustomItemAnimator;
 import com.threethan.launcher.activity.adapter.GroupsAdapter;
-import com.threethan.launcher.helper.App;
-import com.threethan.launcher.data.AppData;
+import com.threethan.launcher.helper.AppExt;
 import com.threethan.launcher.helper.Compat;
 import com.threethan.launcher.activity.support.DataStoreEditor;
 import com.threethan.launcher.activity.dialog.BasicDialog;
-import com.threethan.launcher.helper.Keyboard;
-import com.threethan.launcher.helper.Platform;
+import com.threethan.launcher.helper.PlatformExt;
 import com.threethan.launcher.data.Settings;
 import com.threethan.launcher.LauncherService;
-import com.threethan.launcher.lib.ImageLib;
 import com.threethan.launcher.activity.dialog.AppDetailsDialog;
 import com.threethan.launcher.activity.dialog.SettingsDialog;
 import com.threethan.launcher.activity.support.SettingsManager;
@@ -53,6 +50,10 @@ import com.threethan.launcher.activity.executor.RecheckPackagesExecutor;
 import com.threethan.launcher.activity.executor.WallpaperExecutor;
 import com.threethan.launcher.updater.LauncherUpdater;
 import com.threethan.launcher.activity.view.MarginDecoration;
+import com.threethan.launchercore.Core;
+import com.threethan.launchercore.lib.ImageLib;
+import com.threethan.launchercore.util.Keyboard;
+import com.threethan.launchercore.util.Platform;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -116,6 +117,7 @@ public class LauncherActivity extends ComponentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Core.init(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_container);
 
@@ -125,14 +127,14 @@ public class LauncherActivity extends ComponentActivity {
         bindService(intent, launcherServiceConnection, Context.BIND_AUTO_CREATE);
 
         int background = dataStoreEditor.getInt(Settings.KEY_BACKGROUND,
-        Platform.isTv(this)
+        Platform.isTv()
             ? Settings.DEFAULT_BACKGROUND_TV
             : Settings.DEFAULT_BACKGROUND_VR);
         boolean custom = background < 0 || background >= SettingsManager.BACKGROUND_COLORS.length;
         int backgroundColor = custom ? Color.parseColor("#404044") : SettingsManager.BACKGROUND_COLORS[background];
         int alpha = dataStoreEditor.getInt(Settings.KEY_BACKGROUND_ALPHA, Settings.DEFAULT_ALPHA);
         Drawable cd = new ColorDrawable(backgroundColor);
-        if (alpha < 255 && Platform.isQuest(this)) cd.setAlpha(alpha);
+        if (alpha < 255 && Platform.isQuest()) cd.setAlpha(alpha);
         post(() -> getWindow().setBackgroundDrawable(cd));
 
         // Set back action
@@ -140,7 +142,7 @@ public class LauncherActivity extends ComponentActivity {
         getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                if (AppsAdapter.animateClose(la)) return;
+                if (LauncherAppsAdapter.animateClose(la)) return;
                 if (!settingsVisible) new SettingsDialog(la).show();
             }
         });
@@ -155,8 +157,8 @@ public class LauncherActivity extends ComponentActivity {
         if (hasView) startWithExistingView();
         else         startWithNewView();
 
-        AppsAdapter.shouldAnimateClose = false;
-        AppsAdapter.animateClose(this);
+        LauncherAppsAdapter.shouldAnimateClose = false;
+        LauncherAppsAdapter.animateClose(this);
     }
     protected void startWithNewView() {
         Log.v(TAG, "Starting with new view");
@@ -197,6 +199,7 @@ public class LauncherActivity extends ComponentActivity {
     }
 
     protected void init() {
+        Core.init(this);
         settingsManager = SettingsManager.getInstance(this);
 
         mainView = rootView.findViewById(R.id.mainLayout);
@@ -282,6 +285,7 @@ public class LauncherActivity extends ComponentActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        Core.init(this);
 
         foregroundInstance = new WeakReference<>(this);
 
@@ -290,12 +294,12 @@ public class LauncherActivity extends ComponentActivity {
             Keyboard.hide(this, mainView);
 
             // Bind browser service
-            AppsAdapter.animateClose(this);
+            LauncherAppsAdapter.animateClose(this);
         } catch (Exception ignored) {} // Will fail if service hasn't started yet
 
         BasicDialog.setActivityContext(this);
 
-        if (Platform.installedApps != null) // Will be null only on initial load
+        if (PlatformExt.installedApps != null) // Will be null only on initial load
             postDelayed(this::recheckPackages, 1000);
 
         postDelayed(() -> new LauncherUpdater(this).checkAppUpdateInteractive(), 1000);
@@ -306,13 +310,13 @@ public class LauncherActivity extends ComponentActivity {
      * and then the resulting app list for every activity
      */
     public void refreshPackages() {
-        App.invalidateCaches();
+        AppExt.invalidateCaches();
         PackageManager packageManager = getPackageManager();
 
-        Platform.installedApps = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);
-        Platform.installedApps = Collections.synchronizedList(Platform.installedApps);
+        PlatformExt.installedApps = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);
+        PlatformExt.installedApps = Collections.synchronizedList(PlatformExt.installedApps);
 
-        Log.v(TAG, "Package Reload - Found "+ Platform.installedApps.size() +" packages");
+        Log.v(TAG, "Package Reload - Found "+ PlatformExt.installedApps.size() +" packages");
 
         launcherService.forEachActivity(LauncherActivity::refreshAppList);
     }
@@ -323,7 +327,7 @@ public class LauncherActivity extends ComponentActivity {
      */
     public void recheckPackages() {
         int myPlatformChangeIndex = 0;
-        if (Platform.changeIndex > myPlatformChangeIndex) refreshPackages();
+        if (PlatformExt.changeIndex > myPlatformChangeIndex) refreshPackages();
         else try {
             new RecheckPackagesExecutor().execute(this);
         } catch (Exception ignore) {
@@ -349,7 +353,7 @@ public class LauncherActivity extends ComponentActivity {
         for (int i = 0; i<blurViews.length-1; i++) blurViews[i].setVisibility(hide ? View.GONE : View.VISIBLE);
         if (isEditing() && hide) setEditMode(false); // If groups were disabled while in edit mode
 
-        if (groupsEnabled || Platform.isTv(this)) {
+        if (groupsEnabled || Platform.isTv()) {
             for (BlurView blurView : (groupsEnabled
                     ? blurViews
                     : new BlurView[]{rootView.findViewById(R.id.blurViewSearchBar)})
@@ -426,7 +430,7 @@ public class LauncherActivity extends ComponentActivity {
         if (getAppAdapter() == null) {
             appsView.setItemViewCacheSize(128);
             appsView.setAdapter(
-                    new AppsAdapter(this));
+                    new LauncherAppsAdapter(this));
             appsView.setItemAnimator(new CustomItemAnimator());
         } else {
             getAppAdapter().setAppList(this);
@@ -556,7 +560,7 @@ public class LauncherActivity extends ComponentActivity {
             // Set initial color, execute background task
             if (backgroundIndex == -2) {
                 backgroundIndex = dataStoreEditor.getInt(Settings.KEY_BACKGROUND,
-                        Platform.isTv(this)
+                        Platform.isTv()
                                 ? Settings.DEFAULT_BACKGROUND_TV
                                 : Settings.DEFAULT_BACKGROUND_VR);
             }
@@ -592,25 +596,12 @@ public class LauncherActivity extends ComponentActivity {
      * Used to update the actual content of app list used to the main app grid
      */
     public void refreshAppList() {
-        if (Platform.installedApps == null) return;
+        if (PlatformExt.installedApps == null) return;
 
         refreshAdapters();
 
-        Platform.apps.clear();
-        Platform.apps.addAll(Platform.installedApps);
-        // Add web apps
-        Set<String> webApps = dataStoreEditor.getStringSet(Settings.KEY_WEBSITE_LIST, Collections.emptySet());
-        for (String url:webApps) {
-            ApplicationInfo applicationInfo = new ApplicationInfo();
-            applicationInfo.packageName = url;
-            Platform.apps.add(applicationInfo);
-        }
-        // Add panel apps (Quest Only)
-        if (Platform.isQuest(this))
-            Platform.apps.addAll(AppData.getFullPanelAppList());
-
         if (getAppAdapter() != null)
-            getAppAdapter().setFullAppSet(Platform.apps);
+            getAppAdapter().setFullAppSet(PlatformExt.listInstalledApps(this));
 
         final int scrollY = appsView.getScrollY();
         runOnUiThread(() -> getAppAdapter().setAppList(this));
@@ -679,9 +670,9 @@ public class LauncherActivity extends ComponentActivity {
     }
 
     @Nullable
-    public AppsAdapter getAppAdapter() {
+    public LauncherAppsAdapter getAppAdapter() {
         if (appsView == null) return null;
-        return (AppsAdapter) appsView.getAdapter();
+        return (LauncherAppsAdapter) appsView.getAdapter();
     }
     @Nullable
     public GroupsAdapter getGroupAdapter() {
@@ -694,16 +685,9 @@ public class LauncherActivity extends ComponentActivity {
      * @return Set of packageNames
      */
     public Set<String> getAllPackages() {
-        HashSet<String> setAll = new HashSet<>();
-        if (Platform.installedApps == null) return new HashSet<>();
-        for (ApplicationInfo app : Platform.installedApps) setAll.add(app.packageName);
-        Set<String> webApps = dataStoreEditor.getStringSet(Settings.KEY_WEBSITE_LIST, new HashSet<>());
-        setAll.addAll(webApps);
-        if (Platform.isQuest(this)) {
-            for (ApplicationInfo panelApp : AppData.getFullPanelAppList())
-                setAll.add(panelApp.packageName);
-        }
-        return setAll;
+        Set<String> packages = new HashSet<>();
+        PlatformExt.listInstalledApps(this).forEach(a -> packages.add(a.packageName));
+        return packages;
     }
 
     // Services

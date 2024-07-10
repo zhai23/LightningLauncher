@@ -64,6 +64,7 @@
         <!-- Main activity, called by the launcher & shortcut apk (Quest) -->
         <activity
             android:name=".activity.LauncherActivitySearchable"
+            android:label="@string/app_name_for_list"
             android:screenOrientation="unspecified"
             android:configChanges="density|keyboard|keyboardHidden|navigation|orientation|screenLayout|screenSize|uiMode"
             android:windowSoftInputMode="adjustNothing"
@@ -114,7 +115,7 @@
             android:exported="true"
             android:launchMode="singleInstancePerTask"
             android:resizeableActivity="true"
-            android:theme="@style/ThemeOverlay.Browser">
+            android:theme="@style/ThemeOverlay.Standard">
 
             <layout android:defaultWidth="250dp" android:defaultHeight="442dp" android:gravity="top|end" />
             <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
@@ -126,7 +127,7 @@
             android:exported="true"
             android:launchMode="singleInstancePerTask"
             android:resizeableActivity="true"
-            android:theme="@style/ThemeOverlay.Browser">
+            android:theme="@style/ThemeOverlay.Standard">
 
             <layout android:defaultWidth="384dp" android:defaultHeight="288dp" android:gravity="top|end" />
             <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
@@ -138,7 +139,7 @@
             android:exported="true"
             android:launchMode="singleInstancePerTask"
             android:resizeableActivity="true"
-            android:theme="@style/ThemeOverlay.Browser">
+            android:theme="@style/ThemeOverlay.Standard">
 
             <layout android:defaultWidth="706dp" android:defaultHeight="442dp" android:gravity="top|end" />
             <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
@@ -150,7 +151,7 @@
             android:exported="true"
             android:launchMode="singleInstancePerTask"
             android:resizeableActivity="true"
-            android:theme="@style/ThemeOverlay.Browser">
+            android:theme="@style/ThemeOverlay.Standard">
 
             <layout android:defaultWidth="960dp" android:defaultHeight="540dp" android:gravity="top|end" />
             <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
@@ -162,7 +163,7 @@
             android:exported="true"
             android:launchMode="singleInstancePerTask"
             android:resizeableActivity="true"
-            android:theme="@style/ThemeOverlay.Browser">
+            android:theme="@style/ThemeOverlay.Standard">
 
             <layout android:defaultWidth="1216dp" android:defaultHeight="684dp" android:gravity="top|end" />
             <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
@@ -174,7 +175,7 @@
             android:exported="true"
             android:launchMode="singleInstancePerTask"
             android:resizeableActivity="true"
-            android:theme="@style/ThemeOverlay.Browser">
+            android:theme="@style/ThemeOverlay.Standard">
 
             <layout android:defaultWidth="442dp" android:defaultHeight="720dp" android:gravity="top|end" />
             <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>

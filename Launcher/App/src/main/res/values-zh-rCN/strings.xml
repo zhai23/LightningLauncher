@@ -189,7 +189,7 @@
 
     <!--  Tooltips  -->
     <string name="tip_kill_process">停止后台运行</string>
-    <string name="tip_launch_out">在应用自身窗口启动一次</string>
+    <string name="tip_launch">在应用自身窗口启动一次</string>
 
     <string name="tip_info_website">关于添加网站</string>git
 
@@ -212,11 +212,6 @@
     <string name="moved_hidden_bold">隐藏分组</string>
     <string name="moved_shown">移动到</string>
     <string name="refreshed_icon">刷新图标.....</string>
-
-    <string name="notification_title_n">Lightning Launcher: 没有网站在运行</string>
-    <string name="notification_title_s">Lightning Launcher: 一个网站正在运行</string>
-    <string name="notification_title_p">Lightning Launcher: %1$d 个网站正在运行</string>
-    <string name="notification_content">这条通知可以确保网站背景音频顺利运行</string>
 
     <!-- Addons -->
     <string name="addons_main_vr">安装快捷方式</string>

@@ -1,21 +1,23 @@
 package com.threethan.launcher.helper;
 
 import android.content.Context;
-import android.os.Build;
 import android.util.Log;
 
 import com.threethan.launcher.R;
+import com.threethan.launcher.activity.LauncherActivity;
+import com.threethan.launcher.activity.dialog.BasicDialog;
 import com.threethan.launcher.activity.support.DataStoreEditor;
 import com.threethan.launcher.activity.support.SettingsManager;
 import com.threethan.launcher.data.Settings;
-import com.threethan.launcher.activity.dialog.BasicDialog;
-import com.threethan.launcher.activity.LauncherActivity;
-import com.threethan.launcher.lib.FileLib;
-import com.threethan.launcher.lib.StringLib;
-import com.threethan.launcher.updater.IconUpdater;
+import com.threethan.launchercore.Core;
+import com.threethan.launchercore.icon.IconLoader;
+import com.threethan.launchercore.icon.IconUpdater;
+import com.threethan.launchercore.lib.FileLib;
+import com.threethan.launchercore.lib.StringLib;
+import com.threethan.launchercore.util.App;
+import com.threethan.launchercore.util.Platform;
 
 import java.io.File;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -38,6 +40,7 @@ public abstract class Compat {
     private static final String TAG = "Compatibility";
 
     public static synchronized void checkCompatibilityUpdate(LauncherActivity launcherActivity) {
+        Core.init(launcherActivity);
         if (DEBUG_COMPATIBILITY) Log.e(TAG, "CRITICAL WARNING: DEBUG_COMPATIBILITY IS ON");
         DataStoreEditor dataStoreEditor = launcherActivity.dataStoreEditor;
 
@@ -45,17 +48,15 @@ public abstract class Compat {
 
         if (storedVersion == -1) {
             // Attempt migration
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                DataStoreEditor dse1 = new DataStoreEditor(launcherActivity);
-                dse1.asyncWrite = false;
-                dse1.migrateDefault(launcherActivity);
-                DataStoreEditor dse2 = new DataStoreEditor(launcherActivity, "sort");
-                dse2.asyncWrite = false;
-                dse2.migrateDefault(launcherActivity);
-                if (dataStoreEditor.getInt(Settings.KEY_BACKGROUND, -1) != -1)
-                    BasicDialog.toast(launcherActivity.getString(R.string.migrated));
-                clearIconCache(launcherActivity);
-            }
+            DataStoreEditor dse1 = new DataStoreEditor(launcherActivity);
+            dse1.asyncWrite = false;
+            dse1.migrateDefault(launcherActivity);
+            DataStoreEditor dse2 = new DataStoreEditor(launcherActivity, "sort");
+            dse2.asyncWrite = false;
+            dse2.migrateDefault(launcherActivity);
+            if (dataStoreEditor.getInt(Settings.KEY_BACKGROUND, -1) != -1)
+                BasicDialog.toast(launcherActivity.getString(R.string.migrated));
+            clearIconCache(launcherActivity);
         }
 
         // Update stored version in case it was migrated
@@ -78,7 +79,7 @@ public abstract class Compat {
             for (int version = 0; version <= Compat.CURRENT_COMPATIBILITY_VERSION; version++) {
                 if (SettingsManager.getVersionsWithBackgroundChanges().contains(version)) {
                     int backgroundIndex = dataStoreEditor.getInt(Settings.KEY_BACKGROUND,
-                            Platform.isTv(launcherActivity)
+                            Platform.isTv()
                                     ? Settings.DEFAULT_BACKGROUND_TV
                                     : Settings.DEFAULT_BACKGROUND_VR);
 
@@ -91,7 +92,7 @@ public abstract class Compat {
                 switch (version) {
                     case (0):
                         if (dataStoreEditor.getInt(Settings.KEY_BACKGROUND,
-                                Platform.isTv(launcherActivity)
+                                Platform.isTv()
                                         ? Settings.DEFAULT_BACKGROUND_TV
                                         : Settings.DEFAULT_BACKGROUND_VR) == 6)
                             dataStoreEditor.putInt(Settings.KEY_BACKGROUND, -1);
@@ -100,13 +101,14 @@ public abstract class Compat {
                         break;
                     case (1):
                         int bg = dataStoreEditor.getInt(Settings.KEY_BACKGROUND,
-                                Platform.isTv(launcherActivity)
+                                Platform.isTv()
                                         ? Settings.DEFAULT_BACKGROUND_TV
                                         : Settings.DEFAULT_BACKGROUND_VR);
                         if (bg > 2) dataStoreEditor.putInt(Settings.KEY_BACKGROUND, bg + 1);
                         break;
                     case (2):
-                        String from = dataStoreEditor.getString("KEY_DEFAULT_GROUP_VR", Settings.FALLBACK_GROUPS.get(App.Type.TYPE_VR));
+                        String from = dataStoreEditor.getString("KEY_DEFAULT_GROUP_VR",
+                                Settings.FALLBACK_GROUPS.get(App.Type.VR));
                         String to = StringLib.setStarred(from, true);
                         renameGroup(launcherActivity, from, to);
                         break;
@@ -114,12 +116,9 @@ public abstract class Compat {
                         break;
                     case (4):
                         // App launch out conversion, may not work well but isn't really important
-                        final String KEY_OLD_LAUNCH_OUT = "prefLaunchOutList";
-                        final Set<String> launchOutSet = dataStoreEditor.getStringSet(KEY_OLD_LAUNCH_OUT, Collections.emptySet());
-                        for (String app : launchOutSet) dataStoreEditor.putBoolean(Settings.KEY_LAUNCH_OUT_PREFIX + app, true);
                         // Wallpaper remap
                         int backgroundIndex = dataStoreEditor.getInt(Settings.KEY_BACKGROUND,
-                                Platform.isTv(launcherActivity)
+                                Platform.isTv()
                                         ? Settings.DEFAULT_BACKGROUND_TV
                                         : Settings.DEFAULT_BACKGROUND_VR);
                         if (backgroundIndex > 2)
@@ -127,10 +126,10 @@ public abstract class Compat {
                     case (6):
                         // Remap old default group settings
                         final Map<String, App.Type> oldDefKeyToType = new HashMap<>();
-                        oldDefKeyToType.put("KEY_DEFAULT_GROUP_2D", App.Type.TYPE_PHONE);
-                        oldDefKeyToType.put("KEY_DEFAULT_GROUP_VR", App.Type.TYPE_VR);
-                        oldDefKeyToType.put("KEY_DEFAULT_GROUP_TV", App.Type.TYPE_TV);
-                        oldDefKeyToType.put("KEY_DEFAULT_GROUP_WEB", App.Type.TYPE_WEB);
+                        oldDefKeyToType.put("KEY_DEFAULT_GROUP_2D", App.Type.PHONE);
+                        oldDefKeyToType.put("KEY_DEFAULT_GROUP_VR", App.Type.VR);
+                        oldDefKeyToType.put("KEY_DEFAULT_GROUP_TV", App.Type.TV);
+                        oldDefKeyToType.put("KEY_DEFAULT_GROUP_WEB", App.Type.WEB);
 
                         for (String key : oldDefKeyToType.keySet()) {
                             String val = dataStoreEditor.getString(key, null);
@@ -141,10 +140,10 @@ public abstract class Compat {
                         }
 
                         final Map<String, App.Type> oldWideKeyToType = new HashMap<>();
-                        oldWideKeyToType.put("KEY_WIDE_2D", App.Type.TYPE_PHONE);
-                        oldWideKeyToType.put("KEY_WIDE_VR", App.Type.TYPE_VR);
-                        oldWideKeyToType.put("KEY_WIDE_TV", App.Type.TYPE_TV);
-                        oldWideKeyToType.put("KEY_WIDE_WEB", App.Type.TYPE_WEB);
+                        oldWideKeyToType.put("KEY_WIDE_2D", App.Type.PHONE);
+                        oldWideKeyToType.put("KEY_WIDE_VR", App.Type.VR);
+                        oldWideKeyToType.put("KEY_WIDE_TV", App.Type.TV);
+                        oldWideKeyToType.put("KEY_WIDE_WEB", App.Type.WEB);
 
                         for (String key : oldWideKeyToType.keySet()) {
                             if (dataStoreEditor.contains(key)) {
@@ -211,22 +210,20 @@ public abstract class Compat {
     // Clears all icons, including custom icons
     public static void clearIcons(LauncherActivity launcherActivity) {
         Log.i(TAG, "Icons are being cleared");
-        FileLib.delete(launcherActivity.getApplicationInfo().dataDir + Icon.ICON_CUSTOM_FOLDER);
+        FileLib.delete(launcherActivity.getApplicationInfo().dataDir + IconLoader.ICON_CUSTOM_FOLDER);
         clearIconCache(launcherActivity);
     }
     // Clears all icons, except for custom icons, and sets them to be re-downloaded
     public static void clearIconCache(LauncherActivity launcherActivity) {
         Log.i(TAG, "Icon cache is being cleared");
-        FileLib.delete(launcherActivity.getApplicationInfo().dataDir + Icon.ICON_CACHE_FOLDER);
+        FileLib.delete(launcherActivity.getApplicationInfo().dataDir + IconLoader.ICON_CACHE_FOLDER);
 
-        Icon.cachedIcons.clear();
+        IconLoader.cachedIcons.clear();
+        IconUpdater.nextCheckByPackageMs.clear();
 
-        Icon.init(); // Recreate folders
         launcherActivity.launcherService.forEachActivity(a -> {
             if (a.getAppAdapter() != null) a.getAppAdapter().notifyAllChanged();
         });
-
-        IconUpdater.clearDelays();
     }
     // Clears any custom labels assigned to apps, including whether they've been starred
     public static void clearLabels(LauncherActivity launcherActivity) {
@@ -243,17 +240,16 @@ public abstract class Compat {
     public static void clearSort(LauncherActivity launcherActivity) {
         Log.i(TAG, "App sort is being cleared");
         SettingsManager.getAppGroupMap().clear();
-        Set<String> appGroupsSet = launcherActivity.dataStoreEditor.getStringSet(Settings.KEY_GROUPS, null);
-        if (appGroupsSet == null) return;
-        for (String groupName : appGroupsSet) {
+        Set<String> appGroupsSet = launcherActivity.dataStoreEditor.getStringSet(Settings.KEY_GROUPS, new HashSet<>());
+        for (String groupName : appGroupsSet)
             launcherActivity.dataStoreEditor.removeStringSet(Settings.KEY_GROUP_APP_LIST + groupName);
-        }
+
         storeAndReload(launcherActivity);
         launcherActivity.launcherService.forEachActivity(LauncherActivity::resetAdapters);
     }
     // Resets the group list to default, including default groups for sorting
     public static void resetDefaultGroups(LauncherActivity launcherActivity) {
-        for (App.Type type : Platform.getSupportedAppTypes(launcherActivity))
+        for (App.Type type : PlatformExt.getSupportedAppTypes())
             launcherActivity.dataStoreEditor.removeString(Settings.KEY_DEFAULT_GROUP + type);
 
         launcherActivity.settingsManager.resetGroupsAndSort();

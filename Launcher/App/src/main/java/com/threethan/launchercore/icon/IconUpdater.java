@@ -1,15 +1,13 @@
-package com.threethan.launcher.updater;
+package com.threethan.launchercore.icon;
 
 import android.content.pm.ApplicationInfo;
 import android.graphics.Bitmap;
-import android.util.Log;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 
-import com.threethan.launcher.data.PanelApplicationInfo;
-import com.threethan.launcher.helper.App;
-import com.threethan.launcher.helper.Icon;
-import com.threethan.launcher.activity.LauncherActivity;
-import com.threethan.launcher.lib.ImageLib;
-import com.threethan.launcher.lib.StringLib;
+import com.threethan.launchercore.Core;
+import com.threethan.launchercore.lib.ImageLib;
+import com.threethan.launchercore.util.App;
 
 import java.io.DataInputStream;
 import java.io.File;
@@ -19,6 +17,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
 /**
  * This abstract class is dedicated to downloading icons from online repositories
@@ -28,6 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * the Icon class will then decide on the icon to be used.
  */
 public abstract class IconUpdater {
+
     // Repository URLs:
     // Each URL will be tried in order: the first with a file matching the package name will be used
     private static final String[] ICON_URLS_SQUARE = {
@@ -44,11 +44,7 @@ public abstract class IconUpdater {
             "https://raw.githubusercontent.com/threethan/QuestLauncherImages/main/banner/%s.jpg",
             "https://raw.githubusercontent.com/veticia/binaries/main/banners/%s.png",
     };
-    // Instead of matching a package name, websites match their TLD
-    private static final String[] ICON_URLS_WEB = {
-            "https://www.google.com/s2/favicons?domain=%s&sz=256", // Provides high-res icons
-            "%s/favicon.ico", // The standard directory for a website's icon to be placed
-    };
+
     private static final ConcurrentHashMap<String, Object> locks = new ConcurrentHashMap<>();
 
     /**
@@ -58,31 +54,23 @@ public abstract class IconUpdater {
      * when the icon is next checked/displayed.
      * <p>
      * Since this isn't stored persistently, all icons will be rechecked when the app is fully quit.
-     * This is a non-issue since the LauncherService stays open persitently.
+     * This is a non-issue on LL since the LauncherService stays open persistently.
      */
-    private static final ConcurrentHashMap<String, Long> nextCheckByPackageMs = new ConcurrentHashMap<>();
+    public static final ConcurrentHashMap<String, Long> nextCheckByPackageMs = new ConcurrentHashMap<>();
 
     // How many minutes before we can recheck an icon that hasn't downloaded
-    private static final long ICON_CHECK_TIME_MINUTES_2D = 240;
     private static final long ICON_CHECK_TIME_MINUTES_VR = 1;
     // How many minutes before we can recheck an icon that has downloaded for updates
-    private static final long ICON_UPDATE_TIME_MINUTES_2D = 240;
     private static final long ICON_UPDATE_TIME_MINUTES_VR = 60;
+
 
     /**
      * Starts the download of an icon, if one should be downloaded for that app
      * @param app App for which to download an icon image
      * @param callback Called when the download completes successfully and the icon is changed
      */
-    public static void check(final LauncherActivity activity, ApplicationInfo app, final Runnable callback) {
-        if (shouldDownload(app)) download(activity, app, callback);
-    }
-
-    /**
-     * Clears all icon download delays, letting icons be redownloaded when needed
-     */
-    public static void clearDelays() {
-        nextCheckByPackageMs.clear();
+    public static void check(ApplicationInfo app, final Consumer<Drawable> callback) {
+        if (shouldDownload(app)) download(app, callback);
     }
 
     /**
@@ -91,9 +79,7 @@ public abstract class IconUpdater {
      * @return True if the icon should be downloaded
      */
     private static synchronized boolean shouldDownload(ApplicationInfo app) {
-        if (App.isShortcut(app)) return false; // Shortcut icons are only provided on add
-        if (!nextCheckByPackageMs.containsKey(app.packageName)) return true; // Download if not done yet
-        // Check time since last download
+        if (!nextCheckByPackageMs.containsKey(app.packageName)) return true;
         final long nextCheckMs = Objects.requireNonNull(nextCheckByPackageMs.get(app.packageName));
         return System.currentTimeMillis() > nextCheckMs;
     }
@@ -101,39 +87,30 @@ public abstract class IconUpdater {
     /**
      * Starts the download of an icon and handles relevant threading
      * @param app App for which to download an icon image
-     * @param callback Called when the download completes successfully
+     * @param callback Called when the download completes successfully (*not on ui thread)
      */
-    public static void download(final LauncherActivity activity, ApplicationInfo app, final Runnable callback) {
+    public static void download(ApplicationInfo app, final Consumer<Drawable> callback) {
         final String packageName = app.packageName;
-        final int delayMs = (int) ((
-                        App.isAppOfType(app, App.Type.TYPE_VR)
-                        ? ICON_CHECK_TIME_MINUTES_VR
-                        : ICON_CHECK_TIME_MINUTES_2D )
-                        *1000*60);
+        final int delayMs = (int) (ICON_CHECK_TIME_MINUTES_VR*1000*60);
         nextCheckByPackageMs.put(packageName, System.currentTimeMillis() + delayMs);
 
-        final boolean isWide = App.isBanner(app);
-        final File iconFile = Icon.iconCacheFileForPackage(app);
+        final boolean isBanner = App.isBanner(app);
+        final File iconFile = IconLoader.iconCacheFileForApp(app);
 
         Thread thread = new Thread(() -> {
             Object lock = locks.putIfAbsent(packageName, new Object());
             if (lock == null) lock = locks.get(packageName);
             synchronized (Objects.requireNonNull(lock)) {
                 try {
-                    final String file = App.isWebsite(app) ?
-                            StringLib.baseUrlWithScheme(packageName) :
-                            getDownloadString(app);
-                    for (final String url : App.isWebsite(app) ? ICON_URLS_WEB : (isWide ? ICON_URLS_BANNER : ICON_URLS_SQUARE)) {
+                    final String file = getDownloadString(app);
+                    for (final String url : (isBanner ? ICON_URLS_BANNER : ICON_URLS_SQUARE)) {
                         if (downloadIconFromUrl(String.format(url, file), iconFile)) {
-                            final int delayMsUpd = (int) ((
-                                App.isAppOfType(app, App.Type.TYPE_VR)
-                                        ? ICON_UPDATE_TIME_MINUTES_VR
-                                        : ICON_UPDATE_TIME_MINUTES_2D )
-                                *1000*60);
+                            final int delayMsUpd = (int) (ICON_UPDATE_TIME_MINUTES_VR*1000*60);
                             nextCheckByPackageMs.put(packageName,
                                     System.currentTimeMillis() + delayMsUpd);
-                            Icon.saveIcon(app, iconFile);
-                            activity.runOnUiThread(callback);
+                            IconLoader.saveIcon(app, iconFile);
+                            callback.accept(new BitmapDrawable(Core.context().getResources(),
+                                    ImageLib.bitmapFromFile(iconFile)));
                             return;
                         }
                     }
@@ -150,6 +127,7 @@ public abstract class IconUpdater {
         thread.start();
     }
 
+
     /**
      * Gets the package name as it should be used for download purposes,
      * may exclude parts of the package name used for app mods or variants
@@ -158,9 +136,7 @@ public abstract class IconUpdater {
      * @return PackageID of the app, optionally modified in some way
      */
     private static String getDownloadString(ApplicationInfo app) {
-        return app.packageName.replace(".mrf.", ".")
-                .replace("://","")
-                .replace(PanelApplicationInfo.packagePrefix, "");
+        return app.packageName.replace(".mrf.", ".").replace("://", "");
     }
 
     /**
@@ -179,7 +155,7 @@ public abstract class IconUpdater {
     }
 
     /**
-     * Saves an inputstream used to download a bitmap to an actual file, applying webp compression.
+     * Saves an input stream used to download a bitmap to an actual file, applying webp compression.
      * @return True if the stream was different and has been saved
      */
     private static boolean saveStream(InputStream inputStream, File outputFile) {
@@ -202,13 +178,11 @@ public abstract class IconUpdater {
             Bitmap bitmap = ImageLib.bitmapFromFile(outputFile);
 
             if (bitmap != null) {
-                Icon.compressAndSaveBitmap(outputFile, bitmap);
+                IconLoader.compressAndSaveBitmap(outputFile, bitmap);
                 return true;
             }
             return false;
-
         } catch (Exception e) {
-            Log.i("AbstractPlatform", "Exception while converting file " + outputFile.getAbsolutePath());
             e.printStackTrace();
             return false;
         } finally {

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/layout"
+    android:id="@+id/itemLaunch"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/bkg_dialog"
@@ -46,56 +46,29 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <FrameLayout
+        <com.threethan.launchercore.view.LcButton
             android:id="@+id/clearCache"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bkg_button"
-            android:nextFocusDown="@id/resortOnly">
+            android:nextFocusDown="@id/resortOnly"
+            android:text="@string/clear_icons_clear_cache" />
 
-            <TextView
-                style="@style/SettingButtonLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/clear_icons_clear_cache" />
-
-        </FrameLayout>
-
-        <FrameLayout
+        <com.threethan.launchercore.view.LcButton
             android:id="@+id/clearAll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:background="@drawable/bkg_button"
             android:nextFocusUp="@id/resetGroups"
-            android:nextFocusDown="@id/cancel">
+            android:nextFocusDown="@id/cancel"
+            android:text="@string/clear_icons_clear_all" />
 
-            <TextView
-                style="@style/SettingButtonLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/clear_icons_clear_all" />
-
-        </FrameLayout>
-
-        <FrameLayout
+        <com.threethan.launchercore.view.LcButton
             android:id="@+id/cancel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:background="@drawable/bkg_button"
-            android:nextFocusUp="@id/resortOnly">
-
-            <TextView
-                style="@style/SettingButtonLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/clear_icons_cancel" />
-
-        </FrameLayout>
+            android:nextFocusUp="@id/resortOnly"
+            android:text="@string/clear_icons_cancel" />
     </LinearLayout>
 
 </LinearLayout>

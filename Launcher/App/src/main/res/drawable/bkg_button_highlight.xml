@@ -3,5 +3,22 @@
     <item android:state_hovered="true" android:drawable="@drawable/bkg_button_highlight_hover" />
     <item android:state_focused="true" android:drawable="@drawable/bkg_button_highlight_hover" />
     <item android:state_selected="true" android:drawable="@drawable/bkg_button_highlight_hover" />
-    <item android:drawable="@drawable/bkg_button_highlight_default" />
+    <item android:state_enabled="false">
+        <shape android:shape="rectangle" >
+            <corners android:radius="25dp" />
+            <solid android:color="#50FFFFFF" />
+
+            <padding android:bottom="7dp" android:left="7dp" android:right="7dp" android:top="7dp" />
+            <size android:height="40dp" android:width="40dp" />
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="rectangle" >
+            <corners android:radius="25dp" />
+            <solid android:color="#FFFFFF" />
+
+            <padding android:bottom="7dp" android:left="7dp" android:right="7dp" android:top="7dp" />
+            <size android:height="40dp" android:width="40dp" />
+        </shape>
+    </item>
 </selector>

@@ -4,8 +4,6 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -23,15 +21,16 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.threethan.launcher.R;
-import com.threethan.launcher.helper.App;
-import com.threethan.launcher.helper.Icon;
-import com.threethan.launcher.helper.Launch;
-import com.threethan.launcher.helper.Platform;
-import com.threethan.launcher.data.Settings;
 import com.threethan.launcher.activity.LauncherActivity;
-import com.threethan.launcher.lib.StringLib;
 import com.threethan.launcher.activity.dialog.AppDetailsDialog;
 import com.threethan.launcher.activity.support.SettingsManager;
+import com.threethan.launcher.data.Settings;
+import com.threethan.launcher.helper.LaunchExt;
+import com.threethan.launchercore.adapter.ArrayListAdapter;
+import com.threethan.launchercore.icon.IconLoader;
+import com.threethan.launchercore.lib.StringLib;
+import com.threethan.launchercore.util.App;
+import com.threethan.launchercore.util.Platform;
 
 import java.util.Collections;
 import java.util.List;
@@ -48,13 +47,13 @@ import java.util.Set;
  *     This class also handles clicking and long clicking apps, including the app settings dialog.
  *     It also handles displaying/updating the views of an app (hover interactions, background website)
  */
-public class AppsAdapter extends ArrayListAdapter<ApplicationInfo, AppsAdapter.AppViewHolder> {
+public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, LauncherAppsAdapter.AppViewHolder> {
     private LauncherActivity launcherActivity;
     private Set<ApplicationInfo> fullAppSet;
     private boolean getEditMode() {
         return launcherActivity.isEditing();
     }
-    public AppsAdapter(LauncherActivity activity) {
+    public LauncherAppsAdapter(LauncherActivity activity) {
         launcherActivity = activity;
     }
     public void setFullAppSet(Set<ApplicationInfo> myApps) {
@@ -74,11 +73,9 @@ public class AppsAdapter extends ArrayListAdapter<ApplicationInfo, AppsAdapter.A
         final List<ApplicationInfo> newItems =
                 settingsManager.getVisibleApps(settingsManager.getAppGroupsSorted(false), fullAppSet);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            newItems.removeIf(item -> !StringLib.forSort(SettingsManager.getAppLabel(item)).contains(StringLib.forSort(text)));
-            if (!showHidden)
-                newItems.removeIf(item -> Objects.equals(SettingsManager.getAppGroupMap().get(item.packageName), Settings.HIDDEN_GROUP));
-        }
+        newItems.removeIf(item -> !StringLib.forSort(SettingsManager.getAppLabel(item)).contains(StringLib.forSort(text)));
+        if (!showHidden)
+            newItems.removeIf(item -> Objects.equals(SettingsManager.getAppGroupMap().get(item.packageName), Settings.HIDDEN_GROUP));
 
         boolean showWeb = !text.isEmpty() && launcherActivity.dataStoreEditor.getBoolean(Settings.KEY_SEARCH_WEB, Settings.DEFAULT_SEARCH_WEB);
         // Add search queries
@@ -131,17 +128,17 @@ public class AppsAdapter extends ArrayListAdapter<ApplicationInfo, AppsAdapter.A
     @Override
     public AppViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = (LayoutInflater) launcherActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View itemView = layoutInflater.inflate(R.layout.lv_app, parent, false);
+        View itemView = layoutInflater.inflate(R.layout.item_app, parent, false);
         AppViewHolder holder =  new AppViewHolder(itemView);
         itemView.findViewById(R.id.clip).setClipToOutline(true);
 
         holder.view = itemView;
-        holder.imageViewSquare = itemView.findViewById(R.id.imageLabelSquare);
-        holder.imageViewBanner = itemView.findViewById(R.id.imageLabelBanner);
+        holder.imageViewSquare = itemView.findViewById(R.id.itemIcon);
+        holder.imageViewBanner = itemView.findViewById(R.id.itemBanner);
         holder.clip = itemView.findViewById(R.id.clip);
         holder.textSpacer = itemView.findViewById(R.id.textSpacer);
         holder.bumpSpacer = itemView.findViewById(R.id.bumpSpacer);
-        holder.textView = itemView.findViewById(R.id.textLabel);
+        holder.textView = itemView.findViewById(R.id.itemLabel);
         holder.moreButton = itemView.findViewById(R.id.moreButton);
         if (Platform.isTv()) holder.clip.setBackgroundResource(R.drawable.bkg_app_atv);
 
@@ -159,10 +156,10 @@ public class AppsAdapter extends ArrayListAdapter<ApplicationInfo, AppsAdapter.A
                 boolean selected = launcherActivity.selectApp(holder.app.packageName);
                 holder.view.animate().alpha(selected ? 0.5f : 1).setDuration(150).start();
             } else {
-                if (Launch.launchApp(launcherActivity, holder.app)) animateOpen(holder);
+                if (LaunchExt.launchApp(launcherActivity, holder.app)) animateOpen(holder);
 
-                boolean isWeb = App.isWebsite(holder.app);
-                shouldAnimateClose = isWeb || Platform.isTv(launcherActivity);
+                boolean isWeb = App.isWebsite(holder.app.packageName);
+                shouldAnimateClose = isWeb || Platform.isTv();
             }
         });
         holder.view.setOnLongClickListener(view -> {
@@ -238,8 +235,9 @@ public class AppsAdapter extends ArrayListAdapter<ApplicationInfo, AppsAdapter.A
         holder.app = app;
 
         //Load Icon
-        Drawable appIcon = Icon.loadIcon(launcherActivity, holder.app, holder.imageView);
-        holder.imageView.setImageDrawable(appIcon);
+        IconLoader.loadIcon(holder.app, drawable ->
+            launcherActivity.runOnUiThread(() -> holder.imageView.setImageDrawable(drawable))
+        );
 
         updateSelected(holder);
     }
@@ -269,19 +267,19 @@ public class AppsAdapter extends ArrayListAdapter<ApplicationInfo, AppsAdapter.A
         // Top search result
         if (launcherActivity.currentTopSearchResult != null &&
                 Objects.equals(
-                        Icon.cacheName(launcherActivity.currentTopSearchResult),
-                        Icon.cacheName(holder.app))) {
+                        IconLoader.cacheName(launcherActivity.currentTopSearchResult),
+                        IconLoader.cacheName(holder.app))) {
             updateHover(holder, true);
-        } else if (launcherActivity.clearFocusPackageNames.contains(Icon.cacheName(holder.app))) {
+        } else if (launcherActivity.clearFocusPackageNames.contains(IconLoader.cacheName(holder.app))) {
             updateHover(holder, false);
-            launcherActivity.clearFocusPackageNames.remove(Icon.cacheName(holder.app));
+            launcherActivity.clearFocusPackageNames.remove(IconLoader.cacheName(holder.app));
         }
     }
     public void updateHover(AppViewHolder holder, boolean hovered) {
-        if (!Platform.isTv(launcherActivity))
+        if (!Platform.isTv())
             holder.moreButton.setVisibility(hovered ? View.VISIBLE : View.GONE);
 
-        final boolean tv = Platform.isTv(launcherActivity);
+        final boolean tv = Platform.isTv();
         final float newScaleInner = hovered ? (tv ? 1.075f : 1.060f) : 1.005f;
         final float newScaleOuter = hovered ? (tv ? 1.270f : 1.075f) : 1.000f;
         final float newElevation = hovered ? (tv ? 15f : 20f) : 3f;
@@ -381,7 +379,7 @@ public class AppsAdapter extends ArrayListAdapter<ApplicationInfo, AppsAdapter.A
         openProgress.setVisibility(View.INVISIBLE);
 
         final boolean rv = (openAnim.getVisibility() == View.VISIBLE);
-        if (!AppsAdapter.shouldAnimateClose) {
+        if (!LauncherAppsAdapter.shouldAnimateClose) {
             openAnim.setVisibility(View.INVISIBLE);
             openAnim.setScaleX(1);
             openAnim.setScaleY(1);

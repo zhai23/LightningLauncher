@@ -17,7 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 
 import com.threethan.launcher.R;
-import com.threethan.launcher.lib.FileLib;
+import com.threethan.launchercore.lib.FileLib;
 
 import java.io.File;
 import java.util.Objects;
@@ -83,6 +83,7 @@ public class RemotePackageUpdater {
      * Identifies possible installation states of a package.
      * If a RemotePackage is a service, INSTALLED_SERVICE_INACTIVE will be used if it is installed,
      * but does not yet have an active accessibility service
+     * @noinspection unused
      */
     public enum AddonState
     { NOT_INSTALLED, INSTALLED_HAS_UPDATE, INSTALLED_SERVICE_INACTIVE, INSTALLED_SERVICE_ACTIVE, INSTALLED_APP }
@@ -99,7 +100,7 @@ public class RemotePackageUpdater {
      * @param remotePackage RemotePackage to download
      */
     @SuppressLint("UnspecifiedRegisterReceiverFlag") // Can't be fixed on this API version
-    protected void downloadPackage(RemotePackage remotePackage) {
+    public void downloadPackage(RemotePackage remotePackage) {
         Log.v(TAG, "Downloading from url "+remotePackage.url);
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(remotePackage.url));
         request.setDescription("Downloading "+remotePackage); // Notification
