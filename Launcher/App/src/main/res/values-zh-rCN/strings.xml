@@ -127,6 +127,12 @@
     <string name="browser_quest">在 Meta Quest 浏览器中打开</string>
     <string name="browser_system">尝试用默认浏览器打开</string>
 
+    <string name="launch_reopen">更好的多窗口（Meta Quest v67+）</string>
+    <string name="launch_reopen_tooltip">在实验设置中启用<b>新窗口布局</b>
+，然后将其打开。
+新应用窗口应与 Lightning Launcher 一起打开，而不是替换它。</string>
+
+
     <string name="edit_off">开启编辑模式</string>
     <string name="edit_on">关闭编辑模式</string>
 

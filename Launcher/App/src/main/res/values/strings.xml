@@ -164,6 +164,12 @@
     <string name="browser_quest">Open in Meta Quest Browser</string>
     <string name="browser_system">Try to Open in System Default</string>
 
+    <string name="launch_reopen">Better Multi-Window (Meta Quest v67+)</string>
+    <string name="launch_reopen_tooltip">
+        Enable <b>New Window Layout</b>
+        in Experimental Settings, then enable.
+        <i>New app windows will open next to LL.</i></string>
+
     <string name="edit_off">Turn On Edit Mode</string>
     <string name="edit_on">Turn Off Edit Mode</string>
 

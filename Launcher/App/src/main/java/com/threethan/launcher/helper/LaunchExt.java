@@ -97,46 +97,44 @@ public abstract class LaunchExt extends Launch {
         }
 
         if (SettingsManager.getAppLaunchOut(app.packageName)) {
-            launcherActivity.finishAffinity();
+            if (launcherActivity.dataStoreEditor.getBoolean(
+                    Settings.KEY_LAUNCH_REOPEN, Settings.DEFAULT_LAUNCH_REOPEN)) {
 
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                    Intent.FLAG_ACTIVITY_NEW_DOCUMENT |
-                    Intent.FLAG_ACTIVITY_MULTIPLE_TASK |
-                    Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                launcherActivity.finishAffinity();
+                new Timer().schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        startIntent(launcherActivity, intent);
+                    }
+                }, 50);
 
-            new Timer().schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    startIntent(launcherActivity, intent);
+                final Intent relaunchIntent = Core.context().getPackageManager()
+                        .getLaunchIntentForPackage(BuildConfig.APPLICATION_ID);
+                assert relaunchIntent != null;
+                relaunchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                        | Intent.FLAG_ACTIVITY_NEW_DOCUMENT |
+                        Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+
+                if (launcherActivity.dataStoreEditor.getBoolean(
+                        Settings.KEY_LAUNCH_REOPEN, Settings.DEFAULT_LAUNCH_REOPEN)) {
+                    new Timer().schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            startIntent(launcherActivity, relaunchIntent);
+                        }
+                    }, 500);
+                    new Timer().schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            startIntent(launcherActivity, intent);
+                        }
+                    }, 550);
                 }
-            }, 50);
-
-            final Intent relaunchIntent = Core.context().getPackageManager()
-                    .getLaunchIntentForPackage(BuildConfig.APPLICATION_ID);
-            assert relaunchIntent != null;
-            relaunchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                            | Intent.FLAG_ACTIVITY_NEW_DOCUMENT |
-                    Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-
-
-            new Timer().schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    startIntent(launcherActivity, relaunchIntent);
-                }
-            }, 500);
-            new Timer().schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    startIntent(launcherActivity, intent);
-                }
-            }, 550);
-
-            return false;
+            } else launchInOwnWindow(app, launcherActivity);
         } else {
             startIntent(launcherActivity, intent);
-            return true;
         }
+        return true;
     }
     private static void startIntent(LauncherActivity launcherActivity, Intent intent) {
         if (Objects.equals(intent.getAction(), ACTION_ACTUALLY_SHORTCUT)
@@ -152,7 +150,7 @@ public abstract class LaunchExt extends Launch {
     @Nullable
     private static Intent getIntentForLaunch(LauncherActivity activity, ApplicationInfo app) {
         // Ignore apps which don't work or should be excluded
-        if (app.packageName.equals(activity.getPackageName())) return null;
+        if (app.packageName.startsWith(activity.getPackageName())) return null;
 
         // Detect websites
         if (App.isWebsite(app.packageName)) {

@@ -372,6 +372,10 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
                         : R.array.advanced_launch_browsers,
                 p -> context.dataStoreEditor.putInt(Settings.KEY_DEFAULT_BROWSER, p));
         defaultBrowserSpinner.setSelection(defaultBrowserSelection);
+
+        attachSwitchToSetting(dialog.findViewById(R.id.searchHiddenSwitch),
+                Settings.KEY_LAUNCH_REOPEN, Settings.DEFAULT_LAUNCH_REOPEN);
+
         // Search settings
         attachSwitchToSetting(dialog.findViewById(R.id.searchWebSwitch),
                 Settings.KEY_SEARCH_WEB, Settings.DEFAULT_SEARCH_WEB);
