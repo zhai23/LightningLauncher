@@ -63,7 +63,8 @@ public class AppDetailsDialog extends BasicDialog<LauncherActivity> {
             ((TextView) dialog.findViewById(R.id.packageVersion)).setText("v"+packageInfo.versionName);
         } catch (PackageManager.NameNotFoundException ignored) {}
         // Info Action
-        dialog.findViewById(R.id.info).setOnClickListener(view -> AppExt.openInfo(context, currentApp.packageName));
+        dialog.findViewById(R.id.info).setOnClickListener(view
+                -> AppExt.openInfo(context, currentApp.packageName));
         dialog.findViewById(R.id.uninstall).setOnClickListener(view -> {
             AppExt.uninstall(currentApp.packageName); dialog.dismiss();});
 

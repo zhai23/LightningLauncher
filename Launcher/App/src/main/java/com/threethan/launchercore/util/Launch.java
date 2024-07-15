@@ -33,7 +33,7 @@ public abstract class Launch {
         if (Platform.isQuest() && App.getType(app) == App.Type.PANEL) {
             Intent intent = pm.getLaunchIntentForPackage("com.oculus.vrshell");
             assert intent != null;
-            intent.setData(Uri.parse("apk://"+app.packageName));
+            intent.setData(Uri.parse(app.packageName));
             return intent;
         }
 
