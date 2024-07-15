@@ -65,8 +65,8 @@ public abstract class App {
         if (app instanceof UtilityApplicationInfo) return Type.UTILITY;
         if (isWebsite(app.packageName)) return Type.WEB;
         if (isShortcut(app.packageName)) return Type.SHORTCUT;
-        if (isVrApp(app)) return Type.VR;
         if (isPanelApp(app)) return Type.PANEL;
+        if (isVrApp(app)) return Type.VR;
         if (isTvApp(app)) return Type.TV;
         return Type.PHONE;
     }
@@ -81,6 +81,7 @@ public abstract class App {
         return app.metaData != null && app.metaData.containsKey("com.oculus.pwa.START_URL");
     }
     private static boolean isVrApp(ApplicationInfo app) {
+        if (isPanelApp(app)) return false;
         if (app.metaData != null)
             if ( app.metaData.containsKey("com.oculus.ossplash")
                 || app.metaData.containsKey("com.samsung.android.vr.application.mode")
