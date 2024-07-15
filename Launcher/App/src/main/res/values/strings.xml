@@ -156,6 +156,7 @@
     <string name="size_medium">Open in Medium-Size Window</string>
     <string name="size_large">Open in Large 16:9 Window</string>
     <string name="size_huge">Open in Huge 16:9 Window</string>
+    <string name="size_wide">Open in Wide 21:9 Window</string>
 
     <string name="browser_default_setting">Default for Websites:</string>
     <string name="browser_default_in" >Open in Lightning Browser</string>

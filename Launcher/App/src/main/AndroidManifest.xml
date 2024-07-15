@@ -181,6 +181,18 @@
             <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
             <meta-data android:name="com.oculus.vrshell.free_resizing_limits" android:value="300,2000,500,1000"/>
         </activity>
+        <activity android:name=".activity.chainload.ChainLoadActivityWide"
+            android:screenOrientation="unspecified"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
+            android:exported="true"
+            android:launchMode="singleInstancePerTask"
+            android:resizeableActivity="true"
+            android:theme="@style/ThemeOverlay.Standard">
+
+            <layout android:defaultWidth="540dp" android:defaultHeight="1260dp" android:gravity="top|end" />
+            <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
+            <meta-data android:name="com.oculus.vrshell.free_resizing_limits" android:value="300,2000,500,1000"/>
+        </activity>
 
         <!-- Service that provides/manages Launcher views -->
         <service

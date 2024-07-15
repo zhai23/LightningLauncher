@@ -119,6 +119,8 @@ public abstract class LaunchExt extends Launch {
                     .getLaunchIntentForPackage(BuildConfig.APPLICATION_ID);
             assert relaunchIntent != null;
             relaunchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
