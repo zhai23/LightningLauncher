@@ -119,6 +119,7 @@
     <string name="size_medium">在中窗口中打开</string>
     <string name="size_large">在 16:9 大窗口中打开</string>
     <string name="size_huge">在 16:9 超大窗口中打开</string>
+    <string name="size_wide">在 21:9 大窗口中打开</string>
 
     <string name="browser_default_setting">网站默认设置:</string>
     <string name="browser_default_in" >在浏览器当前窗口中打开</string>

@@ -8,6 +8,7 @@ import com.threethan.launcher.activity.chainload.ChainLoadActivityHuge;
 import com.threethan.launcher.activity.chainload.ChainLoadActivityLarge;
 import com.threethan.launcher.activity.chainload.ChainLoadActivityPhone;
 import com.threethan.launcher.activity.chainload.ChainLoadActivitySmall;
+import com.threethan.launcher.activity.chainload.ChainLoadActivityWide;
 import com.threethan.launchercore.lib.StringLib;
 import com.threethan.launchercore.util.App;
 
@@ -129,6 +130,7 @@ public abstract class Settings {
             ChainLoadActivity.class,
             ChainLoadActivityLarge.class,
             ChainLoadActivityHuge.class,
+            ChainLoadActivityWide.class,
     };
     // group
     public static final String KEY_DEFAULT_GROUP = "prefDefaultGroupForType";
