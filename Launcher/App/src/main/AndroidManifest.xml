@@ -70,6 +70,7 @@
             android:windowSoftInputMode="adjustNothing"
             android:exported="true"
             android:documentLaunchMode="always"
+            android:launchMode="singleInstancePerTask"
             android:resizeableActivity="true"
             android:stateNotNeeded="true"
             android:excludeFromRecents="true">
@@ -79,13 +80,13 @@
             <meta-data android:name="com.oculus.vrshell.free_resizing_limits" android:value="300,2000,500,1000"/>
 
             <meta-data android:name="com.oculus.vrshell.supports_multi_instance" android:value="true" />
-            <meta-data android:name="com.oculus.vrshell.supports_multi_cursor" android:value="true" />
             <meta-data android:name="com.oculus.lazy_gpumem_allocation" android:value="true" />
 
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.DEFAULT"/>
                 <action android:name="android.intent.action.CREATE_SHORTCUT" />
             </intent-filter>
         </activity>
@@ -104,7 +105,6 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.HOME"/>
-                <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER"/>
             </intent-filter>
         </activity>
@@ -189,9 +189,9 @@
             android:resizeableActivity="true"
             android:theme="@style/ThemeOverlay.Standard">
 
-            <layout android:defaultWidth="540dp" android:defaultHeight="1260dp" android:gravity="top|end" />
+            <layout android:defaultWidth="1260dp" android:defaultHeight="540dp" android:gravity="top|end" />
             <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
-            <meta-data android:name="com.oculus.vrshell.free_resizing_limits" android:value="300,2000,500,1000"/>
+            <meta-data android:name="com.oculus.vrshell.free_resizing_limits" android:value="630,2520,270,1080"/>
         </activity>
 
         <!-- Service that provides/manages Launcher views -->

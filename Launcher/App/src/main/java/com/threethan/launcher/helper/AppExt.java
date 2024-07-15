@@ -10,9 +10,9 @@ import android.net.Uri;
 import com.threethan.launcher.R;
 import com.threethan.launcher.activity.LauncherActivity;
 import com.threethan.launcher.activity.support.SettingsManager;
-import com.threethan.launcher.data.PanelApplicationInfo;
 import com.threethan.launcher.data.Settings;
 import com.threethan.launchercore.util.App;
+import com.threethan.launchercore.util.Platform;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -39,8 +39,8 @@ public abstract class AppExt extends App {
     // Opens the app info settings pane
     public static void openInfo(Context context, String packageName) {
         Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-        intent.setData(Uri.parse("package:" +
-                packageName.replace(PanelApplicationInfo.packagePrefix, "")));
+        intent.setData(Uri.parse("package:" + packageName));
+        if (Platform.isQuest()) intent.setPackage("com.android.settings");
         context.startActivity(intent);
     }
     // Requests to uninstall the app

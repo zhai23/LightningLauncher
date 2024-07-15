@@ -54,7 +54,7 @@ public abstract class LaunchExt extends Launch {
             Keyboard.hide(launcherActivity, launcherActivity.mainView);
         } catch (Exception ignored) {}
 
-        Intent intent = getLaunchIntent(launcherActivity, app);
+        Intent intent = getIntentForLaunch(launcherActivity, app);
 
         if (intent == null) {
             Log.w("AppLaunch", "Package could not be launched (Uninstalled?): "
@@ -101,24 +101,22 @@ public abstract class LaunchExt extends Launch {
 
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                     Intent.FLAG_ACTIVITY_NEW_DOCUMENT |
-                    Intent.FLAG_ACTIVITY_MULTIPLE_TASK );
+                    Intent.FLAG_ACTIVITY_MULTIPLE_TASK |
+                    Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
                     startIntent(launcherActivity, intent);
                 }
-            }, 15);
-            new Timer().schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    startIntent(launcherActivity, intent);
-                }
-            }, 100);
+            }, 50);
+
             final Intent relaunchIntent = Core.context().getPackageManager()
                     .getLaunchIntentForPackage(BuildConfig.APPLICATION_ID);
             assert relaunchIntent != null;
-            relaunchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            relaunchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                            | Intent.FLAG_ACTIVITY_NEW_DOCUMENT |
+                    Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
 
 
             new Timer().schedule(new TimerTask() {
@@ -126,8 +124,13 @@ public abstract class LaunchExt extends Launch {
                 public void run() {
                     startIntent(launcherActivity, relaunchIntent);
                 }
-            }, 75);
-
+            }, 500);
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    startIntent(launcherActivity, intent);
+                }
+            }, 550);
 
             return false;
         } else {
@@ -147,9 +150,9 @@ public abstract class LaunchExt extends Launch {
      * including workarounds for browsers & panel apps
      */
     @Nullable
-    private static Intent getLaunchIntent(LauncherActivity activity, ApplicationInfo app) {
+    private static Intent getIntentForLaunch(LauncherActivity activity, ApplicationInfo app) {
         // Ignore apps which don't work or should be excluded
-        if (app.packageName.startsWith(activity.getPackageName())) return null;
+        if (app.packageName.equals(activity.getPackageName())) return null;
 
         // Detect websites
         if (App.isWebsite(app.packageName)) {
