@@ -239,10 +239,11 @@ public abstract class Compat {
     // Clears the categorization of apps & resets everything to selected default groups
     public static void clearSort(LauncherActivity launcherActivity) {
         Log.i(TAG, "App sort is being cleared");
-        SettingsManager.getAppGroupMap().clear();
         Set<String> appGroupsSet = launcherActivity.dataStoreEditor.getStringSet(Settings.KEY_GROUPS, new HashSet<>());
         for (String groupName : appGroupsSet)
             launcherActivity.dataStoreEditor.removeStringSet(Settings.KEY_GROUP_APP_LIST + groupName);
+        SettingsManager.getAppGroupMap().clear();
+        launcherActivity.settingsManager.resetGroupsAndSort();
 
         storeAndReload(launcherActivity);
         launcherActivity.launcherService.forEachActivity(LauncherActivity::resetAdapters);

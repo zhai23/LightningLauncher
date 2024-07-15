@@ -43,7 +43,7 @@ public abstract class App {
         Type type = getTypeInternal(app);
         packageTypeCache.put(app.packageName, type);
         if (Platform.excludedPackageNames.contains(app.packageName)
-                || app.packageName.equals(Core.context().getPackageName())
+                || app.packageName.startsWith(Core.context().getPackageName())
                 || (type == Type.VR || type == Type.PHONE) && Launch.getLaunchIntent(app) == null) {
             packageTypeCache.put(app.packageName, Type.UNSUPPORTED);
             return Type.UNSUPPORTED;

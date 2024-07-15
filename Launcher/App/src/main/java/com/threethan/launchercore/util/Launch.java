@@ -25,7 +25,7 @@ public abstract class Launch {
      */
     @Nullable
     public static Intent getLaunchIntent(ApplicationInfo app) {
-        if (app.packageName.equals(Core.context().getPackageName())) return null;
+        if (app.packageName.startsWith(Core.context().getPackageName())) return null;
         if (Platform.excludedPackageNames.contains(app.packageName)) return null;
 
         PackageManager pm = Core.context().getPackageManager();
@@ -62,8 +62,8 @@ public abstract class Launch {
         if (intent == null) return;
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.addFlags(Intent.FLAG_ACTIVITY_LAUNCH_ADJACENT);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
+        intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
         Core.context().startActivity(intent);
     }
     /** Launch an app - in it's own window, if applicable */
@@ -73,8 +73,8 @@ public abstract class Launch {
             launch(app);
             return;
         }
-        activity.finishAffinity();
         DelayLib.delayed(() -> launch(app), 50);
         DelayLib.delayed(() -> launch(app), 700);
+        activity.finishAffinity();
     }
 }

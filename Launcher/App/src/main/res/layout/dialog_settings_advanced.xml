@@ -139,6 +139,24 @@
                 android:layout_weight="1" />
         </LinearLayout>
 
+        <com.threethan.launchercore.view.LcSwitch
+            android:id="@+id/reopenSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="39dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/launch_reopen"
+            tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-10dp"
+            android:layout_marginBottom="-10dp"
+            android:alpha="0.8"
+            android:padding="15sp"
+            android:text="@string/launch_reopen_tooltip" />
+
         <TextView
             android:id="@+id/extraFeaturesTitle"
             style="@style/SettingSubtitle"

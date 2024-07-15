@@ -331,16 +331,16 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
         int h = clip.getHeight();
 
         View openAnim = launcherActivity.rootView.findViewById(R.id.openAnim);
-        openAnim.setX(l[0] + (Platform.isTv() ? 30 : 0));
-        openAnim.setY(l[1] + (Platform.isTv() ? 30 : 0));
+        openAnim.setX(l[0] + (Platform.isTv() ? 30 : 3));
+        openAnim.setY(l[1] + (Platform.isTv() ? 30 : 3));
         ViewGroup.LayoutParams layoutParams = new FrameLayout.LayoutParams(w, h);
         openAnim.setLayoutParams(layoutParams);
 
         openAnim.setVisibility(View.VISIBLE);
         openAnim.setAlpha(1F);
         openAnim.setClipToOutline(true);
-        openAnim.setScaleX(Platform.isTv() ? 1.40F : 1.08F);
-        openAnim.setScaleY(Platform.isTv() ? 1.40F : 1.08F);
+        openAnim.setScaleX(Platform.isTv() ? 1.40F : 1.15F);
+        openAnim.setScaleY(Platform.isTv() ? 1.40F : 1.15F);
 
         ImageView animIcon = openAnim.findViewById(R.id.openIcon);
         ImageView animIconBg = openAnim.findViewById(R.id.openIconBg);
