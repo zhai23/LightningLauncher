@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -35,29 +36,33 @@ public abstract class ArrayListAdapter<T, VH extends RecyclerView.ViewHolder> ex
     @SuppressLint("NotifyDataSetChanged")
     public void setItems(List<T> newItems) {
         final Map<Integer, Integer> movedPrevByNew = new HashMap<>(); // to -> from
-        for (T item : new ArrayList<>(items)) {
+        for (Iterator<T> iterator = items.iterator(); iterator.hasNext();) {
+            T item = iterator.next();
             if (!newItems.contains(item)) {
                 int i = items.indexOf(item);
-                items.remove(i);
+                iterator.remove();
                 notifyItemRemoved(i);
             }
         }
-        for (T item : newItems) {
+
+        for (int i = 0; i < newItems.size(); i++) {
+            T item = newItems.get(i);
             if (!items.contains(item)) {
-                int i = newItems.indexOf(item);
                 items.add(i, item);
                 notifyItemInserted(i);
             }
         }
-        for (T item : newItems) {
-            final int oldIndex = items.indexOf(item);
-            final int newIndex = newItems.indexOf(item);
-            if (oldIndex != newIndex) {
+
+        for (int i = 0; i < newItems.size(); i++) {
+            T item = newItems.get(i);
+            int oldIndex = items.indexOf(item);
+            if (oldIndex != i) {
+                notifyItemMoved(oldIndex, i);
                 items.remove(oldIndex);
-                items.add(newIndex, item);
-                notifyItemMoved(oldIndex, newIndex);
+                items.add(i, item);
             }
         }
+
         // Failsafe, just in case
         if (!items.equals(newItems)) {
             items.clear();
