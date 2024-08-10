@@ -88,20 +88,24 @@ public class BasicDialog<T extends Context> extends AbstractDialog<T> {
 
         // Fake toast for the Quest
         AlertDialog dialog = new AlertDialog.Builder(getActivityContext(), R.style.dialogToast).setView(R.layout.dialog_toast).create();
+        try {
+            if (dialog.getWindow() != null) {
+                dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
+                dialog.getWindow().setBackgroundDrawableResource(R.drawable.bkg_dialog_transparent);
+                dialog.getWindow().setDimAmount(0.0f);
+            }
 
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
-            dialog.getWindow().setBackgroundDrawableResource(R.drawable.bkg_dialog_transparent);
-            dialog.getWindow().setDimAmount(0.0f);
+            dialog.show();
+
+            ((TextView) dialog.findViewById(R.id.toastTextMain)).setText(stringMain);
+            ((TextView) dialog.findViewById(R.id.toastTextBold)).setText(stringBold);
+
+            // Dismiss if not done automatically
+            dialog.findViewById(R.id.toastTextMain).postDelayed(dialog::dismiss,
+                    isLong ? 5000 : 1750);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        dialog.show();
-
-        ((TextView) dialog.findViewById(R.id.toastTextMain)).setText(stringMain);
-        ((TextView) dialog.findViewById(R.id.toastTextBold)).setText(stringBold);
-
-        // Dismiss if not done automatically
-        dialog.findViewById(R.id.toastTextMain).postDelayed(dialog::dismiss,
-                isLong ? 5000 : 1750);
     }
 
     public static void initSpinner(Spinner spinner, int array_res,

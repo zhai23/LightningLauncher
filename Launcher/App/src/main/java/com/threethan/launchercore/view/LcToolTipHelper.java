@@ -14,13 +14,16 @@ import android.view.ViewGroup;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+
 import com.threethan.launcher.R;
 
 public abstract class LcToolTipHelper {
     private static final int DEFAULT_TOOLTIP_DELAY_MS = 250;
 
-    public static void init(View view, AttributeSet attrs) {
+    public static void init(View view, @Nullable AttributeSet attrs) {
         int tooltipTextResId = -1;
+        CharSequence tooltipText = null;
         final PopupWindow[] popupWindow = {null};
         if (attrs != null) {
             //noinspection resource
@@ -36,13 +39,20 @@ public abstract class LcToolTipHelper {
                 a.recycle();
             }
         }
-        if (tooltipTextResId == -1) return;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && view.getTooltipText() != null) {
+            tooltipText = view.getTooltipText();
+            view.setTooltipText(null);
+        }
+
+        if (tooltipTextResId == -1 && tooltipText == null) return;
         int finalTooltipTextResId = tooltipTextResId;
+        CharSequence finalTooltipText = tooltipText;
         Runnable showToolTip = () -> {
             LayoutInflater inflater = (LayoutInflater) view.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             @SuppressLint("InflateParams") View tooltipView = inflater.inflate(R.layout.lc_tooltip, null);
             TextView text = tooltipView.findViewById(R.id.tooltipText);
-            text.setText(finalTooltipTextResId);
+            if (finalTooltipText != null) text.setText(finalTooltipText);
+            else text.setText(finalTooltipTextResId);
             popupWindow[0] = new PopupWindow(tooltipView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             tooltipView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
             popupWindow[0].showAsDropDown(view, view.getWidth()/2-tooltipView.getMeasuredWidth()/2, -5);

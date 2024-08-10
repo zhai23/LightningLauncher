@@ -108,6 +108,8 @@ public abstract class Settings {
         FALLBACK_BANNER.put(App.Type.TV, true);
         FALLBACK_BANNER.put(App.Type.PANEL, false);
     }
+    public static final String KEY_BANNER_OVERRIDE = "prefAppIsWide";
+
 
     // show names by display type
     public static final String KEY_SHOW_NAMES_SQUARE = "KEY_CUSTOM_NAMES";

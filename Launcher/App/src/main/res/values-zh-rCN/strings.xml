@@ -31,9 +31,10 @@
 
     <string name="behavior_header">行为</string>
     <string name="background_header">壁纸样式</string>
-    <string name="icon_header">图标布局</string>
-    <string name="wide_header">显示为横幅</string>
-    <string name="name_header">显示名称</string>
+    <string name="hdr_icon">图标布局</string>
+    <string name="disp_wide">显示为横幅</string>
+    <string name="disp_icon">显示为正方形</string>
+    <string name="disp_name">显示名称</string>
     <string name="advanced_header">高级设置</string>
     <string name="advanced_button">打开高级设置获取更多选项</string>
     <string name="advanced_interface">界面选项</string>

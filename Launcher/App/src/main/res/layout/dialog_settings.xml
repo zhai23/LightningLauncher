@@ -262,7 +262,7 @@
             style="@style/SettingSubtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/icon_header" />
+            android:text="@string/hdr_icon" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -390,7 +390,7 @@
             style="@style/SettingSubtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/wide_header" />
+            android:text="@string/disp_wide" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -462,7 +462,7 @@
             style="@style/SettingSubtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/name_header" />
+            android:text="@string/disp_name" />
 
         <LinearLayout
             android:layout_width="match_parent"

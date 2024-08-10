@@ -48,22 +48,37 @@
                 android:layout_marginTop="-1dp"
                 android:orientation="horizontal">
 
-                <ImageView
-                    android:id="@+id/launch"
+                <com.threethan.launchercore.view.LcImageView
+                    android:id="@+id/dispIcon"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:background="@drawable/bkg_hover_button"
                     android:padding="1dp"
-                    android:src="@drawable/ic_launch_out"
-                    android:tooltipText="@string/tip_launch"
-                    tools:ignore="UnusedAttribute" />
+                    android:src="@drawable/ic_disp_icon"
+                    android:tooltipText="@string/disp_icon"
+                    android:visibility="gone"
+                    tools:ignore="UnusedAttribute"
+                    tools:visibility="visible" />
 
-                <ImageView
+                <com.threethan.launchercore.view.LcImageView
+                    android:id="@+id/dispWide"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@drawable/bkg_hover_button"
+                    android:padding="2dp"
+                    android:src="@drawable/ic_disp_banner"
+                    android:tooltipText="@string/disp_wide"
+                    android:visibility="gone"
+                    tools:ignore="UnusedAttribute"
+                    tools:visibility="visible" />
+
+                <com.threethan.launchercore.view.LcImageView
                     android:id="@+id/refreshIcon"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:background="@drawable/bkg_hover_button"
                     android:padding="1dp"
+                    android:layout_marginStart="3dp"
                     android:src="@drawable/ic_refresh"
                     android:tooltipText="@string/reload_icon"
                     android:visibility="gone"
@@ -74,7 +89,7 @@
                     android:layout_height="0dp"
                     android:layout_weight="1" />
 
-                <ImageView
+                <com.threethan.launchercore.view.LcImageView
                     android:id="@+id/hide"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
@@ -87,7 +102,7 @@
                     tools:ignore="UnusedAttribute"
                     tools:visibility="visible" />
 
-                <ImageView
+                <com.threethan.launchercore.view.LcImageView
                     android:id="@+id/show"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
@@ -100,7 +115,7 @@
                     tools:ignore="UnusedAttribute"
                     tools:visibility="visible" />
 
-                <ImageView
+                <com.threethan.launchercore.view.LcImageView
                     android:id="@+id/info"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
@@ -111,7 +126,7 @@
                     android:tooltipText="@string/tip_info"
                     tools:ignore="UnusedAttribute" />
 
-                <ImageView
+                <com.threethan.launchercore.view.LcImageView
                     android:id="@+id/uninstall"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
@@ -145,6 +160,7 @@
                 tools:ignore="RtlSymmetry,TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
             <LinearLayout
+                android:id="@+id/packageNameAndVersion"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="1sp"
@@ -177,7 +193,7 @@
                     tools:text="1.2.0" />
             </LinearLayout>
 
-            <ImageView
+            <com.threethan.launchercore.view.LcImageView
                 android:id="@+id/star"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
@@ -236,7 +252,7 @@
         </LinearLayout>
 
         <com.threethan.launchercore.view.LcButton
-            android:id="@+id/install"
+            android:id="@+id/confirm"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.5"

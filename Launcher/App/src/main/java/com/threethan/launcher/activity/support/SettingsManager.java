@@ -132,6 +132,7 @@ public class SettingsManager extends Settings {
         dataStoreEditor.putString(app.packageName, newName);
         LauncherActivity.getForegroundInstance().launcherService.forEachActivity(LauncherActivity::refreshAppList);
     }
+
     public static boolean getAppLaunchOut(String pkg) {
         if (App.isWebsite(pkg)) {
             // If website, select based on browser selection
@@ -465,5 +466,17 @@ public class SettingsManager extends Settings {
     public static void setTypeBanner(App.Type type, boolean banner) {
         isBannerCache.put(type, banner);
         dataStoreEditor.putBoolean(Settings.KEY_BANNER + type, banner);
+    }
+
+    /** Sets a specific app to use banner or icon display, regardless of type */
+    public static void setAppBannerOverride(ApplicationInfo app, boolean isBanner) {
+        String key = Settings.KEY_BANNER_OVERRIDE + app.packageName;
+        if (AppExt.isBanner(app) == isBanner) dataStoreEditor.removeBoolean(key);
+        else dataStoreEditor.putBoolean(key, isBanner);
+    }
+    /** Call getAppOverridesBanner first! @return True, if the app overrides & is a banner */
+    public static boolean getAppIsBanner(ApplicationInfo app) {
+        return dataStoreEditor.getBoolean(Settings.KEY_BANNER_OVERRIDE + app.packageName,
+                AppExt.typeIsBanner(AppExt.getType(app)));
     }
  }
