@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
@@ -204,7 +205,7 @@ public class LauncherActivity extends ComponentActivity {
 
         mainView = rootView.findViewById(R.id.mainLayout);
         topBar = mainView.findViewById(R.id.topBarLayout);
-        mainView.addOnLayoutChangeListener(this::onLayoutChaged);
+        mainView.addOnLayoutChangeListener(this::onLayoutChanged);
         appsView = rootView.findViewById(R.id.apps);
         groupsView = rootView.findViewById(R.id.groupsView);
 
@@ -215,8 +216,8 @@ public class LauncherActivity extends ComponentActivity {
         });
     }
 
-    protected void onLayoutChaged(View v, int left, int top, int right, int bottom,
-                                  int oldLeft, int oldTop, int oldRight, int oldBottom) {
+    protected void onLayoutChanged(View v, int left, int top, int right, int bottom,
+                                   int oldLeft, int oldTop, int oldRight, int oldBottom) {
         if (Math.abs(oldBottom-bottom) > 10 || Math.abs(oldRight-right) > 10) { // Only on significant diff
             new WallpaperExecutor().execute(this);
             updateGridLayouts();
@@ -738,4 +739,9 @@ public class LauncherActivity extends ComponentActivity {
     public boolean canEdit() { return false; }
     public void addWebsite(Context context) {}
     protected boolean getSearching() { return false; }
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_F2) ActivityCapture.takeAndStoreCapture(this);
+        return super.onKeyDown(keyCode, event);
+    }
 }
