@@ -5,6 +5,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
+import com.threethan.launcher.activity.support.SettingsManager;
 import com.threethan.launcher.helper.AppExt;
 import com.threethan.launchercore.Core;
 import com.threethan.launchercore.adapter.UtilityApplicationInfo;
@@ -127,7 +128,7 @@ public abstract class App {
     }
     /** @noinspection unused*/
     public static boolean isBanner(ApplicationInfo app) {
-        return AppExt.typeIsBanner(getType(app));
+        return SettingsManager.getAppIsBanner(app);
     }
     public static Boolean showsName(ApplicationInfo app) {
         return AppExt.showsName(app);

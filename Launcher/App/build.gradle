@@ -4,8 +4,9 @@ android {
     defaultConfig {
         compileSdk 34
         minSdkVersion 24
-        versionCode 723
-        versionName "7.2.3"
+        targetSdkVersion 34
+        versionCode 800
+        versionName "8.0.0"
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
@@ -31,7 +32,7 @@ dependencies {
 
     implementation 'com.github.Dimezis:BlurView:version-2.0.4'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'androidx.activity:activity:1.9.0'
+    implementation 'androidx.activity:activity:1.9.1'
     implementation 'androidx.appcompat:appcompat:1.7.0'
 
     implementation 'com.android.volley:volley:1.2.1'

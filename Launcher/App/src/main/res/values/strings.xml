@@ -33,9 +33,10 @@
 
     <string name="behavior_header">Behavior</string>
     <string name="background_header">Wallpaper &amp; Style</string>
-    <string name="icon_header">Icons &amp; Layout</string>
-    <string name="wide_header">Display as Banner</string>
-    <string name="name_header">Always Show Names</string>
+    <string name="hdr_icon">Icons &amp; Layout</string>
+    <string name="disp_wide">Display as Banner</string>
+    <string name="disp_icon">Display as Icon</string>
+    <string name="disp_name">Always Show Name</string>
     <string name="advanced_header">Advanced Settings</string>
     <string name="advanced_button">Open Advanced Settings for More Options</string>
     <string name="advanced_interface">Interface Options</string>
@@ -201,7 +202,7 @@
     <string name="update_skip_content">You will not be notified about this update again.\n
         \nKeep in mind that updates are highly recommended and may include important fixes.\n
         \nIf you are avoiding this update because it causes issues, report your issues at github.com/threethan/Lightning Launcher\n
-        \nYOU CAN UPDATE LATER FROM THE SETTINGS!</string>
+        \n<b>You can still update later from the settings!</b></string>
     <string name="update_skip_confirm_button">I Understand, Skip It</string>
     <string name="update_skip_cancel_button">Just Dismiss</string>
 
