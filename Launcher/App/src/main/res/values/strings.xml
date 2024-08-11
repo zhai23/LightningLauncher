@@ -25,7 +25,7 @@
     <string name="app_name_icon">Below Icons</string>
     <string name="app_name_wide">Below Banners</string>
 
-    <string name="settings_main">Launcher Settings</string>
+    <string name="settings_main">Lightning Launcher Settings</string>
     <string name="settings_appearance">Customize Appearance</string>
     <string name="settings_addons_attract">Set Up Shortcuts</string>
     <string name="settings_addons">Shortcuts</string>
@@ -167,9 +167,9 @@
 
     <string name="launch_reopen">Better Multi-Window (Meta Quest v67+)</string>
     <string name="launch_reopen_tooltip">
-        Enable <b>New Window Layout</b>
-        in Experimental Settings, then enable.
-        <i>New app windows will open next to LL.</i></string>
+        On v67 or v68: Enable <b>New Window Layout</b>
+        in Experimental Settings, then enable. (On by default in v69+)
+        <i>New app windows will open next to LL. Expect some bugs!</i></string>
 
     <string name="edit_off">Turn On Edit Mode</string>
     <string name="edit_on">Turn Off Edit Mode</string>

@@ -13,6 +13,7 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.threethan.launcher.BuildConfig;
 import com.threethan.launcher.R;
 import com.threethan.launcher.helper.AppExt;
 import com.threethan.launcher.helper.Compat;
@@ -56,6 +57,7 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
         super(launcherActivity, R.layout.dialog_settings);
     }
 
+    @SuppressLint("SetTextI18n")
     public AlertDialog show() {
         AlertDialog dialog = super.show();
         if (dialog == null) return null;
@@ -66,6 +68,8 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
         View dismiss = dialog.findViewById(R.id.dismissButton);
         dismiss.setOnClickListener(view -> dialog.dismiss());
         dismiss.post(dismiss::requestFocus);
+
+        ((TextView) dialog.findViewById(R.id.versionLabel)).setText('v'+BuildConfig.VERSION_NAME);
 
         // Addons
         View addonsButton = dialog.findViewById(R.id.addonsButton);
