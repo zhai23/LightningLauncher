@@ -48,6 +48,7 @@ public abstract class LcToolTipHelper {
         int finalTooltipTextResId = tooltipTextResId;
         CharSequence finalTooltipText = tooltipText;
         Runnable showToolTip = () -> {
+            if (popupWindow[0] != null) return;
             LayoutInflater inflater = (LayoutInflater) view.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             @SuppressLint("InflateParams") View tooltipView = inflater.inflate(R.layout.lc_tooltip, null);
             TextView text = tooltipView.findViewById(R.id.tooltipText);

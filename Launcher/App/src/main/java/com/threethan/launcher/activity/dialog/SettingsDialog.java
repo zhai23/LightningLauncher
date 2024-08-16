@@ -240,7 +240,7 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
         attachSwitchToSetting(dialog.findViewById(R.id.groupSwitch),
                 Settings.KEY_GROUPS_ENABLED, Settings.DEFAULT_GROUPS_ENABLED,
                 value -> {
-                    showOneTimeWarningDialog(R.layout.dialog_info_hide_groups_tv,
+                    showOneTimeWarningDialog(R.layout.dialog_info_hide_groups,
                                              Settings.KEY_SEEN_HIDDEN_GROUPS_POPUP);
                     if (value) {
                         // Can edit, show switch

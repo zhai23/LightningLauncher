@@ -76,8 +76,7 @@
 
     <string name="launch_out_message">在应用自身的窗口中启动 2D 应用程序或网站可让 Quest 设备上的多任务处理变得更轻松，但会导致某些应用程序无法启动。\n\n如果有任何问题，请禁用此选项！</string>
     <string name="launch_size_message">在应用自身的窗口中启动 2D 应用程序或网站可让 Quest 设备上的多任务处理变得更轻松、但会导致某些应用程序无法启动。\n\n        \n设置自定义窗口大小可以解决应用程序无法启动的问题，使某些应用程序显示得更清晰，并允许在平面视图中使用不同的窗口大小。\n        \n不过，偶尔也会导致窗口卡住或 Lightning Launcher 崩溃。\n\n        \n所有这些选项都只能按应用程序设置。\n\n        \n如果遇到问题，请关闭该选项，并确保任何应用程序都未设置为在自己的窗口中启动。重启以修复卡死的窗口。</string>
-    <string name="hidden_groups_message_tv">"关闭该选项将在不进入编辑模式时隐藏顶栏。\n\n        \n不在编辑模式下时，设置按钮也将隐藏。\n\n        \n取而代之的是，按遥控器上的返回按钮打开设置。\n\n        \n您仍然可以通过导航到顶行，然后按向上键进行搜索。\n    "</string>
-    <string name="hidden_groups_message_vr">"关闭该选项将在不进入编辑模式时隐藏顶栏。\n\n        \n不在编辑模式下时，设置按钮也将隐藏。\n\n        \n相反，按下窗口顶部的返回按钮或控制器上的 B 键即可打开设置。\n    "</string>
+    <string name="hidden_groups_message">"关闭该选项将在不进入编辑模式时隐藏顶栏。\n\n        \n不在编辑模式下时，设置按钮也将隐藏。\n\n        \n相反，按下窗口顶部的返回按钮或控制器上的 B 键即可打开设置。\n    "</string>
     <string name="set_default_launcher_message">"将 Lightning Launcher 设置为默认的安卓主应用程序，其他应用程序就可以在主屏幕上添加快捷图标。\n        \n只需执行一次。\n\n        \n它不会取代VR设备上的实际默认启动器，也不会改变Lightning Launcher本身的操作。\n\n\n        如果你想这样做，请查看设置快捷方式/快捷方式设置以获取Lightning Launcher的快捷方式。\n    "</string>
     <string name="download_browser_message">为了获得最佳体验，您必须安装 Lightning Browser 才能在 Lightning Launcher 中打开网站。\n\n（或者您可以尝试在“高级设置”中更改浏览器，但这可能无法按预期工作）</string>
     <string name="update_browser_message">为了获得最佳体验，您必须更新 Lightning Browser.</string>

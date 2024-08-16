@@ -87,14 +87,9 @@
         \nHowever, it may occasionally cause windows to get stuck or Lightning Launcher to crash.\n
         \nAll of these options can be set only on a per-app basis.\n
         \nIf you have issues, turn this option off and make sure any apps are not set to launch in their own windows. Reboot to fix stuck windows.</string>
-    <string name="hidden_groups_message_tv">Turning this option off will hide the top bar when not in Edit Mode. \n
+    <string name="hidden_groups_message">Turning this option off will hide the top bar when not in Edit Mode. \n
         \nThe settings button will also be hidden when not in Edit Mode.\n
-        \nInstead, press the back button on your remote to open the settings.\n
-        \nYou can still search by navigating to the top row, then pressing up.
-    </string>
-    <string name="hidden_groups_message_vr">Turning this option off will hide the top bar when not in Edit Mode. \n
-        \nThe settings button will also be hidden when not in Edit Mode.\n
-        \nInstead, press the back button at the top of the window or B on the controller to open settings.
+        \nInstead, press the back button to open settings.
     </string>
     <string name="set_default_launcher_message">Setting Lightning Launcher as your default android home app will allow other apps to add shortcut icons to the home screen.
         \nThis only needs to be done once.\n

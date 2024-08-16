@@ -20,10 +20,11 @@
     <TextView
         android:id="@+id/infoText"
         android:layout_width="match_parent"
-        android:layout_height="160sp"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:autofillHints="text"
         android:backgroundTint="@android:color/white"
+        android:minHeight="230sp"
         android:text="@string/default_groups_info"
         android:textColor="@android:color/white" />
 

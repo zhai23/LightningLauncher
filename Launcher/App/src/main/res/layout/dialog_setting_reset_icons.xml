@@ -19,8 +19,9 @@
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="85sp"
+        android:layout_height="wrap_content"
         android:autofillHints="text"
+        android:minHeight="90sp"
         android:text="@string/clear_icons_info"
         android:textColor="@android:color/white" />
 
@@ -28,16 +29,18 @@
     <TextView
         android:id="@+id/questOnlyInfo"
         android:layout_width="match_parent"
-        android:layout_height="85sp"
+        android:layout_height="wrap_content"
         android:autofillHints="text"
+        android:minHeight="110sp"
         android:text="@string/clear_icons_info_quest"
         android:textColor="@android:color/white" />
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="95sp"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:autofillHints="text"
+        android:minHeight="95sp"
         android:text="@string/clear_icons_info_custom"
         android:textColor="@android:color/white" />
 
