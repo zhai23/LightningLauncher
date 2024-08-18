@@ -20,7 +20,7 @@ It can run on any Android device, but has been tailored for the lastest updates 
 # Setup Guide
 **[Get Lightning Launcher on SideQuest](https://sidequestvr.com/app/21783)**, or:
 1. Download Lightning Launcher from [releases](https://github.com/threethan/LightningLauncher/releases/latest).
-2. Install the Lightning Launcher apk to your Quest. If you don't know how, you can follow [this guide](https://innovate.it.miami.edu/_assets/pdf/tutorial-for-installing-app.pdf).
+2. Install the Lightning Launcher apk to your Quest. If you don't know how, you can follow [this guide](https://web.archive.org/web/20240512232356/https://innovate.it.miami.edu/_assets/pdf/tutorial-for-installing-app.pdf).
 3. *(Recommended)* Set up a shortcut option in `Settings -> Shortcut Settings`
 
 # Features
