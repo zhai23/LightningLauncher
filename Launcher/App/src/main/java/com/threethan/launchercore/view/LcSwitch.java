@@ -1,21 +1,20 @@
 package com.threethan.launchercore.view;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.TypedValue;
-import android.widget.Switch;
 
 import androidx.annotation.DrawableRes;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.threethan.launcher.R;
 
-@SuppressLint("UseSwitchCompatOrMaterialCode")
-public class LcSwitch extends Switch {
+public class LcSwitch extends SwitchCompat {
     public LcSwitch(Context context) {
         super(context);
         init(null);
@@ -43,7 +42,7 @@ public class LcSwitch extends Switch {
                 int textColor = a.getColor(R.styleable.LcSwitch_android_textColor, Color.WHITE);
                 int textSize = a.getDimensionPixelSize(R.styleable.LcSwitch_android_textSize, (int) TypedValue.applyDimension(
                         TypedValue.COMPLEX_UNIT_SP, 20, getResources().getDisplayMetrics()));
-                int background = a.getResourceId(R.styleable.LcSwitch_android_background, R.drawable.bkg_button);
+                int background = a.getResourceId(R.styleable.LcSwitch_android_background, R.drawable.lc_bkg_button);
 
                 // Apply the custom attributes
                 setTextColor(textColor);
@@ -51,13 +50,12 @@ public class LcSwitch extends Switch {
                 setBackground(getDrawable(background));
                 setThumbDrawable(getDrawable(R.drawable.switch_thumb_custom));
                 setTrackDrawable(getDrawable(R.drawable.switch_track_custom));
-                setSingleLine(true);
             } finally {
                 a.recycle();
             }
         }
 
-        setPadding(getPaddingLeft(), getPaddingTop(),
+        setPadding(getPaddingLeft()*2, getPaddingTop(),
                 getPaddingTop(), getPaddingBottom());
         LcToolTipHelper.init(this, attrs);
     }
@@ -65,5 +63,11 @@ public class LcSwitch extends Switch {
 
     private Drawable getDrawable(@DrawableRes int res) {
         return ResourcesCompat.getDrawable(getResources(), res, getContext().getTheme());
+    }
+
+    @Override
+    public void setTooltipText(@Nullable CharSequence tooltipText) {
+        super.setTooltipText(tooltipText);
+        LcToolTipHelper.init(this, tooltipText);
     }
 }

@@ -9,7 +9,6 @@ import androidx.annotation.Nullable;
 
 public class LcImageView extends androidx.appcompat.widget.AppCompatImageView {
 
-
     public LcImageView(@NonNull Context context) {
         super(context);
     }

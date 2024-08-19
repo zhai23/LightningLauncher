@@ -20,4 +20,9 @@ public class LcText extends androidx.appcompat.widget.AppCompatTextView {
         super(context, attrs, defStyleAttr);
         LcToolTipHelper.init(this, attrs);
     }
+    @Override
+    public void setTooltipText(@Nullable CharSequence tooltipText) {
+        super.setTooltipText(tooltipText);
+        LcToolTipHelper.init(this, tooltipText);
+    }
 }

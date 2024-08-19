@@ -10,7 +10,7 @@
 
     <View
         android:id="@+id/sizer"
-        android:layout_width="385dp"
+        android:layout_width="390dp"
         android:layout_height="94dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -187,10 +187,10 @@
                     android:layout_marginEnd="3dp"
                     android:layout_marginBottom="-1sp"
                     android:ellipsize="end"
-                    android:maxWidth="100dp"
+                    android:maxWidth="80dp"
                     android:singleLine="true"
                     android:textColor="#79FFFFFF"
-                    tools:text="1.2.0" />
+                    tools:text="1.2.3" />
             </LinearLayout>
 
             <com.threethan.launchercore.view.LcImageView
@@ -233,23 +233,18 @@
             android:layout_height="match_parent"
             android:layout_marginEnd="10dp" />
 
-        <LinearLayout
+        <com.threethan.launchercore.view.LcButton
             android:id="@+id/tuningButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
             android:background="@drawable/bkg_button"
-            android:visibility="gone">
-
-            <TextView
-                style="@style/SettingButtonLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:layout_marginEnd="15dp"
-                android:text="@string/open_tuning" />
-
-        </LinearLayout>
+            android:drawableEnd="@drawable/tuner_banner_wide"
+            android:drawablePadding="5dp"
+            android:text="@string/open_tuning"
+            android:tooltipText="@string/open_tuning_tip"
+            android:visibility="gone"
+            tools:targetApi="o" />
 
         <com.threethan.launchercore.view.LcButton
             android:id="@+id/confirm"

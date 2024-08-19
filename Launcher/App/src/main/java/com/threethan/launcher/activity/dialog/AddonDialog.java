@@ -37,20 +37,20 @@ public class AddonDialog extends BasicDialog<LauncherActivity> {
         if (dialog == null) return null;
 
         View addonFeed = dialog.findViewById(R.id.addonFeed);
-        if (addonFeed!=null) updateAddonButton(context, addonFeed, AddonUpdater.TAG_FEED);
+        if (addonFeed!=null) updateAddonButton(a, addonFeed, AddonUpdater.TAG_FEED);
 
         View addonLibrary = dialog.findViewById(R.id.addonLibrary);
-        if (addonLibrary!=null) updateAddonButton(context, addonLibrary, AddonUpdater.TAG_LIBRARY);
+        if (addonLibrary!=null) updateAddonButton(a, addonLibrary, AddonUpdater.TAG_LIBRARY);
 
         View addonPeople = dialog.findViewById(R.id.addonPeople);
-        if (addonLibrary!=null) updateAddonButton(context, addonPeople, AddonUpdater.TAG_PEOPLE);
+        if (addonLibrary!=null) updateAddonButton(a, addonPeople, AddonUpdater.TAG_PEOPLE);
 
         View addonStore = dialog.findViewById(R.id.addonStore);
-        if (addonLibrary!=null) updateAddonButton(context, addonStore, AddonUpdater.TAG_STORE);
+        if (addonLibrary!=null) updateAddonButton(a, addonStore, AddonUpdater.TAG_STORE);
 
 
         View addonAndroidTv = dialog.findViewById(R.id.addonAndroidTv);
-        if (addonAndroidTv!=null) updateAddonButton(context, addonAndroidTv, AddonUpdater.TAG_ATV_LM);
+        if (addonAndroidTv!=null) updateAddonButton(a, addonAndroidTv, AddonUpdater.TAG_ATV_LM);
 
         dialog.findViewById(R.id.exitButton).setOnClickListener(v -> dialog.dismiss());
         return dialog;

@@ -69,12 +69,18 @@ public abstract class Launch {
     /** Launch an app - in it's own window, if applicable */
     public static void launchInOwnWindow(ApplicationInfo app, Activity activity) {
         if (App.getType(app).equals(App.Type.VR) || App.getType(app).equals(App.Type.PANEL)
-        || app instanceof UtilityApplicationInfo) {
+                || app instanceof UtilityApplicationInfo) {
             launch(app);
             return;
         }
         DelayLib.delayed(() -> launch(app), 50);
-        DelayLib.delayed(() -> launch(app), 700);
+        if (Platform.supportsNewVrOsMultiWindow()) {
+            PackageManager pm = Core.context().getPackageManager();
+            Intent relaunch = pm.getLaunchIntentForPackage(activity.getPackageName());
+            DelayLib.delayed(() -> activity.startActivity(relaunch), 550);
+        }
+        DelayLib.delayed(() -> launch(app), 600);
         activity.finishAffinity();
+
     }
 }

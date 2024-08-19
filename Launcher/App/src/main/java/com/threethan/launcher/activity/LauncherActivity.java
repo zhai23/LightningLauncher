@@ -354,10 +354,8 @@ public class LauncherActivity extends ComponentActivity {
         for (int i = 0; i<blurViews.length-1; i++) blurViews[i].setVisibility(hide ? View.GONE : View.VISIBLE);
         if (isEditing() && hide) setEditMode(false); // If groups were disabled while in edit mode
 
-        if (groupsEnabled || Platform.isTv()) {
-            for (BlurView blurView : (groupsEnabled
-                    ? blurViews
-                    : new BlurView[]{rootView.findViewById(R.id.blurViewSearchBar)})
+        if (groupsEnabled) {
+            for (BlurView blurView : blurViews
             ) {
                 blurView.setBackgroundTintList(ColorStateList.valueOf(Color.TRANSPARENT));
                 blurView.setOverlayColor((Color.parseColor(darkMode ? "#29000000" : "#40FFFFFF")));
@@ -367,12 +365,10 @@ public class LauncherActivity extends ComponentActivity {
                 blurView.setClipToOutline(true);
             }
 
-            if (groupsEnabled) {
-                ImageView settingsIcon = rootView.findViewById(R.id.settingsIcon);
-                settingsIcon.setImageTintList(ColorStateList.valueOf(darkMode ? Color.WHITE : Color.BLACK));
-                ImageView searchIcon = rootView.findViewById(R.id.searchIcon);
-                searchIcon.setImageTintList(ColorStateList.valueOf(darkMode ? Color.WHITE : Color.BLACK));
-            }
+            ImageView settingsIcon = rootView.findViewById(R.id.settingsIcon);
+            settingsIcon.setImageTintList(ColorStateList.valueOf(darkMode ? Color.WHITE : Color.BLACK));
+            ImageView searchIcon = rootView.findViewById(R.id.searchIcon);
+            searchIcon.setImageTintList(ColorStateList.valueOf(darkMode ? Color.WHITE : Color.BLACK));
         }
 
         post(() -> { if (needsUpdateCleanup) Compat.doUpdateCleanup(this); });

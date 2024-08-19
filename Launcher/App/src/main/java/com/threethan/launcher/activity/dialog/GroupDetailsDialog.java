@@ -42,7 +42,7 @@ public class GroupDetailsDialog extends BasicDialog<LauncherActivity> {
     public AlertDialog show() {
         final Map<String, String> apps = SettingsManager.getAppGroupMap();
         final Set<String> appGroupsSet = SettingsManager.getAppGroups();
-        SettingsManager settingsManager = context.settingsManager;
+        SettingsManager settingsManager = a.settingsManager;
         final String groupName = settingsManager.getAppGroupsSorted(false).get(groupPosition);
         if (groupName == null) return null;
 
@@ -82,7 +82,7 @@ public class GroupDetailsDialog extends BasicDialog<LauncherActivity> {
                     final boolean newChecked = SettingsManager.getDefaultGroupFor(type).equals(groupName);
                     if (newChecked && !value) {
                         cSwitch.setChecked(true);
-                        BasicDialog.toast(context.getString(R.string.toast_cant_unset_group));
+                        BasicDialog.toast(a.getString(R.string.toast_cant_unset_group));
                     }
                     else cSwitch.setChecked(newChecked);
                 });
@@ -98,7 +98,7 @@ public class GroupDetailsDialog extends BasicDialog<LauncherActivity> {
             // Move the default group when we rename
             for (App.Type type : PlatformExt.getSupportedAppTypes())
                 if (AppExt.getDefaultGroupFor(type).equals(groupName))
-                    context.dataStoreEditor.putString(Settings.KEY_DEFAULT_GROUP + type, newGroupName);
+                    a.dataStoreEditor.putString(Settings.KEY_DEFAULT_GROUP + type, newGroupName);
 
             if (newGroupName.length() > 0) {
                 appGroupsSet.remove(groupName);
@@ -119,7 +119,7 @@ public class GroupDetailsDialog extends BasicDialog<LauncherActivity> {
                 settingsManager.setSelectedGroups(selectedGroup);
                 settingsManager.setAppGroups(appGroupsSet);
                 SettingsManager.setAppGroupMap(updatedAppGroupMap);
-                context.launcherService.forEachActivity(LauncherActivity::refreshInterface);
+                a.launcherService.forEachActivity(LauncherActivity::refreshInterface);
             }
             dialog.cancel();
         });
@@ -150,7 +150,7 @@ public class GroupDetailsDialog extends BasicDialog<LauncherActivity> {
             }
             dialog.dismiss();
 
-            context.launcherService.forEachActivity(LauncherActivity::refreshInterface);
+            a.launcherService.forEachActivity(LauncherActivity::refreshInterface);
         });
         return dialog;
     }

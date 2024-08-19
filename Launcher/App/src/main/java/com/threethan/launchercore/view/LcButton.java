@@ -6,11 +6,11 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.threethan.launcher.R;
-
 
 public class LcButton extends AppCompatButton {
     public LcButton(Context context) {
@@ -45,13 +45,17 @@ public class LcButton extends AppCompatButton {
                 int textSize = a.getDimensionPixelSize(R.styleable.LcButton_android_textSize, (int) TypedValue.applyDimension(
                         TypedValue.COMPLEX_UNIT_SP, 20, getResources().getDisplayMetrics()));
                 setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
-                int backgroundResource = a.getResourceId(R.styleable.LcButton_android_background, R.drawable.bkg_button);
+                int backgroundResource = a.getResourceId(R.styleable.LcButton_android_background, R.drawable.lc_bkg_button);
                 setBackgroundResource(backgroundResource);
-                boolean singleLine = a.getBoolean(R.styleable.LcButton_android_singleLine, true);
-                setSingleLine(singleLine);
             } finally {
                 a.recycle();
             }
         }
+    }
+
+    @Override
+    public void setTooltipText(@Nullable CharSequence tooltipText) {
+        super.setTooltipText(tooltipText);
+        LcToolTipHelper.init(this, tooltipText);
     }
 }

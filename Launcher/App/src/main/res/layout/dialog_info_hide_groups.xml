@@ -28,26 +28,10 @@
         android:textColor="@android:color/white" />
 
 
-    <LinearLayout
+    <com.threethan.launchercore.view.LcButton
+        android:id="@+id/install"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:baselineAligned="false">
-
-        <com.threethan.launchercore.view.LcButton
-            android:id="@+id/cancel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:layout_weight="1"
-            android:text="@string/cancel" />
-
-        <com.threethan.launchercore.view.LcButton
-            android:id="@+id/install"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/understood" />
-    </LinearLayout>
+        android:text="@string/understood" />
 
 </LinearLayout>

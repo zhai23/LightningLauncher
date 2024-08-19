@@ -81,7 +81,6 @@ public abstract class Settings {
     public static final boolean DEFAULT_AUTO_HIDE_EMPTY = true;
     public static final boolean DEFAULT_SEARCH_WEB = true;
     public static final boolean DEFAULT_SEARCH_HIDDEN = true;
-    public static final boolean DEFAULT_LAUNCH_REOPEN = false;
     public static final String CUSTOM_BACKGROUND_PATH = "background.png";
 
     // Basic UI keys
@@ -123,7 +122,6 @@ public abstract class Settings {
     public static final String KEY_WEBSITE_LIST = "prefWebAppNames";
     public static final String KEY_LAUNCH_SIZE = "prefLaunchSize";
     public static final String KEY_LAUNCH_BROWSER = "prefLaunchBrowser";
-    public static final String KEY_LAUNCH_REOPEN = "KEY_LAUNCH_REOPEN";
     public static final String KEY_DEFAULT_BROWSER = "KEY_DEFAULT_BROWSER";
 
     /** @noinspection rawtypes*/
