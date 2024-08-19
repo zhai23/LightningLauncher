@@ -77,7 +77,8 @@
 
     <string name="launch_switch">Runs in Own Window</string>
     <string name="reload_icon">Refresh Icon / Banner</string>
-    <string name="open_tuning">Tune with Quest Tuner</string>
+    <string name="open_tuning"><i>Tune with</i></string>
+    <string name="open_tuning_tip"><i>Quest Game Tuner</i> lets you adjust resolution, FPS, and more!</string>
 
     <string name="launch_out_message">Launching 2D apps or websites in their own window allows for easier multitasking on Quest devices,
         but will cause certain apps to not always launch.\n\nIf you have any issues, disable this option!</string>
@@ -159,12 +160,6 @@
     <string name="browser_default_out">Open in L.B., Own Window</string>
     <string name="browser_quest">Open in Meta Quest Browser</string>
     <string name="browser_system">Try to Open in System Default</string>
-
-    <string name="launch_reopen">Better Multi-Window (Meta Quest v67+)</string>
-    <string name="launch_reopen_tooltip">
-        On v67 or v68: Enable <b>New Window Layout</b>
-        in Experimental Settings, then enable. (On by default in v69+)
-        <i>New app windows will open next to LL. Expect some bugs!</i></string>
 
     <string name="edit_off">Turn On Edit Mode</string>
     <string name="edit_on">Turn Off Edit Mode</string>
