@@ -10,7 +10,6 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
-import com.threethan.launcher.BuildConfig;
 import com.threethan.launcher.R;
 import com.threethan.launcher.activity.AddShortcutActivity;
 import com.threethan.launcher.activity.LauncherActivity;
@@ -18,15 +17,13 @@ import com.threethan.launcher.activity.dialog.BasicDialog;
 import com.threethan.launcher.activity.support.SettingsManager;
 import com.threethan.launcher.data.Settings;
 import com.threethan.launcher.updater.BrowserUpdater;
-import com.threethan.launchercore.Core;
+import com.threethan.launchercore.lib.DelayLib;
 import com.threethan.launchercore.util.App;
 import com.threethan.launchercore.util.Keyboard;
 import com.threethan.launchercore.util.Launch;
 
 import java.util.Map;
 import java.util.Objects;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -96,41 +93,12 @@ public abstract class LaunchExt extends Launch {
             }
         }
 
-        if (SettingsManager.getAppLaunchOut(app.packageName)) {
-            if (launcherActivity.dataStoreEditor.getBoolean(
-                    Settings.KEY_LAUNCH_REOPEN, Settings.DEFAULT_LAUNCH_REOPEN)) {
-
-                launcherActivity.finishAffinity();
-                new Timer().schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        startIntent(launcherActivity, intent);
-                    }
-                }, 50);
-
-                final Intent relaunchIntent = Core.context().getPackageManager()
-                        .getLaunchIntentForPackage(BuildConfig.APPLICATION_ID);
-                assert relaunchIntent != null;
-                relaunchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                        | Intent.FLAG_ACTIVITY_NEW_DOCUMENT |
-                        Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-
-                if (launcherActivity.dataStoreEditor.getBoolean(
-                        Settings.KEY_LAUNCH_REOPEN, Settings.DEFAULT_LAUNCH_REOPEN)) {
-                    new Timer().schedule(new TimerTask() {
-                        @Override
-                        public void run() {
-                            startIntent(launcherActivity, relaunchIntent);
-                        }
-                    }, 500);
-                    new Timer().schedule(new TimerTask() {
-                        @Override
-                        public void run() {
-                            startIntent(launcherActivity, intent);
-                        }
-                    }, 550);
-                }
-            } else launchInOwnWindow(app, launcherActivity);
+        if (SettingsManager.getAppLaunchSize(app.packageName) > 0) {
+            Intent chain = getIntentForLaunch(launcherActivity, app);
+            DelayLib.delayed(() -> launcherActivity.startActivity(chain), 50);
+            launcherActivity.finishAffinity();
+        } else if (SettingsManager.getAppLaunchOut(app.packageName)) {
+            launchInOwnWindow(app, launcherActivity);
         } else {
             startIntent(launcherActivity, intent);
         }
@@ -186,8 +154,7 @@ public abstract class LaunchExt extends Launch {
         Intent li = getLaunchIntent(app);
         // Chain-load for advanced launch options
         if (AppExt.getType(app) == App.Type.PHONE && li != null) {
-
-            int index = activity.dataStoreEditor.getInt(Settings.KEY_LAUNCH_SIZE + app.packageName, 1);
+            int index = SettingsManager.getAppLaunchSize(app.packageName);
             if (index > 0) {
                 Intent chainIntent = new Intent(activity, Settings.launchSizeClasses[index]);
                 chainIntent.putExtra("app", app);

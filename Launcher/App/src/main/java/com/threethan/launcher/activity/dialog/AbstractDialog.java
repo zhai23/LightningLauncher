@@ -5,8 +5,8 @@ import android.content.Context;
 
 public abstract class AbstractDialog<T extends Context> {
     public abstract AlertDialog show();
-    protected final T context;
+    protected final T a;
     public AbstractDialog(T context) {
-        this.context = context;
+        this.a = context;
     }
 }

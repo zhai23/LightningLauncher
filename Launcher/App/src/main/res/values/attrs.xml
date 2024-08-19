@@ -14,5 +14,7 @@
     </declare-styleable>
     <declare-styleable name="LcText">
         <attr name="android:tooltipText" />
+        <attr name="android:text" />
+        <attr name="defaultTooltip" format="boolean"/>
     </declare-styleable>
 </resources>

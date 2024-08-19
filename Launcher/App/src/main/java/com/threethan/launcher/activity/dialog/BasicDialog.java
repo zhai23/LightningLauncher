@@ -55,7 +55,7 @@ public class BasicDialog<T extends Context> extends AbstractDialog<T> {
     }
     @Nullable
     public AlertDialog show() {
-        AlertDialog dialog = new AlertDialog.Builder(context, R.style.dialog).setView(resource).create();
+        AlertDialog dialog = new AlertDialog.Builder(a, R.style.dialog).setView(resource).create();
 
         if (dialog.getWindow() == null) return null;
         dialog.getWindow().setBackgroundDrawableResource(R.drawable.bkg_dialog);

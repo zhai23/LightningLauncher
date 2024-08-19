@@ -11,6 +11,7 @@ import android.net.Uri;
 
 import com.threethan.launchercore.Core;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -134,5 +135,43 @@ public abstract class Platform {
             intent.setData(Uri.parse("package:" + packageName));
             Core.context().startActivity(intent);
         }
+    }
+
+    /**
+     * Gets a system property using reflection
+     * @param key System property key
+     * @param def Default value
+     * @return Def if property doesn't exist or reflection failed, else the value of the property
+     */
+    public static String getSystemProperty(String key, String def) {
+        try {
+            @SuppressLint("PrivateApi") Class<?> systemProperties
+                    = Class.forName("android.os.SystemProperties");
+            Method getMethod = systemProperties.getMethod("get",
+                    String.class, String.class);
+            return (String) getMethod.invoke(null, key, def);
+        } catch (Exception e) {
+            return def;
+        }
+    }
+
+    /**
+     * Gets the version of Meta's VrOs
+     * @return -1 if failed, else VrOs version
+     */
+    public static int getVrOsVersion() {
+        try {
+            return Integer.parseInt(getSystemProperty("ro.vros.build.version", "-1"));
+        } catch (Exception e) {
+            return -1;
+        }
+    }
+
+    /**
+     * Returns true if the device supports the new meta quest multi-window
+     * @return True if VrOs >= 69
+     */
+    public static boolean supportsNewVrOsMultiWindow() {
+        return getVrOsVersion() >= 69;
     }
 }

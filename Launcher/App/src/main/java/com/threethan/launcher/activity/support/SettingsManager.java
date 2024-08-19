@@ -145,6 +145,11 @@ public class SettingsManager extends Settings {
         }
         return App.getType(pkg) != App.Type.PANEL;
     }
+    public static int getAppLaunchSize(String pkg) {
+        return
+            LauncherActivity.getForegroundInstance().dataStoreEditor.getInt(
+                    Settings.KEY_LAUNCH_SIZE + pkg, 1);
+    }
     public static int getDefaultBrowser() {
         return dataStoreEditor.getInt(Settings.KEY_DEFAULT_BROWSER, 0);
     }

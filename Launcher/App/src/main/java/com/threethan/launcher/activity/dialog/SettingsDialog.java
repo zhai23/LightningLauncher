@@ -62,9 +62,9 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
         AlertDialog dialog = super.show();
         if (dialog == null) return null;
 
-        context.settingsVisible = true;
+        a.settingsVisible = true;
 
-        dialog.setOnDismissListener(dialogInterface -> context.settingsVisible = false);
+        dialog.setOnDismissListener(dialogInterface -> a.settingsVisible = false);
         View dismiss = dialog.findViewById(R.id.dismissButton);
         dismiss.setOnClickListener(view -> dialog.dismiss());
         dismiss.post(dismiss::requestFocus);
@@ -73,36 +73,36 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
 
         // Addons
         View addonsButton = dialog.findViewById(R.id.addonsButton);
-        addonsButton.setOnClickListener(view -> new AddonDialog(context).show());
-        if (!context.dataStoreEditor.getBoolean(Settings.KEY_SEEN_ADDONS, false)) {
+        addonsButton.setOnClickListener(view -> new AddonDialog(a).show());
+        if (!a.dataStoreEditor.getBoolean(Settings.KEY_SEEN_ADDONS, false)) {
             View addonsButtonAttract = dialog.findViewById(R.id.addonsButtonAttract);
             addonsButtonAttract.setVisibility(View.VISIBLE);
             addonsButton.setVisibility(View.GONE);
             addonsButtonAttract.setOnClickListener(view -> {
-                context.dataStoreEditor.putBoolean(Settings.KEY_SEEN_ADDONS, true);
-                new AddonDialog(context).show();
+                a.dataStoreEditor.putBoolean(Settings.KEY_SEEN_ADDONS, true);
+                new AddonDialog(a).show();
             });
         }
 
         // Edit
         Switch editSwitch = dialog.findViewById(R.id.editModeSwitch);
         editSwitch.setOnClickListener(view1 -> {
-            context.setEditMode(!context.isEditing());
-            ArrayList<String> selectedGroups = context.settingsManager.getAppGroupsSorted(true);
-            if (context.isEditing() && (selectedGroups.size() > 1)) {
+            a.setEditMode(!a.isEditing());
+            ArrayList<String> selectedGroups = a.settingsManager.getAppGroupsSorted(true);
+            if (a.isEditing() && (selectedGroups.size() > 1)) {
                 Set<String> selectFirst = new HashSet<>();
                 selectFirst.add(selectedGroups.get(0));
-                context.settingsManager.setSelectedGroups(selectFirst);
+                a.settingsManager.setSelectedGroups(selectFirst);
             }
         });
 
         View addWebsite = dialog.findViewById(R.id.addWebsiteButton);
-        addWebsite.setOnClickListener(v -> context.addWebsite(context));
+        addWebsite.setOnClickListener(v -> a.addWebsite(a));
 
         // Group enabled state
-        if (context.canEdit()) {
+        if (a.canEdit()) {
             // Can edit, show switch
-            editSwitch.setChecked(context.isEditing());
+            editSwitch.setChecked(a.isEditing());
             editSwitch.setVisibility(View.VISIBLE);
             addWebsite.setVisibility(View.GONE);
         } else {
@@ -114,7 +114,7 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
         if (LauncherUpdater.isAppUpdateAvailible()) {
             View skippedUpdateButton = dialog.findViewById(R.id.updateButton);
             skippedUpdateButton.setVisibility(View.VISIBLE);
-            skippedUpdateButton.setOnClickListener((view) -> new LauncherUpdater(context).checkAppUpdateAndInstall());
+            skippedUpdateButton.setOnClickListener((view) -> new LauncherUpdater(a).checkAppUpdateAndInstall());
         }
 
         // Wallpaper and style
@@ -123,7 +123,7 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
                 Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE,
                 value -> {
                     LauncherActivity.darkMode = value;
-                    context.launcherService.forEachActivity(LauncherActivity::resetAdapters);
+                    a.launcherService.forEachActivity(LauncherActivity::resetAdapters);
                 });
         ImageView[] views = {
                 dialog.findViewById(R.id.background0),
@@ -138,7 +138,7 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
                 dialog.findViewById(R.id.background9),
                 dialog.findViewById(R.id.background_custom)
         };
-        int background = context.dataStoreEditor.getInt(Settings.KEY_BACKGROUND,
+        int background = a.dataStoreEditor.getInt(Settings.KEY_BACKGROUND,
                 Platform.isTv()
                         ? Settings.DEFAULT_BACKGROUND_TV
                         : Settings.DEFAULT_BACKGROUND_VR);
@@ -148,13 +148,13 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
             image.setClipToOutline(true);
         }
         final int wallpaperWidth = 32;
-        final int selectedWallpaperWidthPx = context.dp(445 + 20 - (wallpaperWidth + 4) * (views.length - 1) - wallpaperWidth);
+        final int selectedWallpaperWidthPx = a.dp(445 + 20 - (wallpaperWidth + 4) * (views.length - 1) - wallpaperWidth);
         views[background].getLayoutParams().width = selectedWallpaperWidthPx;
         views[background].requestLayout();
         for (int i = 0; i < views.length; i++) {
             int index = i;
             views[i].setOnClickListener(view -> {
-                int lastIndex = context.dataStoreEditor.getInt(Settings.KEY_BACKGROUND,
+                int lastIndex = a.dataStoreEditor.getInt(Settings.KEY_BACKGROUND,
                         Platform.isTv()
                                 ? Settings.DEFAULT_BACKGROUND_TV
                                 : Settings.DEFAULT_BACKGROUND_VR);
@@ -162,7 +162,7 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
                     lastIndex = SettingsManager.BACKGROUND_DRAWABLES.length;
                 ImageView last = views[lastIndex];
 
-                if (index == views.length-1) context.showImagePicker(LauncherActivity.ImagePickerTarget.WALLPAPER);
+                if (index == views.length-1) a.showImagePicker(LauncherActivity.ImagePickerTarget.WALLPAPER);
                 if (last == view) return;
 
                 ValueAnimator viewAnimator = ValueAnimator.ofInt(view.getWidth(), selectedWallpaperWidthPx);
@@ -174,7 +174,7 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
                 });
                 viewAnimator.start();
 
-                ValueAnimator lastAnimator = ValueAnimator.ofInt(last.getWidth(), context.dp(wallpaperWidth));
+                ValueAnimator lastAnimator = ValueAnimator.ofInt(last.getWidth(), a.dp(wallpaperWidth));
                 lastAnimator.setDuration(250);
                 lastAnimator.setInterpolator(new DecelerateInterpolator());
                 lastAnimator.addUpdateListener(animation -> {
@@ -184,7 +184,7 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
                 lastAnimator.start();
 
                 // Set the background
-                context.setBackground(index);
+                a.setBackground(index);
 
                 // Set if darkSwitch mode is switch was automatically en/disabled
                 if (index != views.length-1) darkSwitch.setChecked(LauncherActivity.darkMode);
@@ -193,14 +193,14 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
 
         // Icons & Layout
         SeekBar scale = dialog.findViewById(R.id.scaleSeekBar);
-        scale.setProgress(context.dataStoreEditor.getInt(Settings.KEY_SCALE, Settings.DEFAULT_SCALE));
+        scale.setProgress(a.dataStoreEditor.getInt(Settings.KEY_SCALE, Settings.DEFAULT_SCALE));
 
         scale.post(() -> scale.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int value, boolean b) {
-                context.dataStoreEditor.putInt(Settings.KEY_SCALE, value);
+                a.dataStoreEditor.putInt(Settings.KEY_SCALE, value);
                 LauncherActivity.iconScale = value;
-                context.refreshInterface();
+                a.refreshInterface();
             }
 
             @Override
@@ -209,20 +209,20 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                context.launcherService.forEachActivity(LauncherActivity::refreshInterface);
+                a.launcherService.forEachActivity(LauncherActivity::refreshInterface);
             }
         }));
         scale.setMax(Settings.MAX_SCALE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) scale.setMin(Settings.MIN_SCALE);
 
         SeekBar margin = dialog.findViewById(R.id.marginSeekBar);
-        margin.setProgress(context.dataStoreEditor.getInt(Settings.KEY_MARGIN, Settings.DEFAULT_MARGIN));
+        margin.setProgress(a.dataStoreEditor.getInt(Settings.KEY_MARGIN, Settings.DEFAULT_MARGIN));
         margin.post(() -> margin.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int value, boolean b) {
-                context.dataStoreEditor.putInt(Settings.KEY_MARGIN, value);
+                a.dataStoreEditor.putInt(Settings.KEY_MARGIN, value);
                 LauncherActivity.iconMargin = value;
-                context.refreshInterface();
+                a.refreshInterface();
             }
 
             @Override
@@ -231,7 +231,7 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                context.launcherService.forEachActivity(LauncherActivity::refreshInterface);
+                a.launcherService.forEachActivity(LauncherActivity::refreshInterface);
             }
         }));
         margin.setMax(40);
@@ -244,13 +244,15 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
                                              Settings.KEY_SEEN_HIDDEN_GROUPS_POPUP);
                     if (value) {
                         // Can edit, show switch
-                        editSwitch.setChecked(context.isEditing());
+                        editSwitch.setChecked(a.isEditing());
                         editSwitch.setVisibility(View.VISIBLE);
                         addWebsite.setVisibility(View.GONE);
                     } else {
                         editSwitch.setVisibility(View.GONE);
                         addWebsite.setVisibility(View.VISIBLE);
                     }
+                    a.setEditMode(true);
+                    a.setEditMode(false);
                 }
         );
 
@@ -260,13 +262,13 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
         View clearLabel = dialog.findViewById(R.id.clearLabelButton);
         clearLabel.setOnClickListener(view -> {
             if (!clearedLabel) {
-                Compat.clearLabels(context);
+                Compat.clearLabels(a);
                 clearLabel.setAlpha(0.5f);
                 clearedLabel = true;
             }
         });
         View iconSettings = dialog.findViewById(R.id.iconSettingsButton);
-        iconSettings.setOnClickListener(view -> SettingsDialog.showIconSettings(context));
+        iconSettings.setOnClickListener(view -> SettingsDialog.showIconSettings(a));
 
         View groupSettings = dialog.findViewById(R.id.groupDefaultsInfoButton);
         groupSettings.setOnClickListener(view -> showGroupSettings());
@@ -288,7 +290,7 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
                 bSwitch.setChecked(AppExt.typeIsBanner(type));
                 bSwitch.setOnCheckedChangeListener((switchView, value) -> {
                     SettingsManager.setTypeBanner(type, value);
-                    context.launcherService.forEachActivity(LauncherActivity::resetAdapters);
+                    a.launcherService.forEachActivity(LauncherActivity::resetAdapters);
                 });
             } else {
                 Objects.requireNonNull(switchByType.get(type)).setVisibility(View.GONE);
@@ -309,18 +311,18 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
 
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     public void showAdvancedSettings() {
-        AlertDialog dialog = new BasicDialog<>(context, R.layout.dialog_settings_advanced).show();
+        AlertDialog dialog = new BasicDialog<>(a, R.layout.dialog_settings_advanced).show();
         if (dialog == null) return;
 
         dialog.findViewById(R.id.dismissButton).setOnClickListener(view -> dialog.dismiss());
 
         if (Platform.isQuest()) {
             SeekBar alpha = dialog.findViewById(R.id.alphaSeekBar);
-            alpha.setProgress(255 - context.dataStoreEditor.getInt(Settings.KEY_BACKGROUND_ALPHA, Settings.DEFAULT_ALPHA));
+            alpha.setProgress(255 - a.dataStoreEditor.getInt(Settings.KEY_BACKGROUND_ALPHA, Settings.DEFAULT_ALPHA));
             alpha.post(() -> alpha.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int value, boolean b) {
-                    context.dataStoreEditor.putInt(Settings.KEY_BACKGROUND_ALPHA, 255 - value);
+                    a.dataStoreEditor.putInt(Settings.KEY_BACKGROUND_ALPHA, 255 - value);
                 }
 
                 @Override
@@ -329,13 +331,13 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
 
                 @Override
                 public void onStopTrackingTouch(SeekBar seekBar) {
-                    context.refreshBackground();
+                    a.refreshBackground();
                 }
             }));
         } else dialog.findViewById(R.id.alphaLayout).setVisibility(View.GONE);
 
         // Group enabled state
-        if (context.canEdit()) {
+        if (a.canEdit()) {
             // Can edit, show switch
             dialog.findViewById(R.id.editRequiredContaier).setVisibility(View.VISIBLE);
         } else {
@@ -349,13 +351,13 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
         if (Platform.isVr()) {
             View defaultSettingsButton = dialog.findViewById(R.id.defaultLauncherSettingsButton);
             defaultSettingsButton.setOnClickListener((view) -> {
-                AlertDialog minDialog = new BasicDialog<>(context, R.layout.dialog_info_set_default_launcher).show();
+                AlertDialog minDialog = new BasicDialog<>(a, R.layout.dialog_info_set_default_launcher).show();
                 assert minDialog != null;
                 minDialog.findViewById(R.id.install).setOnClickListener(view1 -> {
                     final Intent intent = new Intent(android.provider.Settings.ACTION_HOME_SETTINGS);
                     intent.setPackage("com.android.permissioncontroller");
                     minDialog.cancel();
-                    context.startActivity(intent);
+                    a.startActivity(intent);
                 });
                 minDialog.findViewById(R.id.cancel).setOnClickListener(view1 -> minDialog.cancel());
             });
@@ -367,18 +369,15 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
         // Default browser selection spinner
         final Spinner defaultBrowserSpinner = dialog.findViewById(R.id.launchBrowserSpinner);
 
-        final int defaultBrowserSelection = context.dataStoreEditor.getInt(
+        final int defaultBrowserSelection = a.dataStoreEditor.getInt(
                 Settings.KEY_DEFAULT_BROWSER,
                 SettingsManager.getDefaultBrowser());
         initSpinner(defaultBrowserSpinner,
                 Platform.isQuest()
                         ? R.array.advanced_launch_browsers_quest
                         : R.array.advanced_launch_browsers,
-                p -> context.dataStoreEditor.putInt(Settings.KEY_DEFAULT_BROWSER, p));
+                p -> a.dataStoreEditor.putInt(Settings.KEY_DEFAULT_BROWSER, p));
         defaultBrowserSpinner.setSelection(defaultBrowserSelection);
-
-        attachSwitchToSetting(dialog.findViewById(R.id.searchHiddenSwitch),
-                Settings.KEY_LAUNCH_REOPEN, Settings.DEFAULT_LAUNCH_REOPEN);
 
         // Search settings
         attachSwitchToSetting(dialog.findViewById(R.id.searchWebSwitch),
@@ -388,11 +387,11 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
 
         // Save/load settings
         View loadSettings = dialog.findViewById(R.id.loadSettingsButton);
-        loadSettings.setAlpha(SettingsSaver.canLoad(context) ? 1F : 0.5F);
+        loadSettings.setAlpha(SettingsSaver.canLoad(a) ? 1F : 0.5F);
         loadSettings.setOnClickListener((view) -> {
-            if (SettingsSaver.canLoad(context)) {
+            if (SettingsSaver.canLoad(a)) {
                 dialog.dismiss();
-                SettingsSaver.load(context);
+                SettingsSaver.load(a);
             } else {
                 BasicDialog.toast("Failed to find file!");
             }
@@ -400,17 +399,17 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
 
         View saveSettings = dialog.findViewById(R.id.saveSettingsButton);
         saveSettings.setOnClickListener((view) -> {
-            SettingsSaver.save(context);
+            SettingsSaver.save(a);
             loadSettings.setAlpha(1F);
         });
 
         // Save/load settings
         View loadGroupings = dialog.findViewById(R.id.loadGroupingsButton);
-        loadGroupings.setAlpha(SettingsSaver.canLoadSort(context) ? 1F : 0.5F);
+        loadGroupings.setAlpha(SettingsSaver.canLoadSort(a) ? 1F : 0.5F);
         loadGroupings.setOnClickListener((view) -> {
-            if (SettingsSaver.canLoadSort(context)) {
+            if (SettingsSaver.canLoadSort(a)) {
                 dialog.dismiss();
-                SettingsSaver.loadSort(context);
+                SettingsSaver.loadSort(a);
             } else {
                 BasicDialog.toast("Failed to find file!");
             }
@@ -418,7 +417,7 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
 
         View saveGroupings = dialog.findViewById(R.id.saveGroupingsButton);
         saveGroupings.setOnClickListener((view) -> {
-            SettingsSaver.saveSort(context);
+            SettingsSaver.saveSort(a);
             loadGroupings.setAlpha(1F);
         });
     }
@@ -444,11 +443,11 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
      */
     private void attachSwitchToSetting(Switch toggle, String setting,
                                        boolean def, Consumer<Boolean> onSwitch) {
-        toggle.setChecked(context.dataStoreEditor.getBoolean(setting, def));
+        toggle.setChecked(a.dataStoreEditor.getBoolean(setting, def));
         toggle.setOnCheckedChangeListener((compoundButton, value) -> {
-            context.dataStoreEditor.putBoolean(setting, value);
+            a.dataStoreEditor.putBoolean(setting, value);
             if (onSwitch != null) onSwitch.accept(value);
-            context.launcherService.forEachActivity(LauncherActivity::refreshInterface);
+            a.launcherService.forEachActivity(LauncherActivity::refreshInterface);
         });
     }
 
@@ -459,11 +458,11 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
      * @noinspection SameParameterValue
      */
     private void showOneTimeWarningDialog(int dialogResource, String keySeenDialog) {
-        if (!context.dataStoreEditor.getBoolean(keySeenDialog, false)) {
-            AlertDialog subDialog = new BasicDialog<>(context, dialogResource).show();
+        if (!a.dataStoreEditor.getBoolean(keySeenDialog, false)) {
+            AlertDialog subDialog = new BasicDialog<>(a, dialogResource).show();
             if (subDialog == null) return;
             subDialog.findViewById(R.id.install).setOnClickListener(view -> {
-                context.dataStoreEditor.putBoolean(keySeenDialog, true);
+                a.dataStoreEditor.putBoolean(keySeenDialog, true);
                 subDialog.dismiss();
             });
         }
@@ -473,56 +472,56 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
         clearedSort = false;
         clearedGroups = false;
 
-        AlertDialog dialog = new BasicDialog<>(context, R.layout.dialog_setting_reset_groups).show();
+        AlertDialog dialog = new BasicDialog<>(a, R.layout.dialog_setting_reset_groups).show();
         if (dialog == null) return;
 
         View clearSort = dialog.findViewById(R.id.resortOnly);
         clearSort.setOnClickListener(view -> {
             if (!clearedSort) {
-                Compat.clearSort(context);
+                Compat.clearSort(a);
                 clearSort.setAlpha(0.5f);
                 clearedSort = true;
 
-                BasicDialog.toast(context.getString(R.string.default_groups_resort_only_toast_main),
-                        context.getString(R.string.default_groups_resort_only_toast_bold),
+                BasicDialog.toast(a.getString(R.string.default_groups_resort_only_toast_main),
+                        a.getString(R.string.default_groups_resort_only_toast_bold),
                         false);
             }
         });
 
         StringBuilder builder = new StringBuilder();
         for (App.Type type : PlatformExt.getSupportedAppTypes()) {
-            builder.append(AppExt.getTypeString(context, type))
+            builder.append(AppExt.getTypeString(a, type))
                     .append(" : ")
                     .append(AppExt.getDefaultGroupFor(type))
                     .append("\n");
         }
 
         TextView info = dialog.findViewById(R.id.infoText);
-        info.setText(context.getString(R.string.default_groups_info, builder.toString()));
+        info.setText(a.getString(R.string.default_groups_info, builder.toString()));
 
 
         View clearDefaults = dialog.findViewById(R.id.resetGroups);
         clearDefaults.setOnClickListener(view -> {
             if (!clearedGroups) {
-                Compat.resetDefaultGroups(context);
+                Compat.resetDefaultGroups(a);
                 clearDefaults.setAlpha(0.5f);
                 clearedGroups = true;
                 clearSort.setAlpha(0.5f);
                 clearedSort = true;
 
-                BasicDialog.toast(context.getString(R.string.default_groups_reset_groups_toast_main),
-                        context.getString(R.string.default_groups_reset_groups_toast_bold),
+                BasicDialog.toast(a.getString(R.string.default_groups_reset_groups_toast_main),
+                        a.getString(R.string.default_groups_reset_groups_toast_bold),
                         false);
 
                 StringBuilder builder2 = new StringBuilder();
                 for (App.Type type : PlatformExt.getSupportedAppTypes()) {
-                    builder2.append(AppExt.getTypeString(context, type))
+                    builder2.append(AppExt.getTypeString(a, type))
                             .append(" : ")
                             .append(AppExt.getDefaultGroupFor(type))
                             .append("\n");
                 }
 
-                info.setText(context.getString(R.string.default_groups_info, builder2.toString()));
+                info.setText(a.getString(R.string.default_groups_info, builder2.toString()));
             }
         });
 
