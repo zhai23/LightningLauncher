@@ -13,12 +13,10 @@
     <!-- Must match Launch.java constants -->
     <array name="advanced_launch_browsers">
         <item>@string/browser_default_in</item>
-        <item>@string/browser_default_out</item>
         <item>@string/browser_system</item>
     </array>
     <array name="advanced_launch_browsers_quest">
         <item>@string/browser_default_in</item>
-        <item>@string/browser_default_out</item>
         <item>@string/browser_system</item>
         <item>@string/browser_quest</item>
     </array>

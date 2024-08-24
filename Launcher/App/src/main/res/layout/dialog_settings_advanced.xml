@@ -19,7 +19,7 @@
 
         <View
             android:id="@+id/view"
-            android:layout_width="420dp"
+            android:layout_width="460dp"
             android:layout_height="wrap_content" />
 
         <ImageView
@@ -48,13 +48,14 @@
             android:id="@+id/alphaLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/bkg_button"
+            android:background="@drawable/lc_bkg_button"
             android:orientation="horizontal">
 
             <TextView
                 style="@style/SettingButtonLabel"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:singleLine="true"
@@ -120,13 +121,14 @@
             android:layout_width="match_parent"
             android:layout_height="39dp"
             android:layout_marginTop="10dp"
-            android:background="@drawable/bkg_button"
+            android:background="@drawable/lc_bkg_button"
             android:gravity="center">
 
             <TextView
                 style="@style/SettingsText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
                 android:layout_weight="1"
                 android:text="@string/browser_default_setting" />
 

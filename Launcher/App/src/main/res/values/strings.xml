@@ -98,7 +98,7 @@
         If you want to do that, check Set Up Shortcuts/Shortcut Settings for shortcuts TO Lightning Launcher.
     </string>
     <string name="download_browser_message">For the best experience, you must install Lightning Browser to open websites in Lightning Launcher.\n
-        \n(Alternatively, you can try to change the browser in Advanced Settings, but this may not work as expected)
+        \n(Alternatively, you can try to change the browser in Settings -> Advanced Settings)
     </string>
     <string name="update_browser_message">For the best experience, you must update Lightning Browser.</string>
 =   <string name="download_browser_toast_main">Open the website again</string>
@@ -118,7 +118,8 @@
     </string>
     <string name="website_subtitle3">Browser Selection</string>
     <string name="website_info3">
-        On Quest devices, you can select to launch in the Meta Quest browser, which supports VR web content, but not background audio.
+        On Quest devices, you can select to launch in the Meta Quest browser, which supports VR web content.
+        \n\nYou can change you default browser in Settings -> Advanced Settings.
     </string>
 
     <string name="add_website">Add a Website</string>
@@ -157,7 +158,6 @@
 
     <string name="browser_default_setting">Default for Websites:</string>
     <string name="browser_default_in" >Open in Lightning Browser</string>
-    <string name="browser_default_out">Open in L.B., Own Window</string>
     <string name="browser_quest">Open in Meta Quest Browser</string>
     <string name="browser_system">Try to Open in System Default</string>
 

@@ -238,7 +238,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
-            android:background="@drawable/bkg_button"
+            android:background="@drawable/lc_bkg_button"
             android:drawableEnd="@drawable/tuner_banner_wide"
             android:drawablePadding="5dp"
             android:text="@string/open_tuning"
@@ -251,7 +251,6 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
-            android:background="@drawable/bkg_button"
             android:text="@string/confirm" />
 
     </LinearLayout>

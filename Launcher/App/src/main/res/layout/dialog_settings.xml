@@ -124,7 +124,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="42dp"
-                android:background="@drawable/bkg_button"
+                android:background="@drawable/lc_bkg_button"
                 android:orientation="horizontal"
                 android:paddingStart="6dp"
                 android:paddingEnd="6dp">
@@ -280,7 +280,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="39dp"
-            android:background="@drawable/bkg_button"
+            android:background="@drawable/lc_bkg_button"
             android:orientation="horizontal">
 
             <TextView
@@ -311,7 +311,7 @@
             android:layout_width="match_parent"
             android:layout_height="39dp"
             android:layout_marginTop="10dp"
-            android:background="@drawable/bkg_button"
+            android:background="@drawable/lc_bkg_button"
             android:orientation="horizontal">
 
             <TextView
@@ -360,7 +360,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginStart="10dp"
                 android:layout_weight="1"
-                android:background="@drawable/bkg_button"
+                android:background="@drawable/lc_bkg_button"
                 android:gravity="center"
                 android:orientation="horizontal"
                 android:paddingStart="5dp"

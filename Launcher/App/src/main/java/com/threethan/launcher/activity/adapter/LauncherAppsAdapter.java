@@ -9,7 +9,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.BaseInterpolator;
-import android.view.animation.DecelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -124,6 +123,7 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
     }
 
     public ApplicationInfo getItem(int position) { return items.get(position); }
+
     @NonNull
     @Override
     public AppViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -164,7 +164,8 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
         });
         holder.view.setOnLongClickListener(view -> {
             if (getEditMode() || !launcherActivity.canEdit() || launcherActivity.dataStoreEditor
-                    .getBoolean(Settings.KEY_DETAILS_LONG_PRESS, Settings.DEFAULT_DETAILS_LONG_PRESS)) {
+                    .getBoolean(Settings.KEY_DETAILS_LONG_PRESS, Settings.
+                            DEFAULT_DETAILS_LONG_PRESS)) {
                 new AppDetailsDialog(launcherActivity, holder.app).show();
             } else {
                 launcherActivity.setEditMode(true);
@@ -283,11 +284,16 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
         if (launcherActivity.currentTopSearchResult != null &&
                 Objects.equals(
                         IconLoader.cacheName(launcherActivity.currentTopSearchResult),
-                        IconLoader.cacheName(holder.app))) {
+                        IconLoader.cacheName(holder.app))
+        ) {
             updateHover(holder, true);
-        } else if (launcherActivity.clearFocusPackageNames.contains(IconLoader.cacheName(holder.app))) {
+        } else if (launcherActivity.prevTopSearchResult != null &&
+                Objects.equals(
+                IconLoader.cacheName(launcherActivity.prevTopSearchResult),
+                IconLoader.cacheName(holder.app))
+        ) {
             updateHover(holder, false);
-            launcherActivity.clearFocusPackageNames.remove(IconLoader.cacheName(holder.app));
+            launcherActivity.prevTopSearchResult = null;
         }
     }
     public void updateHover(AppViewHolder holder, boolean hovered) {
@@ -295,21 +301,21 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
             holder.moreButton.setVisibility(hovered ? View.VISIBLE : View.GONE);
 
         final boolean tv = Platform.isTv();
-        final float newScaleInner = hovered ? (tv ? 1.075f : 1.060f) : 1.005f;
-        final float newScaleOuter = hovered ? (tv ? 1.270f : 1.075f) : 1.000f;
+        final float newScaleInner = hovered ? (tv ? 1.055f : 1.050f) : 1.005f;
+        final float newScaleOuter = hovered ? (tv ? 1.270f : 1.085f) : 1.005f;
         final float newElevation = hovered ? (tv ? 15f : 20f) : 3f;
         final float textScale = 1-(1-(1/newScaleOuter))*0.7f;
         final int duration = tv ? 175 : 250;
-        BaseInterpolator intepolator = tv ? new DecelerateInterpolator() : new OvershootInterpolator();
+        BaseInterpolator interpolator = new OvershootInterpolator();
 
         holder.imageView.animate().scaleX(newScaleInner).scaleY(newScaleInner)
-                .setDuration(duration).setInterpolator(intepolator).start();
+                .setDuration(duration).setInterpolator(interpolator).start();
         holder.view     .animate().scaleX(newScaleOuter).scaleY(newScaleOuter)
-                .setDuration(duration).setInterpolator(intepolator).start();
+                .setDuration(duration).setInterpolator(interpolator).start();
         holder.moreButton.animate().alpha(hovered ? 1f : 0f)
-                .setDuration(duration).setInterpolator(intepolator).start();
+                .setDuration(duration).setInterpolator(interpolator).start();
         holder.textView .animate().scaleX(textScale).scaleY(textScale)
-                .setDuration(duration).setInterpolator(intepolator).start();
+                .setDuration(duration).setInterpolator(interpolator).start();
 
         ObjectAnimator aE = ObjectAnimator.ofFloat(holder.clip, "elevation", newElevation);
         aE.setDuration(duration).start();

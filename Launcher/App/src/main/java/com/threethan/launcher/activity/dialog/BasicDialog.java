@@ -93,16 +93,17 @@ public class BasicDialog<T extends Context> extends AbstractDialog<T> {
                 dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
                 dialog.getWindow().setBackgroundDrawableResource(R.drawable.bkg_dialog_transparent);
                 dialog.getWindow().setDimAmount(0.0f);
+                dialog.show();
+                ((TextView) dialog.findViewById(R.id.toastTextMain)).setText(stringMain);
+                ((TextView) dialog.findViewById(R.id.toastTextBold)).setText(stringBold);
+
+                // Dismiss if not done automatically
+                dialog.findViewById(R.id.toastTextMain).postDelayed(dialog::dismiss,
+                        isLong ? 5000 : 1750);
             }
 
-            dialog.show();
 
-            ((TextView) dialog.findViewById(R.id.toastTextMain)).setText(stringMain);
-            ((TextView) dialog.findViewById(R.id.toastTextBold)).setText(stringBold);
 
-            // Dismiss if not done automatically
-            dialog.findViewById(R.id.toastTextMain).postDelayed(dialog::dismiss,
-                    isLong ? 5000 : 1750);
         } catch (Exception e) {
             e.printStackTrace();
         }
