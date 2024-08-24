@@ -27,8 +27,8 @@ import com.threethan.launcher.activity.support.SettingsManager;
 import com.threethan.launcher.data.Settings;
 import com.threethan.launcher.helper.LaunchExt;
 import com.threethan.launchercore.adapter.ArrayListAdapter;
-import com.threethan.launchercore.icon.IconLoader;
 import com.threethan.launchercore.lib.StringLib;
+import com.threethan.launchercore.metadata.IconLoader;
 import com.threethan.launchercore.util.App;
 import com.threethan.launchercore.util.Platform;
 
@@ -195,8 +195,8 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
 
     @Override
     public void onBindViewHolder(@NonNull AppViewHolder holder, int position) {
-        ApplicationInfo app = getItem(position);
-        holder.textView.setText(SettingsManager.getAppLabel(app));
+        final ApplicationInfo app = getItem(position);
+
 
         //noinspection WrapperTypeMayBePrimitive
         final Boolean banner = App.isBanner(app);
@@ -235,9 +235,24 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
         holder.app = app;
 
         //Load Icon
-        IconLoader.loadIcon(holder.app, drawable ->
-            launcherActivity.runOnUiThread(() -> holder.imageView.setImageDrawable(drawable))
-        );
+        IconLoader.loadIcon(holder.app, drawable
+                -> launcherActivity.runOnUiThread(() -> {
+            if (holder.app == app) holder.imageView.setImageDrawable(drawable);
+            else launcherActivity.launcherService.forEachActivity(a -> {
+                    LauncherAppsAdapter adapter = launcherActivity.getAppAdapter();
+                    if (adapter != null) adapter.notifyItemChanged(app);
+            });
+        }));
+
+        // Load label
+        SettingsManager.getAppLabel(app, label
+                -> launcherActivity.runOnUiThread(() -> {
+            if (holder.app == app) holder.textView.setText(label);
+            else launcherActivity.launcherService.forEachActivity(a -> {
+                LauncherAppsAdapter adapter = launcherActivity.getAppAdapter();
+                if (adapter != null) adapter.notifyItemChanged(app);
+            });
+        }));
 
         updateSelected(holder);
     }

@@ -1,4 +1,4 @@
-package com.threethan.launchercore.icon;
+package com.threethan.launchercore.metadata;
 
 import android.app.Activity;
 import android.content.pm.ApplicationInfo;
@@ -33,21 +33,12 @@ import java.util.function.Consumer;
  */
 
 public abstract class IconLoader {
-    private static final int ICON_MAX_HEIGHT = 128;
-    private static final int ICON_QUALITY = 90;
+    private static final int ICON_MAX_HEIGHT = 192;
+    private static final int ICON_QUALITY = 50;
     public static final String ICON_CACHE_FOLDER = "/icon-cache";
     public static final Map<String, Drawable> cachedIcons = new ConcurrentHashMap<>();
     public static final Object ICON_CUSTOM_FOLDER = "/icon-custom";
 
-    public static void saveIcon(ApplicationInfo app, File iconFile) {
-        try {
-            Drawable newIconDrawable = Drawable.createFromPath(iconFile.getAbsolutePath());
-            if (newIconDrawable != null) // Success
-                cachedIcons.put(StringLib.toValidFilename(app.packageName), newIconDrawable);
-        } catch (Exception ignored) {
-            Log.w("Icon", "Error when loading icon drawable from path "+iconFile.getAbsolutePath());
-        }
-    }
     public static void cacheIcon(ApplicationInfo app, Drawable iconDrawable) {
         cachedIcons.put(StringLib.toValidFilename(app.packageName), iconDrawable);
     }
@@ -88,8 +79,8 @@ public abstract class IconLoader {
         public void execute() {
             Thread thread = new Thread(() ->
                     loadIcon(icon -> {
-                        IconLoader.cacheIcon(app, icon);
                         consumer.accept(icon);
+                        cacheIcon(app, icon);
             }));
             thread.setPriority(Thread.MIN_PRIORITY);
             thread.start();
@@ -126,10 +117,11 @@ public abstract class IconLoader {
                 appIcon = ResourcesCompat.getDrawable(resources, iconId, Core.context().getTheme());
                 callback.accept(appIcon);
             } catch (PackageManager.NameNotFoundException ignored) {}
-
-            // Attempt to download the icon for this app from an online repo
-            // Done AFTER saving the drawable version to prevent a race condition)
-            IconUpdater.check(app, callback);
+            finally {
+                // Attempt to download the icon for this app from an online repo
+                // Done AFTER saving the drawable version to prevent a race condition)
+                IconUpdater.check(app, callback);
+            }
         }
     }
 
@@ -159,6 +151,8 @@ public abstract class IconLoader {
         }
         return bitmap;
     }
+    static final Map<File, Bitmap> justCompressedDownloadedBitmaps = new ConcurrentHashMap<>();
+
     public static void compressAndSaveBitmap(File file, Bitmap bitmap) {
         try {
             //noinspection ResultOfMethodCallIgnored
@@ -166,6 +160,7 @@ public abstract class IconLoader {
             FileOutputStream fileOutputStream = new FileOutputStream(file.getAbsolutePath(), false);
             bitmap = scaleBitmap(bitmap);
             bitmap.compress(Bitmap.CompressFormat.WEBP, ICON_QUALITY, fileOutputStream);
+            justCompressedDownloadedBitmaps.put(file, bitmap);
             fileOutputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -189,6 +184,5 @@ public abstract class IconLoader {
             Log.i("ICON", "Exception while converting file " + app.packageName);
             e.printStackTrace();
         }
-
     }
 }

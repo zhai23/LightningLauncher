@@ -95,6 +95,7 @@ public abstract class App {
         return pm.resolveActivity(intent, 0) != null;
     }
     private static boolean isTvApp(ApplicationInfo app) {
+        if (Platform.isVr()) return false;
         PackageManager pm = Core.context().getPackageManager();
         // First check for banner, then check for intent
         if (app.banner != 0) return true;

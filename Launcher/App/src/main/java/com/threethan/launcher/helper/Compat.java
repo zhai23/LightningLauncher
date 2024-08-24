@@ -1,17 +1,22 @@
 package com.threethan.launcher.helper;
 
+import static com.threethan.launcher.activity.support.SettingsManager.META_LABEL_SUFFIX;
+
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 
 import com.threethan.launcher.R;
 import com.threethan.launcher.activity.LauncherActivity;
+import com.threethan.launcher.activity.adapter.LauncherAppsAdapter;
 import com.threethan.launcher.activity.dialog.BasicDialog;
 import com.threethan.launcher.activity.support.DataStoreEditor;
 import com.threethan.launcher.activity.support.SettingsManager;
 import com.threethan.launcher.data.Settings;
 import com.threethan.launchercore.Core;
-import com.threethan.launchercore.icon.IconLoader;
-import com.threethan.launchercore.icon.IconUpdater;
+import com.threethan.launchercore.metadata.IconLoader;
+import com.threethan.launchercore.metadata.IconUpdater;
 import com.threethan.launchercore.lib.FileLib;
 import com.threethan.launchercore.lib.StringLib;
 import com.threethan.launchercore.util.App;
@@ -24,6 +29,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
 /**
  * checkCompatibilityUpdate is called by the launcher when it's started, and attempts to update
@@ -211,6 +217,8 @@ public abstract class Compat {
     public static void clearIcons(LauncherActivity launcherActivity) {
         Log.i(TAG, "Icons are being cleared");
         FileLib.delete(launcherActivity.getApplicationInfo().dataDir + IconLoader.ICON_CUSTOM_FOLDER);
+        for (String packageName : launcherActivity.getAllPackages())
+            launcherActivity.dataStoreEditor.removeBoolean(Settings.KEY_BANNER_OVERRIDE+packageName);
         clearIconCache(launcherActivity);
     }
     // Clears all icons, except for custom icons, and sets them to be re-downloaded
@@ -229,12 +237,13 @@ public abstract class Compat {
     public static void clearLabels(LauncherActivity launcherActivity) {
         Log.i(TAG, "Labels are being cleared");
         SettingsManager.appLabelCache.clear();
-        Set<String> setAll = launcherActivity.getAllPackages();
-        for (String packageName : setAll) launcherActivity.dataStoreEditor.removeString(packageName);
+        for (String packageName : launcherActivity.getAllPackages()) {
+            launcherActivity.dataStoreEditor.removeString(packageName);
+            launcherActivity.dataStoreEditor.removeString(packageName+META_LABEL_SUFFIX);
+        }
 
-        launcherActivity.launcherService.forEachActivity(a -> {
-            if (a.getAppAdapter() != null) a.getAppAdapter().notifyAllChanged();
-        });
+        launcherActivity.launcherService.forEachActivity(LauncherActivity::refreshAppList);
+
     }
     // Clears the categorization of apps & resets everything to selected default groups
     public static void clearSort(LauncherActivity launcherActivity) {
@@ -269,5 +278,24 @@ public abstract class Compat {
     }
     public static DataStoreEditor getDataStore(Context context) {
             return new DataStoreEditor(context);
+    }
+    public static void resetIcon(ApplicationInfo app, Consumer<Drawable> callback) {
+        IconLoader.cachedIcons.remove(app.packageName);
+        IconUpdater.nextCheckByPackageMs.remove(app.packageName);
+
+        File cFile = IconLoader.iconCustomFileForApp(app);
+        if (cFile.exists()) //noinspection ResultOfMethodCallIgnored
+            cFile.delete();
+
+        IconLoader.loadIcon(app, d -> {
+            LauncherActivity foregroundInstance = LauncherActivity.getForegroundInstance();
+            if (foregroundInstance.launcherService != null) {
+                foregroundInstance.launcherService.forEachActivity(a -> {
+                    LauncherAppsAdapter appAdapter = a.getAppAdapter();
+                    if (appAdapter != null) a.runOnUiThread(() -> appAdapter.notifyItemChanged(app));
+                });
+            }
+            callback.accept(d);
+        });
     }
 }

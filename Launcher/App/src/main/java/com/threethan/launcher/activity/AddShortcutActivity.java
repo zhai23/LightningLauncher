@@ -22,7 +22,7 @@ import com.google.gson.stream.JsonWriter;
 import com.threethan.launcher.helper.Compat;
 import com.threethan.launcher.activity.support.DataStoreEditor;
 import com.threethan.launcher.helper.PlatformExt;
-import com.threethan.launchercore.icon.IconLoader;
+import com.threethan.launchercore.metadata.IconLoader;
 
 import java.io.IOException;
 

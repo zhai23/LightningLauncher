@@ -20,9 +20,9 @@ import com.threethan.launcher.activity.LauncherActivity;
 import com.threethan.launcher.activity.support.SettingsManager;
 import com.threethan.launcher.data.Settings;
 import com.threethan.launcher.helper.AppExt;
+import com.threethan.launcher.helper.Compat;
 import com.threethan.launcher.helper.TunerLauncher;
-import com.threethan.launchercore.icon.IconLoader;
-import com.threethan.launchercore.icon.IconUpdater;
+import com.threethan.launchercore.metadata.IconLoader;
 import com.threethan.launchercore.lib.ImageLib;
 import com.threethan.launchercore.lib.StringLib;
 import com.threethan.launchercore.util.App;
@@ -106,12 +106,11 @@ public class AppDetailsDialog extends BasicDialog<LauncherActivity> {
         App.Type appType = AppExt.getType(app);
         dialog.findViewById(R.id.info).setVisibility(app.packageName.contains("://")
                 ? View.GONE : View.VISIBLE);
-        refreshIconButton.setOnClickListener(view -> {
-            IconLoader.cachedIcons.remove(app.packageName);
-            IconUpdater.nextCheckByPackageMs.remove(app.packageName);
-            IconLoader.loadIcon(app, d
-                    -> a.runOnUiThread(() -> iconImageView.setImageDrawable(d)));
-        });
+        refreshIconButton.setOnClickListener(view -> Compat.resetIcon(app, d
+                -> a.runOnUiThread(() -> {
+                    iconImageView.setImageDrawable(d);
+                    if (a.getAppAdapter() != null) a.getAppAdapter().notifyItemChanged(app);
+        })));
         if (appType == App.Type.VR || appType == App.Type.PANEL
                 || Platform.isTv()) {
             // VR apps MUST launch out, so just hide the option and replace it with another
@@ -204,28 +203,31 @@ public class AppDetailsDialog extends BasicDialog<LauncherActivity> {
             SettingsManager.setAppBannerOverride(app, false);
             a.launcherService.forEachActivity(LauncherActivity::refreshAppList);
             iconImageView.getLayoutParams().width = a.dp(83);
-            refreshIconButton.callOnClick();
             dispBannerButton.setVisibility(View.VISIBLE);
             dispIconButton.setVisibility(View.GONE);
+            refreshIconButton.callOnClick();
         });
         dispBannerButton.setOnClickListener(v -> {
             SettingsManager.setAppBannerOverride(app, true);
             a.launcherService.forEachActivity(LauncherActivity::refreshAppList);
             iconImageView.getLayoutParams().width = a.dp(150);
-            refreshIconButton.callOnClick();
             dispBannerButton.setVisibility(View.GONE);
             dispIconButton.setVisibility(View.VISIBLE);
+            refreshIconButton.callOnClick();
         });
         iconImageView.setClipToOutline(true);
         iconImageView.getLayoutParams().width = a.dp(isBanner ? 150 : 83);
 
         // Set Label (don't show star)
-        String label = SettingsManager.getAppLabel(app);
+        final String[] label = {""};
         final EditText appNameEditText = dialog.findViewById(R.id.appLabel);
-        appNameEditText.setText(StringLib.withoutStar(label));
+        SettingsManager.getAppLabel(app, l -> {
+            label[0] = l;
+            appNameEditText.setText(StringLib.withoutStar(label[0]));
+        });
         // Star (actually changes label)
         final ImageView starButton = dialog.findViewById(R.id.star);
-        final boolean[] isStarred = {StringLib.hasStar(label)};
+        final boolean[] isStarred = {StringLib.hasStar(label[0])};
         starButton.setImageResource(isStarred[0] ? R.drawable.ic_star_on : R.drawable.ic_star_off);
         starButton.setOnClickListener((view) -> {
             isStarred[0] = !isStarred[0];

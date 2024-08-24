@@ -10,9 +10,11 @@ import androidx.annotation.Nullable;
 import com.threethan.launcher.activity.LauncherActivity;
 import com.threethan.launcher.data.Settings;
 import com.threethan.launcher.helper.AppExt;
+import com.threethan.launcher.helper.Compat;
 import com.threethan.launcher.helper.LaunchExt;
 import com.threethan.launcher.helper.PlatformExt;
 import com.threethan.launchercore.lib.StringLib;
+import com.threethan.launchercore.metadata.MetaMetadata;
 import com.threethan.launchercore.util.App;
 import com.threethan.launchercore.util.Platform;
 
@@ -28,6 +30,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
 /**
  * An instance of this class is tied to each launcher activity, and it is used to get and store
@@ -39,6 +42,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * It also provides a number of static methods which are used by various other classes .
  */
 public class SettingsManager extends Settings {
+
+    public static final String META_LABEL_SUFFIX = ":META";
 
     /**
      * Return a list of versions where wallpapers were reordered in some way, for Compat
@@ -85,7 +90,36 @@ public class SettingsManager extends Settings {
     public static String getAppLabel(ApplicationInfo app) {
         if (appLabelCache.containsKey(app)) return appLabelCache.get(app);
         final String customLabel = dataStoreEditor.getString(app.packageName, "");
+        if (customLabel.isEmpty()) fetchLabelAsync(app, l -> {});
         return processAppLabel(app, customLabel);
+    }
+    /**
+     * Gets the label for the given app.
+     * @param app App to get the label for
+     * @param onLabel Called when the label is ready, may be called more than once!
+     */
+    public static void getAppLabel(ApplicationInfo app, Consumer<String> onLabel) {
+        if (appLabelCache.containsKey(app)) onLabel.accept(appLabelCache.get(app));
+        final String customLabel = dataStoreEditor.getString(app.packageName, "");
+        onLabel.accept(processAppLabel(app, customLabel));
+        if (customLabel.isEmpty()) fetchLabelAsync(app, onLabel);
+    }
+
+    /**
+     * Asynchronously fetches the app label from metadata repo
+     * @param app ApplicationInfo of the app
+     * @param onLabel Called on success with the label
+     */
+    private static void fetchLabelAsync(ApplicationInfo app, Consumer<String> onLabel) {
+        new Thread(() -> {
+            MetaMetadata.App appMeta = MetaMetadata.getForPackage(app.packageName);
+            if (appMeta != null) {
+                String label = appMeta.label();
+                appLabelCache.put(app, label);
+                dataStoreEditor.putString(app.packageName+META_LABEL_SUFFIX, label);
+                onLabel.accept(label);
+            }
+        }).start();
     }
 
     /**
@@ -115,6 +149,8 @@ public class SettingsManager extends Settings {
             } catch (Exception ignored) {
             }
         }
+        String metaLabel = dataStoreEditor.getString(app.packageName+META_LABEL_SUFFIX, "");
+        if (!metaLabel.isEmpty()) return metaLabel;
         try {
             PackageManager pm = LauncherActivity.getForegroundInstance().getPackageManager();
             String label = app.loadLabel(pm).toString();
@@ -471,6 +507,12 @@ public class SettingsManager extends Settings {
     public static void setTypeBanner(App.Type type, boolean banner) {
         isBannerCache.put(type, banner);
         dataStoreEditor.putBoolean(Settings.KEY_BANNER + type, banner);
+
+        LauncherActivity la = LauncherActivity.getForegroundInstance();
+        for (String packageName : la.getAllPackages())
+            if (App.getType(packageName).equals(type))
+                la.dataStoreEditor.removeBoolean(Settings.KEY_BANNER_OVERRIDE + packageName);
+        Compat.clearIconCache(la);
     }
 
     /** Sets a specific app to use banner or icon display, regardless of type */
