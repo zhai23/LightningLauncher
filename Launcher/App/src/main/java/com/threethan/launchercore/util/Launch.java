@@ -37,6 +37,12 @@ public abstract class Launch {
             return intent;
         }
 
+        if (App.getType(app) == App.Type.WEB) {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(app.packageName));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            return intent;
+        }
+
         final Intent defaultIntent  = pm.getLaunchIntentForPackage(app.packageName);
         final Intent leanbackIntent = pm.getLeanbackLaunchIntentForPackage(app.packageName);
         if (Platform.isQuest()) {
@@ -50,6 +56,7 @@ public abstract class Launch {
         } else {
             return defaultIntent != null ? defaultIntent : leanbackIntent;
         }
+
     }
     /** Launch an app from the core context as a new task */
     public static void launch(ApplicationInfo app) {

@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 
 import com.threethan.launchercore.Core;
 import com.threethan.launchercore.lib.ImageLib;
+import com.threethan.launchercore.lib.StringLib;
 import com.threethan.launchercore.util.App;
 
 import java.io.DataInputStream;
@@ -46,7 +47,11 @@ public abstract class IconUpdater {
     private static final String[] FALLBACK_URLS_BANNER = {
             "https://raw.githubusercontent.com/veticia/binaries/main/banners/%s.png",
     };
-
+    // Instead of matching a package name, websites match their TLD
+    private static final String[] ICON_URLS_WEB = {
+            "https://www.google.com/s2/favicons?domain=%s&sz=256", // Provides high-res icons
+            "https://%s/favicon.ico", // The standard directory for a website's icon to be placed
+    };
     private static final ConcurrentHashMap<String, Object> locks = new ConcurrentHashMap<>();
 
     /**
@@ -61,9 +66,7 @@ public abstract class IconUpdater {
     public static final ConcurrentHashMap<String, Long> nextCheckByPackageMs = new ConcurrentHashMap<>();
 
     // How many minutes before we can recheck an icon that hasn't downloaded
-    private static final long ICON_CHECK_TIME_MINUTES_VR = 1;
-    // How many minutes before we can recheck an icon that has downloaded for updates
-    private static final long ICON_UPDATE_TIME_MINUTES_VR = 60;
+    private static final long ICON_CHECK_TIME_MINUTES = 5;
 
 
     /**
@@ -81,8 +84,10 @@ public abstract class IconUpdater {
      * @return True if the icon should be downloaded
      */
     private static synchronized boolean shouldDownload(ApplicationInfo app) {
-        if (!nextCheckByPackageMs.containsKey(app.packageName)) return true;
-        final long nextCheckMs = Objects.requireNonNull(nextCheckByPackageMs.get(app.packageName));
+        String packageName = App.isWebsite(app.packageName) ?
+                StringLib.baseUrl(app.packageName) : app.packageName;
+        if (!nextCheckByPackageMs.containsKey(packageName)) return true;
+        final long nextCheckMs = Objects.requireNonNull(nextCheckByPackageMs.get(packageName));
         return System.currentTimeMillis() > nextCheckMs;
     }
 
@@ -92,8 +97,10 @@ public abstract class IconUpdater {
      * @param callback Called when the download completes successfully (*not on ui thread)
      */
     public static void download(ApplicationInfo app, final Consumer<Drawable> callback) {
-        final String packageName = app.packageName;
-        final int delayMs = (int) (ICON_CHECK_TIME_MINUTES_VR*1000*60);
+        final boolean isWebsite = App.isWebsite(app.packageName);
+        final String packageName = isWebsite ? StringLib.baseUrl(app.packageName) : app.packageName;
+
+        final int delayMs = (int) (ICON_CHECK_TIME_MINUTES *1000*60);
         nextCheckByPackageMs.put(packageName, System.currentTimeMillis() + delayMs);
 
         final boolean isBanner = App.isBanner(app);
@@ -104,14 +111,12 @@ public abstract class IconUpdater {
             if (lock == null) lock = locks.get(packageName);
             synchronized (Objects.requireNonNull(lock)) {
                 try {
+
+
                     final String dlPkg = getDownloadString(app);
-                    final Runnable success = () -> {
-                        final int delayMsUpd = (int) (ICON_UPDATE_TIME_MINUTES_VR*1000*60);
-                        nextCheckByPackageMs.put(packageName,
-                                System.currentTimeMillis() + delayMsUpd);
-                        callback.accept(new BitmapDrawable(Core.context().getResources(),
-                                IconLoader.justCompressedDownloadedBitmaps.get(iconFile)));
-                    };
+                    final Runnable success = () ->
+                            callback.accept(new BitmapDrawable(Core.context().getResources(),
+                            IconLoader.justCompressedDownloadedBitmaps.get(iconFile)));
 
                     // Priority repos
                     for (final String url : (isBanner ? PRIORITY_URLS_BANNER : PRIORITY_URLS_SQUARE))
@@ -129,7 +134,8 @@ public abstract class IconUpdater {
                     }
 
                     // Fallback repos
-                    for (final String url : (isBanner ? FALLBACK_URLS_BANNER : FALLBACK_URLS_SQUARE))
+                    for (final String url : ( isWebsite ? ICON_URLS_WEB :
+                            (isBanner ? FALLBACK_URLS_BANNER : FALLBACK_URLS_SQUARE)))
                         if (downloadIconFromUrl(String.format(url, dlPkg), iconFile)) {
                             success.run();
                             return;
@@ -157,6 +163,7 @@ public abstract class IconUpdater {
      * @return PackageID of the app, optionally modified in some way
      */
     private static String getDownloadString(ApplicationInfo app) {
+        if (App.isWebsite(app.packageName)) return StringLib.baseUrl(app.packageName);
         return app.packageName.replace(".mrf.", ".").replace("://", "");
     }
 

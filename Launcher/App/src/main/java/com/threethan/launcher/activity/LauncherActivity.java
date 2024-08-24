@@ -87,7 +87,7 @@ public class LauncherActivity extends ComponentActivity {
     public static Boolean groupsEnabled = true;
     RecyclerView appsView;
     public ApplicationInfo currentTopSearchResult = null;
-    public Set<String> clearFocusPackageNames = new HashSet<>();
+    public ApplicationInfo prevTopSearchResult = null;
     RecyclerView groupsView;
     public DataStoreEditor dataStoreEditor;
     public View mainView;
@@ -279,7 +279,7 @@ public class LauncherActivity extends ComponentActivity {
                         }
                     }
                 } else {
-                    Log.d("PhotoPicker", "No media selected");
+                    Log.i("PhotoPicker", "No media selected");
                 }
             });
 

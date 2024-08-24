@@ -16,9 +16,10 @@ import com.threethan.launcher.R;
 import com.threethan.launcher.activity.view.EditTextWatched;
 import com.threethan.launcher.helper.LaunchExt;
 import com.threethan.launchercore.util.Keyboard;
-import com.threethan.launchercore.util.Platform;
 
 import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import eightbitlab.com.blurview.BlurView;
 
@@ -33,9 +34,24 @@ import eightbitlab.com.blurview.BlurView;
 
 public class LauncherActivitySearchable extends LauncherActivityEditable {
     private boolean searching = false;
+
     protected void searchFor(String text) {
         Objects.requireNonNull(getAppAdapter()).filterBy(text);
         updateTopSearchResult();
+    }
+    Timer timer = new Timer();
+    protected void queueSearch(String text) {
+
+        timer.cancel();
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    runOnUiThread(() -> searchFor(text));
+                } catch (Exception ignored) {}
+            }
+        }, 200);
     }
     BlurView searchBar;
     ObjectAnimator alphaIn;
@@ -84,10 +100,7 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
             if (getCurrentFocus() != null) getCurrentFocus().clearFocus();
             searchText.setText("");
             searchText.post(searchText::requestFocus);
-            if (Platform.isVr()) postDelayed(() -> {
-                Keyboard.hide(this, searchBar);
-                Keyboard.show(this);
-            }, 50);
+            Keyboard.show(this);
 
             ValueAnimator padAnimator = ValueAnimator.ofInt(appsView.getPaddingTop(), dp(75));
             padAnimator.setDuration(200);
@@ -175,7 +188,7 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
         searchBg.setOnClickListener((v) -> showSearchBar());
 
         EditTextWatched searchText = findViewById(R.id.searchText);
-        searchText.setOnEdited(this::searchFor);
+        searchText.setOnEdited(this::queueSearch);
 
         searchText.setOnKeyListener((v, keyCode, event) -> {
             if (event.getAction() == KeyEvent.ACTION_UP &&
@@ -221,13 +234,14 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
     }
     private void clearTopSearchResult() {
         if (currentTopSearchResult == null) return;
-        clearFocusPackageNames.add(currentTopSearchResult.packageName);
+        prevTopSearchResult = currentTopSearchResult;
         currentTopSearchResult = null;
+        Objects.requireNonNull(getAppAdapter()).notifyItemChanged(prevTopSearchResult);
     }
-    private void changeTopSearchResult(ApplicationInfo val) {
-        if (currentTopSearchResult != null)
-            clearFocusPackageNames.add(currentTopSearchResult.packageName);
-        currentTopSearchResult = val;
+    private void changeTopSearchResult(ApplicationInfo topRes) {
+        clearTopSearchResult();
+        currentTopSearchResult = topRes;
+        Objects.requireNonNull(getAppAdapter()).notifyItemChanged(topRes);
     }
 
     /** @noinspection deprecation*/

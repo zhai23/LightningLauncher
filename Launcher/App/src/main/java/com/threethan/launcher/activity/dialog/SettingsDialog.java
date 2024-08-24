@@ -124,7 +124,7 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
                 value -> {
                     LauncherActivity.darkMode = value;
                     a.launcherService.forEachActivity(LauncherActivity::resetAdapters);
-                });
+                }, false);
         ImageView[] views = {
                 dialog.findViewById(R.id.background0),
                 dialog.findViewById(R.id.background1),
@@ -253,7 +253,7 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
                     }
                     a.setEditMode(true);
                     a.setEditMode(false);
-                }
+                }, false
         );
 
         // Clear buttons (limited to one use to prevent bugs due to spamming)
@@ -346,7 +346,7 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
 
         // Advanced
         attachSwitchToSetting(dialog.findViewById(R.id.longPressEditSwitch),
-                Settings.KEY_DETAILS_LONG_PRESS, Settings.DEFAULT_AUTO_HIDE_EMPTY);
+                Settings.KEY_DETAILS_LONG_PRESS, Settings.DEFAULT_AUTO_HIDE_EMPTY, null, true);
 
         if (Platform.isVr()) {
             View defaultSettingsButton = dialog.findViewById(R.id.defaultLauncherSettingsButton);
@@ -432,21 +432,23 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
      */
     private void attachSwitchToSetting(Switch toggle, String setting,
                                        boolean def) {
-        attachSwitchToSetting(toggle, setting, def, null);
+        attachSwitchToSetting(toggle, setting, def, null, false);
     }
+
     /**
      * Attaches a toggle switch to a specific setting
      * @param toggle Switch ui element
      * @param setting Setting string key
      * @param def Default setting value
      * @param onSwitch Consumes the new value when it is changed, after writing to the datastore
+     * @param inverted If true, inverts the setting
      */
     private void attachSwitchToSetting(Switch toggle, String setting,
-                                       boolean def, Consumer<Boolean> onSwitch) {
-        toggle.setChecked(a.dataStoreEditor.getBoolean(setting, def));
+                                       boolean def, Consumer<Boolean> onSwitch, boolean inverted) {
+        toggle.setChecked(inverted != a.dataStoreEditor.getBoolean(setting, def));
         toggle.setOnCheckedChangeListener((compoundButton, value) -> {
-            a.dataStoreEditor.putBoolean(setting, value);
-            if (onSwitch != null) onSwitch.accept(value);
+            a.dataStoreEditor.putBoolean(setting, inverted != value);
+            if (onSwitch != null) onSwitch.accept(inverted != value);
             a.launcherService.forEachActivity(LauncherActivity::refreshInterface);
         });
     }

@@ -35,8 +35,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public abstract class LaunchExt extends Launch {
     protected static final String ACTION_ACTUALLY_SHORTCUT = "ACTION_ACTUALLY_SHORTCUT";
     // Must match: arrays.xml -> advance_launch_browsers
+    private static final int LAUNCH_BROWSER_SYSTEM = 1;
     private static final int LAUNCH_BROWSER_QUEST = 2;
-    private static final int LAUNCH_BROWSER_SYSTEM = 3;
 
     /**
      * Launches a given app, checking various configuration options in the process
@@ -125,7 +125,8 @@ public abstract class LaunchExt extends Launch {
             Intent intent;
             if (app.packageName.startsWith("http://") || (app.packageName.startsWith("https://"))) {
                 final int browserIndex
-                        = activity.dataStoreEditor.getInt(Settings.KEY_LAUNCH_BROWSER + app.packageName, 0);
+                        = activity.dataStoreEditor.getInt(Settings.KEY_LAUNCH_BROWSER + app.packageName,
+                        activity.dataStoreEditor.getInt(Settings.KEY_DEFAULT_BROWSER, 0));
                 intent = new Intent(Intent.ACTION_VIEW, Uri.parse(app.packageName));
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 // Reference: arrays.xml -> advance_launch_browsers

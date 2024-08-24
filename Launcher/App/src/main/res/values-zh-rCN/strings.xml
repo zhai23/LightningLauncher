@@ -124,7 +124,6 @@
 
     <string name="browser_default_setting">网站默认设置:</string>
     <string name="browser_default_in" >在浏览器当前窗口中打开</string>
-    <string name="browser_default_out">在浏览器自身窗口中打开</string>
     <string name="browser_quest">在 Meta Quest 浏览器中打开</string>
     <string name="browser_system">尝试用默认浏览器打开</string>
 

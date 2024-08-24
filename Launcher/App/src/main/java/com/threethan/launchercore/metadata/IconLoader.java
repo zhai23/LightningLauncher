@@ -33,7 +33,7 @@ import java.util.function.Consumer;
  */
 
 public abstract class IconLoader {
-    private static final int ICON_MAX_HEIGHT = 192;
+    private static final int ICON_MAX_HEIGHT = 180;
     private static final int ICON_QUALITY = 50;
     public static final String ICON_CACHE_FOLDER = "/icon-cache";
     public static final Map<String, Drawable> cachedIcons = new ConcurrentHashMap<>();
@@ -138,6 +138,8 @@ public abstract class IconLoader {
         return new File(Core.context().getApplicationInfo().dataDir + ICON_CUSTOM_FOLDER,
                 cacheName + (banner ? "-banner" : "") + ".webp");    }
     public static String cacheName(ApplicationInfo app) {
+        if (App.getType(app.packageName) == App.Type.WEB)
+            return StringLib.toValidFilename(StringLib.baseUrl(app.packageName));
         return StringLib.toValidFilename(app.packageName);
     }
     protected static Bitmap scaleBitmap(Bitmap bitmap) {
@@ -151,6 +153,7 @@ public abstract class IconLoader {
         }
         return bitmap;
     }
+
     static final Map<File, Bitmap> justCompressedDownloadedBitmaps = new ConcurrentHashMap<>();
 
     public static void compressAndSaveBitmap(File file, Bitmap bitmap) {

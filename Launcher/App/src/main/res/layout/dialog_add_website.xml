@@ -80,7 +80,7 @@
             android:layout_height="match_parent"
             android:layout_marginEnd="8dp"
             android:layout_weight="1"
-            android:background="@drawable/bkg_button"
+            android:background="@drawable/lc_bkg_button"
             android:padding="5dp">
 
             <ImageView
@@ -96,7 +96,7 @@
             android:layout_height="match_parent"
             android:layout_marginEnd="8dp"
             android:layout_weight="1"
-            android:background="@drawable/bkg_button"
+            android:background="@drawable/lc_bkg_button"
             android:padding="4.5dp">
 
             <ImageView
@@ -112,7 +112,7 @@
             android:layout_height="match_parent"
             android:layout_marginEnd="8dp"
             android:layout_weight="1"
-            android:background="@drawable/bkg_button"
+            android:background="@drawable/lc_bkg_button"
             android:padding="4dp">
 
             <ImageView
@@ -128,7 +128,7 @@
             android:layout_height="match_parent"
             android:layout_marginEnd="8dp"
             android:layout_weight="1"
-            android:background="@drawable/bkg_button"
+            android:background="@drawable/lc_bkg_button"
             android:padding="5dp">
 
             <ImageView
@@ -144,7 +144,7 @@
             android:layout_height="match_parent"
             android:layout_marginEnd="8dp"
             android:layout_weight="1"
-            android:background="@drawable/bkg_button"
+            android:background="@drawable/lc_bkg_button"
             android:padding="4dp"
             android:visibility="gone">
 
@@ -161,7 +161,7 @@
             android:layout_height="match_parent"
             android:layout_marginEnd="8dp"
             android:layout_weight="1"
-            android:background="@drawable/bkg_button"
+            android:background="@drawable/lc_bkg_button"
             android:padding="5dp">
 
             <ImageView
@@ -177,7 +177,7 @@
             android:layout_height="match_parent"
             android:layout_marginEnd="8dp"
             android:layout_weight="1"
-            android:background="@drawable/bkg_button"
+            android:background="@drawable/lc_bkg_button"
             android:padding="4dp">
 
             <ImageView
@@ -246,7 +246,6 @@
             android:layout_width="125dp"
             android:layout_height="match_parent"
             android:layout_marginEnd="10dp"
-            android:background="@drawable/bkg_button"
             android:text="@string/cancel">
 
         </com.threethan.launchercore.view.LcButton>
