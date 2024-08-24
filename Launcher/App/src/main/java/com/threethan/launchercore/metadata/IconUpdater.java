@@ -1,4 +1,4 @@
-package com.threethan.launchercore.icon;
+package com.threethan.launchercore.metadata;
 
 import android.content.pm.ApplicationInfo;
 import android.graphics.Bitmap;
@@ -27,21 +27,23 @@ import java.util.function.Consumer;
  * the Icon class will then decide on the icon to be used.
  */
 public abstract class IconUpdater {
-
-    // Repository URLs:
-    // Each URL will be tried in order: the first with a file matching the package name will be used
-    private static final String[] ICON_URLS_SQUARE = {
-            "https://raw.githubusercontent.com/basti564/LauncherIcons/main/oculus_square/%s.jpg",
-            "https://raw.githubusercontent.com/basti564/LauncherIcons/main/pico_square/%s.png",
-            "https://raw.githubusercontent.com/basti564/LauncherIcons/main/viveport_square/%s.webp",
+    // Special repository urls which take priority
+    private static final String[] PRIORITY_URLS_SQUARE = {
             "https://raw.githubusercontent.com/threethan/QuestLauncherImages/main/icon/%s.jpg",
+    };
+    private static final String[] PRIORITY_URLS_BANNER = {
+            "https://raw.githubusercontent.com/threethan/QuestLauncherImages/main/banner/%s.jpg",
+    };
+    // Type of image to retrieve from https://github.com/threethan/MetaMetadata
+    private static final String IMAGE_TYPE_SQUARE = "icon";
+    private static final String IMAGE_TYPE_BANNER = "landscape";
+
+    // Repository URLs are used if metadata fails to return an icon
+    // Each URL will be tried in order: the first with a file matching the package name will be used
+    private static final String[] FALLBACK_URLS_SQUARE = {
             "https://raw.githubusercontent.com/veticia/binaries/main/icons/%s.png",
     };
-    private static final String[] ICON_URLS_BANNER = {
-            "https://raw.githubusercontent.com/basti564/LauncherIcons/main/oculus_landscape/%s.jpg",
-            "https://raw.githubusercontent.com/basti564/LauncherIcons/main/pico_landscape/%s.png",
-            "https://raw.githubusercontent.com/basti564/LauncherIcons/main/viveport_landscape/%s.webp",
-            "https://raw.githubusercontent.com/threethan/QuestLauncherImages/main/banner/%s.jpg",
+    private static final String[] FALLBACK_URLS_BANNER = {
             "https://raw.githubusercontent.com/veticia/binaries/main/banners/%s.png",
     };
 
@@ -102,18 +104,37 @@ public abstract class IconUpdater {
             if (lock == null) lock = locks.get(packageName);
             synchronized (Objects.requireNonNull(lock)) {
                 try {
-                    final String file = getDownloadString(app);
-                    for (final String url : (isBanner ? ICON_URLS_BANNER : ICON_URLS_SQUARE)) {
-                        if (downloadIconFromUrl(String.format(url, file), iconFile)) {
-                            final int delayMsUpd = (int) (ICON_UPDATE_TIME_MINUTES_VR*1000*60);
-                            nextCheckByPackageMs.put(packageName,
-                                    System.currentTimeMillis() + delayMsUpd);
-                            IconLoader.saveIcon(app, iconFile);
-                            callback.accept(new BitmapDrawable(Core.context().getResources(),
-                                    ImageLib.bitmapFromFile(iconFile)));
+                    final String dlPkg = getDownloadString(app);
+                    final Runnable success = () -> {
+                        final int delayMsUpd = (int) (ICON_UPDATE_TIME_MINUTES_VR*1000*60);
+                        nextCheckByPackageMs.put(packageName,
+                                System.currentTimeMillis() + delayMsUpd);
+                        callback.accept(new BitmapDrawable(Core.context().getResources(),
+                                IconLoader.justCompressedDownloadedBitmaps.get(iconFile)));
+                    };
+
+                    // Priority repos
+                    for (final String url : (isBanner ? PRIORITY_URLS_BANNER : PRIORITY_URLS_SQUARE))
+                        if (downloadIconFromUrl(String.format(url, dlPkg), iconFile)) {
+                            success.run();
                             return;
                         }
+
+                    // New Metadata method
+                    final MetaMetadata.App appMeta = MetaMetadata.getForPackage(dlPkg);
+                    if (appMeta != null && appMeta.downloadImage(
+                            isBanner ? IMAGE_TYPE_BANNER : IMAGE_TYPE_SQUARE, iconFile)) {
+                        success.run();
+                        return;
                     }
+
+                    // Fallback repos
+                    for (final String url : (isBanner ? FALLBACK_URLS_BANNER : FALLBACK_URLS_SQUARE))
+                        if (downloadIconFromUrl(String.format(url, dlPkg), iconFile)) {
+                            success.run();
+                            return;
+                        }
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
@@ -143,7 +164,7 @@ public abstract class IconUpdater {
      * Downloads an icon from a given url and saves it using saveStream()
      * @return True if icon was downloaded
      */
-    private static boolean downloadIconFromUrl(String url, File iconFile) {
+    static boolean downloadIconFromUrl(String url, File iconFile) {
         try (InputStream inputStream = new URL(url).openStream()) {
             // Try to save
             if (saveStream(inputStream, iconFile)) {

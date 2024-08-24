@@ -1,20 +1,22 @@
 package com.threethan.launchercore.view;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.TypedValue;
+import android.widget.Switch;
 
 import androidx.annotation.DrawableRes;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.threethan.launcher.R;
 
-public class LcSwitch extends SwitchCompat {
+@SuppressLint("UseSwitchCompatOrMaterialCode")
+public class LcSwitch extends Switch {
     public LcSwitch(Context context) {
         super(context);
         init(null);
