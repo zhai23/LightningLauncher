@@ -3,6 +3,6 @@
     android:description="@string/service_desc"
     android:settingsActivity=""
     android:packageNames="com.oculus.systemux"
-    android:accessibilityEventTypes="typeWindowStateChanged"
+    android:accessibilityEventTypes="typeWindowStateChanged|typeViewClicked"
     android:accessibilityFlags="flagDefault"
     android:notificationTimeout="500" />
