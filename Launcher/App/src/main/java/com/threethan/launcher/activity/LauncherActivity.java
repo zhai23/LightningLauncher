@@ -583,7 +583,7 @@ public class LauncherActivity extends ComponentActivity {
      */
     public void setBackground(int index) {
         if (index >= SettingsManager.BACKGROUND_DRAWABLES.length || index < 0) index = -1;
-        else dataStoreEditor.putBoolean(Settings.KEY_DARK_MODE, SettingsManager.BACKGROUND_DARK[index]);
+        else darkMode = SettingsManager.BACKGROUND_DARK[index];
         dataStoreEditor.putInt(Settings.KEY_BACKGROUND, index);
         LauncherActivity.backgroundIndex = index;
         launcherService.forEachActivity(LauncherActivity::refreshBackground);

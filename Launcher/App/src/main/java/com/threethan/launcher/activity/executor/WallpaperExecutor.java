@@ -26,46 +26,44 @@ public class WallpaperExecutor {
         Thread thread = new Thread(() -> {
             // Do fetching of data
             int background = LauncherActivity.backgroundIndex;
-            BitmapDrawable backgroundThemeDrawable = null;
+            BitmapDrawable backgroundThemeDrawable;
+            Bitmap imageBitmap = null;
             if (background >= 0 && background < SettingsManager.BACKGROUND_DRAWABLES.length) {
 
                 // Create a cropped image asset for the window background
-                Bitmap imageBitmap = BitmapFactory.decodeResource(owner.getResources(), SettingsManager.BACKGROUND_DRAWABLES[background]);
-
-                float aspectScreen;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    Rect bounds = owner.getWindowManager().getCurrentWindowMetrics().getBounds();
-                    aspectScreen = bounds.width() / (float) bounds.height();
-                } else {
-                    int heightPixels = Resources.getSystem().getDisplayMetrics().heightPixels;
-                    int widthPixels = Resources.getSystem().getDisplayMetrics().widthPixels;
-                    aspectScreen = widthPixels / (float) heightPixels;
-                }
-
-
-                float aspectImage  = imageBitmap.getWidth() / (float) imageBitmap.getHeight();
-                int cropWidth = imageBitmap.getWidth();
-                int cropHeight = imageBitmap.getHeight();
-
-                if (aspectScreen < aspectImage) cropWidth  = (int) (imageBitmap.getHeight() * aspectScreen);
-                else                            cropHeight = (int) (imageBitmap.getWidth()  / aspectScreen);
-
-                int cropMarginWidth  =  imageBitmap.getWidth()  - cropWidth;
-                int cropMarginHeight =  imageBitmap.getHeight() - cropHeight;
-
-                imageBitmap = Bitmap.createBitmap(imageBitmap, cropMarginWidth, cropMarginHeight,
-                        imageBitmap.getWidth() - cropMarginWidth,
-                        imageBitmap.getHeight() - cropMarginHeight);
-                backgroundThemeDrawable = new BitmapDrawable(Resources.getSystem(), imageBitmap);
-
+                imageBitmap = BitmapFactory.decodeResource(owner.getResources(), SettingsManager.BACKGROUND_DRAWABLES[background]);
             } else {
                 File file = new File(owner.getApplicationInfo().dataDir, Settings.CUSTOM_BACKGROUND_PATH);
                 try {
-                    Bitmap backgroundBitmap = ImageLib.bitmapFromFile(file);
-                    backgroundThemeDrawable = new BitmapDrawable(owner.getResources(), backgroundBitmap);
-                } catch (Exception e) { e.printStackTrace(); }
+                    imageBitmap = ImageLib.bitmapFromFile(file);
+                } catch (Exception ignored) {} // In case file no longer exists or similar
             }
-            if (backgroundThemeDrawable == null) return;
+            if (imageBitmap == null) return;
+            float aspectScreen;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                Rect bounds = owner.getWindowManager().getCurrentWindowMetrics().getBounds();
+                aspectScreen = bounds.width() / (float) bounds.height();
+            } else {
+                int heightPixels = Resources.getSystem().getDisplayMetrics().heightPixels;
+                int widthPixels = Resources.getSystem().getDisplayMetrics().widthPixels;
+                aspectScreen = widthPixels / (float) heightPixels;
+            }
+
+            float aspectImage = imageBitmap.getWidth() / (float) imageBitmap.getHeight();
+            int cropWidth = imageBitmap.getWidth();
+            int cropHeight = imageBitmap.getHeight();
+
+            if (aspectScreen < aspectImage)
+                cropWidth = (int) (imageBitmap.getHeight() * aspectScreen);
+            else cropHeight = (int) (imageBitmap.getWidth() / aspectScreen);
+
+            int cropMarginWidth = imageBitmap.getWidth() - cropWidth;
+            int cropMarginHeight = imageBitmap.getHeight() - cropHeight;
+
+            imageBitmap = Bitmap.createBitmap(imageBitmap, cropMarginWidth, cropMarginHeight,
+                    imageBitmap.getWidth() - cropMarginWidth,
+                    imageBitmap.getHeight() - cropMarginHeight);
+            backgroundThemeDrawable = new BitmapDrawable(Resources.getSystem(), imageBitmap);
 
             if (Platform.isQuest()) {
                 backgroundThemeDrawable.setAlpha(owner.dataStoreEditor
