@@ -87,7 +87,8 @@ public class LauncherActivity extends ComponentActivity {
     public static Boolean groupsEnabled = true;
     RecyclerView appsView;
     public ApplicationInfo currentTopSearchResult = null;
-    public ApplicationInfo prevTopSearchResult = null;
+    public String currentTopSearchResultName = null;
+    public Set<String> prevTopSearchResultNames = new HashSet<>();
     RecyclerView groupsView;
     public DataStoreEditor dataStoreEditor;
     public View mainView;

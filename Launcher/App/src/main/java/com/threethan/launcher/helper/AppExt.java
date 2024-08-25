@@ -39,6 +39,8 @@ public abstract class AppExt extends App {
     // Opens the app info settings pane
     public static void openInfo(Context context, String packageName) {
         Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        if (PlatformExt.infoOverrides.containsKey(packageName))
+            packageName = PlatformExt.infoOverrides.get(packageName);
         intent.setData(Uri.parse("package:" + packageName));
         if (Platform.isQuest()) intent.setPackage("com.android.settings");
         context.startActivity(intent);

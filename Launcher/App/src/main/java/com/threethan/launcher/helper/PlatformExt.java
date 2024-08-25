@@ -12,8 +12,10 @@ import com.threethan.launchercore.util.Platform;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -25,6 +27,12 @@ public abstract class PlatformExt {
     public static Set<ApplicationInfo> apps = Collections.synchronizedSet(new HashSet<>());
     public static int changeIndex = 0; //Used to track changes, specifically adding websites
 
+    public static final Map<String, String> infoOverrides = new HashMap<>();
+    static {
+        infoOverrides.put("systemux://settings", "com.oculus.panelapp.settings");
+        infoOverrides.put("systemux://aui-social-v2", "com.oculus.socialplatform");
+        infoOverrides.put("systemux://events", "com.oculus.explore");
+    }
     /**
      * Finds an existing website on the launcher
      * @return Null if not found, else name of group website is in
