@@ -21,6 +21,7 @@ import com.threethan.launcher.activity.support.SettingsManager;
 import com.threethan.launcher.data.Settings;
 import com.threethan.launcher.helper.AppExt;
 import com.threethan.launcher.helper.Compat;
+import com.threethan.launcher.helper.PlatformExt;
 import com.threethan.launcher.helper.TunerLauncher;
 import com.threethan.launchercore.metadata.IconLoader;
 import com.threethan.launchercore.lib.ImageLib;
@@ -105,6 +106,10 @@ public class AppDetailsDialog extends BasicDialog<LauncherActivity> {
 
         App.Type appType = AppExt.getType(app);
         dialog.findViewById(R.id.info).setVisibility(app.packageName.contains("://")
+                && !PlatformExt.infoOverrides.containsKey(app.packageName)
+                ? View.GONE : View.VISIBLE);
+        dialog.findViewById(R.id.uninstall).setVisibility(appType == App.Type.PANEL
+                && app.packageName.contains("://") || (app.flags & ApplicationInfo.FLAG_SYSTEM) != 0
                 ? View.GONE : View.VISIBLE);
         refreshIconButton.setOnClickListener(view -> Compat.resetIcon(app, d
                 -> a.runOnUiThread(() -> {
@@ -115,9 +120,10 @@ public class AppDetailsDialog extends BasicDialog<LauncherActivity> {
                 || Platform.isTv()) {
             // VR apps MUST launch out, so just hide the option and replace it with another
             // Also hide it on TV where it is useless
-            tuningButton.setVisibility(View.VISIBLE);
-            tuningButton.setOnClickListener(v -> TunerLauncher.openForApp(app));
-
+            if (appType == App.Type.VR) {
+                tuningButton.setVisibility(View.VISIBLE);
+                tuningButton.setOnClickListener(v -> TunerLauncher.openForApp(app));
+            }
             refreshIconButton.setVisibility(View.VISIBLE);
             launchSizeSpinner.setVisibility(View.GONE);
         } else {

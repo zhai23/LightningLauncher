@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import com.threethan.launcher.R;
 import com.threethan.launcher.activity.view.EditTextWatched;
 import com.threethan.launcher.helper.LaunchExt;
+import com.threethan.launchercore.metadata.IconLoader;
 import com.threethan.launchercore.util.Keyboard;
 
 import java.util.Objects;
@@ -234,13 +235,16 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
     }
     private void clearTopSearchResult() {
         if (currentTopSearchResult == null) return;
-        prevTopSearchResult = currentTopSearchResult;
+        ApplicationInfo prevTopSearchResult = currentTopSearchResult;
+        prevTopSearchResultNames.add(IconLoader.cacheName(currentTopSearchResult));
         currentTopSearchResult = null;
+        currentTopSearchResultName = null;
         Objects.requireNonNull(getAppAdapter()).notifyItemChanged(prevTopSearchResult);
     }
     private void changeTopSearchResult(ApplicationInfo topRes) {
         clearTopSearchResult();
         currentTopSearchResult = topRes;
+        currentTopSearchResultName = IconLoader.cacheName(topRes);
         Objects.requireNonNull(getAppAdapter()).notifyItemChanged(topRes);
     }
 

@@ -281,19 +281,14 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
             an.start();
         }
         // Top search result
-        if (launcherActivity.currentTopSearchResult != null &&
-                Objects.equals(
-                        IconLoader.cacheName(launcherActivity.currentTopSearchResult),
-                        IconLoader.cacheName(holder.app))
-        ) {
+        String cname = IconLoader.cacheName(holder.app);
+        if (launcherActivity.currentTopSearchResultName != null
+                && Objects.equals(launcherActivity.currentTopSearchResultName, cname)) {
             updateHover(holder, true);
-        } else if (launcherActivity.prevTopSearchResult != null &&
-                Objects.equals(
-                IconLoader.cacheName(launcherActivity.prevTopSearchResult),
-                IconLoader.cacheName(holder.app))
-        ) {
+            launcherActivity.currentTopSearchResultName = null;
+        } else if (launcherActivity.prevTopSearchResultNames.contains(cname)) {
             updateHover(holder, false);
-            launcherActivity.prevTopSearchResult = null;
+            launcherActivity.prevTopSearchResultNames.remove(cname);
         }
     }
     public void updateHover(AppViewHolder holder, boolean hovered) {
