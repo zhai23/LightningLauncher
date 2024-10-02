@@ -288,25 +288,20 @@
     \nPressing back once you get to the launcher will just toggle edit mode, keeping you from accidentally returning to the default launcher.</string>
 
 
-    <string name="addons_preamble">Each addon can be used for another window of Lighting Launcher. You may use an addon as an alternate icon on the dock with or without activating it.</string>
+    <string name="addons_preamble">
+        Each shortcut can be used for another window of Lighting Launcher. You may use an addon as an alternate icon on the dock with or without activating it.</string>
 
     <string name="addons_explore">Feed Shortcut</string>
-    <string name="addons_explore_desc">Install then activate to open Lightning Launcher whenever you hover over the <b>Horizon Feed</b> button on the dock.</string>
-
-    <string name="addons_explore_disable_why">Instead of using this shortcut, you can disable the Explore app &amp; reboot to remove the feed icon.</string>
-    <string name="addons_explore_enable_why">To restore the icon &amp; fix this shortcut, re-enable the Explore app, then reboot your headset.</string>
-
-    <string name="addons_explore_disable">(Optional) Disable the Explore app</string>
-    <string name="addons_explore_enable">Re-Enable Explore app</string>
+    <string name="addons_explore_desc">Install then activate to open Lightning Launcher when you press the <b>Horizon Feed</b> button on the dock.</string>
 
     <string name="addons_library">Library Shortcut</string>
-    <string name="addons_library_desc">Install then activate to open Lightning Launcher whenever you hover over the <b>App Library</b> button on the dock.
+    <string name="addons_library_desc">Install then activate to open Lightning Launcher when you press the <b>App Library</b> button on the dock.
         \n(This makes it hard to open the quest\'s app library)</string>
     <string name="addons_store">Store Shortcut</string>
-    <string name="addons_store_desc">Install then activate to open Lightning Launcher whenever you hover over the <b>Store</b> button on the dock.
+    <string name="addons_store_desc">Install then activate to open Lightning Launcher when you press the <b>Store</b> button on the dock.
         \n(This makes it hard to open the quest\'s store)</string>
     <string name="addons_people">People Shortcut</string>
-    <string name="addons_people_desc">Install then activate to open Lightning Launcher whenever you hover over the <b>People</b> button on the dock.
+    <string name="addons_people_desc">Install then activate to open Lightning Launcher when you press the <b>People</b> button on the dock.
         \n(This makes it hard to open the quest\'s people app)</string>
 
     <string name="addons_install">Install</string>

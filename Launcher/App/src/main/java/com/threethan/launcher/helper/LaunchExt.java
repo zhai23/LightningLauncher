@@ -22,9 +22,7 @@ import com.threethan.launchercore.util.App;
 import com.threethan.launchercore.util.Keyboard;
 import com.threethan.launchercore.util.Launch;
 
-import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * This abstract class is dedicated to actually launching apps.
@@ -50,6 +48,11 @@ public abstract class LaunchExt extends Launch {
             // This is unlikely to fail, but it shouldn't stop us from launching if it somehow does
             Keyboard.hide(launcherActivity, launcherActivity.mainView);
         } catch (Exception ignored) {}
+
+        if (!app.enabled) {
+            AppExt.openInfo(launcherActivity, app.packageName);
+            return false;
+        }
 
         Intent intent = getIntentForLaunch(launcherActivity, app);
 
@@ -164,18 +167,5 @@ public abstract class LaunchExt extends Launch {
         }
 
         return li;
-    }
-
-    private static final Map<String, Boolean> canLaunchCache = new ConcurrentHashMap<>();
-    /**
-     * Checks if an app can be launched. Similar to getLaunchIntent, but faster
-     * @return True if app can be launched & is supported
-     */
-    public static boolean canLaunch(ApplicationInfo app) {
-        if (canLaunchCache.containsKey(app.packageName))
-            return Boolean.TRUE.equals(canLaunchCache.get(app.packageName));
-        boolean canLaunch = getLaunchIntent(app) != null;
-        canLaunchCache.put(app.packageName, canLaunch);
-        return canLaunch;
     }
 }

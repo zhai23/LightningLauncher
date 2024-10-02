@@ -27,7 +27,6 @@ public abstract class Launch {
     public static Intent getLaunchIntent(ApplicationInfo app) {
         if (app.packageName.startsWith(Core.context().getPackageName())) return null;
         if (Platform.excludedPackageNames.contains(app.packageName)) return null;
-
         PackageManager pm = Core.context().getPackageManager();
 
         if (Platform.isQuest() && App.getType(app) == App.Type.PANEL) {

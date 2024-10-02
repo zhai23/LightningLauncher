@@ -102,11 +102,7 @@ public class BasicDialog<T extends Context> extends AbstractDialog<T> {
                         isLong ? 5000 : 1750);
             }
 
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception ignored) {}
     }
 
     public static void initSpinner(Spinner spinner, int array_res,

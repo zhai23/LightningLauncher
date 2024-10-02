@@ -66,13 +66,16 @@ public abstract class Platform {
             "systemux://settings",
             "systemux://aui-social-v2",
             "systemux://events",
-            "systemux://file-manager");
+            "systemux://file-manager",
+            "systemux://sharing"
+            );
     public static final Map<String, String> labelOverrides = new HashMap<>();
     static {
         labelOverrides.put("systemux://settings", "Quest Settings");
         labelOverrides.put("systemux://aui-social-v2", "People");
         labelOverrides.put("systemux://events", "Events");
         labelOverrides.put("systemux://file-manager", "File Manager");
+        labelOverrides.put("systemux://sharing", "Camera");
         labelOverrides.put("com.oculus.gamingactivity", "Meta Quest Scoreboards");
         labelOverrides.put("com.oculus.helpcenter", "Meta Quest Guide");
         labelOverrides.put("com.android.settings", "Android Settings");
@@ -81,7 +84,6 @@ public abstract class Platform {
             "com.oculus.vrshell",
             "com.oculus.shellenv",
             "com.oculus.integrity",
-            "com.oculus.metacam",
             "com.oculus.tv",
             "com.oculus.socialplatform",
             "com.oculus.systemactivities",
@@ -109,7 +111,9 @@ public abstract class Platform {
             "com.oculus.firsttimenux",
             "com.oculus.guidebook",
             "com.oculus.vrshell.desktop",
-            "com.oculus.systemux"
+            "com.oculus.systemux",
+            "com.android.metacam",
+            "com.oculus.metacam"
     );
 
     /**
