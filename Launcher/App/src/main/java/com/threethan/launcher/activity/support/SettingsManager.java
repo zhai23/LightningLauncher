@@ -11,7 +11,6 @@ import com.threethan.launcher.activity.LauncherActivity;
 import com.threethan.launcher.data.Settings;
 import com.threethan.launcher.helper.AppExt;
 import com.threethan.launcher.helper.Compat;
-import com.threethan.launcher.helper.LaunchExt;
 import com.threethan.launcher.helper.PlatformExt;
 import com.threethan.launchercore.lib.StringLib;
 import com.threethan.launchercore.metadata.MetaMetadata;
@@ -215,13 +214,12 @@ public class SettingsManager extends Settings {
 
         if (allApps == null) {
             Log.w("Lightning Launcher", "Got null app list");
-//            launcherActivity.post(launcherActivity::reloadPackages);
             return new ArrayList<>();
         }
 
         // Sort into groups
         for (ApplicationInfo app : new ArrayList<>(allApps)) {
-            if (!LaunchExt.canLaunch(app))
+            if (App.getType(app) == App.Type.UNSUPPORTED)
                 apps.put(app.packageName, Settings.UNSUPPORTED_GROUP);
             else if (!apps.containsKey(app.packageName) ||
                     Objects.equals(apps.get(app.packageName), Settings.UNSUPPORTED_GROUP)){
@@ -347,6 +345,7 @@ public class SettingsManager extends Settings {
      * Resets all groups and sorting
      */
     public void resetGroupsAndSort(){
+        dataStoreEditorSort.asyncWrite = false;
         for (String group : appGroupsSet)
             dataStoreEditorSort.removeStringSet(KEY_GROUP_APP_LIST + group);
         appGroupsSet.clear();
@@ -355,7 +354,11 @@ public class SettingsManager extends Settings {
         dataStoreEditor.removeStringSet(KEY_SELECTED_GROUPS);
         for (String group : getAppGroups())
             dataStoreEditorSort.removeStringSet(group);
-
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         readGroupsAndSort();
         writeGroupsAndSort();
 

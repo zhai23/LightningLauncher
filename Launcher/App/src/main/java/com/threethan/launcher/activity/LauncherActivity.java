@@ -47,7 +47,6 @@ import com.threethan.launcher.LauncherService;
 import com.threethan.launcher.activity.dialog.AppDetailsDialog;
 import com.threethan.launcher.activity.dialog.SettingsDialog;
 import com.threethan.launcher.activity.support.SettingsManager;
-import com.threethan.launcher.activity.executor.RecheckPackagesExecutor;
 import com.threethan.launcher.activity.executor.WallpaperExecutor;
 import com.threethan.launcher.updater.LauncherUpdater;
 import com.threethan.launcher.activity.view.MarginDecoration;
@@ -302,7 +301,7 @@ public class LauncherActivity extends ComponentActivity {
         BasicDialog.setActivityContext(this);
 
         if (PlatformExt.installedApps != null) // Will be null only on initial load
-            postDelayed(this::recheckPackages, 1000);
+            postDelayed(() -> runOnUiThread(this::refreshPackages), 1000);
 
         postDelayed(() -> new LauncherUpdater(this).checkAppUpdateInteractive(), 1000);
     }
@@ -312,31 +311,18 @@ public class LauncherActivity extends ComponentActivity {
      * and then the resulting app list for every activity
      */
     public void refreshPackages() {
-        AppExt.invalidateCaches();
         PackageManager packageManager = getPackageManager();
 
-        PlatformExt.installedApps = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);
-        PlatformExt.installedApps = Collections.synchronizedList(PlatformExt.installedApps);
+        PlatformExt.installedApps = Collections.synchronizedList(
+                packageManager.getInstalledApplications(PackageManager.GET_META_DATA));
 
         Log.v(TAG, "Package Reload - Found "+ PlatformExt.installedApps.size() +" packages");
+        AppExt.invalidateCaches();
 
         launcherService.forEachActivity(LauncherActivity::refreshAppList);
     }
 
-    /**
-     * Checks for packages asynchronously using a RecheckPackagesExecutor,
-     * calls refreshPackages() if a change was detected
-     */
-    public void recheckPackages() {
-        int myPlatformChangeIndex = 0;
-        if (PlatformExt.changeIndex > myPlatformChangeIndex) refreshPackages();
-        else try {
-            new RecheckPackagesExecutor().execute(this);
-        } catch (Exception ignore) {
-            refreshPackages();
-            Log.w("Lightning Launcher", "Exception while starting recheck package task");
-        }
-    }
+
 
     /**
      * Updates various properties relating to the top bar & search bar, including visibility

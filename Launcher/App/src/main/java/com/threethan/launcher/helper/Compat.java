@@ -255,7 +255,7 @@ public abstract class Compat {
         launcherActivity.settingsManager.resetGroupsAndSort();
 
         storeAndReload(launcherActivity);
-        launcherActivity.launcherService.forEachActivity(LauncherActivity::resetAdapters);
+        launcherActivity.launcherService.forEachActivity(LauncherActivity::refreshPackages);
     }
     // Resets the group list to default, including default groups for sorting
     public static void resetDefaultGroups(LauncherActivity launcherActivity) {

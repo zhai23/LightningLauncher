@@ -15,9 +15,7 @@ import com.threethan.launchercore.util.App;
 import com.threethan.launchercore.util.Platform;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -28,13 +26,10 @@ import java.util.Set;
  * Functions prefixed with "is" are wrappers around "check" functions which cache values
  */
 public abstract class AppExt extends App {
-    static Map<Type, Set<String>> categoryIncludedApps = new HashMap<>();
-    static Map<Type, Set<String>> categoryExcludedApps = new HashMap<>();
 
     // Invalidate the values caches for isBlank functions
     public static synchronized void invalidateCaches() {
-        categoryIncludedApps = new HashMap<>();
-        categoryExcludedApps = new HashMap<>();
+        App.clearCache();
     }
     // Opens the app info settings pane
     public static void openInfo(Context context, String packageName) {

@@ -68,7 +68,7 @@
             android:stateNotNeeded="true"
             android:excludeFromRecents="true">
 
-            <layout android:defaultWidth="706dp" android:defaultHeight="442dp" android:gravity="top|end" />
+            <layout android:defaultWidth="1024dp" android:defaultHeight="640dp" android:gravity="top|end" />
             <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
             <meta-data android:name="com.oculus.vrshell.free_resizing_limits" android:value="300,2000,500,1000"/>
 
@@ -112,7 +112,7 @@
             android:resizeableActivity="true"
             android:theme="@style/ThemeOverlay.Standard">
 
-            <layout android:defaultWidth="250dp" android:defaultHeight="442dp" android:gravity="top|end" />
+            <layout android:defaultWidth="362dp" android:defaultHeight="640dp" android:gravity="top|end" />
             <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
             <meta-data android:name="com.oculus.vrshell.free_resizing_limits" android:value="300,2000,500,1000"/>
         </activity>
@@ -124,7 +124,7 @@
             android:resizeableActivity="true"
             android:theme="@style/ThemeOverlay.Standard">
 
-            <layout android:defaultWidth="384dp" android:defaultHeight="288dp" android:gravity="top|end" />
+            <layout android:defaultWidth="557dp" android:defaultHeight="417dp" android:gravity="top|end" />
             <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
             <meta-data android:name="com.oculus.vrshell.free_resizing_limits" android:value="300,2000,500,1000"/>
         </activity>
@@ -136,7 +136,7 @@
             android:resizeableActivity="true"
             android:theme="@style/ThemeOverlay.Standard">
 
-            <layout android:defaultWidth="706dp" android:defaultHeight="442dp" android:gravity="top|end" />
+            <layout android:defaultWidth="1024dp" android:defaultHeight="640dp" android:gravity="top|end" />
             <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
             <meta-data android:name="com.oculus.vrshell.free_resizing_limits" android:value="300,2000,500,1000"/>
         </activity>
@@ -148,7 +148,7 @@
             android:resizeableActivity="true"
             android:theme="@style/ThemeOverlay.Standard">
 
-            <layout android:defaultWidth="960dp" android:defaultHeight="540dp" android:gravity="top|end" />
+            <layout android:defaultWidth="1392dp" android:defaultHeight="783dp" android:gravity="top|end" />
             <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
             <meta-data android:name="com.oculus.vrshell.free_resizing_limits" android:value="300,2000,500,1000"/>
         </activity>
@@ -160,7 +160,7 @@
             android:resizeableActivity="true"
             android:theme="@style/ThemeOverlay.Standard">
 
-            <layout android:defaultWidth="1216dp" android:defaultHeight="684dp" android:gravity="top|end" />
+            <layout android:defaultWidth="1763dp" android:defaultHeight="992dp" android:gravity="top|end" />
             <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
             <meta-data android:name="com.oculus.vrshell.free_resizing_limits" android:value="300,2000,500,1000"/>
         </activity>
@@ -172,7 +172,7 @@
             android:resizeableActivity="true"
             android:theme="@style/ThemeOverlay.Standard">
 
-            <layout android:defaultWidth="442dp" android:defaultHeight="720dp" android:gravity="top|end" />
+            <layout android:defaultWidth="640dp" android:defaultHeight="1044dp" android:gravity="top|end" />
             <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
             <meta-data android:name="com.oculus.vrshell.free_resizing_limits" android:value="300,2000,500,1000"/>
         </activity>
@@ -184,7 +184,7 @@
             android:resizeableActivity="true"
             android:theme="@style/ThemeOverlay.Standard">
 
-            <layout android:defaultWidth="1260dp" android:defaultHeight="540dp" android:gravity="top|end" />
+            <layout android:defaultWidth="1827dp" android:defaultHeight="783dp" android:gravity="top|end" />
             <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
             <meta-data android:name="com.oculus.vrshell.free_resizing_limits" android:value="630,2520,270,1080"/>
         </activity>
@@ -204,6 +204,17 @@
             </intent-filter>
         </activity>
 
+        <receiver
+            android:name=".helper.PackageChangeReceiver"
+            android:enabled="true"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_ADDED" />
+                <action android:name="android.intent.action.PACKAGE_REMOVED" />
+                <action android:name="android.intent.action.PACKAGE_CHANGED" />
+                <data android:scheme="package"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

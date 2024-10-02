@@ -43,7 +43,7 @@ public abstract class App {
             return packageTypeCache.get(app.packageName);
         Type type = getTypeInternal(app);
         packageTypeCache.put(app.packageName, type);
-        if (Platform.excludedPackageNames.contains(app.packageName)
+        if (!app.enabled || Platform.excludedPackageNames.contains(app.packageName)
                 || app.packageName.startsWith(Core.context().getPackageName())
                 || (type == Type.VR || type == Type.PHONE) && Launch.getLaunchIntent(app) == null) {
             packageTypeCache.put(app.packageName, Type.UNSUPPORTED);
@@ -63,6 +63,7 @@ public abstract class App {
         return Type.PHONE;
     }
     private static Type getTypeInternal(ApplicationInfo app) {
+        if (!app.enabled) return Type.UNSUPPORTED;
         if (app instanceof UtilityApplicationInfo) return Type.UTILITY;
         if (isWebsite(app.packageName)) return Type.WEB;
         if (isShortcut(app.packageName)) return Type.SHORTCUT;
@@ -146,4 +147,10 @@ public abstract class App {
             return info;
         }
     }
+
+    public static void clearCache() {
+        packageTypeCache.clear();
+        for (ApplicationInfo app : Platform.listInstalledApps()) App.getType(app);
+    }
 }
+

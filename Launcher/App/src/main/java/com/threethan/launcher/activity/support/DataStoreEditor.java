@@ -3,14 +3,11 @@ package com.threethan.launcher.activity.support;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-//import androidx.datastore.migrations.SharedPreferencesView;
 import androidx.datastore.migrations.SharedPreferencesView;
 import androidx.datastore.preferences.core.MutablePreferences;
 import androidx.datastore.preferences.core.Preferences;
@@ -110,7 +107,6 @@ public class DataStoreEditor implements SharedPreferences, SharedPreferences.Edi
      * <p>
      * You may wish to set 'asyncWrite' to false before this operation.
      */
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public void migrateFrom(SharedPreferences sharedPreferences) {
         if (sharedPreferences instanceof DataStoreEditor)
             throw new InvalidParameterException(
@@ -126,7 +122,6 @@ public class DataStoreEditor implements SharedPreferences, SharedPreferences.Edi
      * You should include your own mechanism to avoid running this more than once.
      * You may wish to set 'asyncWrite' to false before this operation.
      */
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public void migrateDefault(Context context) {
         //noinspection deprecation
         migrateFrom(PreferenceManager.getDefaultSharedPreferences(context));
@@ -136,7 +131,6 @@ public class DataStoreEditor implements SharedPreferences, SharedPreferences.Edi
      * Copies all preferences from another data store file
      * @param dataStoreFile The other file to copy from, must be valid .preferences_pb
      */
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public void copyFrom(File dataStoreFile) {
         DataStoreEditor other = new DataStoreEditor(dataStoreFile);
         getAll().forEach((key, o) -> removeValue(key, o.getClass(), true));
@@ -592,7 +586,6 @@ public class DataStoreEditor implements SharedPreferences, SharedPreferences.Edi
     /**
      * Not implemented, will throw an error!
      */
-    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public Map<String, ?> getAll() {
         HashMap<String, Object> ret = new HashMap<>();

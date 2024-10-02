@@ -17,8 +17,9 @@ import androidx.annotation.Nullable;
 import java.util.List;
 
 public class AddonUpdater extends RemotePackageUpdater {
-    public static final String ADDON_TAG = "addons7.2.0"; // Tag for the release from which to download addons
-    private static final String SHORTCUT_ADDON_VERSION = "7.2.0";
+    // Tag for the GitHub release from which to download addons
+    public static final String ADDON_TAG = "addons8.0.0";
+    private static final String SHORTCUT_ADDON_VERSION = "8.0.0";
 
     public AddonUpdater(Activity activity) {
         super(activity);
