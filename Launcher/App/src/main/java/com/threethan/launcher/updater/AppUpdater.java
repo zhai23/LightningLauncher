@@ -14,6 +14,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.threethan.launcher.activity.dialog.BasicDialog;
 import com.threethan.launchercore.lib.FileLib;
 import com.threethan.launcher.R;
 
@@ -93,8 +94,10 @@ public abstract class AppUpdater extends RemotePackageUpdater {
 
             updateDialogBuilder.setPositiveButton(R.string.update_button, (dialog, which) ->
                     downloadPackage(getAppPackage(newVersion)));
-            updateDialogBuilder.setNegativeButton(R.string.update_skip_button, (dialog, which) ->
-                    dialog.dismiss());
+            updateDialogBuilder.setNegativeButton(R.string.update_skip_button, (dialog, which) -> {
+                dialog.dismiss();
+                skipAppUpdate(newVersion);
+            });
 
             updateDialogBuilder.show();
         } catch (Exception ignored) {} // This is not critical, and may fail if the launcher window isn't visible
@@ -201,6 +204,25 @@ public abstract class AppUpdater extends RemotePackageUpdater {
             Log.w(TAG, "Received invalid JSON", e);
         }
     }
+
+    /**
+     * Skips a specific main app update. An update prompt will not be shown for the skipped version.
+     * @param versionTag Github release tag of the update to skip
+     */
+    public void skipAppUpdate(String versionTag) {
+        AlertDialog.Builder skipDialogBuilder =
+                new AlertDialog.Builder(activity, android.R.style.Theme_DeviceDefault_Dialog_Alert);
+        skipDialogBuilder.setTitle(activity.getString(R.string.update_skip_title, versionTag));
+        skipDialogBuilder.setMessage(R.string.update_skip_content);
+        skipDialogBuilder.setPositiveButton(R.string.update_skip_confirm_button, (dialog, i) -> {
+            putIgnoredUpdateTag(versionTag);
+            BasicDialog.toast(activity.getString(R.string.update_skip_toast), versionTag, false);
+            dialog.dismiss();
+        });
+        skipDialogBuilder.setNegativeButton(R.string.update_skip_cancel_button, ((dialog, i) -> dialog.dismiss()));
+        skipDialogBuilder.show();
+    }
+
 
     /**
      * Stores the ignored update version tag

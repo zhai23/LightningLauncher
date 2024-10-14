@@ -21,6 +21,7 @@ import com.threethan.launchercore.lib.DelayLib;
 import com.threethan.launchercore.util.App;
 import com.threethan.launchercore.util.Keyboard;
 import com.threethan.launchercore.util.Launch;
+import com.threethan.launchercore.util.Platform;
 
 import java.util.Objects;
 
@@ -96,6 +97,10 @@ public abstract class LaunchExt extends Launch {
             }
         }
 
+        if (Platform.isTv()) {
+            startIntent(launcherActivity, intent);
+            return true;
+        }
         if (SettingsManager.getAppLaunchSize(app.packageName) > 0) {
             Intent chain = getIntentForLaunch(launcherActivity, app);
             DelayLib.delayed(() -> launcherActivity.startActivity(chain), 50);

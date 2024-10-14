@@ -169,6 +169,7 @@ public class SettingsManager extends Settings {
     }
 
     public static boolean getAppLaunchOut(String pkg) {
+        if (!Platform.isQuest()) return false;
         if (App.isWebsite(pkg)) {
             // If website, select based on browser selection
             final String launchBrowserKey = Settings.KEY_LAUNCH_BROWSER + pkg;
