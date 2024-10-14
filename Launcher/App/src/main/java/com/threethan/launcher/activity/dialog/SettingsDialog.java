@@ -111,7 +111,7 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
         }
 
         // Update button
-        if (LauncherUpdater.isAppUpdateAvailible()) {
+        if (LauncherUpdater.isAppUpdateAvailable()) {
             View skippedUpdateButton = dialog.findViewById(R.id.updateButton);
             skippedUpdateButton.setVisibility(View.VISIBLE);
             skippedUpdateButton.setOnClickListener((view) -> new LauncherUpdater(a).checkAppUpdateAndInstall());

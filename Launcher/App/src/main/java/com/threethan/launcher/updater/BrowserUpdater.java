@@ -8,7 +8,7 @@ import com.threethan.launcher.activity.support.DataStoreEditor;
 public class BrowserUpdater extends AppUpdater {
     public static final String GIT_REPO_BROWSER = "threethan/LightningBrowser";
     // Will be prompted to update from LL if version code is less than this
-    public static final int REQUIRED_VERSION_CODE = 1011;
+    public static final int REQUIRED_VERSION_CODE = 1020;
 
     // URL Constants
     @Override
@@ -32,7 +32,7 @@ public class BrowserUpdater extends AppUpdater {
     protected String getGitRepo() {
         return GIT_REPO_BROWSER;
     }
-    private static final String KEY_IGNORED_UPDATE_TAG = "IGNORED_UPDATE_TAG";
+    private static final String KEY_IGNORED_UPDATE_TAG = "IGNORED_UPDATE_TAG_BROWSER";
     @Override
     protected void putIgnoredUpdateTag(String ignoredUpdateTag) {
         new DataStoreEditor(activity).putString(KEY_IGNORED_UPDATE_TAG, ignoredUpdateTag);
