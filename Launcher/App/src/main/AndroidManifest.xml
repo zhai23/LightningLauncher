@@ -92,10 +92,8 @@
             android:configChanges="density|keyboard|keyboardHidden|navigation|orientation|screenLayout|screenSize|uiMode"
             android:windowSoftInputMode="adjustNothing"
             android:exported="true"
-            android:launchMode="singleTask"
-            android:theme="@style/ThemeOverlay.ATV"
-            android:stateNotNeeded="true"
-            android:clearTaskOnLaunch="true">
+            android:launchMode="singleInstance"
+            android:theme="@style/ThemeOverlay.ATV">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

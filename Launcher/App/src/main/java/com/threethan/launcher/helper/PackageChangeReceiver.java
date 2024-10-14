@@ -13,7 +13,7 @@ public class PackageChangeReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         try {
             LauncherActivity.getForegroundInstance().launcherService
-                    .forEachActivity(LauncherActivity::refreshPackages);
+                    .forEachActivity(LauncherActivity::forceRefreshPackages);
         } catch (Exception ignored) {}
     }
 }

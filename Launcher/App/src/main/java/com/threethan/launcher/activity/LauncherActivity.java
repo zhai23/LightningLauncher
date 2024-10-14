@@ -151,12 +151,14 @@ public class LauncherActivity extends ComponentActivity {
     public View rootView;
 
     private void onBound() {
+
         if (hasBound) return;
         hasBound = true;
         final boolean hasView = launcherService.checkForExistingView();
 
         if (hasView) startWithExistingView();
         else         startWithNewView();
+        refreshAppList();
 
         LauncherAppsAdapter.shouldAnimateClose = false;
         LauncherAppsAdapter.animateClose(this);
@@ -169,8 +171,9 @@ public class LauncherActivity extends ComponentActivity {
         init();
         Compat.checkCompatibilityUpdate(this);
 
-        refreshPackages();
         refreshBackground();
+        refreshPackages();
+        refreshAppList();
         refreshInterface();
     }
     protected void startWithExistingView() {
@@ -300,28 +303,49 @@ public class LauncherActivity extends ComponentActivity {
 
         BasicDialog.setActivityContext(this);
 
-        if (PlatformExt.installedApps != null) // Will be null only on initial load
-            postDelayed(() -> runOnUiThread(this::refreshPackages), 1000);
-
         postDelayed(() -> new LauncherUpdater(this).checkAppUpdateInteractive(), 1000);
     }
 
+    static ExecutorService refreshPackagesService = Executors.newSingleThreadExecutor();
     /**
      * Reloads and refreshes the current list of packages,
-     * and then the resulting app list for every activity
+     * and then the resulting app list for every activity.
      */
     public void refreshPackages() {
-        PackageManager packageManager = getPackageManager();
+        if (PlatformExt.installedApps == null) forceRefreshPackages();
+        refreshPackagesService.execute(() -> {
+            PackageManager packageManager = getPackageManager();
 
-        PlatformExt.installedApps = Collections.synchronizedList(
-                packageManager.getInstalledApplications(PackageManager.GET_META_DATA));
+            List<ApplicationInfo> newApps = Collections.synchronizedList(
+                    packageManager.getInstalledApplications(PackageManager.GET_META_DATA));
+
+            if (newApps.size() != PlatformExt.installedApps.size())
+                runOnUiThread(() -> this.refreshPackagesInternal(newApps));
+            else {
+
+                Set<Integer> installedSet = new HashSet<>();
+                PlatformExt.installedApps.forEach(v -> installedSet.add(v.packageName.hashCode()));
+                Set<Integer> newSet = new HashSet<>();
+                newApps.forEach(v -> newSet.add(v.packageName.hashCode()));
+
+                if (!newSet.equals(installedSet))
+                    runOnUiThread(() -> this.refreshPackagesInternal(newApps));
+            }
+        });
+    }
+    public void forceRefreshPackages() {
+        PackageManager packageManager = getPackageManager();
+        refreshPackagesInternal(Collections.synchronizedList(
+                packageManager.getInstalledApplications(PackageManager.GET_META_DATA)));
+    }
+    private void refreshPackagesInternal(List<ApplicationInfo> newApps) {
+        PlatformExt.installedApps = newApps;
 
         Log.v(TAG, "Package Reload - Found "+ PlatformExt.installedApps.size() +" packages");
         AppExt.invalidateCaches();
 
         launcherService.forEachActivity(LauncherActivity::refreshAppList);
     }
-
 
 
     /**

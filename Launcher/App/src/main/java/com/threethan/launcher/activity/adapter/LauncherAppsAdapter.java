@@ -9,6 +9,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.BaseInterpolator;
+import android.view.animation.LinearInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -301,7 +302,8 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
         final float newElevation = hovered ? (tv ? 15f : 20f) : 3f;
         final float textScale = 1-(1-(1/newScaleOuter))*0.7f;
         final int duration = tv ? 175 : 250;
-        BaseInterpolator interpolator = new OvershootInterpolator();
+        BaseInterpolator interpolator = Platform.isTv() ?
+                new LinearInterpolator() : new OvershootInterpolator();
 
         holder.imageView.animate().scaleX(newScaleInner).scaleY(newScaleInner)
                 .setDuration(duration).setInterpolator(interpolator).start();
