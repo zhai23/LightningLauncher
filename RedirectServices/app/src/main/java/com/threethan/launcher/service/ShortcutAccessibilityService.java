@@ -14,9 +14,10 @@ public class ShortcutAccessibilityService extends AccessibilityService {
         String targetName = getResources().getString(R.string.target_name);
         String targetEventName = "["+targetName+"]";
 
+
         if (targetEventName.toLowerCase().compareTo(eventText.toLowerCase()) == 0) {
             Intent launchIntent = new Intent(this, MainActivity.class);
-            launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
+            launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
 
             Log.i("LightningLauncherService", "Opening launcher activity from accessibility event");
             startActivity(launchIntent);
