@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.util.Log;
 
 import com.threethan.launcher.activity.support.SettingsManager;
-import com.threethan.launcher.helper.AppExt;
 import com.threethan.launchercore.Core;
 import com.threethan.launchercore.adapter.UtilityApplicationInfo;
 import com.threethan.launchercore.lib.StringLib;
@@ -84,6 +83,7 @@ public abstract class App {
     }
     private static boolean isVrApp(ApplicationInfo app) {
         if (isPanelApp(app)) return false;
+        if (app.packageName.equals("com.android.settings")) return false;
         if (app.metaData != null)
             if ( app.metaData.containsKey("com.oculus.ossplash")
                 || app.metaData.containsKey("com.samsung.android.vr.application.mode")
@@ -131,9 +131,6 @@ public abstract class App {
     /** @noinspection unused*/
     public static boolean isBanner(ApplicationInfo app) {
         return SettingsManager.getAppIsBanner(app);
-    }
-    public static Boolean showsName(ApplicationInfo app) {
-        return AppExt.showsName(app);
     }
 
     /** @return Application info for the given packageName (*without metadata) */

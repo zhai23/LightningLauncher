@@ -14,6 +14,8 @@ public class PackageChangeReceiver extends BroadcastReceiver {
         try {
             LauncherActivity.getForegroundInstance().launcherService
                     .forEachActivity(LauncherActivity::forceRefreshPackages);
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+            LauncherActivity.needsForceRefresh = true;
+        }
     }
 }
