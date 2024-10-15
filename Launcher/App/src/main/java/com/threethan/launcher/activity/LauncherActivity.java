@@ -84,6 +84,7 @@ import eightbitlab.com.blurview.RenderScriptBlur;
 public class LauncherActivity extends ComponentActivity {
     public static Boolean darkMode = null;
     public static Boolean groupsEnabled = true;
+    public static boolean needsForceRefresh = false;
     RecyclerView appsView;
     public ApplicationInfo currentTopSearchResult = null;
     public String currentTopSearchResultName = null;
@@ -312,7 +313,7 @@ public class LauncherActivity extends ComponentActivity {
      * and then the resulting app list for every activity.
      */
     public void refreshPackages() {
-        if (PlatformExt.installedApps == null) forceRefreshPackages();
+        if (PlatformExt.installedApps == null || needsForceRefresh) forceRefreshPackages();
         refreshPackagesService.execute(() -> {
             PackageManager packageManager = getPackageManager();
 
@@ -334,6 +335,7 @@ public class LauncherActivity extends ComponentActivity {
         });
     }
     public void forceRefreshPackages() {
+        needsForceRefresh = false;
         PackageManager packageManager = getPackageManager();
         refreshPackagesInternal(Collections.synchronizedList(
                 packageManager.getInstalledApplications(PackageManager.GET_META_DATA)));
