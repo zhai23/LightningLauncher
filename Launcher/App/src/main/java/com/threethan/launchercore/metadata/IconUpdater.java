@@ -43,9 +43,11 @@ public abstract class IconUpdater {
     // Each URL will be tried in order: the first with a file matching the package name will be used
     private static final String[] FALLBACK_URLS_SQUARE = {
             "https://raw.githubusercontent.com/veticia/binaries/main/icons/%s.png",
+            "https://files.cocaine.trade/LauncherIcons/oculus_landscape/%s.png"
     };
     private static final String[] FALLBACK_URLS_BANNER = {
             "https://raw.githubusercontent.com/veticia/binaries/main/banners/%s.png",
+            "https://files.cocaine.trade/LauncherIcons/oculus_icon/%s.png"
     };
     // Instead of matching a package name, websites match their TLD
     private static final String[] ICON_URLS_WEB = {
