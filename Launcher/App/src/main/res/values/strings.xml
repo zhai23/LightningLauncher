@@ -289,7 +289,7 @@
 
 
     <string name="addons_preamble">
-        Each shortcut can be used for another window of Lighting Launcher. You may use an addon as an alternate icon on the dock with or without activating it.</string>
+        Each shortcut can be used for another window of Lighting Launcher, even without activating. You must manually activate each one for redirects to work!</string>
 
     <string name="addons_explore">Feed Shortcut</string>
     <string name="addons_explore_desc">Install then activate to open Lightning Launcher when you press the <b>Horizon Feed</b> button on the dock.</string>
