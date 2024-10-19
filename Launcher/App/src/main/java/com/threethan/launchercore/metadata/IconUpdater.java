@@ -86,6 +86,7 @@ public abstract class IconUpdater {
      * @return True if the icon should be downloaded
      */
     private static synchronized boolean shouldDownload(ApplicationInfo app) {
+        if (IconLoader.iconCustomFileForApp(app).exists()) return false;
         String packageName = App.isWebsite(app.packageName) ?
                 StringLib.baseUrl(app.packageName) : app.packageName;
         if (!nextCheckByPackageMs.containsKey(packageName)) return true;

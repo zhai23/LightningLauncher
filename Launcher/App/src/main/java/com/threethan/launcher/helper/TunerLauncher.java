@@ -31,10 +31,7 @@ public class TunerLauncher {
             intent.putExtra(Intent.EXTRA_PACKAGE_NAME, packageName);
             Core.context().startActivity(intent);
         } else {
-            Intent openURL = new Intent(Intent.ACTION_VIEW);
-            openURL.setData(Uri.parse("https://threethan.itch.io/quest-game-tuner"));
-            openURL.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            Core.context().startActivity(openURL);
+            LaunchExt.launchUrl(null, "https://threethan.itch.io/quest-game-tuner");
         }
     }
 }

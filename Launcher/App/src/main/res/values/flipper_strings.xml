@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <string name="flipper_page_0_title" translatable="false">Join the Discord</string>
+    <string name="flipper_page_0_desc" translatable="false">Community, discussion, and support.</string>
+    <string name="flipper_page_0_link" translatable="false">https://discord.gg/xG8EG2VxeS</string>
+
+    <string name="flipper_page_1_title" translatable="false">Updates &amp; Changes</string>
+    <string name="flipper_page_1_desc" translatable="false">View the full change log and update history on GitHub.</string>
+    <string name="flipper_page_1_link" translatable="false">https://github.com/threethan/LightningLauncher/releases</string>
+
+    <string name="flipper_page_tuner_title" translatable="false">Get Quest Game Tuner</string>
+    <string name="flipper_page_tuner_desc" translatable="false">Support development &amp; unlock the full power of your quest by tuning resolution, FPS and more.</string>
+    <string name="flipper_page_tuner_link" translatable="false">https://threethan.itch.io/quest-game-tuner</string>
+
+</resources>

@@ -12,6 +12,7 @@ import com.threethan.launcher.data.Settings;
 import com.threethan.launcher.helper.AppExt;
 import com.threethan.launcher.helper.Compat;
 import com.threethan.launcher.helper.PlatformExt;
+import com.threethan.launchercore.Core;
 import com.threethan.launchercore.lib.StringLib;
 import com.threethan.launchercore.metadata.MetaMetadata;
 import com.threethan.launchercore.util.App;
@@ -151,7 +152,7 @@ public class SettingsManager extends Settings {
         String metaLabel = dataStoreEditor.getString(app.packageName+META_LABEL_SUFFIX, "");
         if (!metaLabel.isEmpty()) return metaLabel;
         try {
-            PackageManager pm = LauncherActivity.getForegroundInstance().getPackageManager();
+            PackageManager pm = Core.context().getPackageManager();
             String label = app.loadLabel(pm).toString();
             if (!label.isEmpty()) return label;
             // Try to load this app's real app info
@@ -165,7 +166,9 @@ public class SettingsManager extends Settings {
         if (newName == null) return;
         appLabelCache.put(app, newName);
         dataStoreEditor.putString(app.packageName, newName);
-        LauncherActivity.getForegroundInstance().launcherService.forEachActivity(LauncherActivity::refreshAppList);
+        if (LauncherActivity.getForegroundInstance() != null)
+            LauncherActivity.getForegroundInstance().launcherService
+                    .forEachActivity(LauncherActivity::refreshAppList);
     }
 
     public static boolean getAppLaunchOut(String pkg) {
@@ -173,7 +176,7 @@ public class SettingsManager extends Settings {
         if (App.isWebsite(pkg)) {
             // If website, select based on browser selection
             final String launchBrowserKey = Settings.KEY_LAUNCH_BROWSER + pkg;
-            final int launchBrowserSelection = LauncherActivity.getForegroundInstance().dataStoreEditor.getInt(
+            final int launchBrowserSelection = Compat.getDataStore().getInt(
                     launchBrowserKey,
                     SettingsManager.getDefaultBrowser()
             );
@@ -183,7 +186,7 @@ public class SettingsManager extends Settings {
     }
     public static int getAppLaunchSize(String pkg) {
         return
-            LauncherActivity.getForegroundInstance().dataStoreEditor.getInt(
+                Compat.getDataStore().getInt(
                     Settings.KEY_LAUNCH_SIZE + pkg, 1);
     }
     public static int getDefaultBrowser() {
@@ -468,7 +471,7 @@ public class SettingsManager extends Settings {
     public static void setDefaultGroupFor(App.Type type, String newDefault) {
         if (newDefault == null) return;
         defaultGroupCache.put(type, newDefault);
-        LauncherActivity.getForegroundInstance().dataStoreEditor.putString(Settings.KEY_DEFAULT_GROUP + type, newDefault);
+        Compat.getDataStore().putString(Settings.KEY_DEFAULT_GROUP + type, newDefault);
     }
 
     /**
@@ -513,10 +516,12 @@ public class SettingsManager extends Settings {
         dataStoreEditor.putBoolean(Settings.KEY_BANNER + type, banner);
 
         LauncherActivity la = LauncherActivity.getForegroundInstance();
-        for (String packageName : la.getAllPackages())
-            if (App.getType(packageName).equals(type))
-                la.dataStoreEditor.removeBoolean(Settings.KEY_BANNER_OVERRIDE + packageName);
-        Compat.clearIconCache(la);
+        if (la != null) {
+            for (String pkgName : la.getAllPackages())
+                if (App.getType(pkgName).equals(type))
+                    la.dataStoreEditor.removeBoolean(Settings.KEY_BANNER_OVERRIDE + pkgName);
+            Compat.clearIconCache(la);
+        }
     }
 
     /** Sets a specific app to use banner or icon display, regardless of type */

@@ -10,11 +10,20 @@
     <string name="migrated">Old settings have been migrated</string>
 
     <string name="edit_mode">Edit Mode</string>
+    <string name="edit_mode_tip">Change groups, add websites, and more.</string>
     <string name="edit_mode_disabled">Only main window can edit</string>
     <string name="edit_mode_stop">Stop Editing</string>
 
-    <string name="icons_size">Icon Size</string>
-    <string name="icons_margin">Icon Margin</string>
+    <string name="new_multitasking">Keep Lightning Launcher open when launching apps</string>
+    <string name="new_multitasking_tip">If enabled, 2D &amp; Panel apps\'
+        windows will be launched \n
+        beside the Lightning Launcher window, rather than of replacing it.
+        \n<i>Apps won\'t open correctly if all three desktop spaces are in use.</i></string>
+
+    <string name="icons_size">Scaling</string>
+    <string name="icons_size_tip">Target size for icons/banners.\n<i>May vary with window size.</i></string>
+    <string name="icons_margin">Margins</string>
+    <string name="icons_margin_tip">Target spacing between icons/banners.\n<i>May vary with window size.</i></string>
 
     <string name="apps_vr">VR Apps</string>
     <string name="apps_phone">Phone Apps</string>
@@ -27,30 +36,33 @@
 
     <string name="settings_main">Lightning Launcher Settings</string>
     <string name="settings_appearance">Customize Appearance</string>
-    <string name="settings_addons_attract">Set Up Shortcuts</string>
+    <string name="settings_addons_attract">Shortcuts</string>
     <string name="settings_addons">Shortcuts</string>
+    <string name="settings_addons_tip">Make Lightning Launcher easier to access.</string>
     <string name="settings_update">Download &amp; Install Latest Update</string>
 
     <string name="behavior_header">Behavior</string>
     <string name="background_header">Wallpaper &amp; Style</string>
-    <string name="hdr_icon">Icons &amp; Layout</string>
+    <string name="hdr_icon">Icon Layout</string>
     <string name="disp_wide">Display as Banner</string>
     <string name="disp_icon">Display as Icon</string>
-    <string name="disp_name">Always Show Name</string>
+    <string name="disp_name">Always Show Names</string>
     <string name="advanced_header">Advanced Settings</string>
     <string name="advanced_button">Open Advanced Settings for More Options</string>
-    <string name="advanced_interface">Interface Options</string>
-    <string name="advanced_launching">Launching Options</string>
+    <string name="advanced_interface">Interface</string>
+    <string name="advanced_launching">Launching</string>
     <string name="advanced_features">Extra Features</string>
     <string name="advanced_search">Search Settings</string>
     <string name="advanced_backup">Backup &amp; Restore</string>
     <string name="advanced_alpha">Background Translucency</string>
+    <string name="advanced_alpha_tip">Makes the background of Lightning Launcher translucent in passthrough.\n<i>You may need to close and reopen the window for this to apply.</i></string>
 
-    <string name="dark_mode">Dark Mode with Light Text</string>
+    <string name="dark_mode">Dark Mode</string>
+    <string name="dark_mode_tip">If on, labels will appear white on a dark background.</string>
     <string name="background_overlay">Animated Gradient over Wallpaper</string>
     <string name="group_mode">Enable Groups</string>
     <string name="clear_cache">Reset All Icons</string>
-    <string name="clear_labels">Reset All Labels</string>
+    <string name="clear_labels">Reset Names</string>
     <string name="group_defaults_button">Default Groups</string>
     <string name="icons_settings_button">Refresh Icons</string>
 
@@ -64,7 +76,7 @@
     <string name="groupings_save">Export Groupings</string>
     <string name="groupings_load">Import Groupings</string>
     <string name="settings_default_launcher">Set Default Home to Enable 3rd-party Shortcuts</string>
-    <string name="tip_settings_default_launcher">Setup Lightning Launcher to let other apps add shortcuts</string>
+    <string name="tip_settings_default_launcher">Let Android apps add shortcut icons to Lightning Launcher.\n<i>Does not replace the App Library or home button.</i></string>
 
     <string name="advanced_sizing">Enable Additional Phone App Window Sizes</string>
     <string name="tip_advanced_sizing">Allows apps to be opened in different sized windows, may cause issues.</string>

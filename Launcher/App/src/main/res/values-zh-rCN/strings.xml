@@ -8,13 +8,19 @@
     <string name="migrated">已导入之前的配置</string>
 
     <string name="edit_mode">编辑模式</string>
+    <string name="edit_mode_tip">更改群组、添加网站等等。</string>
     <string name="edit_mode_disabled">只有主窗口可以编辑</string>
     <string name="edit_mode_stop">停止编辑</string>
 
-    <string name="icons_size">图标大小</string>
+    <string name="new_multitasking">打开其他应用程序时保留 Lightning Launcher 窗口</string>
+
+    <string name="new_multitasking_tip">如果启用，2D 应用程序将在 Lightning Launcher 窗口旁边打开窗口，而不是替换它。</string>
+    <string name="icons_size">浆纱</string>
+    <string name="icons_size_tip"><i>如果所有三个桌面空间都在使用中，应用程序将无法正确打开。 </i></string>
     <string name="icons_margin">图标距离</string>
 
-    <string name="apps_vr">VR 应用</string>
+    <string name="icons_margin_tip">修改图标/横幅之间的间距。</string>
+    <string name="apps_vr"><i>可能因窗口大小而异。</i></string>
     <string name="apps_phone">一般应用</string>
     <string name="apps_tv">TV 应用</string>
     <string name="apps_panel">Panel 应用</string>
@@ -27,6 +33,7 @@
     <string name="settings_appearance">自定义外观</string>
     <string name="settings_addons_attract">设置快捷方式</string>
     <string name="settings_addons">快捷方式设置</string>
+    <string name="settings_addons_tip">使 Lightning Launcher 更易于访问。</string>
     <string name="settings_update">下载并安装最新更新</string>
 
     <string name="behavior_header">行为</string>
@@ -44,7 +51,9 @@
     <string name="advanced_backup">备份恢复</string>
     <string name="advanced_alpha">背景透明度</string>
 
-    <string name="dark_mode">黑暗模式下显示明亮文字</string>
+    <string name="advanced_alpha_tip">当直通摄像头打开时，使 Lightning Launcher 的背景变得半透明。</string>
+    <string name="dark_mode"><i>您可能需要关闭并重新打开窗口才能应用此功能。</i></string>
+    <string name="dark_mode_tip">如果打开，标签将在深色背景上显示白色。</string>
     <string name="background_overlay">动画渐变壁纸</string>
     <string name="group_mode">启用分组</string>
     <string name="clear_cache">重置所有图标</string>

@@ -69,7 +69,7 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
         dismiss.setOnClickListener(view -> dialog.dismiss());
         dismiss.post(dismiss::requestFocus);
 
-        ((TextView) dialog.findViewById(R.id.versionLabel)).setText('v'+BuildConfig.VERSION_NAME);
+        ((TextView) dialog.findViewById(R.id.versionLabel)).setText('v' + BuildConfig.VERSION_NAME);
 
         // Addons
         View addonsButton = dialog.findViewById(R.id.addonsButton);
@@ -109,6 +109,14 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
             editSwitch.setVisibility(View.GONE);
             addWebsite.setVisibility(View.VISIBLE);
         }
+
+        // Auto-Multitasking
+        Switch multitaskSwitch = dialog.findViewById(R.id.multitaskSwitch);
+        if (Platform.supportsNewVrOsMultiWindow()) {
+            multitaskSwitch.setVisibility(View.VISIBLE);
+            attachSwitchToSetting(multitaskSwitch, Settings.KEY_NEW_MULTITASK, Settings.DEFAULT_NEW_MULTITASK);
+        } else
+            multitaskSwitch.setVisibility(View.GONE);
 
         // Update button
         if (LauncherUpdater.isAppUpdateAvailable()) {
@@ -237,73 +245,6 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
         margin.setMax(40);
 
 
-        attachSwitchToSetting(dialog.findViewById(R.id.groupSwitch),
-                Settings.KEY_GROUPS_ENABLED, Settings.DEFAULT_GROUPS_ENABLED,
-                value -> {
-                    showOneTimeWarningDialog(R.layout.dialog_info_hide_groups,
-                                             Settings.KEY_SEEN_HIDDEN_GROUPS_POPUP);
-                    if (value) {
-                        // Can edit, show switch
-                        editSwitch.setChecked(a.isEditing());
-                        editSwitch.setVisibility(View.VISIBLE);
-                        addWebsite.setVisibility(View.GONE);
-                    } else {
-                        editSwitch.setVisibility(View.GONE);
-                        addWebsite.setVisibility(View.VISIBLE);
-                    }
-                    a.setEditMode(true);
-                    a.setEditMode(false);
-                }, false
-        );
-
-        // Clear buttons (limited to one use to prevent bugs due to spamming)
-        clearedLabel = false;
-
-        View clearLabel = dialog.findViewById(R.id.clearLabelButton);
-        clearLabel.setOnClickListener(view -> {
-            if (!clearedLabel) {
-                Compat.clearLabels(a);
-                clearLabel.setAlpha(0.5f);
-                clearedLabel = true;
-            }
-        });
-        View iconSettings = dialog.findViewById(R.id.iconSettingsButton);
-        iconSettings.setOnClickListener(view -> SettingsDialog.showIconSettings(a));
-
-        View groupSettings = dialog.findViewById(R.id.groupDefaultsInfoButton);
-        groupSettings.setOnClickListener(view -> showGroupSettings());
-
-        // Banner mode
-        final Map<App.Type, Switch> switchByType = new HashMap<>();
-        switchByType.put(App.Type.PHONE, dialog.findViewById(R.id.bannerPhoneSwitch));
-        switchByType.put(App.Type.VR, dialog.findViewById(R.id.bannerVrSwitch));
-        switchByType.put(App.Type.TV, dialog.findViewById(R.id.bannerTvSwitch));
-        switchByType.put(App.Type.PANEL, dialog.findViewById(R.id.bannerPanelSwitch));
-        switchByType.put(App.Type.WEB, dialog.findViewById(R.id.bannerWebsiteSwitch));
-
-        for (App.Type type : switchByType.keySet()) {
-            if (PlatformExt.getSupportedAppTypes().contains(type)) {
-                Objects.requireNonNull(switchByType.get(type)).setVisibility(View.VISIBLE);
-
-                final Switch bSwitch = switchByType.get(type);
-                if (bSwitch == null) continue;
-                bSwitch.setChecked(AppExt.typeIsBanner(type));
-                bSwitch.setOnCheckedChangeListener((switchView, value) -> {
-                    SettingsManager.setTypeBanner(type, value);
-                    a.launcherService.forEachActivity(LauncherActivity::resetAdapters);
-                });
-            } else {
-                Objects.requireNonNull(switchByType.get(type)).setVisibility(View.GONE);
-            }
-        }
-
-        // Names
-        attachSwitchToSetting(dialog.findViewById(R.id.namesSquareSwitch),
-                Settings.KEY_SHOW_NAMES_SQUARE, Settings.DEFAULT_SHOW_NAMES_SQUARE);
-
-        attachSwitchToSetting(dialog.findViewById(R.id.namesBannerSwitch),
-                Settings.KEY_SHOW_NAMES_BANNER, Settings.DEFAULT_SHOW_NAMES_BANNER);
-
         // Advanced button
         dialog.findViewById(R.id.advancedSettingsButton).setOnClickListener(view -> showAdvancedSettings());
         return dialog;
@@ -335,14 +276,6 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
                 }
             }));
         } else dialog.findViewById(R.id.alphaLayout).setVisibility(View.GONE);
-
-        // Group enabled state
-        if (a.canEdit()) {
-            // Can edit, show switch
-            dialog.findViewById(R.id.editRequiredContaier).setVisibility(View.VISIBLE);
-        } else {
-            dialog.findViewById(R.id.editRequiredContaier).setVisibility(View.GONE);
-        }
 
         // Advanced
         attachSwitchToSetting(dialog.findViewById(R.id.longPressEditSwitch),
@@ -376,8 +309,8 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
                 Platform.isQuest()
                         ? R.array.advanced_launch_browsers_quest
                         : R.array.advanced_launch_browsers,
-                p -> a.dataStoreEditor.putInt(Settings.KEY_DEFAULT_BROWSER, p));
-        defaultBrowserSpinner.setSelection(defaultBrowserSelection);
+                p -> a.dataStoreEditor.putInt(Settings.KEY_DEFAULT_BROWSER, p),
+                defaultBrowserSelection);
 
         // Search settings
         attachSwitchToSetting(dialog.findViewById(R.id.searchWebSwitch),
@@ -420,6 +353,70 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
             SettingsSaver.saveSort(a);
             loadGroupings.setAlpha(1F);
         });
+
+
+        // Banner mode
+        final Map<App.Type, Switch> switchByType = new HashMap<>();
+        switchByType.put(App.Type.PHONE, dialog.findViewById(R.id.bannerPhoneSwitch));
+        switchByType.put(App.Type.VR, dialog.findViewById(R.id.bannerVrSwitch));
+        switchByType.put(App.Type.TV, dialog.findViewById(R.id.bannerTvSwitch));
+        switchByType.put(App.Type.PANEL, dialog.findViewById(R.id.bannerPanelSwitch));
+        switchByType.put(App.Type.WEB, dialog.findViewById(R.id.bannerWebsiteSwitch));
+
+        for (App.Type type : switchByType.keySet()) {
+            if (PlatformExt.getSupportedAppTypes().contains(type)) {
+                Objects.requireNonNull(switchByType.get(type)).setVisibility(View.VISIBLE);
+
+                final Switch bSwitch = switchByType.get(type);
+                if (bSwitch == null) continue;
+                bSwitch.setChecked(AppExt.typeIsBanner(type));
+                bSwitch.setOnCheckedChangeListener((switchView, value) -> {
+                    SettingsManager.setTypeBanner(type, value);
+                    a.launcherService.forEachActivity(LauncherActivity::resetAdapters);
+                });
+            } else {
+                Objects.requireNonNull(switchByType.get(type)).setVisibility(View.GONE);
+            }
+        }
+
+        // Names
+        attachSwitchToSetting(dialog.findViewById(R.id.namesSquareSwitch),
+                Settings.KEY_SHOW_NAMES_SQUARE, Settings.DEFAULT_SHOW_NAMES_SQUARE,
+                v -> a.launcherService.forEachActivity(LauncherActivity::forceRefreshPackages),
+                false);
+
+        attachSwitchToSetting(dialog.findViewById(R.id.namesBannerSwitch),
+                Settings.KEY_SHOW_NAMES_BANNER, Settings.DEFAULT_SHOW_NAMES_BANNER,
+                v -> a.launcherService.forEachActivity(LauncherActivity::refreshInterface),
+                false);
+
+
+        attachSwitchToSetting(dialog.findViewById(R.id.groupSwitch),
+                Settings.KEY_GROUPS_ENABLED, Settings.DEFAULT_GROUPS_ENABLED,
+                value -> {
+                    showOneTimeWarningDialog(R.layout.dialog_info_hide_groups,
+                            Settings.KEY_SEEN_HIDDEN_GROUPS_POPUP);
+                    a.setEditMode(true);
+                    a.setEditMode(false);
+                }, false
+        );
+
+        // Clear buttons (limited to one use to prevent bugs due to spamming)
+        clearedLabel = false;
+
+        View clearLabel = dialog.findViewById(R.id.clearLabelButton);
+        clearLabel.setOnClickListener(view -> {
+            if (!clearedLabel) {
+                Compat.clearLabels(a);
+                clearLabel.setAlpha(0.5f);
+                clearedLabel = true;
+            }
+        });
+        View iconSettings = dialog.findViewById(R.id.iconSettingsButton);
+        iconSettings.setOnClickListener(view -> showIconSettings(a));
+
+        View groupSettings = dialog.findViewById(R.id.groupDefaultsInfoButton);
+        groupSettings.setOnClickListener(view -> showGroupSettings());
     }
 
 
@@ -529,7 +526,7 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
 
         dialog.findViewById(R.id.cancel).setOnClickListener(v -> dialog.dismiss());
     }
-    public static void showIconSettings(LauncherActivity a) {
+    public void showIconSettings(LauncherActivity a) {
         clearedIconCache = false;
         clearedIconCustom = false;
 
@@ -562,4 +559,6 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
 
         dialog.findViewById(R.id.cancel).setOnClickListener(v -> dialog.dismiss());
     }
+
+
 }

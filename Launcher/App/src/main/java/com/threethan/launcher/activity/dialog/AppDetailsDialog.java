@@ -137,12 +137,12 @@ public class AppDetailsDialog extends BasicDialog<LauncherActivity> {
                 final int launchBrowserSelection = a.dataStoreEditor.getInt(
                         launchBrowserKey,
                         SettingsManager.getAppLaunchOut(app.packageName) ? 0 : 1);
-                launchBrowserSpinner.setSelection(launchBrowserSelection);
                 initSpinner(launchBrowserSpinner,
                         Platform.isQuest()
                                 ? R.array.advanced_launch_browsers_quest
                                 : R.array.advanced_launch_browsers,
-                        p -> a.dataStoreEditor.putInt(launchBrowserKey, p));
+                        p -> a.dataStoreEditor.putInt(launchBrowserKey, p),
+                        launchBrowserSelection);
                 launchBrowserSpinner.setVisibility(View.VISIBLE);
                 launchSizeSpinner.setVisibility(View.GONE);
             } else {
@@ -151,9 +151,9 @@ public class AppDetailsDialog extends BasicDialog<LauncherActivity> {
                         launchSizeKey,
                         SettingsManager.getAppLaunchOut(app.packageName) ? 0 : 1);
                 initSpinner(launchSizeSpinner, R.array.advanced_launch_sizes, p ->
-                        a.dataStoreEditor.putInt(launchSizeKey, p)
+                        a.dataStoreEditor.putInt(launchSizeKey, p),
+                        launchSizeSelection
                 );
-                launchSizeSpinner.setSelection(launchSizeSelection);
                 launchSizeSpinner.setVisibility(View.VISIBLE);
             }
         }

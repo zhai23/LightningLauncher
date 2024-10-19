@@ -90,6 +90,8 @@ public abstract class Settings {
     public static final int MAX_SCALE = 160;
     public static final int MIN_SCALE = 60;
     public static final int DEFAULT_MARGIN = 20;
+    public static final String KEY_NEW_MULTITASK = "KEY_NEW_MULTITASK";
+    public static final boolean DEFAULT_NEW_MULTITASK = false;
 
 
     public static final String KEY_EDIT_MODE = "KEY_EDIT_MODE";
