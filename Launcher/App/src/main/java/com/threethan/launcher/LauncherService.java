@@ -1,7 +1,9 @@
 package com.threethan.launcher;
 
+import android.app.Activity;
 import android.app.Service;
 import android.content.Intent;
+import android.content.pm.PackageInstaller;
 import android.os.Binder;
 import android.os.IBinder;
 import android.view.View;
@@ -28,6 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class LauncherService extends Service {
     private final IBinder binder = new LocalBinder();
+    private boolean isObservingInstallations = false;
     private final static ConcurrentHashMap<Integer, View> viewByIndex = new ConcurrentHashMap<>();
     public class LocalBinder extends Binder {
         public LauncherService getService() {
@@ -48,6 +51,7 @@ public class LauncherService extends Service {
      * @return The view itself
      */
     public View getNewView(LauncherActivity activity, ViewGroup root) {
+        if (!isObservingInstallations) observeInstallations(activity);
         final int index = getNewActivityIndex();
 
         View view = View.inflate(activity, R.layout.activity_main, root);
@@ -55,6 +59,39 @@ public class LauncherService extends Service {
         activityByIndex.put(activity, index);
 
         return view;
+    }
+
+    private void observeInstallations(Activity activity) {
+        PackageInstaller packageInstaller = activity.getPackageManager().getPackageInstaller();
+        isObservingInstallations = true;
+        packageInstaller.registerSessionCallback(new PackageInstaller.SessionCallback() {
+            @Override
+            public void onCreated(int sessionId) {}
+
+            @Override
+            public void onFinished(int sessionId, boolean success) {
+                forcePackageRefresh();
+            }
+
+            @Override
+            public void onActiveChanged(int sessionId, boolean active) {}
+
+            @Override
+            public void onBadgingChanged(int sessionId) {}
+
+            @Override
+            public void onProgressChanged(int sessionId, float progress) {}
+        });
+
+
+
+    }
+    private void forcePackageRefresh() {
+        if (activityByIndex.isEmpty()) {
+            LauncherActivity.needsForceRefresh = true;
+        } else {
+            forEachActivity(a -> a.postDelayed(a::forceRefreshPackages, 1000));
+        }
     }
 
     /**
@@ -102,6 +139,8 @@ public class LauncherService extends Service {
      */
     public void forEachActivity(Consumer<LauncherActivity> consumer) {
         for (LauncherActivity activity: activityByIndex.keySet())
-            if(activity != null) consumer.accept(activity);
+            if (activity != null) consumer.accept(activity);
+        if (LauncherActivity.getForegroundInstance() != null)
+            consumer.accept(LauncherActivity.getForegroundInstance());
     }
 }

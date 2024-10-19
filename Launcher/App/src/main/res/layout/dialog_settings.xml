@@ -16,7 +16,7 @@
         android:padding="20dp">
 
         <View
-            android:layout_width="415dp"
+            android:layout_width="455dp"
             android:layout_height="wrap_content" />
 
         <ImageView
@@ -48,6 +48,19 @@
             app:layout_constraintStart_toStartOf="parent"
             tools:text="0.0.0" />
 
+        <include
+            layout="@layout/flipper"
+            android:layout_width="match_parent"
+            android:layout_height="100dp" />
+
+        <TextView
+            style="@style/SettingSubtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:paddingTop="5dp"
+            android:text="@string/behavior_header" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="39dp"
@@ -60,7 +73,10 @@
                 android:layout_height="wrap_content"
 
                 android:layout_marginEnd="10dp"
-                android:text="@string/edit_mode" />
+                android:switchPadding="7dp"
+                android:text="@string/edit_mode"
+                android:tooltipText="@string/edit_mode_tip"
+                tools:ignore="UnusedAttribute" />
 
             <com.threethan.launchercore.view.LcButton
                 android:id="@+id/addWebsiteButton"
@@ -84,8 +100,9 @@
                 android:layout_weight="1"
                 android:drawableEnd="@drawable/ic_dialog"
                 android:text="@string/settings_addons_attract"
+                android:tooltipText="@string/settings_addons_tip"
                 android:visibility="gone"
-                tools:visibility="visible" />
+                tools:ignore="UnusedAttribute" />
 
             <com.threethan.launchercore.view.LcButton
                 android:id="@+id/addonsButton"
@@ -93,7 +110,9 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:drawableEnd="@drawable/ic_dialog"
-                android:text="@string/settings_addons" />
+                android:text="@string/settings_addons"
+                android:tooltipText="@string/settings_addons_tip"
+                tools:ignore="UnusedAttribute" />
 
         </LinearLayout>
 
@@ -108,12 +127,42 @@
             android:visibility="gone"
             tools:visibility="visible" />
 
-        <TextView
-            style="@style/SettingSubtitle"
-            android:layout_width="wrap_content"
+        <com.threethan.launchercore.view.LcSwitch
+            android:id="@+id/multitaskSwitch"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="5dp"
-            android:text="@string/background_header" />
+
+            android:layout_marginTop="10dp"
+            android:switchPadding="7dp"
+            android:text="@string/new_multitasking"
+            android:tooltipText="@string/new_multitasking_tip"
+            tools:ignore="UnusedAttribute" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                style="@style/SettingSubtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="5dp"
+                android:text="@string/background_header" />
+
+            <com.threethan.launchercore.view.LcSwitch
+                android:id="@+id/darkModeSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_marginBottom="5dp"
+                android:background="@android:color/transparent"
+                android:scaleX="0.85"
+                android:scaleY="0.85"
+                android:switchPadding="7dp"
+                android:text="@string/dark_mode"
+                tools:ignore="UnusedAttribute,UseSwitchCompatOrMaterialXml"
+                android:tooltipText="@string/dark_mode_tip"/>
+        </FrameLayout>
 
         <HorizontalScrollView
             android:layout_width="wrap_content"
@@ -263,245 +312,81 @@
             </LinearLayout>
         </HorizontalScrollView>
 
-        <com.threethan.launchercore.view.LcSwitch
-            android:id="@+id/darkModeSwitch"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="@string/dark_mode"
-            tools:ignore="UseSwitchCompatOrMaterialXml" />
-
-        <TextView
-            style="@style/SettingSubtitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/hdr_icon" />
-
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="39dp"
-            android:background="@drawable/lc_bkg_button"
-            android:orientation="horizontal">
-
-            <TextView
-                style="@style/SettingButtonLabel"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginStart="10dp"
-                android:layout_weight="1"
-                android:gravity="center_vertical"
-                android:singleLine="true"
-                android:text="@string/icons_size" />
-
-            <SeekBar
-                android:id="@+id/scaleSeekBar"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1"
-                android:foreground="@drawable/bkg_hover_button"
-                android:max="255"
-                android:padding="0dp"
-                android:progressBackgroundTint="@android:color/white"
-                android:progressDrawable="@drawable/seekbar_custom"
-                android:thumb="@null" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="39dp"
+            android:layout_height="match_parent"
             android:layout_marginTop="10dp"
-            android:background="@drawable/lc_bkg_button"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:baselineAligned="false">
 
-            <TextView
-                style="@style/SettingButtonLabel"
+            <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginStart="10dp"
-                android:layout_weight="1"
-                android:gravity="center_vertical"
-                android:singleLine="true"
-                android:text="@string/icons_margin" />
-
-            <SeekBar
-                android:id="@+id/marginSeekBar"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1"
-                android:foreground="@drawable/bkg_hover_button"
-                android:max="255"
-                android:padding="0dp"
-                android:progressBackgroundTint="@android:color/white"
-                android:progressDrawable="@drawable/seekbar_custom"
-                android:thumb="@null" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="39dp"
-            android:layout_marginTop="10dp"
-            android:baselineAligned="false"
-            android:orientation="horizontal">
-
-            <com.threethan.launchercore.view.LcSwitch
-                android:id="@+id/groupSwitch"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-
-                android:layout_weight="2"
-                android:text="@string/group_mode"
-                tools:ignore="UseSwitchCompatOrMaterialXml" />
-
-            <TextView
-                android:id="@+id/clearLabelButton"
-                style="@style/SettingButtonLabel"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginStart="10dp"
+                android:layout_height="39dp"
+                android:layout_marginEnd="5dp"
                 android:layout_weight="1"
                 android:background="@drawable/lc_bkg_button"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:paddingStart="5dp"
-                android:paddingEnd="5dp"
-                android:singleLine="true"
-                android:text="@string/clear_labels">
+                android:orientation="horizontal">
 
-            </TextView>
-        </LinearLayout>
+                <com.threethan.launchercore.view.LcText
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:singleLine="true"
+                    android:text="@string/icons_size"
+                    android:tooltipText="@string/icons_size_tip"
+                    tools:ignore="NestedWeights,UnusedAttribute" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="39dp"
-            android:layout_marginTop="10dp"
-            android:baselineAligned="false"
-            android:orientation="horizontal">
+                <SeekBar
+                    android:id="@+id/scaleSeekBar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="2"
+                    android:foreground="@drawable/bkg_hover_button"
+                    android:max="255"
+                    android:padding="0dp"
+                    android:progressBackgroundTint="@android:color/white"
+                    android:progressDrawable="@drawable/seekbar_custom"
+                    android:thumb="@null" />
 
-            <com.threethan.launchercore.view.LcButton
-                android:id="@+id/groupDefaultsInfoButton"
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="3dp"
-                android:layout_weight="2"
-                android:drawableEnd="@drawable/ic_dialog"
-                android:text="@string/group_defaults_button" />
-
-            <com.threethan.launchercore.view.LcButton
-                android:id="@+id/iconSettingsButton"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginStart="5dp"
-                android:layout_weight="2"
-                android:drawableEnd="@drawable/ic_dialog"
-                android:text="@string/icons_settings_button" />
-
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/textView"
-            style="@style/SettingSubtitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/disp_wide" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="39dp"
-            android:baselineAligned="false"
-            android:orientation="horizontal">
-
-            <com.threethan.launchercore.view.LcSwitch
-                android:id="@+id/bannerVrSwitch"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-
-                android:layout_marginEnd="5dp"
-                android:layout_weight="1"
-                android:text="@string/apps_vr"
-                tools:ignore="UseSwitchCompatOrMaterialXml" />
-
-            <com.threethan.launchercore.view.LcSwitch
-                android:id="@+id/bannerPanelSwitch"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-
+                android:layout_height="39dp"
                 android:layout_marginStart="5dp"
                 android:layout_weight="1"
-                android:text="@string/apps_panel"
-                tools:ignore="UseSwitchCompatOrMaterialXml" />
+                android:background="@drawable/lc_bkg_button"
+                android:orientation="horizontal">
 
-            <com.threethan.launchercore.view.LcSwitch
-                android:id="@+id/bannerTvSwitch"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                <com.threethan.launchercore.view.LcText
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:singleLine="true"
+                    android:text="@string/icons_margin"
+                    android:tooltipText="@string/icons_margin_tip"
+                    tools:ignore="NestedWeights,UnusedAttribute" />
 
-                android:layout_marginStart="5dp"
-                android:layout_weight="1"
-                android:text="@string/apps_tv"
-                tools:ignore="UseSwitchCompatOrMaterialXml" />
-
+                <SeekBar
+                    android:id="@+id/marginSeekBar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="2"
+                    android:foreground="@drawable/bkg_hover_button"
+                    android:max="255"
+                    android:padding="0dp"
+                    android:progressBackgroundTint="@android:color/white"
+                    android:progressDrawable="@drawable/seekbar_custom"
+                    android:thumb="@null" />
+            </LinearLayout>
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="39dp"
-            android:layout_marginTop="10dp"
-            android:baselineAligned="false"
-            android:orientation="horizontal">
-
-            <com.threethan.launchercore.view.LcSwitch
-                android:id="@+id/bannerPhoneSwitch"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-
-                android:layout_marginEnd="5dp"
-                android:layout_weight="1"
-                android:text="@string/apps_phone"
-                tools:ignore="UseSwitchCompatOrMaterialXml" />
-
-            <com.threethan.launchercore.view.LcSwitch
-                android:id="@+id/bannerWebsiteSwitch"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-
-                android:layout_marginStart="5dp"
-                android:layout_weight="1"
-                android:text="@string/apps_web"
-                tools:ignore="UseSwitchCompatOrMaterialXml" />
-        </LinearLayout>
-
-        <TextView
-            style="@style/SettingSubtitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/disp_name" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="39dp"
-            android:baselineAligned="false"
-            android:orientation="horizontal">
-
-            <com.threethan.launchercore.view.LcSwitch
-                android:id="@+id/namesSquareSwitch"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="5dp"
-                android:layout_weight="1"
-                android:text="@string/app_name_icon" />
-
-            <com.threethan.launchercore.view.LcSwitch
-                android:id="@+id/namesBannerSwitch"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="5dp"
-                android:layout_weight="1"
-                android:text="@string/app_name_wide" />
-
-        </LinearLayout>
 
         <TextView
             style="@style/SettingSubtitle"

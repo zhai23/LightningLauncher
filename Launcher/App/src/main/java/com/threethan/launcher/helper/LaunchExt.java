@@ -1,9 +1,11 @@
 package com.threethan.launcher.helper;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
@@ -17,6 +19,7 @@ import com.threethan.launcher.activity.dialog.BasicDialog;
 import com.threethan.launcher.activity.support.SettingsManager;
 import com.threethan.launcher.data.Settings;
 import com.threethan.launcher.updater.BrowserUpdater;
+import com.threethan.launchercore.Core;
 import com.threethan.launchercore.lib.DelayLib;
 import com.threethan.launchercore.util.App;
 import com.threethan.launchercore.util.Keyboard;
@@ -96,6 +99,12 @@ public abstract class LaunchExt extends Launch {
                 return false;
             }
         }
+        // Relaunch for new multitasking with panel apps, websites, and VR
+        if (PlatformExt.useNewVrOsMultiWindow() && !App.getType(app).equals(App.Type.PHONE)) {
+            PackageManager pm = Core.context().getPackageManager();
+            Intent relaunch = pm.getLaunchIntentForPackage(launcherActivity.getPackageName());
+            DelayLib.delayed(() -> launcherActivity.startActivity(relaunch), 550);
+        }
 
         if (Platform.isTv()) {
             startIntent(launcherActivity, intent);
@@ -106,7 +115,7 @@ public abstract class LaunchExt extends Launch {
             DelayLib.delayed(() -> launcherActivity.startActivity(chain), 50);
             launcherActivity.finishAffinity();
         } else if (SettingsManager.getAppLaunchOut(app.packageName)) {
-            launchInOwnWindow(app, launcherActivity);
+            launchInOwnWindow(app, launcherActivity, PlatformExt.useNewVrOsMultiWindow());
         } else {
             startIntent(launcherActivity, intent);
         }
@@ -121,7 +130,7 @@ public abstract class LaunchExt extends Launch {
 
     /**
      * Gets the intent used to actually launch the given app,
-     * including workarounds for browsers & panel apps
+     * including workarounds for browsers & panel appsf
      */
     @Nullable
     private static Intent getIntentForLaunch(LauncherActivity activity, ApplicationInfo app) {
@@ -172,5 +181,24 @@ public abstract class LaunchExt extends Launch {
         }
 
         return li;
+    }
+
+    /** Launches an URL using a view intent, in a new window.
+     * If activity is null, it will attempt to close the foreground instance. */
+    public static void launchUrl(@Nullable Activity activity, String url) {
+        if (activity == null && LauncherActivity.getForegroundInstance() != null)
+            activity = LauncherActivity.getForegroundInstance();
+        if (activity != null) activity.finishAffinity();
+
+        Intent openURL = new Intent(Intent.ACTION_VIEW);
+        openURL.setData(Uri.parse(url));
+        openURL.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        DelayLib.delayed(() -> Core.context().startActivity(openURL), 50);
+
+        if (PlatformExt.useNewVrOsMultiWindow()) {
+            PackageManager pm = Core.context().getPackageManager();
+            Intent relaunch = pm.getLaunchIntentForPackage(Core.context().getPackageName());
+            DelayLib.delayed(() -> Core.context().startActivity(relaunch), 550);
+        }
     }
 }

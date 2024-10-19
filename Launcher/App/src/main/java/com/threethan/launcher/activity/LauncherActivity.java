@@ -113,8 +113,9 @@ public class LauncherActivity extends ComponentActivity {
      * Gets an instance of a LauncherActivity, preferring that which was most recently resumed
      * @return A reference to some launcher activity
      */
-    public static LauncherActivity getForegroundInstance() {
-        return Objects.requireNonNull(foregroundInstance.get());
+    public static @Nullable LauncherActivity getForegroundInstance() {
+        if (foregroundInstance == null) return null;
+        return foregroundInstance.get();
     }
 
     @Override
@@ -123,7 +124,7 @@ public class LauncherActivity extends ComponentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_container);
 
-        dataStoreEditor = Compat.getDataStore(this);
+        dataStoreEditor = Compat.getDataStore();
 
         Intent intent = new Intent(this, LauncherService.class);
         bindService(intent, launcherServiceConnection, Context.BIND_AUTO_CREATE);
@@ -606,8 +607,9 @@ public class LauncherActivity extends ComponentActivity {
      * Used to update the actual content of app list used to the main app grid
      */
     public void refreshAppList() {
-        if (PlatformExt.installedApps == null) return;
+        if (PlatformExt.installedApps == null) postDelayed(this::refreshAppList, 1000);
 
+        refreshPackages();
         refreshAdapters();
 
         if (getAppAdapter() != null) {

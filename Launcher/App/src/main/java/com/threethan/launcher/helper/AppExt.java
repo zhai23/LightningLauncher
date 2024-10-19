@@ -11,6 +11,7 @@ import com.threethan.launcher.R;
 import com.threethan.launcher.activity.LauncherActivity;
 import com.threethan.launcher.activity.support.SettingsManager;
 import com.threethan.launcher.data.Settings;
+import com.threethan.launchercore.Core;
 import com.threethan.launchercore.util.App;
 import com.threethan.launchercore.util.Platform;
 
@@ -44,6 +45,7 @@ public abstract class AppExt extends App {
     public static void uninstall(String packageName) {
         LauncherActivity launcher = LauncherActivity.getForegroundInstance();
         if (App.isWebsite(packageName)) {
+            if (launcher == null) return;
             Set<String> webApps = launcher.dataStoreEditor.getStringSet(Settings.KEY_WEBSITE_LIST, Collections.emptySet());
             webApps = new HashSet<>(webApps); // Copy since we're not supposed to modify directly
             webApps.remove(packageName);
@@ -53,8 +55,14 @@ public abstract class AppExt extends App {
             launcher.launcherService.forEachActivity(LauncherActivity::refreshAppList);
         } else {
             Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.setData(Uri.parse("package:" + packageName));
-            launcher.startActivity(intent);
+            Core.context().startActivity(intent);
+            if (launcher != null) {
+                for (int i = 2; i < 15; i++) // Check for uninstall completion
+                    launcher.postDelayed(launcher::refreshPackages, i*1000);
+            }
+
         }
     }
 

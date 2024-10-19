@@ -2,7 +2,6 @@ package com.threethan.launcher.helper;
 
 import static com.threethan.launcher.activity.support.SettingsManager.META_LABEL_SUFFIX;
 
-import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
@@ -15,10 +14,10 @@ import com.threethan.launcher.activity.support.DataStoreEditor;
 import com.threethan.launcher.activity.support.SettingsManager;
 import com.threethan.launcher.data.Settings;
 import com.threethan.launchercore.Core;
-import com.threethan.launchercore.metadata.IconLoader;
-import com.threethan.launchercore.metadata.IconUpdater;
 import com.threethan.launchercore.lib.FileLib;
 import com.threethan.launchercore.lib.StringLib;
+import com.threethan.launchercore.metadata.IconLoader;
+import com.threethan.launchercore.metadata.IconUpdater;
 import com.threethan.launchercore.util.App;
 import com.threethan.launchercore.util.Platform;
 
@@ -276,8 +275,14 @@ public abstract class Compat {
             a.forceRefreshPackages();
         });
     }
-    public static DataStoreEditor getDataStore(Context context) {
-            return new DataStoreEditor(context);
+    public static DataStoreEditor getDataStore() {
+        if (LauncherActivity.getForegroundInstance() != null
+                && LauncherActivity.getForegroundInstance().dataStoreEditor != null)
+            return LauncherActivity.getForegroundInstance().dataStoreEditor;
+        else {
+            Log.w(TAG, "Failed to grab dataStoreEditor from instance, using fallback");
+            return new DataStoreEditor(Core.context());
+        }
     }
     public static void resetIcon(ApplicationInfo app, Consumer<Drawable> callback) {
         IconLoader.cachedIcons.remove(app.packageName);
@@ -289,7 +294,7 @@ public abstract class Compat {
 
         IconLoader.loadIcon(app, d -> {
             LauncherActivity foregroundInstance = LauncherActivity.getForegroundInstance();
-            if (foregroundInstance.launcherService != null) {
+            if (foregroundInstance != null && foregroundInstance.launcherService != null) {
                 foregroundInstance.launcherService.forEachActivity(a -> {
                     LauncherAppsAdapter appAdapter = a.getAppAdapter();
                     if (appAdapter != null) a.runOnUiThread(() -> appAdapter.notifyItemChanged(app));

@@ -8,8 +8,8 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 
+import com.threethan.launcher.helper.PlatformExt;
 import com.threethan.launchercore.lib.DelayLib;
-import com.threethan.launchercore.util.Platform;
 
 import java.util.Objects;
 
@@ -32,9 +32,11 @@ public class ChainLoadActivity extends Activity {
             normalIntent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION
                     | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(normalIntent);
-        if (Platform.supportsNewVrOsMultiWindow()) {
-            Intent relaunch = pm.getLaunchIntentForPackage(getPackageName());
-            DelayLib.delayed(() -> startActivity(relaunch), 1050);
+        if (PlatformExt.useNewVrOsMultiWindow()) {
+            DelayLib.delayed(() -> {
+                    Intent relaunch = pm.getLaunchIntentForPackage(getPackageName());
+                    startActivity(relaunch);
+            }, 1050);
         }
         finishAffinity();
     }

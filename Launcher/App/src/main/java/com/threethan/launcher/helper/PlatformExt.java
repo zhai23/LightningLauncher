@@ -125,4 +125,11 @@ public abstract class PlatformExt {
         }
         return apps;
     }
+
+    /** @return True, if we should use the new multitasking behaviour */
+    public static boolean useNewVrOsMultiWindow() {
+        if (!Platform.supportsNewVrOsMultiWindow()) return false;
+        return Compat.getDataStore()
+                .getBoolean(Settings.KEY_NEW_MULTITASK, Settings.DEFAULT_NEW_MULTITASK);
+    }
 }

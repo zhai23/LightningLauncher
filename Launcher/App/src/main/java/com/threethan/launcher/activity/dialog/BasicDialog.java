@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Paint;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -106,7 +107,7 @@ public class BasicDialog<T extends Context> extends AbstractDialog<T> {
     }
 
     public static void initSpinner(Spinner spinner, int array_res,
-                                   Consumer<Integer> onPositionSelected) {
+                                   Consumer<Integer> onPositionSelected, int initialSelection) {
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 Objects.requireNonNull(getActivityContext()),
                 array_res, R.layout.spinner_item);
@@ -121,5 +122,9 @@ public class BasicDialog<T extends Context> extends AbstractDialog<T> {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}
         });
+
+        if (initialSelection < 0 || initialSelection >= adapter.getCount())
+            Log.e("SettingsArray", "Invalid position "+initialSelection);
+        else spinner.setSelection(initialSelection);
     }
 }

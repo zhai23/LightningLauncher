@@ -156,7 +156,7 @@ public abstract class AppUpdater extends RemotePackageUpdater {
     private void storeLatestVersionAndPromptUpdate(String newVersionName) {
         final String installedVersion = getInstalledVersion();
         if (!Objects.equals(newVersionName, installedVersion)) {
-            updateAvailable = false;
+            updateAvailable = true;
             if (newVersionName.equals(getIgnoredUpdateTag())) return;
             Log.v(TAG, "New version available!");
             showAppUpdateDialog(installedVersion, newVersionName);

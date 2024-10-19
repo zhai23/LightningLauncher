@@ -38,8 +38,22 @@
         <item name="android:textSize">20sp</item>
         <item name="android:paddingStart">7dp</item>
         <item name="android:paddingEnd">7dp</item>
-        <item name="android:layout_marginTop">15dp</item>
-        <item name="android:layout_marginBottom">5dp</item>
+        <item name="android:layout_marginTop">22dp</item>
+        <item name="android:layout_marginBottom">6dp</item>
+    </style>
+
+    <style name="FlipperTitle">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:paddingStart">15dp</item>
+        <item name="android:paddingEnd">15dp</item>
+    </style>
+    <style name="FlipperText">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:paddingStart">15dp</item>
+        <item name="android:layout_marginEnd">25dp</item>
+        <item name="android:layout_marginBottom">12dp</item>
     </style>
 
     <style name="SettingButtonLabel">
