@@ -12,7 +12,7 @@
     <string name="edit_mode_disabled">只有主窗口可以编辑</string>
     <string name="edit_mode_stop">停止编辑</string>
 
-    <string name="new_multitasking">打开其他应用程序时保留 Lightning Launcher 窗口</string>
+    <string name="new_multitasking">打开其他应用程序时保留 Launcher 窗口</string>
 
     <string name="new_multitasking_tip">如果启用，2D 应用程序将在 Lightning Launcher 窗口旁边打开窗口，而不是替换它。</string>
     <string name="icons_size">浆纱</string>

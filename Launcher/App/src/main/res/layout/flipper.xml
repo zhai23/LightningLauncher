@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:descendantFocusability="afterDescendants">
+    android:descendantFocusability="afterDescendants"
+    android:foreground="@drawable/flipper_fg">
 
     <FrameLayout
         android:id="@+id/flipperPage1"

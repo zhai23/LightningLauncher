@@ -24,6 +24,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -71,6 +72,8 @@ public class ViewFlinger extends ViewGroup {
     /** Sets a style of dots to indicate current page */
     public void setIndicator(Indicator dots) {
         this.mDots = dots;
+        // Foreground is requires for rendering of indicator
+        if (getForeground() == null) setForeground(new ColorDrawable(Color.TRANSPARENT));
     }
 
     private Indicator mDots = null;
