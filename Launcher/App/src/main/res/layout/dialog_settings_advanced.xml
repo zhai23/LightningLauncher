@@ -347,15 +347,6 @@
             tools:targetApi="o" />
 
         <TextView
-            android:id="@+id/textView4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:alpha="0.8"
-            android:gravity="center"
-            android:text="@string/tip_settings_default_launcher"
-            android:textSize="14sp" />
-
-        <TextView
             style="@style/SettingSubtitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

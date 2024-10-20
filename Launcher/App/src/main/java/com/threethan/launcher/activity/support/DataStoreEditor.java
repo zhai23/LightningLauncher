@@ -75,7 +75,7 @@ public class DataStoreEditor implements SharedPreferences, SharedPreferences.Edi
      * @param context Context from which to get the DataStore
      */
     public DataStoreEditor(Context context) {
-        dataStoreRX = getDataStore(context, "default");
+        dataStoreRX = getDataStore(context.getApplicationContext(), "default");
     }
 
     /**

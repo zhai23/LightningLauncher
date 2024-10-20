@@ -9,6 +9,7 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import com.threethan.launcher.helper.PlatformExt;
 import com.threethan.launchercore.Core;
 import com.threethan.launchercore.adapter.UtilityApplicationInfo;
 import com.threethan.launchercore.lib.DelayLib;
@@ -87,7 +88,7 @@ public abstract class Launch {
             return;
         }
         DelayLib.delayed(() -> launch(app), 50);
-        if (Platform.supportsNewVrOsMultiWindow()) {
+        if (PlatformExt.useNewVrOsMultiWindow()) {
             PackageManager pm = Core.context().getPackageManager();
             Intent relaunch = pm.getLaunchIntentForPackage(activity.getPackageName());
             DelayLib.delayed(() -> activity.startActivity(relaunch), 550);

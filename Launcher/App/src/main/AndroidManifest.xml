@@ -43,7 +43,6 @@
         android:hardwareAccelerated="true">
 
         <meta-data android:name="com.oculus.supportedDevices" android:value="all"/>
-
         <!-- Required for resolving URIs for APK installation -->
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -83,6 +82,7 @@
                 <category android:name="android.intent.category.HOME"/>
                 <category android:name="android.intent.category.VR_HOME"/>
                 <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
                 <action android:name="android.intent.action.CREATE_SHORTCUT" />
             </intent-filter>
         </activity>
