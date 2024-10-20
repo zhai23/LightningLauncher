@@ -47,6 +47,8 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
     private static boolean clearedIconCustom;
     private static boolean clearedSort;
     private static boolean clearedGroups;
+    private static AlertDialog instance;
+    private static AlertDialog advancedInstance;
 
     /**
      * Creates a settings dialog. Make sure to call show()!
@@ -58,8 +60,13 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
 
     @SuppressLint("SetTextI18n")
     public AlertDialog show() {
+        if (instance != null) try {
+            instance.dismiss();
+        } catch (Exception ignored) {}
+
         AlertDialog dialog = super.show();
         if (dialog == null) return null;
+        instance = dialog;
 
         a.settingsVisible = true;
 
@@ -251,8 +258,13 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
 
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     public void showAdvancedSettings() {
+        if (advancedInstance != null) try {
+            advancedInstance.dismiss();
+        } catch (Exception ignored) {}
+
         AlertDialog dialog = new BasicDialog<>(a, R.layout.dialog_settings_advanced).show();
         if (dialog == null) return;
+        advancedInstance = dialog;
 
         dialog.findViewById(R.id.dismissButton).setOnClickListener(view -> dialog.dismiss());
 
@@ -280,14 +292,15 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
         attachSwitchToSetting(dialog.findViewById(R.id.longPressEditSwitch),
                 Settings.KEY_DETAILS_LONG_PRESS, Settings.DEFAULT_AUTO_HIDE_EMPTY, null, true);
 
-        if (Platform.isVr()) {
+        if (Platform.isVr() && Platform.getVrOsVersion() < 71) {
             View defaultSettingsButton = dialog.findViewById(R.id.defaultLauncherSettingsButton);
             defaultSettingsButton.setOnClickListener((view) -> {
                 AlertDialog minDialog = new BasicDialog<>(a, R.layout.dialog_info_set_default_launcher).show();
                 assert minDialog != null;
                 minDialog.findViewById(R.id.install).setOnClickListener(view1 -> {
-                    final Intent intent = new Intent(android.provider.Settings.ACTION_HOME_SETTINGS);
+                     final Intent intent = new Intent(android.provider.Settings.ACTION_HOME_SETTINGS);
                     intent.setPackage("com.android.permissioncontroller");
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     minDialog.cancel();
                     a.startActivity(intent);
                 });

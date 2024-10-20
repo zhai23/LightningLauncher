@@ -33,23 +33,23 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.threethan.launcher.LauncherService;
 import com.threethan.launcher.R;
-import com.threethan.launcher.activity.adapter.LauncherAppsAdapter;
 import com.threethan.launcher.activity.adapter.CustomItemAnimator;
 import com.threethan.launcher.activity.adapter.GroupsAdapter;
+import com.threethan.launcher.activity.adapter.LauncherAppsAdapter;
+import com.threethan.launcher.activity.dialog.AppDetailsDialog;
+import com.threethan.launcher.activity.dialog.BasicDialog;
+import com.threethan.launcher.activity.dialog.SettingsDialog;
+import com.threethan.launcher.activity.executor.WallpaperExecutor;
+import com.threethan.launcher.activity.support.DataStoreEditor;
+import com.threethan.launcher.activity.support.SettingsManager;
+import com.threethan.launcher.activity.view.MarginDecoration;
+import com.threethan.launcher.data.Settings;
 import com.threethan.launcher.helper.AppExt;
 import com.threethan.launcher.helper.Compat;
-import com.threethan.launcher.activity.support.DataStoreEditor;
-import com.threethan.launcher.activity.dialog.BasicDialog;
 import com.threethan.launcher.helper.PlatformExt;
-import com.threethan.launcher.data.Settings;
-import com.threethan.launcher.LauncherService;
-import com.threethan.launcher.activity.dialog.AppDetailsDialog;
-import com.threethan.launcher.activity.dialog.SettingsDialog;
-import com.threethan.launcher.activity.support.SettingsManager;
-import com.threethan.launcher.activity.executor.WallpaperExecutor;
 import com.threethan.launcher.updater.LauncherUpdater;
-import com.threethan.launcher.activity.view.MarginDecoration;
 import com.threethan.launchercore.Core;
 import com.threethan.launchercore.lib.ImageLib;
 import com.threethan.launchercore.util.Keyboard;
@@ -120,10 +120,10 @@ public class LauncherActivity extends ComponentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Core.init(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_container);
 
+        Core.init(this);
         dataStoreEditor = Compat.getDataStore();
 
         Intent intent = new Intent(this, LauncherService.class);

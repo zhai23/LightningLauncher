@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// Updated ViewFlinger created for https://github.com/threethan/LightningLauncher
 package com.threethan.launcher.activity.view;
 
 import android.animation.ValueAnimator;
@@ -47,6 +48,11 @@ import java.util.ArrayList;
  * based on a defunct library.
  * <br/>
  * Updated by <a href="https://github.com/threethan">@threethan</a> 10/19/2024
+ * - Updated to target new AndroidX without reflection or warnings on API 34
+ * - Now supports scrolling via generic pointer input (such as horizontal mouse scroll)
+ * - Now supports optionally supports looping and/or auto-advance
+ * - Now supports adding customizable page indicators
+ * - Foregrounds now render correctly, with support for the hover state
  * @noinspection unused
  */
 public class ViewFlinger extends ViewGroup {

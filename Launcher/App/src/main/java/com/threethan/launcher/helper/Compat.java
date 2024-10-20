@@ -277,9 +277,9 @@ public abstract class Compat {
     }
     public static DataStoreEditor getDataStore() {
         if (LauncherActivity.getForegroundInstance() != null
-                && LauncherActivity.getForegroundInstance().dataStoreEditor != null)
-            return LauncherActivity.getForegroundInstance().dataStoreEditor;
-        else {
+        && LauncherActivity.getForegroundInstance().dataStoreEditor == null) {
+                return new DataStoreEditor(LauncherActivity.getForegroundInstance());
+        } else {
             Log.w(TAG, "Failed to grab dataStoreEditor from instance, using fallback");
             return new DataStoreEditor(Core.context());
         }

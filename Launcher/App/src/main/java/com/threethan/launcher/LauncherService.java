@@ -32,6 +32,7 @@ public class LauncherService extends Service {
     private final IBinder binder = new LocalBinder();
     private boolean isObservingInstallations = false;
     private final static ConcurrentHashMap<Integer, View> viewByIndex = new ConcurrentHashMap<>();
+
     public class LocalBinder extends Binder {
         public LauncherService getService() {
             return LauncherService.this;
