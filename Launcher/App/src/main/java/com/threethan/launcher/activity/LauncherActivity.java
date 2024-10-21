@@ -135,9 +135,9 @@ public class LauncherActivity extends ComponentActivity {
             : Settings.DEFAULT_BACKGROUND_VR);
         boolean custom = background < 0 || background >= SettingsManager.BACKGROUND_COLORS.length;
         int backgroundColor = custom ? Color.parseColor("#404044") : SettingsManager.BACKGROUND_COLORS[background];
-        int alpha = dataStoreEditor.getInt(Settings.KEY_BACKGROUND_ALPHA, Settings.DEFAULT_ALPHA);
+
         Drawable cd = new ColorDrawable(backgroundColor);
-        if (alpha < 255 && Platform.isQuest()) cd.setAlpha(alpha);
+        if (Platform.isQuest()) cd.setAlpha(WallpaperExecutor.getBackgroundAlpha(dataStoreEditor));
         post(() -> getWindow().setBackgroundDrawable(cd));
 
         // Set back action
@@ -578,15 +578,17 @@ public class LauncherActivity extends ComponentActivity {
 
             boolean custom = backgroundIndex < 0 || backgroundIndex >= SettingsManager.BACKGROUND_COLORS.length;
             int backgroundColor = custom ? Color.parseColor("#404044") : SettingsManager.BACKGROUND_COLORS[backgroundIndex];
+            Drawable cd = new ColorDrawable(backgroundColor);
+
+            if (Platform.isQuest()) cd.setAlpha(WallpaperExecutor.getBackgroundAlpha(dataStoreEditor));
 
             runOnUiThread(() -> {
                 getWindow().setNavigationBarColor(backgroundColor);
                 getWindow().setStatusBarColor(backgroundColor);
-                getWindow().setBackgroundDrawable(new ColorDrawable(backgroundColor));
+                getWindow().setBackgroundDrawable(cd);
             });
 
             new WallpaperExecutor().execute(this);
-
         });
     }
     public static int backgroundIndex = -2; // -2 indicated the setting needs to be loaded

@@ -8,6 +8,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 
 import com.threethan.launcher.activity.LauncherActivity;
+import com.threethan.launcher.activity.support.DataStoreEditor;
 import com.threethan.launcher.activity.support.SettingsManager;
 import com.threethan.launcher.data.Settings;
 import com.threethan.launchercore.lib.ImageLib;
@@ -66,8 +67,7 @@ public class WallpaperExecutor {
             backgroundThemeDrawable = new BitmapDrawable(Resources.getSystem(), imageBitmap);
 
             if (Platform.isQuest()) {
-                backgroundThemeDrawable.setAlpha(owner.dataStoreEditor
-                        .getInt(Settings.KEY_BACKGROUND_ALPHA, Settings.DEFAULT_ALPHA));
+                backgroundThemeDrawable.setAlpha(getBackgroundAlpha(owner.dataStoreEditor) + 1);
             }
             // Apply
             BitmapDrawable finalBackgroundThemeDrawable = backgroundThemeDrawable;
@@ -78,5 +78,11 @@ public class WallpaperExecutor {
         });
         thread.setPriority(Thread.MIN_PRIORITY);
         thread.start();
+    }
+
+    /** Quest only. Clamped between 1 and 254 to prevent compositing issues. */
+    public static int getBackgroundAlpha(DataStoreEditor dataStoreEditor) {
+        int alpha = dataStoreEditor.getInt(Settings.KEY_BACKGROUND_ALPHA, Settings.DEFAULT_ALPHA);
+        return Math.max(1, Math.min(alpha, 254));
     }
 }
