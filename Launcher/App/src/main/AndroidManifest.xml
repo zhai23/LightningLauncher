@@ -9,7 +9,6 @@
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES"/>
 
-
     <!--  For backup/download  -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
@@ -66,7 +65,8 @@
             android:launchMode="singleInstancePerTask"
             android:resizeableActivity="true"
             android:stateNotNeeded="true"
-            android:excludeFromRecents="true">
+            android:excludeFromRecents="true"
+            android:theme="@style/ThemeOverlay.Quest">
 
             <layout android:defaultWidth="1024dp" android:defaultHeight="640dp" android:gravity="top|end" />
             <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
@@ -74,7 +74,6 @@
 
             <meta-data android:name="com.oculus.vrshell.supports_multi_instance" android:value="true" />
             <meta-data android:name="com.oculus.lazy_gpumem_allocation" android:value="true" />
-
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

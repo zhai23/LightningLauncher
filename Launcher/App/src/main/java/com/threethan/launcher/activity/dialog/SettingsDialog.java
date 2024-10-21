@@ -22,6 +22,7 @@ import com.threethan.launcher.helper.AppExt;
 import com.threethan.launcher.helper.Compat;
 import com.threethan.launcher.helper.PlatformExt;
 import com.threethan.launcher.helper.SettingsSaver;
+import com.threethan.launcher.updater.LauncherUpdater;
 import com.threethan.launchercore.util.App;
 import com.threethan.launchercore.util.Platform;
 
@@ -125,11 +126,11 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
             multitaskSwitch.setVisibility(View.GONE);
 
         // Update button
-//        if (LauncherUpdater.isAppUpdateAvailable()) {
-//            View skippedUpdateButton = dialog.findViewById(R.id.updateButton);
-//            skippedUpdateButton.setVisibility(View.VISIBLE);
-//            skippedUpdateButton.setOnClickListener((view) -> new LauncherUpdater(a).checkAppUpdateAndInstall());
-//        }
+        if (LauncherUpdater.isAppUpdateAvailable()) {
+            View skippedUpdateButton = dialog.findViewById(R.id.updateButton);
+            skippedUpdateButton.setVisibility(View.VISIBLE);
+            skippedUpdateButton.setOnClickListener((view) -> new LauncherUpdater(a).checkAppUpdateAndInstall());
+        }
 
         // Wallpaper and style
         Switch darkSwitch = dialog.findViewById(R.id.darkModeSwitch);
