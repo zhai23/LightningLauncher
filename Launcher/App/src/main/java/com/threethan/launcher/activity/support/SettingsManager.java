@@ -111,6 +111,7 @@ public class SettingsManager extends Settings {
      * @param onLabel Called on success with the label
      */
     private static void fetchLabelAsync(ApplicationInfo app, Consumer<String> onLabel) {
+        if (Platform.labelOverrides.containsKey(app.packageName)) return;
         new Thread(() -> {
             MetaMetadata.App appMeta = MetaMetadata.getForPackage(app.packageName);
             if (appMeta != null) {

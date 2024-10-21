@@ -114,8 +114,6 @@ public abstract class IconUpdater {
             if (lock == null) lock = locks.get(packageName);
             synchronized (Objects.requireNonNull(lock)) {
                 try {
-
-
                     final String dlPkg = getDownloadString(app);
                     final Runnable success = () ->
                             callback.accept(new BitmapDrawable(Core.context().getResources(),
