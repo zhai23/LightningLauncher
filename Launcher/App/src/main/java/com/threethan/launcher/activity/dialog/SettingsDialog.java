@@ -269,6 +269,7 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
 
         dialog.findViewById(R.id.dismissButton).setOnClickListener(view -> dialog.dismiss());
 
+        dialog.findViewById(R.id.questWindowSettings).setVisibility(Platform.isQuest() ? View.VISIBLE : View.GONE);
         if (Platform.isQuest()) {
             SeekBar alpha = dialog.findViewById(R.id.alphaSeekBar);
             alpha.setProgress(255 - a.dataStoreEditor.getInt(Settings.KEY_BACKGROUND_ALPHA, Settings.DEFAULT_ALPHA));
@@ -287,13 +288,25 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
                     a.refreshBackground();
                 }
             }));
-        } else dialog.findViewById(R.id.alphaLayout).setVisibility(View.GONE);
+            attachSwitchToSetting(dialog.findViewById(R.id.newBlurSwitch), Settings.KEY_NEW_BLUR, Settings.DEFAULT_NEW_BLUR, v -> {
+                // Turn on transparency if it's not
+                if (v && a.dataStoreEditor.getInt(Settings.KEY_BACKGROUND_ALPHA, Settings.DEFAULT_ALPHA) > 128)
+                    a.dataStoreEditor.putInt(Settings.KEY_BACKGROUND_ALPHA, 0);
+                // Restart activities to apply
+                LauncherActivity foregroundInstance = LauncherActivity.getForegroundInstance();
+                if (foregroundInstance != null) {
+                    foregroundInstance.preventInit = true;
+                    foregroundInstance.launcherService
+                            .forEachActivity(LauncherActivity::finishAffinity);
+                }
+            }, false);
+        }
 
         // Advanced
         attachSwitchToSetting(dialog.findViewById(R.id.longPressEditSwitch),
                 Settings.KEY_DETAILS_LONG_PRESS, Settings.DEFAULT_AUTO_HIDE_EMPTY, null, true);
 
-        if (Platform.isVr() && Platform.getVrOsVersion() < 71) {
+        if (Platform.isVr() && Platform.getVrOsVersion() < 69) {
             View defaultSettingsButton = dialog.findViewById(R.id.defaultLauncherSettingsButton);
             defaultSettingsButton.setOnClickListener((view) -> {
                 AlertDialog minDialog = new BasicDialog<>(a, R.layout.dialog_info_set_default_launcher).show();

@@ -275,15 +275,18 @@ public abstract class Compat {
             a.forceRefreshPackages();
         });
     }
+    private static DataStoreEditor dataStoreEditor;
     public static DataStoreEditor getDataStore() {
         if (LauncherActivity.getForegroundInstance() != null
-        && LauncherActivity.getForegroundInstance().dataStoreEditor == null) {
-                return new DataStoreEditor(LauncherActivity.getForegroundInstance());
-        } else {
+        && LauncherActivity.getForegroundInstance().dataStoreEditor != null) {
+            dataStoreEditor = LauncherActivity.getForegroundInstance().dataStoreEditor;
+        } else if (dataStoreEditor == null) {
             Log.w(TAG, "Failed to grab dataStoreEditor from instance, using fallback");
-            return new DataStoreEditor(Core.context());
+            dataStoreEditor = new DataStoreEditor(Core.context());
         }
+        return dataStoreEditor;
     }
+
     public static void resetIcon(ApplicationInfo app, Consumer<Drawable> callback) {
         IconLoader.cachedIcons.remove(app.packageName);
         IconUpdater.nextCheckByPackageMs.remove(app.packageName);

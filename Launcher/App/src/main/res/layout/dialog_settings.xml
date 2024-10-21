@@ -61,6 +61,17 @@
             android:paddingTop="5dp"
             android:text="@string/behavior_header" />
 
+        <com.threethan.launchercore.view.LcButton
+            android:id="@+id/updateButton"
+            style="@style/buttonHighlight"
+            android:layout_width="match_parent"
+            android:layout_height="39dp"
+            android:layout_marginBottom="10dp"
+            android:drawableEnd="@drawable/ic_update"
+            android:text="@string/settings_update"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="39dp"
@@ -115,17 +126,6 @@
                 tools:ignore="UnusedAttribute" />
 
         </LinearLayout>
-
-        <com.threethan.launchercore.view.LcButton
-            android:id="@+id/updateButton"
-            style="@style/buttonHighlight"
-            android:layout_width="match_parent"
-            android:layout_height="39dp"
-            android:layout_marginTop="10dp"
-            android:drawableEnd="@drawable/ic_update"
-            android:text="@string/settings_update"
-            android:visibility="gone"
-            tools:visibility="visible" />
 
         <com.threethan.launchercore.view.LcSwitch
             android:id="@+id/multitaskSwitch"
