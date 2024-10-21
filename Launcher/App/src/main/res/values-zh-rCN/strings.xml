@@ -45,6 +45,7 @@
     <string name="advanced_header">高级设置</string>
     <string name="advanced_button">打开高级设置获取更多选项</string>
     <string name="advanced_interface">界面选项</string>
+    <string name="advanced_window">窗户</string>
     <string name="advanced_launching">启动选项</string>
     <string name="advanced_features">附加特性</string>
     <string name="advanced_search">搜索设置</string>
@@ -52,6 +53,8 @@
     <string name="advanced_alpha">背景透明度</string>
 
     <string name="advanced_alpha_tip">当直通摄像头打开时，使 Lightning Launcher 的背景变得半透明。</string>
+    <string name="advanced_new_blur">Quest 3/3S 的背景模糊</string>
+    <string name="advanced_new_blur_tip">当背景为半透明时，会添加模糊效果。 仅支持 Quest 3/3S。 启动器在更改时重新启动。  <i>打开时外壳闪烁， 并阻止通过快捷方式进行多任务处理。</i></string>
     <string name="dark_mode"><i>您可能需要关闭并重新打开窗口才能应用此功能。</i></string>
     <string name="dark_mode_tip">如果打开，标签将在深色背景上显示白色。</string>
     <string name="background_overlay">动画渐变壁纸</string>

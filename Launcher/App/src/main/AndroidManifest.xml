@@ -85,6 +85,40 @@
                 <action android:name="android.intent.action.CREATE_SHORTCUT" />
             </intent-filter>
         </activity>
+        <!-- For Quest 3 Translucency -->
+        <activity
+            android:name=".activity.QuestBlurActivity"
+            android:label="@string/app_name_for_list"
+            android:screenOrientation="unspecified"
+            android:configChanges="density|keyboard|keyboardHidden|navigation|orientation|screenLayout|screenSize|uiMode"
+            android:windowSoftInputMode="adjustNothing"
+            android:exported="true"
+            android:documentLaunchMode="always"
+            android:launchMode="singleInstancePerTask"
+            android:resizeableActivity="true"
+            android:stateNotNeeded="true"
+            android:excludeFromRecents="true"
+            android:theme="@style/ThemeOverlay.Quest">
+
+            <layout android:defaultWidth="1024dp" android:defaultHeight="640dp" android:gravity="top|end" />
+            <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
+            <meta-data android:name="com.oculus.vrshell.free_resizing_limits" android:value="300,2000,500,1000"/>
+
+            <meta-data android:name="com.oculus.vrshell.supports_multi_instance" android:value="true" />
+            <meta-data android:name="com.oculus.lazy_gpumem_allocation" android:value="true" />
+
+            <meta-data android:name="com.oculus.vrshell.supports_blend_effects" android:value="true" />
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.HOME"/>
+                <category android:name="android.intent.category.VR_HOME"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <action android:name="android.intent.action.CREATE_SHORTCUT" />
+            </intent-filter>
+        </activity>
         <!-- Main activity, called by leanback launcher & launcher manager (Android TV) -->
         <activity
             android:name=".activity.LauncherActivitySingle"

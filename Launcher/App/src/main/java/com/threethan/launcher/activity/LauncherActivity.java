@@ -117,10 +117,13 @@ public class LauncherActivity extends ComponentActivity {
         if (foregroundInstance == null) return null;
         return foregroundInstance.get();
     }
+    public boolean preventInit = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (preventInit) return;
         setContentView(R.layout.activity_container);
 
         Core.init(this);
@@ -291,6 +294,9 @@ public class LauncherActivity extends ComponentActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        if (preventInit) return;
+
         Core.init(this);
 
         foregroundInstance = new WeakReference<>(this);
