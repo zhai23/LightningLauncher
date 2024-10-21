@@ -79,6 +79,8 @@ public abstract class Platform {
         labelOverrides.put("com.oculus.gamingactivity", "Meta Quest Scoreboards");
         labelOverrides.put("com.oculus.helpcenter", "Meta Quest Guide");
         labelOverrides.put("com.android.settings", "Android Settings");
+        labelOverrides.put("com.oculus.tv", "Meta Quest TV");
+        labelOverrides.put("com.facebook.arvr.quillplayer", "VR Animation Player");
     }
     static final Set<String> excludedPackageNames = Set.of(
             "android",
@@ -86,7 +88,6 @@ public abstract class Platform {
             "com.oculus.vrshell",
             "com.oculus.shellenv",
             "com.oculus.integrity",
-            "com.oculus.tv",
             "com.oculus.socialplatform",
             "com.oculus.systemactivities",
             "com.oculus.systempermissions",
