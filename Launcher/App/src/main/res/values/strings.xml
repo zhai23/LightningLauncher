@@ -59,8 +59,7 @@
     <string name="advanced_alpha_tip">Makes the background of Lightning Launcher translucent in passthrough.</string>
     <string name="advanced_new_blur">Quest 3/3S Background Blur</string>
     <string name="advanced_new_blur_tip">Adds a blur effect to the background when translucent.\n
-        Only for Quest 3/3S. Launcher restarts on change.\n
-        \n<i>Cases flicker when opening,\nprevents multitasking via shortcuts.</i></string>
+        Only for Quest 3/3S. Launcher restarts on change.</string>
 
     <string name="dark_mode">Dark Mode</string>
     <string name="dark_mode_tip">If on, labels will appear white on a dark background.</string>
