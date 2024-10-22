@@ -66,7 +66,7 @@ public class SettingsManager extends Settings {
     private SettingsManager(LauncherActivity activity) {
         myLauncherActivityRef = new WeakReference<>(activity);
         dataStoreEditor = activity.dataStoreEditor;
-        dataStoreEditorSort = new DataStoreEditor(activity, "sort");
+        dataStoreEditorSort = new DataStoreEditor(activity.getApplicationContext(), "sort");
         // Conditional defaults (hacky)
         Settings.DEFAULT_DETAILS_LONG_PRESS = Platform.isTv();
     }
@@ -188,7 +188,7 @@ public class SettingsManager extends Settings {
     public static int getAppLaunchSize(String pkg) {
         return
                 Compat.getDataStore().getInt(
-                    Settings.KEY_LAUNCH_SIZE + pkg, 1);
+                    Settings.KEY_LAUNCH_SIZE + pkg, 0);
     }
     public static int getDefaultBrowser() {
         return dataStoreEditor.getInt(Settings.KEY_DEFAULT_BROWSER, 0);

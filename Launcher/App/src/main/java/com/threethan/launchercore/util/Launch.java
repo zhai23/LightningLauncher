@@ -128,7 +128,7 @@ public abstract class Launch {
         private Runnable onPostDestroy = null;
 
         /** Sets a runnable to be called after the activity is destroyed */
-        private void setOnPostDestroy(Runnable onPostDestroy) {
+        protected void setOnPostDestroy(Runnable onPostDestroy) {
             this.onPostDestroy = onPostDestroy;
         }
         @Override

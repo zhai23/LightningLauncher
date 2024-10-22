@@ -2,12 +2,10 @@ package com.threethan.launcher.activity;
 
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,13 +15,10 @@ import android.widget.ImageView;
 
 import com.threethan.launcher.R;
 import com.threethan.launcher.activity.view.EditTextWatched;
-import com.threethan.launcher.data.Settings;
-import com.threethan.launcher.helper.Compat;
 import com.threethan.launcher.helper.LaunchExt;
 import com.threethan.launchercore.Core;
 import com.threethan.launchercore.metadata.IconLoader;
 import com.threethan.launchercore.util.Keyboard;
-import com.threethan.launchercore.util.Platform;
 
 import java.util.Objects;
 import java.util.Timer;
@@ -44,28 +39,7 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Core.init(this);
-        if (shouldBlur()) {
-            if (!(this instanceof QuestBlurActivity)) {
-                preventInit = true;
-                finishAffinity();
-            }
-        } super.onCreate(savedInstanceState);
-    }
-    private boolean shouldBlur() {
-        return Platform.isQuest() && Compat.getDataStore()
-                .getBoolean(Settings.KEY_NEW_BLUR, Settings.DEFAULT_NEW_BLUR);
-    }
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (preventInit) {
-            new Handler().post(() -> {
-                Intent intent = new Intent(this, shouldBlur()
-                        ? QuestBlurActivity.class : LauncherActivitySearchable.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-            });
-        }
+        super.onCreate(savedInstanceState);
     }
 
     private boolean searching = false;

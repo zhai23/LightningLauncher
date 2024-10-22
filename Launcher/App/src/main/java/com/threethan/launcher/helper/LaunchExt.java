@@ -106,8 +106,7 @@ public abstract class LaunchExt extends Launch {
         }
         if (SettingsManager.getAppLaunchSize(app.packageName) > 0) {
             Intent chain = getIntentForLaunch(launcherActivity, app);
-            launchInOwnWindow(chain, launcherActivity, PlatformExt.useNewVrOsMultiWindow());
-            launcherActivity.finishAffinity();
+            launchInOwnWindow(chain, launcherActivity, false);
         } else {
             launchInOwnWindow(app, launcherActivity, PlatformExt.useNewVrOsMultiWindow());
         }

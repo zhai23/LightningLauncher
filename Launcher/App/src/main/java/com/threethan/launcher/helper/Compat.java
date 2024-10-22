@@ -53,10 +53,12 @@ public abstract class Compat {
 
         if (storedVersion == -1) {
             // Attempt migration
-            DataStoreEditor dse1 = new DataStoreEditor(launcherActivity);
+            DataStoreEditor dse1 = new DataStoreEditor(launcherActivity
+                    .getApplicationContext());
             dse1.asyncWrite = false;
             dse1.migrateDefault(launcherActivity);
-            DataStoreEditor dse2 = new DataStoreEditor(launcherActivity, "sort");
+            DataStoreEditor dse2 = new DataStoreEditor(
+                    launcherActivity.getApplicationContext(), "sort");
             dse2.asyncWrite = false;
             dse2.migrateDefault(launcherActivity);
             if (dataStoreEditor.getInt(Settings.KEY_BACKGROUND, -1) != -1)
