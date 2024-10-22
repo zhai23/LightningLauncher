@@ -73,7 +73,7 @@ public abstract class SettingsSaver {
 
         BasicDialog.toast(activity.getString(R.string.settings_load));
 
-        new DataStoreEditor(activity, DATA_STORE_NAME).copyFrom(export);
+        new DataStoreEditor(activity.getApplicationContext(), DATA_STORE_NAME).copyFrom(export);
 
         BasicDialog.toast(activity.getString(R.string.saved_settings_loading));
         new Timer().schedule(new TimerTask() {
@@ -89,7 +89,7 @@ public abstract class SettingsSaver {
 
         BasicDialog.toast(activity.getString(R.string.settings_load));
 
-        new DataStoreEditor(activity, DATA_STORE_NAME_SORT).copyFrom(export);
+        new DataStoreEditor(activity.getApplicationContext(), DATA_STORE_NAME_SORT).copyFrom(export);
 
         BasicDialog.toast(activity.getString(R.string.saved_settings_loading));
         new Timer().schedule(new TimerTask() {

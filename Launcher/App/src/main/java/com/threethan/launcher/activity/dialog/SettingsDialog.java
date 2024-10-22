@@ -4,6 +4,7 @@ import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
@@ -24,6 +25,7 @@ import com.threethan.launcher.helper.PlatformExt;
 import com.threethan.launcher.helper.SettingsSaver;
 import com.threethan.launcher.updater.LauncherUpdater;
 import com.threethan.launchercore.util.App;
+import com.threethan.launchercore.util.Launch;
 import com.threethan.launchercore.util.Platform;
 
 import java.util.ArrayList;
@@ -296,8 +298,14 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
                 LauncherActivity foregroundInstance = LauncherActivity.getForegroundInstance();
                 if (foregroundInstance != null) {
                     foregroundInstance.preventInit = true;
+                    PackageManager pm = foregroundInstance.getPackageManager();
                     foregroundInstance.launcherService
-                            .forEachActivity(LauncherActivity::finishAffinity);
+                            .forEachActivity(a -> {
+                                if (!a.equals(foregroundInstance)) a.finishAffinity();
+                            });
+                    Launch.launchInOwnWindow(
+                            pm.getLaunchIntentForPackage(foregroundInstance.getPackageName()),
+                            foregroundInstance, false);
                 }
             }, false);
         }

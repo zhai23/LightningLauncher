@@ -58,7 +58,6 @@ public class LauncherService extends Service {
         View view = View.inflate(activity, R.layout.activity_main, root);
         viewByIndex.put(index, view);
         activityByIndex.put(activity, index);
-
         return view;
     }
 
