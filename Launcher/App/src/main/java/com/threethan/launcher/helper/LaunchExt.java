@@ -99,12 +99,6 @@ public abstract class LaunchExt extends Launch {
                 return false;
             }
         }
-        // Relaunch for new multitasking with panel apps, websites, and VR
-        if (PlatformExt.useNewVrOsMultiWindow() && !App.getType(app).equals(App.Type.PHONE)) {
-            PackageManager pm = Core.context().getPackageManager();
-            Intent relaunch = pm.getLaunchIntentForPackage(launcherActivity.getPackageName());
-            DelayLib.delayed(() -> launcherActivity.startActivity(relaunch), 550);
-        }
 
         if (Platform.isTv()) {
             startIntent(launcherActivity, intent);
@@ -112,12 +106,10 @@ public abstract class LaunchExt extends Launch {
         }
         if (SettingsManager.getAppLaunchSize(app.packageName) > 0) {
             Intent chain = getIntentForLaunch(launcherActivity, app);
-            DelayLib.delayed(() -> launcherActivity.startActivity(chain), 50);
+            launchInOwnWindow(chain, launcherActivity, PlatformExt.useNewVrOsMultiWindow());
             launcherActivity.finishAffinity();
-        } else if (SettingsManager.getAppLaunchOut(app.packageName)) {
-            launchInOwnWindow(app, launcherActivity, PlatformExt.useNewVrOsMultiWindow());
         } else {
-            startIntent(launcherActivity, intent);
+            launchInOwnWindow(app, launcherActivity, PlatformExt.useNewVrOsMultiWindow());
         }
         return true;
     }

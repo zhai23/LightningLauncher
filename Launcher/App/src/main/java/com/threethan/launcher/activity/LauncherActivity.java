@@ -24,7 +24,6 @@ import android.view.ViewOutlineProvider;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import androidx.activity.ComponentActivity;
 import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
@@ -53,6 +52,7 @@ import com.threethan.launcher.updater.LauncherUpdater;
 import com.threethan.launchercore.Core;
 import com.threethan.launchercore.lib.ImageLib;
 import com.threethan.launchercore.util.Keyboard;
+import com.threethan.launchercore.util.Launch;
 import com.threethan.launchercore.util.Platform;
 
 import java.io.File;
@@ -81,7 +81,7 @@ import eightbitlab.com.blurview.RenderScriptBlur;
     It contains functions for initializing, refreshing, and updating various parts of the interface.
  */
 
-public class LauncherActivity extends ComponentActivity {
+public class LauncherActivity extends Launch.LaunchingActivity {
     public static Boolean darkMode = null;
     public static Boolean groupsEnabled = true;
     public static boolean needsForceRefresh = false;
