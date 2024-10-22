@@ -108,15 +108,12 @@
             <meta-data android:name="com.oculus.lazy_gpumem_allocation" android:value="true" />
 
             <meta-data android:name="com.oculus.vrshell.supports_blend_effects" android:value="true" />
+            <meta-data android:name="com.oculus.vrdesktop.control_bar_config" android:value="{'show_title':false,'show_report_bug':false,'with_back_button':false,'use_activity_label':true}"/>
+
+            <meta-data android:name="com.oculus.ocms.fbpermission.LIBRARY_PROVIDER" android:value=""/>
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-                <category android:name="android.intent.category.HOME"/>
-                <category android:name="android.intent.category.VR_HOME"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <action android:name="android.intent.action.CREATE_SHORTCUT" />
             </intent-filter>
         </activity>
         <!-- Main activity, called by leanback launcher & launcher manager (Android TV) -->

@@ -5,11 +5,12 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Handler;
 import android.util.Log;
 
+import androidx.activity.ComponentActivity;
 import androidx.annotation.Nullable;
 
-import com.threethan.launcher.helper.PlatformExt;
 import com.threethan.launchercore.Core;
 import com.threethan.launchercore.adapter.UtilityApplicationInfo;
 import com.threethan.launchercore.lib.DelayLib;
@@ -56,7 +57,6 @@ public abstract class Launch {
         } else {
             return defaultIntent != null ? defaultIntent : leanbackIntent;
         }
-
     }
     /** Launch an app from the core context as a new task */
     public static void launch(ApplicationInfo app) {
@@ -80,19 +80,61 @@ public abstract class Launch {
         launchInOwnWindow(app, activity, true);
     }
 
-        /** Launch an app - in it's own window, if applicable */
-    public static void launchInOwnWindow(ApplicationInfo app, Activity activity, boolean allowNewVrOsMultiWindow) {
-        if (App.getType(app).equals(App.Type.VR) || App.getType(app).equals(App.Type.PANEL)
-                || app instanceof UtilityApplicationInfo) {
+    /** Launch an app - in it's own window, if applicable */
+    public static void launchInOwnWindow(ApplicationInfo app, Activity activity,
+                                         boolean allowNewVrOsMultiWindow) {
+        Runnable onPostDestroy = () -> {
             launch(app);
-            return;
+            if (Platform.supportsNewVrOsMultiWindow() && allowNewVrOsMultiWindow) {
+                PackageManager pm = Core.context().getPackageManager();
+                Intent relaunch = pm.getLaunchIntentForPackage(activity.getPackageName());
+                DelayLib.delayed(() -> activity.startActivity(relaunch), 550);
+            }
+        };
+        if (!Platform.isVr()) {
+            onPostDestroy.run();
+        } else if (activity instanceof LaunchingActivity launchingActivity) {
+            launchingActivity.setOnPostDestroy(onPostDestroy);
+            launchingActivity.finishAffinity();
+        } else {
+            DelayLib.delayed(onPostDestroy, 50);
+            activity.finishAffinity();
         }
-        DelayLib.delayed(() -> launch(app), 50);
-        if (PlatformExt.useNewVrOsMultiWindow()) {
-            PackageManager pm = Core.context().getPackageManager();
-            Intent relaunch = pm.getLaunchIntentForPackage(activity.getPackageName());
-            DelayLib.delayed(() -> activity.startActivity(relaunch), 550);
+    }
+
+    /** Launch a custom activity intent - in it's own window, if applicable */
+    public static void launchInOwnWindow(Intent intent, Activity activity,
+                                         boolean allowNewVrOsMultiWindow) {
+        Runnable onPostDestroy = () -> {
+            activity.startActivity(intent);
+            if (Platform.supportsNewVrOsMultiWindow() && allowNewVrOsMultiWindow) {
+                PackageManager pm = Core.context().getPackageManager();
+                Intent relaunch = pm.getLaunchIntentForPackage(activity.getPackageName());
+                DelayLib.delayed(() -> activity.startActivity(relaunch), 550);
+            }
+        };
+        if (!Platform.isVr()) {
+            onPostDestroy.run();
+        } else if (activity instanceof LaunchingActivity launchingActivity) {
+            launchingActivity.setOnPostDestroy(onPostDestroy);
+            launchingActivity.finishAffinity();
+        } else {
+            DelayLib.delayed(onPostDestroy, 50);
+            activity.finishAffinity();
         }
-        activity.finishAffinity();
+    }
+    /** A subclass of androidx ComponentActivity which supports launching vrOS apps without delay */
+    public static class LaunchingActivity extends ComponentActivity {
+        private Runnable onPostDestroy = null;
+
+        /** Sets a runnable to be called after the activity is destroyed */
+        private void setOnPostDestroy(Runnable onPostDestroy) {
+            this.onPostDestroy = onPostDestroy;
+        }
+        @Override
+        protected void onDestroy() {
+            super.onDestroy();
+            if (onPostDestroy != null) new Handler().post(onPostDestroy);
+        }
     }
 }
