@@ -52,9 +52,11 @@
     <string name="advanced_backup">备份恢复</string>
     <string name="advanced_alpha">背景透明度</string>
 
-    <string name="advanced_alpha_tip">当直通摄像头打开时，使 Lightning Launcher 的背景变得半透明。</string>
+    <string name="advanced_alpha_tip">当直通摄像头打开时，使 Lightning Launcher 的背景变得半透明。
+    \n\n防止出现多个 Lightning Launcher 窗口。</string>
     <string name="advanced_new_blur">Quest 3/3S 的背景模糊</string>
-    <string name="advanced_new_blur_tip">当背景为半透明时，会添加模糊效果。 仅支持 Quest 3/3S。 启动器在更改时重新启动。</string>
+    <string name="advanced_new_blur_tip">当背景为半透明时，会添加模糊效果。 仅支持 Quest 3/3S。 启动器在更改时重新启动。
+    \n\n仅当窗口从主（白色）图标打开时才有效。</string>
     <string name="dark_mode"><i>您可能需要关闭并重新打开窗口才能应用此功能。</i></string>
     <string name="dark_mode_tip">如果打开，标签将在深色背景上显示白色。</string>
     <string name="background_overlay">动画渐变壁纸</string>
