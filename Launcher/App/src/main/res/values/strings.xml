@@ -56,10 +56,12 @@
     <string name="advanced_search">Search Settings</string>
     <string name="advanced_backup">Backup &amp; Restore</string>
     <string name="advanced_alpha">Background Translucency</string>
-    <string name="advanced_alpha_tip">Makes the background of Lightning Launcher translucent in passthrough.</string>
+    <string name="advanced_alpha_tip">Makes the background of Lightning Launcher translucent in passthrough.
+        \n\n<i>Prevents multiple Lightning Launcher windows from being open at once.</i></string>
     <string name="advanced_new_blur">Quest 3/3S Background Blur</string>
     <string name="advanced_new_blur_tip">Adds a blur effect to the background when translucent.\n
-        Only for Quest 3/3S. Launcher restarts on change.</string>
+        Only for Quest 3/3S. Launcher restarts on change.
+    \n\n<i>Does not apply to shortcuts\' windows.</i></string>
 
     <string name="dark_mode">Dark Mode</string>
     <string name="dark_mode_tip">If on, labels will appear white on a dark background.</string>

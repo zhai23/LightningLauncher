@@ -24,7 +24,6 @@ public class StartActivity extends Activity {
         finish();
 
         startActivity(intent);
-
     }
 
     private boolean shouldBlur() {
