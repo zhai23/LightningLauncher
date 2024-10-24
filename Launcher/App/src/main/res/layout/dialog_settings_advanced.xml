@@ -185,15 +185,6 @@
 
             </LinearLayout>
 
-            <com.threethan.launchercore.view.LcSwitch
-                android:id="@+id/newBlurSwitch"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-
-                android:layout_marginTop="10dp"
-                android:text="@string/advanced_new_blur"
-                android:tooltipText="@string/advanced_new_blur_tip"
-                tools:ignore="UnusedAttribute,UseSwitchCompatOrMaterialXml" />
         </LinearLayout>
 
 
