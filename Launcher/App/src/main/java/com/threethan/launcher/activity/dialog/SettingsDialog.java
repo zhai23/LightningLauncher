@@ -4,7 +4,6 @@ import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
@@ -25,7 +24,6 @@ import com.threethan.launcher.helper.PlatformExt;
 import com.threethan.launcher.helper.SettingsSaver;
 import com.threethan.launcher.updater.LauncherUpdater;
 import com.threethan.launchercore.util.App;
-import com.threethan.launchercore.util.Launch;
 import com.threethan.launchercore.util.Platform;
 
 import java.util.ArrayList;
@@ -253,7 +251,6 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
         }));
         margin.setMax(40);
 
-
         // Advanced button
         dialog.findViewById(R.id.advancedSettingsButton).setOnClickListener(view -> showAdvancedSettings());
         return dialog;
@@ -290,24 +287,6 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
                     a.refreshBackground();
                 }
             }));
-            attachSwitchToSetting(dialog.findViewById(R.id.newBlurSwitch), Settings.KEY_NEW_BLUR, Settings.DEFAULT_NEW_BLUR, v -> {
-                // Turn on transparency if it's not
-                if (v && a.dataStoreEditor.getInt(Settings.KEY_BACKGROUND_ALPHA, Settings.DEFAULT_ALPHA) > 128)
-                    a.dataStoreEditor.putInt(Settings.KEY_BACKGROUND_ALPHA, 0);
-                // Restart activities to apply
-                LauncherActivity foregroundInstance = LauncherActivity.getForegroundInstance();
-                if (foregroundInstance != null) {
-                    foregroundInstance.preventInit = true;
-                    PackageManager pm = foregroundInstance.getPackageManager();
-                    foregroundInstance.launcherService
-                            .forEachActivity(a -> {
-                                if (!a.equals(foregroundInstance)) a.finishAffinity();
-                            });
-                    Launch.launchInOwnWindow(
-                            pm.getLaunchIntentForPackage(foregroundInstance.getPackageName()),
-                            foregroundInstance, false);
-                }
-            }, false);
         }
 
         // Advanced
