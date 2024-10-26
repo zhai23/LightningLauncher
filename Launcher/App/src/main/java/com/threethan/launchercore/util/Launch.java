@@ -70,8 +70,6 @@ public abstract class Launch {
         if (!Platform.isTv()) {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-            intent.addFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
         }
         Core.context().startActivity(intent);
     }
@@ -89,6 +87,9 @@ public abstract class Launch {
                 PackageManager pm = Core.context().getPackageManager();
                 Intent relaunch = pm.getLaunchIntentForPackage(activity.getPackageName());
                 DelayLib.delayed(() -> activity.startActivity(relaunch), 550);
+            } else if (Platform.isVr()) {
+                DelayLib.delayed(() -> launch(app));
+                DelayLib.delayed(() -> activity.startActivity(getLaunchIntent(app)));
             }
         };
         if (!Platform.isVr()) {
@@ -111,6 +112,9 @@ public abstract class Launch {
                 PackageManager pm = Core.context().getPackageManager();
                 Intent relaunch = pm.getLaunchIntentForPackage(activity.getPackageName());
                 DelayLib.delayed(() -> activity.startActivity(relaunch), 550);
+            } else if (Platform.isVr()) {
+                DelayLib.delayed(() -> activity.startActivity(intent));
+                DelayLib.delayed(() -> activity.startActivity(intent), 2000);
             }
         };
         if (!Platform.isVr()) {
