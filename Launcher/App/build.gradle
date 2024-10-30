@@ -1,6 +1,8 @@
 apply plugin: 'com.android.application'
 
 android {
+    android.buildFeatures.buildConfig=true
+
     defaultConfig {
         compileSdk 34
         minSdkVersion 24
