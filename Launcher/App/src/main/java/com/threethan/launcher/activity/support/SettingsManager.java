@@ -392,7 +392,7 @@ public class SettingsManager extends Settings {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("Settings Manager", "Error while reading groups & sort", e);
         }
     }
     synchronized private void storeValues() {
@@ -426,7 +426,7 @@ public class SettingsManager extends Settings {
                 editor.putStringSet(KEY_GROUP_APP_LIST + group, appListSetMap.get(group));
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("Settings Manager", "Error while writing groups & sort", e);
         }
     }
 
@@ -534,6 +534,6 @@ public class SettingsManager extends Settings {
     /** Call getAppOverridesBanner first! @return True, if the app overrides & is a banner */
     public static boolean getAppIsBanner(ApplicationInfo app) {
         return dataStoreEditor.getBoolean(Settings.KEY_BANNER_OVERRIDE + app.packageName,
-                AppExt.typeIsBanner(AppExt.getType(app)));
+                app.packageName.startsWith("com.threethan") || AppExt.typeIsBanner(AppExt.getType(app)));
     }
  }
