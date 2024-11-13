@@ -26,6 +26,7 @@ import com.threethan.launcher.updater.LauncherUpdater;
 import com.threethan.launchercore.util.App;
 import com.threethan.launchercore.util.Platform;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -50,6 +51,7 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
     private static boolean clearedGroups;
     private static AlertDialog instance;
     private static AlertDialog advancedInstance;
+    private WeakReference<Switch> darkSwitchRef;
 
     /**
      * Creates a settings dialog. Make sure to call show()!
@@ -134,6 +136,7 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
 
         // Wallpaper and style
         Switch darkSwitch = dialog.findViewById(R.id.darkModeSwitch);
+        darkSwitchRef = new WeakReference<>(darkSwitch);
         attachSwitchToSetting(darkSwitch,
                 Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE,
                 value -> {
@@ -276,6 +279,13 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int value, boolean b) {
                     a.dataStoreEditor.putInt(Settings.KEY_BACKGROUND_ALPHA, 255 - value);
+                    // Automatically turn on dark mode if we're settings transparency above 50%
+                    // (the user can turn it back on themselves after, if they want)
+                    if (value > 128) {
+                        try {
+                            darkSwitchRef.get().setChecked(true);
+                        } catch (Exception ignored) {}
+                    }
                 }
 
                 @Override
