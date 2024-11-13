@@ -106,6 +106,7 @@ public abstract class Launch {
     /** Launch a custom activity intent - in it's own window, if applicable */
     public static void launchInOwnWindow(Intent intent, Activity activity,
                                          boolean allowNewVrOsMultiWindow) {
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         Runnable onPostDestroy = () -> {
             activity.startActivity(intent);
             if (Platform.supportsNewVrOsMultiWindow() && allowNewVrOsMultiWindow) {
@@ -114,9 +115,11 @@ public abstract class Launch {
                 DelayLib.delayed(() -> activity.startActivity(relaunch), 550);
             } else if (Platform.isVr()) {
                 DelayLib.delayed(() -> activity.startActivity(intent));
-                DelayLib.delayed(() -> activity.startActivity(intent), 2000);
             }
         };
+        if (Platform.isVr() && !(Platform.supportsNewVrOsMultiWindow() && allowNewVrOsMultiWindow))
+            DelayLib.delayed(() -> Core.context().startActivity(intent), 1500);
+
         if (!Platform.isVr()) {
             onPostDestroy.run();
         } else if (activity instanceof LaunchingActivity launchingActivity) {
