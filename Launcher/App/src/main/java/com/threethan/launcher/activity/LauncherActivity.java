@@ -12,7 +12,6 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -54,6 +53,7 @@ import com.threethan.launchercore.lib.ImageLib;
 import com.threethan.launchercore.util.Keyboard;
 import com.threethan.launchercore.util.Launch;
 import com.threethan.launchercore.util.Platform;
+import com.threethan.launchercore.util.TranslucentBlur;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -69,8 +69,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import eightbitlab.com.blurview.BlurView;
-import eightbitlab.com.blurview.RenderEffectBlur;
-import eightbitlab.com.blurview.RenderScriptBlur;
 
 /**
     The class handles most of what the launcher does, though it is extended by it's child classes
@@ -199,8 +197,7 @@ public class LauncherActivity extends Launch.LaunchingActivity {
 
         } catch (Exception e) {
             // Attempt to work around problems with backgrounded activities
-            Log.e(TAG, "Crashed due to exception while re-initiating existing activity");
-            e.printStackTrace();
+            Log.e(TAG, "Crashed due to exception while re-initiating existing activity", e);
             Log.e(TAG, "Attempting to start with a new activity...");
         }
 
@@ -272,7 +269,7 @@ public class LauncherActivity extends Launch.LaunchingActivity {
                     try {
                         bitmap = ImageLib.bitmapFromStream(getContentResolver().openInputStream(uri));
                     } catch (FileNotFoundException e) {
-                        e.printStackTrace();
+                        Log.e("PhotoPicker", "Error on load", e);
                         return;
                     }
                     if (bitmap == null) return;
@@ -402,11 +399,7 @@ public class LauncherActivity extends Launch.LaunchingActivity {
         View windowDecorView = getWindow().getDecorView();
         ViewGroup rootViewGroup = (ViewGroup) windowDecorView;
 
-        //noinspection deprecation
-        blurView.setupWith(rootViewGroup,
-                        Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
-                                ? new RenderEffectBlur()
-                                : new RenderScriptBlur(this))
+        blurView.setupWith(rootViewGroup, TranslucentBlur.getInstance(this))
                 .setBlurRadius(15f);
     }
 
@@ -532,7 +525,7 @@ public class LauncherActivity extends Launch.LaunchingActivity {
 
         final float normScale = (float) (iconScale - Settings.MIN_SCALE) / (Settings.MAX_SCALE - Settings.MIN_SCALE);
         int margin = (int) ((iconMargin) * (normScale+0.5f)/1.5f);
-        margin += (dCol-0.5) * 50 / nCol;
+        margin += (int) ((dCol-0.5) * 50 / nCol);
         margin -= 11;
         if (margin < -11) margin = -11;
 
