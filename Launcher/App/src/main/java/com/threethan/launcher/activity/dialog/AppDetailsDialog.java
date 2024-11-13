@@ -23,6 +23,7 @@ import com.threethan.launcher.helper.AppExt;
 import com.threethan.launcher.helper.Compat;
 import com.threethan.launcher.helper.PlatformExt;
 import com.threethan.launcher.helper.TunerLauncher;
+import com.threethan.launchercore.lib.DelayLib;
 import com.threethan.launchercore.metadata.IconLoader;
 import com.threethan.launchercore.lib.ImageLib;
 import com.threethan.launchercore.lib.StringLib;
@@ -78,8 +79,10 @@ public class AppDetailsDialog extends BasicDialog<LauncherActivity> {
             AppExt.uninstall(app.packageName); dialog.dismiss();});
 
         // Launch Mode Toggle
-        @SuppressLint("UseSwitchCompatOrMaterialCode")
-        final View refreshIconButton = dialog.findViewById(R.id.refreshIcon);
+        final View resetIconButton = dialog.findViewById(R.id.resetIcon);
+        resetIconButton.setVisibility(
+                IconLoader.iconCustomFileForApp(app).exists() ? View.VISIBLE : View.GONE
+        );
         final View tuningButton = dialog.findViewById(R.id.tuningButton);
 
         final Spinner launchSizeSpinner = dialog.findViewById(R.id.launchSizeSpinner);
@@ -99,9 +102,11 @@ public class AppDetailsDialog extends BasicDialog<LauncherActivity> {
             if (customIconFile.exists()) //noinspection ResultOfMethodCallIgnored
                 customIconFile.delete();
             a.setSelectedIconImage(iconImageView);
-
             imageApp = app;
             a.showImagePicker(LauncherActivity.ImagePickerTarget.ICON);
+            // Show the reset button (delayed so it doesn't appear before the image picker)
+            DelayLib.delayed(() ->
+                    a.runOnUiThread(() -> resetIconButton.setVisibility(View.VISIBLE)));
         });
 
         App.Type appType = AppExt.getType(app);
@@ -111,9 +116,10 @@ public class AppDetailsDialog extends BasicDialog<LauncherActivity> {
         dialog.findViewById(R.id.uninstall).setVisibility(appType == App.Type.PANEL
                 && app.packageName.contains("://") || (app.flags & ApplicationInfo.FLAG_SYSTEM) != 0
                 ? View.GONE : View.VISIBLE);
-        refreshIconButton.setOnClickListener(view -> Compat.resetIcon(app, d
+        resetIconButton.setOnClickListener(view -> Compat.resetIcon(app, d
                 -> a.runOnUiThread(() -> {
                     iconImageView.setImageDrawable(d);
+                    view.setVisibility(View.GONE);
                     if (a.getAppAdapter() != null) a.getAppAdapter().notifyItemChanged(app);
         })));
         if (appType == App.Type.VR || appType == App.Type.PANEL
@@ -124,7 +130,7 @@ public class AppDetailsDialog extends BasicDialog<LauncherActivity> {
                 tuningButton.setVisibility(View.VISIBLE);
                 tuningButton.setOnClickListener(v -> TunerLauncher.openForApp(app));
             }
-            refreshIconButton.setVisibility(View.VISIBLE);
+            resetIconButton.setVisibility(View.VISIBLE);
             launchSizeSpinner.setVisibility(View.GONE);
         } else {
             tuningButton.setVisibility(View.GONE);
@@ -211,7 +217,7 @@ public class AppDetailsDialog extends BasicDialog<LauncherActivity> {
             iconImageView.getLayoutParams().width = a.dp(83);
             dispBannerButton.setVisibility(View.VISIBLE);
             dispIconButton.setVisibility(View.GONE);
-            refreshIconButton.callOnClick();
+            resetIconButton.callOnClick();
         });
         dispBannerButton.setOnClickListener(v -> {
             SettingsManager.setAppBannerOverride(app, true);
@@ -219,7 +225,7 @@ public class AppDetailsDialog extends BasicDialog<LauncherActivity> {
             iconImageView.getLayoutParams().width = a.dp(150);
             dispBannerButton.setVisibility(View.GONE);
             dispIconButton.setVisibility(View.VISIBLE);
-            refreshIconButton.callOnClick();
+            resetIconButton.callOnClick();
         });
         iconImageView.setClipToOutline(true);
         iconImageView.getLayoutParams().width = a.dp(isBanner ? 150 : 83);
