@@ -10,13 +10,12 @@
 
     <View
         android:id="@+id/sizer"
-        android:layout_width="390dp"
+        android:layout_width="400dp"
         android:layout_height="94dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
-        android:id="@+id/linearLayout2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -76,9 +75,9 @@
                     android:id="@+id/refreshIcon"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
+                    android:layout_marginStart="3dp"
                     android:background="@drawable/bkg_hover_button"
                     android:padding="1dp"
-                    android:layout_marginStart="3dp"
                     android:src="@drawable/ic_refresh"
                     android:tooltipText="@string/reload_icon"
                     android:visibility="gone"
@@ -229,7 +228,7 @@
         <Spinner
             android:id="@+id/launchSizeSpinner"
             style="@style/customSpinner"
-            android:layout_width="250dp"
+            android:layout_width="260dp"
             android:layout_height="match_parent"
             android:layout_marginEnd="10dp" />
 
