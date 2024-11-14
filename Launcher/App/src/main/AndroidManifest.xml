@@ -52,6 +52,8 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+        <!-- Required for session-based installation -->
+        <receiver android:name=".updater.InstallReceiver" />
 
         <!-- Main activity, called by the launcher & shortcut apk (Quest) -->
         <activity
@@ -118,7 +120,6 @@
             <meta-data android:name="com.oculus.vrdesktop.control_bar_config" android:value="{'show_title':false}"/>
         </activity>
         <activity android:name=".activity.chainload.ChainLoadActivitySmall"
-            android:screenOrientation="unspecified"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
             android:exported="true"
             android:launchMode="singleInstancePerTask"
@@ -131,7 +132,6 @@
             <meta-data android:name="com.oculus.vrdesktop.control_bar_config" android:value="{'show_title':false}"/>
         </activity>
         <activity android:name=".activity.chainload.ChainLoadActivity"
-            android:screenOrientation="unspecified"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
             android:exported="true"
             android:launchMode="singleInstancePerTask"
@@ -144,7 +144,6 @@
             <meta-data android:name="com.oculus.vrdesktop.control_bar_config" android:value="{'show_title':false}"/>
         </activity>
         <activity android:name=".activity.chainload.ChainLoadActivityLarge"
-            android:screenOrientation="unspecified"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
             android:exported="true"
             android:launchMode="singleInstancePerTask"
@@ -157,7 +156,6 @@
             <meta-data android:name="com.oculus.vrdesktop.control_bar_config" android:value="{'show_title':false}"/>
         </activity>
         <activity android:name=".activity.chainload.ChainLoadActivityHuge"
-            android:screenOrientation="unspecified"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
             android:exported="true"
             android:launchMode="singleInstancePerTask"
@@ -170,7 +168,6 @@
             <meta-data android:name="com.oculus.vrdesktop.control_bar_config" android:value="{'show_title':false}"/>
         </activity>
         <activity android:name=".activity.chainload.ChainLoadActivityPortrait"
-            android:screenOrientation="unspecified"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
             android:exported="true"
             android:launchMode="singleInstancePerTask"
@@ -183,7 +180,6 @@
             <meta-data android:name="com.oculus.vrdesktop.control_bar_config" android:value="{'show_title':false}"/>
         </activity>
         <activity android:name=".activity.chainload.ChainLoadActivityWide"
-            android:screenOrientation="unspecified"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
             android:exported="true"
             android:launchMode="singleInstancePerTask"
@@ -210,6 +206,7 @@
                 <action android:name="android.content.pm.action.CONFIRM_PIN_SHORTCUT" />
             </intent-filter>
         </activity>
+
 
     </application>
 

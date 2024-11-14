@@ -1,14 +1,18 @@
 package com.threethan.launcher.activity.dialog;
 
 import android.animation.ObjectAnimator;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Paint;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -19,6 +23,7 @@ import com.threethan.launcher.activity.LauncherActivity;
 import com.threethan.launchercore.Core;
 import com.threethan.launchercore.util.Platform;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 
 /*
@@ -65,6 +70,7 @@ public class BasicDialog<T extends Context> extends AbstractDialog<T> {
 
     public static void toast(String stringMain, String stringBold, boolean isLong) {
         if (Core.context() == null) return;
+        Log.d("Toast", stringMain + " " + stringBold);
 
         // Real toast doesn't block dpad input
         if (!Platform.isVr()) {
@@ -72,7 +78,25 @@ public class BasicDialog<T extends Context> extends AbstractDialog<T> {
                     (isLong ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT)).show();
             return;
         }
-        Log.d("Toast", stringMain + " " + stringBold);
+
+        try {
+            LayoutInflater inflater =
+                    Objects.requireNonNull(LauncherActivity.getForegroundInstance())
+                            .getLayoutInflater();
+            View layout = inflater.inflate(R.layout.dialog_toast, null);
+
+            TextView textMain = layout.findViewById(R.id.toastTextMain);
+            TextView textBold = layout.findViewById(R.id.toastTextBold);
+            textMain.setText(stringMain);
+            textBold.setText(stringBold);
+
+            Toast toast = new Toast(LauncherActivity.getForegroundInstance());
+            toast.setDuration(isLong ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT);
+            toast.setView(layout);
+            toast.show();
+        } catch (Exception e) {
+            Log.w("Toast", "Failed to show toast", e);
+        }
     }
 
     public static void initSpinner(Spinner spinner, int array_res,
