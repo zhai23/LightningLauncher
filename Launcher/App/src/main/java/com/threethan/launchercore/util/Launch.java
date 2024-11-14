@@ -1,6 +1,7 @@
 package com.threethan.launchercore.util;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -27,6 +28,7 @@ public abstract class Launch {
     public static Intent getLaunchIntent(ApplicationInfo app) {
         if (app.packageName.startsWith(Core.context().getPackageName())) return null;
         if (Platform.excludedPackageNames.contains(app.packageName)) return null;
+
         PackageManager pm = Core.context().getPackageManager();
 
         if (Platform.isQuest() && App.getType(app) == App.Type.PANEL) {
@@ -45,9 +47,10 @@ public abstract class Launch {
         final Intent defaultIntent  = pm.getLaunchIntentForPackage(app.packageName);
         final Intent leanbackIntent = pm.getLeanbackLaunchIntentForPackage(app.packageName);
         if (Platform.isQuest()) {
+
             final Intent intent = defaultIntent != null ? defaultIntent : leanbackIntent;
-            if (intent != null) intent.setAction("com.oculus.vrshell.intent.action.LAUNCH");
-            return intent;
+            if (intent != null) return getVrOsLaunchIntent(app.packageName);
+            else return null;
         } else if (Platform.isTv()) {
             if (Objects.equals(app.packageName, "com.android.tv.settings"))
                 return new Intent(android.provider.Settings.ACTION_SETTINGS);
@@ -55,6 +58,18 @@ public abstract class Launch {
         } else {
             return defaultIntent != null ? defaultIntent : leanbackIntent;
         }
+    }
+
+    /** Gets an intent to launch an application using vrOS. Not tested before v69. */
+    public static Intent getVrOsLaunchIntent(String packageName) {
+        Intent intent = new Intent();
+        intent.setAction("com.oculus.vrshell.intent.action.LAUNCH");
+        intent.addCategory("android.intent.category.LAUNCHER");
+        intent.setData(Uri.parse("apk://"+packageName));
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setPackage("com.oculus.vrshell");
+        intent.setComponent(new ComponentName("com.oculus.vrshell", "com.oculus.vrshell.MainActivity"));
+        return intent;
     }
 
     /** Launch a custom activity intent - in it's own window, if applicable */

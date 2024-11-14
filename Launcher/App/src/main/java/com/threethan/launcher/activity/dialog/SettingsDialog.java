@@ -123,7 +123,8 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
         Switch multitaskSwitch = dialog.findViewById(R.id.multitaskSwitch);
         if (Platform.supportsNewVrOsMultiWindow()) {
             multitaskSwitch.setVisibility(View.VISIBLE);
-            attachSwitchToSetting(multitaskSwitch, Settings.KEY_NEW_MULTITASK, Settings.DEFAULT_NEW_MULTITASK);
+            attachSwitchToSetting(multitaskSwitch, Settings.KEY_NEW_MULTITASK,
+                    Settings.DEFAULT_NEW_MULTITASK, null, true);
         } else
             multitaskSwitch.setVisibility(View.GONE);
 
