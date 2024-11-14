@@ -106,9 +106,18 @@ public abstract class LaunchExt extends Launch {
         }
         if (SettingsManager.getAppLaunchSize(app.packageName) > 0) {
             Intent chain = getIntentForLaunch(launcherActivity, app);
+            assert chain != null;
             launchInOwnWindow(chain, launcherActivity, false);
         } else {
-            launchInOwnWindow(app, launcherActivity, PlatformExt.useNewVrOsMultiWindow());
+            final App.Type appType = App.getType(app);
+            if (appType.equals(App.Type.PHONE) || !Platform.supportsNewVrOsMultiWindow())
+                launchInOwnWindow(Objects.requireNonNull(getLaunchIntent(app)),
+                        launcherActivity, PlatformExt.useNewVrOsMultiWindow());
+            else {
+                startIntent(launcherActivity, intent);
+                if (!PlatformExt.useNewVrOsMultiWindow()) launcherActivity.finishAffinity();
+                return !appType.equals(App.Type.PANEL);
+            }
         }
         return true;
     }

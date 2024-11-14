@@ -91,10 +91,10 @@ public class AppDetailsDialog extends BasicDialog<LauncherActivity> {
         // Load Icon
         ImageView iconImageView = dialog.findViewById(R.id.appIcon);
         IconLoader.loadIcon(app, drawable -> {
-            if (getActivityContext() == null) return;
-            getActivityContext().runOnUiThread(() ->
-                    iconImageView.setImageDrawable(drawable)
-            );
+            if (LauncherActivity.getForegroundInstance() != null)
+                LauncherActivity.getForegroundInstance().runOnUiThread(() ->
+                        iconImageView.setImageDrawable(drawable)
+                );
         });
 
         iconImageView.setOnClickListener(iconPickerView -> {
@@ -130,7 +130,6 @@ public class AppDetailsDialog extends BasicDialog<LauncherActivity> {
                 tuningButton.setVisibility(View.VISIBLE);
                 tuningButton.setOnClickListener(v -> TunerLauncher.openForApp(app));
             }
-            resetIconButton.setVisibility(View.VISIBLE);
             launchSizeSpinner.setVisibility(View.GONE);
         } else {
             tuningButton.setVisibility(View.GONE);

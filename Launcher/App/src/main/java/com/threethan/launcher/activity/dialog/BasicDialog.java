@@ -1,27 +1,24 @@
 package com.threethan.launcher.activity.dialog;
 
 import android.animation.ObjectAnimator;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Paint;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 
 import com.threethan.launcher.R;
+import com.threethan.launcher.activity.LauncherActivity;
+import com.threethan.launchercore.Core;
 import com.threethan.launchercore.util.Platform;
 
-import java.lang.ref.WeakReference;
-import java.util.Objects;
 import java.util.function.Consumer;
 
 /*
@@ -31,17 +28,6 @@ import java.util.function.Consumer;
     dialog from a layout resource
  */
 public class BasicDialog<T extends Context> extends AbstractDialog<T> {
-    private static WeakReference<Activity> activityContextWeakReference;
-
-    @Nullable
-    public static Activity getActivityContext() {
-        return activityContextWeakReference.get();
-    }
-    public static void setActivityContext(Activity activityContext) {
-        activityContextWeakReference = new WeakReference<>(activityContext);
-    }
-
-
     final int resource;
 
     /**
@@ -78,38 +64,22 @@ public class BasicDialog<T extends Context> extends AbstractDialog<T> {
     }
 
     public static void toast(String stringMain, String stringBold, boolean isLong) {
-        if (getActivityContext() == null) return;
+        if (Core.context() == null) return;
 
         // Real toast doesn't block dpad input
         if (!Platform.isVr()) {
-            Toast.makeText(getActivityContext() , stringMain + " " + stringBold,
+            Toast.makeText(Core.context() , stringMain + " " + stringBold,
                     (isLong ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT)).show();
             return;
         }
-
-        // Fake toast for the Quest
-        AlertDialog dialog = new AlertDialog.Builder(getActivityContext(), R.style.dialogToast).setView(R.layout.dialog_toast).create();
-        try {
-            if (dialog.getWindow() != null) {
-                dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
-                dialog.getWindow().setBackgroundDrawableResource(R.drawable.bkg_dialog_transparent);
-                dialog.getWindow().setDimAmount(0.0f);
-                dialog.show();
-                ((TextView) dialog.findViewById(R.id.toastTextMain)).setText(stringMain);
-                ((TextView) dialog.findViewById(R.id.toastTextBold)).setText(stringBold);
-
-                // Dismiss if not done automatically
-                dialog.findViewById(R.id.toastTextMain).postDelayed(dialog::dismiss,
-                        isLong ? 5000 : 1750);
-            }
-
-        } catch (Exception ignored) {}
+        Log.d("Toast", stringMain + " " + stringBold);
     }
 
     public static void initSpinner(Spinner spinner, int array_res,
                                    Consumer<Integer> onPositionSelected, int initialSelection) {
+        Context foregroundContext = LauncherActivity.getForegroundInstance();
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-                Objects.requireNonNull(getActivityContext()),
+                foregroundContext != null ? foregroundContext : Core.context(),
                 array_res, R.layout.spinner_item);
         adapter.setDropDownViewResource(R.layout.spinner_item_dropdown);
         spinner.setAdapter(adapter);

@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
+import androidx.annotation.NonNull;
+
 import com.threethan.launchercore.Core;
 import com.threethan.launchercore.lib.ImageLib;
 import com.threethan.launchercore.lib.StringLib;
@@ -143,6 +145,7 @@ public abstract class IconUpdater {
                         }
 
                 } catch (Exception e) {
+                    //noinspection CallToPrintStackTrace
                     e.printStackTrace();
                 } finally {
                     // Set the icon to now download if we either successfully downloaded it,
@@ -189,19 +192,7 @@ public abstract class IconUpdater {
      */
     private static boolean saveStream(InputStream inputStream, File outputFile) {
         try {
-            DataInputStream dataInputStream = new DataInputStream(inputStream);
-
-            int length;
-            byte[] buffer = new byte[65536];
-
-            //noinspection ResultOfMethodCallIgnored
-            Objects.requireNonNull(outputFile.getParentFile()).mkdirs();
-            FileOutputStream fileOutputStream = new FileOutputStream(outputFile, false);
-
-            while ((length = dataInputStream.read(buffer)) > 0)
-                fileOutputStream.write(buffer, 0, length);
-
-            fileOutputStream.flush();
+            FileOutputStream fileOutputStream = getFileOutputStream(inputStream, outputFile);
             fileOutputStream.close();
 
             Bitmap bitmap = ImageLib.bitmapFromFile(outputFile);
@@ -212,6 +203,7 @@ public abstract class IconUpdater {
             }
             return false;
         } catch (Exception e) {
+            //noinspection CallToPrintStackTrace
             e.printStackTrace();
             return false;
         } finally {
@@ -221,5 +213,24 @@ public abstract class IconUpdater {
                 } catch (IOException ignored) {}
             }
         }
+    }
+
+    @NonNull
+    private static FileOutputStream getFileOutputStream(InputStream inputStream, File outputFile)
+            throws IOException {
+        DataInputStream dataInputStream = new DataInputStream(inputStream);
+
+        int length;
+        byte[] buffer = new byte[65536];
+
+        //noinspection ResultOfMethodCallIgnored
+        Objects.requireNonNull(outputFile.getParentFile()).mkdirs();
+        FileOutputStream fileOutputStream = new FileOutputStream(outputFile, false);
+
+        while ((length = dataInputStream.read(buffer)) > 0)
+            fileOutputStream.write(buffer, 0, length);
+
+        fileOutputStream.flush();
+        return fileOutputStream;
     }
 }
