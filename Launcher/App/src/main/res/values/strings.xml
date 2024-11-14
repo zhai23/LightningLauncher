@@ -188,7 +188,7 @@
 
     <!--  Updater  -->
     <string name="update_title">An update is available!</string>
-    <string name="update_content">You can update from version %1$s to %2$s, all in this app.</string>
+    <string name="update_content">You can update from version %1$s to %2$s, fully on-device.</string>
     <string name="update_button">Continue</string>
     <string name="update_skip_button">Skip this Update</string>
     <string name="update_skip_toast">Skipped version</string>

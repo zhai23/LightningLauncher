@@ -3,11 +3,15 @@ package com.threethan.launcher.updater;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.DownloadManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.IntentSender;
+import android.content.pm.PackageInstaller;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.util.Log;
@@ -17,9 +21,14 @@ import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 
 import com.threethan.launcher.R;
+import com.threethan.launcher.activity.LauncherActivity;
+import com.threethan.launcher.activity.dialog.BasicDialog;
 import com.threethan.launchercore.lib.FileLib;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Objects;
 
 /**
@@ -155,15 +164,59 @@ public class RemotePackageUpdater {
             Uri apkURI = FileProvider.getUriForFile(activity,
                     activity.getApplicationContext().getPackageName() + PROVIDER,
                     apkFile);
-            Intent intent = new Intent(Intent.ACTION_VIEW);
 
-            intent.setDataAndType(apkURI, "application/vnd.android.package-archive");
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            intent.putExtra(Intent.EXTRA_NOT_UNKNOWN_SOURCE, true);
+            Runnable viewApk = () -> {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
 
-            if (downloadingDialog != null) downloadingDialog.dismiss();
-            activity.startActivity(intent);
+                intent.setDataAndType(apkURI, "application/vnd.android.package-archive");
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                intent.putExtra(Intent.EXTRA_NOT_UNKNOWN_SOURCE, true);
+
+                if (downloadingDialog != null) downloadingDialog.dismiss();
+                activity.startActivity(intent);
+            };
+
+            try {
+                // Session-based install
+                PackageInstaller packageInstaller = activity.getPackageManager().getPackageInstaller();
+                PackageInstaller.SessionParams params = new PackageInstaller.SessionParams(
+                        PackageInstaller.SessionParams.MODE_FULL_INSTALL);
+                int sessionId = packageInstaller.createSession(params);
+
+                PackageInstaller.Session session = packageInstaller.openSession(sessionId);
+                try (
+                     InputStream in = activity.getContentResolver().openInputStream(apkURI);
+                     OutputStream out = session.openWrite("package", 0, -1)) {
+                    byte[] buffer = new byte[65536];
+                    int c;
+                    //noinspection DataFlowIssue
+                    while ((c = in.read(buffer)) != -1) {
+                        out.write(buffer, 0, c);
+                    }
+                    session.fsync(out);
+                } catch (IOException e) {
+                    session.abandon();
+                    throw e;
+                }
+
+                InstallReceiver.setOnFail(viewApk);
+                InstallReceiver.setOnSuccess(() ->
+                        BasicDialog.toast("Successfully installed"));
+                session.commit(createIntentSender(activity, sessionId));
+
+                session.close();
+
+                Log.i(TAG, "Session-based install finished for " + apkURI);
+
+            } catch (Exception e) {
+
+                Log.w(TAG, "Session-based install failed, fallback to view intent", e);
+
+                viewApk.run();
+            }
+
+
         } else {
             try {
                 AlertDialog.Builder dialog = new AlertDialog.Builder(activity,
@@ -175,4 +228,13 @@ public class RemotePackageUpdater {
             } catch (Exception ignored) {}
         }
     }
+
+    private static IntentSender createIntentSender(Context context, int sessionId) {
+        Intent intent = new Intent(context, InstallReceiver.class);
+        intent.putExtra(PackageInstaller.EXTRA_SESSION_ID, sessionId);
+        return PendingIntent.getBroadcast(context, sessionId, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE)
+                .getIntentSender();
+    }
+
 }
