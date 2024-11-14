@@ -37,7 +37,6 @@ import com.threethan.launcher.activity.adapter.CustomItemAnimator;
 import com.threethan.launcher.activity.adapter.GroupsAdapter;
 import com.threethan.launcher.activity.adapter.LauncherAppsAdapter;
 import com.threethan.launcher.activity.dialog.AppDetailsDialog;
-import com.threethan.launcher.activity.dialog.BasicDialog;
 import com.threethan.launcher.activity.dialog.SettingsDialog;
 import com.threethan.launcher.activity.executor.WallpaperExecutor;
 import com.threethan.launcher.activity.support.DataStoreEditor;
@@ -306,7 +305,6 @@ public class LauncherActivity extends Launch.LaunchingActivity {
             LauncherAppsAdapter.animateClose(this);
         } catch (Exception ignored) {} // Will fail if service hasn't started yet
 
-        BasicDialog.setActivityContext(this);
 
         postDelayed(() -> new LauncherUpdater(this).checkAppUpdateInteractive(), 1000);
     }
