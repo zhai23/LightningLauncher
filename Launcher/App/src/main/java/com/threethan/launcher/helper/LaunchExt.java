@@ -20,6 +20,7 @@ import com.threethan.launcher.activity.support.SettingsManager;
 import com.threethan.launcher.data.Settings;
 import com.threethan.launcher.updater.BrowserUpdater;
 import com.threethan.launchercore.Core;
+import com.threethan.launchercore.adapter.UtilityApplicationInfo;
 import com.threethan.launchercore.lib.DelayLib;
 import com.threethan.launchercore.util.App;
 import com.threethan.launchercore.util.Keyboard;
@@ -104,23 +105,34 @@ public abstract class LaunchExt extends Launch {
             startIntent(launcherActivity, intent);
             return true;
         }
+
         if (SettingsManager.getAppLaunchSize(app.packageName) > 0) {
             Intent chain = getIntentForLaunch(launcherActivity, app);
             assert chain != null;
             launchInOwnWindow(chain, launcherActivity, false);
         } else {
             final App.Type appType = App.getType(app);
-            if (appType.equals(App.Type.PHONE) || !Platform.supportsNewVrOsMultiWindow())
-                launchInOwnWindow(Objects.requireNonNull(getLaunchIntent(app)),
-                        launcherActivity, PlatformExt.useNewVrOsMultiWindow());
-            else {
-                startIntent(launcherActivity, intent);
-                if (!PlatformExt.useNewVrOsMultiWindow()) launcherActivity.finishAffinity();
-                return !appType.equals(App.Type.PANEL);
-            }
+            if (appType == App.Type.PANEL) startIntent(launcherActivity, intent);
+            else if (appType == App.Type.WEB) launchInOwnWindow(intent, launcherActivity, PlatformExt.useNewVrOsMultiWindow());
+            else if (appType == App.Type.UTILITY) ((UtilityApplicationInfo) app).launch();
+            else launcherActivity.startActivity(getIntentForLaunchVrOs(app));
+            if (!PlatformExt.useNewVrOsMultiWindow()) launcherActivity.finishAffinity();
+            return Platform.isTv() || (Platform.isQuest() && appType.equals(App.Type.VR));
         }
         return true;
     }
+
+    private static Intent getIntentForLaunchVrOs(ApplicationInfo app) {
+        Intent intent = new Intent();
+        intent.setAction("com.oculus.vrshell.intent.action.LAUNCH");
+        intent.addCategory("android.intent.category.LAUNCHER");
+        intent.setData(Uri.parse("apk://"+app.packageName));
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setPackage("com.oculus.vrshell");
+        intent.setComponent(new ComponentName("com.oculus.vrshell", "com.oculus.vrshell.MainActivity"));
+        return intent;
+    }
+
     private static void startIntent(LauncherActivity launcherActivity, Intent intent) {
         if (Objects.equals(intent.getAction(), ACTION_ACTUALLY_SHORTCUT)
                 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1)

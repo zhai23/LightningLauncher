@@ -12,9 +12,9 @@
     <string name="edit_mode_disabled">只有主窗口可以编辑</string>
     <string name="edit_mode_stop">停止编辑</string>
 
-    <string name="new_multitasking">打开其他应用程序时保留 Launcher 窗口</string>
+    <string name="new_multitasking">启动其他应用程序时关闭 Lightning Launcher 窗口</string>
 
-    <string name="new_multitasking_tip">如果启用，2D 应用程序将在 Lightning Launcher 窗口旁边打开窗口，而不是替换它。</string>
+    <string name="new_multitasking_tip">如果启用，Lightning Launcher 将在您从中打开应用程序时自动关闭</string>
     <string name="icons_size">浆纱</string>
     <string name="icons_size_tip"><i>如果所有三个桌面空间都在使用中，应用程序将无法正确打开。 </i></string>
     <string name="icons_margin">图标距离</string>
@@ -84,7 +84,6 @@
 
     <string name="service_desc">启用此服务后，当悬停在 dock 右侧的应用程序库图标上约半秒时，Lightning Launcher 将自动打开。\n(这可能会给访问默认启动器带来困难）\n\n        \n确保启用 \"使用 Lightning Launcher \"开关-\"Lightning Launcher 快捷方式 \"开关不会对 Quest 起任何作用！\n</string>
 
-    <string name="launch_switch">在应用自身窗口打开</string>
     <string name="reload_icon">刷新图标/横幅</string>
     <string name="open_tuning">性能优化</string>
     <string name="open_tuning_tip">Quest Game Tuner 可让您调整分辨率、FPS 等！</string>

@@ -186,9 +186,10 @@ public class SettingsManager extends Settings {
         return App.getType(pkg) != App.Type.PANEL;
     }
     public static int getAppLaunchSize(String pkg) {
-        return
-                Compat.getDataStore().getInt(
-                    Settings.KEY_LAUNCH_SIZE + pkg, 0);
+        int val = Compat.getDataStore().getInt(
+                Settings.KEY_LAUNCH_SIZE + pkg, 0);
+        if (val <= 0 && pkg.equals("com.android.documentsui")) return 1;
+        return val;
     }
     public static int getDefaultBrowser() {
         return dataStoreEditor.getInt(Settings.KEY_DEFAULT_BROWSER, 0);

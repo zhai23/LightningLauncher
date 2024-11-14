@@ -14,11 +14,8 @@
     <string name="edit_mode_disabled">Only main window can edit</string>
     <string name="edit_mode_stop">Stop Editing</string>
 
-    <string name="new_multitasking">Keep Launcher window after opening apps</string>
-    <string name="new_multitasking_tip">If enabled, 2D &amp; Panel apps\'
-        windows will be launched \n
-        beside the Lightning Launcher window, rather than of replacing it.
-        \n<i>Apps won\'t open correctly if all three desktop spaces are in use.</i></string>
+    <string name="new_multitasking">Close Launcher window after opening apps</string>
+    <string name="new_multitasking_tip">If enabled, Lightning Launcher will close itself when you open an app.</string>
 
     <string name="icons_size">Scaling</string>
     <string name="icons_size_tip">Target size for icons/banners.\n<i>May vary with window size.</i></string>
