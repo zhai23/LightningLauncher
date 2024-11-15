@@ -18,8 +18,8 @@ import java.util.List;
 
 public class AddonUpdater extends RemotePackageUpdater {
     // Tag for the GitHub release from which to download addons
-    public static final String ADDON_TAG = "addons8.0.0";
-    private static final String SHORTCUT_ADDON_VERSION = "8.0.0";
+    public static final String ADDON_TAG = "addons8.2.0";
+    private static final String SHORTCUT_ADDON_VERSION = "8.2.0";
 
     public AddonUpdater(Activity activity) {
         super(activity);
