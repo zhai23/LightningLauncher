@@ -132,4 +132,11 @@ public abstract class PlatformExt {
         return Compat.getDataStore()
                 .getBoolean(Settings.KEY_NEW_MULTITASK, Settings.DEFAULT_NEW_MULTITASK);
     }
+
+    /** @return True, if we should use the new launching behaviour */
+    public static boolean useVrOsChainLaunch() {
+        if (!Platform.supportsVrOsChainLaunch()) return false;
+        return Compat.getDataStore()
+                .getBoolean(Settings.KEY_ALLOW_CHAIN_LAUNCH, Settings.DEFAULT_ALLOW_CHAIN_LAUNCH);
+    }
 }

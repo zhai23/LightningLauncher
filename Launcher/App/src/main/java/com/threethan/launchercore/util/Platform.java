@@ -180,4 +180,12 @@ public abstract class Platform {
     public static boolean supportsNewVrOsMultiWindow() {
         return getVrOsVersion() >= 69;
     }
+
+    /**
+     * Returns true if the device supports the meta quest chain-launching from 3rd party apps
+     * @return True if VrOs >= 71
+     */
+    public static boolean supportsVrOsChainLaunch() {
+        return getVrOsVersion() >= 71;
+    }
 }
