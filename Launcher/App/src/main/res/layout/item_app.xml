@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/itemLaunch"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="top"
+    android:clipToPadding="false"
     android:descendantFocusability="blocksDescendants"
     android:focusable="true"
-    android:gravity="center"
-    android:layerType="none"
-    android:orientation="vertical">
+    android:paddingBottom="15dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clip"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
         android:layout_margin="20dp"
         android:background="@drawable/bkg_app"
         android:elevation="3dp"
@@ -30,30 +30,15 @@
             android:background="@drawable/ic_circ_more"
             android:focusable="false"
             android:focusableInTouchMode="false"
-            android:visibility="gone"
+            android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible" />
-
-        <ImageView
-            android:id="@+id/itemBanner"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:outlineProvider="background"
-            android:scaleType="centerCrop"
-            android:scaleX="1"
-            android:scaleY="1"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="16:9"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="gone" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/itemIcon"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:drawingCacheQuality="low"
             android:scaleType="centerCrop"
             android:scaleX="1"
             android:scaleY="1"
@@ -66,17 +51,14 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
-        android:id="@+id/textSpacer"
-        android:layout_width="match_parent"
-        android:layout_height="10dp" />
-
-    <TextView
         android:id="@+id/itemLabel"
         android:layout_width="match_parent"
         android:layout_height="35sp"
+        android:layout_gravity="bottom"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="-35dp"
+        android:layout_marginTop="-25dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginBottom="-15dp"
         android:elevation="100dp"
         android:ellipsize="end"
         android:focusable="false"
@@ -86,12 +68,7 @@
         android:maxLines="2"
         android:singleLine="false"
         android:textColor="@android:color/white"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        tools:text="App Name" />
 
-    <TextView
-        android:id="@+id/bumpSpacer"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
-
-</LinearLayout>
+</FrameLayout>
