@@ -1,13 +1,11 @@
 package com.threethan.launchercore.metadata;
 
-import android.app.Activity;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
-import android.widget.ImageView;
 
 import androidx.core.content.res.ResourcesCompat;
 
@@ -41,12 +39,6 @@ public abstract class IconLoader {
 
     public static void cacheIcon(ApplicationInfo app, Drawable iconDrawable) {
         cachedIcons.put(StringLib.toValidFilename(app.packageName), iconDrawable);
-    }
-    @Deprecated
-    public static void loadIcon(ApplicationInfo app, Activity activity, ImageView... imageViews) {
-        loadIcon(app, icon -> activity.runOnUiThread(() -> {
-            for (ImageView imageView : imageViews) imageView.setImageDrawable(icon);
-        }));
     }
 
     /**
@@ -166,7 +158,7 @@ public abstract class IconLoader {
             justCompressedDownloadedBitmaps.put(file, bitmap);
             fileOutputStream.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e("Icon", "IOException during bitmap save", e);
         }
     }
     public static void saveIconDrawableExternal(Drawable icon, ApplicationInfo app) {
@@ -184,8 +176,7 @@ public abstract class IconLoader {
                 compressAndSaveBitmap(f2,bitmap);
             }
         } catch (Exception e) {
-            Log.i("ICON", "Exception while converting file " + app.packageName);
-            e.printStackTrace();
+            Log.i("Icon", "Exception while converting file " + app.packageName, e);
         }
     }
 }

@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.threethan.launcher.R;
@@ -67,17 +68,23 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
                 .getVisibleApps(settingsManager.getAppGroupsSorted(true), fullAppSet)));
     }
     public synchronized void filterBy(String text) {
-        boolean showHidden = !text.isEmpty() && launcherActivity.dataStoreEditor.getBoolean(Settings.KEY_SEARCH_HIDDEN, Settings.DEFAULT_SEARCH_HIDDEN);
+        boolean showHidden = !text.isEmpty() && launcherActivity.dataStoreEditor.getBoolean(
+                Settings.KEY_SEARCH_HIDDEN, Settings.DEFAULT_SEARCH_HIDDEN);
 
         SettingsManager settingsManager = SettingsManager.getInstance(launcherActivity);
         final List<ApplicationInfo> newItems =
-                settingsManager.getVisibleApps(settingsManager.getAppGroupsSorted(false), fullAppSet);
+                settingsManager.getVisibleApps(settingsManager.getAppGroupsSorted(false),
+                        fullAppSet);
 
-        newItems.removeIf(item -> !StringLib.forSort(SettingsManager.getAppLabel(item)).contains(StringLib.forSort(text)));
+        newItems.removeIf(item -> !StringLib.forSort(SettingsManager.getAppLabel(item))
+                .contains(StringLib.forSort(text)));
         if (!showHidden)
-            newItems.removeIf(item -> Objects.equals(SettingsManager.getAppGroupMap().get(item.packageName), Settings.HIDDEN_GROUP));
+            newItems.removeIf(item -> Objects.equals(SettingsManager.getAppGroupMap()
+                    .get(item.packageName), Settings.HIDDEN_GROUP));
 
-        boolean showWeb = !text.isEmpty() && launcherActivity.dataStoreEditor.getBoolean(Settings.KEY_SEARCH_WEB, Settings.DEFAULT_SEARCH_WEB);
+        boolean showWeb = !text.isEmpty() && launcherActivity.dataStoreEditor
+                .getBoolean(Settings.KEY_SEARCH_WEB, Settings.DEFAULT_SEARCH_WEB);
+
         // Add search queries
         if (showWeb && !launcherActivity.isEditing()) {
 
@@ -102,45 +109,44 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
     }
     public void setLauncherActivity(LauncherActivity val) {
         launcherActivity = val;
+        layoutInflater =
+                (LayoutInflater) launcherActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     protected static class AppViewHolder extends RecyclerView.ViewHolder {
         View view;
         ImageView imageView;
-        ImageView imageViewSquare;
-        ImageView imageViewBanner;
         View clip;
-        View textSpacer;
-        View bumpSpacer;
         TextView textView;
         Button moreButton;
         ApplicationInfo app;
         @Nullable Boolean banner = null;
         @Nullable Boolean darkMode = null;
         @Nullable Boolean showName = null;
+        boolean hovered = false;
         public AppViewHolder(@NonNull View itemView) {
             super(itemView);
         }
     }
 
     public ApplicationInfo getItem(int position) { return items.get(position); }
+    private static LayoutInflater layoutInflater;
 
+    /** @noinspection ClassEscapesDefinedScope*/
     @NonNull
     @Override
     public AppViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater layoutInflater = (LayoutInflater) launcherActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View itemView = layoutInflater.inflate(R.layout.item_app, parent, false);
+
         AppViewHolder holder =  new AppViewHolder(itemView);
         itemView.findViewById(R.id.clip).setClipToOutline(true);
 
         holder.view = itemView;
-        holder.imageViewSquare = itemView.findViewById(R.id.itemIcon);
-        holder.imageViewBanner = itemView.findViewById(R.id.itemBanner);
+        holder.imageView = itemView.findViewById(R.id.itemIcon);
         holder.clip = itemView.findViewById(R.id.clip);
-        holder.textSpacer = itemView.findViewById(R.id.textSpacer);
-        holder.bumpSpacer = itemView.findViewById(R.id.bumpSpacer);
         holder.textView = itemView.findViewById(R.id.itemLabel);
         holder.moreButton = itemView.findViewById(R.id.moreButton);
+
         if (Platform.isTv()) holder.clip.setBackgroundResource(R.drawable.bkg_app_atv);
 
         setActions(holder);
@@ -149,7 +155,8 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
     }
     private void setActions(AppViewHolder holder) {
         // Sub-buttons
-        holder.moreButton.setOnClickListener(view -> new AppDetailsDialog(launcherActivity, holder.app).show());
+        holder.moreButton.setOnClickListener(view
+                -> new AppDetailsDialog(launcherActivity, holder.app).show());
 
         // Click
         holder.view.setOnClickListener(view -> {
@@ -195,6 +202,7 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
         holder.moreButton.setOnHoverListener(hoverListener);
     }
 
+    /** @noinspection ClassEscapesDefinedScope*/
     @Override
     public void onBindViewHolder(@NonNull AppViewHolder holder, int position) {
         final ApplicationInfo app = getItem(position);
@@ -203,33 +211,26 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
         //noinspection WrapperTypeMayBePrimitive
         final Boolean banner = App.isBanner(app);
         if (banner != holder.banner) {
-            holder.imageViewSquare.setVisibility(banner ? View.GONE : View.VISIBLE);
-            holder.imageViewBanner.setVisibility(banner ? View.VISIBLE : View.GONE);
-            holder.imageView = banner ? holder.imageViewBanner : holder.imageViewSquare;
-            holder.textSpacer.setVisibility(!banner && LauncherActivity.namesSquare ? View.VISIBLE : View.GONE);
+            ConstraintLayout.LayoutParams ilp
+                    = (ConstraintLayout.LayoutParams) holder.imageView.getLayoutParams();
+
+            ilp.dimensionRatio = banner ? "16:9" : "1:1";
             holder.banner = banner;
         }
         if (LauncherActivity.darkMode != holder.darkMode) {
-            holder.textView.setTextColor(Color.parseColor(LauncherActivity.darkMode ? "#FFFFFF" : "#000000"));
-            holder.textView.setShadowLayer(6, 0, 0, Color.parseColor(LauncherActivity.darkMode ? "#000000" : "#FFFFFF"));
+            holder.textView.setTextColor(Color.parseColor(
+                    LauncherActivity.darkMode ? "#FFFFFF" : "#000000"));
+            holder.textView.setShadowLayer(6, 0, 0, Color.parseColor(
+                    LauncherActivity.darkMode ? "#000000" : "#FFFFFF"));
             holder.darkMode = LauncherActivity.darkMode;
         }
         //noinspection WrapperTypeMayBePrimitive
-        final Boolean showName = banner && LauncherActivity.namesBanner || !banner && LauncherActivity.namesSquare;
+        final Boolean showName = banner && LauncherActivity.namesBanner
+                || !banner && LauncherActivity.namesSquare;
         if (showName != holder.showName) {
-            if (banner && LauncherActivity.namesBanner || !banner && LauncherActivity.namesSquare) {
-                holder.textView.setVisibility(View.VISIBLE);
-                holder.textSpacer.setVisibility(View.VISIBLE);
-                holder.bumpSpacer.setVisibility(View.VISIBLE);
-                holder.textView.setTranslationY(launcherActivity.dp(2));
-                holder.textView.setMaxLines(2);
-            } else {
-                holder.textView.setVisibility(View.GONE);
-                holder.textSpacer.setVisibility(View.GONE);
-                holder.bumpSpacer.setVisibility(View.GONE);
-                holder.textView.setTranslationY(launcherActivity.dp(7));
-                holder.textView.setMaxLines(1);
-            }
+            holder.textView.setVisibility(showName ? View.VISIBLE : View.INVISIBLE);
+            ((ViewGroup.MarginLayoutParams) holder.view.getLayoutParams())
+                    .setMargins(0, 0, 0, showName ? 0 : -15);
             holder.showName = showName;
         }
 
@@ -270,14 +271,11 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
         return position;
     }
 
-    @Override
-    public int getItemCount() {
-        return items.size();
-    }
     private void updateSelected(AppViewHolder holder) {
         boolean selected = launcherActivity.isSelected(holder.app.packageName);
         if (selected != holder.view.getAlpha() < 0.9) {
-            ObjectAnimator an = ObjectAnimator.ofFloat(holder.view, "alpha", selected ? 0.5F : 1.0F);
+            ObjectAnimator an = ObjectAnimator.ofFloat(holder.view, "alpha",
+                    selected ? 0.5F : 1.0F);
             an.setDuration(150);
             an.start();
         }
@@ -292,9 +290,11 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
             launcherActivity.prevTopSearchResultNames.remove(cname);
         }
     }
+    /** @noinspection ClassEscapesDefinedScope*/
     public void updateHover(AppViewHolder holder, boolean hovered) {
+        if (holder.hovered == hovered) return;
         if (!Platform.isTv())
-            holder.moreButton.setVisibility(hovered ? View.VISIBLE : View.GONE);
+            holder.moreButton.setVisibility(hovered ? View.VISIBLE : View.INVISIBLE);
 
         final boolean tv = Platform.isTv();
         final float newScaleInner = hovered ? (tv ? 1.055f : 1.050f) : 1.005f;
@@ -314,13 +314,15 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
         holder.textView .animate().scaleX(textScale).scaleY(textScale)
                 .setDuration(duration).setInterpolator(interpolator).start();
 
-        ObjectAnimator aE = ObjectAnimator.ofFloat(holder.clip, "elevation", newElevation);
+        ObjectAnimator aE = ObjectAnimator.ofFloat(holder.clip, "elevation",
+                newElevation);
         aE.setDuration(duration).start();
 
-        boolean banner = holder.imageView == holder.imageViewBanner;
+        boolean banner = Boolean.TRUE.equals(holder.banner);
         if (banner && !LauncherActivity.namesBanner || !banner && !LauncherActivity.namesSquare)
-            holder.textView.setVisibility(hovered ? View.VISIBLE : View.GONE);
+            holder.textView.setVisibility(hovered ? View.VISIBLE : View.INVISIBLE);
 
+        holder.view.setActivated(true);
         // Force correct state, even if interrupted
         if (!hovered) {
             holder.view.postDelayed(() -> {
@@ -329,9 +331,11 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
                 holder.view.setScaleX(newScaleOuter);
                 holder.view.setScaleY(newScaleOuter);
                 holder.clip.setElevation(newElevation);
+                holder.view.setActivated(false);
             }, tv ? 175 : 250);
         }
         holder.view.setZ(hovered ? 2 : 1);
+        holder.hovered = hovered;
     }
     @Override
     public int getItemViewType(int position) {
@@ -374,7 +378,7 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
         ObjectAnimator aY = ObjectAnimator.ofFloat(openAnim, "ScaleY", 100f);
         ObjectAnimator aA = ObjectAnimator.ofFloat(animIcon, "Alpha", 0f);
         ObjectAnimator aP = ObjectAnimator.ofFloat(openProgress, "Alpha", 0.8f);
-        ObjectAnimator aPo = ObjectAnimator.ofFloat(openProgress, "Alpha", 0.0f);
+        ObjectAnimator aPo= ObjectAnimator.ofFloat(openProgress, "Alpha", 0.0f);
         aX.setDuration(1000);
         aY.setDuration(1000);
         aA.setDuration(500);

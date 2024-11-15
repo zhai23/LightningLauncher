@@ -160,7 +160,6 @@ public class LauncherActivity extends Launch.LaunchingActivity {
 
         if (hasView) startWithExistingView();
         else         startWithNewView();
-        refreshAppList();
 
         LauncherAppsAdapter.shouldAnimateClose = false;
         LauncherAppsAdapter.animateClose(this);
@@ -193,7 +192,6 @@ public class LauncherActivity extends Launch.LaunchingActivity {
             Objects.requireNonNull(getGroupAdapter()).setLauncherActivity(this);
 
             post(this::updateToolBars); // Fix visual bugs with the blur views
-
         } catch (Exception e) {
             // Attempt to work around problems with backgrounded activities
             Log.e(TAG, "Crashed due to exception while re-initiating existing activity", e);

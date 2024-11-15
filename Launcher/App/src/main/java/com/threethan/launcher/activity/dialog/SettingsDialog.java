@@ -417,7 +417,7 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
 
         attachSwitchToSetting(dialog.findViewById(R.id.namesBannerSwitch),
                 Settings.KEY_SHOW_NAMES_BANNER, Settings.DEFAULT_SHOW_NAMES_BANNER,
-                v -> a.launcherService.forEachActivity(LauncherActivity::refreshInterface),
+                v -> a.launcherService.forEachActivity(LauncherActivity::forceRefreshPackages),
                 false);
 
 

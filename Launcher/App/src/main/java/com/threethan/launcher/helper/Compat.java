@@ -178,8 +178,7 @@ public abstract class Compat {
                     storedVersion, Compat.CURRENT_COMPATIBILITY_VERSION));
         } catch (Exception e) {
             // This *shouldn't* fail, but if it does we should not crash
-            Log.e(TAG, "An exception occurred when attempting to perform the compatibility update!");
-            e.printStackTrace();
+            Log.e(TAG, "An exception occurred when attempting to perform the compatibility update", e);
         }
 
         launcherActivity.needsUpdateCleanup = true;
