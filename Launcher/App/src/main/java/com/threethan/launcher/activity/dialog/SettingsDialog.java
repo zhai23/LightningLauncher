@@ -323,7 +323,7 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
             dialog.findViewById(R.id.defaultLauncherSettingsButton).setVisibility(View.GONE);
         }
 
-        // Default browser selection spinner
+        // Launch Section
         final Spinner defaultBrowserSpinner = dialog.findViewById(R.id.launchBrowserSpinner);
 
         final int defaultBrowserSelection = a.dataStoreEditor.getInt(
@@ -335,6 +335,12 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
                         : R.array.advanced_launch_browsers,
                 p -> a.dataStoreEditor.putInt(Settings.KEY_DEFAULT_BROWSER, p),
                 defaultBrowserSelection);
+
+        Switch chainLaunchSwitch = dialog.findViewById(R.id.allowChainLaunchSwitch);
+        attachSwitchToSetting(chainLaunchSwitch,
+                Settings.KEY_ALLOW_CHAIN_LAUNCH, Settings.DEFAULT_ALLOW_CHAIN_LAUNCH);
+        chainLaunchSwitch.setVisibility(Platform.supportsVrOsChainLaunch()
+                ? View.VISIBLE : View.GONE);
 
         // Search settings
         attachSwitchToSetting(dialog.findViewById(R.id.searchWebSwitch),

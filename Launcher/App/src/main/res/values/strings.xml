@@ -17,6 +17,10 @@
     <string name="new_multitasking">Close Launcher window after opening apps</string>
     <string name="new_multitasking_tip">If enabled, Lightning Launcher will close itself when you open an app.</string>
 
+    <string name="allow_chain_launch">Use Quest Native Launching</string>
+    <string name="allow_chain_launch_tip">Launches apps with a method similar to the Quest\'s default launcher.
+        \nTurning this off will change how windows are organized, and could cause issues.</string>
+
     <string name="icons_size">Scaling</string>
     <string name="icons_size_tip">Target size for icons/banners.\n<i>May vary with window size.</i></string>
     <string name="icons_margin">Margins</string>

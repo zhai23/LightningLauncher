@@ -86,6 +86,7 @@ public abstract class Launch {
                 PackageManager pm = Core.context().getPackageManager();
                 Intent relaunch = pm.getLaunchIntentForPackage(activity.getPackageName());
                 DelayLib.delayed(() -> activity.startActivity(relaunch), 550);
+                DelayLib.delayed(() -> activity.startActivity(intent), 2000);
             }
         };
 
