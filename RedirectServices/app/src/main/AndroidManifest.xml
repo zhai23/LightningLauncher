@@ -19,7 +19,6 @@
 
         <activity
             android:name="com.threethan.launcher.service.MainActivity"
-            android:screenOrientation="unspecified"
             android:configChanges="density|keyboard|keyboardHidden|navigation|orientation|screenLayout|screenSize|uiMode"
             android:windowSoftInputMode="adjustNothing"
             android:exported="true"
@@ -31,6 +30,25 @@
             <layout android:defaultWidth="1024dp" android:defaultHeight="640dp" android:gravity="top|end" />
             <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
             <meta-data android:name="com.oculus.vrshell.free_resizing_limits" android:value="300,2000,500,1000"/>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.threethan.launcher.service.MainActivityBlur"
+            android:configChanges="density|keyboard|keyboardHidden|navigation|orientation|screenLayout|screenSize|uiMode"
+            android:windowSoftInputMode="adjustNothing"
+            android:exported="true"
+            android:documentLaunchMode="always"
+            android:resizeableActivity="true"
+            android:theme="@style/Theme.Base">
+
+            <!--suppress AndroidElementNotAllowed -->
+            <layout android:defaultWidth="1024dp" android:defaultHeight="640dp" android:gravity="top|end" />
+            <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
+            <meta-data android:name="com.oculus.vrshell.free_resizing_limits" android:value="300,2000,500,1000"/>
+            <meta-data android:name="com.oculus.vrshell.supports_blend_effects" android:value="true" />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

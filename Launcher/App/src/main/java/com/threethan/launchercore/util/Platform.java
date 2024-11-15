@@ -8,6 +8,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.net.Uri;
+import android.os.Build;
 
 import com.threethan.launchercore.Core;
 
@@ -187,5 +188,14 @@ public abstract class Platform {
      */
     public static boolean supportsVrOsChainLaunch() {
         return getVrOsVersion() >= 71;
+    }
+
+    /**
+     * Check if running on the Quest 3/3s
+     * @return True if running on the Quest 3 or 3S
+     */
+    public static boolean isQuestGen3() {
+        return Build.HARDWARE.equalsIgnoreCase("eureka")
+                || Build.HARDWARE.equalsIgnoreCase("panther");
     }
 }

@@ -2,11 +2,11 @@ package com.threethan.launcher.activity;
 
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.app.Activity;
 import android.content.pm.ApplicationInfo;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -16,14 +16,11 @@ import android.widget.ImageView;
 
 import com.threethan.launcher.R;
 import com.threethan.launcher.activity.view.EditTextWatched;
-import com.threethan.launcher.data.Settings;
-import com.threethan.launcher.helper.Compat;
 import com.threethan.launcher.helper.LaunchExt;
 import com.threethan.launchercore.Core;
 import com.threethan.launchercore.metadata.IconLoader;
 import com.threethan.launchercore.util.Keyboard;
 
-import java.lang.ref.WeakReference;
 import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -40,18 +37,11 @@ import eightbitlab.com.blurview.BlurView;
  */
 
 public class LauncherActivitySearchable extends LauncherActivityEditable {
-    private static WeakReference<Activity> lastCreatedInst = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Core.init(this);
         super.onCreate(savedInstanceState);
-        if (lastCreatedInst != null && lastCreatedInst.get() != null &&
-                Compat.getDataStore().getInt(Settings.KEY_BACKGROUND_ALPHA, 255) < 255) {
-            lastCreatedInst.get().finishAffinity();
-        }
-        lastCreatedInst = new WeakReference<>(this);
     }
-
     private boolean searching = false;
 
     protected void searchFor(String text) {
@@ -131,7 +121,7 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
 
 
         } catch (NullPointerException e) {
-            e.printStackTrace();
+            Log.w(TAG, "NPE when showing searchbar", e);
         }
     }
 

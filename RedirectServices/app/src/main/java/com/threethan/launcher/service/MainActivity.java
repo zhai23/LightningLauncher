@@ -10,7 +10,7 @@ public class MainActivity extends Activity {
         if (launchIntent != null) launchIt(launchIntent);
     }
     private void launchIt(Intent launchIntent) {
-        launchIntent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        launchIntent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         finish();
         startActivity(launchIntent);
     }
