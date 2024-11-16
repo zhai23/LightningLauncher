@@ -20,6 +20,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
 /**
@@ -71,16 +73,7 @@ public abstract class IconUpdater {
 
     // How many minutes before we can recheck an icon that hasn't downloaded
     private static final long ICON_CHECK_TIME_MINUTES = 5;
-
-
-    /**
-     * Starts the download of an icon, if one should be downloaded for that app
-     * @param app App for which to download an icon image
-     * @param callback Called when the download completes successfully and the icon is changed
-     */
-    public static void check(ApplicationInfo app, final Consumer<Drawable> callback) {
-        if (shouldDownload(app)) download(app, callback);
-    }
+    public static final ExecutorService executorService = Executors.newCachedThreadPool();
 
     /**
      * Check if an icon should be downloaded for a particular app
@@ -96,22 +89,25 @@ public abstract class IconUpdater {
         return System.currentTimeMillis() > nextCheckMs;
     }
 
+
     /**
-     * Starts the download of an icon and handles relevant threading
+     * Starts the download of an icon, if one should be downloaded for that app
      * @param app App for which to download an icon image
-     * @param callback Called when the download completes successfully (*not on ui thread)
+     * @param callback Called when the download completes successfully and the icon is changed
      */
-    public static void download(ApplicationInfo app, final Consumer<Drawable> callback) {
-        final boolean isWebsite = App.isWebsite(app.packageName);
-        final String packageName = isWebsite ? StringLib.baseUrl(app.packageName) : app.packageName;
+    public static void check(ApplicationInfo app, final Consumer<Drawable> callback) {
+        executorService.submit(() -> {
+            if (shouldDownload(app)) return;
 
-        final int delayMs = (int) (ICON_CHECK_TIME_MINUTES *1000*60);
-        nextCheckByPackageMs.put(packageName, System.currentTimeMillis() + delayMs);
+            final boolean isWebsite = App.isWebsite(app.packageName);
+            final String packageName = isWebsite ? StringLib.baseUrl(app.packageName) : app.packageName;
 
-        final boolean isBanner = App.isBanner(app);
-        final File iconFile = IconLoader.iconCacheFileForApp(app);
+            final int delayMs = (int) (ICON_CHECK_TIME_MINUTES *1000*60);
+            nextCheckByPackageMs.put(packageName, System.currentTimeMillis() + delayMs);
 
-        Thread thread = new Thread(() -> {
+            final boolean isBanner = App.isBanner(app);
+            final File iconFile = IconLoader.iconCacheFileForApp(app);
+
             Object lock = locks.putIfAbsent(packageName, new Object());
             if (lock == null) lock = locks.get(packageName);
             synchronized (Objects.requireNonNull(lock)) {
@@ -154,8 +150,6 @@ public abstract class IconUpdater {
                 }
             }
         });
-        thread.setPriority(Thread.MIN_PRIORITY);
-        thread.start();
     }
 
 
