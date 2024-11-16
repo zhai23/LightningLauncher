@@ -12,6 +12,7 @@ import android.os.Handler;
 import androidx.activity.ComponentActivity;
 import androidx.annotation.Nullable;
 
+import com.threethan.launcher.helper.PlatformExt;
 import com.threethan.launchercore.Core;
 import com.threethan.launchercore.lib.DelayLib;
 
@@ -46,8 +47,7 @@ public abstract class Launch {
 
         final Intent defaultIntent  = pm.getLaunchIntentForPackage(app.packageName);
         final Intent leanbackIntent = pm.getLeanbackLaunchIntentForPackage(app.packageName);
-        if (Platform.isQuest()) {
-
+        if (Platform.isQuest() && PlatformExt.useVrOsChainLaunch()) {
             final Intent intent = defaultIntent != null ? defaultIntent : leanbackIntent;
             if (intent != null) return getVrOsLaunchIntent(app.packageName);
             else return null;
