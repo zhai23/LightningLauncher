@@ -46,76 +46,63 @@ public abstract class IconLoader {
      * The callback will be called immediately on this thread,
      * and may also be called on a different thread after a small delay
      * @param app App to get the icon for
-     * @param callback Consumer which handles the icon
+     * @param consumer Consumer which handles the icon
      */
-    public static void loadIcon(ApplicationInfo app, final Consumer<Drawable> callback) {
-        if (app instanceof UtilityApplicationInfo uApp)
-            callback.accept(uApp.getDrawable());
-        else if (IconLoader.cachedIcons.containsKey(cacheName(app)))
-            callback.accept(IconLoader.cachedIcons.get(cacheName(app)));
-        else new LoadIconExecutor(app, callback).execute();
+    public static void loadIcon(ApplicationInfo app, final Consumer<Drawable> consumer) {
+        IconUpdater.executorService.submit(() -> {
+            if (app instanceof UtilityApplicationInfo uApp)
+                consumer.accept(uApp.getDrawable());
+            else if (IconLoader.cachedIcons.containsKey(cacheName(app)))
+                consumer.accept(IconLoader.cachedIcons.get(cacheName(app)));
+            else loadIcon(icon -> {
+                    consumer.accept(icon);
+                    cacheIcon(app, icon);
+                }, app);
+        });
     }
 
-    /**
-     * Loads an icon asynchronously
-     */
-    protected static class LoadIconExecutor {
-        private final ApplicationInfo app;
-        private final Consumer<Drawable> consumer;
-
-        protected LoadIconExecutor(ApplicationInfo app, Consumer<Drawable> consumer) {
-            this.app = app;
-            this.consumer = consumer;
-        }
-
-        public void execute() {
-            Thread thread = new Thread(() ->
-                    loadIcon(icon -> {
-                        consumer.accept(icon);
-                        cacheIcon(app, icon);
-            }));
-            thread.setPriority(Thread.MIN_PRIORITY);
-            thread.start();
-        }
-        public void loadIcon(Consumer<Drawable> callback) {
-            Drawable appIcon = null;
-            // Everything in the try will still attempt to download an icon
-            try {
-                // Try to load from external custom icon file
-                final File iconCustomFile = iconCustomFileForApp(app);
-                if (iconCustomFile.exists()) appIcon = Drawable.createFromPath(iconCustomFile.getAbsolutePath());
-                if (appIcon != null) {
-                    callback.accept(appIcon);
-                    return;
-                }
-                // Try to load from cached icon file
-                final File iconCacheFile = iconCacheFileForApp(app);
-                if (iconCacheFile.exists()) appIcon = Drawable.createFromPath(iconCacheFile.getAbsolutePath());
-                if (appIcon != null) {
-                    callback.accept(appIcon);
-                    return;
-                }
-
-                // Try to load from package manager
-                PackageManager packageManager = Core.context().getPackageManager();
-                Resources resources = packageManager.getResourcesForApplication(app);
-
-                // Check Icon
-                int iconId = app.icon;
-                // Check AndroidTV banner
-                if (app.banner != 0 && App.isBanner(app)) iconId = app.banner;
-
-                if (iconId == 0) iconId = android.R.drawable.sym_def_app_icon;
-                appIcon = ResourcesCompat.getDrawable(resources, iconId, Core.context().getTheme());
+    private static void loadIcon(Consumer<Drawable> callback, ApplicationInfo app) {
+        Drawable appIcon = null;
+        // Everything in the try will still attempt to download an icon
+        try {
+            // Try to load from external custom icon file
+            final File iconCustomFile = iconCustomFileForApp(app);
+            if (iconCustomFile.exists())
+                appIcon = Drawable.createFromPath(iconCustomFile.getAbsolutePath());
+            if (appIcon != null) {
                 callback.accept(appIcon);
-            } catch (PackageManager.NameNotFoundException ignored) {}
-            finally {
-                // Attempt to download the icon for this app from an online repo
-                // Done AFTER saving the drawable version to prevent a race condition)
-                IconUpdater.check(app, callback);
+                return;
             }
+            // Try to load from cached icon file
+            final File iconCacheFile = iconCacheFileForApp(app);
+            if (iconCacheFile.exists())
+                appIcon = Drawable.createFromPath(iconCacheFile.getAbsolutePath());
+            if (appIcon != null) {
+                callback.accept(appIcon);
+                return;
+            }
+
+            // Try to load from package manager
+            PackageManager packageManager = Core.context().getPackageManager();
+            Resources resources = packageManager.getResourcesForApplication(app);
+
+            // Check Icon
+            int iconId = app.icon;
+            // Check AndroidTV banner
+            if (app.banner != 0 && App.isBanner(app)) iconId = app.banner;
+
+            if (iconId == 0) iconId = android.R.drawable.sym_def_app_icon;
+            appIcon = ResourcesCompat.getDrawable(resources, iconId, null);
+            callback.accept(appIcon);
+        } catch (PackageManager.NameNotFoundException ignored) {
+        } finally {
+            // Attempt to download the icon for this app from an online repo
+            // Done AFTER saving the drawable version to prevent a race condition)
+            IconUpdater.check(app, callback);
         }
     }
+
+
 
     /** @return The file location which should be used for the applications cache file */
     static File iconCacheFileForApp(ApplicationInfo app) {

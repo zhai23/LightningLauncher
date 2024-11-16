@@ -124,6 +124,7 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
         @Nullable Boolean darkMode = null;
         @Nullable Boolean showName = null;
         boolean hovered = false;
+        @Nullable Runnable iconRunnable = null;
         public AppViewHolder(@NonNull View itemView) {
             super(itemView);
         }
@@ -207,7 +208,6 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
     public void onBindViewHolder(@NonNull AppViewHolder holder, int position) {
         final ApplicationInfo app = getItem(position);
 
-
         //noinspection WrapperTypeMayBePrimitive
         final Boolean banner = App.isBanner(app);
         if (banner != holder.banner) {
@@ -239,23 +239,26 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
 
         //Load Icon
         IconLoader.loadIcon(holder.app, drawable
-                -> launcherActivity.runOnUiThread(() -> {
-            if (holder.app == app) holder.imageView.setImageDrawable(drawable);
+                -> {
+            if (holder.iconRunnable != null) holder.imageView.removeCallbacks(holder.iconRunnable);
+            if (holder.app == app) {
+                holder.iconRunnable = () -> holder.imageView.setImageDrawable(drawable);
+                holder.imageView.post(holder.iconRunnable);
+            }
             else launcherActivity.launcherService.forEachActivity(a -> {
                     LauncherAppsAdapter adapter = launcherActivity.getAppAdapter();
                     if (adapter != null) adapter.notifyItemChanged(app);
             });
-        }));
+        });
 
         // Load label
-        SettingsManager.getAppLabel(app, label
-                -> launcherActivity.runOnUiThread(() -> {
-            if (holder.app == app) holder.textView.setText(label);
+        SettingsManager.getAppLabel(app, label -> {
+            if (holder.app == app) holder.textView.post(() -> holder.textView.setText(label));
             else launcherActivity.launcherService.forEachActivity(a -> {
                 LauncherAppsAdapter adapter = launcherActivity.getAppAdapter();
                 if (adapter != null) adapter.notifyItemChanged(app);
             });
-        }));
+        });
 
         updateSelected(holder);
     }
