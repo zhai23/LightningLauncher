@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
+import android.util.Log;
 
 import androidx.activity.ComponentActivity;
 import androidx.annotation.Nullable;
@@ -62,6 +63,11 @@ public abstract class Launch {
 
     /** Gets an intent to launch an application using vrOS. Not tested before v69. */
     public static Intent getVrOsLaunchIntent(String packageName) {
+        if (!Platform.supportsVrOsChainLaunch()) {
+            Log.e("Launch", "Attempted to get vrOs launch intent on unsupported version!" +
+                    "\nThe standard intent will be returned instead.");
+            return getLaunchIntent(App.infoFor(packageName));
+        }
         Intent intent = new Intent();
         intent.setAction("com.oculus.vrshell.intent.action.LAUNCH");
         intent.addCategory("android.intent.category.LAUNCHER");

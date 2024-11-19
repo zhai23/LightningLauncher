@@ -62,9 +62,9 @@ public abstract class IconLoader {
     }
 
     private static void loadIcon(Consumer<Drawable> callback, ApplicationInfo app) {
-        Drawable appIcon = null;
         // Everything in the try will still attempt to download an icon
         try {
+            Drawable appIcon = null;
             // Try to load from external custom icon file
             final File iconCustomFile = iconCustomFileForApp(app);
             if (iconCustomFile.exists())
@@ -75,6 +75,7 @@ public abstract class IconLoader {
             }
             // Try to load from cached icon file
             final File iconCacheFile = iconCacheFileForApp(app);
+
             if (iconCacheFile.exists())
                 appIcon = Drawable.createFromPath(iconCacheFile.getAbsolutePath());
             if (appIcon != null) {
@@ -101,8 +102,6 @@ public abstract class IconLoader {
             IconUpdater.check(app, callback);
         }
     }
-
-
 
     /** @return The file location which should be used for the applications cache file */
     static File iconCacheFileForApp(ApplicationInfo app) {
@@ -133,21 +132,7 @@ public abstract class IconLoader {
         return bitmap;
     }
 
-    static final Map<File, Bitmap> justCompressedDownloadedBitmaps = new ConcurrentHashMap<>();
 
-    public static void compressAndSaveBitmap(File file, Bitmap bitmap) {
-        try {
-            //noinspection ResultOfMethodCallIgnored
-            Objects.requireNonNull(file.getParentFile()).mkdirs();
-            FileOutputStream fileOutputStream = new FileOutputStream(file.getAbsolutePath(), false);
-            bitmap = scaleBitmap(bitmap);
-            bitmap.compress(Bitmap.CompressFormat.WEBP, ICON_QUALITY, fileOutputStream);
-            justCompressedDownloadedBitmaps.put(file, bitmap);
-            fileOutputStream.close();
-        } catch (IOException e) {
-            Log.e("Icon", "IOException during bitmap save", e);
-        }
-    }
     public static void saveIconDrawableExternal(Drawable icon, ApplicationInfo app) {
         try {
             Bitmap bitmap = ImageLib.bitmapFromDrawable(icon);
@@ -164,6 +149,18 @@ public abstract class IconLoader {
             }
         } catch (Exception e) {
             Log.i("Icon", "Exception while converting file " + app.packageName, e);
+        }
+    }
+    public static void compressAndSaveBitmap(File file, Bitmap bitmap) {
+        try {
+            //noinspection ResultOfMethodCallIgnored
+            Objects.requireNonNull(file.getParentFile()).mkdirs();
+            FileOutputStream fileOutputStream = new FileOutputStream(file.getAbsolutePath(), false);
+            bitmap = scaleBitmap(bitmap);
+            bitmap.compress(Bitmap.CompressFormat.WEBP, ICON_QUALITY, fileOutputStream);
+            fileOutputStream.close();
+        } catch (IOException e) {
+            Log.e("Icon", "IOException during bitmap save", e);
         }
     }
 }
