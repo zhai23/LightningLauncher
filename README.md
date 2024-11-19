@@ -1,9 +1,7 @@
 # Lightning Launcher
-### Fully compatible with Android TV!
-### [Available on SideQuest!](https://sidequestvr.com/app/21783)
+### Fully compatible with Meta Quest & Android TV [Get it on SideQuest!](https://sidequestvr.com/app/21783)
+*Thanks for 80K SideQuest downloads and counting!*
 
-
-## 🔥 **You can now directly open [Quest Game Tuner](https://threethan.itch.io/quest-game-tuner) from the details dialog on any VR app to tune its resolution, fps, and more!** 
 <table>
 <tr>
 <td width=200>
