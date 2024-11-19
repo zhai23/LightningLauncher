@@ -2,19 +2,13 @@ package com.threethan.launchercore.metadata;
 
 import android.content.pm.ApplicationInfo;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 
-import androidx.annotation.NonNull;
-
-import com.threethan.launchercore.Core;
-import com.threethan.launchercore.lib.ImageLib;
 import com.threethan.launchercore.lib.StringLib;
 import com.threethan.launchercore.util.App;
 
-import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -89,7 +83,6 @@ public abstract class IconUpdater {
         return System.currentTimeMillis() > nextCheckMs;
     }
 
-
     /**
      * Starts the download of an icon, if one should be downloaded for that app
      * @param app App for which to download an icon image
@@ -97,7 +90,7 @@ public abstract class IconUpdater {
      */
     public static void check(ApplicationInfo app, final Consumer<Drawable> callback) {
         executorService.submit(() -> {
-            if (shouldDownload(app)) return;
+            if (!shouldDownload(app)) return;
 
             final boolean isWebsite = App.isWebsite(app.packageName);
             final String packageName = isWebsite ? StringLib.baseUrl(app.packageName) : app.packageName;
@@ -113,9 +106,8 @@ public abstract class IconUpdater {
             synchronized (Objects.requireNonNull(lock)) {
                 try {
                     final String dlPkg = getDownloadString(app);
-                    final Runnable success = () ->
-                            callback.accept(new BitmapDrawable(Core.context().getResources(),
-                            IconLoader.justCompressedDownloadedBitmaps.get(iconFile)));
+                    final Runnable success = ()
+                            -> callback.accept(Drawable.createFromPath(iconFile.getAbsolutePath()));
 
                     // Priority repos
                     for (final String url : (isBanner ? PRIORITY_URLS_BANNER : PRIORITY_URLS_SQUARE))
@@ -126,11 +118,12 @@ public abstract class IconUpdater {
 
                     // New Metadata method
                     final MetaMetadata.App appMeta = MetaMetadata.getForPackage(dlPkg);
-                    if (appMeta != null && appMeta.downloadImage(
-                            isBanner ? IMAGE_TYPE_BANNER : IMAGE_TYPE_SQUARE, iconFile)) {
-                        success.run();
-                        return;
-                    }
+                    if (appMeta != null)
+                        if (appMeta.downloadImage(
+                                isBanner ? IMAGE_TYPE_BANNER : IMAGE_TYPE_SQUARE, iconFile)) {
+                            success.run();
+                            return;
+                        }
 
                     // Fallback repos
                     for (final String url : ( isWebsite ? ICON_URLS_WEB :
@@ -167,7 +160,7 @@ public abstract class IconUpdater {
 
     /**
      * Downloads an icon from a given url and saves it using saveStream()
-     * @return True if icon was downloaded
+     * @return True if icon was downloaded and saved successfully
      */
     static boolean downloadIconFromUrl(String url, File iconFile) {
         try (InputStream inputStream = new URL(url).openStream()) {
@@ -186,16 +179,10 @@ public abstract class IconUpdater {
      */
     private static boolean saveStream(InputStream inputStream, File outputFile) {
         try {
-            FileOutputStream fileOutputStream = getFileOutputStream(inputStream, outputFile);
-            fileOutputStream.close();
-
-            Bitmap bitmap = ImageLib.bitmapFromFile(outputFile);
-
-            if (bitmap != null) {
-                IconLoader.compressAndSaveBitmap(outputFile, bitmap);
-                return true;
-            }
-            return false;
+//            saveToFile(inputStream, outputFile);
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+            IconLoader.compressAndSaveBitmap(outputFile, bitmap);
+            return true;
         } catch (Exception e) {
             //noinspection CallToPrintStackTrace
             e.printStackTrace();
@@ -207,24 +194,5 @@ public abstract class IconUpdater {
                 } catch (IOException ignored) {}
             }
         }
-    }
-
-    @NonNull
-    private static FileOutputStream getFileOutputStream(InputStream inputStream, File outputFile)
-            throws IOException {
-        DataInputStream dataInputStream = new DataInputStream(inputStream);
-
-        int length;
-        byte[] buffer = new byte[65536];
-
-        //noinspection ResultOfMethodCallIgnored
-        Objects.requireNonNull(outputFile.getParentFile()).mkdirs();
-        FileOutputStream fileOutputStream = new FileOutputStream(outputFile, false);
-
-        while ((length = dataInputStream.read(buffer)) > 0)
-            fileOutputStream.write(buffer, 0, length);
-
-        fileOutputStream.flush();
-        return fileOutputStream;
     }
 }

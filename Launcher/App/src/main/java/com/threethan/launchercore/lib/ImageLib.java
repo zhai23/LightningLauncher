@@ -42,6 +42,7 @@ public class ImageLib {
             fileOutputStream.flush();
             fileOutputStream.close();
         } catch (IOException e) {
+            //noinspection CallToPrintStackTrace
             e.printStackTrace();
         }
     }
@@ -67,5 +68,36 @@ public class ImageLib {
         final Bitmap bitmap = BitmapFactory.decodeStream(stream);
         try { stream.close(); } catch (IOException ignored) {}
         return bitmap;
+    }
+
+    /**
+     * Quickly checks if two awt BufferedImages are identical.
+     * May produce false positives, but never false negatives!
+     * @param a First image
+     * @param b Second image
+     * @return True if images are probably identical
+     */
+    public static boolean isIdenticalFast(Bitmap a, Bitmap b) {
+        if (a == null || b == null) return false;
+        final int w = a.getWidth();
+        final int h = a.getHeight();
+        // If dimensions don't match, images are necessarily different
+        //noinspection DuplicatedCode
+        if (w != b.getWidth() || h != b.getHeight()) return false;
+        // Sample some arbitrary points on the image and check if they're identical
+        final int N_SAMPLES = 128; // Number of points to sample
+        final float ym = 6.9F; // # should be relatively aperiodic for best result
+        final float xm = 5.1F; // # should be relatively aperiodic for best result
+        final float dx = (w * xm / (N_SAMPLES+1));
+        final float dy = (h * ym / (N_SAMPLES+1));
+        // Sample N_SAMPLES points in looping diagonals across the image,
+        //  which should provide a semi-random but distributed set of samples
+        //   with which to compare the images
+        for (int i = 0; i < N_SAMPLES; i++) {
+            final int y = (int)(i * dy) % h;
+            final int x = (int) ((((int)(i * dy / h)) + dx * i) % w);
+            if (a.getPixel(x,y) != b.getPixel(x,y)) return false;
+        }
+        return true;
     }
 }

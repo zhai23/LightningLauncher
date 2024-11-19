@@ -35,7 +35,7 @@ public class MetaMetadata {
          * (synchronous, must be called off UI thread)
          * @param type Image type ("landscape", "portrait", "square", "icon", or "hero")
          * @param saveFile File to save the image
-         * @return true if succeeded fully, else false
+         * @return Try if icon was downloaded successfully
          */
         public boolean downloadImage(String type, File saveFile) {
             if (!data.containsKey(type)) return false;

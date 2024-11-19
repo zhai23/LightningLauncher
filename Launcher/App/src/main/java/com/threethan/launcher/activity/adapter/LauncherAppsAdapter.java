@@ -3,7 +3,9 @@ package com.threethan.launcher.activity.adapter;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -28,6 +30,7 @@ import com.threethan.launcher.activity.support.SettingsManager;
 import com.threethan.launcher.data.Settings;
 import com.threethan.launcher.helper.LaunchExt;
 import com.threethan.launchercore.adapter.ArrayListAdapter;
+import com.threethan.launchercore.lib.ImageLib;
 import com.threethan.launchercore.lib.StringLib;
 import com.threethan.launchercore.metadata.IconLoader;
 import com.threethan.launchercore.util.App;
@@ -237,12 +240,22 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
         // set value into textview
         holder.app = app;
 
-        //Load Icon
+        // Load Icon
         IconLoader.loadIcon(holder.app, drawable
                 -> {
             if (holder.iconRunnable != null) holder.imageView.removeCallbacks(holder.iconRunnable);
+            if (drawable == null) return;
             if (holder.app == app) {
-                holder.iconRunnable = () -> holder.imageView.setImageDrawable(drawable);
+                if (drawable instanceof BitmapDrawable bitmapDrawable) {
+                    Bitmap bitmap = bitmapDrawable.getBitmap();
+
+                    // It's java's fault for allowing this...
+                    if (holder.imageView.getDrawable() instanceof BitmapDrawable currentBd &&
+                            ImageLib.isIdenticalFast(currentBd.getBitmap(), bitmap)) return;
+
+                    holder.iconRunnable = () -> holder.imageView.setImageBitmap(bitmap);
+                } else holder.iconRunnable = () -> holder.imageView.setImageDrawable(drawable);
+
                 holder.imageView.post(holder.iconRunnable);
             }
             else launcherActivity.launcherService.forEachActivity(a -> {
