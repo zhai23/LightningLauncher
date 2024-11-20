@@ -3,7 +3,6 @@ package com.threethan.launcher.updater;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.DownloadManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -21,7 +20,6 @@ import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 
 import com.threethan.launcher.R;
-import com.threethan.launcher.activity.LauncherActivity;
 import com.threethan.launcher.activity.dialog.BasicDialog;
 import com.threethan.launchercore.lib.FileLib;
 
@@ -195,14 +193,16 @@ public class RemotePackageUpdater {
                         out.write(buffer, 0, c);
                     }
                     session.fsync(out);
+
+
                 } catch (IOException e) {
                     session.abandon();
                     throw e;
                 }
 
-                InstallReceiver.setOnFail(viewApk);
+                BasicDialog.toast(activity.getString(R.string.installing));
                 InstallReceiver.setOnSuccess(() ->
-                        BasicDialog.toast("Successfully installed"));
+                        BasicDialog.toast(activity.getString(R.string.installed_successfully)));
                 session.commit(createIntentSender(activity, sessionId));
 
                 session.close();

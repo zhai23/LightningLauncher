@@ -329,4 +329,12 @@
     <string name="addons_open">Launch</string>
     <string name="addons_deactivate">Deactivate</string>
     <string name="addons_uninstall">Uninstall</string>
+    <string name="installing">Installing…</string>
+    <string name="installed_successfully">Installed Successfully</string>
+
+    <string name="install_image_browser_title">Please install an app which can pick images!</string>
+    <string name="install_image_browser_content">Meta has broken Android\'s built-in file manager on your OS version, so you need to use a third-party app to browse file and select images.
+        \n\nYou are suggested to use the free Amaze file manager, which you can install now.
+        \n\n<i>After installation completes, try this action again.</i></string>
+    <string name="install_image_browser_needed">No installed app can pick images!</string>
 </resources>
