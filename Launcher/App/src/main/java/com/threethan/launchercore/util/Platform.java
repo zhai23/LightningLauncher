@@ -191,6 +191,14 @@ public abstract class Platform {
     }
 
     /**
+     * Returns true if the device has a functioning android file browser
+     * @return True if VrOs < 72
+     */
+    public static boolean supportsSystemFileBrowser() {
+        return getVrOsVersion() < 72;
+    }
+
+    /**
      * Check if running on the Quest 3/3s
      * @return True if running on the Quest 3 or 3S
      */
@@ -198,4 +206,6 @@ public abstract class Platform {
         return Build.HARDWARE.equalsIgnoreCase("eureka")
                 || Build.HARDWARE.equalsIgnoreCase("panther");
     }
+
+
 }

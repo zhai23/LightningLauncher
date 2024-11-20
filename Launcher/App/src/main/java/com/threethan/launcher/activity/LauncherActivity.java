@@ -1,17 +1,21 @@
 package com.threethan.launcher.activity;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -25,7 +29,6 @@ import android.widget.ImageView;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -37,6 +40,7 @@ import com.threethan.launcher.activity.adapter.CustomItemAnimator;
 import com.threethan.launcher.activity.adapter.GroupsAdapter;
 import com.threethan.launcher.activity.adapter.LauncherAppsAdapter;
 import com.threethan.launcher.activity.dialog.AppDetailsDialog;
+import com.threethan.launcher.activity.dialog.BasicDialog;
 import com.threethan.launcher.activity.dialog.SettingsDialog;
 import com.threethan.launcher.activity.executor.WallpaperExecutor;
 import com.threethan.launcher.activity.support.DataStoreEditor;
@@ -46,6 +50,7 @@ import com.threethan.launcher.data.Settings;
 import com.threethan.launcher.helper.AppExt;
 import com.threethan.launcher.helper.Compat;
 import com.threethan.launcher.helper.PlatformExt;
+import com.threethan.launcher.updater.FileManagerUpdater;
 import com.threethan.launcher.updater.LauncherUpdater;
 import com.threethan.launchercore.Core;
 import com.threethan.launchercore.lib.ImageLib;
@@ -248,42 +253,69 @@ public class LauncherActivity extends Launch.LaunchingActivity {
     private ImagePickerTarget imagePickerTarget;
     public void showImagePicker(ImagePickerTarget target) {
         imagePickerTarget = target;
-        imagePicker.launch(new PickVisualMediaRequest.Builder()
-                .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
-                .build());
+
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("image/*");
+
+        try {
+            List<ResolveInfo> resolveInfoList = getPackageManager().queryIntentActivities(intent, 0);
+            if (!Platform.supportsSystemFileBrowser()) {
+                intent.setPackage("com.unsupported");
+                for (ResolveInfo resolveInfo : resolveInfoList) {
+                    if (!resolveInfo.activityInfo.packageName.equals("com.android.documentsui")) {
+                        intent.setPackage(resolveInfo.activityInfo.packageName);
+                        break;
+                    }
+                }
+            }
+            imagePicker.launch(intent);
+        } catch (ActivityNotFoundException ignored) {
+            new AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
+                    .setTitle(R.string.install_image_browser_title)
+                    .setMessage(R.string.install_image_browser_content)
+                    .setPositiveButton(R.string.addons_install, (dialog, which)
+                            -> new FileManagerUpdater(this).checkAppUpdateAndInstall()
+                    )
+                    .setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss())
+                    .show();
+            BasicDialog.toast(getString(R.string.install_image_browser_needed));
+        }
     }
 
     private ImageView selectedImageView;
     public void setSelectedIconImage(ImageView imageView) {
         selectedImageView = imageView;
     }
-    // Registers a photo picker activity launcher in single-select mode.
-    private final ActivityResultLauncher<PickVisualMediaRequest> imagePicker =
-            registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
-                // Callback is invoked after the user selects a media item or closes the photo picker.
-                if (uri != null) {
-                    Bitmap bitmap;
-                    try {
-                        bitmap = ImageLib.bitmapFromStream(getContentResolver().openInputStream(uri));
-                    } catch (FileNotFoundException e) {
-                        Log.e("PhotoPicker", "Error on load", e);
-                        return;
-                    }
-                    if (bitmap == null) return;
-                    switch (imagePickerTarget) {
-                        case ICON -> AppDetailsDialog.onImageSelected(
-                                bitmap, selectedImageView, this);
-                        case WALLPAPER -> {
-                            bitmap = ImageLib.getResizedBitmap(bitmap, 1280);
-                            ImageLib.saveBitmap(bitmap,
-                                    new File(getApplicationInfo().dataDir, Settings.CUSTOM_BACKGROUND_PATH));
-                            refreshBackground();
-                        }
-                    }
-                } else {
-                    Log.i("PhotoPicker", "No media selected");
-                }
-            });
+
+    private final ActivityResultLauncher<Intent> imagePicker =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                    o -> {
+                        if (o.getData() != null)
+                            pickImage(o.getData().getData());
+                    });
+
+    private void pickImage(Uri uri) {
+        Bitmap bitmap;
+        try {
+            bitmap = ImageLib.bitmapFromStream(getContentResolver().openInputStream(uri));
+        } catch (FileNotFoundException e) {
+            Log.e("PhotoPicker", "Error on load", e);
+            return;
+        }
+        if (bitmap == null) return;
+        switch (imagePickerTarget) {
+            case ICON -> AppDetailsDialog.onImageSelected(
+                    bitmap, selectedImageView, this);
+            case WALLPAPER -> {
+                bitmap = ImageLib.getResizedBitmap(bitmap, 1280);
+                ImageLib.saveBitmap(bitmap,
+                        new File(getApplicationInfo().dataDir, Settings.CUSTOM_BACKGROUND_PATH));
+                refreshBackground();
+            }
+        }
+
+    }
 
     @Override
     protected void onResume() {

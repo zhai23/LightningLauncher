@@ -80,12 +80,14 @@ public abstract class AppUpdater extends RemotePackageUpdater {
         this.requestQueue = Volley.newRequestQueue(activity);
     }
 
+    private static boolean hasUpdateDialog = false;
     /**
      * Shows a dialog prompting the user to download & install a main app update
      * @param currentVersion Current launcher version name
      * @param newVersion New launcher version name
      */
     private void showAppUpdateDialog(String currentVersion, String newVersion) {
+        if (hasUpdateDialog) return;
         try {
             AlertDialog.Builder updateDialogBuilder =
                     new AlertDialog.Builder(activity, android.R.style.Theme_DeviceDefault_Dialog_Alert);
@@ -98,8 +100,10 @@ public abstract class AppUpdater extends RemotePackageUpdater {
                 dialog.dismiss();
                 skipAppUpdate(newVersion);
             });
+            updateDialogBuilder.setOnDismissListener(d -> hasUpdateDialog = false);
 
             updateDialogBuilder.show();
+            hasUpdateDialog = true;
         } catch (Exception ignored) {} // This is not critical, and may fail if the launcher window isn't visible
     }
 
@@ -132,6 +136,7 @@ public abstract class AppUpdater extends RemotePackageUpdater {
             packageInfo = packageManager.getPackageInfo(
                     getAppPackageName(), PackageManager.GET_ACTIVITIES);
         } catch (PackageManager.NameNotFoundException e) {
+            //noinspection CallToPrintStackTrace
             e.printStackTrace();
             return null;
         }
@@ -143,6 +148,7 @@ public abstract class AppUpdater extends RemotePackageUpdater {
             packageInfo = packageManager.getPackageInfo(
                     getAppPackageName(), PackageManager.GET_ACTIVITIES);
         } catch (PackageManager.NameNotFoundException e) {
+            //noinspection CallToPrintStackTrace
             e.printStackTrace();
             return 0;
         }
