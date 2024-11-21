@@ -39,7 +39,6 @@ import com.threethan.launcher.activity.adapter.CustomItemAnimator;
 import com.threethan.launcher.activity.adapter.GroupsAdapter;
 import com.threethan.launcher.activity.adapter.LauncherAppsAdapter;
 import com.threethan.launcher.activity.dialog.AppDetailsDialog;
-import com.threethan.launcher.activity.dialog.BasicDialog;
 import com.threethan.launcher.activity.dialog.SettingsDialog;
 import com.threethan.launcher.activity.executor.WallpaperExecutor;
 import com.threethan.launcher.activity.support.DataStoreEditor;
@@ -277,9 +276,12 @@ public class LauncherActivity extends Launch.LaunchingActivity {
                     .setPositiveButton(R.string.addons_install, (dialog, which)
                             -> new FileManagerUpdater(this).checkAppUpdateAndInstall()
                     )
-                    .setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss())
+                    .setNegativeButton(R.string.next, (dialog, which) -> {
+                        dialog.dismiss();
+                        intent.setPackage(null);
+                        imagePicker.launch(intent);
+                    })
                     .show();
-            BasicDialog.toast(getString(R.string.install_image_browser_needed));
         }
     }
 
