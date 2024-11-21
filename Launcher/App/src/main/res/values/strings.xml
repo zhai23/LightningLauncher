@@ -312,8 +312,9 @@
 
     <string name="addons_preamble"><b>You must manually activate each redirect individually.
         \nLighting Launcher will open <i>alongside</i> the target app.</b>
-        \n
-    <i>Each shortcut can be used for another window of Lighting Launcher, even without activating it.</i></string>
+        \n<i>Each shortcut can be used as another launcher window.</i>
+    \n
+    \nYou can also add Lighting Launcher to your dock directly.</string>
 
     <string name="addons_dock_button">Add Lightning Launcher to the Dock</string>
     <string name="addons_dock_title">Adding Lightning Launcher to the dock</string>
