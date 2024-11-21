@@ -1,7 +1,6 @@
 package com.threethan.launcher.activity;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
@@ -54,6 +53,7 @@ import com.threethan.launcher.updater.FileManagerUpdater;
 import com.threethan.launcher.updater.LauncherUpdater;
 import com.threethan.launchercore.Core;
 import com.threethan.launchercore.lib.ImageLib;
+import com.threethan.launchercore.util.CustomDialog;
 import com.threethan.launchercore.util.Keyboard;
 import com.threethan.launchercore.util.Launch;
 import com.threethan.launchercore.util.Platform;
@@ -271,7 +271,7 @@ public class LauncherActivity extends Launch.LaunchingActivity {
             }
             imagePicker.launch(intent);
         } catch (ActivityNotFoundException ignored) {
-            new AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
+            new CustomDialog.Builder(this)
                     .setTitle(R.string.install_image_browser_title)
                     .setMessage(R.string.install_image_browser_content)
                     .setPositiveButton(R.string.addons_install, (dialog, which)

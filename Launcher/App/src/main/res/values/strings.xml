@@ -94,7 +94,7 @@
         \nMake sure to enable the \"Use Lightning Launcher\" switch - the \"Lightning Launcher Shortcut\" switch won\'t do anything on the Quest!
     </string>
 
-    <string name="reload_icon">Refresh Icon / Banner</string>
+    <string name="reload_icon">Reset Icon</string>
     <string name="open_tuning"><i>Tune with</i></string>
     <string name="open_tuning_tip"><i>Quest Game Tuner</i> lets you adjust resolution, FPS, and more!</string>
 
@@ -108,7 +108,7 @@
         \nIf you have issues, turn this option off and make sure any apps are not set to launch in their own windows. Reboot to fix stuck windows.</string>
     <string name="hidden_groups_message">Turning this option off will hide the top bar when not in Edit Mode. \n
         \nThe settings button will also be hidden when not in Edit Mode.\n
-        \nInstead, press the back button to open settings.
+        \nInstead, <b>press the back button, <i>left-arrow at the top-left of the window,</i> to open settings.</b>
     </string>
     <string name="set_default_launcher_message">Setting Lightning Launcher as your default android home app will allow other apps to add shortcut icons to the home screen.
         \nThis only needs to be done once.\n
@@ -149,14 +149,18 @@
     <string name="add_website_group">Add to %s</string>
 
     <string name="service_title">Shortcuts Services</string>
-    <string name="service_subtitle">Easily Access Lightning Launcher</string>
-    <string name="service_info">By enabling the shortcut service, Lighting Launcher will open when you hover over the chosen icon on the dock, basically replacing that app.</string>
-    <string name="service_instructions">Enabling the Shortcut Service</string>
-    <string name="service_message">1. Use the button to open Android\'s accessibility settings\n2.
-        Select the service you wish to enable\n3.
-        Switch the service on at the top of the page\n4.
-        Click \"Allow\" on the prompt\n5.
-        \'X\' out of the window and enjoy!</string>
+    <string name="service_info"><b>Easily Access Lightning Launcher</b>
+        \nBy enabling the shortcut service, Lighting Launcher will open when you hover over the chosen icon on the dock, basically replacing that app.
+        \n
+        \n
+        \n<b>Enabling the Shortcut Service</b>
+        \n
+        \n1. Use the button to open Android\'s accessibility settings
+        \n2. Select the service you wish to enable
+        \n3. Switch the service on at the top of the page
+        \n4. Click \"Allow\" on the prompt
+        \n5. \'X\' out of the window and enjoy!
+    </string>
     <string name="service_next">Continue to Accessibility Settings</string>
 
     <string name="warning">Important Info</string>
@@ -306,9 +310,32 @@
     \nPressing back once you get to the launcher will just toggle edit mode, keeping you from accidentally returning to the default launcher.</string>
 
 
-    <string name="addons_preamble">
-        Each shortcut can be used for another window of Lighting Launcher, even without activating.
-        \n<b>You must manually activate each redirects individually. Lighting Launcher will open <i>alongside</i> the target app.</b></string>
+    <string name="addons_preamble"><b>You must manually activate each redirect individually.
+        \nLighting Launcher will open <i>alongside</i> the target app.</b>
+        \n
+    <i>Each shortcut can be used for another window of Lighting Launcher, even without activating it.</i></string>
+
+    <string name="addons_dock_button">Add Lightning Launcher to the Dock</string>
+    <string name="addons_dock_title">Adding Lightning Launcher to the dock</string>
+    <string name="addons_dock_desc"><b>Remove an existing icon</b>
+        \n
+        \nThe dock only has 5 spaces. By default, they are all filled up.
+        \n
+        \n1. Close the app you want to remove <i>(Camera or Quest Browser)</i>
+        \n2. Click and hold on the icon you want to remove; drag it slowly downwards until it says "Unpin"
+        \n3. Release the icon
+        \n
+        \n<i>You can\'t remove the Horizon Feed, Store, or People icons normally.</i>
+        \n
+        \n
+        \n<b>Add Lightning Launcher</b>
+        \n
+        \n1. Find <i>Lightning Launcher</i> in the recent apps at the right side of the dock
+        \n2. Drag the <i>Lightning Launcher</i> icon to the left side of the dock
+        \n3. Release the icon to place it in your choice of spot
+        \n
+        \n<i>You can do this with any app. You can use the shortcuts to get differently colored icons for Lightning Launcher.</i>
+    </string>
 
     <string name="addons_explore">Feed Shortcut</string>
     <string name="addons_explore_desc">Install then activate to open Lightning Launcher when you press the <b>Horizon Feed</b> button on the dock.</string>

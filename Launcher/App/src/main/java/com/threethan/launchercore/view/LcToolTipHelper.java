@@ -42,17 +42,20 @@ public abstract class LcToolTipHelper {
     public static void init(View view, CharSequence tooltipText) {
         init(view, -1, tooltipText);
     }
-
     private static void init(View view, int textResId, CharSequence text) {
         final PopupWindow[] popupWindow = {null};
         if (textResId == -1 && (text == null || text == "")) return;
-        Runnable showToolTip = () -> {
+        @SuppressLint("SetTextI18n") Runnable showToolTip = () -> {
             if (popupWindow[0] != null && popupWindow[0].isShowing()) return;
             LayoutInflater inflater = (LayoutInflater) view.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             @SuppressLint("InflateParams") View tooltipView = inflater.inflate(R.layout.lc_tooltip, null);
             TextView textView = tooltipView.findViewById(R.id.tooltipText);
             if (textResId == -1) textView.setText(text);
             else textView.setText(textResId);
+            if (view instanceof TextView textView1) {
+                if (textView1.getLayout().getEllipsisCount(0) > 0)
+                    textView.setText(textView.getText().toString() + '\n' + textView1.getText());
+            }
             if (popupWindow[0] == null) {
                 popupWindow[0] = new PopupWindow(tooltipView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 popupWindow[0].setTouchable(false);

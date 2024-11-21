@@ -1,14 +1,13 @@
 package com.threethan.launcher.activity.dialog;
 
 import android.animation.ObjectAnimator;
-import android.app.Activity;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Paint;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
@@ -21,6 +20,7 @@ import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 import com.threethan.launcher.R;
 import com.threethan.launcher.activity.LauncherActivity;
 import com.threethan.launchercore.Core;
+import com.threethan.launchercore.util.CustomDialog;
 import com.threethan.launchercore.util.Platform;
 
 import java.util.Objects;
@@ -47,7 +47,7 @@ public class BasicDialog<T extends Context> extends AbstractDialog<T> {
     }
     @Nullable
     public AlertDialog show() {
-        AlertDialog dialog = new AlertDialog.Builder(a, R.style.dialog).setView(resource).create();
+        AlertDialog dialog = new CustomDialog.Builder(a).setView(resource).create();
 
         if (dialog.getWindow() == null) return null;
         dialog.getWindow().setBackgroundDrawableResource(R.drawable.bkg_dialog);
@@ -83,6 +83,7 @@ public class BasicDialog<T extends Context> extends AbstractDialog<T> {
             LayoutInflater inflater =
                     Objects.requireNonNull(LauncherActivity.getForegroundInstance())
                             .getLayoutInflater();
+            @SuppressLint("InflateParams")
             View layout = inflater.inflate(R.layout.dialog_toast, null);
 
             TextView textMain = layout.findViewById(R.id.toastTextMain);
