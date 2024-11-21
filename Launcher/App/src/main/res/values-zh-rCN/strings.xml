@@ -88,7 +88,7 @@
 
     <string name="service_desc">启用此服务后，当悬停在 dock 右侧的应用程序库图标上约半秒时，Lightning Launcher 将自动打开。\n(这可能会给访问默认启动器带来困难）\n\n        \n确保启用 \"使用 Lightning Launcher \"开关-\"Lightning Launcher 快捷方式 \"开关不会对 Quest 起任何作用！\n</string>
 
-    <string name="reload_icon">刷新图标/横幅</string>
+    <string name="reload_icon">刷新图标</string>
     <string name="open_tuning">性能优化</string>
     <string name="open_tuning_tip">Quest Game Tuner 可让您调整分辨率、FPS 等！</string>
 
@@ -118,10 +118,12 @@
     <string name="add_website_group">添加到 %s</string>
 
     <string name="service_title">快捷方式服务</string>
-    <string name="service_subtitle">快速访问 Lightning Launcher</string>
-    <string name="service_info">启用快捷方式服务后，当你悬停在 dock 上指定的图标上时，Lighting Launcher 会自动打开</string>
-    <string name="service_instructions">启用快捷服务</string>
-    <string name="service_message">1. 使用该按钮打开 Android 的辅助功能设置\n2. 选择要启用的服务\n3. 在页面顶部打开服务\n4. 在提示中点击 \"允许\"\n5. 关闭窗口即刻生效</string>
+    <string name="service_info"><b>快速访问 Lightning Launcher</b>
+        \n启用快捷方式服务后，当你悬停在 dock 上指定的图标上时，Lighting Launcher 会自动打开
+        \n
+        \n<b>启用快捷服务</b>
+        \n1. 使用该按钮打开 Android 的辅助功能设置\n2. 选择要启用的服务\n3. 在页面顶部打开服务\n4. 在提示中点击 \"允许\"\n5. 关闭窗口即刻生效
+    </string>
     <string name="service_next">继续进入辅助功能设置</string>
 
     <string name="warning">重要信息</string>
@@ -245,6 +247,24 @@
     <string name="addons_androidtv_alt_desc">如果你只使用遥控器上的返回键，而不是主页键，你将始终回到 Lightning Launcher。\n    \n\n    \n进入启动器后再按返回键，只会切换编辑模式，避免意外返回默认启动器。</string>
 
     <string name="addons_preamble"> </string>
+
+    <string name="addons_dock_button">如何将 Lightning Launcher 添加到 Dock</string>
+    <string name="addons_dock_title">将 Lightning Launcher 添加到 Dock</string>
+    <string name="addons_dock_desc"><b>移除现有图标</b>
+        \nDock 只有 5 个空间。默认情况下，它们都已填满。
+        \n
+        \n1. 关闭要移除的应用<i>（相机或 Quest 浏览器）</i>
+        \n2. 单击并按住要移除的图标；将其缓慢向下拖动，直到显示“取消固定”
+        \n3. 释放图标
+        \n<i>您无法正常移除 Horizo​​n Feed、Store 或 People 图标。</i>
+        \n
+        \n<b>添加 Lightning Launcher</b>
+        \n1. 在 Dock 右侧的最近应用中找到 Lightning Launcher 图标
+        \n2. 将 Lightning Launcher 图标拖到 Dock 左侧
+        \n3. 释放图标以将其放置在您选择的位置
+        \n<i>您可以对任何应用执行此操作。您可以使用快捷方式为 Lightning Launcher 获取不同颜色的图标。</i>
+    </string>
+
     <string name="addons_explore">Horizon Feed 快捷方式服务</string>
     <string name="addons_explore_desc">安装后，只要悬停在基座上的 &quot;Horizon Feed&quot;/&quot;Oculus Explore&quot; 按钮上，就会激活打开 Lightning Launcher。</string>
 

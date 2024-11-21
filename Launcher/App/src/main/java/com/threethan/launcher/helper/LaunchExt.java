@@ -1,7 +1,6 @@
 package com.threethan.launcher.helper;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -23,6 +22,7 @@ import com.threethan.launchercore.Core;
 import com.threethan.launchercore.adapter.UtilityApplicationInfo;
 import com.threethan.launchercore.lib.DelayLib;
 import com.threethan.launchercore.util.App;
+import com.threethan.launchercore.util.CustomDialog;
 import com.threethan.launchercore.util.Keyboard;
 import com.threethan.launchercore.util.Launch;
 import com.threethan.launchercore.util.Platform;
@@ -70,34 +70,27 @@ public abstract class LaunchExt extends Launch {
 
         // Browser Check
         if (Objects.equals(intent.getPackage(), PlatformExt.BROWSER_PACKAGE)) {
-            if (PlatformExt.hasBrowser(launcherActivity)) {
+            if (!PlatformExt.hasBrowser(launcherActivity) ||
+                    new BrowserUpdater(launcherActivity).getInstalledVersionCode()
+                            < BrowserUpdater.REQUIRED_VERSION_CODE) {
                 // Check for browser update. User probably won't see the prompt until closing, though.
                 BrowserUpdater browserUpdater = new BrowserUpdater(launcherActivity);
                 if (browserUpdater.getInstalledVersionCode() < BrowserUpdater.REQUIRED_VERSION_CODE) {
-                    // If browser is required, but not installed
-                    // Prompt installation
-                    AlertDialog dialog = new BasicDialog<>(launcherActivity, R.layout.dialog_prompt_browser_update).show();
-                    if (dialog == null) return false;
-                    dialog.findViewById(R.id.cancel).setOnClickListener((view) -> dialog.dismiss());
-                    dialog.findViewById(R.id.install).setOnClickListener((view) -> {
-                        new BrowserUpdater(launcherActivity).checkAppUpdateAndInstall();
-                        BasicDialog.toast(launcherActivity.getString(R.string.download_browser_toast_main),
-                                launcherActivity.getString(R.string.download_browser_toast_bold), true);
-                    });
+                    new CustomDialog.Builder(launcherActivity)
+                            .setTitle(R.string.warning)
+                            .setMessage(PlatformExt.hasBrowser(launcherActivity)
+                                    ? R.string.update_browser_message
+                                    : R.string.download_browser_message)
+                            .setPositiveButton(R.string.addons_install, (d, w) -> {
+                                new BrowserUpdater(launcherActivity).checkAppUpdateAndInstall();
+                                BasicDialog.toast(launcherActivity.getString(R.string.download_browser_toast_main),
+                                        launcherActivity.getString(R.string.download_browser_toast_bold), true);
+                            })
+                            .setNegativeButton(R.string.cancel, (d, w) -> d.dismiss())
+                            .show();
+
                     return false;
                 }
-            } else {
-                // If browser is required, but not installed
-                // Prompt installation
-                AlertDialog dialog = new BasicDialog<>(launcherActivity, R.layout.dialog_prompt_browser_install).show();
-                if (dialog == null) return false;
-                dialog.findViewById(R.id.cancel).setOnClickListener((view) -> dialog.dismiss());
-                dialog.findViewById(R.id.install).setOnClickListener((view) -> {
-                    new BrowserUpdater(launcherActivity).checkAppUpdateAndInstall();
-                    BasicDialog.toast(launcherActivity.getString(R.string.download_browser_toast_main),
-                            launcherActivity.getString(R.string.download_browser_toast_bold), true);
-                });
-                return false;
             }
         }
 

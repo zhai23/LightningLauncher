@@ -32,7 +32,6 @@
             android:background="@drawable/bkg_app"
             android:foreground="@drawable/bkg_hover_button_app"
             android:scaleType="centerCrop"
-            android:tooltipText="@string/tip_change_icon"
             tools:ignore="UnusedAttribute" />
 
         <LinearLayout

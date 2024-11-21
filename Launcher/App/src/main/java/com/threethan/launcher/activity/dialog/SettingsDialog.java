@@ -24,6 +24,7 @@ import com.threethan.launcher.helper.PlatformExt;
 import com.threethan.launcher.helper.SettingsSaver;
 import com.threethan.launcher.updater.LauncherUpdater;
 import com.threethan.launchercore.util.App;
+import com.threethan.launchercore.util.CustomDialog;
 import com.threethan.launchercore.util.Platform;
 
 import java.lang.ref.WeakReference;
@@ -306,18 +307,18 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
 
         if (Platform.isVr() && Platform.getVrOsVersion() < 69) {
             View defaultSettingsButton = dialog.findViewById(R.id.defaultLauncherSettingsButton);
-            defaultSettingsButton.setOnClickListener((view) -> {
-                AlertDialog minDialog = new BasicDialog<>(a, R.layout.dialog_info_set_default_launcher).show();
-                assert minDialog != null;
-                minDialog.findViewById(R.id.install).setOnClickListener(view1 -> {
-                     final Intent intent = new Intent(android.provider.Settings.ACTION_HOME_SETTINGS);
-                    intent.setPackage("com.android.permissioncontroller");
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    minDialog.cancel();
-                    a.startActivity(intent);
-                });
-                minDialog.findViewById(R.id.cancel).setOnClickListener(view1 -> minDialog.cancel());
-            });
+            defaultSettingsButton.setOnClickListener((view) -> new CustomDialog.Builder(a)
+                    .setTitle(R.string.warning)
+                    .setMessage(R.string.set_default_launcher_message)
+                    .setPositiveButton(R.string.understood, (d, w) -> {
+                        final Intent intent = new Intent(android.provider.Settings.ACTION_HOME_SETTINGS);
+                        intent.setPackage("com.android.permissioncontroller");
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        d.dismiss();
+                        a.startActivity(intent);
+                    })
+                    .setNegativeButton(R.string.cancel, (d, w) -> d.dismiss())
+                    .show());
         } else {
             dialog.findViewById(R.id.extraFeaturesTitle).setVisibility(View.GONE);
             dialog.findViewById(R.id.defaultLauncherSettingsButton).setVisibility(View.GONE);
@@ -424,8 +425,10 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
         attachSwitchToSetting(dialog.findViewById(R.id.groupSwitch),
                 Settings.KEY_GROUPS_ENABLED, Settings.DEFAULT_GROUPS_ENABLED,
                 value -> {
-                    showOneTimeWarningDialog(R.layout.dialog_info_hide_groups,
-                            Settings.KEY_SEEN_HIDDEN_GROUPS_POPUP);
+                    new CustomDialog.Builder(a)
+                            .setTitle(R.string.warning)
+                            .setMessage(R.string.hidden_groups_message)
+                            .show();
                     a.setEditMode(true);
                     a.setEditMode(false);
                 }, false
@@ -478,23 +481,6 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
             if (onSwitch != null) onSwitch.accept(inverted != value);
             a.launcherService.forEachActivity(LauncherActivity::refreshInterface);
         });
-    }
-
-    /**
-     * Displays a one-time warning dialog
-     * @param dialogResource ResId for the dialog; must contain a button with id of "confirm"
-     * @param keySeenDialog Key to indicate the user has seen the dialog
-     * @noinspection SameParameterValue
-     */
-    private void showOneTimeWarningDialog(int dialogResource, String keySeenDialog) {
-        if (!a.dataStoreEditor.getBoolean(keySeenDialog, false)) {
-            AlertDialog subDialog = new BasicDialog<>(a, dialogResource).show();
-            if (subDialog == null) return;
-            subDialog.findViewById(R.id.install).setOnClickListener(view -> {
-                a.dataStoreEditor.putBoolean(keySeenDialog, true);
-                subDialog.dismiss();
-            });
-        }
     }
 
     private void showGroupSettings() {

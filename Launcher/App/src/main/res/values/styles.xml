@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="ThemeOverlay.Standard" parent="android:Theme.Material.Light.NoActionBar">
+    <style name="ThemeOverlay.Standard" parent="android:Theme.Material.NoActionBar">
 
         <item name="android:windowBackground">#2a2a2c</item>
 
@@ -17,9 +17,8 @@
         <item name="colorControlNormal">#FFF</item>
         <item name="android:textColor">#FFF</item>
         <item name="colorAccent">#3364c3</item>
-
-
     </style>
+
     <style name="ThemeOverlay.ATV" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:fontFamily">@font/sansserif</item>
         <item name="android:colorPrimary">#2a2a2c</item>

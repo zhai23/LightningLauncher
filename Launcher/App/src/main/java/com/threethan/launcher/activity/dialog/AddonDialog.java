@@ -9,6 +9,7 @@ import android.view.View;
 import com.threethan.launcher.R;
 import com.threethan.launcher.activity.LauncherActivity;
 import com.threethan.launcher.updater.AddonUpdater;
+import com.threethan.launchercore.util.CustomDialog;
 import com.threethan.launchercore.util.Platform;
 
 import java.lang.ref.WeakReference;
@@ -52,6 +53,7 @@ public class AddonDialog extends BasicDialog<LauncherActivity> {
         View addonAndroidTv = dialog.findViewById(R.id.addonAndroidTv);
         if (addonAndroidTv!=null) updateAddonButton(a, addonAndroidTv, AddonUpdater.TAG_ATV_LM);
 
+        dialog.findViewById(R.id.addToDockButton).setOnClickListener(v -> showDockDialog());
         dialog.findViewById(R.id.exitButton).setOnClickListener(v -> dialog.dismiss());
         return dialog;
     }
@@ -116,13 +118,26 @@ public class AddonDialog extends BasicDialog<LauncherActivity> {
 
     protected static void showAccessibilityDialog() {
         Activity a = LauncherActivity.getForegroundInstance();
-        AlertDialog subDialog = new BasicDialog<>(a, R.layout.dialog_info_service).show();
-        if (subDialog == null) return;
-        subDialog.findViewById(R.id.install).setOnClickListener(view1 -> {
-            // Navigate to accessibility settings
-            Intent localIntent = new Intent("android.settings.ACCESSIBILITY_SETTINGS");
-            localIntent.setPackage("com.android.settings");
-            a.startActivity(localIntent);
-        });
+        new CustomDialog.Builder(a)
+                .setTitle(R.string.service_title)
+                .setMessage(R.string.service_info)
+                .setPositiveButton(R.string.service_next, (d, w) -> {
+                    // Navigate to accessibility settings
+                    Intent localIntent = new Intent("android.settings.ACCESSIBILITY_SETTINGS");
+                    localIntent.setPackage("com.android.settings");
+                    assert a != null;
+                    a.startActivity(localIntent);
+                    d.dismiss();
+                })
+                .show();
+    }
+
+    protected static void showDockDialog() {
+        Activity a = LauncherActivity.getForegroundInstance();
+        new CustomDialog.Builder(a)
+                .setTitle(R.string.addons_dock_title)
+                .setMessage(R.string.addons_dock_desc)
+                .setPositiveButton(R.string.understood, (d, w) -> d.dismiss())
+                .show();
     }
 }

@@ -22,6 +22,7 @@ import androidx.core.content.FileProvider;
 import com.threethan.launcher.R;
 import com.threethan.launcher.activity.dialog.BasicDialog;
 import com.threethan.launchercore.lib.FileLib;
+import com.threethan.launchercore.util.CustomDialog;
 
 import java.io.File;
 import java.io.IOException;
@@ -124,13 +125,12 @@ public class RemotePackageUpdater {
 
         if (downloadingDialog == null) {
             try {
-                AlertDialog.Builder updateDialogBuilder = new AlertDialog.Builder(activity,
-                        android.R.style.Theme_DeviceDefault_Dialog_Alert);
-                updateDialogBuilder.setTitle(activity.getString(R.string.update_downloading_title, remotePackage));
-                updateDialogBuilder.setMessage(R.string.update_downloading_content);
-                updateDialogBuilder.setNegativeButton(R.string.update_hide_button, (dialog, which) -> dialog.cancel());
-                updateDialogBuilder.setOnDismissListener(d -> downloadingDialog = null);
-                downloadingDialog = updateDialogBuilder.show();
+                downloadingDialog = new CustomDialog.Builder(activity)
+                    .setTitle(activity.getString(R.string.update_downloading_title, remotePackage))
+                    .setMessage(R.string.update_downloading_content)
+                    .setNegativeButton(R.string.update_hide_button, (dialog, which) -> dialog.cancel())
+                    .setOnDismissListener(d -> downloadingDialog = null)
+                    .show();
             } catch (Exception ignored) {} // May rarely fail if window is invalid
         }
 
@@ -219,12 +219,11 @@ public class RemotePackageUpdater {
 
         } else {
             try {
-                AlertDialog.Builder dialog = new AlertDialog.Builder(activity,
-                        android.R.style.Theme_DeviceDefault_Dialog_Alert);
-                dialog.setTitle(R.string.update_failed_title);
-                dialog.setMessage(R.string.update_failed_content);
-                dialog.setNegativeButton(R.string.update_hide_button, (d, w) -> d.cancel());
-                dialog.show();
+                 new CustomDialog.Builder(activity)
+                     .setTitle(R.string.update_failed_title)
+                     .setMessage(R.string.update_failed_content)
+                     .setNegativeButton(R.string.update_hide_button, (d, w) -> d.cancel())
+                     .show();
             } catch (Exception ignored) {}
         }
     }

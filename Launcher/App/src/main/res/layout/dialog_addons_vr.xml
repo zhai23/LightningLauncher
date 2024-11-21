@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:alpha="0.85"
             android:gravity="center"
-            android:minHeight="60sp"
+            android:minHeight="100sp"
             android:text="@string/addons_preamble" />
 
         <LinearLayout
@@ -254,6 +254,23 @@
                 android:text="@string/addons_explore_desc" />
 
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/addToDockButton"
+            style="@style/SettingButtonLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/lc_bkg_button"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:singleLine="true"
+            android:text="@string/addons_dock_button"
+            tools:ignore="NestedWeights">
+
+        </TextView>
 
         <TextView
             android:id="@+id/exitButton"

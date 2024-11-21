@@ -1,7 +1,6 @@
 package com.threethan.launcher.updater;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
@@ -17,6 +16,7 @@ import com.android.volley.toolbox.Volley;
 import com.threethan.launcher.activity.dialog.BasicDialog;
 import com.threethan.launchercore.lib.FileLib;
 import com.threethan.launcher.R;
+import com.threethan.launchercore.util.CustomDialog;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -89,20 +89,17 @@ public abstract class AppUpdater extends RemotePackageUpdater {
     private void showAppUpdateDialog(String currentVersion, String newVersion) {
         if (hasUpdateDialog) return;
         try {
-            AlertDialog.Builder updateDialogBuilder =
-                    new AlertDialog.Builder(activity, android.R.style.Theme_DeviceDefault_Dialog_Alert);
-            updateDialogBuilder.setTitle(R.string.update_title);
-            updateDialogBuilder.setMessage(activity.getString(R.string.update_content, currentVersion, newVersion));
-
-            updateDialogBuilder.setPositiveButton(R.string.update_button, (dialog, which) ->
-                    downloadPackage(getAppPackage(newVersion)));
-            updateDialogBuilder.setNegativeButton(R.string.update_skip_button, (dialog, which) -> {
-                dialog.dismiss();
-                skipAppUpdate(newVersion);
-            });
-            updateDialogBuilder.setOnDismissListener(d -> hasUpdateDialog = false);
-
-            updateDialogBuilder.show();
+            new CustomDialog.Builder(activity)
+                .setTitle(R.string.update_title)
+                .setMessage(activity.getString(R.string.update_content, currentVersion, newVersion))
+                .setPositiveButton(R.string.update_button, (dialog, which) ->
+                        downloadPackage(getAppPackage(newVersion)))
+                .setNegativeButton(R.string.update_skip_button, (dialog, which) -> {
+                    dialog.dismiss();
+                    skipAppUpdate(newVersion);
+                })
+                .setOnDismissListener(d -> hasUpdateDialog = false)
+                .show();
             hasUpdateDialog = true;
         } catch (Exception ignored) {} // This is not critical, and may fail if the launcher window isn't visible
     }
@@ -216,17 +213,16 @@ public abstract class AppUpdater extends RemotePackageUpdater {
      * @param versionTag Github release tag of the update to skip
      */
     public void skipAppUpdate(String versionTag) {
-        AlertDialog.Builder skipDialogBuilder =
-                new AlertDialog.Builder(activity, android.R.style.Theme_DeviceDefault_Dialog_Alert);
-        skipDialogBuilder.setTitle(activity.getString(R.string.update_skip_title, versionTag));
-        skipDialogBuilder.setMessage(R.string.update_skip_content);
-        skipDialogBuilder.setPositiveButton(R.string.update_skip_confirm_button, (dialog, i) -> {
-            putIgnoredUpdateTag(versionTag);
-            BasicDialog.toast(activity.getString(R.string.update_skip_toast), versionTag, false);
-            dialog.dismiss();
-        });
-        skipDialogBuilder.setNegativeButton(R.string.update_skip_cancel_button, ((dialog, i) -> dialog.dismiss()));
-        skipDialogBuilder.show();
+        new CustomDialog.Builder(activity)
+            .setTitle(activity.getString(R.string.update_skip_title, versionTag))
+            .setMessage(R.string.update_skip_content)
+            .setPositiveButton(R.string.update_skip_confirm_button, (dialog, i) -> {
+                putIgnoredUpdateTag(versionTag);
+                BasicDialog.toast(activity.getString(R.string.update_skip_toast), versionTag, false);
+                dialog.dismiss();
+            })
+            .setNegativeButton(R.string.update_skip_cancel_button, ((dialog, i) -> dialog.dismiss()))
+            .show();
     }
 
 
