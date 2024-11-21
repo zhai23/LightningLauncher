@@ -285,7 +285,9 @@
     <string name="installed_successfully">安装成功</string>
 
     <string name="install_image_browser_title">请安装一个可以挑选图片的应用程序！</string>
-    <string name="install_image_browser_content">Meta 破坏了您操作系统版本上 Android 的内置文件管理器，因此您需要使用第三方应用程序来浏览文件和选择图片。
-        \n\n建议您使用免费的 Amaze 文件管理器，您现在可以安装它。</string>
-    <string name="install_image_browser_needed">没有安装任何应用程序可以选择图像！</string>
+    <string name="install_image_browser_content"><b>在您的操作系统版本上，Android 文件浏览器无法与控制器一起使用。</b>
+        \n
+        \n您可以通过用手指触摸文件浏览器来与它交互，或者安装没有此问题的第三方应用程序。
+        \n
+        \n如果您选择“安装”，您将自动获得免费的 <i>Amaze 文件管理器</i>，并且不会再看到此警报。</string>
 </resources>
