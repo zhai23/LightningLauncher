@@ -338,13 +338,13 @@
             android:layout_height="match_parent"
             android:scaleType="fitXY"
             android:scaleX="100"
-            android:scaleY="100"/>
+            android:scaleY="100" />
 
         <ImageView
             android:id="@+id/openIcon"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop"/>
+            android:scaleType="centerCrop" />
 
     </FrameLayout>
 

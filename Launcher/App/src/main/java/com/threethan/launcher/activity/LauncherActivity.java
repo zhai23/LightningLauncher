@@ -545,6 +545,32 @@ public class LauncherActivity extends Launch.LaunchingActivity {
         if (iconScale  == -1) iconScale  = dataStoreEditor.getInt(Settings.KEY_SCALE , Settings.DEFAULT_SCALE );
 
         int targetSize = dp(iconScale);
+        int margin = getMargin(targetSize);
+
+        final boolean groupsVisible = getGroupAdapter() != null && groupsEnabled && !getSearching();
+        final int topAdd = groupsVisible ? dp(32) + groupHeight : dp(23);
+        final int bottomAdd = groupsVisible ? getBottomBarHeight() + dp(11) : margin / 2 + getBottomBarHeight() + dp(11);
+
+        appsView.setClipToPadding(false);
+        appsView.setPadding(
+                dp(margin+25),
+                topAdd,
+                dp(margin+25),
+                bottomAdd);
+
+        // Margins
+
+        if (marginDecoration == null) {
+            marginDecoration = new MarginDecoration(margin);
+            appsView.addItemDecoration(marginDecoration);
+        } else marginDecoration.setMargin(margin);
+        appsView.invalidateItemDecorations();
+        while (appsView.getItemDecorationCount() > 1)
+            appsView.removeItemDecorationAt(appsView.getItemDecorationCount()-1);
+    }
+
+    /** Get the margin, in dp, for the app grid */
+    private int getMargin(int targetSize) {
         int estimatedWidth = prevViewWidth;
 
         final int nCol = estimatedWidth / (targetSize * 2) * 2; // To nearest 2
@@ -553,29 +579,10 @@ public class LauncherActivity extends Launch.LaunchingActivity {
 
         final float normScale = (float) (iconScale - Settings.MIN_SCALE) / (Settings.MAX_SCALE - Settings.MIN_SCALE);
         int margin = (int) ((iconMargin) * (normScale+0.5f)/1.5f);
-        margin += (int) ((dCol-0.5) * 50 / nCol);
-        margin -= 11;
-        if (margin < -11) margin = -11;
-
-        final boolean groupsVisible = getGroupAdapter() != null && groupsEnabled && !getSearching();
-        final int topAdd = groupsVisible ? dp(32) + groupHeight : dp(23);
-        final int bottomAdd = groupsVisible ? getBottomBarHeight() + dp(11) : margin / 2 + getBottomBarHeight() + dp(11);
-
-        appsView.setClipToPadding(false);
-        appsView.setPadding(
-                dp(margin+11),
-                topAdd,
-                dp(margin+11),
-                bottomAdd);
-
-        // Margins
-        if (marginDecoration == null) {
-            marginDecoration = new MarginDecoration(margin);
-            appsView.addItemDecoration(marginDecoration);
-        } else marginDecoration.setMargin(margin);
-        appsView.invalidateItemDecorations();
-        while (appsView.getItemDecorationCount() > 1)
-            appsView.removeItemDecorationAt(appsView.getItemDecorationCount()-1);
+        margin += (int) ((dCol-0.5) * 75 / nCol);
+        margin -= 20;
+        if (margin < -20) margin = -20;
+        return margin;
     }
 
     /**

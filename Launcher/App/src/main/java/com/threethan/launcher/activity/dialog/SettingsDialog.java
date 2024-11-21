@@ -242,7 +242,7 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
             public void onProgressChanged(SeekBar seekBar, int value, boolean b) {
                 a.dataStoreEditor.putInt(Settings.KEY_MARGIN, value);
                 LauncherActivity.iconMargin = value;
-                a.refreshInterface();
+                a.refreshAdapters();
             }
 
             @Override
