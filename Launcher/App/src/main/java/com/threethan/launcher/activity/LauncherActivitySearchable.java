@@ -1,7 +1,6 @@
 package com.threethan.launcher.activity;
 
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.content.pm.ApplicationInfo;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -10,8 +9,6 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.DecelerateInterpolator;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.threethan.launcher.R;
@@ -43,10 +40,16 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
         super.onCreate(savedInstanceState);
     }
     private boolean searching = false;
+    private boolean beenNonEmpty = false;
 
     protected void searchFor(String text) {
-        Objects.requireNonNull(getAppAdapter()).filterBy(text);
-        updateTopSearchResult();
+        if (text.isEmpty()) {
+            if (beenNonEmpty) hideSearchBar();
+        } else {
+            Objects.requireNonNull(getAppAdapter()).filterBy(text);
+            updateTopSearchResult();
+            beenNonEmpty = true;
+        }
     }
     Timer timer = new Timer();
     protected void queueSearch(String text) {
@@ -63,24 +66,25 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
         }, 200);
     }
     BlurView searchBar;
-    ObjectAnimator alphaIn;
-    ObjectAnimator alphaOut;
+
     void showSearchBar() {
+        beenNonEmpty = false;
         try {
             clearTopSearchResult();
             searching = true;
 
-            final int endMargin = 275;
-
-            if (alphaIn  != null) alphaIn .end();
-            if (alphaOut != null) alphaOut.end();
-            alphaIn = ObjectAnimator.ofFloat(searchBar, "alpha", 1f);
-            alphaOut = ObjectAnimator.ofFloat(topBar, "alpha", 0f);
-            alphaIn.setDuration(100);
-            alphaOut.setDuration(300);
+            ObjectAnimator alphaIn = ObjectAnimator.ofFloat(searchBar, "alpha", 1f);
+            ObjectAnimator alphaOut = ObjectAnimator.ofFloat(topBar, "alpha", 0f);
+            ObjectAnimator scaleX = ObjectAnimator.ofFloat(searchBar, "scaleX", 1f);
+            ObjectAnimator scaleY = ObjectAnimator.ofFloat(searchBar, "scaleY", 1f);
+            alphaIn.setDuration(200);
+            alphaOut.setDuration(250);
+            scaleX.setDuration(300);
+            scaleY.setDuration(300);
             alphaIn.start();
             alphaOut.start();
-            topBar.postDelayed(this::fixState, 300);
+            scaleX.start();
+            scaleY.start();
             searchBar.setVisibility(View.VISIBLE);
 
             searchBar.setOverlayColor(Color.parseColor(darkMode ? "#4A000000" : "#50FFFFFF"));
@@ -96,29 +100,10 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
             ((ImageView) findViewById(R.id.searchCancelIcon)).setImageTintList(
                     ColorStateList.valueOf(Color.parseColor(darkMode ? "#FFFFFF" : "#000000")));
 
-            ValueAnimator viewAnimator = ValueAnimator.ofInt(endMargin, 0);
-            viewAnimator.setDuration(200);
-            viewAnimator.setInterpolator(new DecelerateInterpolator());
-            viewAnimator.addUpdateListener(animation -> {
-                FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) searchBar.getLayoutParams();
-                lp.setMargins((int) animation.getAnimatedValue() + dp(25), 0, (int) animation.getAnimatedValue() + dp(25), 0);
-                searchBar.setLayoutParams(lp);
-                searchBar.requestLayout();
-            });
-            viewAnimator.start();
             if (getCurrentFocus() != null) getCurrentFocus().clearFocus();
             searchText.setText("");
             searchText.post(searchText::requestFocus);
             Keyboard.show(this);
-
-            ValueAnimator padAnimator = ValueAnimator.ofInt(appsView.getPaddingTop(), dp(75));
-            padAnimator.setDuration(200);
-            padAnimator.setInterpolator(new DecelerateInterpolator());
-            padAnimator.addUpdateListener(animation -> appsView.setPadding(appsView.getPaddingLeft(),
-                    (Integer) animation.getAnimatedValue(),
-                    appsView.getPaddingRight(),appsView.getPaddingBottom()));
-            padAnimator.start();
-
 
         } catch (NullPointerException e) {
             Log.w(TAG, "NPE when showing searchbar", e);
@@ -130,18 +115,13 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
             searching = false;
             Keyboard.hide(this, mainView);
 
-            if (alphaIn != null) alphaIn.end();
-            if (alphaOut != null) alphaOut.end();
-            alphaIn = ObjectAnimator.ofFloat(topBar, "alpha", 1f);
-            alphaOut = ObjectAnimator.ofFloat(searchBar, "alpha", 0f);
-            alphaIn.setDuration(100);
-            alphaOut.setDuration(300);
-            alphaIn.start();
-            alphaOut.start();
-            searchBar.postDelayed(() -> searchBar.setVisibility(View.GONE), 250);
+            searchBar.setVisibility(View.GONE);
 
-            searchBar.postDelayed(this::fixState, 300);
             topBar.setVisibility(groupsEnabled ? View.VISIBLE : View.GONE);
+            topBar.setAlpha(1F);
+            searchBar.setScaleX(0.5F);
+            searchBar.setScaleY(0.5F);
+            topBar.postDelayed(this::fixState, 500);
             refreshAdapters();
 
         } catch (NullPointerException ignored) {}
@@ -150,8 +130,6 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
     }
     protected void fixState() {
         try {
-            if (alphaIn != null) alphaIn.end();
-            if (alphaOut != null) alphaOut.end();
             searchBar.setVisibility(searching ? View.VISIBLE : View.GONE);
             topBar.setVisibility(!searching ? (groupsEnabled ? View.VISIBLE : View.GONE) : View.GONE);
             searchBar.setAlpha(searching ? 1F : 0F);
