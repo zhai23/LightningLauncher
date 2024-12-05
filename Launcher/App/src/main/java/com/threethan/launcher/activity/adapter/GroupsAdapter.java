@@ -57,6 +57,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.GroupViewH
         return appGroups.size();
     }
 
+    /** @noinspection ClassEscapesDefinedScope*/
     @NonNull
     @Override
     public GroupViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -89,8 +90,10 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.GroupViewH
         holder.menu.setOnClickListener(view ->
                 new GroupDetailsDialog(launcherActivity, holder.position).show());
     }
+    /** @noinspection ClassEscapesDefinedScope*/
     @Override
-    public void onBindViewHolder(@NonNull GroupViewHolder holder, @SuppressLint("RecyclerView") int position) {
+    public void onBindViewHolder(@NonNull GroupViewHolder holder,
+                                 @SuppressLint("RecyclerView") int position) {
         setLook(position, holder.view, holder.menu);
         TextView textView = holder.view.findViewById(R.id.itemLabel);
         setTextViewValue(textView, appGroups.get(position));
@@ -140,22 +143,8 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.GroupViewH
         boolean isSelected = selectedGroups.contains(appGroups.get(position));
 
         if (isSelected) {
-            boolean isLeft = (position == 0) || !selectedGroups.contains(appGroups.get(position - 1));
-            boolean isRight = (position + 1 >= appGroups.size()) || !selectedGroups.contains(appGroups.get(position + 1));
-
-            int shapeResourceId;
-            if (isLeft && isRight) {
-                shapeResourceId = R.drawable.tab_selected;
-            } else if (isLeft) {
-                shapeResourceId = R.drawable.tab_selected_left;
-            } else if (isRight) {
-                shapeResourceId = R.drawable.tab_selected_right;
-            } else {
-                shapeResourceId = R.drawable.tab_selected_middle;
-            }
+            int shapeResourceId = getShapeResourceId(position);
             itemView.setBackgroundResource(shapeResourceId);
-            itemView.setBackgroundTintList(ColorStateList.valueOf(
-                    Color.parseColor(LauncherActivity.darkMode ? "#50000000" : "#FFFFFF")));
             TextView textView = itemView.findViewById(R.id.itemLabel);
             textView.setTextColor(Color.parseColor(
                     LauncherActivity.darkMode ? "#FFFFFFFF" : "#FF000000")); // set selected tab text color
@@ -169,5 +158,23 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.GroupViewH
                     LauncherActivity.darkMode ? "#98FFFFFF" : "#98000000")); // set unselected tab text color
             menu.setVisibility(View.GONE);
         }
+    }
+
+    private int getShapeResourceId(int position) {
+        boolean isLeft = (position == 0) || !selectedGroups.contains(appGroups.get(position - 1));
+        boolean isRight = (position + 1 >= appGroups.size()) || !selectedGroups.contains(appGroups.get(position + 1));
+
+        int shapeResourceId;
+        final boolean dm = LauncherActivity.darkMode;
+        if (isLeft && isRight) {
+            shapeResourceId = dm ? R.drawable.tab_selected_dm : R.drawable.tab_selected_lm;
+        } else if (isLeft) {
+            shapeResourceId = dm ? R.drawable.tab_selected_left_dm : R.drawable.tab_selected_left_lm;
+        } else if (isRight) {
+            shapeResourceId = dm ? R.drawable.tab_selected_right_dm : R.drawable.tab_selected_right_lm;
+        } else {
+            shapeResourceId = dm ? R.drawable.tab_selected_middle_dm : R.drawable.tab_selected_middle_lm;
+        }
+        return shapeResourceId;
     }
 }

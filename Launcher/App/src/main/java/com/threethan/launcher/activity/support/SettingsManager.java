@@ -8,6 +8,7 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import com.threethan.launcher.activity.LauncherActivity;
+import com.threethan.launcher.activity.view.TunerStyleView;
 import com.threethan.launcher.data.Settings;
 import com.threethan.launcher.helper.AppExt;
 import com.threethan.launcher.helper.Compat;

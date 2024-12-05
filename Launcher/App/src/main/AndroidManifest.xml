@@ -77,7 +77,8 @@
             <meta-data android:name="com.oculus.lazy_gpumem_allocation" android:value="true" />
 
             <meta-data android:name="com.oculus.vrshell.supports_blend_effects" android:value="true" />
-
+            <meta-data android:name="com.oculus.vrshell.background_color_for_dark_theme"
+                android:value="#FF25292E" />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <action android:name="android.intent.action.CREATE_SHORTCUT" />
