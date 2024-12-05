@@ -20,6 +20,7 @@
         android:background="@drawable/bkg_app"
         android:elevation="3dp"
         android:focusable="false"
+        android:foreground="@drawable/fg_app_dm"
         android:focusableInTouchMode="false">
 
         <Button

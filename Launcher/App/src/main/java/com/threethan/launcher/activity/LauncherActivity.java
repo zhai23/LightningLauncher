@@ -618,6 +618,9 @@ public class LauncherActivity extends Launch.LaunchingActivity {
 
             if (Platform.isQuest()) cd.setAlpha(WallpaperExecutor.getBackgroundAlpha(dataStoreEditor));
 
+            if (Platform.isQuest()) cd.setAlpha(200);
+
+
             runOnUiThread(() -> {
                 getWindow().setNavigationBarColor(backgroundColor);
                 getWindow().setStatusBarColor(backgroundColor);

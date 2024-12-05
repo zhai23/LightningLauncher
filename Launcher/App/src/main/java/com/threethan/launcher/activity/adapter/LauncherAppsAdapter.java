@@ -6,6 +6,7 @@ import android.content.pm.ApplicationInfo;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -21,8 +22,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.threethan.launcher.LauncherService;
 import com.threethan.launcher.R;
 import com.threethan.launcher.activity.LauncherActivity;
 import com.threethan.launcher.activity.dialog.AppDetailsDialog;
@@ -225,6 +228,10 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
                     LauncherActivity.darkMode ? "#FFFFFF" : "#000000"));
             holder.textView.setShadowLayer(6, 0, 0, Color.parseColor(
                     LauncherActivity.darkMode ? "#000000" : "#FFFFFF"));
+            final Drawable fg = ResourcesCompat.getDrawable(launcherActivity.getResources(),
+                    LauncherActivity.darkMode ? R.drawable.fg_app_dm : R.drawable.fg_app_lm,
+                    null);
+            holder.clip.setForeground(fg);
             holder.darkMode = LauncherActivity.darkMode;
         }
         //noinspection WrapperTypeMayBePrimitive

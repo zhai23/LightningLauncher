@@ -3,8 +3,12 @@ package com.threethan.launcher.activity.executor;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 
 import com.threethan.launcher.activity.LauncherActivity;
@@ -83,6 +87,10 @@ public class WallpaperExecutor {
     /** Quest only. Clamped between 1 and 254 to prevent compositing issues. */
     public static int getBackgroundAlpha(DataStoreEditor dataStoreEditor) {
         int alpha = dataStoreEditor.getInt(Settings.KEY_BACKGROUND_ALPHA, Settings.DEFAULT_ALPHA);
+
+        // Workaround for weird new translucency behaviour
+//        if (Platform.getVrOsVersion() >= 72) alpha = alpha / 2 + 128;
+
         return Math.max(1, Math.min(alpha, 254));
     }
 }
