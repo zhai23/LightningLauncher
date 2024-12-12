@@ -69,7 +69,6 @@ public class LcSwitch extends Switch {
 
     @Override
     public void setTooltipText(@Nullable CharSequence tooltipText) {
-        super.setTooltipText(tooltipText);
         LcToolTipHelper.init(this, tooltipText);
     }
 }

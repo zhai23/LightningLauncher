@@ -2,6 +2,7 @@ package com.threethan.launcher.helper;
 
 import static com.threethan.launcher.activity.support.SettingsManager.META_LABEL_SUFFIX;
 
+import android.app.Activity;
 import android.content.pm.ApplicationInfo;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
@@ -14,6 +15,7 @@ import com.threethan.launcher.activity.support.DataStoreEditor;
 import com.threethan.launcher.activity.support.SettingsManager;
 import com.threethan.launcher.data.Settings;
 import com.threethan.launchercore.Core;
+import com.threethan.launchercore.lib.DelayLib;
 import com.threethan.launchercore.lib.FileLib;
 import com.threethan.launchercore.lib.StringLib;
 import com.threethan.launchercore.metadata.IconLoader;
@@ -306,5 +308,14 @@ public abstract class Compat {
             }
             callback.accept(d);
         });
+    }
+
+    public static void restartFully() {
+        LauncherActivity foregroundInstance = LauncherActivity.getForegroundInstance();
+        if (foregroundInstance != null && foregroundInstance.launcherService != null) {
+            foregroundInstance.launcherService.forEachActivity(Activity::finishAffinity);
+            foregroundInstance.launcherService.stopSelf();
+            DelayLib.delayed(() -> System.exit(0));
+        } else System.exit(0);
     }
 }

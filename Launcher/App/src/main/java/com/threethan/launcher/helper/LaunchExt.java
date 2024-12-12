@@ -94,6 +94,9 @@ public abstract class LaunchExt extends Launch {
             }
         }
 
+        // Apply tuning via Quest Game Tuner (no effect unless Quest Game Tuner >= 1.5 is installed)
+        QuestGameTuner.applyTuning(app.packageName);
+
         if (Platform.isTv()) {
             startIntent(launcherActivity, intent);
             return true;
@@ -193,7 +196,7 @@ public abstract class LaunchExt extends Launch {
 
     /** Launches an URL using a view intent, in a new window.
      * If activity is null, it will attempt to close the foreground instance. */
-    public static void launchUrl(@Nullable Activity activity, String url) {
+    public static void launchUrl(@Nullable Activity activity, String url, boolean forceChromium) {
         if (activity == null && LauncherActivity.getForegroundInstance() != null)
             activity = LauncherActivity.getForegroundInstance();
         if (activity != null) activity.finishAffinity();
@@ -201,6 +204,12 @@ public abstract class LaunchExt extends Launch {
         Intent openURL = new Intent(Intent.ACTION_VIEW);
         openURL.setData(Uri.parse(url));
         openURL.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        if (forceChromium && Platform.isQuest())
+            openURL.setComponent(
+                new ComponentName("com.oculus.browser",
+                        "com.oculus.browser.PanelActivity"));
+
         DelayLib.delayed(() -> Core.context().startActivity(openURL), 50);
 
         if (PlatformExt.useNewVrOsMultiWindow()) {

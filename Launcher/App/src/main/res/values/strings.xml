@@ -68,13 +68,39 @@
     <string name="dark_mode_tip">If on, labels will appear white on a dark background.</string>
     <string name="background_overlay">Animated Gradient over Wallpaper</string>
     <string name="group_mode">Enable Groups</string>
+    <string name="group_mode_tip">Turn this off to show all apps at once, without grouping.
+        \nSearch and settings icons will also be hidden <i>(press back for settings)</i></string>
     <string name="clear_cache">Reset All Icons</string>
     <string name="clear_labels">Reset Names</string>
     <string name="group_defaults_button">Default Groups</string>
     <string name="icons_settings_button">Refresh Icons</string>
 
+    <string name="show_playtimes">Show Playtimes</string>
+    <string name="show_playtimes_desc">Show playtime on app banners.
+    \n\n<i>Requires usage data access</i></string>
+    <string name="open_usage">Usage Data Access</string>
+    <string name="open_usage_desc">Open a settings page where you can turn on or off the ability for apps such as Lighting Launcher to view you playtime &amp; usage data.</string>
+    <string name="close_fully">Fully Close Lightning Launcher</string>
+    <string name="close_fully_desc">Fully closes Lightning Launcher.  <i>(You can then reopen it)</i>
+        \n\nThis lets you troubleshoot issues without rebooting.</string>
+
+    <string name="playtime_charts_warn">Install <b>Quest Game Tuner</b> to view playtime charts</string>
+
+    <string name="request_playtime_title">Usage Data Access Required</string>
+    <string name="request_playtime_msg">To see your playtime in <i>Lighting Launcher</i>,
+        \nyou need to grant it access to app usage data.
+        \n
+        \nIf <i>Quest Game Tuner</i> is also installed, clicking the playtime will open a daily or monthly chart.
+        \n
+        \n<i>You can hide the playtime button in Advanced Settings.</i>
+    </string>
+
     <string name="long_press">Long Press to Edit</string>
+    <string name="long_press_tip"><b>When on,</b> long-pressing an app will enter edit mode and select it.
+    \n<b>When off,</b> long-pressing an app will show details.</string>
     <string name="hide_empty">Hide Empty Groups</string>
+    <string name="hide_empty_tip">Hide groups which do not contain any apps
+    \nwhile not in edit more.</string>
     <string name="default_launch_out">Launch Apps in Own Window by Default</string>
     <string name="search_web">Show Web Search Engines in Searches</string>
     <string name="search_hidden">Show Hidden Apps in Searches</string>
@@ -83,10 +109,10 @@
     <string name="groupings_save">Export Groupings</string>
     <string name="groupings_load">Import Groupings</string>
     <string name="settings_default_launcher">Set Default Home to Enable 3rd-party Shortcuts</string>
-    <string name="tip_settings_default_launcher">Let Android apps add shortcut icons to Lightning Launcher.\n<i>Does not replace the App Library or home button.</i></string>
+    <string name="settings_default_launcher_tip">Let Android apps add shortcut icons to Lightning Launcher.\n<i>Does not replace the App Library or home button.</i></string>
 
     <string name="advanced_sizing">Enable Additional Phone App Window Sizes</string>
-    <string name="tip_advanced_sizing">Allows apps to be opened in different sized windows, may cause issues.</string>
+    <string name="advanced_sizing_tip">Allows apps to be opened in different sized windows, may cause issues.</string>
     <string name="toast_advanced_sizing">New size options can be cycled in per-app settings</string>
 
     <string name="service_desc">When this service is enabled, Lightning Launcher will open automatically when you hover
@@ -97,6 +123,8 @@
     <string name="reload_icon">Reset Icon</string>
     <string name="open_tuning"><i>Tune with</i></string>
     <string name="open_tuning_tip"><i>Quest Game Tuner</i> lets you adjust resolution, FPS, and more!</string>
+
+    <string name="tuner_options">⚙</string>
 
     <string name="launch_out_message">Launching 2D apps or websites in their own window allows for easier multitasking on Quest devices,
         but will cause certain apps to not always launch.\n\nIf you have any issues, disable this option!</string>
@@ -267,6 +295,7 @@
     <string name="tip_uninstall">Uninstall / Remove</string>
     <string name="tip_uninstall_bulk">Uninstall / Remove All Selected</string>
     <string name="tip_info">Android App Info</string>
+    <string name="tip_charts">View Playtime Charts\nin <i>Quest Game Tuner</i></string>
     <string name="tip_change_icon">Change Icon</string>
 
     <string name="tip_save_settings">Backup All Settings &amp; Groupings</string>
@@ -302,7 +331,7 @@
     <string name="addons_androidtv_desc">Install a third-party application which may allow you to change the default home on Android TV.
     \nThis requires ADB Debugging to be enabled, and may not work on every device.
     \n
-    \nIf it doesn\'t install through here, look up &quot;Android TV Launcher Manager XDA&quot;, then manually download &amp; install.</string>
+    \nIf it doesn\'t install through here, look up &quot;Android TV Launcher Manager XDA&quot;, then manually download &amp; install. <i>(Will not work on Fire TV)</i></string>
 
     <string name="addons_androidtv_alt">Or… Just Use the Back Button!</string>
     <string name="addons_androidtv_alt_desc">If you just use the back button on your remote, instead of the home button, you will always come back to Lightning Launcher.
@@ -321,6 +350,7 @@
     <string name="addons_dock_desc"><b>Remove an existing icon</b>
         \n
         \nThe dock only has 5 spaces. By default, they are all filled up.
+        \nIf any VR application is open, <u>fully close it now.</u>
         \n
         \n1. Close the app you want to remove <i>(Camera or Quest Browser)</i>
         \n2. Click and hold on the icon you want to remove; drag it slowly downwards until it says "Unpin"
@@ -342,14 +372,11 @@
     <string name="addons_explore_desc">Install then activate to open Lightning Launcher when you press the <b>Horizon Feed</b> button on the dock.</string>
 
     <string name="addons_library">Library Shortcut</string>
-    <string name="addons_library_desc">Install then activate to open Lightning Launcher when you press the <b>App Library</b> button on the dock.
-        \n(This makes it hard to open the quest\'s app library)</string>
+    <string name="addons_library_desc">Install then activate to open Lightning Launcher when you press the <b>App Library</b> button on the dock.</string>
     <string name="addons_store">Store Shortcut</string>
-    <string name="addons_store_desc">Install then activate to open Lightning Launcher when you press the <b>Store</b> button on the dock.
-        \n(This makes it hard to open the quest\'s store)</string>
+    <string name="addons_store_desc">Install then activate to open Lightning Launcher when you press the <b>Store</b> button on the dock.</string>
     <string name="addons_people">People Shortcut</string>
-    <string name="addons_people_desc">Install then activate to open Lightning Launcher when you press the <b>People</b> button on the dock.
-        \n(This makes it hard to open the quest\'s people app)</string>
+    <string name="addons_people_desc">Install then activate to open Lightning Launcher when you press the <b>People</b> button on the dock.</string>
 
     <string name="addons_install">Install</string>
     <string name="addons_update">Update</string>
@@ -366,4 +393,17 @@
         \nYou can interact with the file browser by touching it with your fingers, or install a third-party app which does not have this issue.
         \n
         \nIf you select "Install", you\'ll automatically get the free <i>Amaze File Manager</i>, and won\'t see this alert again.</string>
+
+    <!--  QGT INFO  -->
+    <string name="tuner_info_tagline" translatable="false">Unlock the Full Power of Your Quest.</string>
+    <string name="tuner_info_desc" translatable="false">Meta limits the performance of apps.
+        <b>Quest Game Tuner</b> breaks those limits, letting you get the most of the hardware you already own.
+        You can also <i>capture better videos</i>, <i>block ads</i>, <i>automatically power off</i>, and more.
+        \n
+        \n<b>Quest Game Tuner</b> is the result of hundreds of hours of development, research, and testing by the same developer which made Lightning Launcher.
+    </string>
+
+    <string name="tuner_info_get" translatable="false">Get <b>Quest Game Tuner</b> on itch.io!</string>
+    <string name="tuner_info_get_link" translatable="false">threethan.itch.io/quest-game-tuner</string>
+
 </resources>

@@ -21,6 +21,7 @@ import com.threethan.launcher.data.Settings;
 import com.threethan.launcher.helper.AppExt;
 import com.threethan.launcher.helper.Compat;
 import com.threethan.launcher.helper.PlatformExt;
+import com.threethan.launcher.helper.PlaytimeHelper;
 import com.threethan.launcher.helper.SettingsSaver;
 import com.threethan.launcher.updater.LauncherUpdater;
 import com.threethan.launchercore.util.App;
@@ -168,7 +169,7 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
             image.setClipToOutline(true);
         }
         final int wallpaperWidth = 32;
-        final int selectedWallpaperWidthPx = a.dp(445 + 20 - (wallpaperWidth + 4) * (views.length - 1) - wallpaperWidth);
+        final int selectedWallpaperWidthPx = a.dp(455 + 20 - (wallpaperWidth + 4) * (views.length - 1) - wallpaperWidth);
         views[background].getLayoutParams().width = selectedWallpaperWidthPx;
         views[background].requestLayout();
         for (int i = 0; i < views.length; i++) {
@@ -303,7 +304,7 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
 
         // Advanced
         attachSwitchToSetting(dialog.findViewById(R.id.longPressEditSwitch),
-                Settings.KEY_DETAILS_LONG_PRESS, Settings.DEFAULT_AUTO_HIDE_EMPTY, null, true);
+                Settings.KEY_DETAILS_LONG_PRESS, Settings.DEFAULT_DETAILS_LONG_PRESS, null, true);
 
         if (Platform.isVr() && Platform.getVrOsVersion() < 69) {
             View defaultSettingsButton = dialog.findViewById(R.id.defaultLauncherSettingsButton);
@@ -323,6 +324,10 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
             dialog.findViewById(R.id.extraFeaturesTitle).setVisibility(View.GONE);
             dialog.findViewById(R.id.defaultLauncherSettingsButton).setVisibility(View.GONE);
         }
+        attachSwitchToSetting(dialog.findViewById(R.id.showPlaytimesSwitch),
+                Settings.KEY_SHOW_TIMES_BANNER, Settings.DEFAULT_SHOW_TIMES_BANNER,
+                b -> a.launcherService.forEachActivity(LauncherActivity::refreshInterface), false);
+        dialog.findViewById(R.id.openUsageSettings).setOnClickListener(v -> PlaytimeHelper.requestPermission());
 
         // Launch Section
         final Spinner defaultBrowserSpinner = dialog.findViewById(R.id.launchBrowserSpinner);
@@ -342,6 +347,8 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
                 Settings.KEY_ALLOW_CHAIN_LAUNCH, Settings.DEFAULT_ALLOW_CHAIN_LAUNCH);
         chainLaunchSwitch.setVisibility(Platform.supportsVrOsChainLaunch()
                 ? View.VISIBLE : View.GONE);
+
+        dialog.findViewById(R.id.fullyCloseButton).setOnClickListener(v -> Compat.restartFully());
 
         // Search settings
         attachSwitchToSetting(dialog.findViewById(R.id.searchWebSwitch),
@@ -497,7 +504,7 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
                 clearSort.setAlpha(0.5f);
                 clearedSort = true;
 
-                BasicDialog.toast(a.getString(R.string.default_groups_resort_only_toast_main),
+                BasicDialog.toast(a.getText(R.string.default_groups_resort_only_toast_main),
                         a.getString(R.string.default_groups_resort_only_toast_bold),
                         false);
             }

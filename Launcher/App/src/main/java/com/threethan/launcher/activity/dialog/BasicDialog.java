@@ -64,11 +64,11 @@ public class BasicDialog<T extends Context> extends AbstractDialog<T> {
         return dialog;
     }
 
-    public static void toast(String string) {
+    public static void toast(CharSequence string) {
         toast(string, "", false);
     }
 
-    public static void toast(String stringMain, String stringBold, boolean isLong) {
+    public static void toast(CharSequence stringMain, CharSequence stringBold, boolean isLong) {
         if (Core.context() == null) return;
         Log.d("Toast", stringMain + " " + stringBold);
 

@@ -10,6 +10,7 @@ import androidx.annotation.StringRes;
 
 import com.threethan.launcher.R;
 import com.threethan.launcher.helper.LaunchExt;
+import com.threethan.launcher.helper.QuestGameTuner;
 
 import java.util.Random;
 
@@ -31,7 +32,7 @@ public class SettingsFlipper extends ViewFlinger {
             findViewById(R.id.flipperPage1).setOnClickListener(l
                     -> openUrl(context, R.string.flipper_page_1_link));
             findViewById(R.id.flipperPageTuner).setOnClickListener(l
-                    -> openUrl(context, R.string.flipper_page_tuner_link));
+                    -> QuestGameTuner.openInfoDialog());
 
             setAutoAdvanceDelayMs(25);
             setAutoAdvance(true);
@@ -42,7 +43,7 @@ public class SettingsFlipper extends ViewFlinger {
     }
 
     private void openUrl(Context context, @StringRes int urlResId) {
-        LaunchExt.launchUrl(getActivity(), context.getResources().getString(urlResId));
+        LaunchExt.launchUrl(getActivity(), context.getResources().getString(urlResId), false);
     }
 
     private Activity getActivity() {

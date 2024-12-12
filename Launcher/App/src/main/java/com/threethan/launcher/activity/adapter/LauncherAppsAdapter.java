@@ -25,13 +25,13 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.threethan.launcher.LauncherService;
 import com.threethan.launcher.R;
 import com.threethan.launcher.activity.LauncherActivity;
 import com.threethan.launcher.activity.dialog.AppDetailsDialog;
 import com.threethan.launcher.activity.support.SettingsManager;
 import com.threethan.launcher.data.Settings;
 import com.threethan.launcher.helper.LaunchExt;
+import com.threethan.launcher.helper.PlaytimeHelper;
 import com.threethan.launchercore.adapter.ArrayListAdapter;
 import com.threethan.launchercore.lib.ImageLib;
 import com.threethan.launchercore.lib.StringLib;
@@ -125,6 +125,7 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
         View clip;
         TextView textView;
         Button moreButton;
+        Button playtimeButton;
         ApplicationInfo app;
         @Nullable Boolean banner = null;
         @Nullable Boolean darkMode = null;
@@ -153,11 +154,9 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
         holder.clip = itemView.findViewById(R.id.clip);
         holder.textView = itemView.findViewById(R.id.itemLabel);
         holder.moreButton = itemView.findViewById(R.id.moreButton);
-
-        if (Platform.isTv()) holder.clip.setBackgroundResource(R.drawable.bkg_app_atv);
+        holder.playtimeButton = itemView.findViewById(R.id.playtimeButton);
 
         setActions(holder);
-
         return holder;
     }
     private void setActions(AppViewHolder holder) {
@@ -195,7 +194,7 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
             boolean hovered;
             if (event.getAction() == MotionEvent.ACTION_HOVER_ENTER) hovered = true;
             else if (event.getAction() == MotionEvent.ACTION_HOVER_EXIT) {
-                for (View subView : new View[] {holder.moreButton})
+                for (View subView : new View[] {holder.moreButton, holder.playtimeButton})
                     if (view != subView && subView != null && subView.isHovered()) return false;
                 hovered = false;
             } else return false;
@@ -234,6 +233,7 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
             holder.clip.setForeground(fg);
             holder.darkMode = LauncherActivity.darkMode;
         }
+
         //noinspection WrapperTypeMayBePrimitive
         final Boolean showName = banner && LauncherActivity.namesBanner
                 || !banner && LauncherActivity.namesSquare;
@@ -243,6 +243,8 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
                     .setMargins(0, 0, 0, showName ? 0 : -15);
             holder.showName = showName;
         }
+
+        if (!Platform.isTv()) holder.playtimeButton.setText("--:--");
 
         // set value into textview
         holder.app = app;
@@ -319,6 +321,22 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
         if (!Platform.isTv())
             holder.moreButton.setVisibility(hovered ? View.VISIBLE : View.INVISIBLE);
 
+        if (!Platform.isTv() && LauncherActivity.timesBanner) {
+            if (hovered) {
+                // Show and update view holder
+                holder.playtimeButton.setVisibility(Boolean.TRUE.equals(holder.banner)
+                        && !holder.app.packageName.contains("://")
+                        ? View.VISIBLE : View.INVISIBLE);
+                if (Boolean.TRUE.equals(holder.banner)
+                        && !holder.app.packageName.contains("://")) {
+                    PlaytimeHelper.getPlaytime(holder.app.packageName,
+                            t -> launcherActivity.runOnUiThread(()
+                                    -> holder.playtimeButton.setText(t)));
+                    holder.playtimeButton.setOnClickListener(v
+                            -> PlaytimeHelper.openFor(holder.app.packageName));
+                }
+            } else holder.playtimeButton.setVisibility(View.INVISIBLE);
+        }
         final boolean tv = Platform.isTv();
         final float newScaleInner = hovered ? (tv ? 1.055f : 1.050f) : 1.005f;
         final float newScaleOuter = hovered ? (tv ? 1.270f : 1.085f) : 1.005f;

@@ -22,7 +22,8 @@ import com.threethan.launcher.data.Settings;
 import com.threethan.launcher.helper.AppExt;
 import com.threethan.launcher.helper.Compat;
 import com.threethan.launcher.helper.PlatformExt;
-import com.threethan.launcher.helper.TunerLauncher;
+import com.threethan.launcher.helper.PlaytimeHelper;
+import com.threethan.launcher.helper.QuestGameTuner;
 import com.threethan.launchercore.lib.DelayLib;
 import com.threethan.launchercore.metadata.IconLoader;
 import com.threethan.launchercore.lib.ImageLib;
@@ -128,7 +129,7 @@ public class AppDetailsDialog extends BasicDialog<LauncherActivity> {
             // Also hide it on TV where it is useless
             if (appType == App.Type.VR) {
                 tuningButton.setVisibility(View.VISIBLE);
-                tuningButton.setOnClickListener(v -> TunerLauncher.openForApp(app));
+                tuningButton.setOnClickListener(v -> QuestGameTuner.tuneApp(app.packageName));
             }
             launchSizeSpinner.setVisibility(View.GONE);
         } else {
@@ -162,6 +163,8 @@ public class AppDetailsDialog extends BasicDialog<LauncherActivity> {
                 launchSizeSpinner.setVisibility(View.VISIBLE);
             }
         }
+        dialog.findViewById(R.id.charts).setOnClickListener(v
+                -> PlaytimeHelper.openFor(app.packageName));
 
         // Show/hide button
         final View showButton = dialog.findViewById(R.id.show);

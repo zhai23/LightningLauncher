@@ -40,7 +40,7 @@ public abstract class SettingsSaver {
         FileLib.delete(export);
 
         if (FileLib.copy(prefs, export) && FileLib.copy(prefs, export))
-            BasicDialog.toast(activity.getString(R.string.saved_settings),
+            BasicDialog.toast(activity.getText(R.string.saved_settings),
                 "Android/Data/"+activity.getPackageName()+"/"+EXPORT_FILE_NAME,
                 false);
         else BasicDialog.toast(activity.getString(R.string.saved_settings_error));

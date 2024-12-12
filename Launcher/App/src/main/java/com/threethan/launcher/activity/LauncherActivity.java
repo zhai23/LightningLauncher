@@ -105,8 +105,10 @@ public class LauncherActivity extends Launch.LaunchingActivity {
     private MarginDecoration marginDecoration;
     public static int iconMargin = -1;
     public static int iconScale = -1;
-    public static boolean namesBanner;
+
     public static boolean namesSquare;
+    public static boolean namesBanner;
+    public static boolean timesBanner;
 
     private static WeakReference<LauncherActivity> foregroundInstance = null;
 
@@ -463,10 +465,14 @@ public class LauncherActivity extends Launch.LaunchingActivity {
                 dataStoreEditor.getBoolean(Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE);
         if (groupsEnabled == null) groupsEnabled =
                 dataStoreEditor.getBoolean(Settings.KEY_GROUPS_ENABLED, Settings.DEFAULT_GROUPS_ENABLED);
+
         namesSquare = dataStoreEditor
                 .getBoolean(Settings.KEY_SHOW_NAMES_SQUARE, Settings.DEFAULT_SHOW_NAMES_SQUARE);
         namesBanner = dataStoreEditor
                 .getBoolean(Settings.KEY_SHOW_NAMES_BANNER, Settings.DEFAULT_SHOW_NAMES_BANNER);
+        timesBanner = dataStoreEditor
+                .getBoolean(Settings.KEY_SHOW_TIMES_BANNER, Settings.DEFAULT_SHOW_TIMES_BANNER);
+
         if (getAppAdapter() == null) {
             appsView.setItemViewCacheSize(128);
             appsView.setAdapter(
