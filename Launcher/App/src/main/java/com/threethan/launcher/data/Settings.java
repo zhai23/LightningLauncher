@@ -95,7 +95,6 @@ public abstract class Settings {
     public static final String KEY_ALLOW_CHAIN_LAUNCH = "KEY_ALLOW_CHAIN_LAUNCH";
     public static final boolean DEFAULT_ALLOW_CHAIN_LAUNCH = true;
     public static final String KEY_EDIT_MODE = "KEY_EDIT_MODE";
-    public static final String KEY_SEEN_HIDDEN_GROUPS_POPUP = "KEY_SEEN_HIDDEN_GROUPS_POPUP";
     public static final String KEY_SEEN_WEBSITE_POPUP = "KEY_SEEN_WEBSITE_POPUP";
     public static final String KEY_SEEN_ADDONS = "KEY_SEEN_ADDONS";
 
@@ -115,8 +114,10 @@ public abstract class Settings {
     // show names by display type
     public static final String KEY_SHOW_NAMES_SQUARE = "KEY_CUSTOM_NAMES";
     public static final String KEY_SHOW_NAMES_BANNER = "KEY_CUSTOM_NAMES_WIDE";
+    public static final String KEY_SHOW_TIMES_BANNER = "KEY_SHOW_PLAYTIMES_WIDE";
     public static final boolean DEFAULT_SHOW_NAMES_SQUARE = true;
     public static final boolean DEFAULT_SHOW_NAMES_BANNER = false;
+    public static final boolean DEFAULT_SHOW_TIMES_BANNER = true;
 
     public static final String KEY_GROUPS = "prefAppGroups";
     public static final String KEY_GROUP_APP_LIST = "prefAppList";

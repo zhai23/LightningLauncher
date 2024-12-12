@@ -2,7 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bkg_dialog"
     android:clipChildren="true"
@@ -45,26 +45,18 @@
             android:layout_height="wrap_content"
             android:text="@string/advanced_interface" />
 
-        <LinearLayout
+        <com.threethan.launchercore.view.LcSwitch
+            android:id="@+id/groupSwitch"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:baselineAligned="false"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
 
-            <com.threethan.launchercore.view.LcSwitch
-                android:id="@+id/groupSwitch"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-
-                android:layout_weight="2"
-                android:text="@string/group_mode"
-                tools:ignore="UseSwitchCompatOrMaterialXml" />
-
-        </LinearLayout>
+            android:text="@string/group_mode"
+            android:tooltipText="@string/group_mode_tip"
+            tools:ignore="UnusedAttribute,UseSwitchCompatOrMaterialXml" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="39dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:baselineAligned="false"
             android:gravity="clip_vertical|center_vertical"
@@ -78,9 +70,8 @@
                 android:layout_weight="1"
                 android:foreground="@drawable/bkg_hover_button"
                 android:text="@string/long_press"
-                android:thumb="@drawable/switch_thumb_custom"
-                android:track="@drawable/switch_track_custom"
-                tools:ignore="UseSwitchCompatOrMaterialXml" />
+                android:tooltipText="@string/long_press_tip"
+                tools:ignore="UnusedAttribute,UseSwitchCompatOrMaterialXml" />
 
             <com.threethan.launchercore.view.LcSwitch
                 android:id="@+id/hideEmptySwitch"
@@ -90,9 +81,41 @@
                 android:layout_weight="1"
                 android:foreground="@drawable/bkg_hover_button"
                 android:text="@string/hide_empty"
-                android:thumb="@drawable/switch_thumb_custom"
-                android:track="@drawable/switch_track_custom"
-                tools:ignore="UseSwitchCompatOrMaterialXml" />
+                android:tooltipText="@string/hide_empty_tip"
+                tools:ignore="UnusedAttribute,UseSwitchCompatOrMaterialXml" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:baselineAligned="false"
+            android:gravity="clip_vertical|center_vertical"
+            android:orientation="horizontal">
+
+            <com.threethan.launchercore.view.LcSwitch
+                android:id="@+id/showPlaytimesSwitch"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:layout_weight="1"
+                android:foreground="@drawable/bkg_hover_button"
+                android:text="@string/show_playtimes"
+                android:tooltipText="@string/show_playtimes_desc"
+                tools:ignore="UnusedAttribute,UseSwitchCompatOrMaterialXml" />
+
+            <com.threethan.launchercore.view.LcButton
+                android:id="@+id/openUsageSettings"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_weight="1"
+                android:drawableEnd="@drawable/ic_dialog"
+                android:foreground="@drawable/bkg_hover_button"
+                android:text="@string/open_usage"
+                android:tooltipText="@string/open_usage_desc"
+                tools:ignore="UnusedAttribute,UseSwitchCompatOrMaterialXml" />
 
         </LinearLayout>
 
@@ -197,6 +220,24 @@
             android:text="@string/allow_chain_launch"
             android:tooltipText="@string/allow_chain_launch_tip"
             tools:ignore="UnusedAttribute,UseSwitchCompatOrMaterialXml" />
+
+        <com.threethan.launchercore.view.LcButton
+            android:id="@+id/fullyCloseButton"
+            style="@style/SettingButtonLabel"
+            android:layout_width="match_parent"
+            android:layout_height="39dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/lc_bkg_button"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:singleLine="true"
+            android:text="@string/close_fully"
+            android:tooltipText="@string/close_fully_desc"
+            tools:ignore="UnusedAttribute">
+
+        </com.threethan.launchercore.view.LcButton>
 
         <TextView
             style="@style/SettingSubtitle"
@@ -366,7 +407,7 @@
             android:layout_weight="1"
             android:drawableEnd="@drawable/ic_dialog"
             android:text="@string/settings_default_launcher"
-            android:tooltipText="@string/tip_settings_default_launcher"
+            android:tooltipText="@string/settings_default_launcher_tip"
             tools:targetApi="o" />
 
         <TextView

@@ -88,6 +88,17 @@
                     android:layout_weight="1" />
 
                 <com.threethan.launchercore.view.LcImageView
+                    android:id="@+id/charts"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="3dp"
+                    android:background="@drawable/bkg_hover_button"
+                    android:padding="1dp"
+                    android:src="@drawable/ic_charts"
+                    android:tooltipText="@string/tip_charts"
+                    tools:ignore="UnusedAttribute" />
+
+                <com.threethan.launchercore.view.LcImageView
                     android:id="@+id/hide"
                     android:layout_width="30dp"
                     android:layout_height="30dp"

@@ -116,7 +116,8 @@ public abstract class Platform {
             "com.oculus.vrshell.desktop",
             "com.oculus.systemux",
             "com.android.metacam",
-            "com.oculus.metacam"
+            "com.oculus.metacam",
+            "com.oculus.horizonmediaplayer"
     );
 
     /**

@@ -203,9 +203,7 @@ public abstract class AppUpdater extends RemotePackageUpdater {
             String tagName = latestReleaseJson.getString("tag_name");
             if (callback != null) callback.onResponse(tagName);
             latestVersionTag = tagName;
-        } catch (JSONException e) {
-            Log.w(TAG, "Received invalid JSON", e);
-        }
+        } catch (JSONException ignored) {}
     }
 
     /**

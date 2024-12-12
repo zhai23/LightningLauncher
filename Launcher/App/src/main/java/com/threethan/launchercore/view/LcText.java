@@ -22,7 +22,6 @@ public class LcText extends androidx.appcompat.widget.AppCompatTextView {
     }
     @Override
     public void setTooltipText(@Nullable CharSequence tooltipText) {
-        super.setTooltipText(tooltipText);
         LcToolTipHelper.init(this, tooltipText);
     }
 }

@@ -65,13 +65,35 @@
     <string name="dark_mode_tip">如果打开，标签将在深色背景上显示白色。</string>
     <string name="background_overlay">动画渐变壁纸</string>
     <string name="group_mode">启用分组</string>
+    <string name="group_mode_tip">关闭此功能可一次显示所有应用，而不进行分组。
+        \n搜索和设置图标也将被隐藏<i>（按返回进行设置）</i></string>
     <string name="clear_cache">重置所有图标</string>
     <string name="clear_labels">重置所有标签</string>
     <string name="group_defaults_button">默认分组</string>
     <string name="icons_settings_button">重置/更新图标</string>
 
+    <string name="show_playtimes">显示应用程序使用时间</string>
+    <string name="show_playtimes_desc">启用后，当您将鼠标悬停在游戏横幅上时，您将在游戏中花费的时间。
+    \n\n<i>需要访问使用情况数据</i></string>
+    <string name="open_usage">管理对使用情况数据的访问</string>
+    <string name="open_usage_desc">打开设置页面，您可以在其中打开或关闭 Lighting Launcher 等应用程序查看您的游戏时间和使用情况数据的功能。</string>
+    <string name="close_fully">完全关闭 Lightning Launcher</string>
+    <string name="close_fully_desc">强制退出 Lightning Launcher。<i>（您可以再次打开它）</i>
+        \n\n这样您就可以在不重启设备的情况下排除潜在问题</string>
+    <string name="playtime_charts_warn">游戏时间图表功能需要 <b>Quest Game Tuner</b></string>
+
+    <string name="request_playtime_title">需要使用数据访问</string>
+    <string name="request_playtime_msg">要在 <i>Lighting Launcher</i> 中查看您的游戏时间，
+        \n您需要授予其访问应用使用数据的权限。
+        \n
+        \n<i>如果还安装了 Quest Game Tuner，点击游戏时间将打开每日或每月图表。</i>
+    </string>
+
     <string name="long_press">长按编辑</string>
+    <string name="long_press_tip"><b>开启时</b>，长按某个应用程序将进入编辑模式并选择它。
+        \n<b>关闭时</b>，长按某个应用程序将显示详细信息。</string>
     <string name="hide_empty">隐藏空分组</string>
+    <string name="hide_empty_tip">隐藏不包含任何应用程序的组（编辑时除外）</string>
     <string name="default_launch_out">默认在应用自身窗口启动</string>
     <string name="search_web">在搜索中显示网络搜索引擎</string>
     <string name="search_hidden">显示搜索中隐藏的应用程序</string>
@@ -80,10 +102,10 @@
     <string name="groupings_save">导出分组</string>
     <string name="groupings_load">导入分组</string>
     <string name="settings_default_launcher">设置默认主页以启用第三方快捷方式</string>
-    <string name="tip_settings_default_launcher">设置 Lightning Launcher，让其他应用程序添加快捷方式</string>
+    <string name="settings_default_launcher_tip">设置 Lightning Launcher，让其他应用程序添加快捷方式</string>
 
     <string name="advanced_sizing">允许手机应用使用自身的窗口大小</string>
-    <string name="tip_advanced_sizing">允许在不同大小的窗口中打开应用，可能会导致问题</string>
+    <string name="advanced_sizing_tip">允许在不同大小的窗口中打开应用，可能会导致问题</string>
     <string name="toast_advanced_sizing">新尺寸选项可在每个应用程序设置中复用</string>
 
     <string name="service_desc">启用此服务后，当悬停在 dock 右侧的应用程序库图标上约半秒时，Lightning Launcher 将自动打开。\n(这可能会给访问默认启动器带来困难）\n\n        \n确保启用 \"使用 Lightning Launcher \"开关-\"Lightning Launcher 快捷方式 \"开关不会对 Quest 起任何作用！\n</string>
@@ -91,6 +113,8 @@
     <string name="reload_icon">刷新图标</string>
     <string name="open_tuning">性能优化</string>
     <string name="open_tuning_tip">Quest Game Tuner 可让您调整分辨率、FPS 等！</string>
+
+    <string name="tuner_options">选项</string>
 
     <string name="launch_out_message">在应用自身的窗口中启动 2D 应用程序或网站可让 Quest 设备上的多任务处理变得更轻松，但会导致某些应用程序无法启动。\n\n如果有任何问题，请禁用此选项！</string>
     <string name="launch_size_message">在应用自身的窗口中启动 2D 应用程序或网站可让 Quest 设备上的多任务处理变得更轻松、但会导致某些应用程序无法启动。\n\n        \n设置自定义窗口大小可以解决应用程序无法启动的问题，使某些应用程序显示得更清晰，并允许在平面视图中使用不同的窗口大小。\n        \n不过，偶尔也会导致窗口卡住或 Lightning Launcher 崩溃。\n\n        \n所有这些选项都只能按应用程序设置。\n\n        \n如果遇到问题，请关闭该选项，并确保任何应用程序都未设置为在自己的窗口中启动。重启以修复卡死的窗口。</string>
@@ -219,6 +243,7 @@
     <string name="tip_uninstall">卸载 / 删除</string>
     <string name="tip_uninstall_bulk">卸载 / 删除所有选中内容</string>
     <string name="tip_info">安卓应用信息</string>
+    <string name="tip_charts">查看游戏时间图表\n使用<i>Quest Game Tuner</i></string>
     <string name="tip_change_icon">更换图标</string>
 
     <string name="tip_save_settings">备份全部设置和分组</string>
@@ -252,11 +277,12 @@
     <string name="addons_dock_title">将 Lightning Launcher 添加到 Dock</string>
     <string name="addons_dock_desc"><b>移除现有图标</b>
         \nDock 只有 5 个空间。默认情况下，它们都已填满。
+        \n如果任何 VR 应用程序处于打开状态，请<u>立即将其完全关闭。</u>
         \n
         \n1. 关闭要移除的应用<i>（相机或 Quest 浏览器）</i>
         \n2. 单击并按住要移除的图标；将其缓慢向下拖动，直到显示“取消固定”
         \n3. 释放图标
-        \n<i>您无法正常移除 Horizo​​n Feed、Store 或 People 图标。</i>
+        \n<i>您无法正常移除 Horizon Feed、Store 或 People 图标。</i>
         \n
         \n<b>添加 Lightning Launcher</b>
         \n1. 在 Dock 右侧的最近应用中找到 Lightning Launcher 图标
@@ -269,11 +295,11 @@
     <string name="addons_explore_desc">安装后，只要悬停在基座上的 &quot;Horizon Feed&quot;/&quot;Oculus Explore&quot; 按钮上，就会激活打开 Lightning Launcher。</string>
 
     <string name="addons_library">Library 快捷方式服务</string>
-    <string name="addons_library_desc">安装后，只要悬停在 dock 上的 &quot;App Library&quot; 按钮上，就会激活打开 Lightning Launcher。\n        \n(这将导致很难打开 &quot;App Library&quot; ）</string>
+    <string name="addons_library_desc">安装后，只要悬停在 dock 上的 &quot;App Library&quot; 按钮上，就会激活打开 Lightning Launcher。</string>
     <string name="addons_people">People 快捷方式服务</string>
-    <string name="addons_people_desc">安装后，只要悬停在 dock 上的 &quot;People&quot; 按钮上，就会激活打开 Lightning Launcher。\n        \n(这将导致很难打开 &quot;People&quot;）</string>
+    <string name="addons_people_desc">安装后，只要悬停在 dock 上的 &quot;People&quot; 按钮上，就会激活打开 Lightning Launcher。</string>
     <string name="addons_store">Store 快捷方式服务</string>
-    <string name="addons_store_desc">安装后，只要悬停在 dock 上的 &quot;Store&quot; 按钮上，就会激活打开 Lightning Launcher。\n        \n(这将导致很难打开 &quot;Store&quot;）</string>
+    <string name="addons_store_desc">安装后，只要悬停在 dock 上的 &quot;Store&quot; 按钮上，就会激活打开 Lightning Launcher。</string>
 
     <string name="addons_install">安装</string>
     <string name="addons_update">更新</string>

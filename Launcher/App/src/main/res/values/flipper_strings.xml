@@ -10,6 +10,5 @@
 
     <string name="flipper_page_tuner_title" translatable="false">Get Quest Game Tuner</string>
     <string name="flipper_page_tuner_desc" translatable="false">Support development &amp; unlock the full power of your quest by tuning resolution, FPS and more.</string>
-    <string name="flipper_page_tuner_link" translatable="false">https://threethan.itch.io/quest-game-tuner</string>
 
 </resources>

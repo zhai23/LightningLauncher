@@ -55,7 +55,6 @@ public class LcButton extends AppCompatButton {
 
     @Override
     public void setTooltipText(@Nullable CharSequence tooltipText) {
-        super.setTooltipText(tooltipText);
         LcToolTipHelper.init(this, tooltipText);
     }
 }
