@@ -10,13 +10,13 @@ android {
         applicationId "com.threethan.launcher.service"
         minSdk 23
         targetSdkVersion 34
-        versionCode 820
-        versionName "8.2.0"
+        versionCode 830
+        versionName "8.3.0"
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
