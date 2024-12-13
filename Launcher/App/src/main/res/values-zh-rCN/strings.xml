@@ -271,7 +271,11 @@
     <string name="addons_androidtv_alt">或直接使用返回按钮</string>
     <string name="addons_androidtv_alt_desc">如果你只使用遥控器上的返回键，而不是主页键，你将始终回到 Lightning Launcher。\n    \n\n    \n进入启动器后再按返回键，只会切换编辑模式，避免意外返回默认启动器。</string>
 
-    <string name="addons_preamble"> </string>
+    <string name="addons_preamble"><b>您必须手动单独激活每一个。
+    \n当您将目标应用<i>悬停</i>在 Dock 上时，Lighting Launcher 将打开。</b>
+    \n<i>Quest OS 更新时，快捷方式的行为可能会发生不可预测的变化！</i>
+    \n
+    \n您还可以将 Lighting Launcher 直接添加到 Dock。</string>
 
     <string name="addons_dock_button">如何将 Lightning Launcher 添加到 Dock</string>
     <string name="addons_dock_title">将 Lightning Launcher 添加到 Dock</string>

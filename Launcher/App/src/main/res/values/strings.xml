@@ -340,8 +340,8 @@
 
 
     <string name="addons_preamble"><b>You must manually activate each redirect individually.
-        \nLighting Launcher will open <i>alongside</i> the target app.</b>
-        \n<i>Each shortcut can be used as another launcher window.</i>
+        \nLighting Launcher will open when you <i>hover</i> the target app on the dock.</b>
+        \n<i>The behaviour of shortcuts may change unpredictably with Quest OS updates!</i>
     \n
     \nYou can also add Lighting Launcher to your dock directly.</string>
 
@@ -372,11 +372,11 @@
     <string name="addons_explore_desc">Install then activate to open Lightning Launcher when you press the <b>Horizon Feed</b> button on the dock.</string>
 
     <string name="addons_library">Library Shortcut</string>
-    <string name="addons_library_desc">Install then activate to open Lightning Launcher when you press the <b>App Library</b> button on the dock.</string>
+    <string name="addons_library_desc">Install then activate to open Lightning Launcher when you hover the <b>App Library</b> button on the dock.</string>
     <string name="addons_store">Store Shortcut</string>
-    <string name="addons_store_desc">Install then activate to open Lightning Launcher when you press the <b>Store</b> button on the dock.</string>
+    <string name="addons_store_desc">Install then activate to open Lightning Launcher when you hover the <b>Store</b> button on the dock.</string>
     <string name="addons_people">People Shortcut</string>
-    <string name="addons_people_desc">Install then activate to open Lightning Launcher when you press the <b>People</b> button on the dock.</string>
+    <string name="addons_people_desc">Install then activate to open Lightning Launcher when you hover the <b>People</b> button on the dock.</string>
 
     <string name="addons_install">Install</string>
     <string name="addons_update">Update</string>
