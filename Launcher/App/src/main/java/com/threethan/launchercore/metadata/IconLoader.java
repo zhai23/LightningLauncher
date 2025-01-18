@@ -31,8 +31,8 @@ import java.util.function.Consumer;
  */
 
 public abstract class IconLoader {
-    private static final int ICON_MAX_HEIGHT = 180;
     private static final int ICON_QUALITY = 50;
+    public static final int ICON_HEIGHT = 192;
     public static final String ICON_CACHE_FOLDER = "/icon-cache";
     public static final Map<String, Drawable> cachedIcons = new ConcurrentHashMap<>();
     public static final Object ICON_CUSTOM_FOLDER = "/icon-custom";
@@ -120,19 +120,6 @@ public abstract class IconLoader {
             return StringLib.toValidFilename(StringLib.baseUrl(app.packageName));
         return StringLib.toValidFilename(app.packageName);
     }
-    protected static Bitmap scaleBitmap(Bitmap bitmap) {
-        int width = bitmap.getWidth();
-        int height = bitmap.getHeight();
-        float aspectRatioInv = (float) height / width;
-        if (height > ICON_MAX_HEIGHT) {
-            height = ICON_MAX_HEIGHT;
-            width = Math.round(height / aspectRatioInv);
-            bitmap = Bitmap.createScaledBitmap(bitmap, width, height, true);
-        }
-        return bitmap;
-    }
-
-
     public static void saveIconDrawableExternal(Drawable icon, ApplicationInfo app) {
         try {
             Bitmap bitmap = ImageLib.bitmapFromDrawable(icon);
@@ -156,7 +143,7 @@ public abstract class IconLoader {
             //noinspection ResultOfMethodCallIgnored
             Objects.requireNonNull(file.getParentFile()).mkdirs();
             FileOutputStream fileOutputStream = new FileOutputStream(file.getAbsolutePath(), false);
-            bitmap = scaleBitmap(bitmap);
+            bitmap = ImageLib.getResizedBitmap(bitmap, ICON_HEIGHT);
             bitmap.compress(Bitmap.CompressFormat.WEBP, ICON_QUALITY, fileOutputStream);
             fileOutputStream.close();
         } catch (IOException e) {

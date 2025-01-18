@@ -1,11 +1,14 @@
 package com.threethan.launchercore.metadata;
 
+import android.util.Log;
+
 import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -60,14 +63,21 @@ public class MetaMetadata {
             request.connect();
 
             Type type = new TypeToken<Map<String, String>>(){}.getType();
-            Map<String, String> data = new Gson()
-                    .fromJson(new InputStreamReader((InputStream) request.getContent()), type);
+            Map<String, String> data;
+            try {
+                data = new Gson()
+                        .fromJson(new InputStreamReader((InputStream) request.getContent()), type);
+            } catch (FileNotFoundException e) {
+                return null;
+            } catch (Exception e) {
+                Log.e("MetaMetadata", "Gson error for "+packageName, e);
+                return null;
+            }
 
             App app = new App(data);
             byPackage.put(packageName, app);
             return app;
         } catch (IOException e) {
-//            e.printStackTrace();
             return null;
         }
     }

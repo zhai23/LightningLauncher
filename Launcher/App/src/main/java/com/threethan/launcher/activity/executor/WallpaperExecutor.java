@@ -3,12 +3,8 @@ package com.threethan.launcher.activity.executor;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 
 import com.threethan.launcher.activity.LauncherActivity;
@@ -44,15 +40,7 @@ public class WallpaperExecutor {
                 } catch (Exception ignored) {} // In case file no longer exists or similar
             }
             if (imageBitmap == null) return;
-            float aspectScreen;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                Rect bounds = owner.getWindowManager().getCurrentWindowMetrics().getBounds();
-                aspectScreen = bounds.width() / (float) bounds.height();
-            } else {
-                int heightPixels = Resources.getSystem().getDisplayMetrics().heightPixels;
-                int widthPixels = Resources.getSystem().getDisplayMetrics().widthPixels;
-                aspectScreen = widthPixels / (float) heightPixels;
-            }
+            float aspectScreen = getAspectScreen(owner);
 
             float aspectImage = imageBitmap.getWidth() / (float) imageBitmap.getHeight();
             int cropWidth = imageBitmap.getWidth();
@@ -82,6 +70,19 @@ public class WallpaperExecutor {
         });
         thread.setPriority(Thread.MIN_PRIORITY);
         thread.start();
+    }
+
+    private static float getAspectScreen(LauncherActivity owner) {
+        float aspectScreen;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            Rect bounds = owner.getWindowManager().getCurrentWindowMetrics().getBounds();
+            aspectScreen = bounds.width() / (float) bounds.height();
+        } else {
+            int heightPixels = Resources.getSystem().getDisplayMetrics().heightPixels;
+            int widthPixels = Resources.getSystem().getDisplayMetrics().widthPixels;
+            aspectScreen = widthPixels / (float) heightPixels;
+        }
+        return aspectScreen;
     }
 
     /** Quest only. Clamped between 1 and 254 to prevent compositing issues. */
