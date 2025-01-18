@@ -17,18 +17,14 @@ import java.util.Objects;
 /** @noinspection unused*/
 public class ImageLib {
 
-    public static Bitmap getResizedBitmap(Bitmap originalBitmap, int maxSize) {
+    public static Bitmap getResizedBitmap(Bitmap originalBitmap, int maxHeight) {
         int width = originalBitmap.getWidth();
         int height = originalBitmap.getHeight();
 
         float bitmapRatio = (float) width / (float) height;
-        if (bitmapRatio > 1) {
-            width = maxSize;
-            height = (int) (width / bitmapRatio);
-        } else {
-            height = maxSize;
-            width = (int) (height * bitmapRatio);
-        }
+
+        height = maxHeight;
+        width = (int) (height * bitmapRatio);
         return Bitmap.createScaledBitmap(originalBitmap, width, height, true);
     }
 
@@ -38,7 +34,7 @@ public class ImageLib {
             //noinspection ResultOfMethodCallIgnored
             Objects.requireNonNull(destinationFile.getParentFile()).mkdirs();
             fileOutputStream = new FileOutputStream(destinationFile);
-            bitmap.compress(Bitmap.CompressFormat.WEBP, 100, fileOutputStream);
+            bitmap.compress(Bitmap.CompressFormat.WEBP, 90, fileOutputStream);
             fileOutputStream.flush();
             fileOutputStream.close();
         } catch (IOException e) {

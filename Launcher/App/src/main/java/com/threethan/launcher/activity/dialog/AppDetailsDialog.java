@@ -266,7 +266,7 @@ public class AppDetailsDialog extends BasicDialog<LauncherActivity> {
     }
     public static void onImageSelected(@NonNull Bitmap bitmap,
                                        ImageView selectedImageView, LauncherActivity launcherActivity) {
-        bitmap = ImageLib.getResizedBitmap(bitmap, 450);
+        bitmap = ImageLib.getResizedBitmap(bitmap, IconLoader.ICON_HEIGHT);
         ImageLib.saveBitmap(bitmap, customIconFile);
         selectedImageView.setImageBitmap(bitmap);
 

@@ -312,7 +312,7 @@ public class LauncherActivity extends Launch.LaunchingActivity {
             case ICON -> AppDetailsDialog.onImageSelected(
                     bitmap, selectedImageView, this);
             case WALLPAPER -> {
-                bitmap = ImageLib.getResizedBitmap(bitmap, 1280);
+                bitmap = ImageLib.getResizedBitmap(bitmap, 720);
                 ImageLib.saveBitmap(bitmap,
                         new File(getApplicationInfo().dataDir, Settings.CUSTOM_BACKGROUND_PATH));
                 refreshBackground();
@@ -474,7 +474,8 @@ public class LauncherActivity extends Launch.LaunchingActivity {
                 .getBoolean(Settings.KEY_SHOW_TIMES_BANNER, Settings.DEFAULT_SHOW_TIMES_BANNER);
 
         if (getAppAdapter() == null) {
-            appsView.setItemViewCacheSize(128);
+            appsView.setItemViewCacheSize(512);
+            appsView.setHasFixedSize(true);
             appsView.setAdapter(
                     new LauncherAppsAdapter(this));
             appsView.setItemAnimator(new CustomItemAnimator());

@@ -1,7 +1,6 @@
 package com.threethan.launcher.activity.adapter;
 
 import android.annotation.SuppressLint;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;

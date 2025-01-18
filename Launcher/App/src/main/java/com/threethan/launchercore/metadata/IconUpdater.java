@@ -179,7 +179,6 @@ public abstract class IconUpdater {
      */
     private static boolean saveStream(InputStream inputStream, File outputFile) {
         try {
-//            saveToFile(inputStream, outputFile);
             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
             IconLoader.compressAndSaveBitmap(outputFile, bitmap);
             return true;

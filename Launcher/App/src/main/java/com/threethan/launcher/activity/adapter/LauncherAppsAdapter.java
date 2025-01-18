@@ -256,11 +256,15 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
             if (drawable == null) return;
             if (holder.app == app) {
                 if (drawable instanceof BitmapDrawable bitmapDrawable) {
-                    Bitmap bitmap = bitmapDrawable.getBitmap();
+//                    Bitmap bitmap = ImageLib.getResizedBitmap(
+//                            bitmapDrawable.getBitmap(),
+//                            128 * getItemViewType(position));
 
+                    Bitmap bitmap = bitmapDrawable.getBitmap();
                     // It's java's fault for allowing this...
                     if (holder.imageView.getDrawable() instanceof BitmapDrawable currentBd &&
                             ImageLib.isIdenticalFast(currentBd.getBitmap(), bitmap)) return;
+
 
                     holder.iconRunnable = () -> holder.imageView.setImageBitmap(bitmap);
                 } else holder.iconRunnable = () -> holder.imageView.setImageDrawable(drawable);
