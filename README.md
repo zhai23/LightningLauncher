@@ -1,20 +1,30 @@
 # Lightning Launcher
-### Fully compatible with Meta Quest & Android TV [Get it on SideQuest!](https://sidequestvr.com/app/21783)
-*Thanks for 80K SideQuest downloads and counting!*
+A lightning-fast app launcher designed for big screens. Fully compatible with Meta Quest & Android TV.
+## [Get it on SideQuest VR](https://sidequestvr.com/app/21783)
+> *🎉  Thanks for over 100K downloads!*
 
 <table>
 <tr>
 <td width=200>
 <a href="https://threethan.itch.io/quest-game-tuner"> <img src="https://img.itch.zone/aW1nLzE4MDU4MDcxLnBuZw==/180x143%23c/ll1mKs.png"/> </a>
 </td>
-
 <td>
 <h2>Unlock the Full Power of Your Quest.</h2><div class="button_row">
 
  Quest Game Tuner is a new tool I made to help you get the most out of your Meta Quest headset. It can automatically adjust resolution, framerate, and more for every game you have installed.
 
-[Get Quest Game Tuner at on itch.io](https://threethan.itch.io/quest-game-tuner)
+**[Get Quest Game Tuner at on itch.io](https://threethan.itch.io/quest-game-tuner)**
 </td>
+</tr>
+<tr>
+ <td>
+  <a href="https://discord.gg/xG8EG2VxeS">
+  <img src="https://github.com/user-attachments/assets/d9c7101a-87d4-4891-9a68-24fa1e4401e6"/>
+  </a>
+ </td>
+ <td>
+    <b><a href="https://discord.gg/xG8EG2VxeS">Join the community discord</a></b> to chat, share configs, ask questions and more.
+ </td>
 </tr>
 </table>
 
@@ -42,7 +52,7 @@ It can run on any Android device, but has been tailored for the lastest updates 
 ### 🎨 **Simple but Powerful Interface**
 - Flexible UI with a focus on ease-of-use
 - Manually hide, rename, or replace the icon of any app
-- High res banner images and icons for most VR apps, thanks to [basti564](https://github.com/basti564/LauncherIcons) and [Veticia](https://github.com/Veticia/binaries)
+- High res banner images and icons for most VR apps, thanks to [Ellie](https://github.com/basti564/LauncherIcons) and [Veticia](https://github.com/Veticia/binaries)
 - Change the size or spacing of apps to show more apps at once
 - Choose from 10 preset styles, or import your own custom wallpaper
 
@@ -66,10 +76,14 @@ It can run on any Android device, but has been tailored for the lastest updates 
 - Use multiple shortcuts to open multiple windows of Lightning Launcher at once
 
 ## Relevant Projects
-[QuestAudioPatcher](https://github.com/threethan/QuestAudioPatcher) patches native apps to support background audio, allowing full functionality of Discord, Tidal, etc.
+[Quest Game Tuner](https://github.com/threethan/Quest-Game-Tuner) provides access to graphics settings and more on Meta Quest, and integrates with Lightning Launcher. *(Paid)*
 
-[PiLauncherNG](https://github.com/ValentineShilov/PiLauncherNG) is a more faithful fork of the original PiLauncher
+[QuestAudioPatcher](https://github.com/threethan/QuestAudioPatcher) patches native apps to support background audio, allowing full functionality of apps such as Discord on Quest 2. 
 
-[DreamGrid](https://github.com/basti564/DreamGrid) no longer works properly on Oculus devices, but may be better for PicoVR
+[PiLauncherNG](https://github.com/ValentineShilov/PiLauncherNG) is a more faithful fork of the original PiLauncher.
 
-[Oculess](https://github.com/basti564/Oculess) can provide background audio for all apps if configured as your device's owner *(Advanced)*
+[DreamGrid](https://github.com/basti564/DreamGrid) no longer works properly on Oculus devices, but may be better for PicoVR.
+
+[MetaMetaData](https://github.com/threethan/MetaMetadata) provides up-to-date icons, banners, and labels used for Meta Quest apps. 
+
+[Oculess](https://github.com/basti564/Oculess) can provide background audio for all apps if configured as your device's owner. *(Advanced)*
