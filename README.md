@@ -76,9 +76,9 @@ It can run on any Android device, but has been tailored for the lastest updates 
 - Use multiple shortcuts to open multiple windows of Lightning Launcher at once
 
 ## Relevant Projects
-[Quest Game Tuner](https://github.com/threethan/Quest-Game-Tuner) provides access to graphics settings and more on Meta Quest, and integrates with Lightning Launcher. *(Paid)*
+[Quest Game Tuner](https://github.com/threethan/Quest-Game-Tuner) provides access to graphics settings and more on Meta Quest, integrates with LL. *(Paid)*
 
-[QuestAudioPatcher](https://github.com/threethan/QuestAudioPatcher) patches native apps to support background audio, allowing full functionality of apps such as Discord on Quest 2. 
+[QuestAudioPatcher](https://github.com/threethan/QuestAudioPatcher) patches native apps to support background audio on Quest 2. 
 
 [PiLauncherNG](https://github.com/ValentineShilov/PiLauncherNG) is a more faithful fork of the original PiLauncher.
 
