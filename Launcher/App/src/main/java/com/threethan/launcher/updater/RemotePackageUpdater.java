@@ -157,74 +157,75 @@ public class RemotePackageUpdater {
      * @param apkFile File pointing to the apk
      */
     public void installApk(File apkFile) {
-        Log.v(TAG, "Installing from apk at "+apkFile.getAbsolutePath());
+        Log.v(TAG, "Installing from apk at " + apkFile.getAbsolutePath());
         if (apkFile.exists()) {
             Uri apkURI = FileProvider.getUriForFile(activity,
                     activity.getApplicationContext().getPackageName() + PROVIDER,
                     apkFile);
-
-            Runnable viewApk = () -> {
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-
-                intent.setDataAndType(apkURI, "application/vnd.android.package-archive");
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                intent.putExtra(Intent.EXTRA_NOT_UNKNOWN_SOURCE, true);
-
-                if (downloadingDialog != null) downloadingDialog.dismiss();
-                activity.startActivity(intent);
-            };
-
-            try {
-                // Session-based install
-                PackageInstaller packageInstaller = activity.getPackageManager().getPackageInstaller();
-                PackageInstaller.SessionParams params = new PackageInstaller.SessionParams(
-                        PackageInstaller.SessionParams.MODE_FULL_INSTALL);
-                int sessionId = packageInstaller.createSession(params);
-
-                PackageInstaller.Session session = packageInstaller.openSession(sessionId);
-                try (
-                     InputStream in = activity.getContentResolver().openInputStream(apkURI);
-                     OutputStream out = session.openWrite("package", 0, -1)) {
-                    byte[] buffer = new byte[65536];
-                    int c;
-                    //noinspection DataFlowIssue
-                    while ((c = in.read(buffer)) != -1) {
-                        out.write(buffer, 0, c);
-                    }
-                    session.fsync(out);
-
-
-                } catch (IOException e) {
-                    session.abandon();
-                    throw e;
-                }
-
-                BasicDialog.toast(activity.getString(R.string.installing));
-                InstallReceiver.setOnSuccess(() ->
-                        BasicDialog.toast(activity.getString(R.string.installed_successfully)));
-                session.commit(createIntentSender(activity, sessionId));
-
-                session.close();
-
-                Log.i(TAG, "Session-based install finished for " + apkURI);
-
-            } catch (Exception e) {
-
-                Log.w(TAG, "Session-based install failed, fallback to view intent", e);
-
-                viewApk.run();
-            }
-
-
+            installApk(apkURI);
         } else {
             try {
-                 new CustomDialog.Builder(activity)
-                     .setTitle(R.string.update_failed_title)
-                     .setMessage(R.string.update_failed_content)
-                     .setNegativeButton(R.string.update_hide_button, (d, w) -> d.cancel())
-                     .show();
+                new CustomDialog.Builder(activity)
+                        .setTitle(R.string.update_failed_title)
+                        .setMessage(R.string.update_failed_content)
+                        .setNegativeButton(R.string.update_hide_button, (d, w) -> d.cancel())
+                        .show();
             } catch (Exception ignored) {}
+        }
+
+}
+    public void installApk(Uri apkURI) {
+        Runnable viewApk = () -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+
+            intent.setDataAndType(apkURI, "application/vnd.android.package-archive");
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.putExtra(Intent.EXTRA_NOT_UNKNOWN_SOURCE, true);
+
+            if (downloadingDialog != null) downloadingDialog.dismiss();
+            activity.startActivity(intent);
+        };
+
+        try {
+            // Session-based install
+            PackageInstaller packageInstaller = activity.getPackageManager().getPackageInstaller();
+            PackageInstaller.SessionParams params = new PackageInstaller.SessionParams(
+                    PackageInstaller.SessionParams.MODE_FULL_INSTALL);
+            int sessionId = packageInstaller.createSession(params);
+
+            PackageInstaller.Session session = packageInstaller.openSession(sessionId);
+            try (
+                 InputStream in = activity.getContentResolver().openInputStream(apkURI);
+                 OutputStream out = session.openWrite("package", 0, -1)) {
+                byte[] buffer = new byte[65536];
+                int c;
+                //noinspection DataFlowIssue
+                while ((c = in.read(buffer)) != -1) {
+                    out.write(buffer, 0, c);
+                }
+                session.fsync(out);
+
+
+            } catch (IOException e) {
+                session.abandon();
+                throw e;
+            }
+
+            BasicDialog.toast(activity.getString(R.string.installing));
+            InstallReceiver.setOnSuccess(() ->
+                    BasicDialog.toast(activity.getString(R.string.installed_successfully)));
+            session.commit(createIntentSender(activity, sessionId));
+
+            session.close();
+
+            Log.i(TAG, "Session-based install finished for " + apkURI);
+
+        } catch (Exception e) {
+
+            Log.w(TAG, "Session-based install failed, fallback to view intent", e);
+
+            viewApk.run();
         }
     }
 

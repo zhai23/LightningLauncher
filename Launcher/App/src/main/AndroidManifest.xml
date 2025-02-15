@@ -59,19 +59,21 @@
         <!-- Required for session-based installation -->
         <receiver android:name=".updater.InstallReceiver" />
 
-        <!-- Main activity, called by the launcher & shortcut apk (Quest) -->
+        <!-- Main activity -->
         <activity
             android:name=".activity.LauncherActivitySearchable"
-            android:label="@string/app_name_for_list"
             android:configChanges="density|keyboard|keyboardHidden|navigation|orientation|screenLayout|screenSize|uiMode"
             android:windowSoftInputMode="adjustNothing"
-            android:exported="true"
-            android:documentLaunchMode="always"
-            android:launchMode="standard"
             android:resizeableActivity="true"
             android:stateNotNeeded="true"
-            android:excludeFromRecents="true"
-            android:theme="@style/ThemeOverlay.Quest">
+            android:label="@string/app_name_for_list"
+            android:exported="true"
+            android:launchMode="singleInstance"
+            android:theme="@style/ThemeOverlay.Standard">
+
+            <meta-data android:name="com.oculus.vrshell.supports_blend_effects" android:value="true" />
+            <meta-data android:name="com.oculus.vrshell.background_color_for_dark_theme"
+                android:value="#FF25292E" />
 
             <layout android:defaultWidth="1024dp" android:defaultHeight="640dp" android:gravity="top|end" />
             <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
@@ -79,33 +81,16 @@
 
             <meta-data android:name="com.oculus.vrshell.supports_multi_instance" android:value="true" />
             <meta-data android:name="com.oculus.lazy_gpumem_allocation" android:value="true" />
-
-            <meta-data android:name="com.oculus.vrshell.supports_blend_effects" android:value="true" />
-            <meta-data android:name="com.oculus.vrshell.background_color_for_dark_theme"
-                android:value="#FF25292E" />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-                <action android:name="android.intent.action.CREATE_SHORTCUT" />
+                <category android:name="android.intent.category.HOME"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER"/>
+                <action android:name="android.intent.action.CREATE_SHORTCUT" />
                 <category android:name="android.intent.category.HOME"/>
                 <category android:name="android.intent.category.VR_HOME"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
-            </intent-filter>
-        </activity>
-        <!-- Main activity, called by leanback launcher & launcher manager (Android TV) -->
-        <activity
-            android:name=".activity.LauncherActivitySingle"
-            android:configChanges="density|keyboard|keyboardHidden|navigation|orientation|screenLayout|screenSize|uiMode"
-            android:windowSoftInputMode="adjustNothing"
-            android:exported="true"
-            android:launchMode="singleInstance"
-            android:theme="@style/ThemeOverlay.ATV">
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.HOME"/>
-                <category android:name="android.intent.category.LEANBACK_LAUNCHER"/>
             </intent-filter>
         </activity>
         <!-- Custom Sizes -->

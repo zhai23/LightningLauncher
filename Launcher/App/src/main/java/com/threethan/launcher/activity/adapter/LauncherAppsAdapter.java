@@ -244,7 +244,7 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
             holder.showName = showName;
         }
 
-        if (!Platform.isTv()) holder.playtimeButton.setText("--:--");
+        if (!Platform.isTv() && banner) holder.playtimeButton.setText("--:--");
 
         // set value into textview
         holder.app = app;
@@ -264,7 +264,6 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
                     // It's java's fault for allowing this...
                     if (holder.imageView.getDrawable() instanceof BitmapDrawable currentBd &&
                             ImageLib.isIdenticalFast(currentBd.getBitmap(), bitmap)) return;
-
 
                     holder.iconRunnable = () -> holder.imageView.setImageBitmap(bitmap);
                 } else holder.iconRunnable = () -> holder.imageView.setImageDrawable(drawable);

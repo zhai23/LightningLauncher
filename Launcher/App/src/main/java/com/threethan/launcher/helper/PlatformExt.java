@@ -3,10 +3,14 @@ package com.threethan.launcher.helper;
 import android.app.Activity;
 import android.content.pm.ApplicationInfo;
 
+import com.threethan.launcher.R;
 import com.threethan.launcher.activity.LauncherActivity;
+import com.threethan.launcher.activity.dialog.BasicDialog;
 import com.threethan.launcher.activity.support.DataStoreEditor;
 import com.threethan.launcher.activity.support.SettingsManager;
 import com.threethan.launcher.data.Settings;
+import com.threethan.launchercore.Core;
+import com.threethan.launchercore.adapter.UtilityApplicationInfo;
 import com.threethan.launchercore.util.App;
 import com.threethan.launchercore.util.Platform;
 
@@ -123,6 +127,8 @@ public abstract class PlatformExt {
             applicationInfo.packageName = url;
             apps.add(applicationInfo);
         }
+        // Utility apps
+        if (Platform.getVrOsVersion() >= 74) apps.add(ApkInstallerUtilityApplication.getInstance());
         return apps;
     }
 
@@ -138,5 +144,26 @@ public abstract class PlatformExt {
         if (!Platform.supportsVrOsChainLaunch()) return false;
         return Compat.getDataStore()
                 .getBoolean(Settings.KEY_ALLOW_CHAIN_LAUNCH, Settings.DEFAULT_ALLOW_CHAIN_LAUNCH);
+    }
+
+    /**
+     * An instance of UtilityApplicationInfo which provides an easy way to install APKs on v74+
+     */
+    public static class ApkInstallerUtilityApplication extends UtilityApplicationInfo {
+        private ApkInstallerUtilityApplication() {
+            super("builtin://apk-install", R.drawable.ic_installer);
+        }
+        private static ApkInstallerUtilityApplication instance;
+        public static ApkInstallerUtilityApplication getInstance() {
+            if (instance== null) instance = new ApkInstallerUtilityApplication();
+            return instance;
+        }
+
+        public void launch() {
+            BasicDialog.toast(Core.context().getString(R.string.apk_installer_tip));
+            if (LauncherActivity.getForegroundInstance() != null)
+                LauncherActivity.getForegroundInstance()
+                        .showFilePicker(LauncherActivity.FilePickerTarget.APK);
+        }
     }
 }

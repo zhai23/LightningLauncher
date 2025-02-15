@@ -118,7 +118,6 @@ public abstract class App {
 
     /** @return The string label for an app */
     public static String getLabel(ApplicationInfo app) {
-        if (app instanceof UtilityApplicationInfo uApp) return uApp.getString();
         if (Platform.labelOverrides.containsKey(app.packageName))
             return Platform.labelOverrides.get(app.packageName);
         PackageManager pm = Core.context().getPackageManager();
