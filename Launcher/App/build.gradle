@@ -7,8 +7,8 @@ android {
         compileSdk 35
         minSdkVersion 24
         targetSdkVersion 35
-        versionCode 831
-        versionName "8.3.1"
+        versionCode 840
+        versionName "8.4.0"
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
