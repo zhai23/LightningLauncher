@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import com.threethan.launcher.helper.PlatformExt;
 import com.threethan.launchercore.lib.DelayLib;
 import com.threethan.launchercore.util.Launch;
+import com.threethan.launchercore.util.Platform;
 
 import java.util.Objects;
 
@@ -27,11 +28,18 @@ public class ChainLoadActivity extends Launch.LaunchingActivity {
 
         // Get normal launch intent
         PackageManager pm = getPackageManager();
-        final Intent normalIntent = pm.getLaunchIntentForPackage(launchApp.packageName);
-        if (normalIntent != null)
-            normalIntent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION
-                    | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(normalIntent);
+        Intent normalIntent = pm.getLaunchIntentForPackage(launchApp.packageName);
+
+        if (normalIntent != null) {
+            if (Platform.getVrOsVersion() >= -100) {
+                normalIntent.setFlags(0);
+                startActivityFromChild(this, normalIntent, 0);
+            } else {
+                normalIntent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION
+                        | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(normalIntent);
+            }
+        }
         Intent relaunch = pm.getLaunchIntentForPackage(getPackageName());
 
         if (PlatformExt.useNewVrOsMultiWindow()) setOnPostDestroy(()
