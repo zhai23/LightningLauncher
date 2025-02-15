@@ -104,7 +104,7 @@ public class AppDetailsDialog extends BasicDialog<LauncherActivity> {
                 customIconFile.delete();
             a.setSelectedIconImage(iconImageView);
             imageApp = app;
-            a.showImagePicker(LauncherActivity.ImagePickerTarget.ICON);
+            a.showFilePicker(LauncherActivity.FilePickerTarget.ICON);
             // Show the reset button (delayed so it doesn't appear before the image picker)
             DelayLib.delayed(() ->
                     a.runOnUiThread(() -> resetIconButton.setVisibility(View.VISIBLE)));
@@ -127,7 +127,7 @@ public class AppDetailsDialog extends BasicDialog<LauncherActivity> {
                 || Platform.isTv()) {
             // VR apps MUST launch out, so just hide the option and replace it with another
             // Also hide it on TV where it is useless
-            if (appType == App.Type.VR) {
+            if (appType == App.Type.VR && Platform.isQuest()) {
                 tuningButton.setVisibility(View.VISIBLE);
                 tuningButton.setOnClickListener(v -> QuestGameTuner.tuneApp(app.packageName));
             }
@@ -135,7 +135,6 @@ public class AppDetailsDialog extends BasicDialog<LauncherActivity> {
         } else {
             tuningButton.setVisibility(View.GONE);
 
-            launchSizeSpinner.setVisibility(Platform.isVr() ? View.VISIBLE : View.GONE);
 
             // Browser selection spinner
             if (appType == App.Type.WEB) {
@@ -150,14 +149,13 @@ public class AppDetailsDialog extends BasicDialog<LauncherActivity> {
                         p -> a.dataStoreEditor.putInt(launchBrowserKey, p),
                         launchBrowserSelection);
                 launchBrowserSpinner.setVisibility(View.VISIBLE);
-                launchSizeSpinner.setVisibility(View.GONE);
-            } else {
+            } else if (Platform.isVr() && !appType.equals(App.Type.UTILITY)) {
                 final String launchSizeKey = Settings.KEY_LAUNCH_SIZE + app.packageName;
                 final int launchSizeSelection = a.dataStoreEditor.getInt(
                         launchSizeKey,
                         SettingsManager.getAppLaunchOut(app.packageName) ? 0 : 1);
                 initSpinner(launchSizeSpinner, R.array.advanced_launch_sizes, p ->
-                        a.dataStoreEditor.putInt(launchSizeKey, p),
+                                a.dataStoreEditor.putInt(launchSizeKey, p),
                         launchSizeSelection
                 );
                 launchSizeSpinner.setVisibility(View.VISIBLE);

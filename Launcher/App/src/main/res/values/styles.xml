@@ -19,17 +19,6 @@
         <item name="colorAccent">#3364c3</item>
     </style>
 
-    <style name="ThemeOverlay.ATV" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:fontFamily">@font/sansserif</item>
-        <item name="android:colorPrimary">#2a2a2c</item>
-        <item name="android:windowBackground">#0a011d</item>
-    </style>
-
-    <style name="ThemeOverlay.Quest" parent="ThemeOverlay.Standard">
-        <item name="android:windowBackground">#0FFF</item>
-        <item name="android:windowIsTranslucent">true</item>
-    </style>
-
     <style name="SettingTitle">
         <item name="android:textColor">#FFFFFF</item>
         <item name="android:textStyle">bold</item>

@@ -1,0 +1,19 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item>
+        <shape android:shape="rectangle">
+            <gradient android:startColor="#f0fff8"
+                android:centerColor="#eceff3"
+                android:endColor="#e7dfee"
+                android:angle="-90"/>
+        </shape>
+    </item>
+    <item android:top="5dp" android:left="5dp" android:right="5dp" android:bottom="5dp">
+        <vector android:height="24dp"
+            android:viewportHeight="24" android:viewportWidth="24"
+            android:width="24dp">
+            <path android:fillColor="#000000" android:pathData="M5,20h14v-2H5V20zM19,9h-4V3H9v6H5l7,7L19,9z"/>
+        </vector>
+    </item>
+
+</layer-list>

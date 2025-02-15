@@ -183,7 +183,7 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
                     lastIndex = SettingsManager.BACKGROUND_DRAWABLES.length;
                 ImageView last = views[lastIndex];
 
-                if (index == views.length-1) a.showImagePicker(LauncherActivity.ImagePickerTarget.WALLPAPER);
+                if (index == views.length-1) a.showFilePicker(LauncherActivity.FilePickerTarget.WALLPAPER);
                 if (last == view) return;
 
                 ValueAnimator viewAnimator = ValueAnimator.ofInt(view.getWidth(), selectedWallpaperWidthPx);

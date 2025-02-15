@@ -10,26 +10,16 @@ import com.threethan.launchercore.Core;
 import java.util.Objects;
 
 public class UtilityApplicationInfo extends ApplicationInfo {
-    private final int stringResId;
     private final int drawableResId;
-    private final Runnable onLaunch;
-    public UtilityApplicationInfo(String packageName, int stringResId, int imageResId, Runnable onLaunch) {
+    public UtilityApplicationInfo(String packageName, int imageResId) {
         this.packageName = packageName;
-        this.stringResId = stringResId;
         this.drawableResId = imageResId;
-        this.onLaunch = onLaunch;
-    }
-
-    public String getString() {
-        return Core.context().getString(stringResId);
     }
 
     public Drawable getDrawable() {
         return AppCompatResources.getDrawable(Core.context(), drawableResId);
     }
-    public void launch() {
-        onLaunch.run();
-    }
+    public void launch() {}
 
     @Override
     public boolean equals(Object o) {

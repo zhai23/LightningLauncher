@@ -81,6 +81,7 @@ public abstract class Platform {
         labelOverrides.put("com.oculus.helpcenter", "Meta Quest Guide");
         labelOverrides.put("com.android.settings", "Android Settings");
         labelOverrides.put("com.oculus.tv", "Meta Quest TV");
+        labelOverrides.put("builtin://apk-install", "APK Installer");
     }
     static final Set<String> excludedPackageNames = Set.of(
             "android",
@@ -189,14 +190,6 @@ public abstract class Platform {
      */
     public static boolean supportsVrOsChainLaunch() {
         return getVrOsVersion() >= 71;
-    }
-
-    /**
-     * Returns true if the device has a functioning android file browser
-     * @return True if VrOs < 72
-     */
-    public static boolean supportsSystemFileBrowser() {
-        return getVrOsVersion() < 72;
     }
 
     /**

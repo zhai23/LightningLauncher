@@ -1,14 +1,12 @@
 package com.threethan.launcher.activity;
 
 import android.annotation.SuppressLint;
-import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -48,11 +46,10 @@ import com.threethan.launcher.data.Settings;
 import com.threethan.launcher.helper.AppExt;
 import com.threethan.launcher.helper.Compat;
 import com.threethan.launcher.helper.PlatformExt;
-import com.threethan.launcher.updater.FileManagerUpdater;
 import com.threethan.launcher.updater.LauncherUpdater;
+import com.threethan.launcher.updater.RemotePackageUpdater;
 import com.threethan.launchercore.Core;
 import com.threethan.launchercore.lib.ImageLib;
-import com.threethan.launchercore.util.CustomDialog;
 import com.threethan.launchercore.util.Keyboard;
 import com.threethan.launchercore.util.Launch;
 import com.threethan.launchercore.util.Platform;
@@ -120,13 +117,11 @@ public class LauncherActivity extends Launch.LaunchingActivity {
         if (foregroundInstance == null) return null;
         return foregroundInstance.get();
     }
-    public boolean preventInit = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (preventInit) return;
         setContentView(R.layout.activity_container);
 
         Core.init(this);
@@ -250,41 +245,20 @@ public class LauncherActivity extends Launch.LaunchingActivity {
         super.onDestroy();
     }
 
-    public enum ImagePickerTarget {ICON, WALLPAPER}
-    private ImagePickerTarget imagePickerTarget;
-    public void showImagePicker(ImagePickerTarget target) {
-        imagePickerTarget = target;
+    public enum FilePickerTarget {ICON, WALLPAPER, APK}
+    private FilePickerTarget filePickerTarget;
+    public void showFilePicker(FilePickerTarget target) {
+        filePickerTarget = target;
 
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("image/*");
 
-        try {
-            List<ResolveInfo> resolveInfoList = getPackageManager().queryIntentActivities(intent, 0);
-            if (!Platform.supportsSystemFileBrowser()) {
-                intent.setPackage("com.unsupported");
-                for (ResolveInfo resolveInfo : resolveInfoList) {
-                    if (!resolveInfo.activityInfo.packageName.equals("com.android.documentsui")) {
-                        intent.setPackage(resolveInfo.activityInfo.packageName);
-                        break;
-                    }
-                }
-            }
-            imagePicker.launch(intent);
-        } catch (ActivityNotFoundException ignored) {
-            new CustomDialog.Builder(this)
-                    .setTitle(R.string.install_image_browser_title)
-                    .setMessage(R.string.install_image_browser_content)
-                    .setPositiveButton(R.string.addons_install, (dialog, which)
-                            -> new FileManagerUpdater(this).checkAppUpdateAndInstall()
-                    )
-                    .setNegativeButton(R.string.next, (dialog, which) -> {
-                        dialog.dismiss();
-                        intent.setPackage(null);
-                        imagePicker.launch(intent);
-                    })
-                    .show();
-        }
+        if (target.equals(FilePickerTarget.APK))
+            intent.setType("application/vnd.android.package-archive");
+        else
+            intent.setType("image/*");
+
+        filePicker.launch(intent);
     }
 
     private ImageView selectedImageView;
@@ -292,14 +266,19 @@ public class LauncherActivity extends Launch.LaunchingActivity {
         selectedImageView = imageView;
     }
 
-    private final ActivityResultLauncher<Intent> imagePicker =
+    private final ActivityResultLauncher<Intent> filePicker =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                     o -> {
                         if (o.getData() != null)
-                            pickImage(o.getData().getData());
+                            pickFile(o.getData().getData());
                     });
 
-    private void pickImage(Uri uri) {
+    private void pickFile(Uri uri) {
+        if (filePickerTarget.equals(FilePickerTarget.APK)) {
+            new RemotePackageUpdater(this).installApk(uri);
+            return;
+        }
+
         Bitmap bitmap;
         try {
             bitmap = ImageLib.bitmapFromStream(getContentResolver().openInputStream(uri));
@@ -308,7 +287,7 @@ public class LauncherActivity extends Launch.LaunchingActivity {
             return;
         }
         if (bitmap == null) return;
-        switch (imagePickerTarget) {
+        switch (filePickerTarget) {
             case ICON -> AppDetailsDialog.onImageSelected(
                     bitmap, selectedImageView, this);
             case WALLPAPER -> {
@@ -324,8 +303,6 @@ public class LauncherActivity extends Launch.LaunchingActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
-        if (preventInit) return;
 
         Core.init(this);
 
@@ -476,8 +453,7 @@ public class LauncherActivity extends Launch.LaunchingActivity {
         if (getAppAdapter() == null) {
             appsView.setItemViewCacheSize(512);
             appsView.setHasFixedSize(true);
-            appsView.setAdapter(
-                    new LauncherAppsAdapter(this));
+            appsView.setAdapter(new LauncherAppsAdapter(this));
             appsView.setItemAnimator(new CustomItemAnimator());
         } else {
             getAppAdapter().setAppList(this);

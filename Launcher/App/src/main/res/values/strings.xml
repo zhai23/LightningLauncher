@@ -387,13 +387,6 @@
     <string name="installing">Installing…</string>
     <string name="installed_successfully">Installed Successfully</string>
 
-    <string name="install_image_browser_title">Please install an app which can pick images!</string>
-    <string name="install_image_browser_content"><b>On your OS version, the Android file browser cannot be used with controllers.</b>
-        \n
-        \nYou can interact with the file browser by touching it with your fingers, or install a third-party app which does not have this issue.
-        \n
-        \nIf you select "Install", you\'ll automatically get the free <i>Amaze File Manager</i>, and won\'t see this alert again.</string>
-
     <!--  QGT INFO  -->
     <string name="tuner_info_tagline" translatable="false">Unlock the Full Power of Your Quest.</string>
     <string name="tuner_info_desc" translatable="false">Meta limits the performance of apps.
@@ -406,4 +399,7 @@
     <string name="tuner_info_get" translatable="false">Get <b>Quest Game Tuner</b> on itch.io!</string>
     <string name="tuner_info_get_link" translatable="false">threethan.itch.io/quest-game-tuner</string>
 
+    <!-- v74 APK INSTALLER -->
+    <string name="apk_installer">APK installer</string>
+    <string name="apk_installer_tip">Select an APK file to install</string>
 </resources>

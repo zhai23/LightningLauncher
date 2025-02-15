@@ -103,7 +103,8 @@ public abstract class LaunchExt extends Launch {
         }
 
         final boolean customSize = SettingsManager.getAppLaunchSize(app.packageName) > 0;
-        if (customSize || !PlatformExt.useVrOsChainLaunch()) {
+        if ((customSize || !PlatformExt.useVrOsChainLaunch())
+                && !(app instanceof UtilityApplicationInfo)) {
             Intent chain = getIntentForLaunch(launcherActivity, app);
             assert chain != null;
             launchInOwnWindow(chain, launcherActivity,

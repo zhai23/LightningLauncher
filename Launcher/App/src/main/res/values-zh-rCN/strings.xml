@@ -314,10 +314,7 @@
     <string name="installing">安装…</string>
     <string name="installed_successfully">安装成功</string>
 
-    <string name="install_image_browser_title">请安装一个可以挑选图片的应用程序！</string>
-    <string name="install_image_browser_content"><b>在您的操作系统版本上，Android 文件浏览器无法与控制器一起使用。</b>
-        \n
-        \n您可以通过用手指触摸文件浏览器来与它交互，或者安装没有此问题的第三方应用程序。
-        \n
-        \n如果您选择“安装”，您将自动获得免费的 <i>Amaze 文件管理器</i>，并且不会再看到此警报。</string>
+    <!-- v74 APK INSTALLER -->
+    <string name="apk_installer">APK 安装</string>
+    <string name="apk_installer_tip">选择要安装的 APK 文件</string>
 </resources>
