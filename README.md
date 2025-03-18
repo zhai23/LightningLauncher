@@ -1,7 +1,7 @@
 # Lightning Launcher
 A lightning-fast app launcher designed for big screens. Fully compatible with Meta Quest & Android TV.
 ## [Get it on SideQuest VR](https://sidequestvr.com/app/21783)
-> *🎉  Thanks for over 100K downloads!*
+> *🎉  Thanks for over 110K downloads!*
 
 <table>
 <tr>
@@ -11,7 +11,7 @@ A lightning-fast app launcher designed for big screens. Fully compatible with Me
 <td>
 <h2>Unlock the Full Power of Your Quest.</h2><div class="button_row">
 
- Quest Game Tuner is a new tool I made to help you get the most out of your Meta Quest headset. It can automatically adjust resolution, framerate, and more for every game you have installed.
+ Quest Game Tuner is a tool I made to help you get the most out of your Meta Quest headset. It can automatically adjust resolution, framerate, and more for every game you have installed. It works great with Lightning Launcher, and lets you auto-open it on boot or game close.
 
 **[Get Quest Game Tuner at on itch.io](https://threethan.itch.io/quest-game-tuner)**
 </td>
@@ -44,36 +44,50 @@ It can run on any Android device, but has been tailored for the lastest updates 
 3. *(Recommended)* Set up a shortcut option in `Settings -> Shortcut Settings`
 
 # Features
-### 🌐 **Websites in the Launcher**
-- Enter edit mode and then select "Add Website" on the bottom right
-- You will be prompted to install [Lightning Browser](https://github.com/threethan/LightningBrowser), which allows websites to continue playing audio in the background
-- Websites will be automatically given labels and high-res icons, but both can be customized as you wish
-
 ### 🎨 **Simple but Powerful Interface**
 - Flexible UI with a focus on ease-of-use
 - Manually hide, rename, or replace the icon of any app
-- High res banner images and icons for most VR apps, thanks to [Ellie](https://github.com/basti564/LauncherIcons) and [Veticia](https://github.com/Veticia/binaries)
+- Constantly updated HD banner images, icons, and labels for all Quest apps, from [MetaMetadata](https://github.com/threethan/MetaMetadata)
+- Change apps to display as icons or banners - individually, or by type.
 - Change the size or spacing of apps to show more apps at once
 - Choose from 10 preset styles, or import your own custom wallpaper
+
+### 🌐 **Websites in the Launcher**
+- Enter edit mode and then select "Add Website" on the bottom right
+- By default, you will be prompted to install [Lightning Browser](https://github.com/threethan/LightningBrowser), which allows websites to look and feel like native apps, and gives cursor support to TVs
+- You can also set website to open in the Meta Quest Browser or default browser on supported systems
+- Websites will be automatically given labels and high-res icons; both can be customized as you wish
 
 ### 📦 **App Groups**
 - Automatic grouping of apps by platform
 - Customizable default groups for VR Apps _(Quest)_, 2D Apps, TV apps _(AndroidTV)_, and Websites
 - Easily sort apps into up to 20 custom groups
+- View a single group with a tap, or hold to view multiple at once
+- Use the special `Hidden` group to hide apps from the main screen
 
-### ⭐ **Starred Apps & Groups**
-- Apps and groups you've starred will be moved to the front of the list for easier access
-- If you chose to hide the top bar and not use groups, starring your favorite apps is a good alternative!
+### ⭐ **Star Apps**
+- Apps you've starred will be moved to the front of the list for easier access
+- Prioritizes your favorite apps even when searching or viewing multiple groups 
 
 ### 🔍 **Search**
-- Press the search icon next to the settings icon to start searching all apps
+- Press the search icon next to quickly search all apps
 - Press enter on the keyboard to instantly open the first result
 
+### 🪟 **Improved Multitasking** _(Quest)_
+- Open 2D apps in windows at a customizable size
+- Open apps & websites next to the launcher window, or replacing it
+
+### 🕑 **View Playtime** _(Quest)_
+- Enable usage data access to see your time played in VR apps *(optional)*
+- Playtime will be shown when hovering over an app banner
+
 ### 🔗 **Shortcuts** _(Quest)_
-- Open `Settings -> Shortcut Settings` to set up shortcuts
-- You can set Lightning Launcher to open from the app Library, Explore, People, and/or Facebook icons
-- Open an app, minimize the window, then use the same shortcut to resume where you left off
-- Use multiple shortcuts to open multiple windows of Lightning Launcher at once
+- Configure in `Settings -> Shortcut Settings` to open Lightning Launcher when you hover certain icons on the dock
+- You can also add Lightning Launcher directly to the dock on most Quest versions
+
+### 🏅 **Quest Game Tuner integration** _(Quest)_
+- If you have Quest Game Tuner installed, you can tune games straight from the launcher
+- If you also have playtime tracking on, you can view detailed playtime charts 
 
 ## Relevant Projects
 [Quest Game Tuner](https://github.com/threethan/Quest-Game-Tuner) provides access to graphics settings and more on Meta Quest, integrates with LL. *(Paid)*
