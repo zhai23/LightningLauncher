@@ -51,19 +51,38 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
             beenNonEmpty = true;
         }
     }
-    Timer timer = new Timer();
+    Timer searchTimer = new Timer();
     protected void queueSearch(String text) {
-
-        timer.cancel();
-        timer = new Timer();
-        timer.schedule(new TimerTask() {
+        int delay;
+        searchTimer.cancel();
+        switch (text.length()) {
+            case 0:
+                return;
+            case 1:
+                delay = 600;
+                break;
+            case 2:
+                delay = 300;
+                break;
+            case 3:
+                delay = 200;
+                break;
+            case 4:
+                delay = 150;
+                break;
+            default:
+                delay = 100;
+                break;
+        }
+        searchTimer = new Timer();
+        searchTimer.schedule(new TimerTask() {
             @Override
             public void run() {
                 try {
                     runOnUiThread(() -> searchFor(text));
                 } catch (Exception ignored) {}
             }
-        }, 200);
+        }, delay);
     }
     BlurView searchBar;
 
