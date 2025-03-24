@@ -8,6 +8,7 @@ import android.view.View;
 
 import com.threethan.launcher.R;
 import com.threethan.launcher.activity.LauncherActivity;
+import com.threethan.launcher.helper.PlatformExt;
 import com.threethan.launcher.updater.AddonUpdater;
 import com.threethan.launchercore.util.CustomDialog;
 import com.threethan.launchercore.util.Platform;
@@ -55,6 +56,11 @@ public class AddonDialog extends BasicDialog<LauncherActivity> {
 
         dialog.findViewById(R.id.addToDockButton).setOnClickListener(v -> showDockDialog());
         dialog.findViewById(R.id.exitButton).setOnClickListener(v -> dialog.dismiss());
+
+        if (PlatformExt.isOldVrOs()) {
+            dialog.findViewById(R.id.addToDockText).setVisibility(View.GONE);
+            dialog.findViewById(R.id.addToDockButton).setVisibility(View.GONE);
+        }
         return dialog;
     }
     public static void updateAddonButton(final Activity a, final View layout, final String tag) {

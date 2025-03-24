@@ -3,7 +3,6 @@ package com.threethan.launcher.activity.dialog;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.Intent;
 import android.os.Build;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
@@ -24,6 +23,7 @@ import com.threethan.launcher.helper.PlatformExt;
 import com.threethan.launcher.helper.PlaytimeHelper;
 import com.threethan.launcher.helper.SettingsSaver;
 import com.threethan.launcher.updater.LauncherUpdater;
+import com.threethan.launchercore.lib.DelayLib;
 import com.threethan.launchercore.util.App;
 import com.threethan.launchercore.util.CustomDialog;
 import com.threethan.launchercore.util.Platform;
@@ -259,6 +259,11 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
 
         // Advanced button
         dialog.findViewById(R.id.advancedSettingsButton).setOnClickListener(view -> showAdvancedSettings());
+        dialog.findViewById(R.id.refreshButton).setOnClickListener(view -> {
+            view.setEnabled(false);
+            a.launcherService.forEachActivity(LauncherActivity::refreshInterface);
+            a.launcherService.forEachActivity(LauncherActivity::forceRefreshPackages);
+        });
         return dialog;
     }
 
@@ -306,24 +311,6 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
         attachSwitchToSetting(dialog.findViewById(R.id.longPressEditSwitch),
                 Settings.KEY_DETAILS_LONG_PRESS, Settings.DEFAULT_DETAILS_LONG_PRESS, null, true);
 
-        if (Platform.isVr() && Platform.getVrOsVersion() < 69) {
-            View defaultSettingsButton = dialog.findViewById(R.id.defaultLauncherSettingsButton);
-            defaultSettingsButton.setOnClickListener((view) -> new CustomDialog.Builder(a)
-                    .setTitle(R.string.warning)
-                    .setMessage(R.string.set_default_launcher_message)
-                    .setPositiveButton(R.string.understood, (d, w) -> {
-                        final Intent intent = new Intent(android.provider.Settings.ACTION_HOME_SETTINGS);
-                        intent.setPackage("com.android.permissioncontroller");
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        d.dismiss();
-                        a.startActivity(intent);
-                    })
-                    .setNegativeButton(R.string.cancel, (d, w) -> d.dismiss())
-                    .show());
-        } else {
-            dialog.findViewById(R.id.extraFeaturesTitle).setVisibility(View.GONE);
-            dialog.findViewById(R.id.defaultLauncherSettingsButton).setVisibility(View.GONE);
-        }
         attachSwitchToSetting(dialog.findViewById(R.id.showPlaytimesSwitch),
                 Settings.KEY_SHOW_TIMES_BANNER, Settings.DEFAULT_SHOW_TIMES_BANNER,
                 b -> a.launcherService.forEachActivity(LauncherActivity::refreshInterface), false);

@@ -31,7 +31,7 @@ public class ChainLoadActivity extends Launch.LaunchingActivity {
         Intent normalIntent = pm.getLaunchIntentForPackage(launchApp.packageName);
 
         if (normalIntent != null) {
-            if (Platform.getVrOsVersion() >= -100) {
+            if (Platform.getVrOsVersion() >= 74 || PlatformExt.isOldVrOs()) {
                 normalIntent.setFlags(0);
                 startActivityFromChild(this, normalIntent, 0);
             } else {

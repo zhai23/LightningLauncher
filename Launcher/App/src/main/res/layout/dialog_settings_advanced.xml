@@ -394,23 +394,6 @@
             tools:ignore="UseSwitchCompatOrMaterialXml" />
 
         <TextView
-            android:id="@+id/extraFeaturesTitle"
-            style="@style/SettingSubtitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/advanced_features" />
-
-        <com.threethan.launchercore.view.LcButton
-            android:id="@+id/defaultLauncherSettingsButton"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:drawableEnd="@drawable/ic_dialog"
-            android:text="@string/settings_default_launcher"
-            android:tooltipText="@string/settings_default_launcher_tip"
-            tools:targetApi="o" />
-
-        <TextView
             style="@style/SettingSubtitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

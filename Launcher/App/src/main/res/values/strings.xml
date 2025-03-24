@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name" translatable="false">Lightning Launcher</string>
-    <string name="app_name_for_list" translatable="false">- Lightning Launcher -</string>
+    <string name="app_name_for_list" translatable="false"> ➜ <u>Lightning</u> Launcher</string>
+    <string name="app_name_for_activity" translatable="false">Lightning Launcher</string>
     <string name="add_group">Add Group</string>
     <string name="delete_group">Delete Group</string>
     <string name="edit_group">Edit Group</string>
@@ -48,8 +49,9 @@
     <string name="disp_wide">Display as Banner</string>
     <string name="disp_icon">Display as Icon</string>
     <string name="disp_name">Always Show Names</string>
-    <string name="advanced_header">Advanced Settings</string>
-    <string name="advanced_button">Open Advanced Settings for More Options</string>
+    <string name="advanced_header">More Options</string>
+    <string name="advanced_button">Advanced Settings</string>
+    <string name="refresh_button">Refresh</string>
     <string name="advanced_interface">Interface</string>
     <string name="advanced_window">Window</string>
     <string name="advanced_launching">Launching</string>
@@ -108,8 +110,6 @@
     <string name="settings_load">Import Settings</string>
     <string name="groupings_save">Export Groupings</string>
     <string name="groupings_load">Import Groupings</string>
-    <string name="settings_default_launcher">Set Default Home to Enable 3rd-party Shortcuts</string>
-    <string name="settings_default_launcher_tip">Let Android apps add shortcut icons to Lightning Launcher.\n<i>Does not replace the App Library or home button.</i></string>
 
     <string name="advanced_sizing">Enable Additional Phone App Window Sizes</string>
     <string name="advanced_sizing_tip">Allows apps to be opened in different sized windows, may cause issues.</string>
@@ -339,13 +339,12 @@
     \nPressing back once you get to the launcher will just toggle edit mode, keeping you from accidentally returning to the default launcher.</string>
 
 
-    <string name="addons_preamble"><b>You must manually activate each redirect individually.
-        \nLighting Launcher will open when you <i>hover</i> the target app on the dock.</b>
-        \n<i>The behaviour of shortcuts may change unpredictably with Quest OS updates!</i>
-    \n
-    \nYou can also add Lighting Launcher to your dock directly.</string>
-
-    <string name="addons_dock_button">Add Lightning Launcher to the Dock</string>
+    <string name="addons_preamble"><b>Redirects</b> open Lighting Launcher when you <i>hovering</i> target dock icon.
+        \n<i>Quest OS updates sometimes break these!</i>
+        \nYou must manually install, then activate each redirect individually.
+    </string>
+    <string name="addons_preamble_dock">You can add Lighting Launcher to your dock directly.</string>
+    <string name="addons_dock_button">How to Add Lightning Launcher to the Dock</string>
     <string name="addons_dock_title">Adding Lightning Launcher to the dock</string>
     <string name="addons_dock_desc"><b>Remove an existing icon</b>
         \n
