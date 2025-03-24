@@ -86,6 +86,7 @@ public abstract class Platform {
     static final Set<String> excludedPackageNames = Set.of(
             "android",
             "com.oculus.panelapp.library",
+            "com.oculus.cvp",
             "com.oculus.vrshell",
             "com.oculus.shellenv",
             "com.oculus.integrity",

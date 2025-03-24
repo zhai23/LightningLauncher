@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -25,6 +26,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.threethan.launcher.BuildConfig;
 import com.threethan.launcher.R;
 import com.threethan.launcher.activity.LauncherActivity;
 import com.threethan.launcher.activity.dialog.AppDetailsDialog;
@@ -160,11 +162,7 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
         return holder;
     }
     private void setActions(AppViewHolder holder) {
-        // Sub-buttons
-        holder.moreButton.setOnClickListener(view
-                -> new AppDetailsDialog(launcherActivity, holder.app).show());
-
-        // Click
+        // Launch app on click
         holder.view.setOnClickListener(view -> {
             if (getEditMode()) {
                 boolean selected = launcherActivity.selectApp(holder.app.packageName);
@@ -194,7 +192,7 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
             boolean hovered;
             if (event.getAction() == MotionEvent.ACTION_HOVER_ENTER) hovered = true;
             else if (event.getAction() == MotionEvent.ACTION_HOVER_EXIT) {
-                for (View subView : new View[] {holder.moreButton, holder.playtimeButton})
+                for (View subView : new View[] {holder.playtimeButton, holder.moreButton})
                     if (view != subView && subView != null && subView.isHovered()) return false;
                 hovered = false;
             } else return false;
@@ -205,7 +203,15 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
         holder.view.setOnHoverListener(hoverListener);
         holder.view.setOnFocusChangeListener((view, hasFocus) -> updateHover(holder, hasFocus));
 
+        // Sub-buttons
         holder.moreButton.setOnHoverListener(hoverListener);
+        holder.playtimeButton.setOnHoverListener(hoverListener);
+
+        // OnClickListener MUST be added after OnHoverListener, else un-clickable on Quest v50
+        holder.moreButton.setOnClickListener(view
+                -> new AppDetailsDialog(launcherActivity, holder.app).show());
+        holder.playtimeButton.setOnClickListener(v
+                -> PlaytimeHelper.openFor(holder.app.packageName));
     }
 
     /** @noinspection ClassEscapesDefinedScope*/
@@ -335,8 +341,6 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
                     PlaytimeHelper.getPlaytime(holder.app.packageName,
                             t -> launcherActivity.runOnUiThread(()
                                     -> holder.playtimeButton.setText(t)));
-                    holder.playtimeButton.setOnClickListener(v
-                            -> PlaytimeHelper.openFor(holder.app.packageName));
                 }
             } else holder.playtimeButton.setVisibility(View.INVISIBLE);
         }

@@ -14,12 +14,14 @@ import android.view.accessibility.AccessibilityManager;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.threethan.launcher.helper.PlatformExt;
+
 import java.util.List;
 
 public class AddonUpdater extends RemotePackageUpdater {
     // Tag for the GitHub release from which to download addons
-    public static final String ADDON_TAG = "addons8.3.0";
-    private static final String SHORTCUT_ADDON_VERSION = "8.3.0";
+    public static final String ADDON_TAG = PlatformExt.isOldVrOs() ? "addonsLegacy" : "addons8.3.0";
+    private static final String SHORTCUT_ADDON_VERSION = PlatformExt.isOldVrOs() ? "LEGACY" : "8.3.0";
 
     public AddonUpdater(Activity activity) {
         super(activity);
@@ -35,10 +37,10 @@ public class AddonUpdater extends RemotePackageUpdater {
 
         /**
          * Creates a new remotePackage with a separate release for arm64
-         * @param tag Tag for equvilancy
+         * @param tag Tag for equivalency
          * @param packageName Name of the package once installed
          * @param latestVersion Latest version (string) of the package
-         * @param isService True if the package is primarily an accessiblity service
+         * @param isService True if the package is primarily an accessibility service
          * @param url String url from which to download the package
          */
 

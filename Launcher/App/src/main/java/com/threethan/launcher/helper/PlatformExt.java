@@ -2,6 +2,7 @@ package com.threethan.launcher.helper;
 
 import android.app.Activity;
 import android.content.pm.ApplicationInfo;
+import android.util.Log;
 
 import com.threethan.launcher.R;
 import com.threethan.launcher.activity.LauncherActivity;
@@ -144,6 +145,14 @@ public abstract class PlatformExt {
         if (!Platform.supportsVrOsChainLaunch()) return false;
         return Compat.getDataStore()
                 .getBoolean(Settings.KEY_ALLOW_CHAIN_LAUNCH, Settings.DEFAULT_ALLOW_CHAIN_LAUNCH);
+    }
+
+    /**
+     * Used to check if device is on Quest 1 (v50) or similar
+     * @return True if VrOs version < 60
+     */
+    public static boolean isOldVrOs() {
+        return Platform.isQuest() && Platform.getVrOsVersion() < 60;
     }
 
     /**

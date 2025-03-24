@@ -37,7 +37,7 @@
 
     <application
         android:icon="@mipmap/app_icon"
-        android:label="@string/app_name"
+        android:label="@string/app_name_for_activity"
         android:theme="@style/ThemeOverlay.Standard"
         android:requestLegacyExternalStorage="true"
         android:usesCleartextTraffic="true"
@@ -61,7 +61,7 @@
 
         <!-- Main activity -->
         <activity
-            android:name=".activity.LauncherActivitySearchable"
+            android:name="Lightning.Launcher"
             android:configChanges="density|keyboard|keyboardHidden|navigation|orientation|screenLayout|screenSize|uiMode"
             android:windowSoftInputMode="adjustNothing"
             android:resizeableActivity="true"
@@ -71,6 +71,7 @@
             android:launchMode="singleInstance"
             android:theme="@style/ThemeOverlay.Standard">
 
+            <meta-data android:name="com.oculus.vrdesktop.control_bar_config" android:value="{'with_back_button':false}"/>
             <meta-data android:name="com.oculus.vrshell.supports_blend_effects" android:value="true" />
             <meta-data android:name="com.oculus.vrshell.background_color_for_dark_theme"
                 android:value="#FF25292E" />

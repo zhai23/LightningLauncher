@@ -28,6 +28,8 @@ import com.threethan.launchercore.util.Launch;
 import com.threethan.launchercore.util.Platform;
 
 import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * This abstract class is dedicated to actually launching apps.
@@ -103,7 +105,20 @@ public abstract class LaunchExt extends Launch {
         }
 
         final boolean customSize = SettingsManager.getAppLaunchSize(app.packageName) > 0;
-        if ((customSize || !PlatformExt.useVrOsChainLaunch())
+
+        if (PlatformExt.isOldVrOs() && !customSize) {
+            // Launching method for Quest 1
+            final App.Type appType = App.getType(app);
+            if (appType == App.Type.TV || appType == App.Type.PHONE) {
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                        Intent.FLAG_ACTIVITY_NEW_DOCUMENT |
+                        Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+                launchInOwnWindow(intent, launcherActivity, false);
+            } else {
+                launcherActivity.launcherService.forEachActivity(Activity::finishAndRemoveTask);
+                DelayLib.delayed(() -> startIntent(launcherActivity, intent), 650);
+            }
+        } else if ((customSize || !PlatformExt.useVrOsChainLaunch())
                 && !(app instanceof UtilityApplicationInfo)) {
             Intent chain = getIntentForLaunch(launcherActivity, app);
             assert chain != null;

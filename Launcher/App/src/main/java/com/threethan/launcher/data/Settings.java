@@ -47,7 +47,7 @@ public abstract class Settings {
             Color.parseColor("#f9ce9b"),
             Color.parseColor("#e4eac8"),
             Color.parseColor("#74575c"),
-            Color.parseColor("#202a36"),
+            Color.parseColor("#323232"),
             Color.parseColor("#c6d1df"),
             Color.parseColor("#140123"),
     };

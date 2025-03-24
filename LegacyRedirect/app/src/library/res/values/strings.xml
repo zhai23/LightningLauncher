@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Lightning Launcher (Library)</string>
+    <string name="service_name" translatable="false">Redirect App Library to Lightning Launcher (QUEST 1)</string>
+    <string name="service_desc">Enable this service using the switch up top to open Lightning Launcher when you hover over the &quot;App Library&quot; button on the dock. For Quest 1 on v50 only.</string>
+</resources>
