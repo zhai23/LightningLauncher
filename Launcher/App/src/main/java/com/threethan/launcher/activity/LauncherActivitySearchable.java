@@ -40,23 +40,19 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
         super.onCreate(savedInstanceState);
     }
     private boolean searching = false;
-    private boolean beenNonEmpty = false;
 
     protected void searchFor(String text) {
-        if (text.isEmpty()) {
-            if (beenNonEmpty) hideSearchBar();
-        } else {
-            Objects.requireNonNull(getAppAdapter()).filterBy(text);
-            updateTopSearchResult();
-            beenNonEmpty = true;
-        }
+        Objects.requireNonNull(getAppAdapter()).filterBy(text);
+        updateTopSearchResult();
     }
     Timer searchTimer = new Timer();
+    private boolean beenNonEmpty = false;
     protected void queueSearch(String text) {
         int delay;
         searchTimer.cancel();
         switch (text.length()) {
             case 0:
+                if (beenNonEmpty) hideSearchBar();
                 return;
             case 1:
                 delay = 600;
@@ -74,6 +70,7 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
                 delay = 100;
                 break;
         }
+        beenNonEmpty = true;
         searchTimer = new Timer();
         searchTimer.schedule(new TimerTask() {
             @Override
