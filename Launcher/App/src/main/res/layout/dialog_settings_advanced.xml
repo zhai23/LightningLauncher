@@ -66,22 +66,10 @@
                 android:id="@+id/longPressEditSwitch"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="5dp"
                 android:layout_weight="1"
                 android:foreground="@drawable/bkg_hover_button"
                 android:text="@string/long_press"
                 android:tooltipText="@string/long_press_tip"
-                tools:ignore="UnusedAttribute,UseSwitchCompatOrMaterialXml" />
-
-            <com.threethan.launchercore.view.LcSwitch
-                android:id="@+id/hideEmptySwitch"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_weight="1"
-                android:foreground="@drawable/bkg_hover_button"
-                android:text="@string/hide_empty"
-                android:tooltipText="@string/hide_empty_tip"
                 tools:ignore="UnusedAttribute,UseSwitchCompatOrMaterialXml" />
 
         </LinearLayout>

@@ -8,7 +8,6 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import com.threethan.launcher.activity.LauncherActivity;
-import com.threethan.launcher.activity.view.TunerStyleView;
 import com.threethan.launcher.data.Settings;
 import com.threethan.launcher.helper.AppExt;
 import com.threethan.launcher.helper.Compat;
@@ -295,8 +294,7 @@ public class SettingsManager extends Settings {
                 LauncherActivity.groupsEnabled || myLauncherActivityRef.get().isEditing()) {
 
             // Deselect hidden
-            if (myLauncherActivityRef.get() != null && !myLauncherActivityRef.get().isEditing()
-                    && dataStoreEditor.getBoolean(Settings.KEY_AUTO_HIDE_EMPTY, Settings.DEFAULT_AUTO_HIDE_EMPTY)) {
+            if (myLauncherActivityRef.get() != null && !myLauncherActivityRef.get().isEditing()) {
                 for (Object group : selectedGroupsSet.toArray()) {
                     if (!appGroupMap.containsValue((String) group))
                         selectedGroupsSet.remove((String) group);
@@ -338,8 +336,7 @@ public class SettingsManager extends Settings {
 
         sortedGroupList.remove(Settings.UNSUPPORTED_GROUP);
 
-        if (myLauncherActivityRef.get() != null && !myLauncherActivityRef.get().isEditing()
-                && dataStoreEditor.getBoolean(Settings.KEY_AUTO_HIDE_EMPTY, Settings.DEFAULT_AUTO_HIDE_EMPTY)) {
+        if (myLauncherActivityRef.get() != null && !myLauncherActivityRef.get().isEditing()) {
             for (Object group: sortedGroupList.toArray()) {
                 if (!appGroupMap.containsValue((String) group)) sortedGroupList.remove((String) group);
             }

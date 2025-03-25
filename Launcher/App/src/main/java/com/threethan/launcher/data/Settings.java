@@ -69,7 +69,6 @@ public abstract class Settings {
     public static final String KEY_DARK_MODE = "KEY_DARK_MODE";
     public static final String KEY_GROUPS_ENABLED = "KEY_GROUPS_ENABLED";
     public static final String KEY_DETAILS_LONG_PRESS = "KEY_DETAILS_LONG_PRESS";
-    public static final String KEY_AUTO_HIDE_EMPTY = "KEY_AUTO_HIDE_EMPTY";
     public static final String KEY_SEARCH_WEB = "KEY_SEARCH_WEB";
     public static final String KEY_SEARCH_HIDDEN = "KEY_SEARCH_HIDDEN";
     public static final int DEFAULT_BACKGROUND_VR = 0;
@@ -78,7 +77,6 @@ public abstract class Settings {
     public static final boolean DEFAULT_DARK_MODE = true;
     public static final boolean DEFAULT_GROUPS_ENABLED = true;
     public static boolean DEFAULT_DETAILS_LONG_PRESS = false;
-    public static final boolean DEFAULT_AUTO_HIDE_EMPTY = true;
     public static final boolean DEFAULT_SEARCH_WEB = true;
     public static final boolean DEFAULT_SEARCH_HIDDEN = true;
     public static final String CUSTOM_BACKGROUND_PATH = "background.png";
@@ -149,7 +147,7 @@ public abstract class Settings {
     }
 
     public static final int MAX_GROUPS = 20;
-    public static final int GROUP_WIDTH_DP = 225;
+    public static final int GROUP_WIDTH_DP = 150;
 
     public static final String HIDDEN_GROUP = "HIDDEN!";
     public static final String UNSUPPORTED_GROUP = "UNSUPPORTED!";
