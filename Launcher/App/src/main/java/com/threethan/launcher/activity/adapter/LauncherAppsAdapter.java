@@ -65,15 +65,16 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
         return launcherActivity.isEditing();
     }
     public LauncherAppsAdapter(LauncherActivity activity) {
+        setHasStableIds(true);
         launcherActivity = activity;
     }
+
     public void setFullAppSet(Set<ApplicationInfo> myApps) {
         fullAppSet = myApps;
     }
     public synchronized void setAppList(LauncherActivity activity) {
         SettingsManager settingsManager = SettingsManager.getInstance(activity);
         launcherActivity = activity;
-
         setItems(Collections.unmodifiableList(settingsManager
                 .getVisibleApps(settingsManager.getAppGroupsSorted(true), fullAppSet)));
     }
@@ -156,6 +157,7 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
     public ApplicationInfo getItem(int position) { return items.get(position); }
     private static LayoutInflater layoutInflater;
 
+
     /** @noinspection ClassEscapesDefinedScope*/
     @NonNull
     @Override
@@ -215,7 +217,7 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
         };
 
         holder.view.setOnHoverListener(hoverListener);
-        holder.view.setOnFocusChangeListener((view, hasFocus) -> updateAppFocus(holder, hasFocus, FocusSource.FOCUS));
+        holder.view.setOnFocusChangeListener((view, hasFocus) -> updateAppFocus(holder, hasFocus, FocusSource.CURSOR));
 
         // Sub-buttons
         if (!PlatformExt.isOldVrOs()) {
@@ -317,7 +319,7 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
 
     @Override
     public long getItemId(int position) {
-        return position;
+        return Objects.hashCode(getItem(position).packageName); // Assuming this is unique!
     }
 
     private void updateSelected(AppViewHolder holder) {
@@ -340,12 +342,12 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
         }
     }
     // Only one focused app is allowed per source at a time.
-    private enum FocusSource { CURSOR, FOCUS, SEARCH };
+    private enum FocusSource { CURSOR, SEARCH };
     private final Map<FocusSource, AppViewHolder> focusedHolderBySource = new HashMap<>();
     /** @noinspection ClassEscapesDefinedScope*/
-    public synchronized void updateAppFocus(AppViewHolder holder, boolean hovered, FocusSource source) {
+    public synchronized void updateAppFocus(AppViewHolder holder, boolean focused, FocusSource source) {
         // Handle focus sources
-        if (hovered) {
+        if (focused) {
             AppViewHolder prevHolder = focusedHolderBySource.getOrDefault(source, null);
             focusedHolderBySource.put(source, holder);
             // If not focused by another source, remove prev. hover
@@ -357,13 +359,13 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
             if (focusedHolderBySource.containsValue(holder)) return;
         }
 
-        if (holder.hovered == hovered) return;
+        if (holder.hovered == focused) return;
 
         if (!Platform.isTv())
-            holder.moreButton.setVisibility(hovered ? View.VISIBLE : View.INVISIBLE);
+            holder.moreButton.setVisibility(focused ? View.VISIBLE : View.INVISIBLE);
 
         if (!Platform.isTv() && LauncherActivity.timesBanner) {
-            if (hovered) {
+            if (focused) {
                 // Show and update view holder
                 holder.playtimeButton.setVisibility(Boolean.TRUE.equals(holder.banner)
                         && !holder.app.packageName.contains("://")
@@ -377,9 +379,9 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
             } else holder.playtimeButton.setVisibility(View.INVISIBLE);
         }
         final boolean tv = Platform.isTv();
-        final float newScaleInner = hovered ? (tv ? 1.055f : 1.050f) : 1.005f;
-        final float newScaleOuter = hovered ? (tv ? 1.270f : 1.085f) : 1.005f;
-        final float newElevation = hovered ? (tv ? 15f : 20f) : 3f;
+        final float newScaleInner = focused ? (tv ? 1.055f : 1.050f) : 1.005f;
+        final float newScaleOuter = focused ? (tv ? 1.270f : 1.085f) : 1.005f;
+        final float newElevation = focused ? (tv ? 15f : 20f) : 3f;
         final float textScale = 1-(1-(1/newScaleOuter))*0.7f;
         final int duration = tv ? 175 : 250;
         BaseInterpolator interpolator = Platform.isTv() ?
@@ -389,7 +391,7 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
                 .setDuration(duration).setInterpolator(interpolator).start();
         holder.view     .animate().scaleX(newScaleOuter).scaleY(newScaleOuter)
                 .setDuration(duration).setInterpolator(interpolator).start();
-        holder.moreButton.animate().alpha(hovered ? 1f : 0f)
+        holder.moreButton.animate().alpha(focused ? 1f : 0f)
                 .setDuration(duration).setInterpolator(interpolator).start();
         holder.textView .animate().scaleX(textScale).scaleY(textScale)
                 .setDuration(duration).setInterpolator(interpolator).start();
@@ -400,12 +402,12 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
 
         boolean banner = Boolean.TRUE.equals(holder.banner);
         if (banner && !LauncherActivity.namesBanner || !banner && !LauncherActivity.namesSquare)
-            holder.textView.setVisibility(hovered ? View.VISIBLE : View.INVISIBLE);
+            holder.textView.setVisibility(focused ? View.VISIBLE : View.INVISIBLE);
 
         holder.view.setActivated(true);
         // Force correct state, even if interrupted
         holder.view.postDelayed(() -> {
-            if (holder.hovered == hovered) {
+            if (holder.hovered == focused) {
                 holder.imageView.setScaleX(newScaleInner);
                 holder.imageView.setScaleY(newScaleInner);
                 holder.view.setScaleX(newScaleOuter);
@@ -415,8 +417,8 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
             }
         },  tv ? 200 : 300);
 
-        holder.view.setZ(hovered ? 2 : 1);
-        holder.hovered = hovered;
+        holder.view.setZ(focused ? 2 : 1);
+        holder.hovered = focused;
     }
     @Override
     public int getItemViewType(int position) {

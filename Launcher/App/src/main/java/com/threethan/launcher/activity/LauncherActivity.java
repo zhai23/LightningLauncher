@@ -210,6 +210,8 @@ public class LauncherActivity extends Launch.LaunchingActivity {
         topBar = mainView.findViewById(R.id.topBarLayout);
         mainView.addOnLayoutChangeListener(this::onLayoutChanged);
         appsView = rootView.findViewById(R.id.apps);
+        appsView.setItemAnimator(new CustomItemAnimator());
+
         groupsView = rootView.findViewById(R.id.groupsView);
 
         // Set logo button
@@ -502,7 +504,6 @@ public class LauncherActivity extends Launch.LaunchingActivity {
                     return Objects.requireNonNull(appsView.getAdapter()).getItemViewType(position);
                 }
             });
-            appsView.setItemAnimator(new CustomItemAnimator());
             appsView.setLayoutManager(gridLayoutManager);
         }
 
@@ -752,7 +753,6 @@ public class LauncherActivity extends Launch.LaunchingActivity {
     public void resetAdapters() {
         if (getAppAdapter() != null) {
             refreshAppList();
-            getAppAdapter().notifyDataSetChanged();
             getAppAdapter().notifyAllChanged();
         }
         if (getGroupAdapter() != null) getGroupAdapter().notifyDataSetChanged();
