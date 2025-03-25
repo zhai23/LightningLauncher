@@ -454,7 +454,6 @@ public class LauncherActivity extends Launch.LaunchingActivity {
             appsView.setItemViewCacheSize(512);
             appsView.setHasFixedSize(true);
             appsView.setAdapter(new LauncherAppsAdapter(this));
-            appsView.setItemAnimator(new CustomItemAnimator());
         } else {
             getAppAdapter().setAppList(this);
         }
@@ -503,6 +502,7 @@ public class LauncherActivity extends Launch.LaunchingActivity {
                     return Objects.requireNonNull(appsView.getAdapter()).getItemViewType(position);
                 }
             });
+            appsView.setItemAnimator(new CustomItemAnimator());
             appsView.setLayoutManager(gridLayoutManager);
         }
 

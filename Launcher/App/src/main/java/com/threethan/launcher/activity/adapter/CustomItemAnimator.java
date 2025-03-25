@@ -222,11 +222,13 @@ public class CustomItemAnimator extends SimpleItemAnimator {
 
                     @Override
                     public void onAnimationEnd(Animator animator) {
-                        animation.setListener(null);
-                        resetView(view);
-                        dispatchRemoveFinished(holder);
-                        mRemoveAnimations.remove(holder);
-                        dispatchFinishedWhenDone();
+                        try {
+                            animation.setListener(null);
+                            resetView(view);
+                            dispatchRemoveFinished(holder);
+                            mRemoveAnimations.remove(holder);
+                            dispatchFinishedWhenDone();
+                        } catch (Exception ignored) {}
                     }
                 }).start();
     }
@@ -260,10 +262,12 @@ public class CustomItemAnimator extends SimpleItemAnimator {
 
                     @Override
                     public void onAnimationEnd(Animator animator) {
-                        animation.setListener(null);
-                        dispatchAddFinished(holder);
-                        mAddAnimations.remove(holder);
-                        dispatchFinishedWhenDone();
+                        try {
+                            animation.setListener(null);
+                            dispatchAddFinished(holder);
+                            mAddAnimations.remove(holder);
+                            dispatchFinishedWhenDone();
+                        } catch (Exception ignored) {}
                     }
                 }).start();
     }
@@ -321,10 +325,12 @@ public class CustomItemAnimator extends SimpleItemAnimator {
 
             @Override
             public void onAnimationEnd(Animator animator) {
-                animation.setListener(null);
-                dispatchMoveFinished(holder);
-                mMoveAnimations.remove(holder);
-                dispatchFinishedWhenDone();
+                try {
+                    animation.setListener(null);
+                    dispatchMoveFinished(holder);
+                    mMoveAnimations.remove(holder);
+                    dispatchFinishedWhenDone();
+                } catch (Exception ignored) {}
             }
         }).start();
     }
@@ -376,13 +382,15 @@ public class CustomItemAnimator extends SimpleItemAnimator {
 
                 @Override
                 public void onAnimationEnd(Animator animator) {
-                    oldViewAnim.setListener(null);
-                    view.setAlpha(1);
-                    view.setTranslationX(0);
-                    view.setTranslationY(0);
-                    dispatchChangeFinished(changeInfo.oldHolder, true);
-                    mChangeAnimations.remove(changeInfo.oldHolder);
-                    dispatchFinishedWhenDone();
+                    try {
+                        oldViewAnim.setListener(null);
+                        view.setAlpha(1);
+                        view.setTranslationX(0);
+                        view.setTranslationY(0);
+                        dispatchChangeFinished(changeInfo.oldHolder, true);
+                        mChangeAnimations.remove(changeInfo.oldHolder);
+                        dispatchFinishedWhenDone();
+                    } catch (Exception ignored) {}
                 }
             }).start();
         }
@@ -397,12 +405,14 @@ public class CustomItemAnimator extends SimpleItemAnimator {
                         }
                         @Override
                         public void onAnimationEnd(Animator animator) {
-                            newViewAnimation.setListener(null);
-                            newView.setTranslationX(0);
-                            newView.setTranslationY(0);
-                            dispatchChangeFinished(changeInfo.newHolder, false);
-                            mChangeAnimations.remove(changeInfo.newHolder);
-                            dispatchFinishedWhenDone();
+                            try {
+                                newViewAnimation.setListener(null);
+                                newView.setTranslationX(0);
+                                newView.setTranslationY(0);
+                                dispatchChangeFinished(changeInfo.newHolder, false);
+                                mChangeAnimations.remove(changeInfo.newHolder);
+                                dispatchFinishedWhenDone();
+                            } catch (Exception ignored) {}
                         }
                     }).start();
         }

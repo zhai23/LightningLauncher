@@ -93,6 +93,7 @@ public abstract class Platform {
             "com.oculus.socialplatform",
             "com.oculus.systemactivities",
             "com.oculus.systempermissions",
+            "com.oculus.systemsearch",
             "com.oculus.systemutilities",
             "com.oculus.systemresource",
             "com.oculus.extrapermissions",
