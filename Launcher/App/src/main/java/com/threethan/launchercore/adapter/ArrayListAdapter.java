@@ -1,7 +1,5 @@
 package com.threethan.launchercore.adapter;
 
-import android.annotation.SuppressLint;
-
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
