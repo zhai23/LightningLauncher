@@ -46,7 +46,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *     The adapter for the main app grid.
@@ -342,7 +341,8 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
         }
     }
     // Only one focused app is allowed per source at a time.
-    private enum FocusSource { CURSOR, SEARCH };
+    private enum FocusSource { CURSOR, SEARCH }
+
     private final Map<FocusSource, AppViewHolder> focusedHolderBySource = new HashMap<>();
     /** @noinspection ClassEscapesDefinedScope*/
     public synchronized void updateAppFocus(AppViewHolder holder, boolean focused, FocusSource source) {
