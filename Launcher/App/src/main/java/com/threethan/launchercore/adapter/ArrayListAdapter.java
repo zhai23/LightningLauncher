@@ -33,7 +33,6 @@ public abstract class ArrayListAdapter<T, VH extends RecyclerView.ViewHolder> ex
      * notifyDataSetChanged()
      * @param newItems the new list of items
      */
-    @SuppressLint("NotifyDataSetChanged")
     public void setItems(List<T> newItems) {
         final Map<Integer, Integer> movedPrevByNew = new HashMap<>(); // to -> from
         for (Iterator<T> iterator = items.iterator(); iterator.hasNext();) {
@@ -67,7 +66,7 @@ public abstract class ArrayListAdapter<T, VH extends RecyclerView.ViewHolder> ex
         if (!items.equals(newItems)) {
             items.clear();
             items.addAll(newItems);
-            notifyDataSetChanged();
+            for (int i = 0; i < items.size(); i++) notifyItemChanged(i);
         }
     }
 

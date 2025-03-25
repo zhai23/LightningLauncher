@@ -336,6 +336,14 @@ public class CustomItemAnimator extends SimpleItemAnimator {
     }
 
     @Override
+    public boolean animatePersistence(@NonNull RecyclerView.ViewHolder viewHolder, @NonNull ItemHolderInfo preLayoutInfo, @NonNull ItemHolderInfo postLayoutInfo) {
+        try {
+            return super.animatePersistence(viewHolder, preLayoutInfo, postLayoutInfo);
+        } catch (Exception ignored) {}
+        return false;
+    }
+
+    @Override
     public boolean animateChange(RecyclerView.ViewHolder oldHolder, RecyclerView.ViewHolder newHolder,
                                  int fromX, int fromY, int toX, int toY) {
         if (oldHolder == newHolder) {
