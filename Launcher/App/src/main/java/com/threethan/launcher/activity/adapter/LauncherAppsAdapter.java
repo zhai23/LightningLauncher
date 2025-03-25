@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -26,13 +25,13 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.threethan.launcher.BuildConfig;
 import com.threethan.launcher.R;
 import com.threethan.launcher.activity.LauncherActivity;
 import com.threethan.launcher.activity.dialog.AppDetailsDialog;
 import com.threethan.launcher.activity.support.SettingsManager;
 import com.threethan.launcher.data.Settings;
 import com.threethan.launcher.helper.LaunchExt;
+import com.threethan.launcher.helper.PlatformExt;
 import com.threethan.launcher.helper.PlaytimeHelper;
 import com.threethan.launchercore.adapter.ArrayListAdapter;
 import com.threethan.launchercore.lib.ImageLib;
@@ -42,9 +41,12 @@ import com.threethan.launchercore.util.App;
 import com.threethan.launchercore.util.Platform;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *     The adapter for the main app grid.
@@ -137,6 +139,18 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
         public AppViewHolder(@NonNull View itemView) {
             super(itemView);
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof AppViewHolder that)) return false;
+            return Objects.equals(app.packageName, that.app.packageName);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hashCode(app.packageName);
+        }
     }
 
     public ApplicationInfo getItem(int position) { return items.get(position); }
@@ -196,17 +210,18 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
                     if (view != subView && subView != null && subView.isHovered()) return false;
                 hovered = false;
             } else return false;
-            updateHover(holder, hovered);
+            updateAppFocus(holder, hovered, FocusSource.CURSOR);
             return false;
         };
 
         holder.view.setOnHoverListener(hoverListener);
-        holder.view.setOnFocusChangeListener((view, hasFocus) -> updateHover(holder, hasFocus));
+        holder.view.setOnFocusChangeListener((view, hasFocus) -> updateAppFocus(holder, hasFocus, FocusSource.FOCUS));
 
         // Sub-buttons
-        holder.moreButton.setOnHoverListener(hoverListener);
-        holder.playtimeButton.setOnHoverListener(hoverListener);
-
+        if (!PlatformExt.isOldVrOs()) {
+            holder.moreButton.setOnHoverListener(hoverListener);
+            holder.playtimeButton.setOnHoverListener(hoverListener);
+        }
         // OnClickListener MUST be added after OnHoverListener, else un-clickable on Quest v50
         holder.moreButton.setOnClickListener(view
                 -> new AppDetailsDialog(launcherActivity, holder.app).show());
@@ -317,16 +332,33 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
         String cname = IconLoader.cacheName(holder.app);
         if (launcherActivity.currentTopSearchResultName != null
                 && Objects.equals(launcherActivity.currentTopSearchResultName, cname)) {
-            updateHover(holder, true);
+            updateAppFocus(holder, true, FocusSource.SEARCH);
             launcherActivity.currentTopSearchResultName = null;
         } else if (launcherActivity.prevTopSearchResultNames.contains(cname)) {
-            updateHover(holder, false);
+            updateAppFocus(holder, false, FocusSource.SEARCH);
             launcherActivity.prevTopSearchResultNames.remove(cname);
         }
     }
+    // Only one focused app is allowed per source at a time.
+    private enum FocusSource { CURSOR, FOCUS, SEARCH };
+    private final Map<FocusSource, AppViewHolder> focusedHolderBySource = new HashMap<>();
     /** @noinspection ClassEscapesDefinedScope*/
-    public void updateHover(AppViewHolder holder, boolean hovered) {
+    public synchronized void updateAppFocus(AppViewHolder holder, boolean hovered, FocusSource source) {
+        // Handle focus sources
+        if (hovered) {
+            AppViewHolder prevHolder = focusedHolderBySource.getOrDefault(source, null);
+            focusedHolderBySource.put(source, holder);
+            // If not focused by another source, remove prev. hover
+            if (!focusedHolderBySource.containsValue(prevHolder) && prevHolder != null)
+                updateAppFocus(prevHolder, false, source);
+        } else if (focusedHolderBySource.containsValue(holder)) {
+            focusedHolderBySource.remove(source);
+            // Return early if focused by another source
+            if (focusedHolderBySource.containsValue(holder)) return;
+        }
+
         if (holder.hovered == hovered) return;
+
         if (!Platform.isTv())
             holder.moreButton.setVisibility(hovered ? View.VISIBLE : View.INVISIBLE);
 
@@ -372,16 +404,17 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
 
         holder.view.setActivated(true);
         // Force correct state, even if interrupted
-        if (!hovered) {
-            holder.view.postDelayed(() -> {
+        holder.view.postDelayed(() -> {
+            if (holder.hovered == hovered) {
                 holder.imageView.setScaleX(newScaleInner);
                 holder.imageView.setScaleY(newScaleInner);
                 holder.view.setScaleX(newScaleOuter);
                 holder.view.setScaleY(newScaleOuter);
                 holder.clip.setElevation(newElevation);
                 holder.view.setActivated(false);
-            }, tv ? 175 : 250);
-        }
+            }
+        },  tv ? 200 : 300);
+
         holder.view.setZ(hovered ? 2 : 1);
         holder.hovered = hovered;
     }
