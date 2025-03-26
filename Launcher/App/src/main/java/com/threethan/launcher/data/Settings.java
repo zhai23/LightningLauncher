@@ -150,7 +150,7 @@ public abstract class Settings {
 
     public static final int MAX_GROUPS = 20;
     public static final int GROUP_WIDTH_DP = 150;
-    public static final int GROUP_WIDTH_DP_WIDE = 250;
+    public static final int GROUP_WIDTH_DP_WIDE = 300;
 
     public static final String HIDDEN_GROUP = "HIDDEN!";
     public static final String UNSUPPORTED_GROUP = "UNSUPPORTED!";
