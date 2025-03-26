@@ -78,7 +78,7 @@ public class QuestGameTuner {
         Intent intent = Core.context().getPackageManager().getLaunchIntentForPackage(PKG_NAME);
         if (intent == null) return;
         intent.putExtra("config", true);
-        LaunchExt.launchInOwnWindow(intent, LauncherActivity.getForegroundInstance(), true);
+        LaunchExt.launchInOwnWindow(intent, LauncherActivity.getForegroundInstance(), false);
     }
 
     /** (Tries) to apply tuning for an app with Quest Game Tuner. */
