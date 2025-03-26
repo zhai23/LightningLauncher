@@ -42,6 +42,9 @@
     <string name="settings_addons">Shortcuts</string>
     <string name="settings_addons_tip">Make Lightning Launcher easier to access.</string>
     <string name="settings_update">Download &amp; Install Latest Update</string>
+    <string name="settings_enable_updates">Notify me of New Updates</string>
+    <string name="settings_enable_updates_tip">Click to show notifications for new updates.
+    \n<i>You previously turned this off when skipping an update.</i></string>
 
     <string name="behavior_header">Behavior</string>
     <string name="background_header">Wallpaper &amp; Style</string>
@@ -66,6 +69,10 @@
     <string name="group_mode">Enable Groups</string>
     <string name="group_mode_tip">Turn this off to show all apps at once, without grouping.
         \nSearch and settings icons will also be hidden <i>(press back for settings)</i></string>
+    <string name="group_wide">Wider Group Buttons</string>
+    <string name="group_wide_tip">Widens group buttons to ensure longer names don\'t get cut off.
+        \nOnly noticeable when groups are enabled and there are many groups.</string>
+
     <string name="clear_cache">Reset All Icons</string>
     <string name="clear_labels">Reset Names</string>
     <string name="group_defaults_button">Default Groups</string>
@@ -220,6 +227,7 @@
     <string name="update_button">Continue</string>
     <string name="update_skip_button">Skip this Update</string>
     <string name="update_skip_toast">Skipped version</string>
+    <string name="update_skip_all_toast">All updates hidden</string>
 
     <string name="update_downloading_title">Downloading Latest Version of %s</string>
     <string name="update_downloading_content">You should get a prompt to install shortly.\n
@@ -231,12 +239,17 @@
     <string name="update_failed_content">Make sure you have a good internet connection and try again later.</string>
 
     <string name="update_skip_title">Skip updating to version %1$s?</string>
-    <string name="update_skip_content">You will not be notified about this update again.\n
-        \nKeep in mind that updates are highly recommended and may include important fixes.\n
-        \nIf you are avoiding this update because it causes issues, report your issues at github.com/threethan/Lightning Launcher\n
-        \n<b>You can still update later from the settings!</b></string>
-    <string name="update_skip_confirm_button">I Understand, Skip It</string>
-    <string name="update_skip_cancel_button">Just Dismiss</string>
+    <string name="update_skip_content"><b>Updates are highly recommended and may include important fixes.</b>
+        \n
+        \nIf you are avoiding this update because it causes issues, report your issues at github.com/threethan/LightningLauncher
+        \n<i>Please only report issues which occur on the most recent version.</i>
+        \n
+        \nTo prevent future popups, you can <i>Skip This Update</i> or <i>Skip All Updates</i>.
+        \n
+        \n<b>Regardless of your selection, you can update later from the settings.</b></string>
+    <string name="update_skip_all_button">Skip This &amp; Future Updates</string>
+    <string name="update_skip_confirm_button">Skip This Update</string>
+    <string name="update_skip_cancel_button">Dismiss</string>
 
     <string name="saved_settings">Saved configuration to</string>
     <string name="saved_settings_loading">Importing, please wait…</string>

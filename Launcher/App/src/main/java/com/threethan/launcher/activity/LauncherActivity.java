@@ -82,6 +82,7 @@ import eightbitlab.com.blurview.BlurView;
 public class LauncherActivity extends Launch.LaunchingActivity {
     public static Boolean darkMode = null;
     public static Boolean groupsEnabled = true;
+    private static Boolean groupsWide = false;
     public static boolean needsForceRefresh = false;
     RecyclerView appsView;
     public ApplicationInfo currentTopSearchResult = null;
@@ -422,6 +423,7 @@ public class LauncherActivity extends Launch.LaunchingActivity {
      */
     public void refreshInterface() {
         groupsEnabled = dataStoreEditor.getBoolean(Settings.KEY_GROUPS_ENABLED, Settings.DEFAULT_GROUPS_ENABLED);
+        groupsWide = dataStoreEditor.getBoolean(Settings.KEY_GROUPS_WIDE, Settings.DEFAULT_GROUPS_WIDE);
 
         refreshAdapters();
 
@@ -474,12 +476,14 @@ public class LauncherActivity extends Launch.LaunchingActivity {
         // Group rows and relevant values
         if (getGroupAdapter() != null && groupsEnabled) {
             if (prevViewWidth < 1) return;
-            final int group_columns =
-                    Math.min(getGroupAdapter().getCount(), prevViewWidth / dp(Settings.GROUP_WIDTH_DP));
+            final int targetWidth
+                    = dp(groupsWide ? Settings.GROUP_WIDTH_DP_WIDE : Settings.GROUP_WIDTH_DP);
+            final int groupCols
+                    = Math.min(getGroupAdapter().getCount(), prevViewWidth / targetWidth);
 
-            groupsView.setLayoutManager(new GridLayoutManager(this, Math.max(1,group_columns)));
+            groupsView.setLayoutManager(new GridLayoutManager(this, Math.max(1, groupCols)));
 
-            final int groupRows = (int) Math.ceil((double) getGroupAdapter().getCount() / group_columns);
+            final int groupRows = (int) Math.ceil((double) getGroupAdapter().getCount() / groupCols);
             groupHeight = dp(40) * groupRows;
 
             if (groupHeight > mainView.getMeasuredHeight() / 3) {

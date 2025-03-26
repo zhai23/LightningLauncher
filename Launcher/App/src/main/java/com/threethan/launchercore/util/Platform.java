@@ -77,11 +77,9 @@ public abstract class Platform {
         labelOverrides.put("systemux://events", "Events");
         labelOverrides.put("systemux://file-manager", "File Manager");
         labelOverrides.put("systemux://sharing", "Camera");
-        labelOverrides.put("com.oculus.gamingactivity", "Meta Quest Scoreboards");
-        labelOverrides.put("com.oculus.helpcenter", "Meta Quest Guide");
-        labelOverrides.put("com.android.settings", "Android Settings");
-        labelOverrides.put("com.oculus.tv", "Meta Quest TV");
         labelOverrides.put("builtin://apk-install", "APK Installer");
+        labelOverrides.put("com.oculus.tv", "Meta Quest TV");
+        labelOverrides.put("com.oculus.browser", "Browser");
     }
     static final Set<String> excludedPackageNames = Set.of(
             "android",
@@ -120,7 +118,8 @@ public abstract class Platform {
             "com.oculus.systemux",
             "com.android.metacam",
             "com.oculus.metacam",
-            "com.oculus.horizonmediaplayer"
+            "com.oculus.horizonmediaplayer",
+            "com.android.healthconnect.controller"
     );
 
     /**
