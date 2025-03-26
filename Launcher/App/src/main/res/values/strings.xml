@@ -68,10 +68,14 @@
     <string name="dark_mode_tip">If on, labels will appear white on a dark background.</string>
     <string name="group_mode">Enable Groups</string>
     <string name="group_mode_tip">Turn this off to show all apps at once, without grouping.
-        \nSearch and settings icons will also be hidden <i>(press back for settings)</i></string>
-    <string name="group_wide">Wider Group Buttons</string>
-    <string name="group_wide_tip">Widens group buttons to ensure longer names don\'t get cut off.
-        \nOnly noticeable when groups are enabled and there are many groups.</string>
+        \nSearch and settings icons will also be hidden.
+        \n
+        \n<i>Use the back button on your remote/controller to open Settings.</i></string>
+    <string name="group_wide">Wider Groups</string>
+    <string name="group_wide_tip">Increases the minimum width of group buttons,
+        \nensuring longer names don\'t get cut off.
+        \n
+        \n<i>Only noticeable when there are many groups.</i></string>
 
     <string name="clear_cache">Reset All Icons</string>
     <string name="clear_labels">Reset Names</string>
