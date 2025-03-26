@@ -39,6 +39,10 @@
     <string name="settings_addons">快捷方式设置</string>
     <string name="settings_addons_tip">使 Lightning Launcher 更易于访问。</string>
     <string name="settings_update">下载并安装最新更新</string>
+    <string name="settings_enable_updates">通知我新的更新</string>
+    <string name="settings_enable_updates_tip">单击可显示新更新的通知。
+\n<i>您之前在跳过更新时关闭了此功能。</i></string>
+
 
     <string name="behavior_header">行为</string>
     <string name="background_header">壁纸样式</string>
@@ -63,6 +67,10 @@
     <string name="group_mode">启用分组</string>
     <string name="group_mode_tip">关闭此功能可一次显示所有应用，而不进行分组。
         \n搜索和设置图标也将被隐藏<i>（按返回进行设置）</i></string>
+    <string name="group_wide">宽组按钮</string>
+    <string name="group_wide_tip">加宽组按钮以确保较长的名称不会被截断。
+\n 仅在启用组并且存在许多组时才会引人注目。</string>
+
     <string name="clear_cache">重置所有图标</string>
     <string name="clear_labels">重置所有标签</string>
     <string name="group_defaults_button">默认分组</string>
@@ -179,6 +187,7 @@
     <string name="update_button">继续</string>
     <string name="update_skip_button">跳过本次更新</string>
     <string name="update_skip_toast">跳过版本</string>
+    <string name="update_skip_all_toast">不再有更新通知</string>
 
     <string name="update_downloading_title">下载最新版本 (%s)</string>
     <string name="update_downloading_content">很快就会出现安装提示\n\n    \n如果你不小心将其删除、未授予权限或出现错误、\n    你可以从设置中再试一次。</string>
@@ -189,7 +198,8 @@
 
     <string name="update_skip_title">跳过更新到 %1$s 版本？</string>
     <string name="update_skip_content">您将不会再收到有关此更新的通知。\n\n        \n请记住，我们强烈建议进行更新，更新可能包括重要的修复。\n\n        \n如果你因该更新导致的问题而回避该更新，请在 github.com/threethan/Lightning Launcher 上报告你的问题。\n\n        \n你可以稍后从设置中更新！</string>
-    <string name="update_skip_confirm_button">我已了解，跳过</string>
+    <string name="update_skip_all_button">跳过未来的每个更新</string>
+    <string name="update_skip_confirm_button">跳过本次更新</string>
     <string name="update_skip_cancel_button">忽略</string>
 
     <string name="saved_settings">保存配置到</string>

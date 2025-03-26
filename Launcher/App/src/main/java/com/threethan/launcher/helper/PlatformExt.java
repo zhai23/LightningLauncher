@@ -2,7 +2,6 @@ package com.threethan.launcher.helper;
 
 import android.app.Activity;
 import android.content.pm.ApplicationInfo;
-import android.util.Log;
 
 import com.threethan.launcher.R;
 import com.threethan.launcher.activity.LauncherActivity;

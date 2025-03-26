@@ -23,7 +23,6 @@ import com.threethan.launcher.helper.PlatformExt;
 import com.threethan.launcher.helper.PlaytimeHelper;
 import com.threethan.launcher.helper.SettingsSaver;
 import com.threethan.launcher.updater.LauncherUpdater;
-import com.threethan.launchercore.lib.DelayLib;
 import com.threethan.launchercore.util.App;
 import com.threethan.launchercore.util.CustomDialog;
 import com.threethan.launchercore.util.Platform;
@@ -134,8 +133,21 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
         if (LauncherUpdater.isAppUpdateAvailable()) {
             View skippedUpdateButton = dialog.findViewById(R.id.updateButton);
             skippedUpdateButton.setVisibility(View.VISIBLE);
-            skippedUpdateButton.setOnClickListener((view) -> new LauncherUpdater(a).checkAppUpdateAndInstall());
+            skippedUpdateButton.setOnClickListener(v -> new LauncherUpdater(a).checkAppUpdateAndInstall());
         }
+        LauncherUpdater.getShouldNotifyUpdates(s -> {
+            if (!s) {
+                View notifyUpdatesButton = dialog.findViewById(R.id.notifyUpdateButton);
+                notifyUpdatesButton.post(() -> {
+                    notifyUpdatesButton.setVisibility(View.VISIBLE);
+                    notifyUpdatesButton.setOnClickListener(v -> {
+                        LauncherUpdater.setShouldNotifyUpdates(true);
+                        notifyUpdatesButton.setVisibility(View.GONE);
+                    });
+                });
+            }
+        });
+
 
         // Wallpaper and style
         Switch darkSwitch = dialog.findViewById(R.id.darkModeSwitch);
@@ -423,6 +435,14 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
                             .setTitle(R.string.warning)
                             .setMessage(R.string.hidden_groups_message)
                             .show();
+                    a.setEditMode(true);
+                    a.setEditMode(false);
+                }, false
+        );
+
+        attachSwitchToSetting(dialog.findViewById(R.id.groupWideSwitch),
+                Settings.KEY_GROUPS_WIDE, Settings.DEFAULT_GROUPS_WIDE,
+                value -> {
                     a.setEditMode(true);
                     a.setEditMode(false);
                 }, false

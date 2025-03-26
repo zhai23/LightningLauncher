@@ -61,16 +61,40 @@
             android:paddingTop="5dp"
             android:text="@string/behavior_header" />
 
-        <com.threethan.launchercore.view.LcButton
-            android:id="@+id/updateButton"
-            style="@style/buttonHighlight"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="39dp"
-            android:layout_marginBottom="10dp"
-            android:drawableEnd="@drawable/ic_update"
-            android:text="@string/settings_update"
-            android:visibility="gone"
-            tools:visibility="visible" />
+            android:layout_height="match_parent"
+            android:layout_marginEnd="-10dp"
+            android:orientation="horizontal">
+
+            <com.threethan.launchercore.view.LcButton
+                android:id="@+id/updateButton"
+                style="@style/buttonHighlight"
+                android:layout_width="0dp"
+                android:layout_height="39dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1"
+                android:drawableEnd="@drawable/ic_update"
+                android:drawablePadding="10dp"
+                android:ellipsize="start"
+                android:singleLine="true"
+                android:text="@string/settings_update"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <com.threethan.launchercore.view.LcButton
+                android:id="@+id/notifyUpdateButton"
+                android:layout_width="0dp"
+                android:layout_height="39dp"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1"
+                android:text="@string/settings_enable_updates"
+                android:tooltipText="@string/settings_enable_updates_tip"
+                android:visibility="gone"
+                tools:ignore="UnusedAttribute"
+                tools:visibility="visible" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
