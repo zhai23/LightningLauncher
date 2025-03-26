@@ -218,12 +218,6 @@ public class LauncherAppsAdapter extends ArrayListAdapter<ApplicationInfo, Launc
         holder.view.setOnHoverListener(hoverListener);
         holder.view.setOnFocusChangeListener((view, hasFocus) -> updateAppFocus(holder, hasFocus, FocusSource.CURSOR));
 
-        // Sub-buttons
-        if (!PlatformExt.isOldVrOs()) {
-            holder.moreButton.setOnHoverListener(hoverListener);
-            holder.playtimeButton.setOnHoverListener(hoverListener);
-        }
-        // OnClickListener MUST be added after OnHoverListener, else un-clickable on Quest v50
         holder.moreButton.setOnClickListener(view
                 -> new AppDetailsDialog(launcherActivity, holder.app).show());
         holder.playtimeButton.setOnClickListener(v

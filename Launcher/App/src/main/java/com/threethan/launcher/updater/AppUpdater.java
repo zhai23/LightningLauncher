@@ -14,6 +14,7 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.threethan.launcher.activity.dialog.BasicDialog;
+import com.threethan.launcher.activity.support.DataStoreEditor;
 import com.threethan.launchercore.lib.FileLib;
 import com.threethan.launcher.R;
 import com.threethan.launchercore.util.CustomDialog;
@@ -86,7 +87,7 @@ public abstract class AppUpdater extends RemotePackageUpdater {
      * @param currentVersion Current launcher version name
      * @param newVersion New launcher version name
      */
-    private void showAppUpdateDialog(String currentVersion, String newVersion) {
+    protected void showAppUpdateDialog(String currentVersion, String newVersion) {
         if (hasUpdateDialog) return;
         try {
             new CustomDialog.Builder(activity)
@@ -211,18 +212,8 @@ public abstract class AppUpdater extends RemotePackageUpdater {
      * @param versionTag Github release tag of the update to skip
      */
     public void skipAppUpdate(String versionTag) {
-        new CustomDialog.Builder(activity)
-            .setTitle(activity.getString(R.string.update_skip_title, versionTag))
-            .setMessage(R.string.update_skip_content)
-            .setPositiveButton(R.string.update_skip_confirm_button, (dialog, i) -> {
-                putIgnoredUpdateTag(versionTag);
-                BasicDialog.toast(activity.getString(R.string.update_skip_toast), versionTag, false);
-                dialog.dismiss();
-            })
-            .setNegativeButton(R.string.update_skip_cancel_button, ((dialog, i) -> dialog.dismiss()))
-            .show();
+        putIgnoredUpdateTag(versionTag);
     }
-
 
     /**
      * Stores the ignored update version tag
