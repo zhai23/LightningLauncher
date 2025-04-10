@@ -1,7 +1,6 @@
 package com.threethan.launcher.activity;
 
 import android.animation.ObjectAnimator;
-import android.content.pm.ApplicationInfo;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -15,7 +14,6 @@ import com.threethan.launcher.R;
 import com.threethan.launcher.activity.view.EditTextWatched;
 import com.threethan.launcher.helper.LaunchExt;
 import com.threethan.launchercore.Core;
-import com.threethan.launchercore.metadata.IconLoader;
 import com.threethan.launchercore.util.Keyboard;
 
 import java.util.Objects;
@@ -43,7 +41,6 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
 
     protected void searchFor(String text) {
         Objects.requireNonNull(getAppAdapter()).filterBy(text);
-        updateTopSearchResult();
     }
     Timer searchTimer = new Timer();
     private boolean beenNonEmpty = false;
@@ -86,7 +83,6 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
     void showSearchBar() {
         beenNonEmpty = false;
         try {
-            clearTopSearchResult();
             searching = true;
 
             ObjectAnimator alphaIn = ObjectAnimator.ofFloat(searchBar, "alpha", 1f);
@@ -139,9 +135,9 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
             searchBar.setScaleY(0.5F);
             topBar.postDelayed(this::fixState, 500);
             refreshAdapters();
+            searchFor("");
 
         } catch (NullPointerException ignored) {}
-        clearTopSearchResult();
 
     }
     protected void fixState() {
@@ -200,13 +196,10 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
             if (event.getAction() == KeyEvent.ACTION_UP &&
             keyCode == KeyEvent.KEYCODE_ENTER) {
                 // Launch the first visible icon when enter is pressed
-                updateTopSearchResult();
-                if (currentTopSearchResult != null) try {
+                if (getAppAdapter() != null && getAppAdapter().getTopSearchResult() != null) {
                     Keyboard.hide(this, searchBg);
-                    LaunchExt.launchApp(this, currentTopSearchResult);
+                    LaunchExt.launchApp(this, getAppAdapter().getTopSearchResult());
                     return true;
-                } catch (Exception ignored) {
-                    return false;
                 }
             }
             return false;
@@ -215,42 +208,14 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
         searchText.setOnFocusChangeListener((view, hasFocus) -> {
             if (hasFocus && searching) {
                 Keyboard.show(this);
-                updateTopSearchResult();
             } else {
                 Keyboard.hide(this, mainView);
-                clearTopSearchResult();
             }
         });
 
         findViewById(R.id.searchCancelIcon).setOnClickListener(v -> hideSearchBar());
 
         searching = false;
-    }
-    private void
-    updateTopSearchResult() {
-        EditTextWatched searchText = findViewById(R.id.searchText);
-        if (searchText == null) clearTopSearchResult();
-        else if (searchText.getText().toString().isEmpty()) clearTopSearchResult();
-        else {
-            // Highlight top result
-            if (getAppAdapter() != null && getAppAdapter().getItemCount() > 0)
-                changeTopSearchResult(getAppAdapter().getItem(0));
-            else clearTopSearchResult();
-        }
-    }
-    private void clearTopSearchResult() {
-        if (currentTopSearchResult == null) return;
-        ApplicationInfo prevTopSearchResult = currentTopSearchResult;
-        prevTopSearchResultNames.add(IconLoader.cacheName(currentTopSearchResult));
-        currentTopSearchResult = null;
-        currentTopSearchResultName = null;
-        Objects.requireNonNull(getAppAdapter()).notifyItemChanged(prevTopSearchResult);
-    }
-    private void changeTopSearchResult(ApplicationInfo topRes) {
-        clearTopSearchResult();
-        currentTopSearchResult = topRes;
-        currentTopSearchResultName = IconLoader.cacheName(topRes);
-        Objects.requireNonNull(getAppAdapter()).notifyItemChanged(topRes);
     }
 
     /** @noinspection deprecation*/

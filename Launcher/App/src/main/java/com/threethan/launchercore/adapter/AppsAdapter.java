@@ -66,9 +66,9 @@ public class AppsAdapter<VH extends AppsAdapter.AppViewHolder>
 
     public AppsAdapter(int itemLayoutResId, @Nullable App.Type showOnly) {
         super(DIFF_CALLBACK);
+        setHasStableIds(true);
         this.showOnly = showOnly;
         this.itemLayoutResId = itemLayoutResId;
-        setHasStableIds(true);
         instances.add(this);
     }
     @Override
@@ -183,33 +183,29 @@ public class AppsAdapter<VH extends AppsAdapter.AppViewHolder>
     public void onBindViewHolder(@NonNull VH holder, int position) {
         ApplicationInfo app = getItem(position);
         holder.app = app;
-        holder.whenReady(() ->
+        holder.whenReady(() -> executorService.submit(() -> {
 
-                executorService.submit(() -> {
+            final Boolean darkMode = LauncherActivity.darkMode;
+            if (!darkMode.equals(holder.darkMode)) {
+                holder.textView.setTextColor(darkMode ? Color.WHITE : Color.BLACK);
+                holder.textView.setShadowLayer(6, 0, 0,
+                        LauncherActivity.darkMode ? Color.BLACK : Color.WHITE);
+                holder.darkMode = darkMode;
+            }
+
             //noinspection WrapperTypeMayBePrimitive
             final Boolean banner = App.isBanner(app);
             if (banner != holder.banner) {
-                holder.banner = banner;
-
                 if (holder.imageView.getLayoutParams() instanceof ConstraintLayout.LayoutParams clp) {
                     clp.dimensionRatio = banner ? "16:9" : "1:1";
+                    holder.banner = banner;
                 }
-            }
-            final Boolean darkMode = LauncherActivity.darkMode;
-            if (!darkMode.equals(holder.darkMode)) {
-                holder.darkMode = darkMode;
-                holder.textView.post(() -> {
-                    holder.textView.setTextColor(darkMode ? Color.WHITE : Color.BLACK);
-                    holder.textView.setShadowLayer(6, 0, 0,
-                            LauncherActivity.darkMode ? Color.BLACK : Color.WHITE);
-                });
             }
             //noinspection WrapperTypeMayBePrimitive
             final Boolean showName = banner
                     ? LauncherActivity.namesBanner : LauncherActivity.namesSquare;
             if (showName != holder.showName) {
-                holder.textView.post(()
-                        -> holder.textView.setVisibility(showName ? View.VISIBLE : View.GONE));
+                holder.textView.setVisibility(showName ? View.VISIBLE : View.GONE);
                 holder.showName = showName;
             }
 
@@ -230,16 +226,19 @@ public class AppsAdapter<VH extends AppsAdapter.AppViewHolder>
             }));
 
             holder.container.post(() -> holder.container.addView(holder.view));
+
+            onViewHolderReady(holder);
         }));
     }
 
+    protected void onViewHolderReady(VH holder) {}
+
     private static final ExecutorService executorService = Executors.newWorkStealingPool();
-    private static final ExecutorService lpExecutorService = Executors.newSingleThreadExecutor();
     protected void onIconChanged(VH holder, Drawable icon) {
         // Set the actual image with proper scaling
         if (icon instanceof BitmapDrawable bitmapIcon) {
 
-            lpExecutorService.submit(() -> {
+            executorService.submit(() -> {
                 Bitmap bitmap = bitmapIcon.getBitmap();
                 holder.imageView.post(() -> holder.imageView.setImageBitmap(bitmap));
             });

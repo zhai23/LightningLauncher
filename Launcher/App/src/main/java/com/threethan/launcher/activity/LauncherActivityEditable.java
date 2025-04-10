@@ -88,14 +88,14 @@ public class LauncherActivityEditable extends LauncherActivity {
         final View editFooter = rootView.findViewById(R.id.editFooter);
         if (editMode) {
             // Edit bar theming and actions
-            editFooter.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#00000000")));
+            editFooter.setBackgroundTintList(ColorStateList.valueOf(Color.TRANSPARENT));
 
             final TextView selectionHintText = rootView.findViewById(R.id.selectionHintText);
             final ImageView uninstallButton = rootView.findViewById(R.id.uninstallBulk);
 
             for (TextView textView: new TextView[]{selectionHintText, rootView.findViewById(R.id.addWebsite), rootView.findViewById(R.id.stopEditing)}) {
                 textView.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(darkMode ? "#80000000" : "#FFFFFF")));
-                textView.setTextColor(Color.parseColor(darkMode ? "#FFFFFF" : "#000000"));
+                textView.setTextColor(darkMode ? Color.WHITE : Color.BLACK);
             }
             selectionHintText  .setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(darkMode ? "#80000000" : "#FFFFFF")));
             uninstallButton.setImageTintList(ColorStateList.valueOf(Color.parseColor(darkMode ? "#FFFFFF" : "#3a3a3c")));
