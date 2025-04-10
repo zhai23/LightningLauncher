@@ -12,6 +12,7 @@ import com.threethan.launcher.data.Settings;
 import com.threethan.launcher.helper.AppExt;
 import com.threethan.launcher.helper.Compat;
 import com.threethan.launcher.helper.PlatformExt;
+import com.threethan.launcher.helper.QuestGameTuner;
 import com.threethan.launchercore.Core;
 import com.threethan.launchercore.lib.StringLib;
 import com.threethan.launchercore.metadata.MetaMetadata;
@@ -69,7 +70,7 @@ public class SettingsManager extends Settings {
         dataStoreEditorSort = new DataStoreEditor(activity.getApplicationContext(), "sort");
 
         if (forcedBannerApps.isEmpty())
-            forcedBannerApps.addAll(dataStoreEditor.getStringSet(KEY_FORCED_BANNER, Set.of()));
+            forcedBannerApps.addAll(dataStoreEditor.getStringSet(KEY_FORCED_BANNER, Set.of(QuestGameTuner.PKG_NAME)));
 
         if (forcedSquareApps.isEmpty())
             forcedSquareApps.addAll(dataStoreEditor.getStringSet(KEY_FORCED_SQUARE, Set.of()));

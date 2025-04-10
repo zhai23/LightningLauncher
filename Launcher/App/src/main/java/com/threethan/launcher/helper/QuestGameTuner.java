@@ -13,10 +13,12 @@ import androidx.annotation.Nullable;
 
 import com.threethan.launcher.R;
 import com.threethan.launcher.activity.LauncherActivity;
+import com.threethan.launcher.activity.chainload.ChainLoadActivity;
 import com.threethan.launcher.activity.dialog.BasicDialog;
 import com.threethan.launcher.activity.view.ViewFlinger;
 import com.threethan.launchercore.Core;
 import com.threethan.launchercore.util.App;
+import com.threethan.launchercore.util.Platform;
 
 import java.util.Random;
 
@@ -37,16 +39,24 @@ public class QuestGameTuner {
             intent.setComponent(new ComponentName("com.threethan.tuner",
                     "com.threethan.tuner.dialog.DialogActivity"));
             intent.setAction("com.threethan.tuning.DIALOG");
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.setData(Uri.parse(APP_TUNING_URI));
             intent.putExtra(Intent.EXTRA_PACKAGE_NAME, packageName);
-            try {
-                Core.context().startActivity(intent);
-            } catch (SecurityException ignored) {
-                launch();
-            }
+            tryStartActivity(intent);
         } else {
             openInfoDialog();
+        }
+    }
+
+    private static void tryStartActivity(Intent intent) {
+        try {
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            final LauncherActivity activity = LauncherActivity.getForegroundInstance();
+            if (activity != null && (Platform.getVrOsVersion() >= 74 || PlatformExt.isOldVrOs())) {
+                intent.setFlags(0);
+                activity.startActivityFromChild(activity, intent, 0);
+            } else Core.context().startActivity(intent);
+        } catch (SecurityException ignored) {
+            launch();
         }
     }
 
@@ -64,18 +74,13 @@ public class QuestGameTuner {
             intent.setComponent(new ComponentName("com.threethan.tuner",
                     "com.threethan.tuner.dialog.DialogActivity"));
             intent.setAction("com.threethan.tuning.DIALOG");
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.setData(Uri.parse(APP_USAGE_URI));
             intent.putExtra(Intent.EXTRA_PACKAGE_NAME, packageName);
 
             if (getVersionCode() < 150)
                 BasicDialog.toast("Update Quest Game Tuner");
             else
-                try {
-                    Core.context().startActivity(intent);
-                } catch (SecurityException ignored) {
-                    launch();
-                }
+                tryStartActivity(intent);
         } else {
             openInfoDialog();
         }
@@ -91,7 +96,8 @@ public class QuestGameTuner {
         Intent intent = Core.context().getPackageManager().getLaunchIntentForPackage(PKG_NAME);
         if (intent == null) return;
         intent.putExtra("config", true);
-        LaunchExt.launchInOwnWindow(intent, LauncherActivity.getForegroundInstance(), false);
+        LaunchExt.launchInOwnWindow(intent, LauncherActivity.getForegroundInstance(),
+                Platform.getVrOsVersion() < 74);
     }
 
     /** (Tries) to apply tuning for an app with Quest Game Tuner. */
