@@ -5,7 +5,7 @@
     <item android:state_selected="true" android:drawable="@drawable/bkg_button_highlight_hover" />
     <item android:state_enabled="false">
         <shape android:shape="rectangle" >
-            <corners android:radius="25dp" />
+            <corners android:radius="?attr/buttonCornerRadius"/>
             <solid android:color="#50FFFFFF" />
 
             <padding android:bottom="7dp" android:left="7dp" android:right="7dp" android:top="7dp" />
@@ -14,7 +14,7 @@
     </item>
     <item>
         <shape android:shape="rectangle" >
-            <corners android:radius="25dp" />
+            <corners android:radius="?attr/buttonCornerRadius"/>
             <solid android:color="#FFFFFF" />
 
             <padding android:bottom="7dp" android:left="7dp" android:right="7dp" android:top="7dp" />
