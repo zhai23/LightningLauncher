@@ -73,6 +73,8 @@
                 android:focusable="false"
                 android:focusableInTouchMode="false"
                 android:text="--:--"
+                android:textColor="@android:color/white"
+                android:fontFamily="@font/sansserif"
                 android:layout_gravity="start|end"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -84,6 +86,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
+        android:fontFamily="@font/sansserif"
         android:id="@+id/itemLabel"
         android:layout_width="match_parent"
         android:layout_height="35sp"

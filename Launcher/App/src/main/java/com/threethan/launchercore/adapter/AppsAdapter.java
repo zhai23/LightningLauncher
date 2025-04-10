@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.threethan.launcher.activity.LauncherActivity;
+import com.threethan.launchercore.Core;
 import com.threethan.launchercore.metadata.IconLoader;
 import com.threethan.launchercore.util.App;
 import com.threethan.launcher.R;
@@ -146,16 +147,15 @@ public class AppsAdapter<VH extends AppsAdapter.AppViewHolder>
         }
     }
 
+    private final AsyncLayoutInflater inflater = new AsyncLayoutInflater(Core.context());
+
     @NonNull
     @Override
     public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        ViewGroup container = new LcContainerView(parent.getContext());
+        ViewGroup container = new LcContainerView(parent.getContext().getApplicationContext());
         VH holder = newViewHolder(container);
         holder.container = container;
-
-        AsyncLayoutInflater inflater = new AsyncLayoutInflater(parent.getContext());
-
 
         inflater.inflate(itemLayoutResId, parent,
                 (view, resId, parent1) -> {
