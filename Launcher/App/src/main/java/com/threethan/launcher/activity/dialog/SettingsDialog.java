@@ -83,6 +83,7 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
 
         // Addons
         View addonsButton = dialog.findViewById(R.id.addonsButton);
+        if (!Platform.isVr() && !Platform.isTv()) addonsButton.setVisibility(View.GONE);
         addonsButton.setOnClickListener(view -> new AddonDialog(a).show());
         if (!a.dataStoreEditor.getBoolean(Settings.KEY_SEEN_ADDONS, false)) {
             View addonsButtonAttract = dialog.findViewById(R.id.addonsButtonAttract);
@@ -406,7 +407,7 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
 
                 final Switch bSwitch = switchByType.get(type);
                 if (bSwitch == null) continue;
-                bSwitch.setChecked(AppExt.typeIsBanner(type));
+                bSwitch.setChecked(SettingsManager.isTypeBanner(type));
                 bSwitch.setOnCheckedChangeListener((switchView, value) -> {
                     SettingsManager.setTypeBanner(type, value);
                     a.launcherService.forEachActivity(LauncherActivity::resetAdapters);
@@ -521,7 +522,7 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
         for (App.Type type : PlatformExt.getSupportedAppTypes()) {
             builder.append(AppExt.getTypeString(a, type))
                     .append(" : ")
-                    .append(AppExt.getDefaultGroupFor(type))
+                    .append(SettingsManager.getDefaultGroupFor(type))
                     .append("\n");
         }
 
@@ -546,7 +547,7 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
                 for (App.Type type : PlatformExt.getSupportedAppTypes()) {
                     builder2.append(AppExt.getTypeString(a, type))
                             .append(" : ")
-                            .append(AppExt.getDefaultGroupFor(type))
+                            .append(SettingsManager.getDefaultGroupFor(type))
                             .append("\n");
                 }
 

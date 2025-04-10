@@ -54,7 +54,8 @@ public class AddonDialog extends BasicDialog<LauncherActivity> {
         View addonAndroidTv = dialog.findViewById(R.id.addonAndroidTv);
         if (addonAndroidTv!=null) updateAddonButton(a, addonAndroidTv, AddonUpdater.TAG_ATV_LM);
 
-        dialog.findViewById(R.id.addToDockButton).setOnClickListener(v -> showDockDialog());
+        View addDockButton = dialog.findViewById(R.id.addToDockButton);
+        if (addDockButton != null) addDockButton.setOnClickListener(v -> showDockDialog());
         dialog.findViewById(R.id.exitButton).setOnClickListener(v -> dialog.dismiss());
 
         if (PlatformExt.isOldVrOs()) {

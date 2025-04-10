@@ -33,9 +33,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.threethan.launcher.LauncherService;
 import com.threethan.launcher.R;
-import com.threethan.launcher.activity.adapter.CustomItemAnimator;
 import com.threethan.launcher.activity.adapter.GroupsAdapter;
 import com.threethan.launcher.activity.adapter.LauncherAppsAdapter;
+import com.threethan.launcher.activity.adapter.LauncherGridLayoutManager;
 import com.threethan.launcher.activity.dialog.AppDetailsDialog;
 import com.threethan.launcher.activity.dialog.SettingsDialog;
 import com.threethan.launcher.activity.executor.WallpaperExecutor;
@@ -161,23 +161,22 @@ public class LauncherActivity extends Launch.LaunchingActivity {
         final boolean hasView = launcherService.checkForExistingView();
 
         if (hasView) startWithExistingView();
-        else         startWithNewView();
+        else startWithNewView();
 
-        LauncherAppsAdapter.shouldAnimateClose = false;
-        LauncherAppsAdapter.animateClose(this);
+
     }
     protected void startWithNewView() {
-        Log.v(TAG, "Starting with new view");
+        Log.v(TAG, "Startup 0: Starting with new view");
         ViewGroup containerView = findViewById(R.id.container);
-        rootView = launcherService.getNewView(this, containerView);
+        launcherService.getNewView(this, containerView, view -> {
+            rootView = view;
+            init();
+            Compat.checkCompatibilityUpdate(this);
 
-        init();
-        Compat.checkCompatibilityUpdate(this);
-
-        refreshBackground();
-        refreshPackages();
-        refreshAppList();
-        refreshInterface();
+            refreshBackground();
+            refreshAppList();
+            refreshInterface();
+        });
     }
     protected void startWithExistingView() {
         Log.v(TAG, "Starting with existing view");
@@ -209,10 +208,11 @@ public class LauncherActivity extends Launch.LaunchingActivity {
 
         mainView = rootView.findViewById(R.id.mainLayout);
         topBar = mainView.findViewById(R.id.topBarLayout);
+
         mainView.addOnLayoutChangeListener(this::onLayoutChanged);
         appsView = rootView.findViewById(R.id.apps);
-        appsView.setItemAnimator(new CustomItemAnimator());
-
+        appsView.setHasFixedSize(true);
+        appsView.setItemViewCacheSize(512);
         groupsView = rootView.findViewById(R.id.groupsView);
 
         // Set logo button
@@ -329,7 +329,11 @@ public class LauncherActivity extends Launch.LaunchingActivity {
      * and then the resulting app list for every activity.
      */
     public void refreshPackages() {
-        if (PlatformExt.installedApps == null || needsForceRefresh) forceRefreshPackages();
+        Log.v(TAG, "Refreshing Package List");
+        if (PlatformExt.installedApps == null || needsForceRefresh) {
+            forceRefreshPackages();
+            return;
+        }
         refreshPackagesService.execute(() -> {
             PackageManager packageManager = getPackageManager();
 
@@ -351,6 +355,8 @@ public class LauncherActivity extends Launch.LaunchingActivity {
         });
     }
     public void forceRefreshPackages() {
+        Log.v(TAG, "Package Refresh - Forced");
+
         needsForceRefresh = false;
         PackageManager packageManager = getPackageManager();
         refreshPackagesInternal(Collections.synchronizedList(
@@ -359,7 +365,7 @@ public class LauncherActivity extends Launch.LaunchingActivity {
     private void refreshPackagesInternal(List<ApplicationInfo> newApps) {
         PlatformExt.installedApps = newApps;
 
-        Log.v(TAG, "Package Reload - Found "+ PlatformExt.installedApps.size() +" packages");
+        Log.v(TAG, "Package reload - Found "+ PlatformExt.installedApps.size() +" packages");
         AppExt.invalidateCaches();
 
         launcherService.forEachActivity(LauncherActivity::refreshAppList);
@@ -422,6 +428,8 @@ public class LauncherActivity extends Launch.LaunchingActivity {
      * It is extended further by child classes
      */
     public void refreshInterface() {
+        Log.v(TAG, "Refreshing interface (incl. Adapters)");
+
         groupsEnabled = dataStoreEditor.getBoolean(Settings.KEY_GROUPS_ENABLED, Settings.DEFAULT_GROUPS_ENABLED);
         groupsWide = dataStoreEditor.getBoolean(Settings.KEY_GROUPS_WIDE, Settings.DEFAULT_GROUPS_WIDE);
 
@@ -440,12 +448,14 @@ public class LauncherActivity extends Launch.LaunchingActivity {
      * Includes a call to updateGridLayouts();
      */
     public void refreshAdapters() {
+        Log.v("REFREHS", "ADAPTERS0");
+
         prevViewWidth = -1;
 
-        if (darkMode == null     ) darkMode      =
-                dataStoreEditor.getBoolean(Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE);
-        if (groupsEnabled == null) groupsEnabled =
-                dataStoreEditor.getBoolean(Settings.KEY_GROUPS_ENABLED, Settings.DEFAULT_GROUPS_ENABLED);
+        darkMode = dataStoreEditor
+                .getBoolean(Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE);
+        groupsEnabled = dataStoreEditor
+                .getBoolean(Settings.KEY_GROUPS_ENABLED, Settings.DEFAULT_GROUPS_ENABLED);
 
         namesSquare = dataStoreEditor
                 .getBoolean(Settings.KEY_SHOW_NAMES_SQUARE, Settings.DEFAULT_SHOW_NAMES_SQUARE);
@@ -455,8 +465,6 @@ public class LauncherActivity extends Launch.LaunchingActivity {
                 .getBoolean(Settings.KEY_SHOW_TIMES_BANNER, Settings.DEFAULT_SHOW_TIMES_BANNER);
 
         if (getAppAdapter() == null) {
-            appsView.setItemViewCacheSize(512);
-            appsView.setHasFixedSize(true);
             appsView.setAdapter(new LauncherAppsAdapter(this));
         } else {
             getAppAdapter().setAppList(this);
@@ -464,6 +472,9 @@ public class LauncherActivity extends Launch.LaunchingActivity {
         groupsView.setAdapter(new GroupsAdapter(this, isEditing()));
 
         updateGridLayouts();
+
+        Log.v("REFREHS", "ADAPTERSD");
+
     }
 
     /**
@@ -481,7 +492,7 @@ public class LauncherActivity extends Launch.LaunchingActivity {
             final int groupCols
                     = Math.min(getGroupAdapter().getCount(), prevViewWidth / targetWidth);
 
-            groupsView.setLayoutManager(new GridLayoutManager(this, Math.max(1, groupCols)));
+            groupsView.setLayoutManager(new LauncherGridLayoutManager(this, Math.max(1, groupCols)));
 
             final int groupRows = (int) Math.ceil((double) getGroupAdapter().getCount() / groupCols);
             groupHeight = dp(40) * groupRows;
@@ -508,6 +519,7 @@ public class LauncherActivity extends Launch.LaunchingActivity {
                     return Objects.requireNonNull(appsView.getAdapter()).getItemViewType(position);
                 }
             });
+            gridLayoutManager.setItemPrefetchEnabled(true);
             appsView.setLayoutManager(gridLayoutManager);
         }
 
@@ -636,9 +648,11 @@ public class LauncherActivity extends Launch.LaunchingActivity {
      * Used to update the actual content of app list used to the main app grid
      */
     public void refreshAppList() {
-        if (PlatformExt.installedApps == null) postDelayed(this::refreshAppList, 1000);
+        if (PlatformExt.installedApps == null) {
+            refreshPackages();
+            return;
+        }
 
-        refreshPackages();
         refreshAdapters();
 
         if (getAppAdapter() != null) {

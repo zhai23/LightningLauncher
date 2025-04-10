@@ -157,8 +157,10 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
     public void refreshInterface() {
         searching = false;
 
-        hideSearchBar();
-        fixState();
+        if (searchBar.getVisibility() == View.VISIBLE) {
+            hideSearchBar();
+            fixState();
+        }
         super.refreshInterface();
     }
 

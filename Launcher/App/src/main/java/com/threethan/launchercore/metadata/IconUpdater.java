@@ -67,7 +67,7 @@ public abstract class IconUpdater {
 
     // How many minutes before we can recheck an icon that hasn't downloaded
     private static final long ICON_CHECK_TIME_MINUTES = 5;
-    public static final ExecutorService executorService = Executors.newCachedThreadPool();
+    public static final ExecutorService executorService = Executors.newWorkStealingPool();
 
     /**
      * Check if an icon should be downloaded for a particular app

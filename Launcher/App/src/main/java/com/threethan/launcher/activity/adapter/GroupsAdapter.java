@@ -77,7 +77,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.GroupViewH
 
         holder.textView.setOnHoverListener((view, event) -> {
             if (event.getAction() == MotionEvent.ACTION_HOVER_ENTER)
-                holder.textView.setBackgroundResource(R.drawable.bkg_hover_button_bar_hovered);
+                holder.textView.setBackgroundResource(R.drawable.tab_hovered);
             else if (event.getAction() == MotionEvent.ACTION_HOVER_EXIT)
                 holder.textView.setBackground(null);
             return false;

@@ -8,7 +8,6 @@ import android.widget.ImageView;
 import android.widget.Switch;
 
 import com.threethan.launcher.R;
-import com.threethan.launcher.helper.AppExt;
 import com.threethan.launcher.helper.PlatformExt;
 import com.threethan.launcher.data.Settings;
 import com.threethan.launcher.activity.LauncherActivity;
@@ -73,7 +72,7 @@ public class GroupDetailsDialog extends BasicDialog<LauncherActivity> {
 
                 @SuppressLint("UseSwitchCompatOrMaterialCode") final Switch cSwitch = switchByType.get(type);
                 if (cSwitch == null) continue;
-                cSwitch.setChecked(AppExt.getDefaultGroupFor(type).equals(groupName));
+                cSwitch.setChecked(SettingsManager.getDefaultGroupFor(type).equals(groupName));
                 cSwitch.setOnCheckedChangeListener((switchView, value) -> {
                     String newDefault = value ? groupName : Settings.FALLBACK_GROUPS.get(type);
                     if ((!value && groupName.equals(newDefault)) || !appGroupsSet.contains(newDefault))
@@ -97,10 +96,10 @@ public class GroupDetailsDialog extends BasicDialog<LauncherActivity> {
 
             // Move the default group when we rename
             for (App.Type type : PlatformExt.getSupportedAppTypes())
-                if (AppExt.getDefaultGroupFor(type).equals(groupName))
+                if (SettingsManager.getDefaultGroupFor(type).equals(groupName))
                     a.dataStoreEditor.putString(Settings.KEY_DEFAULT_GROUP + type, newGroupName);
 
-            if (newGroupName.length() > 0) {
+            if (!newGroupName.isEmpty()) {
                 appGroupsSet.remove(groupName);
                 appGroupsSet.add(newGroupName);
 

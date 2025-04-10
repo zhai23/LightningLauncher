@@ -7,20 +7,16 @@
     android:layout_height="match_parent"
     android:orientation="horizontal">
 
-    <androidx.core.widget.NestedScrollView
-        android:layout_height="match_parent"
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/apps"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:clipToPadding="false"
-        android:clipChildren="false">
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/apps"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:clipChildren="false"
-            android:overScrollMode="ifContentScrolls"
-            android:scrollbars="none" />
-    </androidx.core.widget.NestedScrollView>
+        android:clipChildren="false"
+        android:overScrollMode="never"
+        android:scrollbars="none" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/topBarLayout"
         android:layout_width="match_parent"

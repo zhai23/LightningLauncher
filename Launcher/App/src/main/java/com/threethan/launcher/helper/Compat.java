@@ -219,8 +219,8 @@ public abstract class Compat {
     public static void clearIcons(LauncherActivity launcherActivity) {
         Log.i(TAG, "Icons are being cleared");
         FileLib.delete(launcherActivity.getApplicationInfo().dataDir + IconLoader.ICON_CUSTOM_FOLDER);
-        for (String packageName : launcherActivity.getAllPackages())
-            launcherActivity.dataStoreEditor.removeBoolean(Settings.KEY_BANNER_OVERRIDE+packageName);
+        launcherActivity.dataStoreEditor.removeStringSet(Settings.KEY_FORCED_BANNER);
+        launcherActivity.dataStoreEditor.removeStringSet(Settings.KEY_FORCED_SQUARE);
         clearIconCache(launcherActivity);
     }
     // Clears all icons, except for custom icons, and sets them to be re-downloaded
