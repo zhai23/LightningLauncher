@@ -67,6 +67,13 @@ public class SettingsManager extends Settings {
         myLauncherActivityRef = new WeakReference<>(activity);
         dataStoreEditor = activity.dataStoreEditor;
         dataStoreEditorSort = new DataStoreEditor(activity.getApplicationContext(), "sort");
+
+        if (forcedBannerApps.isEmpty())
+            forcedBannerApps.addAll(dataStoreEditor.getStringSet(KEY_FORCED_BANNER, Set.of()));
+
+        if (forcedSquareApps.isEmpty())
+            forcedSquareApps.addAll(dataStoreEditor.getStringSet(KEY_FORCED_SQUARE, Set.of()));
+
         // Conditional defaults (hacky)
         Settings.DEFAULT_DETAILS_LONG_PRESS = Platform.isTv();
     }
@@ -127,7 +134,16 @@ public class SettingsManager extends Settings {
      * Gets the string which should be used to sort the given app
      */
     public static String getSortableAppLabel(ApplicationInfo app) {
-        return  (App.isBanner(app) ? "0" : "1") + StringLib.forSort(getAppLabel(app));
+        final String base = getAppLabel(app);
+        final boolean starred = StringLib.hasStar(base);
+        final boolean banner = SettingsManager.getAppIsBanner(app);
+
+        if (!starred && !banner) return base;
+
+        final char[] rv = new char[base.length() + 1];
+        rv[0] = banner ? starred ? '\0' : '\1' : '\2';
+        base.getChars(0, base.length(), rv, 1);
+        return new String(rv);
     }
 
     private static @Nullable String processAppLabel(ApplicationInfo app, String name) {
@@ -214,7 +230,8 @@ public class SettingsManager extends Settings {
      * @param allApps A collection of all apps
      * @return Apps which should be shown
      */
-    public List<ApplicationInfo> getVisibleApps(List<String> selectedGroups, Collection<ApplicationInfo> allApps) {
+    public List<ApplicationInfo>
+    getVisibleAppsSorted(List<String> selectedGroups, Collection<ApplicationInfo> allApps) {
         // Get list of installed apps
         ConcurrentHashMap<String, String> apps = getAppGroupMap();
 
@@ -229,7 +246,7 @@ public class SettingsManager extends Settings {
                 apps.put(app.packageName, Settings.UNSUPPORTED_GROUP);
             else if (!apps.containsKey(app.packageName) ||
                     Objects.equals(apps.get(app.packageName), Settings.UNSUPPORTED_GROUP)){
-                apps.put(app.packageName, AppExt.getDefaultGroupFor(AppExt.getType(app)));
+                apps.put(app.packageName, SettingsManager.getDefaultGroupFor(AppExt.getType(app)));
             }
         }
 
@@ -241,10 +258,9 @@ public class SettingsManager extends Settings {
                 -> !(apps.containsKey(app.packageName)
                 && selectedGroups.contains(apps.get(app.packageName))));
 
-        // Must be set here, else labels might async load during sort which causes crashes
+        // Must be set here, else labels might async load during sort which causes issues
         Map<ApplicationInfo, String> labels = new HashMap<>();
-        for (ApplicationInfo app : currentApps)
-            labels.put(app, SettingsManager.getSortableAppLabel(app));
+        currentApps.forEach(app -> labels.put(app, SettingsManager.getSortableAppLabel(app)));
 
         currentApps.sort(Comparator.comparing(labels::get));
         // Sort Done!
@@ -277,7 +293,7 @@ public class SettingsManager extends Settings {
     public static Set<String> getDefaultGroupsSet() {
         Set<String> defaultGroupsSet = new HashSet<>();
         for (App.Type type : PlatformExt.getSupportedAppTypes())
-            defaultGroupsSet.add(AppExt.getDefaultGroupFor(type));
+            defaultGroupsSet.add(SettingsManager.getDefaultGroupFor(type));
 
         return (defaultGroupsSet);
     }
@@ -326,7 +342,7 @@ public class SettingsManager extends Settings {
         if ((selected ? selectedGroupsSet : appGroupsSet).isEmpty()) readGroupsAndSort();
         ArrayList<String> sortedGroupList = new ArrayList<>(selected ? getSelectedGroups() : getAppGroups());
 
-        sortedGroupList.sort(Comparator.comparing(StringLib::forSort));
+        sortedGroupList.sort(Comparator.comparing(StringLib::withoutStar));
 
         // Move hidden group to end
         if (sortedGroupList.contains(Settings.HIDDEN_GROUP)) {
@@ -412,7 +428,7 @@ public class SettingsManager extends Settings {
             for (String pkg : appGroupMap.keySet()) {
                 Set<String> group = appListSetMap.get(appGroupMap.get(pkg));
                 if (group == null) group = appListSetMap.get(
-                        AppExt.getDefaultGroupFor(App.Type.PHONE));
+                        SettingsManager.getDefaultGroupFor(App.Type.PHONE));
                 if (group == null) {
                     Log.w("Group was null", pkg);
                     group = appListSetMap.get(HIDDEN_GROUP);
@@ -517,22 +533,32 @@ public class SettingsManager extends Settings {
 
         LauncherActivity la = LauncherActivity.getForegroundInstance();
         if (la != null) {
-            for (String pkgName : la.getAllPackages())
-                if (App.getType(pkgName).equals(type))
-                    la.dataStoreEditor.removeBoolean(Settings.KEY_BANNER_OVERRIDE + pkgName);
+            la.dataStoreEditor.removeStringSet(Settings.KEY_FORCED_SQUARE);
+            la.dataStoreEditor.removeStringSet(Settings.KEY_FORCED_BANNER);
             Compat.clearIconCache(la);
         }
     }
 
+    private static final Set<String> forcedBannerApps = new HashSet<>();
+    private static final Set<String> forcedSquareApps = new HashSet<>();
     /** Sets a specific app to use banner or icon display, regardless of type */
     public static void setAppBannerOverride(ApplicationInfo app, boolean isBanner) {
-        String key = Settings.KEY_BANNER_OVERRIDE + app.packageName;
-        if (AppExt.isBanner(app) == isBanner) dataStoreEditor.removeBoolean(key);
-        else dataStoreEditor.putBoolean(key, isBanner);
+        if (isBanner) {
+            forcedBannerApps.add(app.packageName);
+            forcedSquareApps.remove(app.packageName);
+        } else {
+            forcedBannerApps.remove(app.packageName);
+            forcedSquareApps.add(app.packageName);
+        }
+        dataStoreEditor.putStringSet(KEY_FORCED_SQUARE, forcedSquareApps);
+        dataStoreEditor.putStringSet(KEY_FORCED_BANNER, forcedBannerApps);
     }
     /** Call getAppOverridesBanner first! @return True, if the app overrides & is a banner */
     public static boolean getAppIsBanner(ApplicationInfo app) {
-        return dataStoreEditor.getBoolean(Settings.KEY_BANNER_OVERRIDE + app.packageName,
-                app.packageName.startsWith("com.threethan") || AppExt.typeIsBanner(AppExt.getType(app)));
+        if (SettingsManager.isTypeBanner(AppExt.getType(app))) {
+            return !forcedSquareApps.contains(app.packageName);
+        } else {
+            return forcedBannerApps.contains(app.packageName);
+        }
     }
  }

@@ -169,7 +169,7 @@ public class AppDetailsDialog extends BasicDialog<LauncherActivity> {
         final View hideButton = dialog.findViewById(R.id.hide);
         String unhideGroup = SettingsManager.getAppGroupMap().get(app.packageName);
         if (Objects.equals(unhideGroup, Settings.HIDDEN_GROUP))
-            unhideGroup = AppExt.getDefaultGroupFor(AppExt.getType(app));
+            unhideGroup = SettingsManager.getDefaultGroupFor(AppExt.getType(app));
         if (Objects.equals(unhideGroup, Settings.HIDDEN_GROUP))
             try {
                 unhideGroup = (String) SettingsManager.getAppGroups().toArray()[0];

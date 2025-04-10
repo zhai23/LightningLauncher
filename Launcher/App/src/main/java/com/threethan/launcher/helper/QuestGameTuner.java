@@ -40,7 +40,11 @@ public class QuestGameTuner {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.setData(Uri.parse(APP_TUNING_URI));
             intent.putExtra(Intent.EXTRA_PACKAGE_NAME, packageName);
-            Core.context().startActivity(intent);
+            try {
+                Core.context().startActivity(intent);
+            } catch (SecurityException ignored) {
+                launch();
+            }
         } else {
             openInfoDialog();
         }
@@ -67,10 +71,19 @@ public class QuestGameTuner {
             if (getVersionCode() < 150)
                 BasicDialog.toast("Update Quest Game Tuner");
             else
-                Core.context().startActivity(intent);
+                try {
+                    Core.context().startActivity(intent);
+                } catch (SecurityException ignored) {
+                    launch();
+                }
         } else {
             openInfoDialog();
         }
+    }
+
+    private static void launch() {
+        Intent li = Core.context().getPackageManager().getLaunchIntentForPackage(PKG_NAME);
+        if (li != null) LaunchExt.launchInOwnWindow(li, LauncherActivity.getForegroundInstance(), true);
     }
 
     /** Opens Quest Game Tuner to its options screen */

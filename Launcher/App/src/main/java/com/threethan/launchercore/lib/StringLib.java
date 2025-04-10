@@ -3,20 +3,17 @@ package com.threethan.launchercore.lib;
 
 /** @noinspection unused*/
 public class StringLib {
-    private static final String STAR = "★";
+    private static final char STAR = '★';
     public static String toggleStar(String in) {
-        if (hasStar(in)) return in.replace(STAR, "");
+        if (hasStar(in)) return in.substring(1);
         else return STAR + in;
     }
     public static boolean hasStar(String in) {
-        return in.startsWith(STAR);
+        return in.charAt(0) == STAR;
     }
     public static String withoutStar(String in) {
-        if (hasStar(in)) return in.replace(STAR, "");
+        if (hasStar(in)) return in.substring(1);
         else return in;
-    }
-    public static String forSort(String in) {
-        return in.toLowerCase().replace(STAR, " ");
     }
     public static String setStarred(String in, boolean starred) {
         in = in.trim();

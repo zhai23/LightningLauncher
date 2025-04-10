@@ -9,7 +9,6 @@ import android.net.Uri;
 
 import com.threethan.launcher.R;
 import com.threethan.launcher.activity.LauncherActivity;
-import com.threethan.launcher.activity.support.SettingsManager;
 import com.threethan.launcher.data.Settings;
 import com.threethan.launchercore.Core;
 import com.threethan.launchercore.util.App;
@@ -75,13 +74,6 @@ public abstract class AppExt extends App {
             case PANEL -> a.getString(R.string.apps_panel);
             default -> "Invalid type";
         };
-    }
-
-    public static String getDefaultGroupFor(Type type) {
-        return SettingsManager.getDefaultGroupFor(type);
-    }
-    public static boolean typeIsBanner(Type type) {
-        return SettingsManager.isTypeBanner(type);
     }
 
     public static boolean doesPackageExist(Activity activity, String packageName) {

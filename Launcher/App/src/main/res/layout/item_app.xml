@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/itemLaunch"
@@ -7,62 +8,64 @@
     android:layout_height="wrap_content"
     android:layout_gravity="top"
     android:clipToPadding="false"
+    android:clipChildren="false"
     android:descendantFocusability="blocksDescendants"
     android:focusable="true"
+
+    android:layerType="hardware"
+
     android:paddingBottom="13dp">
 
+
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/clip"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:layout_margin="20dp"
-        android:background="@drawable/bkg_app"
-        android:elevation="3dp"
         android:focusable="false"
-        android:foreground="@drawable/fg_app_dm"
         android:focusableInTouchMode="false">
 
-        <Button
-            android:id="@+id/moreButton"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_margin="3dp"
-            android:background="@drawable/ic_circ_more"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:visibility="invisible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
-            android:id="@+id/playtimeButton"
-            android:layout_width="50dp"
-            android:layout_height="25dp"
-            android:layout_margin="3dp"
-            android:background="@drawable/bkg_button_circle"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:text="--:--"
-            android:visibility="invisible"
-            app:layout_constraintEnd_toStartOf="@id/moreButton"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="HardcodedText" />
-
         <ImageView
-            android:id="@+id/itemIcon"
-            android:layout_width="0dp"
+            android:id="@+id/itemImage"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
             android:drawingCacheQuality="low"
             android:scaleType="centerCrop"
+            android:background="@drawable/bkg_app"
             android:scaleX="1"
             android:scaleY="1"
+            android:elevation="3dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <Button
+            android:id="@+id/moreButton"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:background="@drawable/ic_circ_more"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="invisible"
+            android:elevation="100dp"/>
+
+        <Button
+            android:id="@+id/playtimeButton"
+            android:layout_width="60dp"
+            android:layout_height="25dp"
+            android:background="@drawable/bkg_button_circle"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:text="--:--"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="invisible"
+            tools:ignore="HardcodedText"
+            android:elevation="100dp"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView

@@ -8,10 +8,10 @@ import android.util.Log;
 import com.threethan.launcher.activity.support.SettingsManager;
 import com.threethan.launchercore.Core;
 import com.threethan.launchercore.adapter.UtilityApplicationInfo;
-import com.threethan.launchercore.lib.StringLib;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
 /** @noinspection unused*/
 public abstract class App {
@@ -118,14 +118,13 @@ public abstract class App {
 
     /** @return The string label for an app */
     public static String getLabel(ApplicationInfo app) {
-        if (Platform.labelOverrides.containsKey(app.packageName))
-            return Platform.labelOverrides.get(app.packageName);
-        PackageManager pm = Core.context().getPackageManager();
-        return (String) pm.getApplicationLabel(app);
+        return SettingsManager.getAppLabel(app);
     }
-    /** @return The string label for an app, processed for sorting */
-    public static String getSortableAppLabel(ApplicationInfo app) {
-        return StringLib.forSort(getLabel(app));
+    private static final Map<String, String> mmdLabelCache = new ConcurrentHashMap<>();
+
+    /** Get the string label for an app async */
+    public static void getLabel(ApplicationInfo app, Consumer<String> onLabel) {
+        SettingsManager.getAppLabel(app, onLabel);
     }
     /** @noinspection unused*/
     public static boolean isBanner(ApplicationInfo app) {

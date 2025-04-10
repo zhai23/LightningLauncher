@@ -4,11 +4,13 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 
 import androidx.core.content.res.ResourcesCompat;
 
+import com.bumptech.glide.Glide;
 import com.threethan.launchercore.Core;
 import com.threethan.launchercore.adapter.UtilityApplicationInfo;
 import com.threethan.launchercore.lib.ImageLib;
@@ -63,8 +65,8 @@ public abstract class IconLoader {
 
     private static void loadIcon(Consumer<Drawable> callback, ApplicationInfo app) {
         // Everything in the try will still attempt to download an icon
+        Drawable appIcon = null;
         try {
-            Drawable appIcon = null;
             // Try to load from external custom icon file
             final File iconCustomFile = iconCustomFileForApp(app);
             if (iconCustomFile.exists())
@@ -73,6 +75,7 @@ public abstract class IconLoader {
                 callback.accept(appIcon);
                 return;
             }
+
             // Try to load from cached icon file
             final File iconCacheFile = iconCacheFileForApp(app);
 
@@ -99,7 +102,16 @@ public abstract class IconLoader {
         } finally {
             // Attempt to download the icon for this app from an online repo
             // Done AFTER saving the drawable version to prevent a race condition)
-            IconUpdater.check(app, callback);
+            Drawable oldIcon = appIcon;
+            IconUpdater.check(app, icon -> {
+                // Callback again only if icon has changed
+                if (oldIcon instanceof BitmapDrawable oldBmp && icon instanceof BitmapDrawable newBmp) {
+                    if (!ImageLib.isIdenticalFast(oldBmp.getBitmap(), newBmp.getBitmap()))
+                        callback.accept(icon);
+                } else {
+                    callback.accept(icon);
+                }
+            });
         }
     }
 

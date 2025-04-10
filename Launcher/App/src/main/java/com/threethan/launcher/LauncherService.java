@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
+import androidx.asynclayoutinflater.view.AsyncLayoutInflater;
 import androidx.core.util.Consumer;
 
 import com.threethan.launcher.activity.LauncherActivity;
@@ -49,16 +50,17 @@ public class LauncherService extends Service {
      * Creates an returns a new view which can be used as the main view for the launcher
      * @param activity The activity calling this
      * @param root The viewgroup the view will be added to
-     * @return The view itself
      */
-    public View getNewView(LauncherActivity activity, ViewGroup root) {
+    public void getNewView(LauncherActivity activity, ViewGroup root, Consumer<View> onReady) {
         if (!isObservingInstallations) observeInstallations(activity);
         final int index = getNewActivityIndex();
 
-        View view = View.inflate(activity, R.layout.activity_main, root);
-        viewByIndex.put(index, view);
-        activityByIndex.put(activity, index);
-        return view;
+        new AsyncLayoutInflater(activity).inflate(R.layout.activity_main, root, (view, resId, parent) -> {
+            viewByIndex.put(index, view);
+            activityByIndex.put(activity, index);
+            root.addView(view);
+            onReady.accept(view);
+        });
     }
 
     private void observeInstallations(Activity activity) {

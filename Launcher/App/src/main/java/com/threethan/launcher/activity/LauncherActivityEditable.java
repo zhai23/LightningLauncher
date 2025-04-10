@@ -273,7 +273,7 @@ public class LauncherActivityEditable extends LauncherActivity {
         String group;
         final ArrayList<String> appGroupsSorted = settingsManager.getAppGroupsSorted(true);
         if (!appGroupsSorted.isEmpty()) group = appGroupsSorted.get(0);
-        else group = AppExt.getDefaultGroupFor(App.Type.PHONE);
+        else group = SettingsManager.getDefaultGroupFor(App.Type.PHONE);
 
         if (dialog == null) return;
 
