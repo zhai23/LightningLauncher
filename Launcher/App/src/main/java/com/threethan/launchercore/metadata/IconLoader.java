@@ -10,7 +10,6 @@ import android.util.Log;
 
 import androidx.core.content.res.ResourcesCompat;
 
-import com.bumptech.glide.Glide;
 import com.threethan.launchercore.Core;
 import com.threethan.launchercore.adapter.UtilityApplicationInfo;
 import com.threethan.launchercore.lib.ImageLib;

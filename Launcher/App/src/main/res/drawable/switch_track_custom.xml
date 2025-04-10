@@ -4,8 +4,7 @@
         <shape android:dither="true" android:shape="rectangle" android:useLevel="false" android:visible="true">
             <corners android:radius="20dp" />
             <solid android:color="#FFF"/>
-            <size android:width="50dp" android:height="28dp" />
-            <stroke android:width="2dp" android:color="#2AAA"/>
+            <size android:width="40dp" android:height="25dp" />
         </shape>
     </item>
     <item android:state_checked="false" android:state_enabled="true">
@@ -13,7 +12,6 @@
             <corners android:radius="20dp" />
             <solid android:color="#8000"/>
             <size android:width="50dp" android:height="28dp" />
-            <stroke android:width="2dp" android:color="#2CCC"/>
         </shape>
     </item>
     <item android:state_enabled="false">
@@ -21,7 +19,6 @@
             <corners android:radius="20dp" />
             <solid android:color="#5555"/>
             <size android:width="50dp" android:height="28dp" />
-            <stroke android:width="2dp" android:color="#1CCC"/>
         </shape>
     </item>
 </selector>

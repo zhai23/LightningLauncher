@@ -17,4 +17,7 @@
         <attr name="android:text" />
         <attr name="defaultTooltip" format="boolean"/>
     </declare-styleable>
+
+    <attr format="dimension" name="buttonCornerRadius"/>
+
 </resources>

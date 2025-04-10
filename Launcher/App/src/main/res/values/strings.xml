@@ -32,7 +32,7 @@
     <string name="apps_tv">TV Apps</string>
     <string name="apps_panel">Panel Apps</string>
     <string name="apps_web">Websites</string>
-    <string name="default_group">Use this as the default group for new:</string>
+    <string name="default_group">Use group as default for new:</string>
     <string name="app_name_icon">Below Icons</string>
     <string name="app_name_wide">Below Banners</string>
 
