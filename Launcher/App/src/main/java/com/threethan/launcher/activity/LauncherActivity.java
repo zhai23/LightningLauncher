@@ -85,9 +85,6 @@ public class LauncherActivity extends Launch.LaunchingActivity {
     private static Boolean groupsWide = false;
     public static boolean needsForceRefresh = false;
     RecyclerView appsView;
-    public ApplicationInfo currentTopSearchResult = null;
-    public String currentTopSearchResultName = null;
-    public Set<String> prevTopSearchResultNames = new HashSet<>();
     RecyclerView groupsView;
     public DataStoreEditor dataStoreEditor;
     public View mainView;
@@ -212,6 +209,7 @@ public class LauncherActivity extends Launch.LaunchingActivity {
         mainView.addOnLayoutChangeListener(this::onLayoutChanged);
         appsView = rootView.findViewById(R.id.apps);
         appsView.setHasFixedSize(true);
+        appsView.setItemAnimator(null);
         appsView.setItemViewCacheSize(512);
         groupsView = rootView.findViewById(R.id.groupsView);
 
@@ -448,8 +446,6 @@ public class LauncherActivity extends Launch.LaunchingActivity {
      * Includes a call to updateGridLayouts();
      */
     public void refreshAdapters() {
-        Log.v("REFREHS", "ADAPTERS0");
-
         prevViewWidth = -1;
 
         darkMode = dataStoreEditor
@@ -472,9 +468,6 @@ public class LauncherActivity extends Launch.LaunchingActivity {
         groupsView.setAdapter(new GroupsAdapter(this, isEditing()));
 
         updateGridLayouts();
-
-        Log.v("REFREHS", "ADAPTERSD");
-
     }
 
     /**

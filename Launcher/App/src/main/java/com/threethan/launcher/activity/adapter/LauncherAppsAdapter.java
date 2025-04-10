@@ -25,7 +25,6 @@ import com.threethan.launcher.helper.LaunchExt;
 import com.threethan.launcher.helper.PlaytimeHelper;
 import com.threethan.launchercore.adapter.AppsAdapter;
 import com.threethan.launchercore.lib.StringLib;
-import com.threethan.launchercore.metadata.IconLoader;
 import com.threethan.launchercore.util.Platform;
 
 import java.util.Collections;
@@ -48,6 +47,7 @@ import java.util.Set;
 public class LauncherAppsAdapter extends AppsAdapter<LauncherAppsAdapter.AppViewHolderExt> {
     private LauncherActivity launcherActivity;
     private Set<ApplicationInfo> fullAppSet;
+    protected ApplicationInfo topSearchResult = null;
 
     private boolean getEditMode() {
         return launcherActivity.isEditing();
@@ -64,14 +64,23 @@ public class LauncherAppsAdapter extends AppsAdapter<LauncherAppsAdapter.AppView
         SettingsManager settingsManager = SettingsManager.getInstance(activity);
         launcherActivity = activity;
 
+        topSearchResult = null;
         setFullItems(Collections.unmodifiableList(settingsManager
                 .getVisibleAppsSorted(settingsManager.getAppGroupsSorted(true), fullAppSet)));
     }
+
+
     public synchronized void filterBy(String text) {
+        if (text.isEmpty()) {
+            refresh();
+            return;
+        }
+
+        SettingsManager settingsManager = SettingsManager.getInstance(launcherActivity);
+
         boolean showHidden = !text.isEmpty() && launcherActivity.dataStoreEditor.getBoolean(
                 Settings.KEY_SEARCH_HIDDEN, Settings.DEFAULT_SEARCH_HIDDEN);
 
-        SettingsManager settingsManager = SettingsManager.getInstance(launcherActivity);
         final List<ApplicationInfo> newItems =
                 settingsManager.getVisibleAppsSorted(
                         settingsManager.getAppGroupsSorted(false),
@@ -107,10 +116,15 @@ public class LauncherAppsAdapter extends AppsAdapter<LauncherAppsAdapter.AppView
             newItems.add(apkMirrorProxy);
         }
 
-        setFullItems(newItems);
+        topSearchResult = newItems.get(0);
+        submitList(newItems, () -> notifyItemChanged(topSearchResult));
     }
     public void setLauncherActivity(LauncherActivity val) {
         launcherActivity = val;
+    }
+
+    public ApplicationInfo getTopSearchResult() {
+        return topSearchResult;
     }
 
     protected static class AppViewHolderExt extends AppsAdapter.AppViewHolder {
@@ -177,18 +191,16 @@ public class LauncherAppsAdapter extends AppsAdapter<LauncherAppsAdapter.AppView
 
         holder.view.findViewById(R.id.playtimeButton).setOnClickListener(v
                 -> PlaytimeHelper.openFor(holder.app.packageName));
+
+
     }
 
-    /** @noinspection ClassEscapesDefinedScope*/
     @Override
-    public void onBindViewHolder(@NonNull AppViewHolderExt holder, int position) {
-        super.onBindViewHolder(holder, position);
-
-        holder.whenReady(() -> {
-            if (!Platform.isTv())
-                holder.playtimeButton.post(() -> holder.playtimeButton.setText("--:--"));
-            updateSelected(holder);
-        });
+    protected void onViewHolderReady(AppViewHolderExt holder) {
+        super.onViewHolderReady(holder);
+        if (!Platform.isTv())
+            holder.playtimeButton.post(() -> holder.playtimeButton.setText("--:--"));
+        holder.view.post(() -> updateSelected(holder));
     }
 
     @Override
@@ -196,6 +208,7 @@ public class LauncherAppsAdapter extends AppsAdapter<LauncherAppsAdapter.AppView
         launcherActivity.runOnUiThread(() ->
                 Glide.with(holder.imageView.getContext())
                 .load(icon)
+                .centerCrop()
                 .into(holder.imageView));
 
     }
@@ -220,15 +233,11 @@ public class LauncherAppsAdapter extends AppsAdapter<LauncherAppsAdapter.AppView
             an.setDuration(150);
             an.start();
         }
+
         // Top search result
-        String cname = IconLoader.cacheName(holder.app);
-        if (launcherActivity.currentTopSearchResultName != null
-                && Objects.equals(launcherActivity.currentTopSearchResultName, cname)) {
+        if (topSearchResult != null && holder.app != null
+                && Objects.equals(topSearchResult.packageName, holder.app.packageName)) {
             updateAppFocus(holder, true, FocusSource.SEARCH);
-            launcherActivity.currentTopSearchResultName = null;
-        } else if (launcherActivity.prevTopSearchResultNames.contains(cname)) {
-            updateAppFocus(holder, false, FocusSource.SEARCH);
-            launcherActivity.prevTopSearchResultNames.remove(cname);
         }
     }
     // Only one focused app is allowed per source at a time.
@@ -300,7 +309,7 @@ public class LauncherAppsAdapter extends AppsAdapter<LauncherAppsAdapter.AppView
         holder.view.setActivated(true);
         // Force correct state, even if interrupted
         holder.view.postDelayed(() -> {
-            if (holder.hovered == focused) {
+            if (Objects.equals(focusedHolderBySource.get(source), holder)) {
                 holder.imageView.setScaleX(newScaleInner);
                 holder.imageView.setScaleY(newScaleInner);
                 holder.view.setScaleX(newScaleOuter);

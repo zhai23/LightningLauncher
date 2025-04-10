@@ -31,7 +31,6 @@
             android:id="@+id/itemImage"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:scaleType="centerCrop"
             android:background="@drawable/bkg_app"
             android:scaleX="1"
             android:scaleY="1"

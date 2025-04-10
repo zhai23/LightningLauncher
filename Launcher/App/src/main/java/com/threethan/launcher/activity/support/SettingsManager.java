@@ -240,12 +240,12 @@ public class SettingsManager extends Settings {
             return new ArrayList<>();
         }
 
-        // Sort into groups
+        // Sort unsorted apps if needed
         for (ApplicationInfo app : new ArrayList<>(allApps)) {
             if (App.getType(app) == App.Type.UNSUPPORTED)
                 apps.put(app.packageName, Settings.UNSUPPORTED_GROUP);
             else if (!apps.containsKey(app.packageName) ||
-                    Objects.equals(apps.get(app.packageName), Settings.UNSUPPORTED_GROUP)){
+                    Objects.equals(apps.get(app.packageName), Settings.UNSUPPORTED_GROUP)) {
                 apps.put(app.packageName, SettingsManager.getDefaultGroupFor(AppExt.getType(app)));
             }
         }
