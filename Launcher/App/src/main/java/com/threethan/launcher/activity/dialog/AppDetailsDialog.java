@@ -34,6 +34,8 @@ import com.threethan.launchercore.view.LcToolTipHelper;
 
 import java.io.File;
 import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Provides the dialog which appears when pressing the three-dots icon on an app,
@@ -167,27 +169,29 @@ public class AppDetailsDialog extends BasicDialog<LauncherActivity> {
         // Show/hide button
         final View showButton = dialog.findViewById(R.id.show);
         final View hideButton = dialog.findViewById(R.id.hide);
-        String unhideGroup = SettingsManager.getAppGroupMap().get(app.packageName);
-        if (Objects.equals(unhideGroup, Settings.HIDDEN_GROUP))
-            unhideGroup = SettingsManager.getDefaultGroupFor(AppExt.getType(app));
-        if (Objects.equals(unhideGroup, Settings.HIDDEN_GROUP))
+
+        AtomicReference<String> unhideGroup = new AtomicReference<>(Settings.HIDDEN_GROUP);
+        SettingsManager.getGroupAppsMap().entrySet().stream().filter(e ->
+                e.getValue().contains(app.packageName)).findFirst().ifPresent(e -> unhideGroup.set(e.getKey()));
+
+        if (Objects.equals(unhideGroup.get(), Settings.HIDDEN_GROUP))
+            unhideGroup.set(SettingsManager.getDefaultGroupFor(AppExt.getType(app)));
+        if (Objects.equals(unhideGroup.get(), Settings.HIDDEN_GROUP))
             try {
-                unhideGroup = (String) SettingsManager.getAppGroups().toArray()[0];
+                unhideGroup.set((String) SettingsManager.getAppGroups().toArray()[0]);
             } catch (AssertionError | IndexOutOfBoundsException ignored) {
-                unhideGroup = Settings.HIDDEN_GROUP;
+                unhideGroup.set(Settings.HIDDEN_GROUP);
                 BasicDialog.toast("Could not find a group to unhide app to!");
             }
-        String finalUnhideGroup = unhideGroup;
+        String finalUnhideGroup = unhideGroup.get();
 
-        boolean amHidden = Objects.equals(SettingsManager.getAppGroupMap()
-                .get(app.packageName), Settings.HIDDEN_GROUP);
+        Set<String> hg = SettingsManager.getGroupAppsMap().get(SettingsManager.HIDDEN_GROUP);
+        boolean amHidden = hg != null && hg.contains(app.packageName);
         showButton.setVisibility( amHidden ? View.VISIBLE : View.GONE);
         hideButton.setVisibility(!amHidden ? View.VISIBLE : View.GONE);
         showButton.setOnClickListener(v -> {
-            a.settingsManager.setAppGroup(app.packageName,
-                    finalUnhideGroup);
-            boolean nowHidden = Objects.equals(SettingsManager.getAppGroupMap()
-                    .get(app.packageName), Settings.HIDDEN_GROUP);
+            a.settingsManager.setAppGroup(app.packageName, finalUnhideGroup);
+            boolean nowHidden = hg != null && hg.contains(app.packageName);
             showButton.setVisibility( nowHidden ? View.VISIBLE : View.GONE);
             hideButton.setVisibility(!nowHidden ? View.VISIBLE : View.GONE);
             BasicDialog.toast(a.getString(R.string.moved_shown), finalUnhideGroup, false);
@@ -195,10 +199,8 @@ public class AppDetailsDialog extends BasicDialog<LauncherActivity> {
 
         });
         hideButton.setOnClickListener(v -> {
-            a.settingsManager.setAppGroup(app.packageName,
-                    Settings.HIDDEN_GROUP);
-            boolean nowHidden = Objects.equals(SettingsManager.getAppGroupMap()
-                    .get(app.packageName), Settings.HIDDEN_GROUP);
+            a.settingsManager.setAppGroup(app.packageName, Settings.HIDDEN_GROUP);
+            boolean nowHidden = hg != null && hg.contains(app.packageName);
             showButton.setVisibility( nowHidden ? View.VISIBLE : View.GONE);
             hideButton.setVisibility(!nowHidden ? View.VISIBLE : View.GONE);
             BasicDialog.toast(a.getString(R.string.moved_hidden),

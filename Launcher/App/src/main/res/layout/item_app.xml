@@ -86,7 +86,6 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
-        android:fontFamily="@font/sansserif"
         android:id="@+id/itemLabel"
         android:layout_width="match_parent"
         android:layout_height="35sp"
@@ -98,8 +97,9 @@
         android:ellipsize="end"
         android:focusable="false"
         android:focusableInTouchMode="false"
+        android:fontFamily="@font/sansserif"
         android:gravity="center"
-        android:lineSpacingExtra="-2.5dp"
+        android:lineSpacingExtra="-5dp"
         android:maxLines="2"
         android:singleLine="false"
         android:textColor="@android:color/white"

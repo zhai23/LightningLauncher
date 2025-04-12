@@ -60,6 +60,10 @@ public class BasicDialog<T extends Context> extends AbstractDialog<T> {
         animator.start();
 
         dialog.show();
+
+        View dismissButton = dialog.findViewById(R.id.dismissButton);
+        if (dismissButton != null) dismissButton.setOnClickListener(view -> dialog.dismiss());
+
         return dialog;
     }
 
@@ -104,8 +108,7 @@ public class BasicDialog<T extends Context> extends AbstractDialog<T> {
         Context foregroundContext = LauncherActivity.getForegroundInstance();
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 foregroundContext != null ? foregroundContext : Core.context(),
-                array_res, R.layout.spinner_item);
-        adapter.setDropDownViewResource(R.layout.spinner_item_dropdown);
+                array_res, android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

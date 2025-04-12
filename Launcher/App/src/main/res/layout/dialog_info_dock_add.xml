@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <View
+        android:layout_width="406sp"
+        android:layout_height="0dp" />
+
+    <TextView
+        style="@style/SettingTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/addons_dock_title" />
+
+    <TextView
+        android:layout_marginTop="10dp"
+        style="@style/SettingSubtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/addons_dock_section_1_title" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autofillHints="text"
+        android:background="@drawable/lc_bkg_button_section"
+        android:alpha="0.8"
+        android:text="@string/addons_dock_section_1_content"
+        android:textColor="@android:color/white" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autofillHints="text"
+        android:gravity="center"
+        android:alpha="0.5"
+        android:text="@string/addons_dock_section_1_below"
+        android:textColor="@android:color/white" />
+    <TextView
+        style="@style/SettingSubtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/addons_dock_section_2_title" />
+
+    <TextView
+        android:background="@drawable/lc_bkg_button_section"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autofillHints="text"
+        android:alpha="0.8"
+        android:text="@string/addons_dock_section_2_content"
+        android:textColor="@android:color/white" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autofillHints="text"
+        android:gravity="center"
+        android:alpha="0.5"
+        android:text="@string/addons_dock_section_2_below"
+        android:textColor="@android:color/white" />
+
+    <com.threethan.launchercore.view.LcButton
+        android:layout_marginTop="10dp"
+        android:id="@+id/dismissButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/understood" />
+
+</LinearLayout>
