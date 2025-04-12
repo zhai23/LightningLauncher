@@ -213,7 +213,7 @@ public class SettingsManager extends Settings {
         return val;
     }
     public static int getDefaultBrowser() {
-        return dataStoreEditor.getInt(Settings.KEY_DEFAULT_BROWSER, 0);
+        return dataStoreEditor.getInt(Settings.KEY_DEFAULT_BROWSER, Platform.isQuest() ? 3 : 0);
     }
 
     public static ConcurrentHashMap<String, Set<String>> getGroupAppsMap() {

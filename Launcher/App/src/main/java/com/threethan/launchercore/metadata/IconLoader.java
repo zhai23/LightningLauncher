@@ -85,14 +85,14 @@ public abstract class IconLoader {
                 return;
             }
 
-            // Try to load from package manager
-            PackageManager packageManager = Core.context().getPackageManager();
-            Resources resources = packageManager.getResourcesForApplication(app);
-
             // Check Icon
             int iconId = app.icon;
             // Check AndroidTV banner
             if (app.banner != 0 && App.isBanner(app)) iconId = app.banner;
+
+            // Try to load from package manager
+            PackageManager packageManager = Core.context().getPackageManager();
+            Resources resources = packageManager.getResourcesForApplication(app);
 
             if (iconId == 0) iconId = android.R.drawable.sym_def_app_icon;
             appIcon = ResourcesCompat.getDrawable(resources, iconId, null);

@@ -69,7 +69,8 @@
             android:label="@string/app_name_for_list"
             android:exported="true"
             android:launchMode="singleInstance"
-            android:theme="@style/ThemeOverlay.Standard">
+            android:theme="@style/ThemeOverlay.Standard"
+            android:icon="@android:color/transparent">
 
             <meta-data android:name="com.oculus.vrdesktop.control_bar_config" android:value="{'with_back_button':false}"/>
             <meta-data android:name="com.oculus.vrshell.supports_blend_effects" android:value="true" />
@@ -82,11 +83,13 @@
 
             <meta-data android:name="com.oculus.vrshell.supports_multi_instance" android:value="true" />
             <meta-data android:name="com.oculus.lazy_gpumem_allocation" android:value="true" />
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.HOME"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER"/>
+                <category android:name="com.oculus.intent.category.2D"/>
                 <action android:name="android.intent.action.CREATE_SHORTCUT" />
                 <category android:name="android.intent.category.HOME"/>
                 <category android:name="android.intent.category.VR_HOME"/>
@@ -195,7 +198,12 @@
             </intent-filter>
         </activity>
 
-
+        <provider
+            android:name="com.threethan.launcher.activity.QuestAppMenuProvider"
+            android:exported="true"
+            android:authorities="com.threethan.launcher.appMenuProvider"
+            android:grantUriPermissions="true"
+            tools:ignore="ExportedContentProvider">
+        </provider>
     </application>
-
 </manifest>

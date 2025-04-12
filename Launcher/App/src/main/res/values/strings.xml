@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name" translatable="false">Lightning Launcher</string>
-    <string name="app_name_for_list" translatable="false"> ➜&nbsp;&nbsp;<u>Lightning</u> Launcher</string>
+    <string name="app_name_for_list" translatable="false"> ➜ <u>Lightning</u> Launcher</string>
     <string name="app_name_for_activity" translatable="false">Lightning Launcher</string>
     <string name="add_group">Add Group</string>
     <string name="delete_group">Delete Group</string>
