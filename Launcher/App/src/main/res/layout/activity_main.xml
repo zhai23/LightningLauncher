@@ -239,7 +239,6 @@
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
         android:visibility="gone"
-        app:blurOverlayColor="#4A000000"
         tools:visibility="visible">
 
         <LinearLayout
@@ -256,7 +255,6 @@
                 android:layout_weight="1"
                 android:background="@drawable/lc_bkg_button"
                 android:ellipsize="end"
-                android:foreground="@drawable/bkg_hover_button_bar"
                 android:gravity="center"
                 android:maxLines="2"
                 android:nextFocusRight="@id/uninstallBulk"
@@ -294,7 +292,6 @@
                 android:layout_weight="0.3"
                 android:background="@drawable/lc_bkg_button"
                 android:ellipsize="end"
-                android:foreground="@drawable/bkg_hover_button_bar"
                 android:gravity="center"
                 android:maxLines="2"
                 android:nextFocusLeft="@id/uninstallBulk"
@@ -315,7 +312,6 @@
                 android:layout_weight="0.3"
                 android:background="@drawable/lc_bkg_button"
                 android:ellipsize="end"
-                android:foreground="@drawable/bkg_hover_button_bar"
                 android:gravity="center"
                 android:maxLines="2"
                 android:paddingStart="15dp"

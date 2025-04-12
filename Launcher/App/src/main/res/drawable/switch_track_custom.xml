@@ -3,22 +3,22 @@
     <item android:state_checked="true" android:state_enabled="true">
         <shape android:dither="true" android:shape="rectangle" android:useLevel="false" android:visible="true">
             <corners android:radius="20dp" />
-            <solid android:color="#FFF"/>
-            <size android:width="40dp" android:height="25dp" />
+            <solid android:color="#00b800"/>
+            <size android:width="30dp" android:height="24dp" />
         </shape>
     </item>
     <item android:state_checked="false" android:state_enabled="true">
         <shape android:dither="true" android:shape="rectangle" android:useLevel="false" android:visible="true">
             <corners android:radius="20dp" />
-            <solid android:color="#8000"/>
-            <size android:width="50dp" android:height="28dp" />
+            <solid android:color="#050505"/>
+            <size android:width="30dp" android:height="24dp" />
         </shape>
     </item>
     <item android:state_enabled="false">
         <shape android:dither="true" android:shape="rectangle" android:useLevel="false" android:visible="true">
             <corners android:radius="20dp" />
             <solid android:color="#5555"/>
-            <size android:width="50dp" android:height="28dp" />
+            <size android:width="30dp" android:height="24dp" />
         </shape>
     </item>
 </selector>

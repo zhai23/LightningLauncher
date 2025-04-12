@@ -55,32 +55,32 @@
 
             <Button
                 android:id="@+id/moreButton"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_gravity="top|end"
                 android:background="@drawable/ic_circ_more"
                 android:focusable="false"
-                android:visibility="invisible"
                 android:focusableInTouchMode="false"
-                android:layout_gravity="top|end"
-                tools:visibility="visible"/>
+                android:visibility="invisible"
+                tools:visibility="visible" />
 
             <Button
                 android:id="@+id/playtimeButton"
-                android:layout_width="60dp"
-                android:layout_height="25dp"
-                android:layout_margin="5dp"
+                android:layout_width="55dp"
+                android:layout_height="23dp"
+                android:layout_gravity="start|end"
+                android:layout_margin="3dp"
                 android:background="@drawable/bkg_button_circle"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
+                android:fontFamily="@font/sansserif"
                 android:text="--:--"
                 android:textColor="@android:color/white"
-                android:fontFamily="@font/sansserif"
-                android:layout_gravity="start|end"
+                android:visibility="invisible"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:visibility="invisible"
-                tools:visibility="visible"
-                tools:ignore="HardcodedText"/>
+                tools:ignore="HardcodedText"
+                tools:visibility="visible" />
         </FrameLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -22,9 +22,9 @@
     <string name="allow_chain_launch_tip">Launches apps with a method similar to the Quest\'s default launcher.
         \nTurning this off will change how windows are organized, and could cause issues.</string>
 
-    <string name="icons_size">Scaling</string>
+    <string name="icons_size">Scale</string>
     <string name="icons_size_tip">Target size for icons/banners.\n<i>May vary with window size.</i></string>
-    <string name="icons_margin">Margins</string>
+    <string name="icons_margin">Margin</string>
     <string name="icons_margin_tip">Target spacing between icons/banners.\n<i>May vary with window size.</i></string>
 
     <string name="apps_vr">VR Apps</string>
@@ -33,8 +33,8 @@
     <string name="apps_panel">Panel Apps</string>
     <string name="apps_web">Websites</string>
     <string name="default_group">Use group as default for new:</string>
-    <string name="app_name_icon">Below Icons</string>
-    <string name="app_name_wide">Below Banners</string>
+    <string name="app_name_icon">Below App Icons</string>
+    <string name="app_name_wide">Below App Banners</string>
 
     <string name="settings_main">Lightning Launcher Settings</string>
     <string name="settings_appearance">Customize Appearance</string>
@@ -56,11 +56,11 @@
     <string name="advanced_button">Advanced Settings</string>
     <string name="refresh_button">Refresh</string>
     <string name="advanced_interface">Interface</string>
-    <string name="advanced_window">Window</string>
-    <string name="advanced_launching">Launching</string>
+    <string name="advanced_reset">Refresh &amp; Reset</string>
+    <string name="advanced_launching">Launch Preferences</string>
     <string name="advanced_features">Extra Features</string>
     <string name="advanced_search">Search Settings</string>
-    <string name="advanced_backup">Backup &amp; Restore</string>
+    <string name="advanced_backup">Settings Backup</string>
     <string name="advanced_alpha">Background Translucency</string>
     <string name="advanced_alpha_tip">Makes the background of Lightning Launcher translucent in passthrough.</string>
 
@@ -78,7 +78,7 @@
         \n<i>Only noticeable when there are many groups.</i></string>
 
     <string name="clear_cache">Reset All Icons</string>
-    <string name="clear_labels">Reset Names</string>
+    <string name="clear_labels">Reset All App Labels to Default</string>
     <string name="group_defaults_button">Default Groups</string>
     <string name="icons_settings_button">Refresh Icons</string>
 
@@ -139,7 +139,7 @@
         \nIf you have issues, turn this option off and make sure any apps are not set to launch in their own windows. Reboot to fix stuck windows.</string>
     <string name="hidden_groups_message">Turning this option off will hide the top bar when not in Edit Mode. \n
         \nThe settings button will also be hidden when not in Edit Mode.\n
-        \nInstead, <b>press the back button, <i>left-arrow at the top-left of the window,</i> to open settings.</b>
+        \nInstead, <b>press the back button to open settings.</b>
     </string>
     <string name="set_default_launcher_message">Setting Lightning Launcher as your default android home app will allow other apps to add shortcut icons to the home screen.
         \nThis only needs to be done once.\n
@@ -352,7 +352,7 @@
         \n<i>Quest OS updates sometimes break these!</i>
         \nYou must manually install, then activate each redirect individually.
     </string>
-    <string name="addons_preamble_dock">You can add Lighting Launcher to your dock directly.</string>
+    <string name="addons_preamble_dock">You may be able to add Lighting Launcher to your dock directly.</string>
     <string name="addons_dock_button">How to Add Lightning Launcher to the Dock</string>
     <string name="addons_dock_title">Adding Lightning Launcher to the dock</string>
     <string name="addons_dock_desc"><b>Remove an existing icon</b>

@@ -28,10 +28,9 @@
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="2dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginBottom="2dp"
+        android:layout_marginEnd="2dp"
         android:background="@drawable/ic_circ_more"
+        android:translationY="-1dp"
         android:visibility="gone"
         tools:visibility="visible" />
 

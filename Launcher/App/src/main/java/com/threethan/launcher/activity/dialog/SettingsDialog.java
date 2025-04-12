@@ -292,7 +292,9 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
 
         dialog.findViewById(R.id.dismissButton).setOnClickListener(view -> dialog.dismiss());
 
-        dialog.findViewById(R.id.questWindowSettings).setVisibility(Platform.isQuest() ? View.VISIBLE : View.GONE);
+        dialog.findViewById(R.id.alphaLayout)
+                .setVisibility(Platform.isQuest() ? View.VISIBLE : View.GONE);
+
         if (Platform.isQuest()) {
             SeekBar alpha = dialog.findViewById(R.id.alphaSeekBar);
             alpha.setProgress(255 - a.dataStoreEditor.getInt(Settings.KEY_BACKGROUND_ALPHA, Settings.DEFAULT_ALPHA));
@@ -435,6 +437,7 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
                     new CustomDialog.Builder(a)
                             .setTitle(R.string.warning)
                             .setMessage(R.string.hidden_groups_message)
+                            .setPositiveButton(R.string.understood, (d, w) -> d.dismiss())
                             .show();
                     a.setEditMode(true);
                     a.setEditMode(false);
