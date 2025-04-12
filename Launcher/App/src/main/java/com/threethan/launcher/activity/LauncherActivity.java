@@ -200,7 +200,7 @@ public class LauncherActivity extends Launch.LaunchingActivity {
 
         refreshBackground();
     }
-
+    @SuppressWarnings("InvalidSetHasFixedSize")
     protected void init() {
         Core.init(this);
         settingsManager = SettingsManager.getInstance(this);
@@ -313,7 +313,7 @@ public class LauncherActivity extends Launch.LaunchingActivity {
 
         try {
             // Hide KB
-            Keyboard.hide(this, mainView);
+            Keyboard.hide( mainView);
 
             // Bind browser service
             LauncherAppsAdapter.animateClose(this);
@@ -614,13 +614,6 @@ public class LauncherActivity extends Launch.LaunchingActivity {
             if (Platform.isQuest()) cd.setAlpha(WallpaperExecutor.getBackgroundAlpha(dataStoreEditor));
 
             if (Platform.isQuest()) cd.setAlpha(200);
-
-
-            runOnUiThread(() -> {
-                getWindow().setNavigationBarColor(backgroundColor);
-                getWindow().setStatusBarColor(backgroundColor);
-                getWindow().setBackgroundDrawable(cd);
-            });
 
             new WallpaperExecutor().execute(this);
         });

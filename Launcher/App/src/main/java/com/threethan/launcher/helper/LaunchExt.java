@@ -52,7 +52,7 @@ public abstract class LaunchExt extends Launch {
         // Apply any pending preference changes before launching
         try {
             // This is unlikely to fail, but it shouldn't stop us from launching if it somehow does
-            Keyboard.hide(launcherActivity, launcherActivity.mainView);
+            Keyboard.hide(launcherActivity.mainView);
         } catch (Exception ignored) {}
 
         if (!app.enabled) {

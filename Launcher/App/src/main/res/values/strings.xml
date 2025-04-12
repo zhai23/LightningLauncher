@@ -217,10 +217,10 @@
     <string name="selection_hint_single_copy">1 app selected, click a group to make a copy</string>
     <string name="selection_hint_multiple_move">%d apps selected, click a group to move them</string>
     <string name="selection_hint_multiple_copy">%d apps selected, click a group to make copies</string>
-    <string name="selection_moved_single">Moved an app to %s</string>
-    <string name="selection_copied_single">Copied an app to %s</string>
-    <string name="selection_moved_multiple">Moved %d apps to %s</string>
-    <string name="selection_copied_multiple">Copied %d apps to %s</string>
+    <string name="selection_moved_single">Moved an app to %1$s</string>
+    <string name="selection_copied_single">Copied an app to %1$s</string>
+    <string name="selection_moved_multiple">Moved %1$d apps to %2$s</string>
+    <string name="selection_copied_multiple">Copied %1$d apps to %2$s</string>
     <string name="selection_hint_cleared">Cleared selection</string>
     <string name="selection_hint_all">Selected all visible apps</string>
 

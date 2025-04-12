@@ -7,13 +7,13 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.view.View;
 
 import androidx.annotation.Nullable;
 
 import com.threethan.launcher.R;
 import com.threethan.launcher.activity.LauncherActivity;
-import com.threethan.launcher.activity.chainload.ChainLoadActivity;
 import com.threethan.launcher.activity.dialog.BasicDialog;
 import com.threethan.launcher.activity.view.ViewFlinger;
 import com.threethan.launchercore.Core;
@@ -113,7 +113,7 @@ public class QuestGameTuner {
     }
 
     /** Gets the numeric version code of the currently installed Quest Game Tuner */
-    private static int getVersionCode() {
+    private static long getVersionCode() {
         PackageInfo packageInfo;
         try {
             packageInfo = Core.context().getPackageManager().getPackageInfo(
@@ -123,7 +123,7 @@ public class QuestGameTuner {
             e.printStackTrace();
             return 0;
         }
-        return packageInfo.versionCode;
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.P ? packageInfo.getLongVersionCode() : packageInfo.versionCode;
     }
     /** Checks if Quest Game Tuner is installed */
     public static boolean isInstalled() {

@@ -180,10 +180,10 @@
     <string name="selection_hint_single_copy">选择 1 个应用，点击一个组进行复制</string>
     <string name="selection_hint_multiple_move">已选择 %d 个应用，单击分组移动</string>
     <string name="selection_hint_multiple_copy">已选择 %d 个应用，点击其中一个即可进行复制</string>
-    <string name="selection_moved_single">移动应用到 %s</string>
-    <string name="selection_copied_single">复制到 %s</string>
-    <string name="selection_moved_multiple">移动 %d 个应用到 %s</string>
-    <string name="selection_copied_multiple">已将 %d 个应用复制到 %s</string>
+    <string name="selection_moved_single">移动应用到 %1$s</string>
+    <string name="selection_copied_single">复制到 %1$s</string>
+    <string name="selection_moved_multiple">移动 %1$d 个应用到 %2$s</string>
+    <string name="selection_copied_multiple">已将 %1$d 个应用复制到 %2$s</string>
     <string name="selection_hint_cleared">清除选择</string>
     <string name="selection_hint_all">选择所有可见的应用</string>
 

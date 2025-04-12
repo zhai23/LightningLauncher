@@ -115,7 +115,7 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
             if (getCurrentFocus() != null) getCurrentFocus().clearFocus();
             searchText.setText("");
             searchText.post(searchText::requestFocus);
-            Keyboard.show(this);
+            Keyboard.show(searchText);
 
         } catch (NullPointerException e) {
             Log.w(TAG, "NPE when showing searchbar", e);
@@ -125,7 +125,7 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
     void hideSearchBar() {
         try {
             searching = false;
-            Keyboard.hide(this, mainView);
+            Keyboard.hide(mainView);
 
             searchBar.setVisibility(View.GONE);
 
@@ -197,7 +197,7 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
             keyCode == KeyEvent.KEYCODE_ENTER) {
                 // Launch the first visible icon when enter is pressed
                 if (getAppAdapter() != null && getAppAdapter().getTopSearchResult() != null) {
-                    Keyboard.hide(this, searchBg);
+                    Keyboard.hide(searchBg);
                     LaunchExt.launchApp(this, getAppAdapter().getTopSearchResult());
                     return true;
                 }
@@ -207,9 +207,9 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
 
         searchText.setOnFocusChangeListener((view, hasFocus) -> {
             if (hasFocus && searching) {
-                Keyboard.show(this);
+                Keyboard.show(searchText);
             } else {
-                Keyboard.hide(this, mainView);
+                Keyboard.hide(mainView);
             }
         });
 

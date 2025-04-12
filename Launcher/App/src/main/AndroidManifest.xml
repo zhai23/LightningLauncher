@@ -91,7 +91,6 @@
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER"/>
                 <category android:name="com.oculus.intent.category.2D"/>
                 <action android:name="android.intent.action.CREATE_SHORTCUT" />
-                <category android:name="android.intent.category.HOME"/>
                 <category android:name="android.intent.category.VR_HOME"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
