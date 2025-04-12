@@ -108,8 +108,6 @@
     <string name="advanced_sizing_tip">允许在不同大小的窗口中打开应用，可能会导致问题</string>
     <string name="toast_advanced_sizing">新尺寸选项可在每个应用程序设置中复用</string>
 
-    <string name="service_desc">启用此服务后，当悬停在 dock 右侧的应用程序库图标上约半秒时，Lightning Launcher 将自动打开。\n(这可能会给访问默认启动器带来困难）\n\n        \n确保启用 \"使用 Lightning Launcher \"开关-\"Lightning Launcher 快捷方式 \"开关不会对 Quest 起任何作用！\n</string>
-
     <string name="reload_icon">刷新图标</string>
     <string name="open_tuning">性能优化</string>
     <string name="open_tuning_tip">Quest Game Tuner 可让您调整分辨率、FPS 等！</string>
@@ -128,9 +126,9 @@
 
     <string name="website_title">显示标题</string>
     <string name="website_subtitle1">快速访问网站和Web应用</string>
-    <string name="website_info1">"\n        网站将以应用程序的形式出现在主屏幕上。它们将在 Lightning Browser (独立的应用) 中打开\n\n        \n你还可以使用搜索栏搜索 Google、YouTube 或 ApkPure。\n    "</string>
+    <string name="website_info1">"网站将以应用程序的形式出现在主屏幕上。它们将在 Lightning Browser (独立的应用) 中打开\n\n        \n你还可以使用搜索栏搜索 Google。"</string>
     <string name="website_subtitle2">背景音乐</string>
-    <string name="website_info2">"\n        关闭后，网站将继续运行，并可在后台播放和录制音频，即使在游戏中也会生效！(通话时可能会出现延迟或卡顿现象）\n\n        \n通过搜索打开的网站不会在后台运行，除非使用添加页面到启动器 (+) 按钮进行添加。\n    "</string>
+    <string name="website_info2">"最小化后，添加的网站可以继续运行，并可以在后台播放音频。\n<i>（可能会出现音频延迟。）</i>\n"</string>
     <string name="website_subtitle3">浏览器选择</string>
     <string name="website_info3">在 Quest 设备上，您可以选择在 Meta Quest 浏览器中启动，该浏览器支持 VR 网页内容，但不支持背景音频。</string>
     <string name="add_website">添加网站</string>
@@ -142,13 +140,13 @@
     <string name="add_website_group">添加到 %s</string>
 
     <string name="service_title">快捷方式服务</string>
-    <string name="service_info"><b>快速访问 Lightning Launcher</b>
-        \n启用快捷方式服务后，当你悬停在 dock 上指定的图标上时，Lighting Launcher 会自动打开
-        \n
-        \n<b>启用快捷服务</b>
-        \n1. 使用该按钮打开 Android 的辅助功能设置\n2. 选择要启用的服务\n3. 在页面顶部打开服务\n4. 在提示中点击 \"允许\"\n5. 关闭窗口即刻生效
-    </string>
-    <string name="service_next">继续进入辅助功能设置</string>
+
+    <string name="service_info_section_1_title">轻松访问<b>Lightning Launcher</b></string>
+    <string name="service_info_section_1_content">快速访问 <b>Lightning Launcher</b>
+        \n启用快捷方式服务后，当你悬停在 dock 上指定的图标上时，<b>Lighting Launcher</b> 会自动打开</string>
+    <string name="service_info_section_2_title"><b>启用</b>快捷服务</string>
+    <string name="service_info_section_2_content">1. 使用该按钮打开 Android 的辅助功能设置\n2. 选择要启用的服务\n3. 在页面顶部打开服务\n4. 在提示中点击 \"允许\"\n5. 关闭窗口即刻生效</string>
+    <string name="service_open_accessibility">继续进入辅助功能设置</string>
 
     <string name="warning">重要信息</string>
     <string name="cancel">关闭</string>
@@ -173,11 +171,18 @@
     <string name="edit_off">开启编辑模式</string>
     <string name="edit_on">关闭编辑模式</string>
 
+    <string name="edit_move">移动</string>
+    <string name="edit_copy">复制</string>
+
     <string name="selection_hint_none">单击选择应用程序或点击此处全部</string>
-    <string name="selection_hint_single">已选择 1 个应用，单击分组移动</string>
-    <string name="selection_hint_multiple">已选择 %d 个应用，单击分组移动</string>
+    <string name="selection_hint_single_move">已选择 1 个应用，单击分组移动</string>
+    <string name="selection_hint_single_copy">选择 1 个应用，点击一个组进行复制</string>
+    <string name="selection_hint_multiple_move">已选择 %d 个应用，单击分组移动</string>
+    <string name="selection_hint_multiple_copy">已选择 %d 个应用，点击其中一个即可进行复制</string>
     <string name="selection_moved_single">移动应用到 %s</string>
+    <string name="selection_copied_single">复制到 %s</string>
     <string name="selection_moved_multiple">移动 %d 个应用到 %s</string>
+    <string name="selection_copied_multiple">已将 %d 个应用复制到 %s</string>
     <string name="selection_hint_cleared">清除选择</string>
     <string name="selection_hint_all">选择所有可见的应用</string>
 
@@ -280,22 +285,23 @@
     <string name="addons_preamble_dock">您还可以将 Lighting Launcher 直接添加到 Dock。</string>
 
     <string name="addons_dock_button">如何将 Lightning Launcher 添加到 Dock</string>
-    <string name="addons_dock_title">将 Lightning Launcher 添加到 Dock</string>
-    <string name="addons_dock_desc"><b>移除现有图标</b>
-        \nDock 只有 5 个空间。默认情况下，它们都已填满。
-        \n如果任何 VR 应用程序处于打开状态，请<u>立即将其完全关闭。</u>
-        \n
-        \n1. 关闭要移除的应用<i>（相机或 Quest 浏览器）</i>
-        \n2. 单击并按住要移除的图标；将其缓慢向下拖动，直到显示“取消固定”
-        \n3. 释放图标
-        \n<i>您无法正常移除 Horizon Feed、Store 或 People 图标。</i>
-        \n
-        \n<b>添加 Lightning Launcher</b>
-        \n1. 在 Dock 右侧的最近应用中找到 Lightning Launcher 图标
-        \n2. 将 Lightning Launcher 图标拖到 Dock 左侧
-        \n3. 释放图标以将其放置在您选择的位置
-        \n<i>您可以对任何应用执行此操作。您可以使用快捷方式为 Lightning Launcher 获取不同颜色的图标。</i>
-    </string>
+    <string name="addons_dock_title">将 LL 添加到 Dock</string>
+    <string name="addons_dock_section_1_title">删除现有图标</string>
+    <string name="addons_dock_section_1_content">1. 关闭所有其他 2D 和 VR 应用。
+\n2. 选择要移除的图标。<i>（相机或浏览器）</i>
+\n3. 点击并按住该图标。
+\n4. 向下拖动，直到显示“取消固定”，然后松开。</string>
+    <string name="addons_dock_section_1_below"><b>Feed</b>、<b>Store</b> 和 <b>People</b> 无法删除。</string>
+
+    <string name="addons_dock_section_2_title">添加<b>Lightning Launcher</b>的图标</string>
+    <string name="addons_dock_section_2_content">1. 在最近使用的应用中找到 <b>Lightning Launcher</b>。
+\n\t\t<i>（程序坞右侧）</i>
+\n2. 将 <b>Lightning Launcher</b> 拖至左侧。
+\n3. 松开鼠标，将其放置在 5 个空格之一中。</string>
+    <string name="addons_dock_section_2_below">您不能拥有超过 5 个固定的应用程序。</string>
+
+    <string name="addons_add">添加 LL 停靠图标</string>
+    <string name="addons_redirect">重定向内置图标</string>
 
     <string name="addons_explore">Horizon Feed 快捷方式服务</string>
     <string name="addons_explore_desc">安装后，只要悬停在基座上的 &quot;Horizon Feed&quot;/&quot;Oculus Explore&quot; 按钮上，就会激活打开 Lightning Launcher。</string>

@@ -125,26 +125,18 @@ public class AddonDialog extends BasicDialog<LauncherActivity> {
 
     protected static void showAccessibilityDialog() {
         Activity a = LauncherActivity.getForegroundInstance();
-        new CustomDialog.Builder(a)
-                .setTitle(R.string.service_title)
-                .setMessage(R.string.service_info)
-                .setPositiveButton(R.string.service_next, (d, w) -> {
-                    // Navigate to accessibility settings
-                    Intent localIntent = new Intent("android.settings.ACCESSIBILITY_SETTINGS");
-                    localIntent.setPackage("com.android.settings");
-                    assert a != null;
-                    a.startActivity(localIntent);
-                    d.dismiss();
-                })
-                .show();
+        AlertDialog dialog = new BasicDialog<>(a, R.layout.dialog_info_redirect_activate).show();
+        if (dialog != null) dialog.findViewById(R.id.openAccessibilitySettings).setOnClickListener(v -> {
+            // Navigate to accessibility settings
+            Intent localIntent = new Intent("android.settings.ACCESSIBILITY_SETTINGS");
+            localIntent.setPackage("com.android.settings");
+            assert a != null;
+            a.startActivity(localIntent);
+        });
     }
 
     protected static void showDockDialog() {
         Activity a = LauncherActivity.getForegroundInstance();
-        new CustomDialog.Builder(a)
-                .setTitle(R.string.addons_dock_title)
-                .setMessage(R.string.addons_dock_desc)
-                .setPositiveButton(R.string.understood, (d, w) -> d.dismiss())
-                .show();
+        new BasicDialog<>(a, R.layout.dialog_info_dock_add).show();
     }
 }

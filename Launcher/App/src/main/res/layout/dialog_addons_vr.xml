@@ -29,42 +29,60 @@
             android:text="@string/addons_main_vr" />
 
         <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/SettingSubtitle"
+            android:layout_marginTop="20dp"
+            android:gravity="center|start"
+            android:text="@string/addons_add" />
+        <TextView
+            android:background="@drawable/lc_bkg_button_top"
             android:id="@+id/addToDockText"
             style="@style/SettingsText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:alpha="0.85"
+            android:alpha="0.7"
             android:gravity="bottom|center"
             android:minHeight="30sp"
             android:text="@string/addons_preamble_dock" />
 
         <TextView
+            android:background="@drawable/lc_bkg_button_bottom"
             android:id="@+id/addToDockButton"
             style="@style/SettingButtonLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:background="@drawable/lc_bkg_button"
+            android:layout_marginTop="2dp"
             android:gravity="center"
             android:orientation="horizontal"
-            android:paddingStart="5dp"
-            android:paddingEnd="5dp"
             android:singleLine="true"
+            android:textStyle="bold"
             android:text="@string/addons_dock_button"
             tools:ignore="NestedWeights">
 
         </TextView>
 
         <TextView
-            style="@style/SettingsText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:alpha="0.85"
+            style="@style/SettingSubtitle"
+            android:layout_marginTop="20dp"
+            android:gravity="center|start"
+            android:text="@string/addons_redirect" />
+        <TextView
+            style="@style/SettingsText"
+            android:background="@drawable/lc_bkg_button_top"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:alpha="0.7"
             android:gravity="bottom|center"
-            android:minHeight="80sp"
+            android:minHeight="50sp"
             android:text="@string/addons_preamble" />
 
         <LinearLayout
+            android:layout_marginTop="2dp"
+            android:background="@drawable/lc_bkg_button_middle"
+            android:backgroundTint="#8000"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -73,7 +91,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
-                android:layout_marginBottom="0dp"
+                android:layout_marginBottom="10dp"
                 android:orientation="horizontal"
                 tools:ignore="UseCompoundDrawables">
 
@@ -119,6 +137,9 @@
         </LinearLayout>
 
         <LinearLayout
+            android:layout_marginTop="2dp"
+            android:background="@drawable/lc_bkg_button_middle"
+            android:backgroundTint="#8000"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -127,7 +148,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
-                android:layout_marginBottom="0dp"
+                android:layout_marginBottom="10dp"
                 android:orientation="horizontal"
                 tools:ignore="UseCompoundDrawables">
 
@@ -173,15 +194,19 @@
         </LinearLayout>
 
         <LinearLayout
+            android:layout_marginTop="2dp"
+            android:background="@drawable/lc_bkg_button_middle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:backgroundTint="#8000"
+            >
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
-                android:layout_marginBottom="0dp"
+                android:layout_marginBottom="10dp"
                 android:orientation="horizontal"
                 tools:ignore="UseCompoundDrawables">
 
@@ -227,6 +252,9 @@
         </LinearLayout>
 
         <LinearLayout
+            android:layout_marginTop="2dp"
+            android:background="@drawable/lc_bkg_button_bottom"
+            android:backgroundTint="#8000"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -235,7 +263,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
-                android:layout_marginBottom="0dp"
+                android:layout_marginBottom="10dp"
                 android:orientation="horizontal"
                 tools:ignore="UseCompoundDrawables">
 

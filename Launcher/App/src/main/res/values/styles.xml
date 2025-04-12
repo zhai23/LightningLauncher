@@ -91,7 +91,7 @@
     </style>
     <style name="buttonHighlight">
         <item name="android:textColor">#000</item>
-        <item name="android:background">@drawable/bkg_button_highlight</item>
+        <item name="backgroundTint">@color/color_button_highlight</item>
         <item name="android:drawableTint">#000</item>
     </style>
     <style name="customSpinner">

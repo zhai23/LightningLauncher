@@ -118,10 +118,6 @@
     <string name="advanced_sizing_tip">Allows apps to be opened in different sized windows, may cause issues.</string>
     <string name="toast_advanced_sizing">New size options can be cycled in per-app settings</string>
 
-    <string name="service_desc">When this service is enabled, Lightning Launcher will open automatically when you hover
-        the cursor over the App Library icon on the right of dock for about half a second.\n(This may make it difficult to access the default launcher)\n
-        \nMake sure to enable the \"Use Lightning Launcher\" switch - the \"Lightning Launcher Shortcut\" switch won\'t do anything on the Quest!
-    </string>
 
     <string name="reload_icon">Reset Icon</string>
     <string name="open_tuning"><i>Tune with</i></string>
@@ -157,18 +153,17 @@
     <string name="website_title">Websites in Lightning Launcher</string>
     <string name="website_subtitle1">Easily Access Websites &amp; Web Apps</string>
     <string name="website_info1">
-        Websites will appear as apps on your home screen. They will open in Lightning Browser (a separate app which you will be prompted to install).\n
-        \nYou can also search Google, YouTube, or ApkPure using the search bar.
+        Websites will appear as apps in the launcher.\n
+        \nYou can also search the web from the search bar.
     </string>
     <string name="website_subtitle2">Audio in the Background</string>
     <string name="website_info2">
-        After being minimized, websites can continue running, and can play and record audio in the background - even while in a game! (You may experience latency or stutters in calls)\n
-        \nWebsites open via a search will not run in the background unless added with the Add Page to Launcher (+) button.
+        After being minimized, added websites can continue running, playing, and recording sound until fully closed. <i>(Audio latency may occur.)</i>\n
     </string>
     <string name="website_subtitle3">Browser Selection</string>
     <string name="website_info3">
-        On Quest devices, you can select to launch in the Meta Quest browser, which supports VR web content.
-        \n\nYou can change you default browser in Settings -> Advanced Settings.
+        On Quest devices, you can launch in <b>Meta Quest Browser</b>, which supports VR web content.
+        \n<i>The default can be set in Advanced Settings.</i>
     </string>
 
     <string name="add_website">Add a Website</string>
@@ -180,19 +175,15 @@
     <string name="add_website_group">Add to %s</string>
 
     <string name="service_title">Shortcuts Services</string>
-    <string name="service_info"><b>Easily Access Lightning Launcher</b>
-        \nBy enabling the shortcut service, Lighting Launcher will open when you hover over the chosen icon on the dock, basically replacing that app.
-        \n
-        \n
-        \n<b>Enabling the Shortcut Service</b>
-        \n
-        \n1. Use the button to open Android\'s accessibility settings
-        \n2. Select the service you wish to enable
-        \n3. Switch the service on at the top of the page
-        \n4. Click \"Allow\" on the prompt
-        \n5. \'X\' out of the window and enjoy!
-    </string>
-    <string name="service_next">Continue to Accessibility Settings</string>
+    <string name="service_info_section_1_title">Easily Access <b>Lightning Launcher</b></string>
+    <string name="service_info_section_1_content">By enabling the shortcut service, <b>Lightning Launcher</b> will open when you hover over the chosen icon on the dock.</string>
+    <string name="service_info_section_2_title"><b>Enable</b> the Shortcut Service</string>
+    <string name="service_info_section_2_content">1. Use the button below to open Android\'s accessibility settings.
+        \n2. Select the service you wish to enable.
+        \n3. Turn on the service with the upper switch.
+        \n4. Click \"Allow\" when prompted.</string>
+
+    <string name="service_open_accessibility">Continue to Accessibility Settings</string>
 
     <string name="warning">Important Info</string>
     <string name="cancel">Cancel</string>
@@ -217,11 +208,18 @@
     <string name="edit_off">Turn On Edit Mode</string>
     <string name="edit_on">Turn Off Edit Mode</string>
 
+    <string name="edit_move">Move</string>
+    <string name="edit_copy">Copy</string>
+
     <string name="selection_hint_none">Click an app to select it or click here to select all</string>
-    <string name="selection_hint_single">1 app selected, click a group to move it</string>
-    <string name="selection_hint_multiple">%d apps selected, click a group to move them</string>
+    <string name="selection_hint_single_move">1 app selected, click a group to move it</string>
+    <string name="selection_hint_single_copy">1 app selected, click a group to make a copy</string>
+    <string name="selection_hint_multiple_move">%d apps selected, click a group to move them</string>
+    <string name="selection_hint_multiple_copy">%d apps selected, click a group to make copies</string>
     <string name="selection_moved_single">Moved an app to %s</string>
+    <string name="selection_copied_single">Copied an app to %s</string>
     <string name="selection_moved_multiple">Moved %d apps to %s</string>
+    <string name="selection_copied_multiple">Copied %d apps to %s</string>
     <string name="selection_hint_cleared">Cleared selection</string>
     <string name="selection_hint_all">Selected all visible apps</string>
 
@@ -262,7 +260,7 @@
     <string name="loaded_settings2">the launcher must now close!</string>
 
     <string name="default_groups_title">Default Group Settings</string>
-    <string name="default_groups_info">Current Default Groups:\n\n
+    <string name="default_groups_info"><b>Current Default Groups:</b>\n
         \n%1$s\n
         \n<i>You can change these by editing a group in edit mode.</i>
         \n
@@ -279,13 +277,12 @@
 
     <string name="toast_cant_unset_group">Set another group as default to unset this one</string>
 
-    <string name="clear_icons_title">Icon Update/Clear Settings</string>
-    <string name="clear_icons_info">Lightning Launcher caches icons and banners for apps for faster loading.\n
-        \nYou can clear this cache to refresh any icons which might have changed.</string>
-    <string name="clear_icons_info_quest">Lightning Launcher will download icons for official Quest Games and app from the internet.\n
-        \nBy clearing the icon cache, you can also re-download all such icons. This is useful if they seem to be missing!</string>
-    <string name="clear_icons_info_custom">You can also set custom icons for apps by placing them in a folder <i>on this device</i>, then pressing on the icon in the app info popup.\n
-    \nIf you want, you can also reset &amp; refresh all icons.</string>
+    <string name="clear_icons_title">Default Icon Settings</string>
+    <string name="clear_icons_info"><b>Lightning Launcher</b> caches icons and banners for apps for faster loading.</string>
+    <string name="clear_icons_info_quest"><b>Lightning Launcher</b> will download icons for Quest apps &amp; games from the internet.
+        \n<i>By clearing the icon cache, you also re-download these.</i></string>
+    <string name="clear_icons_info_custom">You can set custom icons for apps by clicking the icon in the app\'s info popup.
+        \n<i>If you want, you can also reset these.</i></string>
 
     <string name="clear_icons_clear_cache">Clear Icon Cache</string>
     <string name="clear_icons_clear_all">Clear Custom Icons</string>
@@ -350,42 +347,40 @@
     \nPressing back once you get to the launcher will just toggle edit mode, keeping you from accidentally returning to the default launcher.</string>
 
 
-    <string name="addons_preamble"><b>Redirects</b> open Lighting Launcher when you <i>hovering</i> target dock icon.
-        \n<i>Quest OS updates sometimes break these!</i>
-        \nYou must manually install, then activate each redirect individually.
+    <string name="addons_preamble"><b>Redirects</b> open Lighting Launcher when <i>hovering</i> a dock icon.
+        \nEach redirect must be individually installed, then activated.
     </string>
-    <string name="addons_preamble_dock">You may be able to add Lighting Launcher to your dock directly.</string>
-    <string name="addons_dock_button">How to Add Lightning Launcher to the Dock</string>
-    <string name="addons_dock_title">Adding Lightning Launcher to the dock</string>
-    <string name="addons_dock_desc"><b>Remove an existing icon</b>
-        \n
-        \nThe dock only has 5 spaces. By default, they are all filled up.
-        \nIf any VR application is open, <u>fully close it now.</u>
-        \n
-        \n1. Close the app you want to remove <i>(Camera or Quest Browser)</i>
-        \n2. Click and hold on the icon you want to remove; drag it slowly downwards until it says "Unpin"
-        \n3. Release the icon
-        \n
-        \n<i>You can\'t remove the Horizon Feed, Store, or People icons normally.</i>
-        \n
-        \n
-        \n<b>Add Lightning Launcher</b>
-        \n
-        \n1. Find <i>Lightning Launcher</i> in the recent apps at the right side of the dock
-        \n2. Drag the <i>Lightning Launcher</i> icon to the left side of the dock
-        \n3. Release the icon to place it in your choice of spot
-        \n
-        \n<i>You can do this with any app. You can use the shortcuts to get differently colored icons for Lightning Launcher.</i>
-    </string>
+    <string name="addons_preamble_dock">You can add Lighting Launcher to directly to your dock!</string>
+    <string name="addons_dock_button">How to Add Lightning Launcher to the Quest Dock</string>
+    <string name="addons_dock_title">Adding LL to the Dock</string>
 
-    <string name="addons_explore">Feed Shortcut</string>
+    <string name="addons_dock_section_1_title">Remove an existing icon</string>
+    <string name="addons_dock_section_1_content">1. Close all other 2D and VR apps.
+        \n2. Pick an icon to remove. <i>(Camera or Browser)</i>
+        \n3. Click and hold the icon.
+        \n4. Drag it down until it says \'Unpin\', then release.</string>
+    <string name="addons_dock_section_1_below"><b>Feed</b>, <b>Store</b>, and <b>People</b> can\'t be removed.</string>
+
+
+    <string name="addons_dock_section_2_title">Add <b>Lightning Launcher</b>\'s Icon</string>
+    <string name="addons_dock_section_2_content">1. Find <b>Lightning Launcher</b> in recent apps.
+        \n\t\t<i>(Right side of the dock)</i>
+        \n2. Drag <b>Lightning Launcher</b> to the left side.
+        \n3. Release to pin it to the dock.</string>
+
+    <string name="addons_dock_section_2_below">You can\'t have more than five apps pinned.</string>
+
+    <string name="addons_add">Add Dock Icon</string>
+    <string name="addons_redirect">Redirect Built-In Icons</string>
+
+    <string name="addons_explore">Feed Redirect</string>
     <string name="addons_explore_desc">Install then activate to open Lightning Launcher when you press the <b>Horizon Feed</b> button on the dock.</string>
 
-    <string name="addons_library">Library Shortcut</string>
+    <string name="addons_library">Library Redirect</string>
     <string name="addons_library_desc">Install then activate to open Lightning Launcher when you hover the <b>App Library</b> button on the dock.</string>
-    <string name="addons_store">Store Shortcut</string>
+    <string name="addons_store">Store Redirect</string>
     <string name="addons_store_desc">Install then activate to open Lightning Launcher when you hover the <b>Store</b> button on the dock.</string>
-    <string name="addons_people">People Shortcut</string>
+    <string name="addons_people">People Redirect</string>
     <string name="addons_people_desc">Install then activate to open Lightning Launcher when you hover the <b>People</b> button on the dock.</string>
 
     <string name="addons_install">Install</string>
