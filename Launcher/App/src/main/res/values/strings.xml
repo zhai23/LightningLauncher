@@ -264,8 +264,10 @@
     <string name="default_groups_title">Default Group Settings</string>
     <string name="default_groups_info">Current Default Groups:\n\n
         \n%1$s\n
-        \nYou can change these by editing a group in edit mode.
-        \nWhat would you like to do now?</string>
+        \n<i>You can change these by editing a group in edit mode.</i>
+        \n
+        \n<b>What would you like to do now?</b>
+    </string>
 
     <string name="default_groups_reset_groups">Reset All Groups &amp; Sort to Default</string>
     <string name="default_groups_resort_only">Move everything to its Default Group</string>
