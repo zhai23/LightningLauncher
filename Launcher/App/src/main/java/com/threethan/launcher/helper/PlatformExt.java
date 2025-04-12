@@ -7,7 +7,6 @@ import com.threethan.launcher.R;
 import com.threethan.launcher.activity.LauncherActivity;
 import com.threethan.launcher.activity.dialog.BasicDialog;
 import com.threethan.launcher.activity.support.DataStoreEditor;
-import com.threethan.launcher.activity.support.SettingsManager;
 import com.threethan.launcher.data.Settings;
 import com.threethan.launchercore.Core;
 import com.threethan.launchercore.adapter.UtilityApplicationInfo;
@@ -36,17 +35,6 @@ public abstract class PlatformExt {
         infoOverrides.put("systemux://settings", "com.oculus.panelapp.settings");
         infoOverrides.put("systemux://aui-social-v2", "com.oculus.socialplatform");
         infoOverrides.put("systemux://events", "com.oculus.explore");
-    }
-    /**
-     * Finds an existing website on the launcher
-     * @return Null if not found, else name of group website is in
-     */
-    public static String findWebsite(DataStoreEditor dataStoreEditor, String url) {
-        if (!url.contains("://")) url = "https://" + url;
-
-        Set<String> webApps = dataStoreEditor.getStringSet(Settings.KEY_WEBSITE_LIST, Collections.emptySet());
-        if (!webApps.contains(url)) return null;
-        else return SettingsManager.getAppGroupMap().get(url);
     }
 
     /**

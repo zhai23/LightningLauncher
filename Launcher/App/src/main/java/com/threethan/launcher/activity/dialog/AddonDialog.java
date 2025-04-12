@@ -10,7 +10,6 @@ import com.threethan.launcher.R;
 import com.threethan.launcher.activity.LauncherActivity;
 import com.threethan.launcher.helper.PlatformExt;
 import com.threethan.launcher.updater.AddonUpdater;
-import com.threethan.launchercore.util.CustomDialog;
 import com.threethan.launchercore.util.Platform;
 
 import java.lang.ref.WeakReference;

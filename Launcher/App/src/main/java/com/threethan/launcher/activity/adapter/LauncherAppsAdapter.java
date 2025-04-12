@@ -89,9 +89,10 @@ public class LauncherAppsAdapter extends AppsAdapter<LauncherAppsAdapter.AppView
         newItems.removeIf(item -> !
                 SettingsManager.getAppLabel(item).toLowerCase().contains(text.toLowerCase()));
 
-        if (!showHidden)
-            newItems.removeIf(item -> Objects.equals(SettingsManager.getAppGroupMap()
-                    .get(item.packageName), Settings.HIDDEN_GROUP));
+        if (!showHidden) {
+            Set<String> hg = SettingsManager.getGroupAppsMap().get(Settings.HIDDEN_GROUP);
+            if (hg != null) newItems.removeIf(ai -> hg.contains(ai.packageName));
+        }
 
         boolean showWeb = !text.isEmpty() && launcherActivity.dataStoreEditor
                 .getBoolean(Settings.KEY_SEARCH_WEB, Settings.DEFAULT_SEARCH_WEB);
@@ -217,11 +218,6 @@ public class LauncherAppsAdapter extends AppsAdapter<LauncherAppsAdapter.AppView
         for (int i=0; i<getItemCount(); i++)
             if (Objects.equals(getItem(i).packageName, packageName))
                 notifyItemChanged(i, getItem(i));
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return Objects.hashCode(getItem(position).packageName); // Assuming this is unique!
     }
 
     private void updateSelected(AppViewHolderExt holder) {

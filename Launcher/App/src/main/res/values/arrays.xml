@@ -20,4 +20,9 @@
         <item>@string/browser_system</item>
         <item>@string/browser_quest</item>
     </array>
+
+    <array name="edit_actions">
+        <item>@string/edit_move</item>
+        <item>@string/edit_copy</item>
+    </array>
 </resources>

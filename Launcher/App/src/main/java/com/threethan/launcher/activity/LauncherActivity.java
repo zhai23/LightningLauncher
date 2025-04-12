@@ -140,14 +140,16 @@ public class LauncherActivity extends Launch.LaunchingActivity {
         post(() -> getWindow().setBackgroundDrawable(cd));
 
         // Set back action
-        final LauncherActivity la = this;
         getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                if (LauncherAppsAdapter.animateClose(la)) return;
-                if (!settingsVisible) new SettingsDialog(la).show();
+                handleBackPressed();
             }
         });
+    }
+    protected void handleBackPressed() {
+        if (LauncherAppsAdapter.animateClose(this)) return;
+        if (!settingsVisible) new SettingsDialog(this).show();
     }
     public View rootView;
 

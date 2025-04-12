@@ -18,10 +18,11 @@ import com.threethan.launcher.activity.dialog.GroupDetailsDialog;
 import com.threethan.launcher.activity.support.SettingsManager;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The adapter for the groups grid view.
@@ -131,11 +132,48 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.GroupViewH
         else textView.setText(value);
     }
 
-    public void setGroup(String packageName, String groupName) {
-        Map<String, String> appGroupMap = SettingsManager.getAppGroupMap();
-        appGroupMap.remove(packageName);
-        appGroupMap.put(packageName, groupName);
-        SettingsManager.setAppGroupMap(appGroupMap);
+    public void moveAppToGroup(String packageName, String to) {
+        if (Settings.HIDDEN_GROUP.equals(to)) {
+            moveToHiddenGroup(packageName);
+            return;
+        }
+        ConcurrentHashMap<String, Set<String>> gam = SettingsManager.getGroupAppsMap();
+
+        // Remove from old group(s)
+        for (String group : gam.keySet()) {
+            Objects.requireNonNull(gam.get(group)).remove(packageName);
+        }
+
+        // Add to new group
+        gam.computeIfAbsent(to, k -> new HashSet<>());
+        Objects.requireNonNull(SettingsManager.getGroupAppsMap().get(to)).add(packageName);
+
+        SettingsManager.setGroupAppsMap(gam);
+    }
+
+    public void copyAppToGroup(String packageName, String to) {
+        if (Settings.HIDDEN_GROUP.equals(to)) {
+            moveToHiddenGroup(packageName);
+            return;
+        }
+        ConcurrentHashMap<String, Set<String>> gam = SettingsManager.getGroupAppsMap();
+
+        // Add to new group
+        gam.computeIfAbsent(to, k -> new HashSet<>());
+        Objects.requireNonNull(SettingsManager.getGroupAppsMap().get(to)).add(packageName);
+
+        SettingsManager.setGroupAppsMap(gam);
+    }
+
+    private void moveToHiddenGroup(String packageName) {
+        ConcurrentHashMap<String, Set<String>> gam = SettingsManager.getGroupAppsMap();
+
+        // Remove from old group(s)
+        for (String group : gam.keySet())
+            Objects.requireNonNull(gam.get(group)).remove(packageName);
+
+        Set<String> hg = SettingsManager.getGroupAppsMap().get(Settings.HIDDEN_GROUP);
+        if (hg != null) hg.add(packageName);
     }
 
     private void setLook(int position, View itemView, View menu) {

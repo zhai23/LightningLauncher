@@ -53,7 +53,8 @@ public abstract class Platform {
         PackageManager pm = Core.context().getPackageManager();
         @SuppressLint("QueryPermissionsNeeded")
         List<ApplicationInfo> installedApps
-                = pm.getInstalledApplications(PackageManager.GET_META_DATA);
+                = pm.getInstalledApplications(PackageManager.GET_META_DATA
+                | PackageManager.MATCH_DISABLED_UNTIL_USED_COMPONENTS);
         if (Platform.isQuest()) for (String systemUxPanelApp : systemUxPanelApps) {
             ApplicationInfo panelAppInfo = new ApplicationInfo();
             panelAppInfo.packageName = systemUxPanelApp;

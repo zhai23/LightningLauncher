@@ -218,11 +218,10 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
         searching = false;
     }
 
-    /** @noinspection deprecation*/
     @Override
-    public void onBackPressed() {
+    public void handleBackPressed() {
         if (searching) hideSearchBar();
-        else super.onBackPressed();
+        else super.handleBackPressed();
     }
 
     @Override

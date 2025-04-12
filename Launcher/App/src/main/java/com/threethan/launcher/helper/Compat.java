@@ -105,8 +105,6 @@ public abstract class Compat {
                                         ? Settings.DEFAULT_BACKGROUND_TV
                                         : Settings.DEFAULT_BACKGROUND_VR) == 6)
                             dataStoreEditor.putInt(Settings.KEY_BACKGROUND, -1);
-                        // Rename group to new default
-                        renameGroup(launcherActivity, "Tools", "Apps");
                         break;
                     case (1):
                         int bg = dataStoreEditor.getInt(Settings.KEY_BACKGROUND,
@@ -118,8 +116,7 @@ public abstract class Compat {
                     case (2):
                         String from = dataStoreEditor.getString("KEY_DEFAULT_GROUP_VR",
                                 Settings.FALLBACK_GROUPS.get(App.Type.VR));
-                        String to = StringLib.setStarred(from, true);
-                        renameGroup(launcherActivity, from, to);
+                        StringLib.setStarred(from, true);
                         break;
                     case (3): // Should just clear icon cache, which is called anyways
                         break;
@@ -193,28 +190,6 @@ public abstract class Compat {
         launcherActivity.needsUpdateCleanup = false;
     }
 
-    public static void renameGroup(LauncherActivity launcherActivity, String from, String to) {
-        SettingsManager settingsManager = launcherActivity.settingsManager;
-
-        final Map<String, String> apps = SettingsManager.getAppGroupMap();
-        final Set<String> appGroupsList = SettingsManager.getAppGroups();
-        appGroupsList.remove(from);
-        appGroupsList.add(to);
-        Map<String, String> updatedAppList = new HashMap<>();
-
-        for (String packageName : apps.keySet())
-            if (Objects.requireNonNull(apps.get(packageName)).compareTo(from) == 0)
-                updatedAppList.put(packageName, to);
-            else
-                updatedAppList.put(packageName, apps.get(packageName));
-
-        HashSet<String> selectedGroups = new HashSet<>();
-        selectedGroups.add(to);
-        settingsManager.setSelectedGroups(selectedGroups);
-        settingsManager.setAppGroups(appGroupsList);
-        SettingsManager.setAppGroupMap(updatedAppList);
-    }
-
     // Clears all icons, including custom icons
     public static void clearIcons(LauncherActivity launcherActivity) {
         Log.i(TAG, "Icons are being cleared");
@@ -254,7 +229,7 @@ public abstract class Compat {
             Set<String> appGroupsSet = launcherActivity.dataStoreEditor.getStringSet(Settings.KEY_GROUPS, new HashSet<>());
             for (String groupName : appGroupsSet)
                 launcherActivity.dataStoreEditor.removeStringSet(Settings.KEY_GROUP_APP_LIST + groupName);
-            SettingsManager.getAppGroupMap().clear();
+            SettingsManager.getGroupAppsMap().clear();
             launcherActivity.settingsManager.resetGroupsAndSort();
 
             storeAndReload(launcherActivity);
@@ -271,7 +246,7 @@ public abstract class Compat {
     }
     // Stores any settings which may have been changed then refreshes any extent launcher activities
     private static void storeAndReload(LauncherActivity launcherActivity) {
-        SettingsManager.setAppGroupMap(new ConcurrentHashMap<>());
+        SettingsManager.setGroupAppsMap(new ConcurrentHashMap<>());
 
         SettingsManager.writeGroupsAndSort();
         launcherActivity.launcherService.forEachActivity(a ->
