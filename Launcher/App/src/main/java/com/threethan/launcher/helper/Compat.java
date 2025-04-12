@@ -249,34 +249,37 @@ public abstract class Compat {
     }
     // Clears the categorization of apps & resets everything to selected default groups
     public static void clearSort(LauncherActivity launcherActivity) {
-        Log.i(TAG, "App sort is being cleared");
-        Set<String> appGroupsSet = launcherActivity.dataStoreEditor.getStringSet(Settings.KEY_GROUPS, new HashSet<>());
-        for (String groupName : appGroupsSet)
-            launcherActivity.dataStoreEditor.removeStringSet(Settings.KEY_GROUP_APP_LIST + groupName);
-        SettingsManager.getAppGroupMap().clear();
-        launcherActivity.settingsManager.resetGroupsAndSort();
+        new Thread(() -> {
+            Log.i(TAG, "App sort is being cleared");
+            Set<String> appGroupsSet = launcherActivity.dataStoreEditor.getStringSet(Settings.KEY_GROUPS, new HashSet<>());
+            for (String groupName : appGroupsSet)
+                launcherActivity.dataStoreEditor.removeStringSet(Settings.KEY_GROUP_APP_LIST + groupName);
+            SettingsManager.getAppGroupMap().clear();
+            launcherActivity.settingsManager.resetGroupsAndSort();
 
-        storeAndReload(launcherActivity);
-        launcherActivity.launcherService.forEachActivity(LauncherActivity::forceRefreshPackages);
+            storeAndReload(launcherActivity);
+        }).start();
     }
     // Resets the group list to default, including default groups for sorting
     public static void resetDefaultGroups(LauncherActivity launcherActivity) {
-        for (App.Type type : PlatformExt.getSupportedAppTypes())
-            launcherActivity.dataStoreEditor.removeString(Settings.KEY_DEFAULT_GROUP + type);
+        new Thread(() -> {
+            for (App.Type type : PlatformExt.getSupportedAppTypes())
+                launcherActivity.dataStoreEditor.removeString(Settings.KEY_DEFAULT_GROUP + type);
 
-        launcherActivity.settingsManager.resetGroupsAndSort();
-        clearSort(launcherActivity);
-        launcherActivity.launcherService.forEachActivity(LauncherActivity::resetAdapters);
+            clearSort(launcherActivity);
+        }).start();
     }
     // Stores any settings which may have been changed then refreshes any extent launcher activities
     private static void storeAndReload(LauncherActivity launcherActivity) {
         SettingsManager.setAppGroupMap(new ConcurrentHashMap<>());
 
         SettingsManager.writeGroupsAndSort();
-        launcherActivity.launcherService.forEachActivity(a -> {
-            a.refreshAppList();
-            a.forceRefreshPackages();
-        });
+        launcherActivity.launcherService.forEachActivity(a ->
+            a.runOnUiThread(() -> {
+                a.refreshAppList();
+                a.forceRefreshPackages();
+            }
+        ));
     }
     private static DataStoreEditor dataStoreEditor;
     public static DataStoreEditor getDataStore() {
