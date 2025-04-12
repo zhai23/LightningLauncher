@@ -183,6 +183,7 @@ public class AppsAdapter<VH extends AppsAdapter.AppViewHolder>
     public void onBindViewHolder(@NonNull VH holder, int position) {
         ApplicationInfo app = getItem(position);
         holder.app = app;
+        holder.whenReady(() -> holder.imageView.setImageDrawable(null));
         holder.whenReady(() -> executorService.submit(() -> {
 
             final Boolean darkMode = LauncherActivity.darkMode;
