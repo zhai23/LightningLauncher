@@ -50,8 +50,8 @@
     <string name="disp_wide">显示为横幅</string>
     <string name="disp_icon">显示为正方形</string>
     <string name="disp_name">显示名称</string>
-    <string name="advanced_header">高级设置</string>
-    <string name="advanced_button">打开高级设置</string>
+    <string name="more_options">高级设置</string>
+    <string name="advanced_header">打开高级设置</string>
     <string name="refresh_button">刷新应用程序</string>
     <string name="advanced_interface">界面选项</string>
     <string name="advanced_reset">重置为默认值</string>

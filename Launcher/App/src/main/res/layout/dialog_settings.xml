@@ -38,11 +38,11 @@
         <TextView
             android:id="@+id/versionLabel"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="20dp"
             android:layout_gravity="end"
-            android:layout_marginTop="-30dp"
+            android:layout_marginTop="-38dp"
             android:layout_marginEnd="5dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="18dp"
             android:alpha="0.5"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -433,7 +433,7 @@
             style="@style/SettingSubtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/advanced_header" />
+            android:text="@string/more_options" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -447,7 +447,7 @@
                 android:layout_weight="2"
                 android:layout_height="39dp"
                 android:layout_marginEnd="10dp"
-                android:text="@string/advanced_button"
+                android:text="@string/advanced_header"
                 android:drawableEnd="@drawable/ic_dialog" />
 
             <com.threethan.launchercore.view.LcButton

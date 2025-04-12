@@ -36,7 +36,7 @@
     <string name="app_name_icon">Below App Icons</string>
     <string name="app_name_wide">Below App Banners</string>
 
-    <string name="settings_main">Lightning Launcher Settings</string>
+    <string name="settings_main">Lightning Launcher</string>
     <string name="settings_appearance">Customize Appearance</string>
     <string name="settings_addons_attract">Shortcuts</string>
     <string name="settings_addons">Shortcuts</string>
@@ -52,8 +52,8 @@
     <string name="disp_wide">Display as Banner</string>
     <string name="disp_icon">Display as Icon</string>
     <string name="disp_name">Always Show Names</string>
-    <string name="advanced_header">More Options</string>
-    <string name="advanced_button">Advanced Settings</string>
+    <string name="more_options">More Options</string>
+    <string name="advanced_header">Advanced Settings</string>
     <string name="refresh_button">Refresh</string>
     <string name="advanced_interface">Interface</string>
     <string name="advanced_reset">Refresh &amp; Reset</string>
@@ -244,10 +244,7 @@
     <string name="update_skip_title">Skip updating to version %1$s?</string>
     <string name="update_skip_content"><b>Updates are highly recommended and may include important fixes.</b>
         \n
-        \nIf you are avoiding this update because it causes issues, report your issues at github.com/threethan/LightningLauncher
-        \n<i>Please only report issues which occur on the most recent version.</i>
-        \n
-        \nTo prevent future popups, you can <i>Skip This Update</i> or <i>Skip All Updates</i>.
+        \nIf you are avoiding this update due to an issue, please report it at github.com/threethan/LightningLauncher
         \n
         \n<b>Regardless of your selection, you can update later from the settings.</b></string>
     <string name="update_skip_all_button">Skip This &amp; Future Updates</string>
