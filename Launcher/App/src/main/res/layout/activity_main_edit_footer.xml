@@ -69,7 +69,6 @@
             android:layout_height="match_parent"
             android:layout_gravity="bottom|center_horizontal|end"
             android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
             android:background="@drawable/lc_bkg_button"
             android:ellipsize="end"
             android:gravity="center"
@@ -88,19 +87,18 @@
 
         <TextView
             android:id="@+id/stopEditing"
-            android:layout_width="wrap_content"
+            android:layout_width="45dp"
+            android:layout_marginStart="5dp"
             android:layout_height="match_parent"
             android:layout_gravity="bottom|center_horizontal|end"
             android:layout_marginEnd="10dp"
-            android:drawableStart="@drawable/ic_cancel"
+            android:drawableEnd="@drawable/ic_cancel"
+            android:paddingEnd="10dp"
+            android:paddingStart="0dp"
             android:background="@drawable/bkg_hover_button"
             android:ellipsize="end"
             android:gravity="center"
             android:maxLines="2"
-            android:paddingStart="15dp"
-            android:paddingTop="10dp"
-            android:paddingEnd="15dp"
-            android:paddingBottom="10dp"
             android:textSize="16sp"
             tools:ignore="UseCompatTextViewDrawableXml" />
     </LinearLayout>
