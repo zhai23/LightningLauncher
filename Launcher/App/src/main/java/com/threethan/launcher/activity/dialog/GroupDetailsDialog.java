@@ -39,7 +39,7 @@ public class GroupDetailsDialog extends BasicDialog<LauncherActivity> {
     }
 
     public AlertDialog show() {
-        final Map<String, String> apps = SettingsManager.getAppGroupMap();
+        final Map<String, Set<String>> gam = SettingsManager.getGroupAppsMap();
         final Set<String> appGroupsSet = SettingsManager.getAppGroups();
         SettingsManager settingsManager = a.settingsManager;
         final String groupName = settingsManager.getAppGroupsSorted(false).get(groupPosition);
@@ -103,33 +103,23 @@ public class GroupDetailsDialog extends BasicDialog<LauncherActivity> {
                 appGroupsSet.remove(groupName);
                 appGroupsSet.add(newGroupName);
 
-                // Move apps when we rename
-                Map<String, String> updatedAppGroupMap = new HashMap<>();
-                for (String packageName : apps.keySet()) {
-                    if (apps.get(packageName) != null) {
-                        if (Objects.requireNonNull(apps.get(packageName)).compareTo(groupName) == 0)
-                            updatedAppGroupMap.put(packageName, newGroupName);
-                        else
-                            updatedAppGroupMap.put(packageName, apps.get(packageName));
-                    }
-                }
+                // Move contents when we rename
+                Set<String> contents = gam.remove(groupName);
+                gam.put(newGroupName, contents);
+
                 HashSet<String> selectedGroup = new HashSet<>();
                 selectedGroup.add(newGroupName);
                 settingsManager.setSelectedGroups(selectedGroup);
                 settingsManager.setAppGroups(appGroupsSet);
-                SettingsManager.setAppGroupMap(updatedAppGroupMap);
+                SettingsManager.setGroupAppsMap(gam);
                 a.launcherService.forEachActivity(LauncherActivity::refreshInterface);
             }
             dialog.cancel();
         });
 
         dialog.findViewById(R.id.deleteGroupButton).setOnClickListener(view1 -> {
-            HashMap<String, String> appGroupMap = new HashMap<>();
-            for (String packageName : apps.keySet())
-                if (!Objects.equals(groupName, apps.get(packageName)))
-                    appGroupMap.put(packageName, apps.get(packageName));
-
-            SettingsManager.setAppGroupMap(appGroupMap);
+            gam.remove(groupName);
+            SettingsManager.setGroupAppsMap(gam);
             appGroupsSet.remove(groupName);
 
             boolean hasNormalGroup = false;

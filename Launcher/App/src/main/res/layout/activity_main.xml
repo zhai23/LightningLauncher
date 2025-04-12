@@ -11,10 +11,11 @@
         android:id="@+id/apps"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipToPadding="false"
         android:clipChildren="false"
+        android:clipToPadding="false"
         android:overScrollMode="never"
-        android:scrollbars="none"/>
+        android:scrollbars="none" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/topBarLayout"
         android:layout_width="match_parent"
@@ -221,7 +222,7 @@
                         android:nextFocusUp="@id/searchCancelIcon"
                         android:padding="8dp"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/ic_cancel_search"
+                        android:src="@drawable/ic_cancel"
                         tools:ignore="ImageContrastCheck" />
                 </FrameLayout>
             </LinearLayout>
@@ -229,100 +230,7 @@
         </eightbitlab.com.blurview.BlurView>
     </FrameLayout>
 
-    <eightbitlab.com.blurview.BlurView
-        android:id="@+id/editFooter"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:background="#000000"
-        android:elevation="13dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
-        android:visibility="gone"
-        tools:visibility="visible">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/selectionHintText"
-
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginStart="10dp"
-                android:layout_weight="1"
-                android:background="@drawable/lc_bkg_button"
-                android:ellipsize="end"
-                android:gravity="center"
-                android:maxLines="2"
-                android:nextFocusRight="@id/uninstallBulk"
-                android:paddingStart="10dp"
-                android:paddingTop="10dp"
-                android:paddingEnd="5dp"
-                android:paddingBottom="10dp"
-                android:text="@string/selection_hint_none"
-                android:textSize="16sp"
-                tools:ignore="NestedWeights" />
-
-            <ImageView
-                android:id="@+id/uninstallBulk"
-                android:layout_width="40dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_marginStart="-40dp"
-                android:background="@drawable/bkg_hover_button_bar"
-                android:nextFocusLeft="@id/selectionHintText"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_uninstall"
-                android:visibility="gone"
-                tools:visibility="visible" />
-
-
-            <TextView
-                android:id="@+id/addWebsite"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="bottom|center_horizontal|end"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_weight="0.3"
-                android:background="@drawable/lc_bkg_button"
-                android:ellipsize="end"
-                android:gravity="center"
-                android:maxLines="2"
-                android:nextFocusLeft="@id/uninstallBulk"
-                android:paddingStart="15dp"
-                android:paddingTop="10dp"
-                android:paddingEnd="15dp"
-                android:paddingBottom="10dp"
-                android:singleLine="false"
-                android:text="@string/add_website"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/stopEditing"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="bottom|center_horizontal|end"
-                android:layout_marginEnd="10dp"
-                android:layout_weight="0.3"
-                android:background="@drawable/lc_bkg_button"
-                android:ellipsize="end"
-                android:gravity="center"
-                android:maxLines="2"
-                android:paddingStart="15dp"
-                android:paddingTop="10dp"
-                android:paddingEnd="15dp"
-                android:paddingBottom="10dp"
-                android:text="@string/edit_mode_stop"
-                android:textSize="16sp" />
-        </LinearLayout>
-
-    </eightbitlab.com.blurview.BlurView>
+    <include layout="@layout/activity_main_edit_footer" />
 
     <FrameLayout
         android:id="@+id/openAnim"

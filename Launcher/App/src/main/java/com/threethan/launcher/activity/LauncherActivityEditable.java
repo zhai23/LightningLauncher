@@ -1,13 +1,16 @@
 package com.threethan.launcher.activity;
 
 import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -44,6 +47,7 @@ import eightbitlab.com.blurview.BlurView;
 public class LauncherActivityEditable extends LauncherActivity {
     @Nullable
     protected Boolean editMode = null;
+    private boolean isCopying = false;
 
     /**
      * Used to track changes in a hashset and track changes made to selected apps
@@ -77,6 +81,7 @@ public class LauncherActivityEditable extends LauncherActivity {
         stopEditingButton.setOnClickListener(view -> setEditMode(false));
     }
 
+    @SuppressLint("UseCompatTextViewDrawableApis")
     @Override
     public void refreshInterface() {
         dataStoreEditor = new DataStoreEditor(this);
@@ -92,13 +97,20 @@ public class LauncherActivityEditable extends LauncherActivity {
 
             final TextView selectionHintText = rootView.findViewById(R.id.selectionHintText);
             final ImageView uninstallButton = rootView.findViewById(R.id.uninstallBulk);
+            final Spinner actionSpinner = rootView.findViewById(R.id.editActionSpinner);
+            actionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    isCopying = i == 1;
+                    updateSelectionHint();
+                }
 
-            for (TextView textView: new TextView[]{selectionHintText, rootView.findViewById(R.id.addWebsite), rootView.findViewById(R.id.stopEditing)}) {
-                textView.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(darkMode ? "#80000000" : "#FFFFFF")));
-                textView.setTextColor(darkMode ? Color.WHITE : Color.BLACK);
-            }
-            selectionHintText  .setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(darkMode ? "#80000000" : "#FFFFFF")));
-            uninstallButton.setImageTintList(ColorStateList.valueOf(Color.parseColor(darkMode ? "#FFFFFF" : "#3a3a3c")));
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {}
+            });
+
+            ((TextView) rootView.findViewById(R.id.stopEditing))
+                    .setCompoundDrawableTintList(ColorStateList.valueOf(darkMode ? Color.WHITE : Color.BLACK));
 
             selectionHintText.setOnClickListener((view) -> {
                 if (currentSelectedApps.isEmpty()) {
@@ -172,13 +184,15 @@ public class LauncherActivityEditable extends LauncherActivity {
         if (!currentSelectedApps.isEmpty()) {
             GroupsAdapter groupsAdapter = getGroupAdapter();
             if (groupsAdapter != null)
-                for (String app : currentSelectedApps)
-                    groupsAdapter.setGroup(app, group);
+                for (String app : currentSelectedApps) {
+                    if (isCopying) groupsAdapter.copyAppToGroup(app, group);
+                    else groupsAdapter.moveAppToGroup(app, group);
+                }
 
             TextView selectionHintText = rootView.findViewById(R.id.selectionHintText);
             selectionHintText.setText( currentSelectedApps.size()==1 ?
-                    getString(R.string.selection_moved_single, group) :
-                    getString(R.string.selection_moved_multiple, currentSelectedApps.size(), group)
+                    getString(isCopying ? R.string.selection_copied_single :R.string.selection_moved_single, group) :
+                    getString(isCopying ? R.string.selection_copied_multiple :R.string.selection_moved_multiple, currentSelectedApps.size(), group)
             );
             rootView.findViewById(R.id.uninstallBulk).setVisibility(View.GONE);
             selectionHintText.postDelayed(this::updateSelectionHint, 2000);
@@ -260,8 +274,8 @@ public class LauncherActivityEditable extends LauncherActivity {
         final int size = currentSelectedApps.size();
         runOnUiThread(() -> {
             if (size == 0)      selectionHintText.setText(R.string.selection_hint_none);
-            else if (size == 1) selectionHintText.setText(R.string.selection_hint_single);
-            else selectionHintText.setText(getString(R.string.selection_hint_multiple, size));
+            else if (size == 1) selectionHintText.setText(isCopying ? R.string.selection_hint_single_copy : R.string.selection_hint_single_move);
+            else selectionHintText.setText(getString(isCopying ? R.string.selection_hint_multiple_copy : R.string.selection_hint_multiple_move, size));
         });
     }
 
@@ -283,24 +297,16 @@ public class LauncherActivityEditable extends LauncherActivity {
         urlEdit.post(urlEdit::requestFocus);
 
         TextView badUrl  = dialog.findViewById(R.id.badUrl);
-        TextView usedUrl = dialog.findViewById(R.id.usedUrl);
         urlEdit.setOnEdited(url -> {
             if (StringLib.isInvalidUrl(url)) url = "https://" + url;
             badUrl .setVisibility(StringLib.isInvalidUrl(url)
                     ? View.VISIBLE : View.GONE);
-
-            String foundGroup = PlatformExt.findWebsite(dataStoreEditor, url);
-            usedUrl.setVisibility(foundGroup != null
-                    ? View.VISIBLE : View.GONE);
-            if (foundGroup != null)
-                usedUrl.setText(context.getString(R.string.add_website_used_url, foundGroup));
         });
 
         dialog.findViewById(R.id.install).setOnClickListener(view -> {
             String url  = urlEdit.getText().toString().toLowerCase();
             if (StringLib.isInvalidUrl(url)) url = "https://" + url;
             if (StringLib.isInvalidUrl(url)) return;
-            if (PlatformExt.findWebsite(dataStoreEditor, url) != null) return;
             PlatformExt.addWebsite(dataStoreEditor, url);
             if (!url.contains("://")) url = "https://" + url;
             settingsManager.setAppGroup(url, group);
@@ -326,11 +332,6 @@ public class LauncherActivityEditable extends LauncherActivity {
         AlertDialog subDialog = new BasicDialog<>(this, R.layout.dialog_info_websites).show();
         if (subDialog == null) return;
         subDialog.findViewById(R.id.vrOnlyInfo).setVisibility(Platform.isVr() ? View.VISIBLE : View.GONE);
-        subDialog.findViewById(R.id.install).setOnClickListener(view -> {
-            dataStoreEditor.putBoolean(Settings.KEY_SEEN_WEBSITE_POPUP, true);
-            addWebsite(this);
-            subDialog.dismiss();
-        });
     }
 
     @Override

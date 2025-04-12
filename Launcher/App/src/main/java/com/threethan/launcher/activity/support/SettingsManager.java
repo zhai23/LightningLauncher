@@ -32,6 +32,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 /**
  * An instance of this class is tied to each launcher activity, and it is used to get and store
@@ -60,7 +61,7 @@ public class SettingsManager extends Settings {
     private static DataStoreEditor dataStoreEditor = null;
     private static DataStoreEditor dataStoreEditorSort = null;
     private final WeakReference<LauncherActivity> myLauncherActivityRef;
-    private static ConcurrentHashMap<String, String> appGroupMap = new ConcurrentHashMap<>();
+    private static ConcurrentHashMap<String, Set<String>> groupAppsMap = new ConcurrentHashMap<>();
     private static Set<String> appGroupsSet = Collections.synchronizedSet(new HashSet<>());
     private Set<String> selectedGroupsSet = Collections.synchronizedSet(new HashSet<>());
     private static final Map<Context, SettingsManager> instanceByContext = Collections.synchronizedMap(new HashMap<>());
@@ -97,6 +98,7 @@ public class SettingsManager extends Settings {
      */
     public static String getAppLabel(ApplicationInfo app) {
         if (appLabelCache.containsKey(app)) return appLabelCache.get(app);
+        if (app == null) return "";
         final String customLabel = dataStoreEditor.getString(app.packageName, "");
         if (customLabel.isEmpty()) fetchLabelAsync(app, l -> {});
         return processAppLabel(app, customLabel);
@@ -135,6 +137,8 @@ public class SettingsManager extends Settings {
      * Gets the string which should be used to sort the given app
      */
     public static String getSortableAppLabel(ApplicationInfo app) {
+        if (app == null) return "";
+
         final String base = getAppLabel(app);
         final boolean starred = StringLib.hasStar(base);
         final boolean banner = SettingsManager.getAppIsBanner(app);
@@ -211,17 +215,24 @@ public class SettingsManager extends Settings {
     public static int getDefaultBrowser() {
         return dataStoreEditor.getInt(Settings.KEY_DEFAULT_BROWSER, 0);
     }
-    public static ConcurrentHashMap<String, String> getAppGroupMap() {
-        if (appGroupMap.isEmpty()) readGroupsAndSort();
-        return appGroupMap;
+
+    public static ConcurrentHashMap<String, Set<String>> getGroupAppsMap() {
+        if (groupAppsMap.isEmpty()) readGroupsAndSort();
+        return groupAppsMap;
     }
     public void setAppGroup(String packageName, String group) {
-        getAppGroupMap();
-        appGroupMap.put(packageName, group);
+        ConcurrentHashMap<String, Set<String>> gam = SettingsManager.getGroupAppsMap();
+        // Remove from old group(s)
+        for (String from : gam.keySet())
+            Objects.requireNonNull(gam.get(from)).remove(packageName);
+        // Add to new group
+        Objects.requireNonNull(SettingsManager.getGroupAppsMap().get(group))
+                .add(packageName);
+
         storeValues();
     }
-    public static void setAppGroupMap(Map<String, String> value) {
-        appGroupMap = new ConcurrentHashMap<>(value);
+    public static void setGroupAppsMap(Map<String, Set<String>> value) {
+        groupAppsMap = new ConcurrentHashMap<>(value);
         writeGroupsAndSort();
     }
 
@@ -234,30 +245,45 @@ public class SettingsManager extends Settings {
     public List<ApplicationInfo>
     getVisibleAppsSorted(List<String> selectedGroups, Collection<ApplicationInfo> allApps) {
         // Get list of installed apps
-        ConcurrentHashMap<String, String> apps = getAppGroupMap();
+        Map<String, Set<String>> gam = getGroupAppsMap();
 
         if (allApps == null) {
             Log.w("Lightning Launcher", "Got null app list");
             return new ArrayList<>();
         }
 
+        ArrayList<ApplicationInfo> unsorted = new ArrayList<>(allApps);
+        unsorted.removeIf(Objects::isNull);
+        gam.values().forEach(groupApps -> unsorted.removeIf(ai -> groupApps.contains(ai.packageName)));
+
         // Sort unsorted apps if needed
-        for (ApplicationInfo app : new ArrayList<>(allApps)) {
-            if (App.getType(app) == App.Type.UNSUPPORTED)
-                apps.put(app.packageName, Settings.UNSUPPORTED_GROUP);
-            else if (!apps.containsKey(app.packageName) ||
-                    Objects.equals(apps.get(app.packageName), Settings.UNSUPPORTED_GROUP)) {
-                apps.put(app.packageName, SettingsManager.getDefaultGroupFor(AppExt.getType(app)));
-            }
+        for (ApplicationInfo app : unsorted) {
+            App.Type type = App.getType(app);
+            String targetGroup = type == App.Type.UNSUPPORTED
+                    ? Settings.UNSUPPORTED_GROUP
+                    : SettingsManager.getDefaultGroupFor(AppExt.getType(app));
+
+            // Create group if needed
+            if (!gam.containsKey(targetGroup))
+                gam.put(targetGroup, new HashSet<>());
+
+            Set<String> group = gam.get(targetGroup);
+            if (group != null)
+                group.add(app.packageName);
         }
 
-        // Save changes to app list
-        setAppGroupMap(apps);
+        setGroupAppsMap(gam);
 
-        List<ApplicationInfo> currentApps = new ArrayList<>(allApps);
-        currentApps.removeIf(app
-                -> !(apps.containsKey(app.packageName)
-                && selectedGroups.contains(apps.get(app.packageName))));
+        Set<String> currentPackages = new HashSet<>();
+        for (String group : selectedGroups)
+            if (gam.containsKey(group))
+                currentPackages.addAll(Objects.requireNonNull(gam.get(group)));
+
+        Map<String, ApplicationInfo> appByPackageName = allApps.stream().collect(Collectors.toMap(ai -> ai.packageName, x -> x));
+        List<ApplicationInfo> currentApps = currentPackages.stream().map(appByPackageName::get).collect(Collectors.toList());
+
+        // Remove disabled/uninstalled apps
+        currentApps.removeIf(Objects::isNull);
 
         // Must be set here, else labels might async load during sort which causes issues
         Map<ApplicationInfo, String> labels = new HashMap<>();
@@ -311,12 +337,9 @@ public class SettingsManager extends Settings {
                 LauncherActivity.groupsEnabled || myLauncherActivityRef.get().isEditing()) {
 
             // Deselect hidden
-            if (myLauncherActivityRef.get() != null && !myLauncherActivityRef.get().isEditing()) {
-                for (Object group : selectedGroupsSet.toArray()) {
-                    if (!appGroupMap.containsValue((String) group))
-                        selectedGroupsSet.remove((String) group);
-                }
-            }
+            if (myLauncherActivityRef.get() != null && !myLauncherActivityRef.get().isEditing())
+                selectedGroupsSet.removeIf(s -> s.equals(Settings.HIDDEN_GROUP)
+                        || groupAppsMap.get(s) == null || Objects.requireNonNull(groupAppsMap.get(s)).isEmpty());
             return selectedGroupsSet;
         } else {
             Set<String> retSet = new HashSet<>(appGroupsSet);
@@ -354,9 +377,7 @@ public class SettingsManager extends Settings {
         sortedGroupList.remove(Settings.UNSUPPORTED_GROUP);
 
         if (myLauncherActivityRef.get() != null && !myLauncherActivityRef.get().isEditing()) {
-            for (Object group: sortedGroupList.toArray()) {
-                if (!appGroupMap.containsValue((String) group)) sortedGroupList.remove((String) group);
-            }
+            sortedGroupList.removeIf(s -> s.equals(Settings.HIDDEN_GROUP) || Objects.requireNonNull(groupAppsMap.get(s)).isEmpty());
         }
 
         return sortedGroupList;
@@ -370,7 +391,7 @@ public class SettingsManager extends Settings {
         for (String group : appGroupsSet)
             dataStoreEditorSort.removeStringSet(KEY_GROUP_APP_LIST + group);
         appGroupsSet.clear();
-        appGroupMap.clear();
+        groupAppsMap.clear();
         dataStoreEditorSort.removeStringSet(KEY_GROUPS);
         dataStoreEditor.removeStringSet(KEY_SELECTED_GROUPS);
         for (String group : getAppGroups())
@@ -397,15 +418,17 @@ public class SettingsManager extends Settings {
             appGroupsSet.clear();
             appGroupsSet.addAll(dataStoreEditorSort.getStringSet(KEY_GROUPS, getDefaultGroupsSet()));
 
-            appGroupMap.clear();
+            groupAppsMap.clear();
 
             appGroupsSet.add(Settings.HIDDEN_GROUP);
             appGroupsSet.add(Settings.UNSUPPORTED_GROUP);
+
             for (String group : appGroupsSet) {
                 Set<String> appListSet = new HashSet<>();
                 appListSet = dataStoreEditorSort.getStringSet(KEY_GROUP_APP_LIST + group, appListSet);
-                for (String app : appListSet) appGroupMap.put(app, group);
+                groupAppsMap.put(group, appListSet);
             }
+
 
         } catch (Exception e) {
             Log.e("Settings Manager", "Error while reading groups & sort", e);
@@ -424,23 +447,26 @@ public class SettingsManager extends Settings {
             DataStoreEditor editor = dataStoreEditorSort;
             editor.putStringSet(KEY_GROUPS, appGroupsSet);
 
-            Map<String, Set<String>> appListSetMap = new HashMap<>();
-            for (String group : appGroupsSet) appListSetMap.put(group, new HashSet<>());
-            for (String pkg : appGroupMap.keySet()) {
-                Set<String> group = appListSetMap.get(appGroupMap.get(pkg));
-                if (group == null) group = appListSetMap.get(
-                        SettingsManager.getDefaultGroupFor(App.Type.PHONE));
-                if (group == null) {
-                    Log.w("Group was null", pkg);
-                    group = appListSetMap.get(HIDDEN_GROUP);
-                    appGroupMap.put(pkg, HIDDEN_GROUP);
-                }
-                assert group != null;
-                group.add(pkg);
-            }
             for (String group : appGroupsSet) {
-                editor.putStringSet(KEY_GROUP_APP_LIST + group, appListSetMap.get(group));
+                editor.putStringSet(KEY_GROUP_APP_LIST + group, groupAppsMap.get(group));
             }
+//            Map<String, Set<String>> appListSetMap = new HashMap<>();
+//            for (String group : appGroupsSet) appListSetMap.put(group, new HashSet<>());
+//            for (String pkg : appGroupMap.keySet()) {
+//                Set<String> group = appListSetMap.get(appGroupMap.get(pkg));
+//                if (group == null) group = appListSetMap.get(
+//                        SettingsManager.getDefaultGroupFor(App.Type.PHONE));
+//                if (group == null) {
+//                    Log.w("Group was null", pkg);
+//                    group = appListSetMap.get(HIDDEN_GROUP);
+//                    appGroupMap.put(pkg, HIDDEN_GROUP);
+//                }
+//                assert group != null;
+//                group.add(pkg);
+//            }
+//            for (String group : appGroupsSet) {
+//                editor.putStringSet(KEY_GROUP_APP_LIST + group, appListSetMap.get(group));
+//            }
         } catch (Exception e) {
             Log.e("Settings Manager", "Error while writing groups & sort", e);
         }
@@ -556,6 +582,7 @@ public class SettingsManager extends Settings {
     }
     /** Call getAppOverridesBanner first! @return True, if the app overrides & is a banner */
     public static boolean getAppIsBanner(ApplicationInfo app) {
+        if (app == null) return false;
         if (SettingsManager.isTypeBanner(AppExt.getType(app))) {
             return !forcedSquareApps.contains(app.packageName);
         } else {
