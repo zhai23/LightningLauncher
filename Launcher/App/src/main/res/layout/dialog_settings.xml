@@ -107,29 +107,30 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginEnd="10dp"
                 android:switchPadding="7dp"
                 android:text="@string/edit_mode"
                 android:tooltipText="@string/edit_mode_tip"
-                tools:ignore="UnusedAttribute" />
+                tools:ignore="UnusedAttribute"
+                android:background="@drawable/lc_bkg_button_top_left"/>
 
             <com.threethan.launchercore.view.LcButton
                 android:id="@+id/addWebsiteButton"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginEnd="5dp"
                 android:layout_weight="1"
                 android:paddingStart="5dp"
                 android:paddingEnd="5dp"
                 android:singleLine="true"
                 android:text="@string/add_website"
-                android:visibility="gone">
+                android:visibility="gone"
+                android:background="@drawable/lc_bkg_button_top_left">
 
             </com.threethan.launchercore.view.LcButton>
 
             <com.threethan.launchercore.view.LcButton
                 android:id="@+id/addonsButtonAttract"
                 style="@style/buttonHighlight"
+                android:layout_marginStart="2dp"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -140,10 +141,12 @@
                 tools:ignore="UnusedAttribute" />
 
             <com.threethan.launchercore.view.LcButton
+                android:background="@drawable/lc_bkg_button_top_right"
                 android:id="@+id/addonsButton"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:layout_marginStart="2dp"
                 android:drawableEnd="@drawable/ic_dialog"
                 android:text="@string/settings_addons"
                 android:tooltipText="@string/settings_addons_tip"
@@ -155,8 +158,8 @@
             android:id="@+id/multitaskSwitch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
-            android:layout_marginTop="10dp"
+            android:background="@drawable/lc_bkg_button_bottom"
+            android:layout_marginTop="2dp"
             android:switchPadding="7dp"
             android:text="@string/new_multitasking"
             android:tooltipText="@string/new_multitasking_tip"
@@ -189,18 +192,18 @@
         </FrameLayout>
 
         <HorizontalScrollView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="42dp"
+            android:padding="0dp"
             android:scrollbars="none"
+            android:background="@drawable/lc_bkg_button_top"
             tools:ignore="SpeakableTextPresentCheck">
 
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="42dp"
-                android:background="@drawable/lc_bkg_button"
-                android:orientation="horizontal"
-                android:paddingStart="6dp"
-                android:paddingEnd="6dp">
+                android:layout_height="match_parent"
+                android:padding="6dp"
+                android:orientation="horizontal">
 
                 <ImageView
                     android:id="@+id/background0"
@@ -339,22 +342,22 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="2dp"
             android:orientation="horizontal"
             android:baselineAligned="false">
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="39dp"
-                android:layout_marginEnd="5dp"
                 android:layout_weight="1"
-                android:background="@drawable/lc_bkg_button"
-                android:orientation="horizontal">
+                android:paddingEnd="10dp"
+                android:background="@drawable/lc_bkg_button_bottom_left"
+                android:orientation="horizontal"
+                tools:ignore="RtlSymmetry">
 
                 <com.threethan.launchercore.view.LcText
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="10dp"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
                     android:singleLine="true"
@@ -378,17 +381,18 @@
             </LinearLayout>
 
             <LinearLayout
+                android:paddingEnd="10dp"
                 android:layout_width="0dp"
                 android:layout_height="39dp"
-                android:layout_marginStart="5dp"
+                android:layout_marginStart="2dp"
                 android:layout_weight="1"
-                android:background="@drawable/lc_bkg_button"
-                android:orientation="horizontal">
+                android:background="@drawable/lc_bkg_button_bottom_right"
+                android:orientation="horizontal"
+                tools:ignore="RtlSymmetry">
 
                 <com.threethan.launchercore.view.LcText
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="10dp"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
                     android:singleLine="true"

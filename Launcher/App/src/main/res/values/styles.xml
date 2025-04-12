@@ -18,7 +18,7 @@
         <item name="android:textColor">#FFF</item>
         <item name="colorAccent">#3364c3</item>
 
-        <item name="buttonCornerRadius">10dp</item>
+        <item name="buttonCornerRadius">13dp</item>
     </style>
 
     <style name="SettingTitle">
@@ -31,7 +31,7 @@
     <style name="SettingSubtitle">
         <item name="android:textColor">#FFFFFF</item>
         <item name="android:textSize">20sp</item>
-        <item name="android:paddingStart">7dp</item>
+        <item name="android:paddingStart">20dp</item>
         <item name="android:paddingEnd">7dp</item>
         <item name="android:layout_marginTop">22dp</item>
         <item name="android:layout_marginBottom">6dp</item>

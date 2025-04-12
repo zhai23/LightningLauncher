@@ -54,7 +54,7 @@
     <string name="advanced_button">打开高级设置</string>
     <string name="refresh_button">刷新应用程序</string>
     <string name="advanced_interface">界面选项</string>
-    <string name="advanced_window">窗户</string>
+    <string name="advanced_reset">重置为默认值</string>
     <string name="advanced_launching">启动选项</string>
     <string name="advanced_features">附加特性</string>
     <string name="advanced_search">搜索设置</string>

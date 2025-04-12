@@ -56,9 +56,6 @@ public class LcSwitch extends Switch {
                 a.recycle();
             }
         }
-
-        setPadding(getPaddingLeft()*2, getPaddingTop(),
-                getPaddingTop(), getPaddingBottom());
         LcToolTipHelper.init(this, attrs);
     }
 

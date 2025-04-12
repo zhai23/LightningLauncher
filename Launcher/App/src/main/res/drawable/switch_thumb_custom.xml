@@ -3,25 +3,25 @@
     <item android:state_checked="true"  android:state_enabled="true">
         <shape android:dither="true" android:shape="rectangle" android:useLevel="false" android:visible="true">
             <corners android:radius="20dp" />
-            <size android:width="28dp" android:height="28dp" />
+            <size android:width="24dp" android:height="24dp" />
 
-            <solid android:color="#333"/>
-            <stroke android:width="6dp" android:color="#0000" />
+            <solid android:color="#FFF"/>
+            <stroke android:width="4dp" android:color="#0000" />
         </shape>
     </item>
     <item android:state_checked="false"  android:state_enabled="true">
         <shape android:dither="true" android:shape="rectangle" android:useLevel="false" android:visible="true">
             <corners android:radius="20dp" />
-            <size android:width="28dp" android:height="28dp" />
+            <size android:width="24dp" android:height="24dp" />
 
             <solid android:color="#FFF"/>
-            <stroke android:width="6dp" android:color="#0000" />
+            <stroke android:width="4dp" android:color="#0000" />
         </shape>
     </item>
     <item android:state_enabled="false">
         <shape android:dither="true" android:shape="rectangle" android:useLevel="false" android:visible="true">
             <corners android:radius="20dp" />
-            <size android:width="28dp" android:height="28dp" />
+            <size android:width="24dp" android:height="24dp" />
 
             <solid android:color="#4FFF"/>
             <stroke android:width="6dp" android:color="#0000" />

@@ -51,7 +51,6 @@ public class BasicDialog<T extends Context> extends AbstractDialog<T> {
 
         if (dialog.getWindow() == null) return null;
         dialog.getWindow().setBackgroundDrawableResource(R.drawable.bkg_dialog);
-        dialog.getWindow().setDimAmount(0.4f);
         final View rootView = dialog.getWindow().getDecorView().findViewById(android.R.id.content).getRootView();
         rootView.setLayerType(View.LAYER_TYPE_HARDWARE, new Paint());
 
