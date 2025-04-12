@@ -28,8 +28,6 @@ import com.threethan.launchercore.util.Launch;
 import com.threethan.launchercore.util.Platform;
 
 import java.util.Objects;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * This abstract class is dedicated to actually launching apps.
@@ -42,6 +40,7 @@ public abstract class LaunchExt extends Launch {
     // Must match: arrays.xml -> advance_launch_browsers
     private static final int LAUNCH_BROWSER_SYSTEM = 1;
     private static final int LAUNCH_BROWSER_QUEST = 2;
+    private static final int LAUNCH_BROWSER_QUEST_SHORTCUT = 3;
 
     /**
      * Launches a given app, checking various configuration options in the process
@@ -181,8 +180,22 @@ public abstract class LaunchExt extends Launch {
                                 new ComponentName("com.oculus.browser",
                                         "com.oculus.browser.PanelActivity"));
                         break;
+
+                    case (LAUNCH_BROWSER_QUEST_SHORTCUT):
+                        intent.setPackage("com.oculus.browser");
+                        intent.setComponent(
+                                new ComponentName("com.oculus.browser",
+                                        "com.oculus.browser.ShortcutLauncher"));
+
+                        intent.putExtra("org.chromium.chrome.browser.webapp_url", app.packageName);
+                        intent.putExtra("org.chromium.chrome.browser.webapp_short_name", App.getLabel(app));
+                        intent.putExtra("org.chromium.chrome.browser.webapp_display_mode", 3);
+                        intent.putExtra("REUSE_URL_MATCHING_TAB_ELSE_NEW_TAB", true);
+                        break;
+
                     case (LAUNCH_BROWSER_SYSTEM):
                         break;
+
                     default:
                         intent.setPackage(PlatformExt.BROWSER_PACKAGE);
                         break;

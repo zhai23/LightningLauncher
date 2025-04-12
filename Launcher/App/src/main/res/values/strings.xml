@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name" translatable="false">Lightning Launcher</string>
-    <string name="app_name_for_list" translatable="false"> ➜ <u>Lightning</u> Launcher</string>
+    <string name="app_name_for_list" translatable="false"> ➜&nbsp;&nbsp;<u>Lightning</u> Launcher</string>
     <string name="app_name_for_activity" translatable="false">Lightning Launcher</string>
     <string name="add_group">Add Group</string>
     <string name="delete_group">Delete Group</string>
@@ -202,7 +202,8 @@
 
     <string name="browser_default_setting">Default for Websites:</string>
     <string name="browser_default_in" >Open in Lightning Browser</string>
-    <string name="browser_quest">Open in Meta Quest Browser</string>
+    <string name="browser_quest">Open in Quest Browser Tab</string>
+    <string name="browser_quest_shortcut">Open as Quest Browser Web App</string>
     <string name="browser_system">Try to Open in System Default</string>
 
     <string name="edit_off">Turn On Edit Mode</string>

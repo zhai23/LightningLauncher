@@ -19,6 +19,7 @@
         <item>@string/browser_default_in</item>
         <item>@string/browser_system</item>
         <item>@string/browser_quest</item>
+        <item>@string/browser_quest_shortcut</item>
     </array>
 
     <array name="edit_actions">
