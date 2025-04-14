@@ -2,6 +2,7 @@ package com.threethan.launcher.activity.adapter;
 
 import android.annotation.SuppressLint;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -183,17 +184,17 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.GroupViewH
             int shapeResourceId = getShapeResourceId(position);
             itemView.setBackgroundResource(shapeResourceId);
             TextView textView = itemView.findViewById(R.id.itemLabel);
-            textView.setTextColor(Color.parseColor(
-                    LauncherActivity.darkMode ? "#FFFFFFFF" : "#FF000000")); // set selected tab text color
+            textView.setTextColor(LauncherActivity.darkMode ? 0xFFFFFFFF : 0xFF000000); // set selected tab text color
+            textView.setTypeface(null, Typeface.BOLD);
 
             if (isEditMode && (position < getCount() - 2)) menu.setVisibility(View.VISIBLE);
             else                                           menu.setVisibility(View.GONE);
         } else {
             itemView.setBackgroundColor(Color.TRANSPARENT);
             TextView textView = itemView.findViewById(R.id.itemLabel);
-            textView.setTextColor(Color.parseColor(
-                    LauncherActivity.darkMode ? "#98FFFFFF" : "#98000000")); // set unselected tab text color
+            textView.setTextColor(LauncherActivity.darkMode ? 0x99FFFFFF : 0x99000000); // set unselected tab text color
             menu.setVisibility(View.GONE);
+            textView.setTypeface(null, Typeface.NORMAL);
         }
     }
 

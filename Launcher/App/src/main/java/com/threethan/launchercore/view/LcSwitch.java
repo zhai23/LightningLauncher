@@ -15,6 +15,8 @@ import androidx.core.content.res.ResourcesCompat;
 
 import com.threethan.launcher.R;
 
+import java.lang.reflect.Field;
+
 @SuppressLint("UseSwitchCompatOrMaterialCode")
 public class LcSwitch extends Switch {
     public LcSwitch(Context context) {
@@ -33,6 +35,7 @@ public class LcSwitch extends Switch {
     }
 
     protected void init(AttributeSet attrs) {
+        setSwitchMinWidth(1);
         if (attrs != null) {
             //noinspection resource
             TypedArray a = getContext().getTheme().obtainStyledAttributes(
@@ -67,5 +70,20 @@ public class LcSwitch extends Switch {
     @Override
     public void setTooltipText(@Nullable CharSequence tooltipText) {
         LcToolTipHelper.init(this, tooltipText);
+    }
+
+    @Override
+    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+        try {
+            //noinspection JavaReflectionMemberAccess
+            @SuppressLint("DiscouragedPrivateApi")
+            Field fmSwitchWidth = Switch.class.getDeclaredField("mSwitchWidth");
+            fmSwitchWidth.setAccessible(true);
+
+            fmSwitchWidth.set(this, 48);
+
+        } catch (Exception ignored) {}
     }
 }
