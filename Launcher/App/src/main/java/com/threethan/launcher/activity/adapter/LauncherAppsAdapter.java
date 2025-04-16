@@ -27,6 +27,7 @@ import com.threethan.launchercore.adapter.AppsAdapter;
 import com.threethan.launchercore.lib.StringLib;
 import com.threethan.launchercore.util.Platform;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -65,13 +66,15 @@ public class LauncherAppsAdapter extends AppsAdapter<LauncherAppsAdapter.AppView
         launcherActivity = activity;
 
         topSearchResult = null;
+        prevFilterText = "";
         setFullItems(Collections.unmodifiableList(settingsManager
                 .getVisibleAppsSorted(settingsManager.getAppGroupsSorted(true), fullAppSet)));
     }
 
-
+    private static String prevFilterText = "";
     public synchronized void filterBy(String text) {
         if (text.isEmpty()) {
+            prevFilterText = "";
             refresh();
             return;
         }
@@ -81,13 +84,17 @@ public class LauncherAppsAdapter extends AppsAdapter<LauncherAppsAdapter.AppView
         boolean showHidden = !text.isEmpty() && launcherActivity.dataStoreEditor.getBoolean(
                 Settings.KEY_SEARCH_HIDDEN, Settings.DEFAULT_SEARCH_HIDDEN);
 
-        final List<ApplicationInfo> newItems =
+        boolean reList = !text.startsWith(prevFilterText);
+        prevFilterText = text;
+
+        final List<ApplicationInfo> newItems = reList ?
                 settingsManager.getVisibleAppsSorted(
                         settingsManager.getAppGroupsSorted(false),
-                        fullAppSet);
+                        fullAppSet) : new ArrayList<>(getCurrentList());
 
         newItems.removeIf(item -> !
                 SettingsManager.getAppLabel(item).toLowerCase().contains(text.toLowerCase()));
+
 
         if (!showHidden) {
             Set<String> hg = SettingsManager.getGroupAppsMap().get(Settings.HIDDEN_GROUP);
@@ -99,7 +106,6 @@ public class LauncherAppsAdapter extends AppsAdapter<LauncherAppsAdapter.AppView
 
         // Add search queries
         if (showWeb && !launcherActivity.isEditing()) {
-
             final ApplicationInfo googleProxy = new ApplicationInfo();
             googleProxy.packageName = StringLib.googleSearchForUrl(text);
             newItems.add(googleProxy);
@@ -117,7 +123,7 @@ public class LauncherAppsAdapter extends AppsAdapter<LauncherAppsAdapter.AppView
             newItems.add(apkMirrorProxy);
         }
 
-        topSearchResult = newItems.get(0);
+        topSearchResult = newItems.isEmpty() ? null : newItems.get(0);
         submitList(newItems, () -> notifyItemChanged(topSearchResult));
     }
     public void setLauncherActivity(LauncherActivity val) {

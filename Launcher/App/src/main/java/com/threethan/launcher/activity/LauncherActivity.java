@@ -675,7 +675,6 @@ public class LauncherActivity extends Launch.LaunchingActivity {
      */
     public void clickGroup(int position, View source) {
         refreshPackages();
-        if (position == lastSelectedGroup) return;
 
         lastSelectedGroup = position;
         // This method is replaced with a greatly expanded one in the child class
