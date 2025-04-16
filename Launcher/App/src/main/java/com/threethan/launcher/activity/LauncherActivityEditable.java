@@ -166,16 +166,16 @@ public class LauncherActivityEditable extends LauncherActivity {
     }
 
     @Override
-    public void clickGroup(int position) {
+    public void clickGroup(int position, View source) {
         lastSelectedGroup = position;
         final List<String> groupsSorted = settingsManager.getAppGroupsSorted(false);
 
         // If the new group button was selected, create and select a new group
         if (position >= groupsSorted.size()) {
             final String ignored = settingsManager.addGroup();
-            super.clickGroup(position-1); //Auto-move selection and select new group
+            super.clickGroup(position-1, source); //Auto-move selection and select new group
             refreshInterface();
-            postDelayed(() -> clickGroup(position-1), 500); //Auto-move selection
+            postDelayed(() -> clickGroup(position-1, source), 500); //Auto-move selection
             return;
         }
         final String group = groupsSorted.get(position);
@@ -201,7 +201,7 @@ public class LauncherActivityEditable extends LauncherActivity {
 
             SettingsManager.writeGroupsAndSort();
             refreshInterface();
-        } else super.clickGroup(position);
+        } else super.clickGroup(position, source);
     }
 
     // Function overrides

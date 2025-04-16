@@ -236,7 +236,7 @@ public class AppsAdapter<VH extends AppsAdapter.AppViewHolder>
 
     protected void onViewHolderReady(VH holder) {}
 
-    private static final ExecutorService executorService = Executors.newWorkStealingPool();
+    private static final ExecutorService executorService = Executors.newCachedThreadPool();
     protected void onIconChanged(VH holder, Drawable icon) {
         // Set the actual image with proper scaling
         if (icon instanceof BitmapDrawable bitmapIcon) {

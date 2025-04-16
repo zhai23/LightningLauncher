@@ -82,7 +82,8 @@ public class LcSwitch extends Switch {
             Field fmSwitchWidth = Switch.class.getDeclaredField("mSwitchWidth");
             fmSwitchWidth.setAccessible(true);
 
-            fmSwitchWidth.set(this, 48);
+            fmSwitchWidth.set(this, (int) TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP, 38, getResources().getDisplayMetrics()));
 
         } catch (Exception ignored) {}
     }

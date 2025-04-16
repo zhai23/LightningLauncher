@@ -71,7 +71,8 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.GroupViewH
     }
 
     private void setActions(GroupViewHolder holder) {
-        holder.textView.setOnClickListener((view) -> launcherActivity.clickGroup(holder.position));
+        holder.textView.setOnClickListener((view)
+                -> launcherActivity.clickGroup(holder.position, view));
         holder.textView.setOnLongClickListener((view) -> {
             if (launcherActivity.longClickGroup(holder.position)) holder.menu.callOnClick();
             return true;

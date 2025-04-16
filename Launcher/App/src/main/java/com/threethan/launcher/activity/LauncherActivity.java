@@ -1,5 +1,6 @@
 package com.threethan.launcher.activity;
 
+import android.animation.Animator;
 import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Context;
@@ -19,6 +20,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
 import android.widget.FrameLayout;
@@ -462,14 +464,29 @@ public class LauncherActivity extends Launch.LaunchingActivity {
         timesBanner = dataStoreEditor
                 .getBoolean(Settings.KEY_SHOW_TIMES_BANNER, Settings.DEFAULT_SHOW_TIMES_BANNER);
 
+        updateSelectedGroups(rootView.getWidth()/2, 0);
+        updateGridLayouts();
+    }
+
+
+    protected void updateSelectedGroups(int x, int y) {
+        groupsView.setAdapter(new GroupsAdapter(this, isEditing()));
         if (getAppAdapter() == null) {
             appsView.setAdapter(new LauncherAppsAdapter(this));
         } else {
             getAppAdapter().setAppList(this);
         }
-        groupsView.setAdapter(new GroupsAdapter(this, isEditing()));
 
-        updateGridLayouts();
+        Animator anim = ViewAnimationUtils.createCircularReveal(appsView, x, y, 0, rootView.getHeight() + rootView.getWidth());
+        anim.setDuration(425);
+
+        appsView.setVisibility(View.INVISIBLE);
+        appsView.postDelayed(() -> {
+            try {
+                appsView.setVisibility(View.VISIBLE);
+                anim.start();
+            } catch (Exception ignored) {}
+        }, 75);
     }
 
     /**
@@ -654,14 +671,25 @@ public class LauncherActivity extends Launch.LaunchingActivity {
     /**
      * Perform the action for clicking a group
      * @param position Index of the group
+     * @param source Source of the click (optional)
      */
-    public void clickGroup(int position) {
+    public void clickGroup(int position, View source) {
+        refreshPackages();
+        if (position == lastSelectedGroup) return;
+
         lastSelectedGroup = position;
         // This method is replaced with a greatly expanded one in the child class
         final List<String> groupsSorted = settingsManager.getAppGroupsSorted(false);
         final String group = groupsSorted.get(position);
         settingsManager.selectGroup(group);
-        refreshInterface();
+
+        try {
+            int[] location = new int[2];
+            source.getLocationInWindow(location);
+            updateSelectedGroups(location[0] + source.getWidth()/2, location[1]);
+        } catch (Exception ignored) {
+            updateSelectedGroups(0,0);
+        }
     }
     /**
      * Perform the action for long clicking a group
