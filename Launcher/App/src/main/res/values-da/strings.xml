@@ -1,0 +1,312 @@
+<resources>
+    <string name="add_group">Tilføj gruppe</string>
+    <string name="delete_group">Slet gruppe</string>
+    <string name="edit_group">Rediger gruppe</string>
+    <string name="app_details">Detaljer om appen</string>
+    <string name="apps_hidden">- Skjult</string>
+    <string name="migrated">Gamle indstillinger er blevet migreret</string>
+    <string name="edit_mode">Redigeringstilstand</string>
+    <string name="edit_mode_tip">Skift grupper, tilføj hjemmesider og meget mere.</string>
+    <string name="edit_mode_disabled">Kun hovedvinduet kan redigere</string>
+    <string name="edit_mode_stop">Stop redigering</string>
+    <string name="new_multitasking">Luk Launcher-vinduet efter åbning af apps</string>
+    <string name="new_multitasking_tip">Hvis den er aktiveret, lukker Lightning Launcher sig selv, når du åbner en app.</string>
+    <string name="allow_chain_launch">Brug Quest Native Launching</string>
+    <string name="allow_chain_launch_tip">Starter apps med en metode, der ligner Quests standardstarter.
+        \Hvis du slår dette fra, ændres organiseringen af vinduer, og det kan give problemer.</string>
+    <string name="icons_size">Skala</string>
+    <string name="icons_size_tip">Målstørrelse for ikoner/bannere. \nKan variere med vinduesstørrelse.</string>
+    <string name="icons_margin">Margin</string>
+    <string name="icons_margin_tip">Målafstand mellem ikoner/bannere. \nKan variere med vinduesstørrelse.</string>
+    <string name="apps_vr">VR-apps</string>
+    <string name="apps_phone">Telefon-apps</string>
+    <string name="apps_tv">TV-apps</string>
+    <string name="apps_panel">Panel-apps</string>
+    <string name="apps_web">Hjemmesider</string>
+    <string name="default_group">Brug gruppe som standard for nye:</string>
+    <string name="app_name_icon">Under app-ikoner</string>
+    <string name="app_name_wide">Under app-bannere</string>
+    <string name="settings_main">Lightning Launcher</string>
+    <string name="settings_appearance">Tilpas udseende</string>
+    <string name="settings_addons_attract">Genveje</string>
+    <string name="settings_addons">Genveje</string>
+    <string name="settings_addons_tip">Gør Lightning Launcher lettere at få adgang til.</string>
+    <string name="settings_update">Download og installer seneste opdatering</string>
+    <string name="settings_enable_updates">Giv mig besked om nye opdateringer</string>
+    <string name="settings_enable_updates_tip">Klik for at få vist meddelelser om nye opdateringer.
+    \nDu har tidligere slået dette fra, når du sprang en opdatering over.</string>
+    <string name="behavior_header">Adfærd</string>
+    <string name="background_header">Tapet &amp; stil</string>
+    <string name="hdr_icon">Ikon-layout</string>
+    <string name="disp_wide">Vis som banner</string>
+    <string name="disp_icon">Vis som ikon</string>
+    <string name="disp_name">Vis altid navne</string>
+    <string name="more_options">Flere muligheder</string>
+    <string name="advanced_header">Avancerede indstillinger</string>
+    <string name="refresh_button">Opdatering</string>
+    <string name="advanced_interface">Grænseflade</string>
+    <string name="advanced_reset">Opdater og nulstil</string>
+    <string name="advanced_launching">Start-indstillinger</string>
+    <string name="advanced_features">Ekstra funktioner</string>
+    <string name="advanced_search">Indstillinger for søgning</string>
+    <string name="advanced_backup">Backup af indstillinger</string>
+    <string name="advanced_alpha">Gennemsigtighed i baggrunden</string>
+    <string name="advanced_alpha_tip">Gør baggrunden for Lightning Launcher gennemsigtig i passthrough.</string>
+    <string name="dark_mode">Mørk tilstand</string>
+    <string name="dark_mode_tip">Hvis den er slået til, bliver etiketterne hvide på en mørk baggrund.</string>
+    <string name="group_mode">Aktivér grupper</string>
+    <string name="group_mode_tip">Slå dette fra for at vise alle apps på én gang uden gruppering.
+        \Søg- og indstillingsikonerne bliver også skjult.
+        \n
+        \nBrug tilbage-knappen på din fjernbetjening/controller til at åbne Indstillinger.</string>
+    <string name="group_wide">Større grupper</string>
+    <string name="group_wide_tip">Øger minimumsbredden på gruppeknapper,
+        \sikrer, at længere navne ikke afskæres.
+        \n
+        \Kun mærkbar, når der er mange grupper.</string>
+    <string name="clear_cache">Nulstil alle ikoner</string>
+    <string name="clear_labels">Nulstil alle app-labels til standard</string>
+    <string name="group_defaults_button">Standardgrupper</string>
+    <string name="icons_settings_button">Opdater ikoner</string>
+    <string name="show_playtimes">Vis spilletider</string>
+    <string name="show_playtimes_desc">Vis spilletid på app-bannere.
+    \n\nKræver adgang til brugsdata</string>
+    <string name="open_usage">Adgang til brugsdata</string>
+    <string name="open_usage_desc">Åbn en indstillingsside, hvor du kan slå muligheden for, at apps som Lighting Launcher kan se din spilletid og dine brugsdata, til eller fra.</string>
+    <string name="close_fully">Helt tæt lynkaster</string>
+    <string name="close_fully_desc">Lukker Lightning Launcher helt.  (Du kan derefter åbne den igen)
+        \Dette giver dig mulighed for at fejlfinde problemer uden at genstarte.</string>
+    <string name="playtime_charts_warn">Installer Quest Game Tuner for at se diagrammer over spilletid</string>
+    <string name="request_playtime_title">Adgang til brugsdata påkrævet</string>
+    <string name="request_playtime_msg">For at se din spilletid i Lighting Launcher,
+        \skal du give den adgang til appens brugsdata.
+        \n
+        \Hvis Quest Game Tuner også er installeret, åbner et klik på spilletiden et dagligt eller månedligt diagram.
+        \n
+        \nDu kan skjule knappen for spilletid i Avancerede indstillinger.</string>
+    <string name="long_press">Langt tryk for at redigere</string>
+    <string name="long_press_tip">Når den er slået til, vil et langt tryk på en app åbne redigeringstilstand og vælge den.
+    \Når den er slukket, vil et langt tryk på en app vise detaljer.</string>
+    <string name="default_launch_out">Start apps i eget vindue som standard</string>
+    <string name="search_web">Vis websøgemaskiner i søgninger</string>
+    <string name="search_hidden">Vis skjulte apps i søgninger</string>
+    <string name="settings_save">Eksportindstillinger</string>
+    <string name="settings_load">Indstillinger for import</string>
+    <string name="groupings_save">Eksport af grupperinger</string>
+    <string name="groupings_load">Import af grupperinger</string>
+    <string name="advanced_sizing">Aktivér yderligere størrelser på telefonapp-vinduer</string>
+    <string name="advanced_sizing_tip">Gør det muligt at åbne apps i vinduer af forskellig størrelse, hvilket kan give problemer.</string>
+    <string name="toast_advanced_sizing">Nye størrelsesindstillinger kan vælges i indstillingerne for den enkelte app</string>
+    <string name="reload_icon">Nulstil-ikon</string>
+    <string name="open_tuning">Indstil med</string>
+    <string name="open_tuning_tip">Med Quest Game Tuner kan du justere opløsning, FPS og meget mere!</string>
+    <string name="tuner_options">⚙</string>
+    <string name="launch_out_message">Start af 2D-apps eller websites i deres eget vindue gør det nemmere at multitaske på Quest-enheder,
+        men vil medføre, at visse apps ikke altid starter. Hvis du har problemer, skal du deaktivere denne indstilling!</string>
+    <string name="launch_size_message">At starte 2D-apps eller websites i deres eget vindue gør det nemmere at multitaske på Quest-enheder,
+        men vil medføre, at visse apps ikke altid starter
+        \Indstilling af brugerdefinerede vinduesstørrelser løser problemet med apps, der ikke starter, viser nogle apps lidt tydeligere og giver mulighed for forskellige vinduesstørrelser i den flade visning.
+        \Men det kan af og til få vinduer til at sidde fast eller få Lightning Launcher til at gå ned
+        \Alle disse indstillinger kan kun indstilles pr. app
+        \Hvis du har problemer, skal du slå denne indstilling fra og sørge for, at alle apps ikke er indstillet til at starte i deres egne vinduer. Genstart for at løse fastlåste vinduer.</string>
+    <string name="hidden_groups_message">Hvis du slår denne indstilling fra, skjules den øverste bjælke, når du ikke er i redigeringstilstand. \n
+        \Indstillingsknappen bliver også skjult, når du ikke er i redigeringstilstand
+        \n Tryk i stedet på tilbage-knappen for at åbne indstillingerne.</string>
+    <string name="set_default_launcher_message">Hvis du indstiller Lightning Launcher som din standard Android-hjemmeapp, kan andre apps tilføje genvejsikoner til startskærmen.
+        \Dette skal kun gøres én gang
+        \nDet erstatter IKKE den faktiske standardstarter på VR-enheder og ændrer ikke selve funktionen af Lightning Launcher.\n
+        Hvis du vil gøre det, skal du tjekke Set Up Shortcuts/Shortcut Settings for genveje til Lightning Launcher.</string>
+    <string name="download_browser_message">For at få den bedste oplevelse skal du installere Lightning Browser for at åbne hjemmesider i Lightning Launcher
+        \n(Alternativt kan du prøve at ændre browseren i Indstillinger -&gt; Avancerede indstillinger)</string>
+    <string name="update_browser_message">For at få den bedste oplevelse skal du opdatere Lightning Browser.</string>
+    <string name="download_browser_toast_main">Åbn hjemmesiden igen</string>
+    <string name="download_browser_toast_bold">når installationen er færdig</string>
+    <string name="website_title">Hjemmesider i Lightning Launcher</string>
+    <string name="website_subtitle1">Nem adgang til hjemmesider og webapps</string>
+    <string name="website_info1">Hjemmesider vises som apps i launcheren
+        \nDu kan også søge på nettet fra søgefeltet.</string>
+    <string name="website_subtitle2">Lyd i baggrunden</string>
+    <string name="website_info2">Når de er minimeret, kan tilføjede websteder fortsætte med at køre, afspille og optage lyd, indtil de er helt lukket. (Der kan forekomme lydforsinkelse.) \n</string>
+    <string name="website_subtitle3">Valg af browser</string>
+    <string name="website_info3">På Quest-enheder kan du starte i Meta Quest Browser, som understøtter VR-webindhold.
+        \nStandarden kan indstilles i Avancerede indstillinger.</string>
+    <string name="add_website">Tilføj en hjemmeside</string>
+    <string name="add_website_tip">Tilføj en hjemmeside til launcheren</string>
+    <string name="add_website_url_label">Indtast en hvilken som helst webadresse</string>
+    <string name="add_website_bad_url">Indtast en gyldig URL</string>
+    <string name="add_website_used_url">Denne hjemmeside er allerede i %1$s</string>
+    <string name="add_website_audio_info">Tilføjede hjemmesider kan afspille baggrundslyd</string>
+    <string name="add_website_group">Tilføj til %s</string>
+    <string name="service_title">Genvejstjenester</string>
+    <string name="service_info_section_1_title">Nem adgang til Lightning Launcher</string>
+    <string name="service_info_section_1_content">Ved at aktivere genvejstjenesten åbnes Lightning Launcher, når du holder musen over det valgte ikon på docken.</string>
+    <string name="service_info_section_2_title">Aktivér genvejstjenesten</string>
+    <string name="service_info_section_2_content">1. Brug knappen nedenfor til at åbne Androids tilgængelighedsindstillinger.
+        \n2. Vælg den tjeneste, du ønsker at aktivere.
+        \n3. Tænd for tjenesten med den øverste kontakt.
+        \n4. Klik på "Tillad", når du bliver bedt om det.</string>
+    <string name="service_open_accessibility">Fortsæt til Indstillinger for tilgængelighed</string>
+    <string name="warning">Vigtig information</string>
+    <string name="cancel">Annuller</string>
+    <string name="understood">Jeg har det!</string>
+    <string name="confirm">Bekræft</string>
+    <string name="next">Fortsæt</string>
+    <string name="size_none">Åbn i standardvindue</string>
+    <string name="size_own">Åbn i App\'s eget vindue</string>
+    <string name="size_phone">Åbn i telefon-lignende vindue</string>
+    <string name="size_small">Åbn i lille 4:3-vindue</string>
+    <string name="size_medium">Åbn i mellemstort vindue</string>
+    <string name="size_large">Åbn i stort 16:9-vindue</string>
+    <string name="size_huge">Åbn i stort 16:9-vindue</string>
+    <string name="size_wide">Åben i bredt 21:9-vindue</string>
+    <string name="browser_default_setting">Standard for hjemmesider:</string>
+    <string name="browser_default_in">Åbn i Lightning Browser</string>
+    <string name="browser_quest">Åbn i Quest Browser-fanen</string>
+    <string name="browser_quest_shortcut">Åbn som Quest Browser Web App</string>
+    <string name="browser_system">Prøv at åbne i systemets standardindstillinger</string>
+    <string name="edit_off">Slå redigeringstilstand til</string>
+    <string name="edit_on">Slå redigeringstilstand fra</string>
+    <string name="edit_move">Flyt dig</string>
+    <string name="edit_copy">Kopi</string>
+    <string name="selection_hint_none">Klik på en app for at vælge den, eller klik her for at vælge alle</string>
+    <string name="selection_hint_single_move">1 app valgt, klik på en gruppe for at flytte den</string>
+    <string name="selection_hint_single_copy">1 app valgt, klik på en gruppe for at lave en kopi</string>
+    <string name="selection_hint_multiple_move">%d apps valgt, klik på en gruppe for at flytte dem</string>
+    <string name="selection_hint_multiple_copy">%d apps valgt, klik på en gruppe for at lave kopier</string>
+    <string name="selection_moved_single">Flyttede en app til %1$s</string>
+    <string name="selection_copied_single">Kopierede en app til %1$s</string>
+    <string name="selection_moved_multiple">Flyttede %1$d apps til %2$s</string>
+    <string name="selection_copied_multiple">Kopierede %1$d apps til %2$s</string>
+    <string name="selection_hint_cleared">Ryddet valg</string>
+    <string name="selection_hint_all">Vælg alle synlige apps</string>
+    <string name="update_title">En opdatering er tilgængelig!</string>
+    <string name="update_content">Du kan opdatere fra version %1$s til %2$s, helt på enheden.</string>
+    <string name="update_button">Fortsæt</string>
+    <string name="update_skip_button">Spring denne opdatering over</string>
+    <string name="update_skip_toast">Springet version over</string>
+    <string name="update_skip_all_toast">Alle opdateringer skjult</string>
+    <string name="update_downloading_title">Downloader seneste version af %s</string>
+    <string name="update_downloading_content">Du skulle få en opfordring til at installere inden længe
+    \nHvis du ved et uheld afviste den, ikke gav tilladelse eller fik en fejl,
+    kan du prøve igen fra indstillingerne.</string>
+    <string name="update_hide_button">Skjul dig</string>
+    <string name="update_failed_title">Kunne ikke downloade pakken!</string>
+    <string name="update_failed_content">Sørg for, at du har en god internetforbindelse, og prøv igen senere.</string>
+    <string name="update_skip_title">Spring opdatering til version %1$s over?</string>
+    <string name="update_skip_content">Opdateringer anbefales på det kraftigste og kan indeholde vigtige rettelser.
+        \n
+        \nHvis du undgår denne opdatering på grund af et problem, bedes du rapportere det på github.com/threethan/LightningLauncher
+        \n
+        \nUanset hvad du vælger, kan du opdatere senere fra indstillingerne.</string>
+    <string name="update_skip_all_button">Spring denne og fremtidige opdateringer over</string>
+    <string name="update_skip_confirm_button">Spring denne opdatering over</string>
+    <string name="update_skip_cancel_button">Afslå</string>
+    <string name="saved_settings">Gemt konfiguration til</string>
+    <string name="saved_settings_loading">Importerer, vent venligst..</string>
+    <string name="saved_settings_error">Fejl under kopiering af fil!</string>
+    <string name="loaded_settings1">Importeret konfiguration,</string>
+    <string name="loaded_settings2">startanordningen skal nu lukkes!</string>
+    <string name="default_groups_title">Standard gruppeindstillinger</string>
+    <string name="default_groups_info">Nuværende standardgrupper:\n
+        \n%1$s\n
+        \nDu kan ændre disse ved at redigere en gruppe i redigeringstilstand.
+        \n
+        \nHvad vil du gerne gøre nu?</string>
+    <string name="default_groups_reset_groups">Nulstil alle grupper og sorter til standard</string>
+    <string name="default_groups_resort_only">Flyt alt til dets standardgruppe</string>
+    <string name="default_groups_cancel">Gå tilbage, gør ikke noget</string>
+    <string name="default_groups_reset_groups_toast_main">Nulstil grupper</string>
+    <string name="default_groups_reset_groups_toast_bold">fuldt ud!</string>
+    <string name="default_groups_resort_only_toast_main">Apps er blevet flyttet til</string>
+    <string name="default_groups_resort_only_toast_bold">dine valgte standardgrupper</string>
+    <string name="toast_cant_unset_group">Indstil en anden gruppe som standard for at fjerne denne</string>
+    <string name="clear_icons_title">Standardindstillinger for ikoner</string>
+    <string name="clear_icons_info">Lightning Launcher cacher ikoner og bannere til apps for hurtigere indlæsning.</string>
+    <string name="clear_icons_info_quest">Lightning Launcher downloader ikoner til Quest-apps og -spil fra internettet.
+        \nVed at rydde ikon-cachen kan du også downloade dem igen.</string>
+    <string name="clear_icons_info_custom">Du kan indstille brugerdefinerede ikoner til apps ved at klikke på ikonet i appens infopopup.
+        \nHvis du vil, kan du også nulstille dem.</string>
+    <string name="clear_icons_clear_cache">Ryd ikon-cache</string>
+    <string name="clear_icons_clear_all">Ryd brugerdefinerede ikoner</string>
+    <string name="clear_icons_cancel">Gå tilbage, gør ikke noget</string>
+    <string name="toast_cleared_icon_cache">Ikon-cachen er blevet ryddet</string>
+    <string name="toast_cleared_icon_all">Alle ikoner er blevet nulstillet til standard</string>
+    <string name="tip_kill_process">Stop med at køre i baggrunden</string>
+    <string name="tip_launch">Start app\'en</string>
+    <string name="tip_info_website">Om at tilføje hjemmesider</string>
+    <string name="tip_stop_editing">Slå redigeringstilstand fra</string>
+    <string name="tip_select_all">Vælg/fravælg alle synlige apps</string>
+    <string name="tip_uninstall">Afinstaller / fjern</string>
+    <string name="tip_uninstall_bulk">Afinstaller / fjern alle valgte</string>
+    <string name="tip_info">Info om Android-appen</string>
+    <string name="tip_charts">Se spilletidsdiagrammer\nin Quest Game Tuner</string>
+    <string name="tip_change_icon">Skift ikon</string>
+    <string name="tip_save_settings">Sikkerhedskopier alle indstillinger og grupperinger</string>
+    <string name="tip_load_settings">Gendan alle indstillinger og grupperinger</string>
+    <string name="tip_hide">Skjul denne app</string>
+    <string name="tip_show">Fjern skjul på denne app</string>
+    <string name="moved_hidden">Flyttet til</string>
+    <string name="moved_hidden_bold">Skjult gruppe</string>
+    <string name="moved_shown">Flyttet til</string>
+    <string name="refreshed_icon">Opdaterer ikonet..</string>
+    <string name="addons_main_vr">Genveje</string>
+    <string name="addons_main_tv">Indstillinger for genveje</string>
+    <string name="addons_info">Genveje gør det lettere at åbne launcheren.
+        \Det anbefales på det kraftigste, at du bruger mindst én.</string>
+    <string name="addons_tv_info">Desværre begrænser Android TV funktionaliteten af tilgængelighedstjenester og tredjeparts launchers.</string>
+    <string name="addons_exit">Gå tilbage til indstillinger</string>
+    <string name="addons_androidtv">Android TV Launcher Manager</string>
+    <string name="addons_androidtv_desc">Installer en tredjepartsapplikation, som kan give dig mulighed for at ændre standardhjemmesiden på Android TV.
+    \Dette kræver, at ADB Debugging er aktiveret, og det virker muligvis ikke på alle enheder.
+    \n
+    \Hvis det ikke installeres her, skal du søge efter "Android TV Launcher Manager XDA" og derefter downloade og installere manuelt. (Virker ikke på Fire TV)</string>
+    <string name="addons_androidtv_alt">Eller … bare brug tilbage-knappen!</string>
+    <string name="addons_androidtv_alt_desc">Hvis du bare bruger tilbage-knappen på din fjernbetjening i stedet for hjem-knappen, vil du altid komme tilbage til Lightning Launcher.
+    \n
+    \Hvis du trykker på tilbage, når du kommer til launcheren, skifter du bare redigeringstilstand, så du ikke ved et uheld vender tilbage til standard launcheren.</string>
+    <string name="addons_preamble">Omdirigeringer åbner Lighting Launcher, når man holder musen over et dock-ikon.
+        \nHver omdirigering skal installeres individuelt og derefter aktiveres.</string>
+    <string name="addons_preamble_dock">Du kan tilføje Lighting Launcher direkte til din dock!</string>
+    <string name="addons_dock_button">Sådan tilføjer du Lightning Launcher til Quest Dock</string>
+    <string name="addons_dock_title">Tilføjelse af LL til Dock</string>
+    <string name="addons_dock_section_1_title">Fjern et eksisterende ikon</string>
+    <string name="addons_dock_section_1_content">1. Luk alle andre 2D- og VR-apps.
+        \n2. Vælg et ikon, der skal fjernes. (Kamera eller browser)
+        \n3. Klik og hold på ikonet.
+        \n4. Træk det ned, indtil der står "Unpin", og slip så.</string>
+    <string name="addons_dock_section_1_below">Feed, Store og People kan ikke fjernes.</string>
+    <string name="addons_dock_section_2_title">Tilføj Lightning Launchers ikon</string>
+    <string name="addons_dock_section_2_content">1. Find Lightning Launcher i de seneste apps.
+        \n\t\t(Højre side af docken)
+        \n2. Træk Lightning Launcher til venstre side.
+        \n3. Slip for at fastgøre den til docken.</string>
+    <string name="addons_dock_section_2_below">Du kan ikke have mere end fem apps fastgjort.</string>
+    <string name="addons_add">Tilføj Dock-ikon</string>
+    <string name="addons_redirect">Indbyggede ikoner til omdirigering</string>
+    <string name="addons_explore">Feed-omdirigering</string>
+    <string name="addons_explore_desc">Installer og aktiver derefter for at åbne Lightning Launcher, når du trykker på Horizon Feed-knappen på docken.</string>
+    <string name="addons_library">Omdirigering af bibliotek</string>
+    <string name="addons_library_desc">Installer og aktiver derefter for at åbne Lightning Launcher, når du holder knappen App Library i docken.</string>
+    <string name="addons_store">Omdirigering af butik</string>
+    <string name="addons_store_desc">Installer og aktiver derefter for at åbne Lightning Launcher, når du holder Store-knappen på docken.</string>
+    <string name="addons_people">Omdirigering af personer</string>
+    <string name="addons_people_desc">Installer og aktiver derefter for at åbne Lightning Launcher, når du holder People-knappen på docken.</string>
+    <string name="addons_install">Installer</string>
+    <string name="addons_update">Opdatering</string>
+    <string name="addons_activate">Aktiver</string>
+    <string name="addons_open">Lancering</string>
+    <string name="addons_deactivate">Deaktiver</string>
+    <string name="addons_uninstall">Afinstaller</string>
+    <string name="installing">Installation..</string>
+    <string name="installed_successfully">Installeret med succes</string>
+    <string name="tuner_info_tagline">Frigør den fulde kraft i din søgen.</string>
+    <string name="tuner_info_desc">Meta begrænser apps\' ydeevne.
+        Quest Game Tuner bryder disse grænser og giver dig mulighed for at få mest muligt ud af den hardware, du allerede ejer.
+        Du kan også optage bedre videoer, blokere reklamer, slukke automatisk og meget mere.
+        \n
+        \Quest Game Tuner er resultatet af hundredvis af timers udvikling, forskning og testning af den samme udvikler, som lavede Lightning Launcher.</string>
+    <string name="tuner_info_get">Få Quest Game Tuner på itch.io!</string>
+    <string name="tuner_info_get_link">threethan.itch.io/quest-game-tuner</string>
+    <string name="apk_installer">APK-installationsprogram</string>
+    <string name="apk_installer_tip">Vælg en APK-fil, der skal installeres</string>
+</resources>

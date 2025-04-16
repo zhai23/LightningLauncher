@@ -1,0 +1,312 @@
+<resources>
+    <string name="add_group">Groep toevoegen</string>
+    <string name="delete_group">Groep verwijderen</string>
+    <string name="edit_group">Groep bewerken</string>
+    <string name="app_details">App Details</string>
+    <string name="apps_hidden">- Verborgen</string>
+    <string name="migrated">Oude instellingen zijn gemigreerd</string>
+    <string name="edit_mode">Modus Bewerken</string>
+    <string name="edit_mode_tip">Wijzig groepen, voeg websites toe en meer.</string>
+    <string name="edit_mode_disabled">Alleen hoofdvenster kan bewerken</string>
+    <string name="edit_mode_stop">Stoppen met bewerken</string>
+    <string name="new_multitasking">Sluit het Launcher-venster na het openen van apps</string>
+    <string name="new_multitasking_tip">Als dit is ingeschakeld, sluit Lightning Launcher zichzelf wanneer je een app opent.</string>
+    <string name="allow_chain_launch">Quest Native Launching gebruiken</string>
+    <string name="allow_chain_launch_tip">Lanceert toepassingen op een vergelijkbare manier als de standaard launcher van de Quest.
+        \Als je dit uitschakelt, verandert de indeling van vensters en kunnen er problemen ontstaan.</string>
+    <string name="icons_size">Schaal</string>
+    <string name="icons_size_tip">Doelgrootte voor pictogrammen/banners.kan variëren afhankelijk van de venstergrootte.</string>
+    <string name="icons_margin">Marge</string>
+    <string name="icons_margin_tip">Doelafstand tussen pictogrammen/banners.kan variëren afhankelijk van de venstergrootte.</string>
+    <string name="apps_vr">VR-apps</string>
+    <string name="apps_phone">Telefoon Apps</string>
+    <string name="apps_tv">TV-apps</string>
+    <string name="apps_panel">Panel-apps</string>
+    <string name="apps_web">Websites</string>
+    <string name="default_group">Gebruik groep als standaard voor nieuw:</string>
+    <string name="app_name_icon">Onder App Pictogrammen</string>
+    <string name="app_name_wide">Onder App Banners</string>
+    <string name="settings_main">Bliksemwerper</string>
+    <string name="settings_appearance">Uiterlijk aanpassen</string>
+    <string name="settings_addons_attract">Snelkoppelingen</string>
+    <string name="settings_addons">Snelkoppelingen</string>
+    <string name="settings_addons_tip">Maak Lightning Launcher gemakkelijker toegankelijk.</string>
+    <string name="settings_update">Download en installeer de nieuwste update</string>
+    <string name="settings_enable_updates">Houd me op de hoogte van nieuwe updates</string>
+    <string name="settings_enable_updates_tip">Klik om meldingen voor nieuwe updates weer te geven.
+    \Je hebt dit eerder uitgeschakeld toen je een update oversloeg.</string>
+    <string name="behavior_header">Gedrag</string>
+    <string name="background_header">Behang &amp; Stijl</string>
+    <string name="hdr_icon">Pictogram-indeling</string>
+    <string name="disp_wide">Weergeven als banner</string>
+    <string name="disp_icon">Weergeven als pictogram</string>
+    <string name="disp_name">Toon altijd namen</string>
+    <string name="more_options">Meer opties</string>
+    <string name="advanced_header">Geavanceerde instellingen</string>
+    <string name="refresh_button">Vernieuw</string>
+    <string name="advanced_interface">Interface</string>
+    <string name="advanced_reset">Vernieuwen en resetten</string>
+    <string name="advanced_launching">Startvoorkeuren</string>
+    <string name="advanced_features">Extra functies</string>
+    <string name="advanced_search">Instellingen zoeken</string>
+    <string name="advanced_backup">Instellingen back-up</string>
+    <string name="advanced_alpha">Achtergrond doorschijnendheid</string>
+    <string name="advanced_alpha_tip">Maakt de achtergrond van Lightning Launcher doorschijnend in passthrough.</string>
+    <string name="dark_mode">Donkere modus</string>
+    <string name="dark_mode_tip">Als deze optie is ingeschakeld, worden labels wit weergegeven op een donkere achtergrond.</string>
+    <string name="group_mode">Groepen inschakelen</string>
+    <string name="group_mode_tip">Schakel dit uit om alle apps tegelijk weer te geven, zonder te groeperen.
+        \Zoek- en instellingenpictogrammen worden ook verborgen.
+        \n
+        \Gebruik de terugknop op uw afstandsbediening/controller om Instellingen te openen.</string>
+    <string name="group_wide">Grotere groepen</string>
+    <string name="group_wide_tip">Vergroot de minimale breedte van groepsknoppen,
+        \zodat langere namen niet worden afgesneden.
+        \n
+        \Alleen zichtbaar als er veel groepen zijn.</string>
+    <string name="clear_cache">Alle pictogrammen resetten</string>
+    <string name="clear_labels">Alle app-labels terugzetten naar standaard</string>
+    <string name="group_defaults_button">Standaard groepen</string>
+    <string name="icons_settings_button">Pictogrammen verversen</string>
+    <string name="show_playtimes">Speeltijden</string>
+    <string name="show_playtimes_desc">Afspeeltijd weergeven op app-banners.
+    \Vereist toegang tot gebruiksgegevens</string>
+    <string name="open_usage">Toegang tot gebruiksgegevens</string>
+    <string name="open_usage_desc">Open een instellingenpagina waar je de mogelijkheid voor apps zoals Lighting Launcher om je speeltijd en gebruiksgegevens te bekijken, kunt in- of uitschakelen.</string>
+    <string name="close_fully">Bliksemwerper volledig sluiten</string>
+    <string name="close_fully_desc">Sluit Lightning Launcher volledig af.  (U kunt het dan opnieuw openen)
+        \Hiermee kun je problemen oplossen zonder opnieuw op te starten.</string>
+    <string name="playtime_charts_warn">Installeer Quest Game Tuner om speeltijdgrafieken te bekijken</string>
+    <string name="request_playtime_title">Toegang tot gebruiksgegevens vereist</string>
+    <string name="request_playtime_msg">Om je speeltijd te zien in Lighting Launcher,
+        \moet je het toegang geven tot app-gebruiksgegevens.
+        \n
+        \Als Quest Game Tuner ook is geïnstalleerd, kun je door op de speeltijd te klikken een dagelijkse of maandelijkse grafiek openen.
+        \n
+        \Je kunt de speeltijdknop verbergen in Geavanceerde instellingen.</string>
+    <string name="long_press">Lang indrukken om te bewerken</string>
+    <string name="long_press_tip">Als deze functie is ingeschakeld, wordt de bewerkingsmodus geopend en wordt de app geselecteerd door er lang op te drukken.
+    \Uitgeschakeld: als u lang op een app drukt, worden de details weergegeven.</string>
+    <string name="default_launch_out">Apps standaard in eigen venster starten</string>
+    <string name="search_web">Toon webzoekmachines in zoekopdrachten</string>
+    <string name="search_hidden">Verborgen apps weergeven in zoekopdrachten</string>
+    <string name="settings_save">Instellingen exporteren</string>
+    <string name="settings_load">Instellingen importeren</string>
+    <string name="groupings_save">Exportgroepen</string>
+    <string name="groupings_load">Groepen importeren</string>
+    <string name="advanced_sizing">Extra venstergroottes voor telefoonapps inschakelen</string>
+    <string name="advanced_sizing_tip">Hiermee kunnen apps worden geopend in vensters van verschillende grootte, wat problemen kan veroorzaken.</string>
+    <string name="toast_advanced_sizing">Nieuwe grootte-opties kunnen worden omgewisseld in de instellingen per app</string>
+    <string name="reload_icon">Pictogram opnieuw instellen</string>
+    <string name="open_tuning">Afstemmen met</string>
+    <string name="open_tuning_tip">Met Quest Game Tuner kun je de resolutie, FPS en nog veel meer aanpassen!</string>
+    <string name="tuner_options">⚙</string>
+    <string name="launch_out_message">Door 2D apps of websites in hun eigen venster te starten, kun je makkelijker multitasken op Quest-apparaten,
+        als je problemen ondervindt, schakel deze optie dan uit!</string>
+    <string name="launch_size_message">Door 2D-apps of websites in hun eigen venster te starten, wordt multitasken op Quest-apparaten eenvoudiger,
+        maar zorgt ervoor dat bepaalde apps niet altijd starten
+        \Het instellen van aangepaste venstergroottes verhelpt het niet starten van apps, geeft sommige apps iets duidelijker weer en maakt verschillende venstergroottes mogelijk in de platte weergave.
+        \Het kan echter ook voorkomen dat vensters vastlopen of dat Lightning Launcher crasht
+        \Al deze opties kunnen alleen per app worden ingesteld
+        \Als je problemen hebt, schakel deze optie dan uit en zorg ervoor dat apps niet zijn ingesteld om in hun eigen venster te starten. Herstart om vastgelopen vensters te repareren.</string>
+    <string name="hidden_groups_message">Als u deze optie uitschakelt, wordt de bovenste balk verborgen als u niet in de bewerkingsmodus bent. \n
+        \De instellingenknop wordt ook verborgen als je niet in de bewerkingsmodus bent
+        \Druk in plaats daarvan op de terugknop om de instellingen te openen.</string>
+    <string name="set_default_launcher_message">Als je Lightning Launcher instelt als je standaard Android home app, kunnen andere apps snelkoppelingspictogrammen toevoegen aan het startscherm.
+        \Dit hoeft maar één keer gedaan te worden
+        \Het vervangt NIET de standaard launcher op VR-apparaten en verandert niets aan de werking van Lightning Launcher zelf
+        Als je dat wilt doen, kijk dan bij Snelkoppelingen instellen/snelkoppelingsinstellingen voor snelkoppelingen naar Lightning Launcher.</string>
+    <string name="download_browser_message">Voor de beste ervaring moet je Lightning Browser installeren om websites te openen in Lightning Launcher
+        \(U kunt ook proberen de browser te wijzigen in Instellingen -&gt; Geavanceerde instellingen)</string>
+    <string name="update_browser_message">Voor de beste ervaring moet je Lightning Browser bijwerken.</string>
+    <string name="download_browser_toast_main">Open de website opnieuw</string>
+    <string name="download_browser_toast_bold">nadat de installatie is voltooid</string>
+    <string name="website_title">Websites in Lightning Launcher</string>
+    <string name="website_subtitle1">Gemakkelijk toegang tot websites en webapps</string>
+    <string name="website_info1">Websites verschijnen als apps in de launcher
+        \Je kunt ook op het web zoeken via de zoekbalk.</string>
+    <string name="website_subtitle2">Audio op de achtergrond</string>
+    <string name="website_info2">Na het minimaliseren kunnen toegevoegde websites blijven draaien, afspelen en geluid opnemen totdat ze volledig zijn afgesloten. (Audiovertraging kan optreden.)</string>
+    <string name="website_subtitle3">Browserselectie</string>
+    <string name="website_info3">Op Quest toestellen kan je starten in Meta Quest Browser, die VR web content ondersteunt.
+        \De standaardinstelling kan worden ingesteld in Geavanceerde instellingen.</string>
+    <string name="add_website">Website toevoegen</string>
+    <string name="add_website_tip">Een website toevoegen aan de Launcher</string>
+    <string name="add_website_url_label">Voer een willekeurige website-URL in</string>
+    <string name="add_website_bad_url">Voer een geldige URL in</string>
+    <string name="add_website_used_url">Deze website is al in %1$s</string>
+    <string name="add_website_audio_info">Toegevoegde websites kunnen achtergrondaudio afspelen</string>
+    <string name="add_website_group">Toevoegen aan %s</string>
+    <string name="service_title">Services met snelkoppelingen</string>
+    <string name="service_info_section_1_title">Gemakkelijk toegang tot Lightning Launcher</string>
+    <string name="service_info_section_1_content">Als je de snelkoppelingsdienst inschakelt, wordt Lightning Launcher geopend wanneer je met je muis over het gekozen pictogram in het dock beweegt.</string>
+    <string name="service_info_section_2_title">De snelkoppelingsdienst inschakelen</string>
+    <string name="service_info_section_2_content">1. Gebruik de onderstaande knop om de toegankelijkheidsinstellingen van Android te openen.
+        \n2. Selecteer de service die je wilt inschakelen.
+        \n3. Schakel de service in met de bovenste schakelaar.
+        \n4. Klik op "Toestaan" als daarom wordt gevraagd.</string>
+    <string name="service_open_accessibility">Doorgaan naar Toegankelijkheidsinstellingen</string>
+    <string name="warning">Belangrijke informatie</string>
+    <string name="cancel">Annuleren</string>
+    <string name="understood">Hebbes!</string>
+    <string name="confirm">Bevestig</string>
+    <string name="next">Ga verder</string>
+    <string name="size_none">Openen in standaardvenster</string>
+    <string name="size_own">Openen in eigen venster</string>
+    <string name="size_phone">Openen in een venster in telefoonstijl</string>
+    <string name="size_small">Openen in klein 4:3-venster</string>
+    <string name="size_medium">Openen in een middelgroot venster</string>
+    <string name="size_large">Openen in groot 16:9-venster</string>
+    <string name="size_huge">Openen in een enorm 16:9-venster</string>
+    <string name="size_wide">Open in breed 21:9-venster</string>
+    <string name="browser_default_setting">Standaard voor websites:</string>
+    <string name="browser_default_in">Openen in Lightning-browser</string>
+    <string name="browser_quest">Openen in Quest Browser Tab</string>
+    <string name="browser_quest_shortcut">Openen als Quest Browser Web App</string>
+    <string name="browser_system">Probeer te openen in Systeemstandaard</string>
+    <string name="edit_off">De bewerkingsmodus inschakelen</string>
+    <string name="edit_on">De bewerkingsmodus uitschakelen</string>
+    <string name="edit_move">Verplaats</string>
+    <string name="edit_copy">Kopie</string>
+    <string name="selection_hint_none">Klik op een app om deze te selecteren of klik hier om alles te selecteren</string>
+    <string name="selection_hint_single_move">1 app geselecteerd, klik op een groep om deze te verplaatsen</string>
+    <string name="selection_hint_single_copy">1 app geselecteerd, klik op een groep om een kopie te maken</string>
+    <string name="selection_hint_multiple_move">%d apps geselecteerd, klik op een groep om ze te verplaatsen</string>
+    <string name="selection_hint_multiple_copy">%d apps geselecteerd, klik op een groep om kopieën te maken</string>
+    <string name="selection_moved_single">Een app verplaatst naar %1$s</string>
+    <string name="selection_copied_single">Een app gekopieerd naar %1$s</string>
+    <string name="selection_moved_multiple">Verplaatst %1$d apps naar %2$s</string>
+    <string name="selection_copied_multiple">%1$d apps gekopieerd naar %2$s</string>
+    <string name="selection_hint_cleared">Selectie gewist</string>
+    <string name="selection_hint_all">Alle zichtbare apps geselecteerd</string>
+    <string name="update_title">Er is een update beschikbaar!</string>
+    <string name="update_content">U kunt bijwerken van versie %1$s naar %2$s, volledig op het apparaat.</string>
+    <string name="update_button">Ga verder</string>
+    <string name="update_skip_button">Deze update overslaan</string>
+    <string name="update_skip_toast">Overgeslagen versie</string>
+    <string name="update_skip_all_toast">Alle updates verborgen</string>
+    <string name="update_downloading_title">Laatste versie downloaden van %s</string>
+    <string name="update_downloading_content">Je zou een prompt moeten krijgen om te installeren
+    \Als je het per ongeluk hebt verworpen, geen toestemming hebt gegeven, of een foutmelding kreeg,
+    kun je het opnieuw proberen via instellingen.</string>
+    <string name="update_hide_button">Verberg</string>
+    <string name="update_failed_title">Downloaden van pakket mislukt!</string>
+    <string name="update_failed_content">Zorg voor een goede internetverbinding en probeer het later nog eens.</string>
+    <string name="update_skip_title">Bijwerken naar versie %1$s overslaan?</string>
+    <string name="update_skip_content">Updates worden ten zeerste aanbevolen en kunnen belangrijke fixes bevatten.
+        \n
+        \Als je deze update vermijdt vanwege een probleem, meld dit dan op github.com/threethan/LightningLauncher
+        \n
+        \Ongeacht je keuze kun je later updaten via de instellingen.</string>
+    <string name="update_skip_all_button">Deze en toekomstige updates overslaan</string>
+    <string name="update_skip_confirm_button">Deze update overslaan</string>
+    <string name="update_skip_cancel_button">Ontsla</string>
+    <string name="saved_settings">Configuratie opgeslagen in</string>
+    <string name="saved_settings_loading">Importeren, even geduld..</string>
+    <string name="saved_settings_error">Fout tijdens kopiëren bestand!</string>
+    <string name="loaded_settings1">Geïmporteerde configuratie,</string>
+    <string name="loaded_settings2">de draagraket moet nu sluiten!</string>
+    <string name="default_groups_title">Standaard groepsinstellingen</string>
+    <string name="default_groups_info">Huidige standaardgroepen:\n
+        \%1$s
+        \U kunt deze wijzigen door een groep te bewerken in bewerkingsmodus.
+        \n
+        \Wat wilt u nu doen?</string>
+    <string name="default_groups_reset_groups">Alle groepen en sorteren terugzetten naar standaard</string>
+    <string name="default_groups_resort_only">Verplaats alles naar de standaardgroep</string>
+    <string name="default_groups_cancel">Ga terug, doe niets</string>
+    <string name="default_groups_reset_groups_toast_main">Groepen resetten</string>
+    <string name="default_groups_reset_groups_toast_bold">volledig!</string>
+    <string name="default_groups_resort_only_toast_main">Apps zijn verplaatst naar</string>
+    <string name="default_groups_resort_only_toast_bold">je geselecteerde standaardgroepen</string>
+    <string name="toast_cant_unset_group">Stel een andere groep in als standaard om deze groep op te heffen</string>
+    <string name="clear_icons_title">Standaard instellingen pictogrammen</string>
+    <string name="clear_icons_info">Lightning Launcher slaat pictogrammen en banners voor apps op in de cache om ze sneller te laden.</string>
+    <string name="clear_icons_info_quest">Lightning Launcher downloadt pictogrammen voor Quest apps &amp; games van het internet.
+        \Door de cache van de pictogrammen te wissen, download je deze ook opnieuw.</string>
+    <string name="clear_icons_info_custom">Je kunt aangepaste pictogrammen voor apps instellen door op het pictogram in het infovenster van de app te klikken.
+        \Als je wilt, kun je deze ook resetten.</string>
+    <string name="clear_icons_clear_cache">Pictogram-cache wissen</string>
+    <string name="clear_icons_clear_all">Aangepaste pictogrammen wissen</string>
+    <string name="clear_icons_cancel">Ga terug, doe niets</string>
+    <string name="toast_cleared_icon_cache">Pictogram cache is gewist</string>
+    <string name="toast_cleared_icon_all">Alle pictogrammen zijn teruggezet naar de standaardwaarden</string>
+    <string name="tip_kill_process">Stoppen met draaien op de achtergrond</string>
+    <string name="tip_launch">App lanceren</string>
+    <string name="tip_info_website">Over websites toevoegen</string>
+    <string name="tip_stop_editing">De bewerkingsmodus uitschakelen</string>
+    <string name="tip_select_all">Alle zichtbare apps selecteren/selecteren</string>
+    <string name="tip_uninstall">Verwijderen</string>
+    <string name="tip_uninstall_bulk">Alles verwijderen</string>
+    <string name="tip_info">Info over Android-app</string>
+    <string name="tip_charts">Bekijk de speeltijd grafieken</string>
+    <string name="tip_change_icon">Pictogram wijzigen</string>
+    <string name="tip_save_settings">Een back-up maken van alle instellingen en groepen</string>
+    <string name="tip_load_settings">Alle instellingen en groepen herstellen</string>
+    <string name="tip_hide">Verberg deze app</string>
+    <string name="tip_show">Deze app verbergen</string>
+    <string name="moved_hidden">Verplaatst naar</string>
+    <string name="moved_hidden_bold">Verborgen Groep</string>
+    <string name="moved_shown">Verplaatst naar</string>
+    <string name="refreshed_icon">Vernieuwend pictogram..</string>
+    <string name="addons_main_vr">Snelkoppelingen</string>
+    <string name="addons_main_tv">Snelkoppelingsopties</string>
+    <string name="addons_info">Snelkoppelingen maken het makkelijker om de launcher te openen.
+        \Het wordt sterk aangeraden om er minstens één te gebruiken.</string>
+    <string name="addons_tv_info">Helaas beperkt Android TV de functionaliteit van toegankelijkheidsdiensten en launchers van derden.</string>
+    <string name="addons_exit">Terug naar instellingen</string>
+    <string name="addons_androidtv">Android TV Launcher Manager</string>
+    <string name="addons_androidtv_desc">Installeer een toepassing van derden waarmee u de standaardthome op Android TV kunt wijzigen.
+    \Hiervoor moet ADB Debugging zijn ingeschakeld en dit werkt mogelijk niet op elk apparaat.
+    \n
+    \Als het hier niet installeert, zoek dan "Android TV Launcher Manager XDA" op en download en installeer het handmatig (werkt niet op Fire TV)</string>
+    <string name="addons_androidtv_alt">Of… Gebruik gewoon de Terug-knop!</string>
+    <string name="addons_androidtv_alt_desc">Als je gewoon de terugknop op je afstandsbediening gebruikt in plaats van de home-knop, kom je altijd terug bij Lightning Launcher.
+    \n
+    \Als je op de terugknop drukt als je bij de launcher bent, wordt alleen de bewerkingsmodus ingeschakeld, zodat je niet per ongeluk terugkeert naar de standaard launcher.</string>
+    <string name="addons_preamble">Omleidingen openen Lighting Launcher wanneer je met de muis over een dockpictogram beweegt.
+        \Elke omleiding moet afzonderlijk worden geïnstalleerd en vervolgens geactiveerd.</string>
+    <string name="addons_preamble_dock">Je kunt Lighting Launcher direct aan je dock toevoegen!</string>
+    <string name="addons_dock_button">Hoe Lightning Launcher toevoegen aan het Quest Dock</string>
+    <string name="addons_dock_title">LL toevoegen aan het Dock</string>
+    <string name="addons_dock_section_1_title">Een bestaand pictogram verwijderen</string>
+    <string name="addons_dock_section_1_content">1. Sluit alle andere 2D en VR apps.
+        \n2. Kies een pictogram dat u wilt verwijderen. (Camera of Browser)
+        \n3. Klik op het pictogram en houd het vast.
+        \n4. Sleep het naar beneden totdat \'Unpin\' verschijnt en laat los.</string>
+    <string name="addons_dock_section_1_below">Feed, Store en People kunnen niet worden verwijderd.</string>
+    <string name="addons_dock_section_2_title">Pictogram van Lightning Launcher toevoegen</string>
+    <string name="addons_dock_section_2_content">1. Zoek Lightning Launcher in recente apps.
+        \(Rechts in het dock)
+        \n2. Sleep Lightning Launcher naar de linkerkant.
+        \n3. Laat los om hem vast te zetten in het dock.</string>
+    <string name="addons_dock_section_2_below">Je kunt niet meer dan vijf apps vastpinnen.</string>
+    <string name="addons_add">Dock pictogram toevoegen</string>
+    <string name="addons_redirect">Ingebouwde pictogrammen omleiden</string>
+    <string name="addons_explore">Feed omleiden</string>
+    <string name="addons_explore_desc">Installeer en activeer vervolgens om Lightning Launcher te openen wanneer je op de knop Horizon Feed op het dock drukt.</string>
+    <string name="addons_library">Bibliotheek omleiden</string>
+    <string name="addons_library_desc">Installeer en activeer vervolgens om Lightning Launcher te openen wanneer je met de muis over de knop App Library in het dock gaat.</string>
+    <string name="addons_store">Winkel doorsturen</string>
+    <string name="addons_store_desc">Installeer en activeer vervolgens om Lightning Launcher te openen wanneer je met de muis over de Store-knop op het dock gaat.</string>
+    <string name="addons_people">Mensen omleiden</string>
+    <string name="addons_people_desc">Installeer en activeer vervolgens om Lightning Launcher te openen wanneer je met de muis over de knop Mensen op het dock gaat.</string>
+    <string name="addons_install">Installeer</string>
+    <string name="addons_update">Update</string>
+    <string name="addons_activate">Activeer</string>
+    <string name="addons_open">Lancering</string>
+    <string name="addons_deactivate">Deactiveer</string>
+    <string name="addons_uninstall">Verwijderen</string>
+    <string name="installing">Installeren..</string>
+    <string name="installed_successfully">Succesvol geïnstalleerd</string>
+    <string name="tuner_info_tagline">Ontgrendel de volledige kracht van je zoektocht.</string>
+    <string name="tuner_info_desc">Meta beperkt de prestaties van apps.
+        Quest Game Tuner doorbreekt deze beperkingen, zodat je het beste haalt uit de hardware die je al bezit.
+        Je kunt ook betere video\'s opnemen, advertenties blokkeren, automatisch uitschakelen en meer.
+        \n
+        \Quest Game Tuner is het resultaat van honderden uren ontwikkeling, onderzoek en testen door dezelfde ontwikkelaar die Lightning Launcher heeft gemaakt.</string>
+    <string name="tuner_info_get">Haal Quest Game Tuner op itch.io!</string>
+    <string name="tuner_info_get_link">threethan.itch.io/quest-game-tuner</string>
+    <string name="apk_installer">APK installatieprogramma</string>
+    <string name="apk_installer_tip">Selecteer een APK-bestand om te installeren</string>
+</resources>

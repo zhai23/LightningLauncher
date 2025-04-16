@@ -1,0 +1,312 @@
+<resources>
+    <string name="add_group">Adaugă grup</string>
+    <string name="delete_group">Ștergeți grupul</string>
+    <string name="edit_group">Editare grup</string>
+    <string name="app_details">Detalii aplicație</string>
+    <string name="apps_hidden">- Ascunse</string>
+    <string name="migrated">Setările vechi au fost migrate</string>
+    <string name="edit_mode">Mod editare</string>
+    <string name="edit_mode_tip">Schimbați grupurile, adăugați site-uri web și multe altele.</string>
+    <string name="edit_mode_disabled">Numai fereastra principală poate edita</string>
+    <string name="edit_mode_stop">Opriți editarea</string>
+    <string name="new_multitasking">Închideți fereastra lansatorului după deschiderea aplicațiilor</string>
+    <string name="new_multitasking_tip">Dacă este activat, Lightning Launcher se va închide singur atunci când deschideți o aplicație.</string>
+    <string name="allow_chain_launch">Utilizați lansarea nativă Quest</string>
+    <string name="allow_chain_launch_tip">Lansează aplicații cu o metodă similară lansatorului implicit al Quest\.
+        \nDezactivarea acestei funcții va schimba modul în care sunt organizate ferestrele și ar putea cauza probleme.</string>
+    <string name="icons_size">Scară</string>
+    <string name="icons_size_tip">Dimensiunea țintă pentru pictograme/bannere.\nPoate varia în funcție de dimensiunea ferestrei.</string>
+    <string name="icons_margin">Marjă</string>
+    <string name="icons_margin_tip">Spațierea țintă între pictograme/bannere.\nPoate varia în funcție de dimensiunea ferestrei.</string>
+    <string name="apps_vr">Aplicații VR</string>
+    <string name="apps_phone">Aplicații pentru telefon</string>
+    <string name="apps_tv">Aplicații TV</string>
+    <string name="apps_panel">Aplicații de panou</string>
+    <string name="apps_web">Site-uri web</string>
+    <string name="default_group">Utilizați grupul ca implicit pentru nou:</string>
+    <string name="app_name_icon">Icoane de aplicații de mai jos</string>
+    <string name="app_name_wide">Bannere aplicație de mai jos</string>
+    <string name="settings_main">Lansator de fulgere</string>
+    <string name="settings_appearance">Personalizarea aspectului</string>
+    <string name="settings_addons_attract">Scurtături</string>
+    <string name="settings_addons">Scurtături</string>
+    <string name="settings_addons_tip">Faceți Lightning Launcher mai ușor de accesat.</string>
+    <string name="settings_update">Descărcați și instalați ultima actualizare</string>
+    <string name="settings_enable_updates">Anunțați-mă de noi actualizări</string>
+    <string name="settings_enable_updates_tip">Faceți clic pentru a afișa notificări pentru noile actualizări.
+    \nAți dezactivat anterior această opțiune atunci când săriți peste o actualizare.</string>
+    <string name="behavior_header">Comportament</string>
+    <string name="background_header">Tapet și stil</string>
+    <string name="hdr_icon">Layout pictogramă</string>
+    <string name="disp_wide">Afișare ca banner</string>
+    <string name="disp_icon">Afișare ca pictogramă</string>
+    <string name="disp_name">Afișați întotdeauna numele</string>
+    <string name="more_options">Mai multe opțiuni</string>
+    <string name="advanced_header">Setări avansate</string>
+    <string name="refresh_button">Reîmprospătare</string>
+    <string name="advanced_interface">Interfață</string>
+    <string name="advanced_reset">Reîmprospătare și resetare</string>
+    <string name="advanced_launching">Preferențe de lansare</string>
+    <string name="advanced_features">Caracteristici suplimentare</string>
+    <string name="advanced_search">Setări de căutare</string>
+    <string name="advanced_backup">Setări de rezervă</string>
+    <string name="advanced_alpha">Transluciditate fundal</string>
+    <string name="advanced_alpha_tip">Face fundalul Lightning Launcher translucid în passthrough.</string>
+    <string name="dark_mode">Mod întunecat</string>
+    <string name="dark_mode_tip">Dacă este activată, etichetele vor apărea albe pe un fundal închis.</string>
+    <string name="group_mode">Activarea grupurilor</string>
+    <string name="group_mode_tip">Dezactivați această opțiune pentru a afișa toate aplicațiile simultan, fără grupare.
+        \nIcoanele de căutare și de setări vor fi, de asemenea, ascunse.
+        \n
+        \nUtilizați butonul înapoi de pe telecomandă/controler pentru a deschide Setări.</string>
+    <string name="group_wide">Grupuri mai largi</string>
+    <string name="group_wide_tip">Crește lățimea minimă a butoanelor de grup,
+        \nasigurându-se că numele mai lungi nu sunt tăiate.
+        \n
+        \nSe observă doar atunci când există multe grupuri.</string>
+    <string name="clear_cache">Resetați toate pictogramele</string>
+    <string name="clear_labels">Resetați toate etichetele aplicațiilor la valoarea implicită</string>
+    <string name="group_defaults_button">Grupuri implicite</string>
+    <string name="icons_settings_button">Actualizați pictogramele</string>
+    <string name="show_playtimes">Afișați orele de redare</string>
+    <string name="show_playtimes_desc">Afișează timpul de redare pe bannerele aplicațiilor.
+    \n\nRechiziționează acces la datele de utilizare</string>
+    <string name="open_usage">Utilizare Date Acces</string>
+    <string name="open_usage_desc">Deschideți o pagină de setări în care puteți activa sau dezactiva posibilitatea ca aplicații precum Lighting Launcher să vă vizualizeze timpul de redare și datele de utilizare.</string>
+    <string name="close_fully">Închideți complet lansatorul de fulgere</string>
+    <string name="close_fully_desc">Închide complet Lightning Launcher.  (Apoi îl puteți redeschide)
+        \n\nAcest lucru vă permite să rezolvați problemele fără a reporni.</string>
+    <string name="playtime_charts_warn">Instalați Quest Game Tuner pentru a vizualiza graficele timpului de joc</string>
+    <string name="request_playtime_title">Utilizare Date Acces necesar</string>
+    <string name="request_playtime_msg">Pentru a vedea timpul dvs. de redare în Lighting Launcher,
+        \trebuie să îi acordați acces la datele de utilizare a aplicației.
+        \n
+        \nDacă Quest Game Tuner este de asemenea instalat, făcând clic pe timpul de redare se va deschide un grafic zilnic sau lunar.
+        \n
+        \nPuteți ascunde butonul playtime în Setări avansate.</string>
+    <string name="long_press">Apăsare lungă pentru editare</string>
+    <string name="long_press_tip">Când este activată, apăsarea lungă a unei aplicații va intra în modul de editare și o va selecta.
+    \nCând este oprită, apăsarea lungă a unei aplicații va afișa detalii.</string>
+    <string name="default_launch_out">Lansarea implicită a aplicațiilor în fereastra proprie</string>
+    <string name="search_web">Afișarea motoarelor de căutare web în căutări</string>
+    <string name="search_hidden">Afișați aplicațiile ascunse în căutări</string>
+    <string name="settings_save">Setări de export</string>
+    <string name="settings_load">Setări de import</string>
+    <string name="groupings_save">Grupări de export</string>
+    <string name="groupings_load">Import grupări</string>
+    <string name="advanced_sizing">Activați dimensiuni suplimentare ale ferestrei aplicației telefonice</string>
+    <string name="advanced_sizing_tip">Permite ca aplicațiile să fie deschise în ferestre de dimensiuni diferite, poate cauza probleme.</string>
+    <string name="toast_advanced_sizing">Noile opțiuni de mărime pot fi ciclate în setările per-app</string>
+    <string name="reload_icon">Pictograma de resetare</string>
+    <string name="open_tuning">Acordați cu</string>
+    <string name="open_tuning_tip">Quest Game Tuner vă permite să ajustați rezoluția, FPS și multe altele!</string>
+    <string name="tuner_options">⚙</string>
+    <string name="launch_out_message">Lansarea aplicațiilor 2D sau a site-urilor web în propria lor fereastră facilitează multitasking-ul pe dispozitivele Quest,
+        dar va face ca anumite aplicații să nu fie întotdeauna lansate.\n\nDacă aveți probleme, dezactivați această opțiune!</string>
+    <string name="launch_size_message">Lansarea aplicațiilor 2D sau a site-urilor web în propria lor fereastră facilitează multitasking-ul pe dispozitivele Quest,
+        dar va face ca anumite aplicații să nu fie întotdeauna lansate.\n
+        \nStabilirea dimensiunilor personalizate ale ferestrelor va rezolva problema lansării aplicațiilor, va afișa unele aplicații puțin mai clar și va permite diferite dimensiuni ale ferestrelor în vizualizarea plată.
+        \nOcazional, poate cauza blocarea ferestrelor sau blocarea Lightning Launcher.\n
+        \nToate aceste opțiuni pot fi setate numai pentru fiecare aplicație în parte.\n
+        \nDacă aveți probleme, dezactivați această opțiune și asigurați-vă că nicio aplicație nu este setată să se lanseze în propriile ferestre. Reporniți pentru a repara ferestrele blocate.</string>
+    <string name="hidden_groups_message">Dezactivarea acestei opțiuni va ascunde bara de sus atunci când nu sunteți în modul Editare. \n
+        \nBotonul Setări va fi, de asemenea, ascuns atunci când nu vă aflați în modul Editare.\n
+        \nÎn schimb, apăsați butonul înapoi pentru a deschide setările.</string>
+    <string name="set_default_launcher_message">Setarea Lightning Launcher ca aplicație de pornire implicită Android va permite altor aplicații să adauge pictograme de acces rapid la ecranul de pornire.
+        \nAceasta trebuie făcută o singură dată.\n
+        \nEste NU va înlocui lansatorul implicit real de pe dispozitivele VR și nu va schimba funcționarea Lightning Launcher în sine.\n\n
+        Dacă doriți să faceți acest lucru, verificați Set Up Shortcuts/Shortcut Settings pentru comenzi rapide către Lightning Launcher.</string>
+    <string name="download_browser_message">Pentru o experiență optimă, trebuie să instalați Lightning Browser pentru a deschide site-uri web în Lightning Launcher.\n
+        \n(Alternativ, puteți încerca să schimbați browserul în Setări -&gt; Setări avansate)</string>
+    <string name="update_browser_message">Pentru o experiență optimă, trebuie să actualizați Lightning Browser.</string>
+    <string name="download_browser_toast_main">Deschideți din nou site-ul web</string>
+    <string name="download_browser_toast_bold">după finalizarea instalării</string>
+    <string name="website_title">Site-uri web în Lightning Launcher</string>
+    <string name="website_subtitle1">Accesați cu ușurință site-uri web și aplicații web</string>
+    <string name="website_info1">Site-urile web vor apărea ca aplicații în lansator.\n
+        \nDe asemenea, puteți căuta pe web din bara de căutare.</string>
+    <string name="website_subtitle2">Audio în fundal</string>
+    <string name="website_info2">După ce sunt minimizate, site-urile web adăugate pot continua să ruleze, să redea și să înregistreze sunet până la închiderea completă. (Pot apărea latențe audio.)\n</string>
+    <string name="website_subtitle3">Selectare browser</string>
+    <string name="website_info3">Pe dispozitivele Quest, puteți lansa în Meta Quest Browser, care acceptă conținut web VR.
+        \nDatele implicite pot fi setate în Setări avansate.</string>
+    <string name="add_website">Adăugați un site web</string>
+    <string name="add_website_tip">Adăugați un site web la lansator</string>
+    <string name="add_website_url_label">Introduceți orice adresă URL a site-ului</string>
+    <string name="add_website_bad_url">Introduceți o adresă URL validă</string>
+    <string name="add_website_used_url">Acest site este deja în %1$s</string>
+    <string name="add_website_audio_info">Site-urile web adăugate pot reda fundal audio</string>
+    <string name="add_website_group">Adăugați la %s</string>
+    <string name="service_title">Servicii Shortcuts</string>
+    <string name="service_info_section_1_title">Accesați cu ușurință Lightning Launcher</string>
+    <string name="service_info_section_1_content">Prin activarea serviciului de comenzi rapide, Lightning Launcher se va deschide atunci când treceți peste pictograma aleasă din dock.</string>
+    <string name="service_info_section_2_title">Activați serviciul de comenzi rapide</string>
+    <string name="service_info_section_2_content">1. Utilizați butonul de mai jos pentru a deschide setările de accesibilitate ale Android\.
+        \n2. Selectați serviciul pe care doriți să îl activați.
+        \n3. Activați serviciul cu comutatorul de sus.
+        \n4. Faceți clic pe "Allow" atunci când vi se solicită.</string>
+    <string name="service_open_accessibility">Continuați la Setări de accesibilitate</string>
+    <string name="warning">Informații importante</string>
+    <string name="cancel">Anulează</string>
+    <string name="understood">Am reușit!</string>
+    <string name="confirm">Confirmați</string>
+    <string name="next">Continuați</string>
+    <string name="size_none">Deschidere în fereastra implicită</string>
+    <string name="size_own">Deschidere în fereastra proprie a aplicației</string>
+    <string name="size_phone">Deschidere în fereastra de tip telefon</string>
+    <string name="size_small">Deschideți în fereastra mică 4:3</string>
+    <string name="size_medium">Deschidere în fereastră de mărime medie</string>
+    <string name="size_large">Deschidere în fereastră mare 16:9</string>
+    <string name="size_huge">Deschideți în fereastra uriașă 16:9</string>
+    <string name="size_wide">Deschis în fereastră largă 21:9</string>
+    <string name="browser_default_setting">Implicit pentru site-uri web:</string>
+    <string name="browser_default_in">Deschideți în browserul Lightning</string>
+    <string name="browser_quest">Deschidere în fila browser Quest</string>
+    <string name="browser_quest_shortcut">Deschidere ca aplicație web Quest Browser</string>
+    <string name="browser_system">Încercați să deschideți în sistemul implicit</string>
+    <string name="edit_off">Porniți modul editare</string>
+    <string name="edit_on">Dezactivați modul de editare</string>
+    <string name="edit_move">Mutare</string>
+    <string name="edit_copy">Copiați</string>
+    <string name="selection_hint_none">Faceți clic pe o aplicație pentru a o selecta sau faceți clic aici pentru a le selecta pe toate</string>
+    <string name="selection_hint_single_move">1 aplicație selectată, faceți clic pe un grup pentru a-l muta</string>
+    <string name="selection_hint_single_copy">1 aplicație selectată, faceți clic pe un grup pentru a face o copie</string>
+    <string name="selection_hint_multiple_move">%d aplicații selectate, faceți clic pe un grup pentru a le muta</string>
+    <string name="selection_hint_multiple_copy">%d aplicații selectate, faceți clic pe un grup pentru a face copii</string>
+    <string name="selection_moved_single">Am mutat o aplicație la %1$s</string>
+    <string name="selection_copied_single">Ați copiat o aplicație la %1$s</string>
+    <string name="selection_moved_multiple">Am mutat %1$d aplicații la %2$s</string>
+    <string name="selection_copied_multiple">Copiat %1$d aplicații în %2$s</string>
+    <string name="selection_hint_cleared">Selecție eliminată</string>
+    <string name="selection_hint_all">Selectate toate aplicațiile vizibile</string>
+    <string name="update_title">O actualizare este disponibilă!</string>
+    <string name="update_content">Puteți actualiza de la versiunea %1$s la %2$s, complet pe dispozitiv.</string>
+    <string name="update_button">Continuați</string>
+    <string name="update_skip_button">Săriți peste această actualizare</string>
+    <string name="update_skip_toast">Versiune sărită</string>
+    <string name="update_skip_all_toast">Toate actualizările sunt ascunse</string>
+    <string name="update_downloading_title">Descărcarea ultimei versiuni a %s</string>
+    <string name="update_downloading_content">Ar trebui să primiți în scurt timp o solicitare de instalare.\n
+    \nDacă l-ați respins din greșeală, nu ați dat permisiunea sau ați primit o eroare,
+    puteți încerca din nou din setări.</string>
+    <string name="update_hide_button">Ascunde</string>
+    <string name="update_failed_title">Nu s-a reușit descărcarea pachetului!</string>
+    <string name="update_failed_content">Asigurați-vă că aveți o conexiune bună la internet și încercați din nou mai târziu.</string>
+    <string name="update_skip_title">Săriți peste actualizarea la versiunea %1$s?</string>
+    <string name="update_skip_content">Actualizările sunt foarte recomandate și pot include remedieri importante.
+        \n
+        \nDacă evitați această actualizare din cauza unei probleme, vă rugăm să o raportați la github.com/threethan/LightningLauncher
+        \n
+        \nIndiferent de selecția dvs., puteți actualiza ulterior din setări.</string>
+    <string name="update_skip_all_button">Săriți peste aceasta și actualizările viitoare</string>
+    <string name="update_skip_confirm_button">Săriți peste această actualizare</string>
+    <string name="update_skip_cancel_button">Respinge</string>
+    <string name="saved_settings">Configurație salvată la</string>
+    <string name="saved_settings_loading">Import, vă rugăm să așteptați..</string>
+    <string name="saved_settings_error">Eroare în timpul copierii fișierului!</string>
+    <string name="loaded_settings1">Configurație importată,</string>
+    <string name="loaded_settings2">lansatorul trebuie să se închidă acum!</string>
+    <string name="default_groups_title">Setări de grup implicite</string>
+    <string name="default_groups_info">Grupuri implicite actuale:\n
+        \n%1$s\n
+        \nLe puteți modifica prin editarea unui grup în modul editare.
+        \n
+        \nCe ați dori să faceți acum?</string>
+    <string name="default_groups_reset_groups">Resetați toate grupurile și sortați la valoarea implicită</string>
+    <string name="default_groups_resort_only">Mutați totul în grupul său implicit</string>
+    <string name="default_groups_cancel">Du-te înapoi, nu face nimic</string>
+    <string name="default_groups_reset_groups_toast_main">Resetarea grupurilor</string>
+    <string name="default_groups_reset_groups_toast_bold">pe deplin!</string>
+    <string name="default_groups_resort_only_toast_main">Aplicațiile au fost mutate la</string>
+    <string name="default_groups_resort_only_toast_bold">grupurile implicite selectate</string>
+    <string name="toast_cant_unset_group">Setați un alt grup ca implicit pentru a-l dezactiva pe acesta</string>
+    <string name="clear_icons_title">Setări implicite pentru pictograme</string>
+    <string name="clear_icons_info">Lightning Launcher stochează în cache pictograme și bannere pentru aplicații pentru o încărcare mai rapidă.</string>
+    <string name="clear_icons_info_quest">Lightning Launcher va descărca de pe internet pictograme pentru aplicațiile și jocurile Quest.
+        \nDe asemenea, prin ștergerea memoriei cache a pictogramelor, le descărcați din nou.</string>
+    <string name="clear_icons_info_custom">Puteți seta pictograme personalizate pentru aplicații făcând clic pe pictograma din fereastra pop-up de informații a aplicației.
+        \nDacă doriți, le puteți reseta și pe acestea.</string>
+    <string name="clear_icons_clear_cache">Ștergeți memoria cache a pictogramelor</string>
+    <string name="clear_icons_clear_all">Icoane personalizate clare</string>
+    <string name="clear_icons_cancel">Du-te înapoi, nu face nimic</string>
+    <string name="toast_cleared_icon_cache">Memoria cache a pictogramelor a fost ștearsă</string>
+    <string name="toast_cleared_icon_all">Toate pictogramele au fost resetate la valorile implicite</string>
+    <string name="tip_kill_process">Opriți rularea în fundal</string>
+    <string name="tip_launch">Lansarea aplicației</string>
+    <string name="tip_info_website">Despre adăugarea de site-uri web</string>
+    <string name="tip_stop_editing">Dezactivați modul de editare</string>
+    <string name="tip_select_all">Selectați/deselectați toate aplicațiile vizibile</string>
+    <string name="tip_uninstall">Dezinstalare / Eliminare</string>
+    <string name="tip_uninstall_bulk">Dezinstalare / Eliminare toate selectate</string>
+    <string name="tip_info">Informații despre aplicația Android</string>
+    <string name="tip_charts">Vezi graficele timpului de joc\nin Quest Game Tuner</string>
+    <string name="tip_change_icon">Schimbare pictogramă</string>
+    <string name="tip_save_settings">Copierea de rezervă a tuturor setărilor și grupărilor</string>
+    <string name="tip_load_settings">Restaurarea tuturor setărilor și grupărilor</string>
+    <string name="tip_hide">Ascundeți această aplicație</string>
+    <string name="tip_show">Dezascundeți această aplicație</string>
+    <string name="moved_hidden">Mutat la</string>
+    <string name="moved_hidden_bold">Grup ascuns</string>
+    <string name="moved_shown">Mutat la</string>
+    <string name="refreshed_icon">Reîmprospătarea pictogramei..</string>
+    <string name="addons_main_vr">Scurtături</string>
+    <string name="addons_main_tv">Opțiuni de comandă rapidă</string>
+    <string name="addons_info">Comenzile rapide facilitează deschiderea lansatorului.
+        \nEste foarte recomandat să configurați să utilizați cel puțin una.</string>
+    <string name="addons_tv_info">Din păcate, Android TV limitează funcționalitatea serviciilor de accesibilitate și a lansatoarelor terțe.</string>
+    <string name="addons_exit">Reveniți la Setări</string>
+    <string name="addons_androidtv">Manager lansator Android TV</string>
+    <string name="addons_androidtv_desc">Instalați o aplicație terță parte care vă poate permite să schimbați casa implicită de pe Android TV.
+    \nAceasta necesită activarea depanării ADB și este posibil să nu funcționeze pe toate dispozitivele.
+    \n
+    \nDacă nu se instalează de aici, căutați "Android TV Launcher Manager XDA", apoi descărcați și instalați manual. (Nu va funcționa pe Fire TV)</string>
+    <string name="addons_androidtv_alt">Sau… folosiți butonul Înapoi!</string>
+    <string name="addons_androidtv_alt_desc">Dacă utilizați butonul înapoi de pe telecomandă, în loc de butonul Acasă, veți reveni întotdeauna la Lightning Launcher.
+    \n
+    \Apăsând înapoi odată ce ajungeți la lansator, veți comuta doar modul de editare, împiedicându-vă să reveniți accidental la lansatorul implicit.</string>
+    <string name="addons_preamble">Redirecționează lansatorul de lumini deschis atunci când treceți peste o pictogramă dock.
+        \Fiecare redirecționare trebuie să fie instalată individual, apoi activată.</string>
+    <string name="addons_preamble_dock">Puteți adăuga Lighting Launcher direct la dock!</string>
+    <string name="addons_dock_button">Cum să adăugați Lightning Launcher la Dock Quest</string>
+    <string name="addons_dock_title">Adăugarea LL la dock</string>
+    <string name="addons_dock_section_1_title">Îndepărtați o pictogramă existentă</string>
+    <string name="addons_dock_section_1_content">1. Închideți toate celelalte aplicații 2D și VR.
+        \n2. Alegeți o pictogramă pentru a o elimina. (Aparat foto sau Browser)
+        \n3. Faceți clic pe pictogramă și țineți-o apăsată.
+        \n4. Trageți-o în jos până când se afișează \'Unpin\', apoi eliberați.</string>
+    <string name="addons_dock_section_1_below">Feed, Store și People nu pot fi eliminate.</string>
+    <string name="addons_dock_section_2_title">Adaugă iconița lui Lightning Launcher\</string>
+    <string name="addons_dock_section_2_content">1. Găsiți Lightning Launcher în aplicațiile recente.
+        \n\t\t(partea dreaptă a dock-ului)
+        \n2. Trageți Lightning Launcher în partea stângă.
+        \n3. Eliberați pentru a-l fixa pe dock.</string>
+    <string name="addons_dock_section_2_below">Nu puteți avea mai mult de cinci aplicații fixate.</string>
+    <string name="addons_add">Adăugați pictograma Dock</string>
+    <string name="addons_redirect">Redirecționarea pictogramelor încorporate</string>
+    <string name="addons_explore">Redirecționare Feed</string>
+    <string name="addons_explore_desc">Instalați apoi activați pentru a deschide Lightning Launcher atunci când apăsați butonul Horizon Feed de pe dock.</string>
+    <string name="addons_library">Redirecționare bibliotecă</string>
+    <string name="addons_library_desc">Instalați apoi activați pentru a deschide Lightning Launcher atunci când treceți peste butonul App Library de pe dock.</string>
+    <string name="addons_store">Redirecționare magazin</string>
+    <string name="addons_store_desc">Instalați apoi activați pentru a deschide Lightning Launcher atunci când treceți peste butonul Magazin de pe dock.</string>
+    <string name="addons_people">Redirecționarea persoanelor</string>
+    <string name="addons_people_desc">Instalați apoi activați pentru a deschide Lightning Launcher atunci când treceți butonul Persoane pe dock.</string>
+    <string name="addons_install">Instalați</string>
+    <string name="addons_update">Actualizare</string>
+    <string name="addons_activate">Activați</string>
+    <string name="addons_open">Lansare</string>
+    <string name="addons_deactivate">Dezactivare</string>
+    <string name="addons_uninstall">Dezinstalare</string>
+    <string name="installing">Instalarea..</string>
+    <string name="installed_successfully">Instalat cu succes</string>
+    <string name="tuner_info_tagline">Eliberați întreaga putere a căutării dvs.</string>
+    <string name="tuner_info_desc">Meta limitează performanța aplicațiilor.
+        Quest Game Tuner sparge aceste limite, permițându-vă să profitați la maximum de hardware-ul pe care îl dețineți deja.
+        De asemenea, puteți captura videoclipuri mai bune, bloca reclamele, opri automat și multe altele.
+        \n
+        \nQuest Game Tuner este rezultatul a sute de ore de dezvoltare, cercetare și testare de către același dezvoltator care a realizat Lightning Launcher.</string>
+    <string name="tuner_info_get">Obțineți Quest Game Tuner pe itch.io!</string>
+    <string name="tuner_info_get_link">threethan.itch.io/quest-game-tuner</string>
+    <string name="apk_installer">Instalator APK</string>
+    <string name="apk_installer_tip">Selectați un fișier APK pentru instalare</string>
+</resources>

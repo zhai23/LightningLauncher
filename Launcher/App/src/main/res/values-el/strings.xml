@@ -1,0 +1,312 @@
+<resources>
+    <string name="add_group">Προσθήκη ομάδας</string>
+    <string name="delete_group">Διαγραφή ομάδας</string>
+    <string name="edit_group">Επεξεργασία ομάδας</string>
+    <string name="app_details">Λεπτομέρειες εφαρμογής</string>
+    <string name="apps_hidden">- Κρυφό</string>
+    <string name="migrated">Οι παλιές ρυθμίσεις έχουν μεταφερθεί</string>
+    <string name="edit_mode">Λειτουργία επεξεργασίας</string>
+    <string name="edit_mode_tip">Αλλάξτε ομάδες, προσθέστε ιστότοπους και πολλά άλλα.</string>
+    <string name="edit_mode_disabled">Μόνο το κύριο παράθυρο μπορεί να επεξεργαστεί</string>
+    <string name="edit_mode_stop">Σταματήστε την επεξεργασία</string>
+    <string name="new_multitasking">Κλείσιμο παραθύρου εκτοξευτή μετά το άνοιγμα εφαρμογών</string>
+    <string name="new_multitasking_tip">Εάν είναι ενεργοποιημένη, ο Lightning Launcher θα κλείνει μόνος του όταν ανοίγετε μια εφαρμογή.</string>
+    <string name="allow_chain_launch">Χρήση Quest Native Launching</string>
+    <string name="allow_chain_launch_tip">Εκκινεί εφαρμογές με μια μέθοδο παρόμοια με τον προεπιλεγμένο εκκινητή του Quest\.
+        \nΗ απενεργοποίηση αυτής της λειτουργίας θα αλλάξει τον τρόπο οργάνωσης των παραθύρων και θα μπορούσε να προκαλέσει προβλήματα.</string>
+    <string name="icons_size">Κλίμακα</string>
+    <string name="icons_size_tip">Μέγεθος στόχου για εικονίδια/μπάνερ.\nΜπορεί να διαφέρει ανάλογα με το μέγεθος του παραθύρου.</string>
+    <string name="icons_margin">Περιθώριο</string>
+    <string name="icons_margin_tip">Απόσταση στόχου μεταξύ εικονιδίων/πανό.\nΜπορεί να διαφέρει ανάλογα με το μέγεθος του παραθύρου.</string>
+    <string name="apps_vr">Εφαρμογές VR</string>
+    <string name="apps_phone">Εφαρμογές τηλεφώνου</string>
+    <string name="apps_tv">Εφαρμογές τηλεόρασης</string>
+    <string name="apps_panel">Εφαρμογές πάνελ</string>
+    <string name="apps_web">Ιστοσελίδες</string>
+    <string name="default_group">Χρησιμοποιήστε την ομάδα ως προεπιλογή για νέα:</string>
+    <string name="app_name_icon">Κάτω από τα εικονίδια εφαρμογών</string>
+    <string name="app_name_wide">Κάτω από το App Banners</string>
+    <string name="settings_main">Εκτοξευτής αστραπών</string>
+    <string name="settings_appearance">Προσαρμογή εμφάνισης</string>
+    <string name="settings_addons_attract">Συντομεύσεις</string>
+    <string name="settings_addons">Συντομεύσεις</string>
+    <string name="settings_addons_tip">Διευκόλυνση της πρόσβασης στον Lightning Launcher.</string>
+    <string name="settings_update">Λήψη και εγκατάσταση της τελευταίας ενημέρωσης</string>
+    <string name="settings_enable_updates">Ειδοποιήστε με για νέες ενημερώσεις</string>
+    <string name="settings_enable_updates_tip">Κάντε κλικ για να εμφανίσετε ειδοποιήσεις για νέες ενημερώσεις.
+    \nΠροηγουμένως την απενεργοποιήσατε όταν παραλείπατε μια ενημέρωση.</string>
+    <string name="behavior_header">Συμπεριφορά</string>
+    <string name="background_header">Ταπετσαρία &amp; στυλ</string>
+    <string name="hdr_icon">Διάταξη εικονιδίων</string>
+    <string name="disp_wide">Εμφάνιση ως Banner</string>
+    <string name="disp_icon">Εμφάνιση ως εικονίδιο</string>
+    <string name="disp_name">Να εμφανίζονται πάντα τα ονόματα</string>
+    <string name="more_options">Περισσότερες επιλογές</string>
+    <string name="advanced_header">Ρυθμίσεις για προχωρημένους</string>
+    <string name="refresh_button">Ανανέωση</string>
+    <string name="advanced_interface">Διεπαφή</string>
+    <string name="advanced_reset">Ανανέωση &amp; επαναφορά</string>
+    <string name="advanced_launching">Προτιμήσεις εκκίνησης</string>
+    <string name="advanced_features">Επιπλέον χαρακτηριστικά</string>
+    <string name="advanced_search">Ρυθμίσεις αναζήτησης</string>
+    <string name="advanced_backup">Δημιουργία αντιγράφων ασφαλείας ρυθμίσεων</string>
+    <string name="advanced_alpha">Διαφάνεια φόντου</string>
+    <string name="advanced_alpha_tip">Κάνει το φόντο του Lightning Launcher ημιδιαφανές στο passthrough.</string>
+    <string name="dark_mode">Σκοτεινή λειτουργία</string>
+    <string name="dark_mode_tip">Εάν είναι ενεργοποιημένη, οι ετικέτες θα εμφανίζονται λευκές σε σκούρο φόντο.</string>
+    <string name="group_mode">Ενεργοποίηση ομάδων</string>
+    <string name="group_mode_tip">Απενεργοποιήστε το για να εμφανίσετε όλες τις εφαρμογές ταυτόχρονα, χωρίς ομαδοποίηση.
+        \nΤα εικονίδια αναζήτησης και ρυθμίσεων θα είναι επίσης κρυμμένα.
+        \n
+        \nΧρησιμοποιήστε το κουμπί επιστροφής στο τηλεχειριστήριο/χειριστήριο για να ανοίξετε τις Ρυθμίσεις.</string>
+    <string name="group_wide">Ευρύτερες ομάδες</string>
+    <string name="group_wide_tip">Αυξάνει το ελάχιστο πλάτος των κουμπιών ομάδας,
+        \εξασφαλίζει ότι τα μεγαλύτερα ονόματα δεν θα αποκόπτονται.
+        \n
+        \nΜόνο όταν υπάρχουν πολλές ομάδες.</string>
+    <string name="clear_cache">Επαναφορά όλων των εικονιδίων</string>
+    <string name="clear_labels">Επαναφορά όλων των ετικετών εφαρμογών στην προεπιλογή</string>
+    <string name="group_defaults_button">Προεπιλεγμένες ομάδες</string>
+    <string name="icons_settings_button">Ανανέωση εικονιδίων</string>
+    <string name="show_playtimes">Προβολή χρόνων προβολής</string>
+    <string name="show_playtimes_desc">Εμφάνιση του χρόνου παιχνιδιού σε banners εφαρμογών.
+    \n\nΑπαιτεί πρόσβαση σε δεδομένα χρήσης</string>
+    <string name="open_usage">Πρόσβαση σε δεδομένα χρήσης</string>
+    <string name="open_usage_desc">Ανοίξτε μια σελίδα ρυθμίσεων, όπου μπορείτε να ενεργοποιήσετε ή να απενεργοποιήσετε τη δυνατότητα για εφαρμογές όπως το Lighting Launcher να βλέπουν τα δεδομένα χρόνου παιχνιδιού και χρήσης.</string>
+    <string name="close_fully">Πλήρως κλειστός εκτοξευτής αστραπών</string>
+    <string name="close_fully_desc">Κλείνει πλήρως το Lightning Launcher.  (Στη συνέχεια μπορείτε να τον ανοίξετε ξανά)
+        \n\nΑυτό σας επιτρέπει την αντιμετώπιση προβλημάτων χωρίς επανεκκίνηση.</string>
+    <string name="playtime_charts_warn">Εγκαταστήστε το Quest Game Tuner για να δείτε τα διαγράμματα χρόνου παιχνιδιού</string>
+    <string name="request_playtime_title">Χρήση Απαιτείται πρόσβαση σε δεδομένα χρήσης</string>
+    <string name="request_playtime_msg">Για να δείτε το χρόνο παιχνιδιού σας στο Lighting Launcher,
+        \ πρέπει να του επιτρέψετε την πρόσβαση στα δεδομένα χρήσης της εφαρμογής.
+        \n
+        \nΕάν είναι επίσης εγκατεστημένο το Quest Game Tuner, κάνοντας κλικ στο χρόνο παιχνιδιού θα ανοίξει ένα ημερήσιο ή μηνιαίο διάγραμμα.
+        \n
+        \nΜπορείτε να αποκρύψετε το κουμπί χρόνου παιχνιδιού στις Ρυθμίσεις για προχωρημένους.</string>
+    <string name="long_press">Παρατεταμένο πάτημα για επεξεργασία</string>
+    <string name="long_press_tip">Όταν είναι ενεργοποιημένη, πατώντας παρατεταμένα μια εφαρμογή θα εισέλθετε στη λειτουργία επεξεργασίας και θα την επιλέξετε.
+    \nΌταν είναι απενεργοποιημένη, πατώντας παρατεταμένα μια εφαρμογή θα εμφανιστούν λεπτομέρειες.</string>
+    <string name="default_launch_out">Εκκίνηση εφαρμογών σε δικό σας παράθυρο από προεπιλογή</string>
+    <string name="search_web">Εμφάνιση μηχανών αναζήτησης στο Web στις αναζητήσεις</string>
+    <string name="search_hidden">Εμφάνιση κρυφών εφαρμογών στις αναζητήσεις</string>
+    <string name="settings_save">Ρυθμίσεις εξαγωγής</string>
+    <string name="settings_load">Ρυθμίσεις εισαγωγής</string>
+    <string name="groupings_save">Ομαδοποιήσεις εξαγωγής</string>
+    <string name="groupings_load">Ομαδοποιήσεις εισαγωγής</string>
+    <string name="advanced_sizing">Ενεργοποίηση πρόσθετων μεγεθών παραθύρων εφαρμογών τηλεφώνου</string>
+    <string name="advanced_sizing_tip">Επιτρέπει το άνοιγμα εφαρμογών σε παράθυρα διαφορετικού μεγέθους, μπορεί να προκαλέσει προβλήματα.</string>
+    <string name="toast_advanced_sizing">Οι νέες επιλογές μεγέθους μπορούν να εναλλάσσονται στις ρυθμίσεις ανά εφαρμογή</string>
+    <string name="reload_icon">Εικονίδιο επαναφοράς</string>
+    <string name="open_tuning">Συντονιστείτε με</string>
+    <string name="open_tuning_tip">Το Quest Game Tuner σας επιτρέπει να ρυθμίσετε την ανάλυση, τα FPS και πολλά άλλα!</string>
+    <string name="tuner_options">⚙</string>
+    <string name="launch_out_message">Η εκκίνηση εφαρμογών ή ιστότοπων 2D σε δικό τους παράθυρο επιτρέπει ευκολότερη πολυδιεργασία σε συσκευές Quest,
+        αλλά μπορεί να προκαλέσει το γεγονός ότι ορισμένες εφαρμογές δεν ξεκινούν πάντα.\n\nΕάν έχετε οποιοδήποτε πρόβλημα, απενεργοποιήστε αυτή την επιλογή!</string>
+    <string name="launch_size_message">Η εκκίνηση εφαρμογών ή ιστότοπων 2D σε δικό τους παράθυρο επιτρέπει ευκολότερη πολυδιεργασία στις συσκευές Quest,
+        αλλά θα έχει ως αποτέλεσμα ορισμένες εφαρμογές να μην ξεκινούν πάντα.\n
+        \nΗ ρύθμιση προσαρμοσμένων μεγεθών παραθύρων θα διορθώσει τις εφαρμογές που δεν εκκινούνται, θα εμφανίσει ορισμένες εφαρμογές ελαφρώς πιο καθαρά και θα επιτρέψει διαφορετικά μεγέθη παραθύρων στην επίπεδη προβολή.
+        \nΌμως, μπορεί περιστασιακά να προκαλέσει κόλλημα των παραθύρων ή συντριβή του Lightning Launcher.\n
+        \nΌλες αυτές οι επιλογές μπορούν να ρυθμιστούν μόνο ανά εφαρμογή.\n
+        \nΕάν έχετε προβλήματα, απενεργοποιήστε αυτή την επιλογή και βεβαιωθείτε ότι οι εφαρμογές δεν έχουν ρυθμιστεί να εκκινούνται σε δικά τους παράθυρα. Κάντε επανεκκίνηση για να διορθώσετε τα κολλημένα παράθυρα.</string>
+    <string name="hidden_groups_message">Η απενεργοποίηση αυτής της επιλογής θα αποκρύψει την επάνω μπάρα όταν δεν βρίσκεστε σε Λειτουργία επεξεργασίας. \n
+        \nΤο κουμπί ρυθμίσεων θα είναι επίσης κρυμμένο όταν δεν βρίσκεστε σε Λειτουργία επεξεργασίας.\n
+        \nΑντ\' αυτού, πατήστε το κουμπί επιστροφής για να ανοίξετε τις ρυθμίσεις.</string>
+    <string name="set_default_launcher_message">Ο ορισμός του Lightning Launcher ως προεπιλεγμένη αρχική εφαρμογή του Android θα επιτρέψει σε άλλες εφαρμογές να προσθέσουν εικονίδια συντόμευσης στην αρχική οθόνη.
+        \nΑυτό χρειάζεται να γίνει μόνο μία φορά.\n
+        \nΔεν θα αντικαταστήσει τον πραγματικό προεπιλεγμένο εκτοξευτή στις συσκευές VR και δεν θα αλλάξει τη λειτουργία του ίδιου του Lightning Launcher.\n\n
+        Αν θέλετε να το κάνετε αυτό, ελέγξτε την ενότητα Ρύθμιση συντομεύσεων/Ρυθμίσεις συντομεύσεων για συντομεύσεις TO Lightning Launcher.</string>
+    <string name="download_browser_message">Για την καλύτερη δυνατή εμπειρία, πρέπει να εγκαταστήσετε το Lightning Browser για να ανοίξετε ιστότοπους στο Lightning Launcher.\n
+        \n(Εναλλακτικά, μπορείτε να προσπαθήσετε να αλλάξετε το πρόγραμμα περιήγησης στις Ρυθμίσεις -&gt; Ρυθμίσεις για προχωρημένους)</string>
+    <string name="update_browser_message">Για την καλύτερη δυνατή εμπειρία, πρέπει να ενημερώσετε το Lightning Browser.</string>
+    <string name="download_browser_toast_main">Ανοίξτε ξανά τον ιστότοπο</string>
+    <string name="download_browser_toast_bold">μετά την ολοκλήρωση της εγκατάστασης</string>
+    <string name="website_title">Ιστοσελίδες στον εκτοξευτή Lightning</string>
+    <string name="website_subtitle1">Εύκολη πρόσβαση σε ιστότοπους και εφαρμογές Web</string>
+    <string name="website_info1">Οι ιστότοποι θα εμφανίζονται ως εφαρμογές στον εκκινητή.\n
+        \nΜπορείτε επίσης να κάνετε αναζήτηση στο διαδίκτυο από τη γραμμή αναζήτησης.</string>
+    <string name="website_subtitle2">Ήχος στο παρασκήνιο</string>
+    <string name="website_info2">Αφού ελαχιστοποιηθούν, οι προστιθέμενοι ιστότοποι μπορούν να συνεχίσουν να εκτελούνται, να αναπαράγονται και να εγγράφουν ήχο μέχρι να κλείσουν πλήρως. (Ενδέχεται να εμφανιστεί καθυστέρηση ήχου.)\n</string>
+    <string name="website_subtitle3">Επιλογή προγράμματος περιήγησης</string>
+    <string name="website_info3">Στις συσκευές Quest, μπορείτε να εκκινήσετε το Meta Quest Browser, το οποίο υποστηρίζει περιεχόμενο ιστού VR.
+        \nΗ προεπιλογή μπορεί να οριστεί στις Ρυθμίσεις για προχωρημένους.</string>
+    <string name="add_website">Προσθέστε έναν ιστότοπο</string>
+    <string name="add_website_tip">Προσθέστε έναν ιστότοπο στον εκτοξευτή</string>
+    <string name="add_website_url_label">Εισάγετε οποιαδήποτε διεύθυνση URL ιστότοπου</string>
+    <string name="add_website_bad_url">Εισάγετε ένα έγκυρο URL</string>
+    <string name="add_website_used_url">Αυτός ο ιστότοπος βρίσκεται ήδη στο %1$s</string>
+    <string name="add_website_audio_info">Οι προστιθέμενοι ιστότοποι μπορούν να αναπαράγουν ήχο στο παρασκήνιο</string>
+    <string name="add_website_group">Προσθήκη στο %s</string>
+    <string name="service_title">Υπηρεσίες συντομεύσεων</string>
+    <string name="service_info_section_1_title">Εύκολη πρόσβαση στον εκτοξευτή Lightning</string>
+    <string name="service_info_section_1_content">Ενεργοποιώντας την υπηρεσία συντόμευσης, ο Lightning Launcher θα ανοίγει όταν περνάτε το ποντίκι πάνω από το επιλεγμένο εικονίδιο στο dock.</string>
+    <string name="service_info_section_2_title">Ενεργοποίηση της υπηρεσίας συντόμευσης</string>
+    <string name="service_info_section_2_content">1. Χρησιμοποιήστε το παρακάτω κουμπί για να ανοίξετε τις ρυθμίσεις προσβασιμότητας του Android\.
+        \n2. Επιλέξτε την υπηρεσία που θέλετε να ενεργοποιήσετε.
+        \n3. Ενεργοποιήστε την υπηρεσία με τον επάνω διακόπτη.
+        \n4. Κάντε κλικ στο "Allow" όταν σας ζητηθεί.</string>
+    <string name="service_open_accessibility">Συνεχίστε στις Ρυθμίσεις προσβασιμότητας</string>
+    <string name="warning">Σημαντικές πληροφορίες</string>
+    <string name="cancel">Ακύρωση</string>
+    <string name="understood">Το βρήκα!</string>
+    <string name="confirm">Επιβεβαίωση</string>
+    <string name="next">Συνεχίστε</string>
+    <string name="size_none">Άνοιγμα σε προεπιλεγμένο παράθυρο</string>
+    <string name="size_own">Άνοιγμα στο δικό σας παράθυρο της App\</string>
+    <string name="size_phone">Άνοιγμα σε παράθυρο τύπου τηλεφώνου</string>
+    <string name="size_small">Άνοιγμα σε μικρό παράθυρο 4:3</string>
+    <string name="size_medium">Άνοιγμα σε παράθυρο μεσαίου μεγέθους</string>
+    <string name="size_large">Άνοιγμα σε μεγάλο παράθυρο 16:9</string>
+    <string name="size_huge">Άνοιγμα σε τεράστιο παράθυρο 16:9</string>
+    <string name="size_wide">Άνοιγμα σε ευρύ παράθυρο 21:9</string>
+    <string name="browser_default_setting">Προεπιλογή για ιστοσελίδες:</string>
+    <string name="browser_default_in">Άνοιγμα στο Lightning Browser</string>
+    <string name="browser_quest">Άνοιγμα σε καρτέλα του προγράμματος περιήγησης Quest</string>
+    <string name="browser_quest_shortcut">Άνοιγμα ως εφαρμογή Web Quest Browser</string>
+    <string name="browser_system">Προσπαθήστε να ανοίξετε στην Προεπιλογή συστήματος</string>
+    <string name="edit_off">Ενεργοποίηση της λειτουργίας επεξεργασίας</string>
+    <string name="edit_on">Απενεργοποίηση λειτουργίας επεξεργασίας</string>
+    <string name="edit_move">Μετακίνηση</string>
+    <string name="edit_copy">Αντιγραφή</string>
+    <string name="selection_hint_none">Κάντε κλικ σε μια εφαρμογή για να την επιλέξετε ή κάντε κλικ εδώ για να επιλέξετε όλες</string>
+    <string name="selection_hint_single_move">1 επιλεγμένη εφαρμογή, κάντε κλικ σε μια ομάδα για να τη μετακινήσετε</string>
+    <string name="selection_hint_single_copy">1 επιλεγμένη εφαρμογή, κάντε κλικ σε μια ομάδα για να δημιουργήσετε ένα αντίγραφο</string>
+    <string name="selection_hint_multiple_move">%d εφαρμογές επιλεγμένες, κάντε κλικ σε μια ομάδα για να τις μετακινήσετε</string>
+    <string name="selection_hint_multiple_copy">%d εφαρμογές επιλεγμένες, κάντε κλικ σε μια ομάδα για να δημιουργήσετε αντίγραφα</string>
+    <string name="selection_moved_single">Μεταφέρθηκε μια εφαρμογή στο %1$s</string>
+    <string name="selection_copied_single">Αντιγραφή μιας εφαρμογής στο %1$s</string>
+    <string name="selection_moved_multiple">Μετακινήθηκαν %1$d εφαρμογές στο %2$s</string>
+    <string name="selection_copied_multiple">Αντιγραφή %1$d εφαρμογών σε %2$s</string>
+    <string name="selection_hint_cleared">Εκκαθαρισμένη επιλογή</string>
+    <string name="selection_hint_all">Επιλογή όλων των ορατών εφαρμογών</string>
+    <string name="update_title">Μια ενημέρωση είναι διαθέσιμη!</string>
+    <string name="update_content">Μπορείτε να ενημερώσετε από την έκδοση %1$s σε %2$s, πλήρως στη συσκευή.</string>
+    <string name="update_button">Συνεχίστε</string>
+    <string name="update_skip_button">Παραλείψτε αυτή την ενημέρωση</string>
+    <string name="update_skip_toast">Παραλειφθείσα έκδοση</string>
+    <string name="update_skip_all_toast">Όλες οι ενημερώσεις είναι κρυφές</string>
+    <string name="update_downloading_title">Λήψη της τελευταίας έκδοσης του %s</string>
+    <string name="update_downloading_content">Θα σας ζητηθεί να εγκαταστήσετε σύντομα.\n
+    \nΑν το απορρίψατε κατά λάθος, δεν δώσατε άδεια ή λάβατε κάποιο σφάλμα,
+    μπορείτε να προσπαθήσετε ξανά από τις ρυθμίσεις.</string>
+    <string name="update_hide_button">Απόκρυψη</string>
+    <string name="update_failed_title">Απέτυχε η λήψη του πακέτου!</string>
+    <string name="update_failed_content">Βεβαιωθείτε ότι έχετε καλή σύνδεση στο διαδίκτυο και δοκιμάστε ξανά αργότερα.</string>
+    <string name="update_skip_title">Παραλείπετε την ενημέρωση στην έκδοση %1$s?</string>
+    <string name="update_skip_content">Οι ενημερώσεις συνιστώνται ανεπιφύλακτα και μπορεί να περιλαμβάνουν σημαντικές διορθώσεις.
+        \n
+        \nΕάν αποφεύγετε αυτή την ενημέρωση λόγω κάποιου προβλήματος, παρακαλούμε αναφέρετέ το στο github.com/threethan/LightningLauncher
+        \n
+        \nΑνεξάρτητα από την επιλογή σας, μπορείτε να ενημερώσετε αργότερα από τις ρυθμίσεις.</string>
+    <string name="update_skip_all_button">Παραλείψτε αυτό &amp; μελλοντικές ενημερώσεις</string>
+    <string name="update_skip_confirm_button">Παραλείψτε αυτή την ενημέρωση</string>
+    <string name="update_skip_cancel_button">Απορρίψτε το</string>
+    <string name="saved_settings">Αποθηκευμένη διαμόρφωση στο</string>
+    <string name="saved_settings_loading">Εισαγωγή, παρακαλώ περιμένετε..</string>
+    <string name="saved_settings_error">Σφάλμα κατά την αντιγραφή αρχείου!</string>
+    <string name="loaded_settings1">Εισαγόμενη διαμόρφωση,</string>
+    <string name="loaded_settings2">ο εκτοξευτής πρέπει τώρα να κλείσει!</string>
+    <string name="default_groups_title">Προεπιλεγμένες ρυθμίσεις ομάδας</string>
+    <string name="default_groups_info">Τρέχουσες προεπιλεγμένες ομάδες:\n
+        \n%1$s\n
+        \nΜπορείτε να τις αλλάξετε με την επεξεργασία μιας ομάδας στη λειτουργία επεξεργασίας.
+        \n
+        \nΤι θα θέλατε να κάνετε τώρα</string>
+    <string name="default_groups_reset_groups">Επαναφορά όλων των ομάδων &amp; ταξινόμηση στην προεπιλογή</string>
+    <string name="default_groups_resort_only">Μετακινήστε τα πάντα στην προεπιλεγμένη ομάδα τους</string>
+    <string name="default_groups_cancel">Πήγαινε πίσω, μην κάνεις τίποτα</string>
+    <string name="default_groups_reset_groups_toast_main">Επαναφορά ομάδων</string>
+    <string name="default_groups_reset_groups_toast_bold">πλήρως!</string>
+    <string name="default_groups_resort_only_toast_main">Οι εφαρμογές έχουν μεταφερθεί στο</string>
+    <string name="default_groups_resort_only_toast_bold">τις επιλεγμένες προεπιλεγμένες ομάδες σας</string>
+    <string name="toast_cant_unset_group">Ορίστε μια άλλη ομάδα ως προεπιλεγμένη για να ακυρώσετε αυτή την ομάδα</string>
+    <string name="clear_icons_title">Προεπιλεγμένες ρυθμίσεις εικονιδίων</string>
+    <string name="clear_icons_info">Ο Lightning Launcher αποθηκεύει τα εικονίδια και τα banners των εφαρμογών για ταχύτερη φόρτωση.</string>
+    <string name="clear_icons_info_quest">Ο Lightning Launcher θα κατεβάσει εικονίδια για εφαρμογές και παιχνίδια Quest από το διαδίκτυο.
+        \nΜε την εκκαθάριση της προσωρινής μνήμης εικονιδίων, μπορείτε επίσης να τα κατεβάσετε εκ νέου.</string>
+    <string name="clear_icons_info_custom">Μπορείτε να ορίσετε προσαρμοσμένα εικονίδια για εφαρμογές κάνοντας κλικ στο εικονίδιο στο αναδυόμενο παράθυρο πληροφοριών της εφαρμογής.
+        \nΑν θέλετε, μπορείτε επίσης να τα επαναφέρετε.</string>
+    <string name="clear_icons_clear_cache">Εκκαθάριση προσωρινής μνήμης εικονιδίων</string>
+    <string name="clear_icons_clear_all">Εκκαθάριση προσαρμοσμένων εικονιδίων</string>
+    <string name="clear_icons_cancel">Πήγαινε πίσω, μην κάνεις τίποτα</string>
+    <string name="toast_cleared_icon_cache">Η προσωρινή μνήμη εικονιδίων έχει εκκαθαριστεί</string>
+    <string name="toast_cleared_icon_all">Όλα τα εικονίδια έχουν επανέλθει στις προεπιλογές</string>
+    <string name="tip_kill_process">Σταματήστε την εκτέλεση στο παρασκήνιο</string>
+    <string name="tip_launch">Εκκίνηση εφαρμογής</string>
+    <string name="tip_info_website">Σχετικά με την προσθήκη ιστοσελίδων</string>
+    <string name="tip_stop_editing">Απενεργοποίηση λειτουργίας επεξεργασίας</string>
+    <string name="tip_select_all">Επιλογή/αποεπιλογή όλων των ορατών εφαρμογών</string>
+    <string name="tip_uninstall">Απεγκατάσταση / Αφαίρεση</string>
+    <string name="tip_uninstall_bulk">Απεγκατάσταση / Κατάργηση όλων των επιλεγμένων</string>
+    <string name="tip_info">Πληροφορίες εφαρμογής Android</string>
+    <string name="tip_charts">Προβολή διαγραμμάτων χρόνου παιχνιδιού\nin Quest Game Tuner</string>
+    <string name="tip_change_icon">Εικονίδιο αλλαγής</string>
+    <string name="tip_save_settings">Δημιουργία αντιγράφων ασφαλείας όλων των ρυθμίσεων &amp; ομαδοποιήσεων</string>
+    <string name="tip_load_settings">Επαναφορά όλων των ρυθμίσεων &amp; ομαδοποιήσεων</string>
+    <string name="tip_hide">Απόκρυψη αυτής της εφαρμογής</string>
+    <string name="tip_show">Αποκρύψτε αυτή την εφαρμογή</string>
+    <string name="moved_hidden">Μεταφέρθηκε στο</string>
+    <string name="moved_hidden_bold">Κρυφή ομάδα</string>
+    <string name="moved_shown">Μεταφέρθηκε στο</string>
+    <string name="refreshed_icon">Ανανέωση εικονιδίου..</string>
+    <string name="addons_main_vr">Συντομεύσεις</string>
+    <string name="addons_main_tv">Επιλογές συντόμευσης</string>
+    <string name="addons_info">Οι συντομεύσεις διευκολύνουν το άνοιγμα του εκτοξευτή.
+        \nΣυνιστάται ιδιαίτερα να ρυθμίσετε τη χρήση τουλάχιστον μίας.</string>
+    <string name="addons_tv_info">Δυστυχώς, το Android TV περιορίζει τη λειτουργικότητα των υπηρεσιών προσβασιμότητας και των εκτοξευτών τρίτων.</string>
+    <string name="addons_exit">Επιστροφή στις ρυθμίσεις</string>
+    <string name="addons_androidtv">Διαχειριστής εκτοξευτή Android TV</string>
+    <string name="addons_androidtv_desc">Εγκαταστήστε μια εφαρμογή τρίτου μέρους που μπορεί να σας επιτρέψει να αλλάξετε την προεπιλεγμένη αρχική σελίδα στο Android TV.
+    \nΑυτό απαιτεί την ενεργοποίηση του ADB Debugging και ενδέχεται να μην λειτουργεί σε κάθε συσκευή.
+    \n
+    \nΑν δεν εγκατασταθεί από εδώ, αναζητήστε το "Android TV Launcher Manager XDA", και στη συνέχεια κατεβάστε και εγκαταστήστε το χειροκίνητα (δεν θα λειτουργήσει στο Fire TV)</string>
+    <string name="addons_androidtv_alt">Ή… απλά χρησιμοποιήστε το κουμπί Πίσω!</string>
+    <string name="addons_androidtv_alt_desc">Αν απλά χρησιμοποιήσετε το κουμπί επιστροφής στο τηλεχειριστήριο αντί για το κουμπί home, θα επιστρέφετε πάντα στον Lightning Launcher.
+    \n
+    \nΠατώντας το back μόλις φτάσετε στον εκτοξευτή, θα αλλάξετε απλώς τη λειτουργία επεξεργασίας, ώστε να μην επιστρέψετε κατά λάθος στον προεπιλεγμένο εκτοξευτή.</string>
+    <string name="addons_preamble">Επανακατευθύνει τον ανοιχτό εκτοξευτή φωτισμού όταν αιωρείται ένα εικονίδιο αποβάθρας.
+        \nΚάθε ανακατεύθυνση πρέπει να εγκατασταθεί ξεχωριστά και στη συνέχεια να ενεργοποιηθεί.</string>
+    <string name="addons_preamble_dock">Μπορείτε να προσθέσετε το Lighting Launcher απευθείας στο dock σας!</string>
+    <string name="addons_dock_button">Πώς να προσθέσετε τον Lightning Launcher στο Quest Dock</string>
+    <string name="addons_dock_title">Προσθήκη LL στο Dock</string>
+    <string name="addons_dock_section_1_title">Κατάργηση ενός υπάρχοντος εικονιδίου</string>
+    <string name="addons_dock_section_1_content">1. Κλείστε όλες τις άλλες εφαρμογές 2D και VR.
+        \n2. Επιλέξτε ένα εικονίδιο για να το αφαιρέσετε. (Κάμερα ή πρόγραμμα περιήγησης)
+        \n3. Κάντε κλικ και κρατήστε πατημένο το εικονίδιο.
+        \n4. Σύρετέ το προς τα κάτω μέχρι να γράψει \'Unpin\' και, στη συνέχεια, αφήστε το.</string>
+    <string name="addons_dock_section_1_below">Τα Feed, Store και People δεν μπορούν να αφαιρεθούν.</string>
+    <string name="addons_dock_section_2_title">Προσθέστε το εικονίδιο του Lightning Launcher\'s</string>
+    <string name="addons_dock_section_2_content">1. Βρείτε το Lightning Launcher στις πρόσφατες εφαρμογές.
+        \n\t\t(Δεξιά πλευρά του dock)
+        \n2. Σύρετε τον Lightning Launcher στην αριστερή πλευρά.
+        \n3. Απελευθερώστε τον για να τον καρφιτσώσετε στο dock.</string>
+    <string name="addons_dock_section_2_below">Δεν μπορείτε να έχετε περισσότερες από πέντε εφαρμογές καρφιτσωμένες.</string>
+    <string name="addons_add">Προσθήκη εικονιδίου Dock</string>
+    <string name="addons_redirect">Ανακατεύθυνση ενσωματωμένων εικονιδίων</string>
+    <string name="addons_explore">Ανακατεύθυνση ζωοτροφών</string>
+    <string name="addons_explore_desc">Εγκαταστήστε και ενεργοποιήστε το για να ανοίγει ο Lightning Launcher όταν πατάτε το κουμπί Horizon Feed στο dock.</string>
+    <string name="addons_library">Ανακατεύθυνση βιβλιοθήκης</string>
+    <string name="addons_library_desc">Εγκαταστήστε και στη συνέχεια ενεργοποιήστε το για να ανοίγει το Lightning Launcher όταν μετακινείτε το κουμπί App Library στο dock.</string>
+    <string name="addons_store">Ανακατεύθυνση καταστήματος</string>
+    <string name="addons_store_desc">Εγκαταστήστε και ενεργοποιήστε το για να ανοίξει ο Lightning Launcher όταν μετακινείτε το κουμπί Store στο dock.</string>
+    <string name="addons_people">Επανακατεύθυνση ανθρώπων</string>
+    <string name="addons_people_desc">Εγκαταστήστε και ενεργοποιήστε το για να ανοίξει ο Lightning Launcher όταν μετακινείτε το κουμπί People στο dock.</string>
+    <string name="addons_install">Εγκαταστήστε το</string>
+    <string name="addons_update">Ενημέρωση</string>
+    <string name="addons_activate">Ενεργοποίηση</string>
+    <string name="addons_open">Εκκίνηση</string>
+    <string name="addons_deactivate">Απενεργοποίηση</string>
+    <string name="addons_uninstall">Απεγκατάσταση του</string>
+    <string name="installing">Εγκατάσταση..</string>
+    <string name="installed_successfully">Εγκαταστάθηκε με επιτυχία</string>
+    <string name="tuner_info_tagline">Ξεκλειδώστε την πλήρη ισχύ της Αναζήτησής σας.</string>
+    <string name="tuner_info_desc">Το Meta περιορίζει την απόδοση των εφαρμογών.
+        Το Quest Game Tuner σπάει αυτά τα όρια, επιτρέποντάς σας να αξιοποιήσετε στο έπακρο το υλικό που ήδη διαθέτετε.
+        Μπορείτε επίσης να καταγράφετε καλύτερα βίντεο, να μπλοκάρετε διαφημίσεις, να απενεργοποιείτε αυτόματα και πολλά άλλα.
+        \n
+        \nΤο Quest Game Tuner είναι το αποτέλεσμα εκατοντάδων ωρών ανάπτυξης, έρευνας και δοκιμών από τον ίδιο προγραμματιστή που δημιούργησε το Lightning Launcher.</string>
+    <string name="tuner_info_get">Αποκτήστε το Quest Game Tuner στο itch.io!</string>
+    <string name="tuner_info_get_link">threethan.itch.io/quest-game-tuner</string>
+    <string name="apk_installer">Εγκαταστάτης APK</string>
+    <string name="apk_installer_tip">Επιλέξτε ένα αρχείο APK για εγκατάσταση</string>
+</resources>

@@ -1,0 +1,312 @@
+<resources>
+    <string name="add_group">Adicionar grupo</string>
+    <string name="delete_group">Eliminar grupo</string>
+    <string name="edit_group">Editar grupo</string>
+    <string name="app_details">Detalhes da aplicação</string>
+    <string name="apps_hidden">- Oculto</string>
+    <string name="migrated">As definições antigas foram migradas</string>
+    <string name="edit_mode">Modo de edição</string>
+    <string name="edit_mode_tip">Alterar grupos, adicionar sítios Web e muito mais.</string>
+    <string name="edit_mode_disabled">Apenas a janela principal pode editar</string>
+    <string name="edit_mode_stop">Parar de editar</string>
+    <string name="new_multitasking">Fechar a janela do Launcher depois de abrir aplicações</string>
+    <string name="new_multitasking_tip">Se estiver ativado, o Lightning Launcher fecha-se sozinho quando abre uma aplicação.</string>
+    <string name="allow_chain_launch">Utilizar o Quest Native Launching</string>
+    <string name="allow_chain_launch_tip">Lança aplicações com um método semelhante ao do lançador predefinido do Quest.
+        \nA desativação desta opção irá alterar a forma como as janelas são organizadas e poderá causar problemas.</string>
+    <string name="icons_size">Escala</string>
+    <string name="icons_size_tip">Tamanho alvo para ícones/banners.\nPode variar consoante o tamanho da janela.</string>
+    <string name="icons_margin">Margem</string>
+    <string name="icons_margin_tip">Espaçamento alvo entre ícones/banners.\nPode variar consoante o tamanho da janela.</string>
+    <string name="apps_vr">Aplicações de RV</string>
+    <string name="apps_phone">Aplicações para telemóvel</string>
+    <string name="apps_tv">Aplicações de TV</string>
+    <string name="apps_panel">Aplicações do painel</string>
+    <string name="apps_web">Sítios Web</string>
+    <string name="default_group">Utilizar o grupo como predefinição para os novos:</string>
+    <string name="app_name_icon">Abaixo os ícones da aplicação</string>
+    <string name="app_name_wide">Abaixo dos banners de aplicações</string>
+    <string name="settings_main">Lançador de raios</string>
+    <string name="settings_appearance">Personalizar a aparência</string>
+    <string name="settings_addons_attract">Atalhos</string>
+    <string name="settings_addons">Atalhos</string>
+    <string name="settings_addons_tip">Facilitar o acesso ao Lançador de Raios.</string>
+    <string name="settings_update">Transferir e instalar a atualização mais recente</string>
+    <string name="settings_enable_updates">Notificar-me de novas actualizações</string>
+    <string name="settings_enable_updates_tip">Clique para mostrar notificações de novas actualizações.
+    \Anteriormente, desligou esta opção ao saltar uma atualização.</string>
+    <string name="behavior_header">Comportamento</string>
+    <string name="background_header">Papel de parede e estilo</string>
+    <string name="hdr_icon">Esquema de ícones</string>
+    <string name="disp_wide">Exibir como banner</string>
+    <string name="disp_icon">Apresentar como ícone</string>
+    <string name="disp_name">Mostrar sempre os nomes</string>
+    <string name="more_options">Mais opções</string>
+    <string name="advanced_header">Definições avançadas</string>
+    <string name="refresh_button">Atualizar</string>
+    <string name="advanced_interface">Interface</string>
+    <string name="advanced_reset">Atualizar e reiniciar</string>
+    <string name="advanced_launching">Preferências de lançamento</string>
+    <string name="advanced_features">Caraterísticas adicionais</string>
+    <string name="advanced_search">Definições de pesquisa</string>
+    <string name="advanced_backup">Cópia de segurança das definições</string>
+    <string name="advanced_alpha">Translucidez do fundo</string>
+    <string name="advanced_alpha_tip">Torna o fundo do Lightning Launcher translúcido na passagem.</string>
+    <string name="dark_mode">Modo escuro</string>
+    <string name="dark_mode_tip">Se estiver ligado, as etiquetas aparecerão a branco num fundo escuro.</string>
+    <string name="group_mode">Ativar grupos</string>
+    <string name="group_mode_tip">Desactive esta opção para mostrar todas as aplicações de uma só vez, sem agrupamento.
+        \Os ícones de pesquisa e definições também serão ocultados.
+        \n
+        \nUtilize o botão de retrocesso no seu controlo remoto/controlador para abrir as Definições.</string>
+    <string name="group_wide">Grupos mais alargados</string>
+    <string name="group_wide_tip">Aumenta a largura mínima dos botões de grupo,
+        \garantindo que nomes mais longos não sejam cortados.
+        \n
+        \nSó é percetível quando há muitos grupos.</string>
+    <string name="clear_cache">Repor todos os ícones</string>
+    <string name="clear_labels">Repor todas as etiquetas de aplicações para as predefinições</string>
+    <string name="group_defaults_button">Grupos predefinidos</string>
+    <string name="icons_settings_button">Atualizar ícones</string>
+    <string name="show_playtimes">Mostrar horários de reprodução</string>
+    <string name="show_playtimes_desc">Mostrar o tempo de reprodução nos banners da aplicação.
+    \Requer acesso aos dados de utilização</string>
+    <string name="open_usage">Acesso aos dados de utilização</string>
+    <string name="open_usage_desc">Abra uma página de definições onde pode ativar ou desativar a possibilidade de aplicações como o Lighting Launcher verem o seu tempo de reprodução e dados de utilização.</string>
+    <string name="close_fully">Lançador de raios totalmente fechado</string>
+    <string name="close_fully_desc">Fecha completamente o Lightning Launcher.  (Você pode reabri-lo em seguida)
+        \Isto permite-lhe resolver problemas sem reiniciar.</string>
+    <string name="playtime_charts_warn">Instale o Quest Game Tuner para ver os gráficos de tempo de jogo</string>
+    <string name="request_playtime_title">Dados de utilização Acesso necessário</string>
+    <string name="request_playtime_msg">Para ver o seu tempo de reprodução no Lighting Launcher,
+        \nprecisa de lhe conceder acesso aos dados de utilização da aplicação.
+        \n
+        \nSe o Quest Game Tuner também estiver instalado, clicar no tempo de reprodução abrirá um gráfico diário ou mensal.
+        \n
+        \nÉ possível ocultar o botão de tempo de reprodução nas Definições avançadas.</string>
+    <string name="long_press">Pressão longa para editar</string>
+    <string name="long_press_tip">Quando ligado, premir longamente uma aplicação entrará no modo de edição e seleccioná-la-á.
+    \nQuando desligada, premir longamente uma aplicação mostra os detalhes.</string>
+    <string name="default_launch_out">Iniciar aplicações numa janela própria por predefinição</string>
+    <string name="search_web">Mostrar os motores de busca da Web nas pesquisas</string>
+    <string name="search_hidden">Mostrar aplicações ocultas nas pesquisas</string>
+    <string name="settings_save">Definições de exportação</string>
+    <string name="settings_load">Importar definições</string>
+    <string name="groupings_save">Agrupamentos de exportação</string>
+    <string name="groupings_load">Agrupamentos de importação</string>
+    <string name="advanced_sizing">Ativar tamanhos adicionais de janelas de aplicações para telemóvel</string>
+    <string name="advanced_sizing_tip">Permite que as aplicações sejam abertas em janelas de tamanhos diferentes, o que pode causar problemas.</string>
+    <string name="toast_advanced_sizing">As novas opções de tamanho podem ser alternadas nas definições por aplicação</string>
+    <string name="reload_icon">Ícone de reinicialização</string>
+    <string name="open_tuning">Sintonizar com</string>
+    <string name="open_tuning_tip">O Quest Game Tuner permite-lhe ajustar a resolução, os FPS e muito mais!</string>
+    <string name="tuner_options">⚙</string>
+    <string name="launch_out_message">O lançamento de aplicações 2D ou de Web sites na sua própria janela permite um multitasking mais fácil nos dispositivos Quest,
+        mas fará com que certas aplicações nem sempre sejam iniciadas.\n\nSe tiver algum problema, desactive esta opção!</string>
+    <string name="launch_size_message">O lançamento de aplicações 2D ou de sítios Web na sua própria janela permite um multitasking mais fácil nos dispositivos Quest,
+        mas fará com que certas aplicações nem sempre sejam iniciadas
+        \nDefinir tamanhos de janela personalizados corrigirá o não lançamento de aplicativos, exibirá alguns aplicativos um pouco mais claros e permitirá diferentes tamanhos de janela na exibição plana.
+        \nNo entanto, isso pode ocasionalmente fazer com que as janelas fiquem presas ou que o Lightning Launcher trave.\n
+        \nTodas essas opções podem ser definidas apenas por aplicativo.\n
+        \nSe você tiver problemas, desative essa opção e certifique-se de que os aplicativos não estejam configurados para serem iniciados em suas próprias janelas. Reinicie para corrigir janelas presas.</string>
+    <string name="hidden_groups_message">Se desativar esta opção, a barra superior será ocultada quando não estiver no Modo de Edição. \n
+        \nO botão de definições também será ocultado quando não estiver no Modo de Edição.\n
+        \nEm vez disso, prima o botão para trás para abrir as definições.</string>
+    <string name="set_default_launcher_message">Definir o Lightning Launcher como a aplicação inicial padrão do Android permitirá que outras aplicações adicionem ícones de atalho ao ecrã inicial.
+        \Isso só precisa ser feito uma vez
+        \Isso NÃO substituirá o lançador padrão real em dispositivos VR e não alterará a operação do próprio Lightning Launcher
+        Se você quiser fazer isso, verifique Configurar atalhos/Configurações de atalho para atalhos para o Lightning Launcher.</string>
+    <string name="download_browser_message">Para obter a melhor experiência, é necessário instalar o Lightning Browser para abrir sites no Lightning Launcher.\n
+        \n(Em alternativa, podes tentar alterar o navegador em Definições -&gt; Definições avançadas)</string>
+    <string name="update_browser_message">Para obter a melhor experiência, é necessário atualizar o Lightning Browser.</string>
+    <string name="download_browser_toast_main">Abrir novamente o sítio Web</string>
+    <string name="download_browser_toast_bold">após a conclusão da instalação</string>
+    <string name="website_title">Sítios Web no Lightning Launcher</string>
+    <string name="website_subtitle1">Aceder facilmente a sítios Web e aplicações Web</string>
+    <string name="website_info1">Os Web sites aparecerão como aplicações no iniciador
+        \nTambém pode pesquisar na Web a partir da barra de pesquisa.</string>
+    <string name="website_subtitle2">Áudio em segundo plano</string>
+    <string name="website_info2">Depois de serem minimizados, os sites adicionados podem continuar a funcionar, reproduzir e gravar som até serem totalmente fechados. (Pode ocorrer latência de áudio.)\n</string>
+    <string name="website_subtitle3">Seleção do navegador</string>
+    <string name="website_info3">Nos dispositivos Quest, pode iniciar no Meta Quest Browser, que suporta conteúdo Web de RV.
+        \A predefinição pode ser definida em Definições avançadas.</string>
+    <string name="add_website">Adicionar um sítio Web</string>
+    <string name="add_website_tip">Adicionar um site ao iniciador</string>
+    <string name="add_website_url_label">Introduzir o URL de qualquer site</string>
+    <string name="add_website_bad_url">Introduzir um URL válido</string>
+    <string name="add_website_used_url">Este sítio Web já se encontra em %1$s</string>
+    <string name="add_website_audio_info">Os sítios Web adicionados podem reproduzir áudio de fundo</string>
+    <string name="add_website_group">Adicionar a %s</string>
+    <string name="service_title">Serviços Shortcuts</string>
+    <string name="service_info_section_1_title">Aceder facilmente ao Lightning Launcher</string>
+    <string name="service_info_section_1_content">Ao ativar o serviço de atalho, o Lightning Launcher será aberto quando passar o rato sobre o ícone escolhido na doca.</string>
+    <string name="service_info_section_2_title">Ativar o serviço de atalhos</string>
+    <string name="service_info_section_2_content">1. Utilize o botão abaixo para abrir as definições de acessibilidade do Android.
+        \n2. Selecione o serviço que pretende ativar.
+        \n3. Ligue o serviço com o interrutor superior.
+        \n4. Clique em "Permitir" quando solicitado.</string>
+    <string name="service_open_accessibility">Continuar para Definições de acessibilidade</string>
+    <string name="warning">Informações importantes</string>
+    <string name="cancel">Cancelar</string>
+    <string name="understood">Já está!</string>
+    <string name="confirm">Confirmar</string>
+    <string name="next">Continuar</string>
+    <string name="size_none">Abrir na janela predefinida</string>
+    <string name="size_own">Abrir na própria janela da aplicação</string>
+    <string name="size_phone">Abrir numa janela do tipo telefone</string>
+    <string name="size_small">Abrir numa janela pequena de 4:3</string>
+    <string name="size_medium">Abrir numa janela de tamanho médio</string>
+    <string name="size_large">Abrir numa janela grande de 16:9</string>
+    <string name="size_huge">Abrir numa janela enorme de 16:9</string>
+    <string name="size_wide">Abrir numa janela ampla de 21:9</string>
+    <string name="browser_default_setting">Predefinição para sítios Web:</string>
+    <string name="browser_default_in">Abrir no navegador do Lightning</string>
+    <string name="browser_quest">Abrir no separador do navegador Quest</string>
+    <string name="browser_quest_shortcut">Abrir como Quest Browser Web App</string>
+    <string name="browser_system">Tentar abrir na predefinição do sistema</string>
+    <string name="edit_off">Ativar o modo de edição</string>
+    <string name="edit_on">Desativar o modo de edição</string>
+    <string name="edit_move">Mover</string>
+    <string name="edit_copy">Cópia</string>
+    <string name="selection_hint_none">Clique numa aplicação para a selecionar ou clique aqui para selecionar todas</string>
+    <string name="selection_hint_single_move">1 aplicação selecionada, clique num grupo para o mover</string>
+    <string name="selection_hint_single_copy">1 aplicação selecionada, clique num grupo para fazer uma cópia</string>
+    <string name="selection_hint_multiple_move">%d aplicações selecionadas, clique num grupo para as mover</string>
+    <string name="selection_hint_multiple_copy">%d aplicações selecionadas, clique num grupo para fazer cópias</string>
+    <string name="selection_moved_single">Moveu uma aplicação para %1$s</string>
+    <string name="selection_copied_single">Copiou uma aplicação para %1$s</string>
+    <string name="selection_moved_multiple">Movido %1$d aplicações para %2$s</string>
+    <string name="selection_copied_multiple">Copiou %1$d aplicações para %2$s</string>
+    <string name="selection_hint_cleared">Seleção apagada</string>
+    <string name="selection_hint_all">Selecionar todas as aplicações visíveis</string>
+    <string name="update_title">Está disponível uma atualização!</string>
+    <string name="update_content">Pode atualizar da versão %1$s para %2$s, totalmente no dispositivo.</string>
+    <string name="update_button">Continuar</string>
+    <string name="update_skip_button">Ignorar esta atualização</string>
+    <string name="update_skip_toast">Versão ignorada</string>
+    <string name="update_skip_all_toast">Todas as actualizações ocultas</string>
+    <string name="update_downloading_title">Descarregamento da versão mais recente de %s</string>
+    <string name="update_downloading_content">Deverá receber uma mensagem para instalar em breve
+    \Se a rejeitou acidentalmente, não deu permissão ou obteve um erro,
+    pode tentar novamente a partir das definições.</string>
+    <string name="update_hide_button">Esconder</string>
+    <string name="update_failed_title">Falha ao descarregar o pacote!</string>
+    <string name="update_failed_content">Certifique-se de que tem uma boa ligação à Internet e tente novamente mais tarde.</string>
+    <string name="update_skip_title">Saltar a atualização para a versão %1$s?</string>
+    <string name="update_skip_content">As actualizações são altamente recomendadas e podem incluir correcções importantes.
+        \n
+        \nSe estiver a evitar esta atualização devido a um problema, comunique-o em github.com/threethan/LightningLauncher
+        \n
+        \nIndependentemente da sua seleção, pode atualizar mais tarde a partir das definições.</string>
+    <string name="update_skip_all_button">Saltar esta e futuras actualizações</string>
+    <string name="update_skip_confirm_button">Ignorar esta atualização</string>
+    <string name="update_skip_cancel_button">Recusar</string>
+    <string name="saved_settings">Configuração guardada em</string>
+    <string name="saved_settings_loading">A importar, por favor aguarde..</string>
+    <string name="saved_settings_error">Erro ao copiar o ficheiro!</string>
+    <string name="loaded_settings1">Configuração importada,</string>
+    <string name="loaded_settings2">o lançador deve agora fechar!</string>
+    <string name="default_groups_title">Definições de grupo predefinidas</string>
+    <string name="default_groups_info">Grupos predefinidos actuais:\n
+        \n%1$s\n
+        \nPode alterá-los editando um grupo no modo de edição.
+        \n
+        \nO que gostaria de fazer agora?</string>
+    <string name="default_groups_reset_groups">Repor todos os grupos e ordenar por defeito</string>
+    <string name="default_groups_resort_only">Mover tudo para o seu grupo predefinido</string>
+    <string name="default_groups_cancel">Voltar atrás, não fazer nada</string>
+    <string name="default_groups_reset_groups_toast_main">Redefinir grupos</string>
+    <string name="default_groups_reset_groups_toast_bold">totalmente!</string>
+    <string name="default_groups_resort_only_toast_main">As aplicações foram transferidas para</string>
+    <string name="default_groups_resort_only_toast_bold">os grupos predefinidos selecionados</string>
+    <string name="toast_cant_unset_group">Definir outro grupo como predefinição para anular a definição deste</string>
+    <string name="clear_icons_title">Definições de ícones predefinidas</string>
+    <string name="clear_icons_info">O Lightning Launcher coloca em cache ícones e banners de aplicações para um carregamento mais rápido.</string>
+    <string name="clear_icons_info_quest">O Lightning Launcher descarrega ícones para aplicações e jogos Quest a partir da Internet.
+        \Ao limpar a cache de ícones, também os transfere novamente.</string>
+    <string name="clear_icons_info_custom">Podes definir ícones personalizados para aplicações clicando no ícone na janela pop-up de informações da aplicação.
+        \Se quiseres, também podes repor estes ícones.</string>
+    <string name="clear_icons_clear_cache">Limpar a cache de ícones</string>
+    <string name="clear_icons_clear_all">Limpar ícones personalizados</string>
+    <string name="clear_icons_cancel">Voltar atrás, não fazer nada</string>
+    <string name="toast_cleared_icon_cache">A cache de ícones foi limpa</string>
+    <string name="toast_cleared_icon_all">Todos os ícones foram repostos para as predefinições</string>
+    <string name="tip_kill_process">Parar de correr em segundo plano</string>
+    <string name="tip_launch">Lançar a aplicação</string>
+    <string name="tip_info_website">Acerca da adição de sítios Web</string>
+    <string name="tip_stop_editing">Desativar o modo de edição</string>
+    <string name="tip_select_all">Selecionar/Desmarcar todas as aplicações visíveis</string>
+    <string name="tip_uninstall">Desinstalar / Remover</string>
+    <string name="tip_uninstall_bulk">Desinstalar / Remover todos os selecionados</string>
+    <string name="tip_info">Informações sobre a aplicação Android</string>
+    <string name="tip_charts">Ver gráficos de tempo de jogo\nin Quest Game Tuner</string>
+    <string name="tip_change_icon">Alterar ícone</string>
+    <string name="tip_save_settings">Cópia de segurança de todas as definições e agrupamentos</string>
+    <string name="tip_load_settings">Restaurar todas as definições e agrupamentos</string>
+    <string name="tip_hide">Ocultar esta aplicação</string>
+    <string name="tip_show">Desocultar esta aplicação</string>
+    <string name="moved_hidden">Transferido para</string>
+    <string name="moved_hidden_bold">Grupo oculto</string>
+    <string name="moved_shown">Transferido para</string>
+    <string name="refreshed_icon">Atualização do ícone..</string>
+    <string name="addons_main_vr">Atalhos</string>
+    <string name="addons_main_tv">Opções de atalho</string>
+    <string name="addons_info">Os atalhos facilitam a abertura do iniciador.
+        \É altamente recomendável que configure e utilize pelo menos um.</string>
+    <string name="addons_tv_info">Infelizmente, a Android TV limita a funcionalidade dos serviços de acessibilidade e dos lançadores de terceiros.</string>
+    <string name="addons_exit">Regressar às definições</string>
+    <string name="addons_androidtv">Gestor do lançador da Android TV</string>
+    <string name="addons_androidtv_desc">Instale uma aplicação de terceiros que pode permitir-lhe alterar a página inicial predefinida na Android TV.
+    \nIsto requer que a Depuração ADB esteja activada e pode não funcionar em todos os dispositivos.
+    \n
+    \nSe não instalar por aqui, procure por "Android TV Launcher Manager XDA", depois baixe e instale manualmente. (Não funcionará na Fire TV)</string>
+    <string name="addons_androidtv_alt">Ou… Utilize o botão Voltar!</string>
+    <string name="addons_androidtv_alt_desc">Se utilizar apenas o botão "Voltar" do seu telecomando, em vez do botão "Início", regressará sempre ao Lightning Launcher.
+    \n
+    \nPressionar para trás quando chegar ao inicializador apenas alternará o modo de edição, evitando que você retorne acidentalmente ao inicializador padrão.</string>
+    <string name="addons_preamble">Redirecciona a abertura do Lighting Launcher ao passar o rato sobre um ícone de doca.
+        \Cada redireccionamento tem de ser instalado individualmente e depois ativado.</string>
+    <string name="addons_preamble_dock">Pode adicionar o Lighting Launcher diretamente à sua doca!</string>
+    <string name="addons_dock_button">Como adicionar o Lightning Launcher à Dock do Quest</string>
+    <string name="addons_dock_title">Adicionar LL ao Dock</string>
+    <string name="addons_dock_section_1_title">Remover um ícone existente</string>
+    <string name="addons_dock_section_1_content">1. Fechar todas as outras aplicações 2D e VR.
+        \n2. Escolha um ícone para remover. (Câmara ou Navegador)
+        \n3. Clique e mantenha pressionado o ícone.
+        \n4. Arraste-o para baixo até aparecer \'Unpin\' e depois solte-o.</string>
+    <string name="addons_dock_section_1_below">Feed, Store e People não podem ser removidos.</string>
+    <string name="addons_dock_section_2_title">Adicionar o ícone do Lightning Launcher</string>
+    <string name="addons_dock_section_2_content">1. Encontrar o Lightning Launcher nas aplicações recentes.
+        \n\t\t(Lado direito da doca)
+        \n2. Arraste o Lightning Launcher para o lado esquerdo.
+        \n3. Solte para fixá-lo no dock.</string>
+    <string name="addons_dock_section_2_below">Não pode ter mais de cinco aplicações fixadas.</string>
+    <string name="addons_add">Adicionar ícone de doca</string>
+    <string name="addons_redirect">Redirecionar ícones incorporados</string>
+    <string name="addons_explore">Redireccionamento de alimentação</string>
+    <string name="addons_explore_desc">Instale e active para abrir o Lightning Launcher quando premir o botão Horizon Feed na doca.</string>
+    <string name="addons_library">Redireccionamento da biblioteca</string>
+    <string name="addons_library_desc">Instale e active para abrir o Lightning Launcher quando passar o botão da Biblioteca de aplicações na doca.</string>
+    <string name="addons_store">Redireccionamento da loja</string>
+    <string name="addons_store_desc">Instale e active para abrir o Lightning Launcher quando passar o botão Loja na doca.</string>
+    <string name="addons_people">Redirecionar pessoas</string>
+    <string name="addons_people_desc">Instale e active para abrir o Lightning Launcher quando passar o botão Pessoas na doca.</string>
+    <string name="addons_install">Instalar</string>
+    <string name="addons_update">Atualização</string>
+    <string name="addons_activate">Ativar</string>
+    <string name="addons_open">Lançamento</string>
+    <string name="addons_deactivate">Desativar</string>
+    <string name="addons_uninstall">Desinstalar</string>
+    <string name="installing">Instalar..</string>
+    <string name="installed_successfully">Instalado com sucesso</string>
+    <string name="tuner_info_tagline">Desbloquear o poder total da sua missão.</string>
+    <string name="tuner_info_desc">O Meta limita o desempenho das aplicações.
+        O Quest Game Tuner quebra esses limites, permitindo-lhe tirar o máximo partido do hardware que já possui.
+        Também pode capturar melhores vídeos, bloquear anúncios, desligar automaticamente e muito mais.
+        \n
+        \nQuest Game Tuner é o resultado de centenas de horas de desenvolvimento, pesquisa e testes pelo mesmo programador que criou o Lightning Launcher.</string>
+    <string name="tuner_info_get">Baixe o Quest Game Tuner no itch.io!</string>
+    <string name="tuner_info_get_link">threethan.itch.io/quest-game-tuner</string>
+    <string name="apk_installer">Instalador APK</string>
+    <string name="apk_installer_tip">Selecionar um ficheiro APK para instalar</string>
+</resources>

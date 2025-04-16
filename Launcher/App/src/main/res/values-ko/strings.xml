@@ -1,0 +1,312 @@
+<resources>
+    <string name="add_group">그룹 추가</string>
+    <string name="delete_group">그룹 삭제</string>
+    <string name="edit_group">그룹 편집</string>
+    <string name="app_details">앱 세부 정보</string>
+    <string name="apps_hidden">- 숨겨진</string>
+    <string name="migrated">이전 설정이 마이그레이션되었습니다</string>
+    <string name="edit_mode">편집 모드</string>
+    <string name="edit_mode_tip">그룹 변경, 웹사이트 추가 등을 할 수 있습니다.</string>
+    <string name="edit_mode_disabled">메인 창에서만 편집 가능</string>
+    <string name="edit_mode_stop">편집 중지</string>
+    <string name="new_multitasking">앱을 연 후 런처 창 닫기</string>
+    <string name="new_multitasking_tip">활성화하면 앱을 열면 Lightning 런처가 자동으로 닫힙니다.</string>
+    <string name="allow_chain_launch">퀘스트 네이티브 실행 사용</string>
+    <string name="allow_chain_launch_tip">퀘스트의 기본 런처와 유사한 방법으로 앱을 실행합니다.
+        \이 옵션을 끄면 창이 구성되는 방식이 변경되어 문제가 발생할 수 있습니다.</string>
+    <string name="icons_size">규모</string>
+    <string name="icons_size_tip">아이콘/배너의 대상 크기.\n창 크기에 따라 달라질 수 있습니다.</string>
+    <string name="icons_margin">마진</string>
+    <string name="icons_margin_tip">아이콘/배너 사이의 목표 간격은 창 크기에 따라 달라질 수 있습니다.</string>
+    <string name="apps_vr">VR 앱</string>
+    <string name="apps_phone">전화 앱</string>
+    <string name="apps_tv">TV 앱</string>
+    <string name="apps_panel">패널 앱</string>
+    <string name="apps_web">웹 사이트</string>
+    <string name="default_group">신규의 경우 그룹을 기본값으로 사용합니다:</string>
+    <string name="app_name_icon">앱 아이콘 아래</string>
+    <string name="app_name_wide">앱 배너 아래</string>
+    <string name="settings_main">라이트닝 런처</string>
+    <string name="settings_appearance">모양 사용자 지정</string>
+    <string name="settings_addons_attract">바로 가기</string>
+    <string name="settings_addons">바로 가기</string>
+    <string name="settings_addons_tip">라이트닝 런처에 더 쉽게 액세스할 수 있습니다.</string>
+    <string name="settings_update">최신 업데이트 다운로드 및 설치</string>
+    <string name="settings_enable_updates">새 업데이트 알림</string>
+    <string name="settings_enable_updates_tip">새 업데이트에 대한 알림을 표시하려면 클릭합니다.
+    \n이전에는 업데이트를 건너뛸 때 이 기능을 해제했습니다.</string>
+    <string name="behavior_header">행동</string>
+    <string name="background_header">배경 화면 및 스타일</string>
+    <string name="hdr_icon">아이콘 레이아웃</string>
+    <string name="disp_wide">배너로 표시</string>
+    <string name="disp_icon">아이콘으로 표시</string>
+    <string name="disp_name">항상 이름 표시</string>
+    <string name="more_options">추가 옵션</string>
+    <string name="advanced_header">고급 설정</string>
+    <string name="refresh_button">새로 고침</string>
+    <string name="advanced_interface">인터페이스</string>
+    <string name="advanced_reset">새로 고침 및 초기화</string>
+    <string name="advanced_launching">실행 환경설정</string>
+    <string name="advanced_features">추가 기능</string>
+    <string name="advanced_search">검색 설정</string>
+    <string name="advanced_backup">설정 백업</string>
+    <string name="advanced_alpha">배경 반투명도</string>
+    <string name="advanced_alpha_tip">라이트닝 런처의 배경을 패스스루에서 반투명하게 만듭니다.</string>
+    <string name="dark_mode">다크 모드</string>
+    <string name="dark_mode_tip">켜져 있으면 레이블이 어두운 배경에 흰색으로 표시됩니다.</string>
+    <string name="group_mode">그룹 사용</string>
+    <string name="group_mode_tip">이 기능을 끄면 그룹화하지 않고 모든 앱을 한 번에 표시합니다.
+        \n검색 및 설정 아이콘도 숨겨집니다.
+        \n
+        \n리모컨/컨트롤러의 뒤로 버튼을 사용하여 설정을 엽니다.</string>
+    <string name="group_wide">더 넓은 그룹</string>
+    <string name="group_wide_tip">그룹 버튼의 최소 너비를 늘립니다,
+        \긴 이름이 잘리지 않도록 합니다.
+        \n
+        \그룹이 많을 때만 눈에 띄게 됩니다.</string>
+    <string name="clear_cache">모든 아이콘 초기화</string>
+    <string name="clear_labels">모든 앱 레이블을 기본값으로 재설정</string>
+    <string name="group_defaults_button">기본 그룹</string>
+    <string name="icons_settings_button">새로 고침 아이콘</string>
+    <string name="show_playtimes">재생 시간 표시</string>
+    <string name="show_playtimes_desc">앱 배너에 재생 시간 표시.
+    \n\n사용량 데이터 액세스 필요</string>
+    <string name="open_usage">사용량 데이터 액세스</string>
+    <string name="open_usage_desc">설정 페이지를 열어 조명 런처와 같은 앱에서 재생 시간 및 사용량 데이터를 볼 수 있는 기능을 켜거나 끌 수 있습니다.</string>
+    <string name="close_fully">라이트닝 런처 완전히 닫기</string>
+    <string name="close_fully_desc">라이트닝 런처를 완전히 닫습니다.  (그런 다음 다시 열 수 있습니다.)
+        \n\n재부팅하지 않고도 문제를 해결할 수 있습니다.</string>
+    <string name="playtime_charts_warn">퀘스트 게임 튜너를 설치하여 플레이 시간 차트 보기</string>
+    <string name="request_playtime_title">사용 데이터 액세스 필요</string>
+    <string name="request_playtime_msg">조명 런처에서 플레이 시간을 확인하려면
+        \앱 사용 데이터에 대한 액세스 권한을 부여해야 합니다.
+        \n
+        \퀘스트 게임 튜너도 설치되어 있는 경우 플레이 시간을 클릭하면 일별 또는 월별 차트가 열립니다.
+        \n
+        \n고급 설정에서 플레이 시간 버튼을 숨길 수 있습니다.</string>
+    <string name="long_press">길게 눌러 편집</string>
+    <string name="long_press_tip">켜져 있는 경우 앱을 길게 누르면 편집 모드로 전환되어 앱을 선택합니다.
+    \끄면 앱을 길게 누르면 세부 정보가 표시됩니다.</string>
+    <string name="default_launch_out">기본적으로 자체 창에서 앱 실행</string>
+    <string name="search_web">검색에 웹 검색 엔진 표시</string>
+    <string name="search_hidden">검색에 숨겨진 앱 표시</string>
+    <string name="settings_save">내보내기 설정</string>
+    <string name="settings_load">설정 가져오기</string>
+    <string name="groupings_save">그룹 내보내기</string>
+    <string name="groupings_load">그룹 가져오기</string>
+    <string name="advanced_sizing">추가 휴대폰 앱 창 크기 사용</string>
+    <string name="advanced_sizing_tip">다른 크기의 창에서 앱을 열 수 있도록 허용하면 문제가 발생할 수 있습니다.</string>
+    <string name="toast_advanced_sizing">앱별 설정에서 새로운 크기 옵션을 순환할 수 있습니다</string>
+    <string name="reload_icon">초기화 아이콘</string>
+    <string name="open_tuning">다음으로 조정</string>
+    <string name="open_tuning_tip">퀘스트 게임 튜너로 해상도, FPS 등을 조정할 수 있습니다!</string>
+    <string name="tuner_options">⚙</string>
+    <string name="launch_out_message">2D 앱이나 웹사이트를 자체 창에서 실행하면 Quest 기기에서 멀티태스킹을 더 쉽게 할 수 있습니다,
+        하지만 특정 앱이 항상 실행되지 않을 수 있습니다.\n\n문제가 발생하면 이 옵션을 비활성화하세요!</string>
+    <string name="launch_size_message">2D 앱이나 웹사이트를 자체 창에서 실행하면 Quest 기기에서 멀티태스킹을 더 쉽게 할 수 있습니다,
+        하지만 특정 앱이 항상 실행되지 않을 수 있습니다.\n
+        \사용자 지정 창 크기를 설정하면 앱이 실행되지 않는 문제가 해결되고 일부 앱이 약간 더 선명하게 표시되며 평면 보기에서 다른 창 크기를 사용할 수 있습니다.
+        \하지만 간혹 창이 멈추거나 Lightning 런처가 충돌할 수 있습니다.\n
+        \n이 모든 옵션은 앱별로만 설정할 수 있습니다.\n
+        \n문제가 발생하면 이 옵션을 끄고 앱이 자체 창에서 실행되도록 설정되어 있지 않은지 확인하세요. 재부팅하여 멈춘 창을 수정합니다.</string>
+    <string name="hidden_groups_message">이 옵션을 끄면 편집 모드에 있지 않을 때 상단 표시줄이 숨겨집니다. \n
+        \편집 모드에 있지 않을 때는 설정 버튼도 숨겨집니다
+        \대신 뒤로 버튼을 눌러 설정을 엽니다.</string>
+    <string name="set_default_launcher_message">Lightning Launcher를 기본 Android 홈 앱으로 설정하면 다른 앱에서 홈 화면에 바로 가기 아이콘을 추가할 수 있습니다.
+        \n이 작업은 한 번만 수행하면 됩니다.\n
+        vR 기기의 실제 기본 런처를 대체하지 않으며 Lightning 런처 자체의 작동을 변경하지 않습니다.\n\n\n
+        이 작업을 수행하려면 바로 가기 설정/바로 가기 설정에서 Lightning 런처에 대한 바로 가기를 확인하십시오.</string>
+    <string name="download_browser_message">최상의 경험을 위해서는 Lightning 런처에서 웹사이트를 열려면 Lightning 브라우저를 설치해야 합니다
+        \n(또는 설정 -&gt; 고급 설정에서 브라우저를 변경할 수 있습니다)</string>
+    <string name="update_browser_message">최상의 경험을 위해서는 Lightning 브라우저를 업데이트해야 합니다.</string>
+    <string name="download_browser_toast_main">웹사이트를 다시 엽니다</string>
+    <string name="download_browser_toast_bold">설치가 완료된 후</string>
+    <string name="website_title">라이트닝 런처의 웹사이트</string>
+    <string name="website_subtitle1">웹사이트 및 웹 앱에 쉽게 액세스</string>
+    <string name="website_info1">웹 사이트는 런처에 앱으로 표시됩니다.\n
+        \n검색창에서 웹을 검색할 수도 있습니다.</string>
+    <string name="website_subtitle2">백그라운드의 오디오</string>
+    <string name="website_info2">최소화한 후 추가된 웹사이트는 완전히 닫힐 때까지 계속 실행, 재생 및 사운드를 녹음할 수 있습니다. (오디오 지연이 발생할 수 있습니다.)\n</string>
+    <string name="website_subtitle3">브라우저 선택</string>
+    <string name="website_info3">Quest 기기에서는 VR 웹 콘텐츠를 지원하는 메타 퀘스트 브라우저에서 실행할 수 있습니다.
+        \n기본값은 고급 설정에서 설정할 수 있습니다.</string>
+    <string name="add_website">웹사이트 추가</string>
+    <string name="add_website_tip">런처에 웹사이트 추가</string>
+    <string name="add_website_url_label">웹사이트 URL 입력</string>
+    <string name="add_website_bad_url">유효한 URL을 입력하세요</string>
+    <string name="add_website_used_url">이 웹 사이트는 이미 %1$s에 있습니다</string>
+    <string name="add_website_audio_info">추가된 웹사이트는 백그라운드 오디오를 재생할 수 있습니다</string>
+    <string name="add_website_group">에 추가</string>
+    <string name="service_title">바로 가기 서비스</string>
+    <string name="service_info_section_1_title">라이트닝 런처에 쉽게 액세스</string>
+    <string name="service_info_section_1_content">바로 가기 서비스를 활성화하면 도크에서 선택한 아이콘 위로 마우스를 가져가면 라이트닝 런처가 열립니다.</string>
+    <string name="service_info_section_2_title">바로 가기 서비스 활성화</string>
+    <string name="service_info_section_2_content">1. 아래 버튼을 사용하여 Android의 접근성 설정을 엽니다.
+        \n2. 활성화하려는 서비스를 선택합니다.
+        \n3. 상단 스위치로 서비스를 켭니다.
+        \n4. 메시지가 표시되면 "허용"을 클릭합니다.</string>
+    <string name="service_open_accessibility">접근성 설정으로 계속 진행</string>
+    <string name="warning">중요 정보</string>
+    <string name="cancel">취소</string>
+    <string name="understood">알았어요!</string>
+    <string name="confirm">확인</string>
+    <string name="next">계속하기</string>
+    <string name="size_none">기본 창에서 열기</string>
+    <string name="size_own">앱 자체 창에서 열기</string>
+    <string name="size_phone">휴대폰 스타일 창에서 열기</string>
+    <string name="size_small">4:3 작은 창에서 열기</string>
+    <string name="size_medium">중간 크기 창에서 열기</string>
+    <string name="size_large">16:9 대형 창에서 열기</string>
+    <string name="size_huge">16:9 대형 창에서 열기</string>
+    <string name="size_wide">21:9 와이드 창으로 열기</string>
+    <string name="browser_default_setting">웹사이트의 기본값입니다:</string>
+    <string name="browser_default_in">라이트닝 브라우저에서 열기</string>
+    <string name="browser_quest">퀘스트 브라우저 탭에서 열기</string>
+    <string name="browser_quest_shortcut">퀘스트 브라우저 웹 앱으로 열기</string>
+    <string name="browser_system">시스템 기본값에서 열기 시도</string>
+    <string name="edit_off">편집 모드 켜기</string>
+    <string name="edit_on">편집 모드 끄기</string>
+    <string name="edit_move">이동</string>
+    <string name="edit_copy">복사</string>
+    <string name="selection_hint_none">앱을 클릭하여 선택하거나 여기를 클릭하여 모두 선택합니다</string>
+    <string name="selection_hint_single_move">앱 1개 선택, 그룹을 클릭하여 이동합니다</string>
+    <string name="selection_hint_single_copy">앱 1개 선택, 그룹을 클릭하여 복사하기</string>
+    <string name="selection_hint_multiple_move">d 앱이 선택되었으므로 그룹을 클릭하여 이동합니다</string>
+    <string name="selection_hint_multiple_copy">d 앱 선택, 복사할 그룹을 클릭합니다</string>
+    <string name="selection_moved_single">앱을 %1$s로 이동했습니다</string>
+    <string name="selection_copied_single">1$s에 앱을 복사했습니다</string>
+    <string name="selection_moved_multiple">1$d 앱을 %2$s로 이동했습니다</string>
+    <string name="selection_copied_multiple">1$d 앱을 %2$s에 복사했습니다</string>
+    <string name="selection_hint_cleared">선택 항목 지우기</string>
+    <string name="selection_hint_all">표시된 모든 앱 선택</string>
+    <string name="update_title">업데이트를 사용할 수 있습니다!</string>
+    <string name="update_content">장치에서 %1$s 버전에서 %2$s 버전으로 업데이트할 수 있습니다.</string>
+    <string name="update_button">계속하기</string>
+    <string name="update_skip_button">이 업데이트 건너뛰기</string>
+    <string name="update_skip_toast">건너뛴 버전</string>
+    <string name="update_skip_all_toast">모든 업데이트 숨김</string>
+    <string name="update_downloading_title">최신 버전의 %s 다운로드 중</string>
+    <string name="update_downloading_content">곧 설치하라는 메시지가 표시됩니다.\n
+    \n실수로 삭제했거나 권한을 부여하지 않았거나 오류가 발생한 경우,
+    설정에서 다시 시도할 수 있습니다.</string>
+    <string name="update_hide_button">숨기기</string>
+    <string name="update_failed_title">패키지를 다운로드하지 못했습니다!</string>
+    <string name="update_failed_content">인터넷 연결 상태가 양호한지 확인한 후 나중에 다시 시도하세요.</string>
+    <string name="update_skip_title">버전 %1$s로 업데이트를 건너뛰시겠습니까?</string>
+    <string name="update_skip_content">업데이트를 적극 권장하며 중요한 수정 사항이 포함될 수 있습니다.
+        \n
+        \n문제로 인해 이 업데이트를 피하는 경우 github.com/threethan/LightningLauncher에서 보고해 주세요
+        \n
+        \n선택에 관계없이 나중에 설정에서 업데이트할 수 있습니다.</string>
+    <string name="update_skip_all_button">이 내용 건너뛰기 및 향후 업데이트</string>
+    <string name="update_skip_confirm_button">이 업데이트 건너뛰기</string>
+    <string name="update_skip_cancel_button">해지</string>
+    <string name="saved_settings">다음에 구성을 저장했습니다</string>
+    <string name="saved_settings_loading">가져오기 중, 잠시만 기다려주세요..</string>
+    <string name="saved_settings_error">파일 복사 중 오류가 발생했습니다!</string>
+    <string name="loaded_settings1">가져온 구성,</string>
+    <string name="loaded_settings2">이제 런처를 닫아야 합니다!</string>
+    <string name="default_groups_title">기본 그룹 설정</string>
+    <string name="default_groups_info">현재 기본 그룹:\n
+        \n%1$s\n
+        \n편집 모드에서 그룹을 편집하여 변경할 수 있습니다.
+        \n
+        \n이제 무엇을 하시겠습니까?</string>
+    <string name="default_groups_reset_groups">모든 그룹 재설정 및 정렬 기본값으로 재설정</string>
+    <string name="default_groups_resort_only">모든 항목을 기본 그룹으로 이동</string>
+    <string name="default_groups_cancel">돌아가기, 아무것도 하지 않기</string>
+    <string name="default_groups_reset_groups_toast_main">그룹 재설정</string>
+    <string name="default_groups_reset_groups_toast_bold">완전히!</string>
+    <string name="default_groups_resort_only_toast_main">앱이 다음 위치로 이동되었습니다</string>
+    <string name="default_groups_resort_only_toast_bold">선택한 기본 그룹</string>
+    <string name="toast_cant_unset_group">이 그룹을 설정 해제하려면 다른 그룹을 기본값으로 설정하세요</string>
+    <string name="clear_icons_title">기본 아이콘 설정</string>
+    <string name="clear_icons_info">라이트닝 런처는 앱의 아이콘과 배너를 캐시하여 더 빠르게 로드할 수 있습니다.</string>
+    <string name="clear_icons_info_quest">라이트닝 런처는 인터넷에서 퀘스트 앱 및 게임 아이콘을 다운로드합니다.
+        \아이콘 캐시를 지우면 이러한 아이콘도 다시 다운로드됩니다.</string>
+    <string name="clear_icons_info_custom">앱의 정보 팝업에서 아이콘을 클릭하여 앱의 사용자 지정 아이콘을 설정할 수 있습니다.
+        \원하는 경우 재설정할 수도 있습니다.</string>
+    <string name="clear_icons_clear_cache">아이콘 캐시 지우기</string>
+    <string name="clear_icons_clear_all">사용자 지정 아이콘 지우기</string>
+    <string name="clear_icons_cancel">돌아가기, 아무것도 하지 않기</string>
+    <string name="toast_cleared_icon_cache">아이콘 캐시가 지워졌습니다</string>
+    <string name="toast_cleared_icon_all">모든 아이콘이 기본값으로 재설정되었습니다</string>
+    <string name="tip_kill_process">백그라운드에서 실행 중지</string>
+    <string name="tip_launch">앱 실행</string>
+    <string name="tip_info_website">웹사이트 추가 정보</string>
+    <string name="tip_stop_editing">편집 모드 끄기</string>
+    <string name="tip_select_all">표시되는 모든 앱 선택/선택 해제</string>
+    <string name="tip_uninstall">제거/제거</string>
+    <string name="tip_uninstall_bulk">선택한 모든 항목 제거/제거</string>
+    <string name="tip_info">안드로이드 앱 정보</string>
+    <string name="tip_charts">플레이 시간 차트 보기\닌 퀘스트 게임 튜너</string>
+    <string name="tip_change_icon">아이콘 변경</string>
+    <string name="tip_save_settings">모든 설정 및 그룹 백업</string>
+    <string name="tip_load_settings">모든 설정 및 그룹 복원</string>
+    <string name="tip_hide">이 앱 숨기기</string>
+    <string name="tip_show">이 앱 숨기기 해제</string>
+    <string name="moved_hidden">로 이동</string>
+    <string name="moved_hidden_bold">숨겨진 그룹</string>
+    <string name="moved_shown">로 이동</string>
+    <string name="refreshed_icon">새로 고침 아이콘..</string>
+    <string name="addons_main_vr">바로 가기</string>
+    <string name="addons_main_tv">바로 가기 옵션</string>
+    <string name="addons_info">바로가기를 사용하면 런처를 더 쉽게 열 수 있습니다.
+        \하나 이상 사용하도록 설정하는 것이 좋습니다.</string>
+    <string name="addons_tv_info">안타깝게도 Android TV는 접근성 서비스 및 타사 런처의 기능을 제한합니다.</string>
+    <string name="addons_exit">설정으로 돌아가기</string>
+    <string name="addons_androidtv">Android TV 런처 관리자</string>
+    <string name="addons_androidtv_desc">Android TV에서 기본 홈을 변경할 수 있는 타사 애플리케이션을 설치합니다.
+    \n이 기능을 사용하려면 ADB 디버깅이 활성화되어 있어야 하며 모든 기기에서 작동하지 않을 수 있습니다.
+    \n
+    \n여기를 통해 설치되지 않는 경우 "Android TV 런처 관리자 XDA"를 찾아 수동으로 다운로드 및 설치하세요. (Fire TV에서는 작동하지 않음)</string>
+    <string name="addons_androidtv_alt">아니면… 그냥 뒤로 버튼을 사용하세요!</string>
+    <string name="addons_androidtv_alt_desc">홈 버튼 대신 리모컨의 뒤로 가기 버튼만 사용하면 항상 Lightning 런처로 돌아올 수 있습니다.
+    \n
+    \런처로 돌아간 후 뒤로 버튼을 누르면 편집 모드만 전환되므로 실수로 기본 런처로 돌아가는 것을 방지할 수 있습니다.</string>
+    <string name="addons_preamble">도크 아이콘을 가리키면 열린 조명 런처를 리디렉션합니다.
+        \n각 리디렉션은 개별적으로 설치한 다음 활성화해야 합니다.</string>
+    <string name="addons_preamble_dock">조명 런처를 도크에 바로 추가할 수 있습니다!</string>
+    <string name="addons_dock_button">퀘스트 도크에 라이트닝 런처를 추가하는 방법</string>
+    <string name="addons_dock_title">도크에 LL 추가하기</string>
+    <string name="addons_dock_section_1_title">기존 아이콘 제거</string>
+    <string name="addons_dock_section_1_content">1. 다른 모든 2D 및 VR 앱을 닫습니다.
+        \n2. 제거할 아이콘을 선택합니다. (카메라 또는 브라우저)
+        \n3. 아이콘을 길게 누릅니다.
+        \n4. \'고정 해제\'라고 표시될 때까지 아래로 드래그한 다음 손을 뗍니다.</string>
+    <string name="addons_dock_section_1_below">피드, 스토어, 피플은 제거할 수 없습니다.</string>
+    <string name="addons_dock_section_2_title">라이트닝 런처 아이콘 추가</string>
+    <string name="addons_dock_section_2_content">1. 최근 앱에서 Lightning 런처 찾기.
+        \n\t\t(도크의 오른쪽)
+        \n2. Lightning Launcher를 왼쪽으로 드래그합니다.
+        \n3. 놓아 도크에 고정합니다.</string>
+    <string name="addons_dock_section_2_below">앱을 5개 이상 고정할 수 없습니다.</string>
+    <string name="addons_add">도크 아이콘 추가</string>
+    <string name="addons_redirect">기본 제공 아이콘 리디렉션</string>
+    <string name="addons_explore">피드 리디렉션</string>
+    <string name="addons_explore_desc">설치한 후 활성화하여 도크의 Horizon 피드 버튼을 누르면 라이트닝 런처가 열립니다.</string>
+    <string name="addons_library">라이브러리 리디렉션</string>
+    <string name="addons_library_desc">설치한 다음 활성화하면 도크의 앱 라이브러리 버튼에 마우스를 갖다 대면 Lightning 런처가 열립니다.</string>
+    <string name="addons_store">스토어 리디렉션</string>
+    <string name="addons_store_desc">설치한 다음 활성화하면 도크의 스토어 버튼에 마우스를 갖다 대면 Lightning 런처가 열립니다.</string>
+    <string name="addons_people">사람 리디렉션</string>
+    <string name="addons_people_desc">설치한 후 활성화하면 도크의 사람들 버튼에 마우스를 갖다 대면 라이트닝 런처가 열립니다.</string>
+    <string name="addons_install">설치</string>
+    <string name="addons_update">업데이트</string>
+    <string name="addons_activate">활성화</string>
+    <string name="addons_open">시작</string>
+    <string name="addons_deactivate">비활성화</string>
+    <string name="addons_uninstall">제거</string>
+    <string name="installing">설치 중..</string>
+    <string name="installed_successfully">성공적으로 설치됨</string>
+    <string name="tuner_info_tagline">퀘스트의 모든 힘을 잠금 해제하세요.</string>
+    <string name="tuner_info_desc">메타는 앱의 성능을 제한합니다.
+        퀘스트 게임 튜너는 이러한 한계를 뛰어넘어 이미 보유하고 있는 하드웨어를 최대한 활용할 수 있도록 해줍니다.
+        또한 더 나은 동영상 캡처, 광고 차단, 자동 전원 끄기 등의 기능을 사용할 수 있습니다.
+        \n
+        \퀘스트 게임 튜너는 라이트닝 런처를 만든 개발자가 수백 시간의 개발, 연구, 테스트를 거친 결과물입니다.</string>
+    <string name="tuner_info_get">Itch.io에서 퀘스트 게임 튜너를 다운로드하세요!</string>
+    <string name="tuner_info_get_link">threethan.itch.io/quest-game-tuner</string>
+    <string name="apk_installer">APK 설치 프로그램</string>
+    <string name="apk_installer_tip">설치할 APK 파일 선택</string>
+</resources>

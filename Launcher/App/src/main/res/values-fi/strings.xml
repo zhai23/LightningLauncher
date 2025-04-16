@@ -1,0 +1,312 @@
+<resources>
+    <string name="add_group">Lisää ryhmä</string>
+    <string name="delete_group">Poista ryhmä</string>
+    <string name="edit_group">Muokkaa ryhmää</string>
+    <string name="app_details">Sovelluksen tiedot</string>
+    <string name="apps_hidden">- Piilotettu</string>
+    <string name="migrated">Vanhat asetukset on siirretty</string>
+    <string name="edit_mode">Muokkaustila</string>
+    <string name="edit_mode_tip">Vaihda ryhmiä, lisää verkkosivustoja ja paljon muuta.</string>
+    <string name="edit_mode_disabled">Vain pääikkuna voi muokata</string>
+    <string name="edit_mode_stop">Lopeta muokkaus</string>
+    <string name="new_multitasking">Sulje Launcher-ikkuna sovellusten avaamisen jälkeen</string>
+    <string name="new_multitasking_tip">Jos Lightning Launcher on käytössä, se sulkeutuu, kun avaat sovelluksen.</string>
+    <string name="allow_chain_launch">Käytä Quest Native Launchingia</string>
+    <string name="allow_chain_launch_tip">Käynnistää sovellukset menetelmällä, joka on samanlainen kuin Quest\:n oletuskäynnistin.
+        \nTämän pois päältä kytkeminen muuttaa ikkunoiden järjestämistä ja voi aiheuttaa ongelmia.</string>
+    <string name="icons_size">Mittakaava</string>
+    <string name="icons_size_tip">Kuvakkeiden/bannereiden tavoitekoko.\nMahdollisesti vaihtelee ikkunan koon mukaan.</string>
+    <string name="icons_margin">Marginaali</string>
+    <string name="icons_margin_tip">Kuvakkeiden/bannereiden välinen tavoiteväli.\nMahdollisesti vaihtelee ikkunan koon mukaan.</string>
+    <string name="apps_vr">VR-sovellukset</string>
+    <string name="apps_phone">Puhelinsovellukset</string>
+    <string name="apps_tv">TV-sovellukset</string>
+    <string name="apps_panel">Paneelisovellukset</string>
+    <string name="apps_web">Verkkosivut</string>
+    <string name="default_group">Käytä ryhmää oletusarvona uusille:</string>
+    <string name="app_name_icon">Alla sovelluksen kuvakkeet</string>
+    <string name="app_name_wide">Sovelluksen alla olevat bannerit</string>
+    <string name="settings_main">Lightning Launcher</string>
+    <string name="settings_appearance">Muokkaa ulkonäköä</string>
+    <string name="settings_addons_attract">Shortcuts</string>
+    <string name="settings_addons">Shortcuts</string>
+    <string name="settings_addons_tip">Lightning Launcherin käyttö helpottuu.</string>
+    <string name="settings_update">Lataa ja asenna uusin päivitys</string>
+    <string name="settings_enable_updates">Ilmoita minulle uusista päivityksistä</string>
+    <string name="settings_enable_updates_tip">Näytä ilmoitukset uusista päivityksistä napsauttamalla tätä.
+    \nOlet aiemmin kytkenyt tämän pois päältä ohittaessasi päivityksen.</string>
+    <string name="behavior_header">Käyttäytyminen</string>
+    <string name="background_header">Tapetti &amp; tyyli</string>
+    <string name="hdr_icon">Kuvakkeen asettelu</string>
+    <string name="disp_wide">Näytä bannerina</string>
+    <string name="disp_icon">Näytä kuvakkeena</string>
+    <string name="disp_name">Näytä aina nimet</string>
+    <string name="more_options">Lisää vaihtoehtoja</string>
+    <string name="advanced_header">Lisäasetukset</string>
+    <string name="refresh_button">Päivitä</string>
+    <string name="advanced_interface">Liitäntä</string>
+    <string name="advanced_reset">Päivitä ja nollaa</string>
+    <string name="advanced_launching">Käynnistä asetukset</string>
+    <string name="advanced_features">Lisäominaisuudet</string>
+    <string name="advanced_search">Hakuasetukset</string>
+    <string name="advanced_backup">Asetusten varmuuskopiointi</string>
+    <string name="advanced_alpha">Taustan läpikuultavuus</string>
+    <string name="advanced_alpha_tip">Tekee Lightning Launcherin taustan läpikuultavaksi läpikuultavana.</string>
+    <string name="dark_mode">Tumma tila</string>
+    <string name="dark_mode_tip">Jos tämä on päällä, tarrat näkyvät valkoisina tummalla taustalla.</string>
+    <string name="group_mode">Ota ryhmät käyttöön</string>
+    <string name="group_mode_tip">Kytke tämä pois päältä, jos haluat näyttää kaikki sovellukset kerralla ilman ryhmittelyä.
+        \nHaku- ja asetuskuvakkeet ovat myös piilossa.
+        \n
+        \nAvaa Asetukset kaukosäätimen/ohjaimen takaisin-painikkeella.</string>
+    <string name="group_wide">Laajemmat ryhmät</string>
+    <string name="group_wide_tip">Lisää ryhmäpainikkeiden vähimmäisleveyttä,
+        \varmistaa, että pidemmät nimet eivät katkea.
+        \n
+        \nHuomaa vain, kun ryhmiä on paljon.</string>
+    <string name="clear_cache">Nollaa kaikki kuvakkeet</string>
+    <string name="clear_labels">Nollaa kaikki sovelluksen etiketit oletusasetuksiin</string>
+    <string name="group_defaults_button">Oletusryhmät</string>
+    <string name="icons_settings_button">Päivitä kuvakkeet</string>
+    <string name="show_playtimes">Näytä esitysajat</string>
+    <string name="show_playtimes_desc">Näytä peliaika sovelluksen bannereissa.
+    \n\nTarvitaan käyttötietojen käyttöoikeus</string>
+    <string name="open_usage">Käyttötietojen käyttö</string>
+    <string name="open_usage_desc">Avaa asetussivu, jossa voit ottaa käyttöön tai poistaa käytöstä sen, että sovellukset, kuten Lighting Launcher, voivat tarkastella peliaika- ja käyttötietoja.</string>
+    <string name="close_fully">Täysin lähellä Lightning Launcher</string>
+    <string name="close_fully_desc">Sulkee Lightning Launcherin kokonaan.  (Sen jälkeen voit avata sen uudelleen)
+        \n\nTämän avulla voit etsiä vikoja ilman uudelleenkäynnistystä.</string>
+    <string name="playtime_charts_warn">Asenna Quest Game Tuner nähdäksesi peliaikataulukot</string>
+    <string name="request_playtime_title">Käyttötietojen käyttöoikeus vaaditaan</string>
+    <string name="request_playtime_msg">Näet peliaikasi Lighting Launcherissa,
+        \ny sinun on annettava sille pääsy sovelluksen käyttötietoihin.
+        \n
+        \nJos myös Quest Game Tuner on asennettu, peliaikaa napsauttamalla voit avata päivittäisen tai kuukausittaisen kaavion.
+        \n
+        \nVoit piilottaa peliaika-painikkeen lisäasetuksissa.</string>
+    <string name="long_press">Muokkaa painamalla pitkään</string>
+    <string name="long_press_tip">Kun toiminto on päällä, sovelluksen pitkä painallus siirtyy muokkaustilaan ja valitsee sen.
+    \nKun se on pois päältä, sovelluksen pitkä painallus näyttää tiedot.</string>
+    <string name="default_launch_out">Käynnistä sovellukset omassa ikkunassa oletusarvoisesti</string>
+    <string name="search_web">Näytä Web-hakukoneet hakujen yhteydessä</string>
+    <string name="search_hidden">Näytä piilotetut sovellukset hauissa</string>
+    <string name="settings_save">Vie asetukset</string>
+    <string name="settings_load">Tuo asetukset</string>
+    <string name="groupings_save">Vientiryhmittelyt</string>
+    <string name="groupings_load">Tuo ryhmittelyt</string>
+    <string name="advanced_sizing">Ota käyttöön puhelinsovelluksen ikkunakoot</string>
+    <string name="advanced_sizing_tip">Mahdollistaa sovellusten avaamisen erikokoisissa ikkunoissa, voi aiheuttaa ongelmia.</string>
+    <string name="toast_advanced_sizing">Uusia kokovaihtoehtoja voi vaihdella sovelluskohtaisissa asetuksissa</string>
+    <string name="reload_icon">Nollaa kuvake</string>
+    <string name="open_tuning">Tune with</string>
+    <string name="open_tuning_tip">Quest Game Tunerilla voit säätää resoluutiota, FPS:ää ja paljon muuta!</string>
+    <string name="tuner_options">⚙</string>
+    <string name="launch_out_message">2D-sovellusten tai -sivustojen käynnistäminen omassa ikkunassaan helpottaa Quest-laitteiden moniajoa,
+        mutta aiheuttaa sen, että tietyt sovellukset eivät aina käynnisty.\n\nJos sinulla on ongelmia, poista tämä vaihtoehto käytöstä!</string>
+    <string name="launch_size_message">2D-sovellusten tai -sivustojen käynnistäminen omassa ikkunassaan helpottaa Quest-laitteiden moniajoa,
+        mutta aiheuttaa sen, että tietyt sovellukset eivät aina käynnisty.\n
+        \n Mukautettujen ikkunakokojen asettaminen korjaa sovellusten käynnistymättä jäämisen, näyttää jotkin sovellukset hieman selkeämmin ja mahdollistaa eri ikkunakokojen käytön tasonäkymässä.
+        \nSe voi kuitenkin joskus aiheuttaa ikkunoiden jumiutumisen tai Lightning Launcherin kaatumisen.\n
+        \nKaikki nämä asetukset voidaan asettaa vain sovelluskohtaisesti.\n
+        \nJos sinulla on ongelmia, kytke tämä vaihtoehto pois päältä ja varmista, että sovelluksia ei ole asetettu käynnistymään omissa ikkunoissaan. Käynnistä uudelleen juuttuneiden ikkunoiden korjaamiseksi.</string>
+    <string name="hidden_groups_message">Tämän vaihtoehdon kytkeminen pois päältä piilottaa yläpalkin, kun se ei ole muokkaustilassa. \n
+        \nSäätöpainike piilotetaan myös silloin, kun se ei ole muokkaustilassa.\n
+        \nAvaa sen sijaan asetukset painamalla takaisin-painiketta.</string>
+    <string name="set_default_launcher_message">Kun asetat Lightning Launcherin oletusarvoiseksi Android-kotisovellukseksi, muut sovellukset voivat lisätä pikakuvakkeita aloitusnäyttöön.
+        \nTämä on tehtävä vain kerran.\n
+        \nSe EI korvaa VR-laitteiden varsinaista oletuslaukaisinta eikä muuta Lightning Launcherin toimintaa.\n\n\n
+        Jos haluat tehdä sen, tarkista Lightning Launcherin pikakuvakkeiden määrittäminen/Pikakuvakkeiden asetukset.</string>
+    <string name="download_browser_message">Parhaan käyttökokemuksen saamiseksi sinun on asennettava Lightning Browser, jotta voit avata verkkosivustoja Lightning Launcherissa.\n
+        \n(Vaihtoehtoisesti voit yrittää vaihtaa selaimen Asetukset -&gt; Lisäasetukset)</string>
+    <string name="update_browser_message">Parhaan käyttökokemuksen saat päivittämällä Lightning Browserin.</string>
+    <string name="download_browser_toast_main">Avaa verkkosivusto uudelleen</string>
+    <string name="download_browser_toast_bold">asennuksen päätyttyä</string>
+    <string name="website_title">Lightning Launcherin verkkosivustot</string>
+    <string name="website_subtitle1">Helppo pääsy verkkosivustoihin ja verkkosovelluksiin</string>
+    <string name="website_info1">Verkkosivustot näkyvät sovelluksina käynnistysohjelmassa.\n
+        \nVoit myös etsiä verkosta hakupalkista.</string>
+    <string name="website_subtitle2">Audio taustalla</string>
+    <string name="website_info2">Lisätyt verkkosivustot voivat jatkaa toimintaa, toistoa ja äänen tallentamista, kunnes ne suljetaan kokonaan, kun ne on minimoitu. (Äänen viive voi esiintyä.)\n</string>
+    <string name="website_subtitle3">Selaimen valinta</string>
+    <string name="website_info3">Quest-laitteissa voit käynnistää Meta Quest Browserin, joka tukee VR-verkkosisältöä.
+        \nValinta-asetuksen voi asettaa lisäasetuksissa.</string>
+    <string name="add_website">Lisää verkkosivusto</string>
+    <string name="add_website_tip">Verkkosivuston lisääminen käynnistimeen</string>
+    <string name="add_website_url_label">Syötä mikä tahansa verkkosivuston URL-osoite</string>
+    <string name="add_website_bad_url">Syötä kelvollinen URL-osoite</string>
+    <string name="add_website_used_url">Tämä sivusto on jo %1$s</string>
+    <string name="add_website_audio_info">Lisätyt verkkosivustot voivat toistaa taustaääntä</string>
+    <string name="add_website_group">Lisää %s:ään</string>
+    <string name="service_title">Oikotiet Palvelut</string>
+    <string name="service_info_section_1_title">Helppo pääsy Lightning Launcheriin</string>
+    <string name="service_info_section_1_content">Kun otat pikakuvakepalvelun käyttöön, Lightning Launcher avautuu, kun viet hiiren hiiren valitsemasi kuvakkeen päälle telakalla.</string>
+    <string name="service_info_section_2_title">Ota pikakuvakepalvelu käyttöön</string>
+    <string name="service_info_section_2_content">1. Avaa Android\:n saavutettavuusasetukset alla olevalla painikkeella.
+        \n2. Valitse palvelu, jonka haluat ottaa käyttöön.
+        \n3. Ota palvelu käyttöön ylemmällä kytkimellä.
+        \n4. Napsauta "Salli", kun sinua kehotetaan.</string>
+    <string name="service_open_accessibility">Jatka saavutettavuusasetuksiin</string>
+    <string name="warning">Tärkeää tietoa</string>
+    <string name="cancel">Peruuta</string>
+    <string name="understood">Sain sen!</string>
+    <string name="confirm">Vahvista</string>
+    <string name="next">Jatka</string>
+    <string name="size_none">Avaa oletusikkunassa</string>
+    <string name="size_own">Avaa App\:n omaan ikkunaan</string>
+    <string name="size_phone">Avaa puhelintyylinen ikkuna</string>
+    <string name="size_small">Avaa pienessä 4:3 ikkunassa</string>
+    <string name="size_medium">Avaa keskikokoisessa ikkunassa</string>
+    <string name="size_large">Avaa suuressa 16:9-ikkunassa</string>
+    <string name="size_huge">Avaa valtavassa 16:9-ikkunassa</string>
+    <string name="size_wide">Avaa laaja 21:9-ikkuna</string>
+    <string name="browser_default_setting">Verkkosivustojen oletusarvo:</string>
+    <string name="browser_default_in">Avaa Lightning-selaimessa</string>
+    <string name="browser_quest">Avaa Quest-selaimen välilehti</string>
+    <string name="browser_quest_shortcut">Avaa Quest-selaimen verkkosovelluksena</string>
+    <string name="browser_system">Yritä avata järjestelmän oletusasetuksissa</string>
+    <string name="edit_off">Ota muokkaustila käyttöön</string>
+    <string name="edit_on">Muokkaustilan sammuttaminen</string>
+    <string name="edit_move">Siirrä</string>
+    <string name="edit_copy">Kopioi</string>
+    <string name="selection_hint_none">Valitse sovellus napsauttamalla sitä tai valitse kaikki napsauttamalla tätä</string>
+    <string name="selection_hint_single_move">1 sovellus valittuna, siirrä ryhmä napsauttamalla sitä</string>
+    <string name="selection_hint_single_copy">1 sovellus valittuna, napsauta ryhmää kopioidaksesi sen</string>
+    <string name="selection_hint_multiple_move">%d sovelluksia valittu, siirrä niitä napsauttamalla ryhmää</string>
+    <string name="selection_hint_multiple_copy">%d sovelluksia valittu, napsauta ryhmää tehdäksesi kopioita</string>
+    <string name="selection_moved_single">Siirretty sovellus osoitteeseen %1$s</string>
+    <string name="selection_copied_single">Sovelluksen kopiointi osoitteeseen %1$s</string>
+    <string name="selection_moved_multiple">Siirretty %1$d sovellusta %2$s:ään</string>
+    <string name="selection_copied_multiple">Kopioitu %1$d sovellusta %2$s:ään</string>
+    <string name="selection_hint_cleared">Valinta tyhjennetty</string>
+    <string name="selection_hint_all">Valittu kaikki näkyvät sovellukset</string>
+    <string name="update_title">Päivitys on saatavilla!</string>
+    <string name="update_content">Voit päivittää versiosta %1$s versioon %2$s, täysin laitteessa.</string>
+    <string name="update_button">Jatka</string>
+    <string name="update_skip_button">Ohita tämä päivitys</string>
+    <string name="update_skip_toast">Ohitettu versio</string>
+    <string name="update_skip_all_toast">Kaikki päivitykset piilotettu</string>
+    <string name="update_downloading_title">Viimeisimmän version lataaminen %s</string>
+    <string name="update_downloading_content">Sinun pitäisi saada kehote asentaa pian.\n
+    \nJos vahingossa hylkäsit sen, et antanut lupaa tai sait virheilmoituksen,
+    voit yrittää uudelleen asetuksista.</string>
+    <string name="update_hide_button">Piilota</string>
+    <string name="update_failed_title">Paketin lataaminen epäonnistui!</string>
+    <string name="update_failed_content">Varmista, että sinulla on hyvä internetyhteys, ja yritä myöhemmin uudelleen.</string>
+    <string name="update_skip_title">Ohita päivitys versioon %1$s?</string>
+    <string name="update_skip_content">Päivitykset ovat erittäin suositeltavia, ja ne voivat sisältää tärkeitä korjauksia.
+        \n
+        \nJos vältät tätä päivitystä ongelman vuoksi, ilmoita siitä osoitteessa github.com/threethan/LightningLauncher
+        \n
+        \nValinnastasi riippumatta voit päivittää myöhemmin asetuksista.</string>
+    <string name="update_skip_all_button">Ohita tämä &amp; tulevat päivitykset</string>
+    <string name="update_skip_confirm_button">Ohita tämä päivitys</string>
+    <string name="update_skip_cancel_button">Vapauttakaa</string>
+    <string name="saved_settings">Tallennettu kokoonpano osoitteeseen</string>
+    <string name="saved_settings_loading">Tuodaan, odota..</string>
+    <string name="saved_settings_error">Virhe tiedoston kopioinnin aikana!</string>
+    <string name="loaded_settings1">Tuodut kokoonpanot,</string>
+    <string name="loaded_settings2">laukaisimen on nyt suljettava!</string>
+    <string name="default_groups_title">Ryhmän oletusasetukset</string>
+    <string name="default_groups_info">Nykyiset oletusryhmät:\n
+        \n%1$s\n
+        \nVoit muuttaa näitä muokkaamalla ryhmää muokkaustilassa.
+        \n
+        \nMitä haluat tehdä nyt?</string>
+    <string name="default_groups_reset_groups">Nollaa kaikki ryhmät ja lajittelu oletusarvoon</string>
+    <string name="default_groups_resort_only">Siirrä kaikki sen oletusryhmään</string>
+    <string name="default_groups_cancel">Mene takaisin, älä tee mitään..</string>
+    <string name="default_groups_reset_groups_toast_main">Nollaa ryhmät</string>
+    <string name="default_groups_reset_groups_toast_bold">täysin!</string>
+    <string name="default_groups_resort_only_toast_main">Sovellukset on siirretty</string>
+    <string name="default_groups_resort_only_toast_bold">valitut oletusryhmät</string>
+    <string name="toast_cant_unset_group">Aseta toinen ryhmä oletusarvoksi tämän ryhmän poistamiseksi käytöstä</string>
+    <string name="clear_icons_title">Kuvakkeen oletusasetukset</string>
+    <string name="clear_icons_info">Lightning Launcher tallentaa sovellusten kuvakkeet ja bannerit välimuistiin latautumisen nopeuttamiseksi.</string>
+    <string name="clear_icons_info_quest">Lightning Launcher lataa Quest-sovellusten ja -pelien kuvakkeet internetistä.
+        \nTyhjentämällä kuvakkeiden välimuistin lataat myös nämä uudelleen.</string>
+    <string name="clear_icons_info_custom">Voit asettaa sovelluksille mukautettuja kuvakkeita napsauttamalla kuvaketta sovelluksen ponnahdusikkunassa.
+        \nVoit halutessasi myös nollata nämä.</string>
+    <string name="clear_icons_clear_cache">Tyhjennä kuvakkeiden välimuisti</string>
+    <string name="clear_icons_clear_all">Tyhjennä mukautetut kuvakkeet</string>
+    <string name="clear_icons_cancel">Mene takaisin, älä tee mitään..</string>
+    <string name="toast_cleared_icon_cache">Kuvakkeiden välimuisti on tyhjennetty</string>
+    <string name="toast_cleared_icon_all">Kaikki kuvakkeet on palautettu oletusasetuksiin</string>
+    <string name="tip_kill_process">Lopeta taustakäytön suorittaminen</string>
+    <string name="tip_launch">Käynnistä sovellus</string>
+    <string name="tip_info_website">Tietoja verkkosivustojen lisäämisestä</string>
+    <string name="tip_stop_editing">Muokkaustilan sammuttaminen</string>
+    <string name="tip_select_all">Valitse/Poista kaikki näkyvät sovellukset</string>
+    <string name="tip_uninstall">Poista asennus / Poista</string>
+    <string name="tip_uninstall_bulk">Poista / Poista kaikki valitut</string>
+    <string name="tip_info">Android-sovelluksen tiedot</string>
+    <string name="tip_charts">Näytä peliaikakaaviot\nin Quest-pelin viritin</string>
+    <string name="tip_change_icon">Vaihda kuvake</string>
+    <string name="tip_save_settings">Varmuuskopioi kaikki asetukset ja ryhmittelyt</string>
+    <string name="tip_load_settings">Palauta kaikki asetukset ja ryhmittelyt</string>
+    <string name="tip_hide">Piilota tämä sovellus</string>
+    <string name="tip_show">Poista tämän sovelluksen piilottaminen</string>
+    <string name="moved_hidden">Siirretty osoitteeseen</string>
+    <string name="moved_hidden_bold">Piilotettu ryhmä</string>
+    <string name="moved_shown">Siirretty osoitteeseen</string>
+    <string name="refreshed_icon">Kuvakkeen päivittäminen..</string>
+    <string name="addons_main_vr">Shortcuts</string>
+    <string name="addons_main_tv">Pikavalinta-asetukset</string>
+    <string name="addons_info">Pikakuvakkeet helpottavat käynnistimen avaamista.
+        \nOn erittäin suositeltavaa, että otat käyttöön ainakin yhden.</string>
+    <string name="addons_tv_info">Valitettavasti Android TV rajoittaa saavutettavuuspalveluiden ja kolmansien osapuolten käynnistysohjelmien toimivuutta.</string>
+    <string name="addons_exit">Palaa asetuksiin</string>
+    <string name="addons_androidtv">Android TV Launcher Manager</string>
+    <string name="addons_androidtv_desc">Asenna kolmannen osapuolen sovellus, jonka avulla voit ehkä vaihtaa Android TV:n oletuskotia.
+    \nTämä edellyttää, että ADB-vianmääritys on käytössä, eikä se välttämättä toimi kaikissa laitteissa.
+    \n
+    \nJos se ei asennu tämän kautta, etsi "Android TV Launcher Manager XDA" ja lataa ja asenna se manuaalisesti (ei toimi Fire TV:ssä)</string>
+    <string name="addons_androidtv_alt">Tai… Käytä vain Takaisin-painiketta!</string>
+    <string name="addons_androidtv_alt_desc">Jos käytät kaukosäätimen takaisin-painiketta kotipainikkeen sijasta, pääset aina takaisin Lightning Launcheriin.
+    \n
+    \n Kun painat takaisin, kun olet päässyt launcheriin, vaihdat vain muokkaustilan, jolloin et pääse vahingossa palaamaan oletuslauncheriin.</string>
+    <string name="addons_preamble">Uudelleenohjaus avaa Lighting Launcherin, kun telakkakuvaketta siirretään.
+        \nJokainen uudelleenohjaus on asennettava erikseen ja aktivoitava.</string>
+    <string name="addons_preamble_dock">Voit lisätä Lighting Launcherin suoraan telakkaan!</string>
+    <string name="addons_dock_button">Lightning Launcherin lisääminen Quest Dock -telakkaan</string>
+    <string name="addons_dock_title">LL:n lisääminen telakkaan</string>
+    <string name="addons_dock_section_1_title">Olemassa olevan kuvakkeen poistaminen</string>
+    <string name="addons_dock_section_1_content">1. Sulje kaikki muut 2D- ja VR-sovellukset.
+        \n2. Valitse poistettava kuvake. (Kamera tai selain)
+        \n3. Napsauta kuvaketta ja pidä sitä painettuna.
+        \n4. Vedä sitä alaspäin, kunnes siinä lukee \'Poista\', ja vapauta sitten.</string>
+    <string name="addons_dock_section_1_below">Feed-, Store- ja People-toimintoja ei voi poistaa.</string>
+    <string name="addons_dock_section_2_title">Lisää Lightning Launcher\:n kuvake</string>
+    <string name="addons_dock_section_2_content">1. Etsi Lightning Launcher viimeisimmistä sovelluksista.
+        \n\t\t(Telakan oikealla puolella)
+        \n2. Vedä Lightning Launcher vasemmalle puolelle.
+        \n3. Vapauta se kiinnittämällä se telakkaan.</string>
+    <string name="addons_dock_section_2_below">Sinulla voi olla enintään viisi sovellusta kiinnitettynä.</string>
+    <string name="addons_add">Lisää telakkakuvake</string>
+    <string name="addons_redirect">Uudelleenohjaus Sisäänrakennetut kuvakkeet</string>
+    <string name="addons_explore">Syötteen uudelleenohjaus</string>
+    <string name="addons_explore_desc">Asenna ja aktivoi sitten Lightning Launcher, kun painat telakan Horizon Feed -painiketta.</string>
+    <string name="addons_library">Kirjaston uudelleenohjaus</string>
+    <string name="addons_library_desc">Asenna ja aktivoi sitten Lightning Launcher, kun viet App Library -painikkeen telakalle.</string>
+    <string name="addons_store">Kaupan uudelleenohjaus</string>
+    <string name="addons_store_desc">Asenna ja aktivoi sitten Lightning Launcher, kun viet Store-painikkeen telakalle.</string>
+    <string name="addons_people">Ihmiset uudelleenohjaus</string>
+    <string name="addons_people_desc">Asenna ja aktivoi sitten Lightning Launcher, kun viet Ihmiset-painiketta telakalle.</string>
+    <string name="addons_install">Asenna</string>
+    <string name="addons_update">Päivitys</string>
+    <string name="addons_activate">Aktivoi</string>
+    <string name="addons_open">Laukaisu</string>
+    <string name="addons_deactivate">Deaktivoi</string>
+    <string name="addons_uninstall">Poista</string>
+    <string name="installing">Asennus..</string>
+    <string name="installed_successfully">Asennettu onnistuneesti</string>
+    <string name="tuner_info_tagline">Vapauta etsintäsi täysi teho.</string>
+    <string name="tuner_info_desc">Meta rajoittaa sovellusten suorituskykyä.
+        Quest Game Tuner rikkoo nämä rajoitukset, ja saat kaiken irti jo omistamastasi laitteistosta.
+        Voit myös kuvata parempia videoita, estää mainoksia, sammuttaa virran automaattisesti ja paljon muuta.
+        \n
+        \nQuest Game Tuner on satojen tuntien kehitystyön, tutkimuksen ja testauksen tulos samalta kehittäjältä, joka teki Lightning Launcherin.</string>
+    <string name="tuner_info_get">Hanki Quest Game Tuner itch.iosta!</string>
+    <string name="tuner_info_get_link">threethan.itch.io/quest-game-tuner</string>
+    <string name="apk_installer">APK-asentaja</string>
+    <string name="apk_installer_tip">Valitse asennettava APK-tiedosto</string>
+</resources>
