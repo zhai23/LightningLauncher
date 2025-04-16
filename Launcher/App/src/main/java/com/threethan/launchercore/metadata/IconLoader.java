@@ -38,10 +38,6 @@ public abstract class IconLoader {
     public static final Map<String, Drawable> cachedIcons = new ConcurrentHashMap<>();
     public static final Object ICON_CUSTOM_FOLDER = "/icon-custom";
 
-    public static void cacheIcon(ApplicationInfo app, Drawable iconDrawable) {
-        cachedIcons.put(StringLib.toValidFilename(app.packageName), iconDrawable);
-    }
-
     /**
      * Loads the icon for an app.
      * The callback will be called immediately on this thread,
@@ -50,16 +46,14 @@ public abstract class IconLoader {
      * @param consumer Consumer which handles the icon
      */
     public static void loadIcon(ApplicationInfo app, final Consumer<Drawable> consumer) {
-        IconUpdater.executorService.submit(() -> {
-            if (app instanceof UtilityApplicationInfo uApp)
-                consumer.accept(uApp.getDrawable());
-            else if (IconLoader.cachedIcons.containsKey(cacheName(app)))
-                consumer.accept(IconLoader.cachedIcons.get(cacheName(app)));
-            else loadIcon(icon -> {
-                    consumer.accept(icon);
-                    cacheIcon(app, icon);
-                }, app);
-        });
+        if (app instanceof UtilityApplicationInfo uApp)
+            consumer.accept(uApp.getDrawable());
+        else if (IconLoader.cachedIcons.containsKey(app.packageName))
+            consumer.accept(IconLoader.cachedIcons.get(app.packageName));
+        else loadIcon(icon -> {
+                consumer.accept(icon);
+                cachedIcons.put(app.packageName, icon);
+            }, app);
     }
 
     private static void loadIcon(Consumer<Drawable> callback, ApplicationInfo app) {
