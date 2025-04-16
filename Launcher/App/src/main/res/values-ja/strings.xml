@@ -136,7 +136,7 @@
     <string name="add_website_bad_url">有効なURLを入力してください。</string>
     <string name="add_website_used_url">このウェブサイトはすでに %1$s に登録されています。</string>
     <string name="add_website_audio_info">バックグラウンド・オーディオを再生できるウェブサイトを追加</string>
-    <string name="add_website_group">sに追加</string>
+    <string name="add_website_group">%s に追加</string>
     <string name="service_title">ショートカット・サービス</string>
     <string name="service_info_section_1_title">ライトニングランチャーに簡単にアクセス</string>
     <string name="service_info_section_1_content">ショートカットサービスを有効にすると、ドック上の選択したアイコンにカーソルを合わせたときにLightning Launcherが開きます。</string>

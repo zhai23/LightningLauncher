@@ -136,7 +136,7 @@
     <string name="add_website_bad_url">Geçerli bir URL girin</string>
     <string name="add_website_used_url">Bu web sitesi zaten %1$s içinde</string>
     <string name="add_website_audio_info">Eklenen web siteleri arka plan sesi çalabilir</string>
-    <string name="add_website_group">S\'ye ekle</string>
+    <string name="add_website_group">S\'ye ekle %s</string>
     <string name="service_title">Kısayol Hizmetleri</string>
     <string name="service_info_section_1_title">Lightning Launcher\'a Kolayca Erişin</string>
     <string name="service_info_section_1_content">Kısayol hizmetini etkinleştirdiğinizde, dock üzerinde seçilen simgenin üzerine geldiğinizde Lightning Launcher açılacaktır.</string>

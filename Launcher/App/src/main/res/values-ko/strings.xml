@@ -136,7 +136,7 @@
     <string name="add_website_bad_url">유효한 URL을 입력하세요</string>
     <string name="add_website_used_url">이 웹 사이트는 이미 %1$s에 있습니다</string>
     <string name="add_website_audio_info">추가된 웹사이트는 백그라운드 오디오를 재생할 수 있습니다</string>
-    <string name="add_website_group">에 추가</string>
+    <string name="add_website_group">에 추가 %s</string>
     <string name="service_title">바로 가기 서비스</string>
     <string name="service_info_section_1_title">라이트닝 런처에 쉽게 액세스</string>
     <string name="service_info_section_1_content">바로 가기 서비스를 활성화하면 도크에서 선택한 아이콘 위로 마우스를 가져가면 라이트닝 런처가 열립니다.</string>
