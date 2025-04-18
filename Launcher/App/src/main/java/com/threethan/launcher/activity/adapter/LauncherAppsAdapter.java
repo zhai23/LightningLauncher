@@ -75,6 +75,7 @@ public class LauncherAppsAdapter extends AppsAdapter<LauncherAppsAdapter.AppView
     public synchronized void filterBy(String text) {
         if (text.isEmpty()) {
             prevFilterText = "";
+            updateAppFocus(null, true, FocusSource.SEARCH);
             refresh();
             return;
         }

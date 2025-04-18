@@ -95,6 +95,7 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
             alphaOut.start();
             scaleX.start();
             scaleY.start();
+            scaleX.addUpdateListener(an -> searchBar.postInvalidate());
             searchBar.setVisibility(View.VISIBLE);
 
             searchBar.setClipToOutline(true);
