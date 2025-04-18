@@ -215,7 +215,7 @@ public class AppDetailsDialog extends BasicDialog<LauncherActivity> {
         dispBannerButton.setVisibility(!isBanner ? View.VISIBLE : View.GONE);
         dispIconButton.setOnClickListener(v -> {
             SettingsManager.setAppBannerOverride(app, false);
-            a.launcherService.forEachActivity(LauncherActivity::refreshAppList);
+            a.launcherService.forEachActivity(LauncherActivity::resetAdapters);
             iconImageView.getLayoutParams().width = a.dp(83);
             dispBannerButton.setVisibility(View.VISIBLE);
             dispIconButton.setVisibility(View.GONE);
@@ -223,7 +223,8 @@ public class AppDetailsDialog extends BasicDialog<LauncherActivity> {
         });
         dispBannerButton.setOnClickListener(v -> {
             SettingsManager.setAppBannerOverride(app, true);
-            a.launcherService.forEachActivity(LauncherActivity::refreshAppList);
+            SettingsManager.sortableLabelCache.clear();
+            a.launcherService.forEachActivity(LauncherActivity::resetAdapters);
             iconImageView.getLayoutParams().width = a.dp(150);
             dispBannerButton.setVisibility(View.GONE);
             dispIconButton.setVisibility(View.VISIBLE);

@@ -769,12 +769,14 @@ public class LauncherActivity extends Launch.LaunchingActivity {
      */
     @SuppressLint("NotifyDataSetChanged")
     public void resetAdapters() {
+        SettingsManager.sortableLabelCache.clear();
         if (getAppAdapter() != null) {
             refreshAppList();
             getAppAdapter().notifyAllChanged();
         }
         if (getGroupAdapter() != null) getGroupAdapter().notifyDataSetChanged();
         refreshInterface();
+        updateSelectedGroups(0,0);
     }
 
     // Edit mode stubs, to be overridden by child

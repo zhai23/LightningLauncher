@@ -86,14 +86,7 @@ public class AppsAdapter<VH extends AppsAdapter.AppViewHolder>
     }
 
     protected void setFullItems(List<ApplicationInfo> items) {
-        try {
-            if (items != null && fullAppList != null && items.size() == fullAppList.size()) {
-                Set<String> pna = items.stream().map(x -> x.packageName).collect(Collectors.toSet());
-                Set<String> pnb = fullAppList.stream().map(x -> x.packageName).collect(Collectors.toSet());
-                if (pna.equals(pnb)) return;
-            }
-        } catch (NullPointerException ignored) {}
-
+        if (items.equals(fullAppList)) return;
         fullAppList = items;
         refresh();
     }

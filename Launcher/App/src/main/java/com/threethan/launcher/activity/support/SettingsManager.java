@@ -576,7 +576,8 @@ public class SettingsManager extends Settings {
     private static final Set<String> forcedBannerApps = new HashSet<>();
     private static final Set<String> forcedSquareApps = new HashSet<>();
     /** Sets a specific app to use banner or icon display, regardless of type */
-    public static void setAppBannerOverride(ApplicationInfo app, boolean isBanner) {
+    public static void
+    setAppBannerOverride(ApplicationInfo app, boolean isBanner) {
         if (isBanner) {
             forcedBannerApps.add(app.packageName);
             forcedSquareApps.remove(app.packageName);
