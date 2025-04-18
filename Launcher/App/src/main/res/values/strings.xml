@@ -41,7 +41,7 @@
     <string name="settings_addons_attract">Shortcuts</string>
     <string name="settings_addons">Shortcuts</string>
     <string name="settings_addons_tip">Make Lightning Launcher easier to access.</string>
-    <string name="settings_update">Download &amp; Install Latest Update</string>
+    <string name="settings_update">Get Latest Update</string>
     <string name="settings_enable_updates">Notify me of New Updates</string>
     <string name="settings_enable_updates_tip">Click to show notifications for new updates.
     \n<i>You previously turned this off when skipping an update.</i></string>
