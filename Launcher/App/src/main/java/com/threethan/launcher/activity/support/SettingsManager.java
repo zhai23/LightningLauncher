@@ -91,6 +91,7 @@ public class SettingsManager extends Settings {
     }
 
     public static HashMap<ApplicationInfo, String> appLabelCache = new HashMap<>();
+    public static HashMap<ApplicationInfo, String> sortableLabelCache = new HashMap<>();
 
     /**
      * Gets the label for the given app.
@@ -137,6 +138,11 @@ public class SettingsManager extends Settings {
      * Gets the string which should be used to sort the given app
      */
     public static String getSortableAppLabel(ApplicationInfo app) {
+        if (sortableLabelCache.containsKey(app)) return sortableLabelCache.get(app);
+        sortableLabelCache.put(app, getSortableAppLabelInternal(app));
+        return sortableLabelCache.get(app);
+    }
+    private static String getSortableAppLabelInternal(ApplicationInfo app) {
         if (app == null) return "";
 
         final String base = getAppLabel(app);
@@ -187,6 +193,7 @@ public class SettingsManager extends Settings {
     public static void setAppLabel(ApplicationInfo app, String newName) {
         if (newName == null) return;
         appLabelCache.put(app, newName);
+        sortableLabelCache.remove(app);
         dataStoreEditor.putString(app.packageName, newName);
         if (LauncherActivity.getForegroundInstance() != null)
             LauncherActivity.getForegroundInstance().launcherService

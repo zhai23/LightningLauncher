@@ -157,7 +157,10 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
                 Settings.KEY_DARK_MODE, Settings.DEFAULT_DARK_MODE,
                 value -> {
                     LauncherActivity.darkMode = value;
-                    a.launcherService.forEachActivity(LauncherActivity::resetAdapters);
+                    a.launcherService.forEachActivity(a -> {
+                        a.resetAdapters();
+                        a.updateToolBars();
+                    });
                 }, false);
         ImageView[] views = {
                 dialog.findViewById(R.id.background0),

@@ -16,14 +16,19 @@ public class LauncherGridLayoutManager extends GridLayoutManager {
      */
     public LauncherGridLayoutManager(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+        setMeasurementCacheEnabled(true);
         setItemPrefetchEnabled(true);
+        setRecycleChildrenOnDetach(false);
     }
 
     public LauncherGridLayoutManager(Context context, int spanCount) {
         super(context, spanCount);
+        setMeasurementCacheEnabled(true);
         setItemPrefetchEnabled(true);
+        setRecycleChildrenOnDetach(false);
     }
 
+    //
     @Override
     public void collectAdjacentPrefetchPositions(int dx, int dy, RecyclerView.State state,
                                                  LayoutPrefetchRegistry layoutPrefetchRegistry) {

@@ -214,6 +214,7 @@ public abstract class Compat {
     public static void clearLabels(LauncherActivity launcherActivity) {
         Log.i(TAG, "Labels are being cleared");
         SettingsManager.appLabelCache.clear();
+        SettingsManager.sortableLabelCache.clear();
         for (String packageName : launcherActivity.getAllPackages()) {
             launcherActivity.dataStoreEditor.removeString(packageName);
             launcherActivity.dataStoreEditor.removeString(packageName+META_LABEL_SUFFIX);
