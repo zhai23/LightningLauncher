@@ -89,7 +89,7 @@
     </style>
     <style name="buttonHighlight">
         <item name="android:textColor">#000</item>
-        <item name="backgroundTint">@color/color_button_highlight</item>
+        <item name="android:backgroundTint">@color/color_button_highlight</item>
         <item name="android:backgroundTintMode">add</item>
         <item name="android:drawableTint">#000</item>
     </style>

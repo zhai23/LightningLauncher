@@ -2,11 +2,12 @@ package com.threethan.launchercore.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class LcText extends androidx.appcompat.widget.AppCompatTextView {
+public class LcText extends TextView {
     public LcText(@NonNull Context context) {
         super(context);
     }

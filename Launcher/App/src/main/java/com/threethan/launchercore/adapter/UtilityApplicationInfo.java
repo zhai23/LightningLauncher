@@ -3,8 +3,6 @@ package com.threethan.launchercore.adapter;
 import android.content.pm.ApplicationInfo;
 import android.graphics.drawable.Drawable;
 
-import androidx.appcompat.content.res.AppCompatResources;
-
 import com.threethan.launchercore.Core;
 
 import java.util.Objects;
@@ -17,7 +15,7 @@ public class UtilityApplicationInfo extends ApplicationInfo {
     }
 
     public Drawable getDrawable() {
-        return AppCompatResources.getDrawable(Core.context(), drawableResId);
+        return Core.context().getDrawable(drawableResId);
     }
     public void launch() {}
 

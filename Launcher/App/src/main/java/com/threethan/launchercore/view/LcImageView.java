@@ -2,12 +2,13 @@ package com.threethan.launchercore.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 
-public class LcImageView extends androidx.appcompat.widget.AppCompatImageView {
+public class LcImageView extends ImageView {
 
     public LcImageView(@NonNull Context context) {
         super(context);

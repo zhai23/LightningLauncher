@@ -207,11 +207,7 @@
     <string name="loaded_settings1">Geïmporteerde configuratie,</string>
     <string name="loaded_settings2">de draagraket moet nu sluiten!</string>
     <string name="default_groups_title">Standaard groepsinstellingen</string>
-    <string name="default_groups_info">Huidige standaardgroepen:\n
-        \%1$s
-        \U kunt deze wijzigen door een groep te bewerken in bewerkingsmodus.
-        \n
-        \Wat wilt u nu doen?</string>
+    <string name="default_groups_info">Huidige standaardgroepen:          \\n%1$s         \\U kunt deze wijzigen door een groep te bewerken in bewerkingsmodus.                   \\nWat wilt u nu doen?</string>
     <string name="default_groups_reset_groups">Alle groepen en sorteren terugzetten naar standaard</string>
     <string name="default_groups_resort_only">Verplaats alles naar de standaardgroep</string>
     <string name="default_groups_cancel">Ga terug, doe niets</string>

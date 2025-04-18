@@ -207,11 +207,7 @@
     <string name="loaded_settings1">インポートされたコンフィギュレーション、</string>
     <string name="loaded_settings2">ランチャーを閉じなければならない！</string>
     <string name="default_groups_title">デフォルトのグループ設定</string>
-    <string name="default_groups_info">現在のデフォルトグループ
-        \グループ
-        \編集モードでグループを編集することで変更できます。
-        \n
-        \これからどうしますか？</string>
+    <string name="default_groups_info">現在のデフォルトグループ           %1$s  編集モードでグループを編集することで変更できます。     これからどうしますか？</string>
     <string name="default_groups_reset_groups">すべてのグループとソートをデフォルトに戻す</string>
     <string name="default_groups_resort_only">すべてをデフォルトグループに移動する</string>
     <string name="default_groups_cancel">Go Back, Don\'t do Anything</string>

@@ -5,14 +5,14 @@ import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.widget.Button;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.threethan.launcher.R;
 
-public class LcButton extends AppCompatButton {
+public class LcButton extends Button {
     public LcButton(Context context) {
         super(context);
         init(null);

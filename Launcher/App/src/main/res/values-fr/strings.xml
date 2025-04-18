@@ -207,11 +207,7 @@
     <string name="loaded_settings1">Configuration importée,</string>
     <string name="loaded_settings2">le lanceur doit maintenant se fermer !</string>
     <string name="default_groups_title">Paramètres de groupe par défaut</string>
-    <string name="default_groups_info">Groupes actuels par défaut:\N- \N- \N- \N- \N- \N
-        \N%1$s\N
-        \NVous pouvez les modifier en éditant un groupe en mode édition.
-        \n
-        \nQue voulez-vous faire maintenant ?</string>
+    <string name="default_groups_info">Groupes actuels par défaut:\\n         \\n%1$s\\n   Vous pouvez les modifier en éditant un groupe en mode édition.                    Que voulez-vous faire maintenant ?</string>
     <string name="default_groups_reset_groups">Réinitialiser tous les groupes et les tris par défaut</string>
     <string name="default_groups_resort_only">Déplacer tout vers le groupe par défaut</string>
     <string name="default_groups_cancel">Revenir en arrière, ne rien faire</string>

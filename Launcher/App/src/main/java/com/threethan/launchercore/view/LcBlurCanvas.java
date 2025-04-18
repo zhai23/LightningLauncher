@@ -14,12 +14,10 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 
 public class LcBlurCanvas extends LcContainerView {
-    private int height;
-    private int width;
-    private ViewTreeObserver.OnPreDrawListener listener = () -> {
+    private final ViewTreeObserver.OnPreDrawListener listener = () -> {
         if (getChildCount() == 0) return true;
-        height = getChildAt(0).getHeight();
-        width = getChildAt(0).getWidth();
+        int height = getChildAt(0).getHeight();
+        int width = getChildAt(0).getWidth();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             renderNode.setPosition(0, 0, width, height);
             Canvas canvas = renderNode.beginRecording();

@@ -45,7 +45,6 @@ import com.threethan.launcher.activity.support.DataStoreEditor;
 import com.threethan.launcher.activity.support.SettingsManager;
 import com.threethan.launchercore.view.LcBlurCanvas;
 import com.threethan.launcher.activity.view.MarginDecoration;
-import com.threethan.launchercore.view.LcBlurView;
 import com.threethan.launcher.data.Settings;
 import com.threethan.launcher.helper.AppExt;
 import com.threethan.launcher.helper.Compat;
@@ -455,7 +454,6 @@ public class LauncherActivity extends Launch.LaunchingActivity {
         updateGridLayouts();
     }
 
-    boolean t = true;
     protected void updateSelectedGroups(int x, int y) {
         groupsView.setAdapter(new GroupsAdapter(this, isEditing()));
         if (getAppAdapter() == null) {

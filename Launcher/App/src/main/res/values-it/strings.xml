@@ -207,11 +207,7 @@
     <string name="loaded_settings1">Configurazione importata,</string>
     <string name="loaded_settings2">il lanciatore deve ora chiudersi!</string>
     <string name="default_groups_title">Impostazioni di gruppo predefinite</string>
-    <string name="default_groups_info">Gruppi predefiniti attuali:\n
-        \%1$s
-        \È possibile modificarli modificando un gruppo in modalità di modifica.
-        \n
-        \Cosa si desidera fare ora?</string>
+    <string name="default_groups_info">Gruppi predefiniti attuali:          \n\n\n%1$s         \n\nÈ possibile modificarli modificando un gruppo in modalità di modifica. \n\nCosa si desidera fare ora?</string>
     <string name="default_groups_reset_groups">Ripristinare tutti i gruppi e l\'ordinamento predefinito</string>
     <string name="default_groups_resort_only">Spostare tutto nel gruppo predefinito</string>
     <string name="default_groups_cancel">Tornare indietro, non fare niente</string>
