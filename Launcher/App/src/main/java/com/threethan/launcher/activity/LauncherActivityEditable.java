@@ -36,8 +36,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import eightbitlab.com.blurview.BlurView;
-
 /**
     The class handles the additional interface elements and properties related to edit mode.
     This includes the bottom bar & dialog for adding websites, but not the dialogs to edit an
@@ -153,6 +151,7 @@ public class LauncherActivityEditable extends LauncherActivity {
             editFooter.setVisibility(View.VISIBLE);
         }
         ObjectAnimator aF = ObjectAnimator.ofFloat(editFooter, "TranslationY", editMode ?0f:100f);
+        aF.addUpdateListener(va -> editFooter.invalidate());
         aF.setDuration(200);
         aF.start();
         if (!editMode) editFooter.postDelayed(() -> {
@@ -167,6 +166,11 @@ public class LauncherActivityEditable extends LauncherActivity {
 
     @Override
     public void clickGroup(int position, View source) {
+        if (Boolean.FALSE.equals(editMode)) {
+            super.clickGroup(position, source);
+            return;
+        }
+
         lastSelectedGroup = position;
         final List<String> groupsSorted = settingsManager.getAppGroupsSorted(false);
 
@@ -332,20 +336,5 @@ public class LauncherActivityEditable extends LauncherActivity {
         AlertDialog subDialog = new BasicDialog<>(this, R.layout.dialog_info_websites).show();
         if (subDialog == null) return;
         subDialog.findViewById(R.id.vrOnlyInfo).setVisibility(Platform.isVr() ? View.VISIBLE : View.GONE);
-    }
-
-    @Override
-    public void updateToolBars() {
-        super.updateToolBars();
-        if (!isEditing()) return;
-
-        BlurView blurViewE = rootView.findViewById(R.id.
-                editFooter);
-        blurViewE.setOverlayColor(Color.parseColor(darkMode ? "#2A000000" : "#45FFFFFF"));
-
-        initBlurView(blurViewE);
-
-        blurViewE.setActivated(false);
-        blurViewE.setActivated(true);
     }
 }

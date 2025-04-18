@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<eightbitlab.com.blurview.BlurView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.threethan.launchercore.view.LcBlurView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/editFooter"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/bkg_blur_view"
     android:layout_gravity="bottom"
-    android:background="#000000"
     android:elevation="13dp"
     android:paddingTop="10dp"
     android:paddingBottom="10dp"
@@ -103,4 +103,4 @@
             tools:ignore="UseCompatTextViewDrawableXml" />
     </LinearLayout>
 
-</eightbitlab.com.blurview.BlurView>
+</com.threethan.launchercore.view.LcBlurView>

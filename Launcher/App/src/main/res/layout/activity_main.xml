@@ -7,6 +7,9 @@
     android:layout_height="match_parent">
 
 
+    <com.threethan.launchercore.view.LcBlurCanvas
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/apps"
         android:layout_width="match_parent"
@@ -15,6 +18,7 @@
         android:clipToPadding="false"
         android:overScrollMode="never"
         android:scrollbars="none" />
+    </com.threethan.launchercore.view.LcBlurCanvas>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/topBarLayout"
@@ -37,7 +41,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <eightbitlab.com.blurview.BlurView
+        <com.threethan.launchercore.view.LcBlurView
             android:id="@+id/blurViewGroups"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -70,9 +74,9 @@
                 android:padding="0dp"
                 android:visibility="gone" />
 
-        </eightbitlab.com.blurview.BlurView>
+        </com.threethan.launchercore.view.LcBlurView>
 
-        <eightbitlab.com.blurview.BlurView
+        <com.threethan.launchercore.view.LcBlurView
             android:id="@+id/blurViewSearchIcon"
             android:layout_width="40dp"
             android:layout_height="40dp"
@@ -105,9 +109,9 @@
                 tools:layout_editor_absoluteX="297dp"
                 tools:layout_editor_absoluteY="22dp" />
 
-        </eightbitlab.com.blurview.BlurView>
+        </com.threethan.launchercore.view.LcBlurView>
 
-        <eightbitlab.com.blurview.BlurView
+        <com.threethan.launchercore.view.LcBlurView
             android:id="@+id/blurViewSettingsIcon"
             android:layout_width="40dp"
             android:layout_height="40dp"
@@ -118,7 +122,6 @@
             android:elevation="12dp"
             android:nextFocusUp="@id/blurViewSettingsIcon"
             android:visibility="visible"
-            app:blurOverlayColor="#4A000000"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:layout_conversion_absoluteHeight="40dp"
@@ -140,7 +143,7 @@
                 tools:layout_conversion_absoluteWidth="40dp"
                 tools:layout_editor_absoluteX="349dp"
                 tools:layout_editor_absoluteY="22dp" />
-        </eightbitlab.com.blurview.BlurView>
+        </com.threethan.launchercore.view.LcBlurView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -149,7 +152,7 @@
         android:layout_width="match_parent"
         android:layout_height="88dp">
 
-        <eightbitlab.com.blurview.BlurView
+        <com.threethan.launchercore.view.LcBlurView
             android:id="@+id/blurViewSearchBar"
             android:layout_width="match_parent"
             android:layout_height="40dp"
@@ -209,8 +212,7 @@
                     android:layout_height="40dp"
                     android:layout_gravity="end"
                     android:background="@drawable/bkg_hover_button"
-                    android:nextFocusRight="@id/searchCancelIcon"
-                    app:blurOverlayColor="#4A000000">
+                    android:nextFocusRight="@id/searchCancelIcon">
 
                     <ImageView
                         android:id="@+id/searchCancelIcon"
@@ -227,7 +229,7 @@
                 </FrameLayout>
             </LinearLayout>
 
-        </eightbitlab.com.blurview.BlurView>
+        </com.threethan.launchercore.view.LcBlurView>
     </FrameLayout>
 
     <include layout="@layout/activity_main_edit_footer" />

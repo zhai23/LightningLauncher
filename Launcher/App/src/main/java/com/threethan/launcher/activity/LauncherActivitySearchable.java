@@ -20,8 +20,6 @@ import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import eightbitlab.com.blurview.BlurView;
-
 /**
     The class handles the additional interface elements and properties related to searching.
     It sends the current search term to the GroupsAdapter when updated, and open the first app
@@ -78,7 +76,7 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
             }
         }, delay);
     }
-    BlurView searchBar;
+    View searchBar;
 
     void showSearchBar() {
         beenNonEmpty = false;
@@ -98,8 +96,6 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
             scaleX.start();
             scaleY.start();
             searchBar.setVisibility(View.VISIBLE);
-
-            searchBar.setOverlayColor(Color.parseColor(darkMode ? "#4A000000" : "#50FFFFFF"));
 
             searchBar.setClipToOutline(true);
 

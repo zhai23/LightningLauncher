@@ -43,7 +43,9 @@ import com.threethan.launcher.activity.dialog.SettingsDialog;
 import com.threethan.launcher.activity.executor.WallpaperExecutor;
 import com.threethan.launcher.activity.support.DataStoreEditor;
 import com.threethan.launcher.activity.support.SettingsManager;
+import com.threethan.launchercore.view.LcBlurCanvas;
 import com.threethan.launcher.activity.view.MarginDecoration;
+import com.threethan.launchercore.view.LcBlurView;
 import com.threethan.launcher.data.Settings;
 import com.threethan.launcher.helper.AppExt;
 import com.threethan.launcher.helper.Compat;
@@ -55,7 +57,6 @@ import com.threethan.launchercore.lib.ImageLib;
 import com.threethan.launchercore.util.Keyboard;
 import com.threethan.launchercore.util.Launch;
 import com.threethan.launchercore.util.Platform;
-import com.threethan.launchercore.util.TranslucentBlur;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -69,8 +70,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import eightbitlab.com.blurview.BlurView;
 
 /**
     The class handles most of what the launcher does, though it is extended by it's child classes
@@ -380,7 +379,7 @@ public class LauncherActivity extends Launch.LaunchingActivity {
      * Note that these same views are also often manipulated in LauncherActivitySearchable
      */
     public void updateToolBars() {
-        BlurView[] blurViews = new BlurView[]{
+        View[] blurViews = new View[]{
                 rootView.findViewById(R.id.blurViewGroups),
                 rootView.findViewById(R.id.blurViewSettingsIcon),
                 rootView.findViewById(R.id.blurViewSearchIcon),
@@ -391,12 +390,12 @@ public class LauncherActivity extends Launch.LaunchingActivity {
         for (int i = 0; i<blurViews.length-1; i++) blurViews[i].setVisibility(hide ? View.GONE : View.VISIBLE);
         if (isEditing() && hide) setEditMode(false); // If groups were disabled while in edit mode
 
+        LcBlurCanvas.setOverlayColor((Color.parseColor(darkMode ? "#29000000" : "#40FFFFFF")));
+
         if (groupsEnabled) {
-            for (BlurView blurView : blurViews
+            for (View blurView : blurViews
             ) {
                 blurView.setBackgroundTintList(ColorStateList.valueOf(Color.TRANSPARENT));
-                blurView.setOverlayColor((Color.parseColor(darkMode ? "#29000000" : "#40FFFFFF")));
-                initBlurView(blurView);
 
                 blurView.setOutlineProvider(ViewOutlineProvider.BACKGROUND);
                 blurView.setClipToOutline(true);
@@ -409,18 +408,6 @@ public class LauncherActivity extends Launch.LaunchingActivity {
         }
 
         post(() -> { if (needsUpdateCleanup) Compat.doUpdateCleanup(this); });
-    }
-
-    /**
-     * Initializes an eightbitlabs BlurView
-     * @param blurView BlurView to setup
-     */
-    protected final void initBlurView(BlurView blurView) {
-        View windowDecorView = getWindow().getDecorView();
-        ViewGroup rootViewGroup = (ViewGroup) windowDecorView;
-
-        blurView.setupWith(rootViewGroup, TranslucentBlur.getInstance(this))
-                .setBlurRadius(15f);
     }
 
     public int lastSelectedGroup;
@@ -468,7 +455,7 @@ public class LauncherActivity extends Launch.LaunchingActivity {
         updateGridLayouts();
     }
 
-
+    boolean t = true;
     protected void updateSelectedGroups(int x, int y) {
         groupsView.setAdapter(new GroupsAdapter(this, isEditing()));
         if (getAppAdapter() == null) {
@@ -477,8 +464,10 @@ public class LauncherActivity extends Launch.LaunchingActivity {
             getAppAdapter().setAppList(this);
         }
 
+        if (isEditing()) return;
+
         Animator anim = ViewAnimationUtils.createCircularReveal(appsView, x, y, 0, rootView.getHeight() + rootView.getWidth());
-        anim.setDuration(425);
+        anim.setDuration(500);
 
         appsView.setVisibility(View.INVISIBLE);
         appsView.postDelayed(() -> {
@@ -486,7 +475,7 @@ public class LauncherActivity extends Launch.LaunchingActivity {
                 appsView.setVisibility(View.VISIBLE);
                 anim.start();
             } catch (Exception ignored) {}
-        }, 75);
+        }, 500);
     }
 
     /**
@@ -504,7 +493,7 @@ public class LauncherActivity extends Launch.LaunchingActivity {
             final int groupCols
                     = Math.min(getGroupAdapter().getCount(), prevViewWidth / targetWidth);
 
-            groupsView.setLayoutManager(new LauncherGridLayoutManager(this, Math.max(1, groupCols)));
+            groupsView.setLayoutManager(new GridLayoutManager(this, Math.max(1, groupCols)));
 
             final int groupRows = (int) Math.ceil((double) getGroupAdapter().getCount() / groupCols);
             groupHeight = dp(40) * groupRows;
@@ -524,7 +513,7 @@ public class LauncherActivity extends Launch.LaunchingActivity {
 
         GridLayoutManager gridLayoutManager = (GridLayoutManager) appsView.getLayoutManager();
         if (gridLayoutManager == null) {
-            gridLayoutManager = new GridLayoutManager(this, 3);
+            gridLayoutManager = new LauncherGridLayoutManager(this, 3);
             gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
                 @Override
                 public int getSpanSize(int position) {
@@ -565,7 +554,6 @@ public class LauncherActivity extends Launch.LaunchingActivity {
         final int topAdd = groupsVisible ? dp(32) + groupHeight : dp(23);
         final int bottomAdd = groupsVisible ? getBottomBarHeight() + dp(11) : margin / 2 + getBottomBarHeight() + dp(11);
 
-        appsView.setClipToPadding(false);
         appsView.setPadding(
                 dp(margin+25),
                 topAdd,
@@ -573,7 +561,6 @@ public class LauncherActivity extends Launch.LaunchingActivity {
                 bottomAdd);
 
         // Margins
-
         if (marginDecoration == null) {
             marginDecoration = new MarginDecoration(margin);
             appsView.addItemDecoration(marginDecoration);
