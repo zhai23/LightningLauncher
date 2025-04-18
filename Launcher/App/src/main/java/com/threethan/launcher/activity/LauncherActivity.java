@@ -39,6 +39,7 @@ import com.threethan.launcher.activity.adapter.GroupsAdapter;
 import com.threethan.launcher.activity.adapter.LauncherAppsAdapter;
 import com.threethan.launcher.activity.adapter.LauncherGridLayoutManager;
 import com.threethan.launcher.activity.dialog.AppDetailsDialog;
+import com.threethan.launcher.activity.dialog.BasicDialog;
 import com.threethan.launcher.activity.dialog.SettingsDialog;
 import com.threethan.launcher.activity.executor.WallpaperExecutor;
 import com.threethan.launcher.activity.support.DataStoreEditor;
@@ -261,7 +262,11 @@ public class LauncherActivity extends Launch.LaunchingActivity {
         else
             intent.setType("image/*");
 
-        filePicker.launch(intent);
+        try {
+            filePicker.launch(intent);
+        } catch (Exception ignored) {
+            BasicDialog.toast("No image picker available!");
+        }
     }
 
     private ImageView selectedImageView;

@@ -75,7 +75,11 @@ public abstract class PlaytimeHelper {
         intent.setPackage("com.android.settings");
         LauncherActivity activity = LauncherActivity.getForegroundInstance();
         if (activity != null)
-            activity.startActivity(intent);
+            try {
+                activity.startActivity(intent);
+            } catch (Exception e) {
+                BasicDialog.toast("Usage permission settings are unavailable");
+            }
         else {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             Core.context().startActivity(intent);
