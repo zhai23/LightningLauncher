@@ -9,6 +9,7 @@ import android.net.Uri;
 
 import com.threethan.launcher.R;
 import com.threethan.launcher.activity.LauncherActivity;
+import com.threethan.launcher.activity.dialog.BasicDialog;
 import com.threethan.launcher.data.Settings;
 import com.threethan.launchercore.Core;
 import com.threethan.launchercore.util.App;
@@ -38,7 +39,11 @@ public abstract class AppExt extends App {
             packageName = PlatformExt.infoOverrides.get(packageName);
         intent.setData(Uri.parse("package:" + packageName));
         if (Platform.isQuest()) intent.setPackage("com.android.settings");
-        context.startActivity(intent);
+        try {
+            context.startActivity(intent);
+        } catch (Exception e) {
+            BasicDialog.toast("App info unavailable");
+        }
     }
     // Requests to uninstall the app
     public static void uninstall(String packageName) {
@@ -56,7 +61,11 @@ public abstract class AppExt extends App {
             Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.setData(Uri.parse("package:" + packageName));
-            Core.context().startActivity(intent);
+            try {
+                Core.context().startActivity(intent);
+            } catch (Exception e) {
+                BasicDialog.toast("Could not request uninstall");
+            }
             if (launcher != null) {
                 for (int i = 2; i < 15; i++) // Check for uninstall completion
                     launcher.postDelayed(launcher::refreshPackages, i*1000);

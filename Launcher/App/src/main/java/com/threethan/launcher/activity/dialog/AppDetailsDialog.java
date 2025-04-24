@@ -163,8 +163,9 @@ public class AppDetailsDialog extends BasicDialog<LauncherActivity> {
                 launchSizeSpinner.setVisibility(View.VISIBLE);
             }
         }
-        dialog.findViewById(R.id.charts).setOnClickListener(v
-                -> PlaytimeHelper.openFor(app.packageName));
+        if (Platform.isQuest()) dialog.findViewById(R.id.charts).setOnClickListener(v
+                    -> PlaytimeHelper.openFor(app.packageName));
+        else dialog.findViewById(R.id.charts).setVisibility(View.GONE);
 
         // Show/hide button
         final View showButton = dialog.findViewById(R.id.show);
