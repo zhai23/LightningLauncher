@@ -41,7 +41,7 @@ import com.threethan.launcher.activity.adapter.LauncherGridLayoutManager;
 import com.threethan.launcher.activity.dialog.AppDetailsDialog;
 import com.threethan.launcher.activity.dialog.BasicDialog;
 import com.threethan.launcher.activity.dialog.SettingsDialog;
-import com.threethan.launcher.activity.executor.WallpaperExecutor;
+import com.threethan.launcher.activity.support.WallpaperLoader;
 import com.threethan.launcher.activity.support.DataStoreEditor;
 import com.threethan.launcher.activity.support.SettingsManager;
 import com.threethan.launchercore.view.LcBlurCanvas;
@@ -96,6 +96,7 @@ public class LauncherActivity extends Launch.LaunchingActivity {
     public SettingsManager settingsManager;
     public boolean settingsVisible;
     public LauncherService launcherService;
+    private WallpaperLoader wallpaperLoader;
     protected static String TAG = "Lightning Launcher";
     private int groupHeight;
     private MarginDecoration marginDecoration;
@@ -129,6 +130,7 @@ public class LauncherActivity extends Launch.LaunchingActivity {
         Intent intent = new Intent(this, LauncherService.class);
         bindService(intent, launcherServiceConnection, Context.BIND_AUTO_CREATE);
 
+        wallpaperLoader = new WallpaperLoader(this);
         int background = dataStoreEditor.getInt(Settings.KEY_BACKGROUND,
         Platform.isTv()
             ? Settings.DEFAULT_BACKGROUND_TV
@@ -137,7 +139,7 @@ public class LauncherActivity extends Launch.LaunchingActivity {
         int backgroundColor = custom ? Color.parseColor("#404044") : SettingsManager.BACKGROUND_COLORS[background];
 
         Drawable cd = new ColorDrawable(backgroundColor);
-        if (Platform.isQuest()) cd.setAlpha(WallpaperExecutor.getBackgroundAlpha(dataStoreEditor));
+        if (Platform.isQuest()) cd.setAlpha(WallpaperLoader.getBackgroundAlpha(dataStoreEditor));
         post(() -> getWindow().setBackgroundDrawable(cd));
 
         // Set back action
@@ -226,7 +228,7 @@ public class LauncherActivity extends Launch.LaunchingActivity {
     protected void onLayoutChanged(View v, int left, int top, int right, int bottom,
                                    int oldLeft, int oldTop, int oldRight, int oldBottom) {
         if (Math.abs(oldBottom-bottom) > 10 || Math.abs(oldRight-right) > 10) { // Only on significant diff
-            new WallpaperExecutor().execute(this);
+            wallpaperLoader.crop();
             updateGridLayouts();
             post(this::updateToolBars);
             postDelayed(this::updateToolBars, 1000);
@@ -383,7 +385,7 @@ public class LauncherActivity extends Launch.LaunchingActivity {
      * Note that these same views are also often manipulated in LauncherActivitySearchable
      */
     public void updateToolBars() {
-        View[] blurViews = new View[]{
+        View[] toolbars = new View[]{
                 rootView.findViewById(R.id.blurViewGroups),
                 rootView.findViewById(R.id.blurViewSettingsIcon),
                 rootView.findViewById(R.id.blurViewSearchIcon),
@@ -391,13 +393,13 @@ public class LauncherActivity extends Launch.LaunchingActivity {
         };
 
         final boolean hide = !groupsEnabled;
-        for (int i = 0; i<blurViews.length-1; i++) blurViews[i].setVisibility(hide ? View.GONE : View.VISIBLE);
+        for (int i = 0; i<toolbars.length-1; i++) toolbars[i].setVisibility(hide ? View.GONE : View.VISIBLE);
         if (isEditing() && hide) setEditMode(false); // If groups were disabled while in edit mode
 
         LcBlurCanvas.setOverlayColor((Color.parseColor(darkMode ? "#29000000" : "#40FFFFFF")));
 
         if (groupsEnabled) {
-            for (View blurView : blurViews
+            for (View blurView : toolbars
             ) {
                 blurView.setBackgroundTintList(ColorStateList.valueOf(Color.TRANSPARENT));
 
@@ -619,11 +621,11 @@ public class LauncherActivity extends Launch.LaunchingActivity {
             int backgroundColor = custom ? Color.parseColor("#404044") : SettingsManager.BACKGROUND_COLORS[backgroundIndex];
             Drawable cd = new ColorDrawable(backgroundColor);
 
-            if (Platform.isQuest()) cd.setAlpha(WallpaperExecutor.getBackgroundAlpha(dataStoreEditor));
+            if (Platform.isQuest()) cd.setAlpha(WallpaperLoader.getBackgroundAlpha(dataStoreEditor));
 
             if (Platform.isQuest()) cd.setAlpha(200);
 
-            new WallpaperExecutor().execute(this);
+            wallpaperLoader.load();
         });
     }
     public static int backgroundIndex = -2; // -2 indicated the setting needs to be loaded
