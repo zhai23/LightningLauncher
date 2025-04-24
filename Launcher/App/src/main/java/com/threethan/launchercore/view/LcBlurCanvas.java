@@ -38,8 +38,12 @@ public class LcBlurCanvas extends LcContainerView {
                 // Draw window background
                 drawWindowBackground(canvas);
 
+                int[] location = new int[2];
+                getLocationInWindow(location);
+                canvas.translate(location[0], location[1]);
                 // Draw child
                 getChildAt(0).draw(canvas);
+                canvas.translate(-location[0], -location[1]);
 
                 // Canvas overlay
                 canvas.drawColor(overlayColor);

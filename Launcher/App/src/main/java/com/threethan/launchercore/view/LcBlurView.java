@@ -34,11 +34,12 @@ public class LcBlurView extends FrameLayout {
         canvas.drawColor(0, PorterDuff.Mode.CLEAR);
 
         // Draw blurred content
-        canvas.save();
-        canvas.translate(-position[0], -position[1]);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            canvas.translate(-position[0], -position[1]);
             canvas.drawRenderNode(LcBlurCanvas.renderNode);
-        canvas.restore();
+            canvas.translate(position[0], position[1]);
+        }
+
         super.draw(canvas);
     }
 }
