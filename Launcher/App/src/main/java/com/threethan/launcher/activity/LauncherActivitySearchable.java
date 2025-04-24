@@ -82,20 +82,14 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
         beenNonEmpty = false;
         try {
             searching = true;
+            searchBar.setAlpha(0F);
 
             ObjectAnimator alphaIn = ObjectAnimator.ofFloat(searchBar, "alpha", 1f);
             ObjectAnimator alphaOut = ObjectAnimator.ofFloat(topBar, "alpha", 0f);
-            ObjectAnimator scaleX = ObjectAnimator.ofFloat(searchBar, "scaleX", 1f);
-            ObjectAnimator scaleY = ObjectAnimator.ofFloat(searchBar, "scaleY", 1f);
             alphaIn.setDuration(200);
             alphaOut.setDuration(250);
-            scaleX.setDuration(300);
-            scaleY.setDuration(300);
             alphaIn.start();
             alphaOut.start();
-            scaleX.start();
-            scaleY.start();
-            scaleX.addUpdateListener(an -> searchBar.postInvalidate());
             searchBar.setVisibility(View.VISIBLE);
 
             searchBar.setClipToOutline(true);
@@ -128,8 +122,6 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
 
             topBar.setVisibility(groupsEnabled ? View.VISIBLE : View.GONE);
             topBar.setAlpha(1F);
-            searchBar.setScaleX(0.5F);
-            searchBar.setScaleY(0.5F);
             topBar.postDelayed(this::fixState, 500);
             refreshAdapters();
             searchFor("");
