@@ -62,6 +62,8 @@
     <string name="advanced_search">Search Settings</string>
     <string name="advanced_backup">Settings Backup</string>
     <string name="advanced_alpha">Background Translucency</string>
+    <string name="advanced_alpha_preserve">Preserve Details with Translucency</string>
+    <string name="advanced_alpha_preserve_tip">Preserve background details when passthrough is off,\nuse fancy partial translucency when it\'s on.</string>
     <string name="advanced_alpha_tip">Makes the background of Lightning Launcher translucent in passthrough.</string>
 
     <string name="dark_mode">Dark Mode</string>
@@ -392,14 +394,14 @@
 
     <!--  QGT INFO  -->
     <string name="tuner_info_tagline" translatable="false">Unlock the Full Power of Your Quest.</string>
-    <string name="tuner_info_desc" translatable="false">Meta limits the performance of apps.
+    <string name="tuner_info_desc">Meta limits the performance of apps.
         <b>Quest Game Tuner</b> breaks those limits, letting you get the most of the hardware you already own.
         You can also <i>capture better videos</i>, <i>block ads</i>, <i>automatically power off</i>, and more.
         \n
         \n<b>Quest Game Tuner</b> is the result of hundreds of hours of development, research, and testing by the same developer which made Lightning Launcher.
     </string>
 
-    <string name="tuner_info_get" translatable="false">Get <b>Quest Game Tuner</b> on itch.io!</string>
+    <string name="tuner_info_get">Get <b>Quest Game Tuner</b> on itch.io!</string>
     <string name="tuner_info_get_link" translatable="false">threethan.itch.io/quest-game-tuner</string>
 
     <!-- v74 APK INSTALLER -->

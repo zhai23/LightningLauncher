@@ -66,6 +66,7 @@ public abstract class Settings {
     // Theme/background
     public static final String KEY_BACKGROUND = "KEY_CUSTOM_THEME";
     public static final String KEY_BACKGROUND_ALPHA = "KEY_CUSTOM_ALPHA";
+    public static final String KEY_BACKGROUND_ALPHA_PRESERVE = "KEY_BACKGROUND_ALPHA_PRESERVE";
     public static final String KEY_DARK_MODE = "KEY_DARK_MODE";
     public static final String KEY_GROUPS_ENABLED = "KEY_GROUPS_ENABLED";
     public static final String KEY_GROUPS_WIDE = "KEY_GROUPS_ENABLED";
@@ -74,7 +75,8 @@ public abstract class Settings {
     public static final String KEY_SEARCH_HIDDEN = "KEY_SEARCH_HIDDEN";
     public static final int DEFAULT_BACKGROUND_VR = 0;
     public static final int DEFAULT_BACKGROUND_TV = 9;
-    public static final int DEFAULT_ALPHA = 255;
+    public static final int DEFAULT_ALPHA = 64;
+    public static final boolean DEFAULT_BACKGROUND_ALPHA_PRESERVE = true;
     public static final boolean DEFAULT_DARK_MODE = true;
     public static final boolean DEFAULT_GROUPS_ENABLED = true;
     public static final boolean DEFAULT_GROUPS_WIDE = false;
@@ -95,7 +97,6 @@ public abstract class Settings {
     public static final String KEY_ALLOW_CHAIN_LAUNCH = "KEY_ALLOW_CHAIN_LAUNCH";
     public static final boolean DEFAULT_ALLOW_CHAIN_LAUNCH = true;
     public static final String KEY_EDIT_MODE = "KEY_EDIT_MODE";
-    public static final String KEY_SEEN_WEBSITE_POPUP = "KEY_SEEN_WEBSITE_POPUP";
     public static final String KEY_SEEN_ADDONS = "KEY_SEEN_ADDONS";
 
     // banner-style display by app type

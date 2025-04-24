@@ -298,7 +298,7 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
         dialog.findViewById(R.id.alphaLayout)
                 .setVisibility(Platform.isQuest() ? View.VISIBLE : View.GONE);
 
-        if (Platform.isQuest()) {
+        if (Platform.isQuest() && !PlatformExt.isOldVrOs()) {
             SeekBar alpha = dialog.findViewById(R.id.alphaSeekBar);
             alpha.setProgress(255 - a.dataStoreEditor.getInt(Settings.KEY_BACKGROUND_ALPHA, Settings.DEFAULT_ALPHA));
             alpha.post(() -> alpha.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -323,6 +323,13 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
                     a.refreshBackground();
                 }
             }));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                Switch alphaPreserve = dialog.findViewById(R.id.alphaPreserveSwitch);
+                attachSwitchToSetting(alphaPreserve, Settings.KEY_BACKGROUND_ALPHA_PRESERVE,
+                        Settings.DEFAULT_BACKGROUND_ALPHA_PRESERVE, v -> a.refreshBackground(), false);
+            } else {
+                dialog.findViewById(R.id.alphaPreserveSwitch).setVisibility(View.GONE);
+            }
         }
 
         // Advanced

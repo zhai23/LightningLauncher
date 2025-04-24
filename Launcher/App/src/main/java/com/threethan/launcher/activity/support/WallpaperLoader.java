@@ -4,16 +4,35 @@ import android.app.Activity;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapShader;
+import android.graphics.HardwareRenderer;
+import android.graphics.Paint;
+import android.graphics.RecordingCanvas;
 import android.graphics.Rect;
+import android.graphics.RenderEffect;
+import android.graphics.RenderNode;
+import android.graphics.RuntimeShader;
+import android.graphics.Shader;
+import android.graphics.SurfaceTexture;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
+import android.view.PixelCopy;
+import android.view.Surface;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 
 import com.threethan.launcher.activity.LauncherActivity;
 import com.threethan.launcher.data.Settings;
 import com.threethan.launchercore.lib.ImageLib;
 import com.threethan.launchercore.util.Platform;
 
+import org.intellij.lang.annotations.Language;
+
 import java.io.File;
+import java.util.concurrent.CountDownLatch;
 
 /**
     Loads an image background asynchronously, then sets it to the specified view when done
@@ -41,6 +60,7 @@ public class WallpaperLoader {
         thread.setPriority(Thread.MIN_PRIORITY);
         thread.start();
     }
+
     private void cropInternal() {
         if (imageBitmap == null) loadInternal();
         if (imageBitmap == null) return;
@@ -61,16 +81,95 @@ public class WallpaperLoader {
                 imageBitmap.getWidth() - cropMarginWidth,
                 imageBitmap.getHeight() - cropMarginHeight);
 
+
         BitmapDrawable wallpaperDrawable = new BitmapDrawable(Resources.getSystem(), imageBitmap);
 
         if (Platform.isQuest())
-            wallpaperDrawable.setAlpha(getBackgroundAlpha(owner.dataStoreEditor) + 1);
-
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+            && owner.dataStoreEditor.getBoolean(Settings.KEY_BACKGROUND_ALPHA_PRESERVE,
+                    Settings.DEFAULT_BACKGROUND_ALPHA_PRESERVE)) {
+                float alpha = getBackgroundAlpha(owner.dataStoreEditor) / 255f;
+                imageBitmap = preserveAlphaBitmap(imageBitmap, alpha);
+                wallpaperDrawable = new BitmapDrawable(Resources.getSystem(), imageBitmap);
+            } else {
+                wallpaperDrawable.setAlpha(getBackgroundAlpha(owner.dataStoreEditor) + 1);
+            }
         // Apply
+        BitmapDrawable finalWallpaperDrawable = wallpaperDrawable;
         owner.runOnUiThread(() ->
-                owner.getWindow().setBackgroundDrawable(wallpaperDrawable));
+                owner.getWindow().setBackgroundDrawable(finalWallpaperDrawable));
 
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
+    @NonNull
+    private static RuntimeShader getPreserveAlphaRuntimeShader() {
+        @Language("AGSL") String shaderCode = """
+            uniform shader content;
+            uniform float fade;
+        
+            half4 main(float2 coord) {
+                half4 color = content.eval(coord);
+                float len = length(color.rgb) / 1.25;
+                float a = fade + (1.0 - fade) * len;
+                float b = ((1. - a) / 3) + 1.;
+                color.r *= b;
+                color.g *= b;
+                color.b *= b;
+                color.a *= a;
+                return color;
+            }
+        """;
+
+        return new RuntimeShader(shaderCode);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
+    private static Bitmap preserveAlphaBitmap(Bitmap imageBitmap, float alpha) {
+
+        RuntimeShader runtimeShader = getPreserveAlphaRuntimeShader();
+        runtimeShader.setFloatUniform("fade", alpha);
+
+        // Set up RenderNode to render to a HardwareBuffer
+        RenderNode renderNode = new RenderNode("shaderNode");
+        renderNode.setPosition(0, 0, imageBitmap.getWidth(), imageBitmap.getHeight());
+        renderNode.setRenderEffect(RenderEffect.createRuntimeShaderEffect(runtimeShader, "content"));
+
+        Bitmap output = Bitmap.createBitmap(imageBitmap.getWidth(), imageBitmap.getHeight(), Bitmap.Config.ARGB_8888);
+
+        // Use a recording canvas to draw the shader effect
+        RecordingCanvas canvas = renderNode.beginRecording();
+        Paint paint = new Paint();
+        paint.setShader(new BitmapShader(imageBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP));
+        canvas.drawRect(0, 0, imageBitmap.getWidth(), imageBitmap.getHeight(), paint);
+        renderNode.endRecording();
+
+        // Create surface
+        SurfaceTexture surfaceTexture = new SurfaceTexture(0);
+        surfaceTexture.setDefaultBufferSize(imageBitmap.getWidth(), imageBitmap.getHeight());
+        Surface surface = new Surface(surfaceTexture);
+
+        // Render to surface
+        HardwareRenderer renderer = new HardwareRenderer();
+        renderer.setContentRoot(renderNode);
+        renderer.setSurface(surface);
+        renderer.createRenderRequest().syncAndDraw();
+
+        // Copy to bitmap
+        CountDownLatch latch = new CountDownLatch(1);
+        PixelCopy.request(surface, output, copyResult -> latch.countDown(), new Handler(Looper.getMainLooper()));
+        try {
+            latch.await();
+        } catch (InterruptedException ignored) {}
+
+        // Cleanup
+        renderer.destroy();
+        surface.release();
+        surfaceTexture.release();
+
+        return output;
+    }
+
     public void loadInternal() {
         int background = LauncherActivity.backgroundIndex;
         imageBitmap = null;

@@ -51,6 +51,7 @@
     <string name="advanced_search">検索設定</string>
     <string name="advanced_backup">設定のバックアップ</string>
     <string name="advanced_alpha">背景の透明度</string>
+    <string name="advanced_alpha_preserve_tip">パススルーがオフの場合は背景の詳細​​を保持し、オンの場合は断面の半透明を使用します。</string>
     <string name="advanced_alpha_tip">Lightning Launcherの背景をパススルーで半透明にする。</string>
     <string name="dark_mode">ダークモード</string>
     <string name="dark_mode_tip">オンの場合、ラベルは暗い背景に白く表示される。</string>
@@ -295,14 +296,13 @@
     <string name="addons_uninstall">アンインストール</string>
     <string name="installing">インストール…</string>
     <string name="installed_successfully">インストール成功</string>
-    <string name="tuner_info_tagline">クエストの全パワーを解き放て</string>
     <string name="tuner_info_desc">メタはアプリのパフォーマンスを制限する。
         Quest Game Tunerはそのような制限を破り、すでにお持ちのハードウェアを最大限に活用できるようにします。
         また、より良いビデオのキャプチャ、広告のブロック、自動電源オフなども可能です。
         \n
         \Quest Game Tunerは、Lightning Launcherを開発したデベロッパーによる、数百時間に及ぶ開発、研究、テストの成果です。</string>
     <string name="tuner_info_get">itch.ioでQuest Game Tunerを手に入れよう！</string>
-    <string name="tuner_info_get_link">threethan.itch.io/quest-game-tuner</string>
     <string name="apk_installer">APKインストーラー</string>
     <string name="apk_installer_tip">インストールするAPKファイルを選択する</string>
+    <string name="advanced_alpha_preserve">詳細の保存</string>
 </resources>

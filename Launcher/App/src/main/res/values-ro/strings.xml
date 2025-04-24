@@ -51,7 +51,8 @@
     <string name="advanced_search">Setări de căutare</string>
     <string name="advanced_backup">Setări de rezervă</string>
     <string name="advanced_alpha">Transluciditate fundal</string>
-    <string name="advanced_alpha_tip">Face fundalul Lightning Launcher translucid în passthrough.</string>
+    <string name="advanced_alpha_preserve_tip">Păstrați detaliile de fundal când trecerea este dezactivată și utilizați</string>
+    <string name="advanced_alpha_tip">transluciditatea secțională atunci când este activată.</string>
     <string name="dark_mode">Mod întunecat</string>
     <string name="dark_mode_tip">Dacă este activată, etichetele vor apărea albe pe un fundal închis.</string>
     <string name="group_mode">Activarea grupurilor</string>
@@ -299,14 +300,13 @@
     <string name="addons_uninstall">Dezinstalare</string>
     <string name="installing">Instalarea..</string>
     <string name="installed_successfully">Instalat cu succes</string>
-    <string name="tuner_info_tagline">Eliberați întreaga putere a căutării dvs.</string>
     <string name="tuner_info_desc">Meta limitează performanța aplicațiilor.
         Quest Game Tuner sparge aceste limite, permițându-vă să profitați la maximum de hardware-ul pe care îl dețineți deja.
         De asemenea, puteți captura videoclipuri mai bune, bloca reclamele, opri automat și multe altele.
         \n
         \nQuest Game Tuner este rezultatul a sute de ore de dezvoltare, cercetare și testare de către același dezvoltator care a realizat Lightning Launcher.</string>
     <string name="tuner_info_get">Obțineți Quest Game Tuner pe itch.io!</string>
-    <string name="tuner_info_get_link">threethan.itch.io/quest-game-tuner</string>
     <string name="apk_installer">Instalator APK</string>
     <string name="apk_installer_tip">Selectați un fișier APK pentru instalare</string>
+    <string name="advanced_alpha_preserve">Păstrează detaliile</string>
 </resources>

@@ -51,6 +51,7 @@
     <string name="advanced_search">Arama Ayarları</string>
     <string name="advanced_backup">Ayarlar Yedekleme</string>
     <string name="advanced_alpha">Arka Plan Saydamlığı</string>
+    <string name="advanced_alpha_preserve_tip">Geçiş kapalıyken arka plan ayrıntılarını koru ve açıkken kesitsel yarı saydamlığı kullan.</string>
     <string name="advanced_alpha_tip">Lightning Launcher\'ın arka planını geçişte yarı saydam hale getirir.</string>
     <string name="dark_mode">Karanlık Mod</string>
     <string name="dark_mode_tip">Açıksa, etiketler koyu bir arka plan üzerinde beyaz görünecektir.</string>
@@ -299,14 +300,13 @@
     <string name="addons_uninstall">Kaldırma</string>
     <string name="installing">Kuruluyor</string>
     <string name="installed_successfully">Başarıyla Kuruldu</string>
-    <string name="tuner_info_tagline">Arayışınızın Tüm Gücünü Ortaya Çıkarın.</string>
     <string name="tuner_info_desc">Meta, uygulamaların performansını sınırlar.
         Quest Game Tuner bu sınırları ortadan kaldırarak sahip olduğunuz donanımdan en iyi şekilde yararlanmanızı sağlar.
         Ayrıca daha iyi videolar çekebilir, reklamları engelleyebilir, otomatik olarak kapanabilir ve daha fazlasını yapabilirsiniz.
         \n
         \nQuest Game Tuner, Lightning Launcher\'ı yapan aynı geliştirici tarafından yüzlerce saat süren geliştirme, araştırma ve testlerin sonucudur.</string>
     <string name="tuner_info_get">Quest Game Tuner\'ı itch.io\'da edinin!</string>
-    <string name="tuner_info_get_link">threethan.itch.io/quest-game-tuner</string>
     <string name="apk_installer">APK yükleyici</string>
     <string name="apk_installer_tip">Yüklemek için bir APK dosyası seçin</string>
+    <string name="advanced_alpha_preserve">Ayrıntıları Koru</string>
 </resources>

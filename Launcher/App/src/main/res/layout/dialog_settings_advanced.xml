@@ -123,7 +123,7 @@
 
 
         <LinearLayout
-            android:background="@drawable/lc_bkg_button_section"
+            android:background="@drawable/lc_bkg_button_top"
             android:id="@+id/alphaLayout"
             android:layout_width="match_parent"
             android:layout_height="40dp"
@@ -155,7 +155,15 @@
                 android:thumb="@null" />
 
         </LinearLayout>
-
+        <com.threethan.launchercore.view.LcSwitch
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:background="@drawable/lc_bkg_button_bottom"
+            android:id="@+id/alphaPreserveSwitch"
+            android:text="@string/advanced_alpha_preserve"
+            android:tooltipText="@string/advanced_alpha_preserve_tip"
+            tools:ignore="UnusedAttribute" />
 
         <TextView
             style="@style/SettingSubtitle"
