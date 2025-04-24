@@ -14,12 +14,14 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.bumptech.glide.Glide;
 import com.threethan.launcher.R;
 import com.threethan.launcher.activity.LauncherActivity;
 import com.threethan.launcher.activity.dialog.AppDetailsDialog;
 import com.threethan.launcher.activity.support.SettingsManager;
+import com.threethan.launcher.activity.view.LauncherAppListContainer;
 import com.threethan.launcher.data.Settings;
 import com.threethan.launcher.helper.LaunchExt;
 import com.threethan.launcher.helper.PlaytimeHelper;
@@ -49,6 +51,7 @@ public class LauncherAppsAdapter extends AppsAdapter<LauncherAppsAdapter.AppView
     private LauncherActivity launcherActivity;
     private Set<ApplicationInfo> fullAppSet;
     protected ApplicationInfo topSearchResult = null;
+    private LauncherAppListContainer container;
 
     private boolean getEditMode() {
         return launcherActivity.isEditing();
@@ -131,8 +134,20 @@ public class LauncherAppsAdapter extends AppsAdapter<LauncherAppsAdapter.AppView
         launcherActivity = val;
     }
 
+    @Override
+    public void submitList(@Nullable List<ApplicationInfo> list) {
+        if (container != null) container.setAllowLayout(false);
+        super.submitList(list, () -> {
+            if (container != null) container.setAllowLayout(true);
+        });
+    }
+
     public ApplicationInfo getTopSearchResult() {
         return topSearchResult;
+    }
+
+    public void setContainer(LauncherAppListContainer container) {
+        this.container = container;
     }
 
     protected static class AppViewHolderExt extends AppsAdapter.AppViewHolder {

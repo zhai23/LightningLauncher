@@ -466,6 +466,7 @@ public class LauncherActivity extends Launch.LaunchingActivity {
         } else {
             getAppAdapter().setAppList(this);
         }
+        getAppAdapter().setContainer(findViewById(R.id.appsContainer));
 
         if (isEditing()) return;
 

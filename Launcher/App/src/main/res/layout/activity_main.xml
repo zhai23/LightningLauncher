@@ -7,18 +7,19 @@
     android:layout_height="match_parent">
 
 
-    <com.threethan.launchercore.view.LcBlurCanvas
+    <com.threethan.launcher.activity.view.LauncherAppListContainer
+        android:id="@+id/appsContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/apps"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:overScrollMode="never"
-        android:scrollbars="none" />
-    </com.threethan.launchercore.view.LcBlurCanvas>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/apps"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:overScrollMode="never"
+            android:scrollbars="none" />
+    </com.threethan.launcher.activity.view.LauncherAppListContainer>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/topBarLayout"
