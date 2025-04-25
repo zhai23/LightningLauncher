@@ -170,12 +170,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/advanced_reset" />
-        <TextView
+        <com.threethan.launchercore.view.LcButton
             android:background="@drawable/lc_bkg_button_top"
             android:id="@+id/clearLabelButton"
             style="@style/SettingButtonLabel"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="horizontal"
             android:paddingStart="5dp"
@@ -184,7 +184,7 @@
             android:text="@string/clear_labels"/>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:baselineAligned="false"
             android:orientation="horizontal">
@@ -237,7 +237,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="39dp"
+            android:layout_height="wrap_content"
             android:baselineAligned="false"
             android:orientation="horizontal">
 
@@ -245,7 +245,7 @@
                 android:background="@drawable/lc_bkg_button_top_left"
                 android:id="@+id/bannerVrSwitch"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
 
                 android:layout_weight="1"
                 android:text="@string/apps_vr"
@@ -255,7 +255,7 @@
                 android:background="@drawable/lc_bkg_button_top_right"
                 android:id="@+id/bannerPanelSwitch"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
 
                 android:layout_marginStart="2dp"
                 android:layout_weight="1"
@@ -266,7 +266,7 @@
                 android:background="@drawable/lc_bkg_button_top"
                 android:id="@+id/bannerTvSwitch"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
 
                 android:layout_weight="1"
                 android:text="@string/apps_tv"
@@ -276,7 +276,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="39dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:baselineAligned="false"
             android:orientation="horizontal">
@@ -285,7 +285,7 @@
                 android:background="@drawable/lc_bkg_button_bottom_left"
                 android:id="@+id/bannerPhoneSwitch"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
 
                 android:layout_weight="1"
                 android:text="@string/apps_phone"
@@ -295,7 +295,7 @@
                 android:background="@drawable/lc_bkg_button_bottom_right"
                 android:id="@+id/bannerWebsiteSwitch"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
 
                 android:layout_marginStart="2dp"
                 android:layout_weight="1"
@@ -336,7 +336,7 @@
             android:background="@drawable/lc_bkg_button_section"
             android:id="@+id/allowChainLaunchSwitch"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
 
             android:text="@string/allow_chain_launch"
@@ -378,7 +378,7 @@
             android:background="@drawable/lc_bkg_button_top"
             android:id="@+id/searchWebSwitch"
             android:layout_width="match_parent"
-            android:layout_height="39dp"
+            android:layout_height="wrap_content"
             android:text="@string/search_web"
             tools:ignore="UseSwitchCompatOrMaterialXml" />
 
@@ -386,7 +386,7 @@
             android:background="@drawable/lc_bkg_button_bottom"
             android:id="@+id/searchHiddenSwitch"
             android:layout_width="match_parent"
-            android:layout_height="39dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:text="@string/search_hidden"
             tools:ignore="UseSwitchCompatOrMaterialXml" />
@@ -399,7 +399,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="39dp"
+            android:layout_height="wrap_content"
             android:gravity="clip_vertical|center_vertical"
             android:orientation="horizontal"
             android:visibility="visible">
@@ -408,7 +408,7 @@
                 android:background="@drawable/lc_bkg_button_top_left"
                 android:id="@+id/saveSettingsButton"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:drawableEnd="@drawable/ic_upload"
                 android:text="@string/settings_save"
@@ -431,7 +431,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="39dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:gravity="clip_vertical|center_vertical"
             android:orientation="horizontal"

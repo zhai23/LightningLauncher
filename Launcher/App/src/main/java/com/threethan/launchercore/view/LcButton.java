@@ -46,6 +46,7 @@ public class LcButton extends Button {
                         TypedValue.COMPLEX_UNIT_SP, 20, getResources().getDisplayMetrics()));
                 setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
                 int backgroundResource = a.getResourceId(R.styleable.LcButton_android_background, R.drawable.lc_bkg_button);
+                setIncludeFontPadding(false);
                 setBackgroundResource(backgroundResource);
             } finally {
                 a.recycle();
