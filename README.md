@@ -35,7 +35,7 @@ It has been built with a focus on speed, flexiblity, and convenience.
 
 It can run on any Android device, but has been tailored for the lastest updates to the Oculus/Meta Quest OS.
 
-![image](https://github.com/threethan/LightningLauncher/assets/12588584/5a0acec5-2102-4afe-adb3-0f7bb4972623)
+![Screenshot](https://github.com/user-attachments/assets/9d90d12f-cb0d-4e24-b5e2-27dfd0545cb0)
 
 # Setup Guide
 **[Get Lightning Launcher on SideQuest](https://sidequestvr.com/app/21783)**, or:
