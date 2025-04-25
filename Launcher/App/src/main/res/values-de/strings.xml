@@ -2,6 +2,7 @@
     <string name="add_group">Gruppe hinzufügen</string>
     <string name="apps_hidden">- Versteckt</string>
     <string name="migrated">Alte Einstellungen sind migriert worden</string>
+    <string name="force_untranslated_tip">Lightning Launcher muss auf Englisch sein.\\n(Nicht in Ihre Sprache übersetzen.)</string>
     <string name="edit_mode">Bearbeitungsmodus</string>
     <string name="edit_mode_tip">Ändern Sie Gruppen, fügen Sie Websites hinzu und vieles mehr.</string>
     <string name="new_multitasking">Launcher-Fenster nach dem Öffnen von Anwendungen schließen</string>
@@ -267,4 +268,5 @@
     <string name="tuner_info_get">Hol dir Quest Game Tuner auf itch.io!</string>
     <string name="apk_installer_tip">Wählen Sie eine APK-Datei zur Installation aus</string>
     <string name="advanced_alpha_preserve">Details bewahren</string>
+    <string name="force_untranslated">Verwenden Sie die englische Sprache</string>
 </resources>

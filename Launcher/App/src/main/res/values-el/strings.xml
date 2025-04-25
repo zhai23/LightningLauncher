@@ -2,6 +2,7 @@
     <string name="add_group">Προσθήκη ομάδας</string>
     <string name="apps_hidden">- Κρυφό</string>
     <string name="migrated">Οι παλιές ρυθμίσεις έχουν μεταφερθεί</string>
+    <string name="force_untranslated_tip">Αναγκάστε το Lightning Launcher να είναι στα Αγγλικά.\\n(Μην μεταφράσετε στη γλώσσα σας.)</string>
     <string name="edit_mode">Λειτουργία επεξεργασίας</string>
     <string name="edit_mode_tip">Αλλάξτε ομάδες, προσθέστε ιστότοπους και πολλά άλλα.</string>
     <string name="new_multitasking">Κλείσιμο παραθύρου εκτοξευτή μετά το άνοιγμα εφαρμογών</string>
@@ -267,4 +268,5 @@
     <string name="tuner_info_get">Αποκτήστε το Quest Game Tuner στο itch.io!</string>
     <string name="apk_installer_tip">Επιλέξτε ένα αρχείο APK για εγκατάσταση</string>
     <string name="advanced_alpha_preserve">Διατήρηση λεπτομερειών</string>
+    <string name="force_untranslated">Χρησιμοποιήστε την αγγλική γλώσσα</string>
 </resources>

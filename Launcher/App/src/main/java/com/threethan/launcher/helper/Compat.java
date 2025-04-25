@@ -221,7 +221,6 @@ public abstract class Compat {
         }
 
         launcherActivity.launcherService.forEachActivity(LauncherActivity::refreshAppList);
-
     }
     // Clears the categorization of apps & resets everything to selected default groups
     public static void clearSort(LauncherActivity launcherActivity) {

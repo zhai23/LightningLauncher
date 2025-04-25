@@ -13,6 +13,7 @@ import com.threethan.launchercore.lib.StringLib;
 import com.threethan.launchercore.util.App;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -64,6 +65,8 @@ public abstract class Settings {
             true,
     };
     // Theme/background
+    public static final String KEY_FORCE_UNTRANSLATED = "KEY_FORCE_UNTRANSLATED";
+    public static final String UNTRANSLATED_LANGUAGE = "en";
     public static final String KEY_BACKGROUND = "KEY_CUSTOM_THEME";
     public static final String KEY_BACKGROUND_ALPHA = "KEY_CUSTOM_ALPHA";
     public static final String KEY_BACKGROUND_ALPHA_PRESERVE = "KEY_BACKGROUND_ALPHA_PRESERVE";

@@ -7,6 +7,9 @@
     <string name="apps_hidden">- Hidden</string>
     <string name="migrated">Old settings have been migrated</string>
 
+    <string name="force_untranslated">Use English Language</string>
+    <string name="force_untranslated_tip">Force Lightning Launcher to be in English.\n(Do not translate to your language.)</string>
+
     <string name="edit_mode">Edit Mode</string>
     <string name="edit_mode_tip">Change groups, add websites, and more.</string>
 

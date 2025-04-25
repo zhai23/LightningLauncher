@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.graphics.RenderEffect;
 import android.graphics.RenderNode;
 import android.graphics.Shader;
@@ -73,6 +74,7 @@ public class LcBlurCanvas extends LcContainerView {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     Canvas canvas = renderNode.beginRecording();
 
+                    canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
                     // Draw window background
                     drawWindowBackground(canvas);
                     drawChild(canvas);

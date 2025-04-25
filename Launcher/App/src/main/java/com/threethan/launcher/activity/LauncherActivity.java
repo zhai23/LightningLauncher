@@ -9,6 +9,8 @@ import android.content.ServiceConnection;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -64,6 +66,7 @@ import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 import java.util.Timer;
@@ -85,6 +88,7 @@ public class LauncherActivity extends Launch.LaunchingActivity {
     public static Boolean groupsEnabled = true;
     private static Boolean groupsWide = false;
     public static boolean needsForceRefresh = false;
+    public boolean queueOpenSettings = false;
     RecyclerView appsView;
     RecyclerView groupsView;
     public DataStoreEditor dataStoreEditor;
@@ -109,6 +113,8 @@ public class LauncherActivity extends Launch.LaunchingActivity {
 
     private static WeakReference<LauncherActivity> foregroundInstance = null;
 
+    public static Locale implicitLocale = null;
+
     /**
      * Gets an instance of a LauncherActivity, preferring that which was most recently resumed
      * @return A reference to some launcher activity
@@ -119,13 +125,38 @@ public class LauncherActivity extends Launch.LaunchingActivity {
     }
 
     @Override
+    public Resources getResources() {
+        try {
+            implicitLocale = Locale.getDefault();
+            // If system language != english:
+            if (!implicitLocale.getLanguage().startsWith(Settings.UNTRANSLATED_LANGUAGE)) {
+                Configuration config = super.getResources().getConfiguration();
+                Locale currentLocale = config.getLocales().get(0);
+
+                // Check if user wants to force english
+                dataStoreEditor = new DataStoreEditor(getApplicationContext());
+                boolean forceUntranslated
+                        = dataStoreEditor.getBoolean(Settings.KEY_FORCE_UNTRANSLATED, false);
+                Locale targetLocale = forceUntranslated ? Locale.ENGLISH : implicitLocale;
+
+                // Override as necessary
+                if (targetLocale != currentLocale) {
+                    config.setLocale(targetLocale);
+                    super.getResources().updateConfiguration(config, super.getResources().getDisplayMetrics());
+                }
+            }
+        } catch (Exception ignored) {}
+        return super.getResources();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_container);
 
         Core.init(this);
-        dataStoreEditor = Compat.getDataStore();
+        if (dataStoreEditor == null) dataStoreEditor = Compat.getDataStore();
 
         Intent intent = new Intent(this, LauncherService.class);
         bindService(intent, launcherServiceConnection, Context.BIND_AUTO_CREATE);
@@ -430,6 +461,8 @@ public class LauncherActivity extends Launch.LaunchingActivity {
         if (focused != null) focused.clearFocus();
         post(() -> {
             if (focused != null && getCurrentFocus() == null) focused.requestFocus();
+            if (queueOpenSettings) new SettingsDialog(this).show();
+            queueOpenSettings = false;
         });
     }
 
@@ -467,16 +500,19 @@ public class LauncherActivity extends Launch.LaunchingActivity {
 
         if (isEditing()) return;
 
-        Animator anim = ViewAnimationUtils.createCircularReveal(appsView, x, y, 0, rootView.getHeight() + rootView.getWidth());
-        anim.setDuration(500);
+        try {
+            Animator anim = ViewAnimationUtils.createCircularReveal(appsView, x, y, 0, rootView.getHeight() + rootView.getWidth());
+            anim.setDuration(500);
 
-        appsView.setVisibility(View.INVISIBLE);
-        appsView.postDelayed(() -> {
-            try {
-                appsView.setVisibility(View.VISIBLE);
-                anim.start();
-            } catch (Exception ignored) {}
-        }, 500);
+            appsView.setVisibility(View.INVISIBLE);
+            appsView.postDelayed(() -> {
+                try {
+                    appsView.setVisibility(View.VISIBLE);
+                    anim.start();
+                } catch (Exception ignored) {
+                }
+            }, 500);
+        } catch (Exception ignored) {}
     }
 
     /**

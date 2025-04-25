@@ -4,6 +4,7 @@
     <string name="apps_hidden">- 隐藏</string>
     <string name="migrated">已导入之前的配置</string>
 
+    <string name="force_untranslated_tip">强制 Lightning Launcher 使用英文。\\n（不要翻译成您的语言。）</string>
     <string name="edit_mode">编辑模式</string>
     <string name="edit_mode_tip">更改群组、添加网站等等。</string>
     <string name="new_multitasking">启动其他应用程序时关闭 Lightning Launcher 窗口</string>
@@ -289,4 +290,5 @@
     <string name="advanced_alpha_preserve">保留细节</string>
     <string name="tuner_info_desc">Meta 限制了应用的性能。 <b>Quest Game Tuner</b> 打破了这些限制，让您能够充分利用现有硬件。 您还可以<i>录制更优质的视频</i>、<i>屏蔽广告</i>、<i>自动关机</i>等等。  <b>Quest Game Tuner</b> 是 Lightning Launcher 的开发者历经数百小时开发、研究和测试的成果。</string>
     <string name="tuner_info_get">在 itch.io 上获取<b>Quest Game Tuner</b>！</string>
+    <string name="force_untranslated">使用英语</string>
 </resources>

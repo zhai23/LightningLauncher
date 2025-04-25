@@ -25,7 +25,7 @@ import java.util.Random;
 /**
  * Allows direct opening of Quest Game Tuner tuning settings for a specific app
  */
-public class QuestGameTuner {
+public abstract class QuestGameTuner {
     private static final String APP_TUNING_URI = "tune_app";
     private static final String APP_USAGE_URI = "usage_app";
     public static final String PKG_NAME = "com.threethan.tuner";

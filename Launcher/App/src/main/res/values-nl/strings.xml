@@ -2,6 +2,7 @@
     <string name="add_group">Groep toevoegen</string>
     <string name="apps_hidden">- Verborgen</string>
     <string name="migrated">Oude instellingen zijn gemigreerd</string>
+    <string name="force_untranslated_tip">Dwing Lightning Launcher om in het Engels te zijn.\\n(Vertaal niet naar jouw taal.)</string>
     <string name="edit_mode">Modus Bewerken</string>
     <string name="edit_mode_tip">Wijzig groepen, voeg websites toe en meer.</string>
     <string name="new_multitasking">Sluit het Launcher-venster na het openen van apps</string>
@@ -263,4 +264,5 @@
     <string name="tuner_info_get">Haal Quest Game Tuner op itch.io!</string>
     <string name="apk_installer_tip">Selecteer een APK-bestand om te installeren</string>
     <string name="advanced_alpha_preserve">Details behouden</string>
+    <string name="force_untranslated">Brug engelsk sprog</string>
 </resources>

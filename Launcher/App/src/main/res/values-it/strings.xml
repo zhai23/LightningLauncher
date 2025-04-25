@@ -2,6 +2,7 @@
     <string name="add_group">Aggiungi gruppo</string>
     <string name="apps_hidden">- Nascosto</string>
     <string name="migrated">Le vecchie impostazioni sono state migrate</string>
+    <string name="force_untranslated_tip">Force Lightning Launcher sarà in inglese.\\n(Non tradurre nella tua lingua.)</string>
     <string name="edit_mode">Modalità di modifica</string>
     <string name="edit_mode_tip">Modificare i gruppi, aggiungere siti web e altro ancora.</string>
     <string name="new_multitasking">Chiudere la finestra del Launcher dopo l\'apertura delle applicazioni</string>
@@ -263,4 +264,5 @@
     <string name="tuner_info_get">Ottieni Quest Game Tuner su itch.io!</string>
     <string name="apk_installer_tip">Selezionare un file APK da installare</string>
     <string name="advanced_alpha_preserve">Conserva i dettagli</string>
+    <string name="force_untranslated">Usa la lingua inglese</string>
 </resources>

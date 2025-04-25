@@ -2,6 +2,7 @@
     <string name="add_group">Lisää ryhmä</string>
     <string name="apps_hidden">- Piilotettu</string>
     <string name="migrated">Vanhat asetukset on siirretty</string>
+    <string name="force_untranslated_tip">Pakota Lightning Launcher olemaan englanniksi.\\n(Älä käännä kielellesi.)</string>
     <string name="edit_mode">Muokkaustila</string>
     <string name="edit_mode_tip">Vaihda ryhmiä, lisää verkkosivustoja ja paljon muuta.</string>
     <string name="new_multitasking">Sulje Launcher-ikkuna sovellusten avaamisen jälkeen</string>
@@ -267,4 +268,5 @@
     <string name="tuner_info_get">Hanki Quest Game Tuner itch.iosta!</string>
     <string name="apk_installer_tip">Valitse asennettava APK-tiedosto</string>
     <string name="advanced_alpha_preserve">Säilytä tiedot</string>
+    <string name="force_untranslated">Käytä englannin kieltä</string>
 </resources>

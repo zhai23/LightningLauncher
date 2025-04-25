@@ -2,6 +2,7 @@
     <string name="add_group">Adaugă grup</string>
     <string name="apps_hidden">- Ascunse</string>
     <string name="migrated">Setările vechi au fost migrate</string>
+    <string name="force_untranslated_tip">Forțați Lightning Launcher să fie în engleză.\\n(Nu traduceți în limba dvs.)</string>
     <string name="edit_mode">Mod editare</string>
     <string name="edit_mode_tip">Schimbați grupurile, adăugați site-uri web și multe altele.</string>
     <string name="new_multitasking">Închideți fereastra lansatorului după deschiderea aplicațiilor</string>
@@ -267,4 +268,5 @@
     <string name="tuner_info_get">Obțineți Quest Game Tuner pe itch.io!</string>
     <string name="apk_installer_tip">Selectați un fișier APK pentru instalare</string>
     <string name="advanced_alpha_preserve">Păstrează detaliile</string>
+    <string name="force_untranslated">Folosiți limba engleză</string>
 </resources>

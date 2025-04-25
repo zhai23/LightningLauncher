@@ -4,6 +4,7 @@ import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.os.Build;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
@@ -23,6 +24,7 @@ import com.threethan.launcher.helper.PlatformExt;
 import com.threethan.launcher.helper.PlaytimeHelper;
 import com.threethan.launcher.helper.SettingsSaver;
 import com.threethan.launcher.updater.LauncherUpdater;
+import com.threethan.launchercore.lib.DelayLib;
 import com.threethan.launchercore.util.App;
 import com.threethan.launchercore.util.CustomDialog;
 import com.threethan.launchercore.util.Platform;
@@ -31,6 +33,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -108,6 +111,18 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
             }
         });
         dialog.findViewById(R.id.topSettingsArea).setClipToOutline(true);
+
+        Switch languageSwitch = dialog.findViewById(R.id.forceUntranslatedSwitch);
+        attachSwitchToSetting(languageSwitch, Settings.KEY_FORCE_UNTRANSLATED, false, (v) -> {
+            LauncherActivity inst = LauncherActivity.getForegroundInstance();
+            if (inst != null) {
+                inst.queueOpenSettings = true;
+                inst.recreate();
+            }
+        }, false);
+        languageSwitch.setVisibility(LauncherActivity.implicitLocale != null &&
+                LauncherActivity.implicitLocale.getLanguage().startsWith(Settings.UNTRANSLATED_LANGUAGE)
+                ? View.GONE : View.VISIBLE);
 
         View addWebsite = dialog.findViewById(R.id.addWebsiteButton);
         addWebsite.setOnClickListener(v -> a.addWebsite());

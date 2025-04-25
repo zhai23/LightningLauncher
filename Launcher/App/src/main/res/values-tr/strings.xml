@@ -2,6 +2,7 @@
     <string name="add_group">Grup Ekle</string>
     <string name="apps_hidden">- Gizli</string>
     <string name="migrated">Eski ayarlar taşındı</string>
+    <string name="force_untranslated_tip">Lightning Launcher\'ın İngilizce olmasını zorunlu kılın.\\n(Kendi dilinize çevirmeyin.)</string>
     <string name="edit_mode">Düzenleme Modu</string>
     <string name="edit_mode_tip">Grupları değiştirin, web siteleri ekleyin ve daha fazlasını yapın.</string>
     <string name="new_multitasking">Uygulamaları açtıktan sonra Başlatıcı penceresini kapatma</string>
@@ -267,4 +268,5 @@
     <string name="tuner_info_get">Quest Game Tuner\'ı itch.io\'da edinin!</string>
     <string name="apk_installer_tip">Yüklemek için bir APK dosyası seçin</string>
     <string name="advanced_alpha_preserve">Ayrıntıları Koru</string>
+    <string name="force_untranslated">İngilizce Dilini Kullan</string>
 </resources>

@@ -2,6 +2,7 @@
     <string name="add_group">グループ追加</string>
     <string name="apps_hidden">- ヒドゥン</string>
     <string name="migrated">古い設定は移行されました</string>
+    <string name="force_untranslated_tip">Lightning Launcher を英語で表示するように強制します。\\n(あなたの言語に翻訳しないでください。)</string>
     <string name="edit_mode">編集モード</string>
     <string name="edit_mode_tip">グループの変更、ウェブサイトの追加など。</string>
     <string name="new_multitasking">アプリを開いた後、ランチャーウィンドウを閉じる</string>
@@ -263,4 +264,5 @@
     <string name="tuner_info_get">itch.ioでQuest Game Tunerを手に入れよう！</string>
     <string name="apk_installer_tip">インストールするAPKファイルを選択する</string>
     <string name="advanced_alpha_preserve">詳細の保存</string>
+    <string name="force_untranslated">英語を使用する</string>
 </resources>
