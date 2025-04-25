@@ -123,7 +123,7 @@ public class LcBlurCanvas extends LcContainerView {
         LcBlurCanvas.overlayColor = overlayColor;
     }
 
-    public static RenderNode renderNode = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ? new RenderNode("BackgroundNode") : null;
+    public static final RenderNode renderNode = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ? new RenderNode("BackgroundNode") : null;
 
     @Override
     public void addView(View child, int index, LayoutParams params) {

@@ -3,7 +3,6 @@ package com.threethan.launcher.activity;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.view.View;
@@ -68,13 +67,13 @@ public class LauncherActivityEditable extends LauncherActivity {
             super.clear();
         }
     }
-    public HashSet<String> currentSelectedApps = new ConnectedHashSet();
+    public final HashSet<String> currentSelectedApps = new ConnectedHashSet();
     // Startup
     @Override
     protected void init() {
         super.init();
         View addWebsiteButton = rootView.findViewById(R.id.addWebsite);
-        addWebsiteButton.setOnClickListener(view -> addWebsite(this));
+        addWebsiteButton.setOnClickListener(view -> addWebsite());
         View stopEditingButton = rootView.findViewById(R.id.stopEditing);
         stopEditingButton.setOnClickListener(view -> setEditMode(false));
     }
@@ -283,7 +282,7 @@ public class LauncherActivityEditable extends LauncherActivity {
         });
     }
 
-    public void addWebsite(Context context) {
+    public void addWebsite() {
         
         AlertDialog dialog = new BasicDialog<>(this, R.layout.dialog_add_website).show();
 

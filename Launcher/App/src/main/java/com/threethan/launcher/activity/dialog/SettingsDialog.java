@@ -108,7 +108,7 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
         });
 
         View addWebsite = dialog.findViewById(R.id.addWebsiteButton);
-        addWebsite.setOnClickListener(v -> a.addWebsite(a));
+        addWebsite.setOnClickListener(v -> a.addWebsite());
 
         // Group enabled state
         if (a.canEdit()) {

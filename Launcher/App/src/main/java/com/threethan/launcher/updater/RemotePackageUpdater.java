@@ -45,9 +45,9 @@ public class RemotePackageUpdater {
      * Stores information for a package which may be downloaded using RemotePackageUpdater
      */
     public static class RemotePackage {
-        public String packageName;
-        public String url;
-        public String latestVersion;
+        public final String packageName;
+        public final String url;
+        public final String latestVersion;
 
         @Override
         public boolean equals(@Nullable Object obj) {
@@ -95,7 +95,7 @@ public class RemotePackageUpdater {
      */
     public enum AddonState
     { NOT_INSTALLED, INSTALLED_HAS_UPDATE, INSTALLED_SERVICE_INACTIVE, INSTALLED_SERVICE_ACTIVE, INSTALLED_APP }
-    String latestVersionTag;
+
     private AlertDialog downloadingDialog;
 
     public RemotePackageUpdater(Activity activity) {
@@ -135,7 +135,7 @@ public class RemotePackageUpdater {
         }
 
 
-        // Registers a one-off reciever to install the downloaded package
+        // Registers a one-off receiver to install the downloaded package
         // Android will prompt the user if they actually want to install
         activity.registerReceiver(new BroadcastReceiver() {
             @Override

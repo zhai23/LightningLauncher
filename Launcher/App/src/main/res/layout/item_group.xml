@@ -30,7 +30,7 @@
         android:layout_centerVertical="true"
         android:layout_marginStart="4dp"
         android:layout_marginEnd="2dp"
-        android:background="@drawable/ic_circ_more"
+        android:background="@drawable/ic_more_button"
         android:translationY="-1dp"
         android:visibility="gone"
         tools:visibility="visible" />

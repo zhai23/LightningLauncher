@@ -176,7 +176,7 @@ public class DataStoreEditor implements SharedPreferences, SharedPreferences.Edi
         throw new InvalidParameterException("Invalid preference class, must be one of "
                 + Arrays.toString(classes));
     }
-    static Map<Class, Object> nullFallbacks = new HashMap<>();
+    static final Map<Class, Object> nullFallbacks = new HashMap<>();
     static {
         nullFallbacks.put(String.class, "<!NULL>");
         nullFallbacks.put(Integer.class, Integer.MIN_VALUE+1);
@@ -268,7 +268,6 @@ public class DataStoreEditor implements SharedPreferences, SharedPreferences.Edi
      * @param <T> Type of the value, should be derived automatically from tClass
      */
     public <T> void putValue(String key, @Nullable T value, Class<T> tClass) {
-        boolean returnvalue;
         Preferences.Key<T> prefKey = getKey(key, tClass);
         Single<Preferences> updateResult =  dataStoreRX.updateDataAsync(prefsIn -> {
             MutablePreferences mutablePreferences = prefsIn.toMutablePreferences();
@@ -284,7 +283,6 @@ public class DataStoreEditor implements SharedPreferences, SharedPreferences.Edi
      * @param <T> Type of the value, should be derived automatically from tClass
      */
     public <T> void putValue(String key, @Nullable T value, Class<T> tClass, boolean synchronous) {
-        boolean returnvalue;
         Preferences.Key<T> prefKey = getKey(key, tClass);
         Single<Preferences> updateResult =  dataStoreRX.updateDataAsync(prefsIn -> {
             MutablePreferences mutablePreferences = prefsIn.toMutablePreferences();
@@ -310,7 +308,6 @@ public class DataStoreEditor implements SharedPreferences, SharedPreferences.Edi
      * @param <T> Type of the value, should be derived automatically from value
      */
     public <T> void putValue(String key, @NonNull T value, boolean synchronous) {
-        boolean returnvalue;
         Preferences.Key<T> prefKey = getKey(key, value);
         Single<Preferences> updateResult =  dataStoreRX.updateDataAsync(prefsIn -> {
             MutablePreferences mutablePreferences = prefsIn.toMutablePreferences();
@@ -336,7 +333,6 @@ public class DataStoreEditor implements SharedPreferences, SharedPreferences.Edi
      * @param <T> Type of the value, should be derived automatically from tClass
      */
     public <T> void removeValue(String key, Class<T> tClass, boolean synchronous){
-        boolean returnvalue;
         Preferences.Key<T> prefKey = getKey(key, tClass);
         @SuppressLint("UnsafeOptInUsageWarning")
         Single<Preferences> updateResult =  dataStoreRX.updateDataAsync(prefsIn -> {
@@ -351,7 +347,6 @@ public class DataStoreEditor implements SharedPreferences, SharedPreferences.Edi
      * Asynchronously clears ALL data in the store
      */
     public DataStoreEditor clear(){
-        boolean returnvalue;
         @SuppressLint("UnsafeOptInUsageWarning")
         Single<Preferences> updateResult =  dataStoreRX.updateDataAsync(prefsIn -> {
             MutablePreferences mutablePreferences = prefsIn.toMutablePreferences();
@@ -482,7 +477,7 @@ public class DataStoreEditor implements SharedPreferences, SharedPreferences.Edi
     // String Set
     /**
      * Synchronously fetches a string set.
-     * The set returned is made modifiable for consitency with the old sharedPreferences editor
+     * The set returned is made modifiable for consistency with the old sharedPreferences editor
      */
     public Set<String> getStringSet(String key, Set<String> def) {
         //noinspection unchecked
@@ -510,7 +505,7 @@ public class DataStoreEditor implements SharedPreferences, SharedPreferences.Edi
 
     // Compat
     /**
-     * This is included for compatiblity, but is slow and may not work as expected.
+     * This is included for compatibility, but is slow and may not work as expected.
      * <p>
      * It's recommended to use typed remove functions instead.
      * @noinspection rawtypes
@@ -525,9 +520,9 @@ public class DataStoreEditor implements SharedPreferences, SharedPreferences.Edi
         return this;
     }
 
-    /*** This is included for compatiblity, but is slow!
+    /*** This is included for compatibility, but is slow!
      * <p>
-     * It's recommented to instead try to read your specific typed value,
+     * It's recommended to instead try to read your specific typed value,
      * you can use a default of null and check for a non-null return value.
      */
     @Override
@@ -556,7 +551,7 @@ public class DataStoreEditor implements SharedPreferences, SharedPreferences.Edi
 
     // Compat (sharedpref)
     /**
-     * This is included for compatiblity, but simply returns the same object,
+     * This is included for compatibility, but simply returns the same object,
      * which implements both SharedPreferences and SharedPreferences.Editor
      */
     @Override

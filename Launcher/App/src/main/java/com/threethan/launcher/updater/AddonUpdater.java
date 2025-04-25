@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.ServiceInfo;
 import android.net.Uri;
 import android.util.Log;
 import android.view.accessibility.AccessibilityManager;
@@ -17,6 +16,7 @@ import androidx.annotation.Nullable;
 import com.threethan.launcher.helper.PlatformExt;
 
 import java.util.List;
+import java.util.Objects;
 
 public class AddonUpdater extends RemotePackageUpdater {
     // Tag for the GitHub release from which to download addons
@@ -124,17 +124,17 @@ public class AddonUpdater extends RemotePackageUpdater {
         } catch (PackageManager.NameNotFoundException e) {
             return AddonState.NOT_INSTALLED;
         }
-        if (!packageInfo.versionName.equals(addon.latestVersion)) return AddonState.INSTALLED_HAS_UPDATE;
+        if (!Objects.equals(packageInfo.versionName, addon.latestVersion)) return AddonState.INSTALLED_HAS_UPDATE;
         if (addon.isService) {
             AccessibilityManager am = (AccessibilityManager) activity.getSystemService(Context.ACCESSIBILITY_SERVICE);
             List<AccessibilityServiceInfo> enabledServices = am.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_ALL_MASK);
 
-            for (AccessibilityServiceInfo enabledService : enabledServices) {
-                ServiceInfo enabledServiceInfo = enabledService.getResolveInfo().serviceInfo;
-                if (enabledServiceInfo.packageName.equals(addon.packageName))
-                    return AddonState.INSTALLED_SERVICE_ACTIVE;
-            }
-            return AddonState.INSTALLED_SERVICE_INACTIVE;
+            final boolean enabled = enabledServices.stream()
+                    .anyMatch(enabledService
+                            -> enabledService.getResolveInfo()
+                            .serviceInfo.packageName.equals(addon.packageName));
+
+            return enabled ? AddonState.INSTALLED_SERVICE_ACTIVE : AddonState.INSTALLED_SERVICE_INACTIVE;
         } else return AddonState.INSTALLED_APP;
     }
     public void uninstallAddon(Activity activity, String tag) {

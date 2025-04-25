@@ -1,5 +1,7 @@
 package com.threethan.launchercore.lib;
 
+import android.util.Log;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -24,7 +26,7 @@ public class FileLib {
         return fileOrDirectory.delete();
     }
 
-    /** @noinspection IOStreamConstructor*/ // Fix requires higher API
+    /** */ // Fix requires higher API
     public static boolean copy(File fIn, File fOut) {
         try {
             InputStream in = new FileInputStream(fIn);
@@ -38,7 +40,7 @@ public class FileLib {
             out.close();
             return true;
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.w("Error when copying file", e);
             return false;
         }
     }

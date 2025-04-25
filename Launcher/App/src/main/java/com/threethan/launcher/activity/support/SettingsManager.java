@@ -90,8 +90,8 @@ public class SettingsManager extends Settings {
         return instanceByContext.get(context);
     }
 
-    public static HashMap<ApplicationInfo, String> appLabelCache = new HashMap<>();
-    public static HashMap<ApplicationInfo, String> sortableLabelCache = new HashMap<>();
+    public static final HashMap<ApplicationInfo, String> appLabelCache = new HashMap<>();
+    public static final HashMap<ApplicationInfo, String> sortableLabelCache = new HashMap<>();
 
     /**
      * Gets the label for the given app.
@@ -457,23 +457,6 @@ public class SettingsManager extends Settings {
             for (String group : appGroupsSet) {
                 editor.putStringSet(KEY_GROUP_APP_LIST + group, groupAppsMap.get(group));
             }
-//            Map<String, Set<String>> appListSetMap = new HashMap<>();
-//            for (String group : appGroupsSet) appListSetMap.put(group, new HashSet<>());
-//            for (String pkg : appGroupMap.keySet()) {
-//                Set<String> group = appListSetMap.get(appGroupMap.get(pkg));
-//                if (group == null) group = appListSetMap.get(
-//                        SettingsManager.getDefaultGroupFor(App.Type.PHONE));
-//                if (group == null) {
-//                    Log.w("Group was null", pkg);
-//                    group = appListSetMap.get(HIDDEN_GROUP);
-//                    appGroupMap.put(pkg, HIDDEN_GROUP);
-//                }
-//                assert group != null;
-//                group.add(pkg);
-//            }
-//            for (String group : appGroupsSet) {
-//                editor.putStringSet(KEY_GROUP_APP_LIST + group, appListSetMap.get(group));
-//            }
         } catch (Exception e) {
             Log.e("Settings Manager", "Error while writing groups & sort", e);
         }

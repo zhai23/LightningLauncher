@@ -53,7 +53,7 @@ import java.util.ArrayList;
  * - Now supports optionally supports looping and/or auto-advance
  * - Now supports adding customizable page indicators
  * - Foregrounds now render correctly, with support for the hover state
- * @noinspection unused
+ * @noinspection unused, SpellCheckingInspection
  */
 public class ViewFlinger extends ViewGroup {
     private static final String TAG = "ViewFlinger";

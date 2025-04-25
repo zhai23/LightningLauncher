@@ -48,7 +48,7 @@
         android:layout_width="26dp"
         android:layout_height="26dp"
         android:layout_gravity="top|end"
-        android:background="@drawable/ic_circ_more"
+        android:background="@drawable/ic_more_button"
         android:focusable="false"
         android:focusableInTouchMode="false"
         android:visibility="invisible"

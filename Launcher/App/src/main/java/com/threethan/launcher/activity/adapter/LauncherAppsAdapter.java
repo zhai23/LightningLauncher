@@ -57,7 +57,7 @@ public class LauncherAppsAdapter extends AppsAdapter<LauncherAppsAdapter.AppView
         return launcherActivity.isEditing();
     }
     public LauncherAppsAdapter(LauncherActivity activity) {
-        super(R.layout.item_app, null);
+        super(R.layout.item_app);
         launcherActivity = activity;
     }
 

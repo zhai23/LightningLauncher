@@ -11,9 +11,7 @@ import android.util.Log;
 public class InstallReceiver extends BroadcastReceiver {
     private static Runnable onFail = null;
     private static Runnable onSuccess = null;
-    public static void setOnFail(Runnable onFail) {
-        InstallReceiver.onFail = onFail;
-    }
+
     public static void setOnSuccess(Runnable onSuccess) {
         InstallReceiver.onSuccess = onSuccess;
     }

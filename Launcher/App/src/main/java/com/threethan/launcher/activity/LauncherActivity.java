@@ -97,7 +97,7 @@ public class LauncherActivity extends Launch.LaunchingActivity {
     public boolean settingsVisible;
     public LauncherService launcherService;
     private WallpaperLoader wallpaperLoader;
-    protected static String TAG = "Lightning Launcher";
+    protected static final String TAG = "Lightning Launcher";
     private int groupHeight;
     private MarginDecoration marginDecoration;
     public static int iconMargin = -1;
@@ -225,8 +225,8 @@ public class LauncherActivity extends Launch.LaunchingActivity {
         });
     }
 
-    protected void onLayoutChanged(View v, int left, int top, int right, int bottom,
-                                   int oldLeft, int oldTop, int oldRight, int oldBottom) {
+    protected void onLayoutChanged(View ignoredV, int ignoredLeft, int ignoredTop, int right, int bottom,
+                                   int ignoredOldLeft, int ignoredOldTop, int oldRight, int oldBottom) {
         if (Math.abs(oldBottom-bottom) > 10 || Math.abs(oldRight-right) > 10) { // Only on significant diff
             wallpaperLoader.crop();
             updateGridLayouts();
@@ -330,7 +330,7 @@ public class LauncherActivity extends Launch.LaunchingActivity {
         postDelayed(() -> new LauncherUpdater(this).checkAppUpdateInteractive(), 1000);
     }
 
-    static ExecutorService refreshPackagesService = Executors.newSingleThreadExecutor();
+    static final ExecutorService refreshPackagesService = Executors.newSingleThreadExecutor();
     /**
      * Reloads and refreshes the current list of packages,
      * and then the resulting app list for every activity.
@@ -381,7 +381,6 @@ public class LauncherActivity extends Launch.LaunchingActivity {
 
     /**
      * Updates various properties relating to the top bar & search bar, including visibility
-     * & init-ing blurviews.
      * Note that these same views are also often manipulated in LauncherActivitySearchable
      */
     public void updateToolBars() {
@@ -602,7 +601,7 @@ public class LauncherActivity extends Launch.LaunchingActivity {
     }
 
     /**
-     * Sets a background color to the window, navbar & statusbar  based on your chosen background,
+     * Sets a background color to the window, nav-bar & status-bar  based on your chosen background,
      * then calls an additional Executor to actually load the background image
      */
     public void refreshBackground() {
@@ -800,7 +799,7 @@ public class LauncherActivity extends Launch.LaunchingActivity {
     }
     public boolean isEditing() { return false; }
     public boolean canEdit() { return false; }
-    public void addWebsite(Context context) {}
+    public void addWebsite() {}
     protected boolean getSearching() { return false; }
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

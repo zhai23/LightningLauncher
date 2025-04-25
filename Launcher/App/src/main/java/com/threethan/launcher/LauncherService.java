@@ -49,7 +49,7 @@ public class LauncherService extends Service {
     /**
      * Creates an returns a new view which can be used as the main view for the launcher
      * @param activity The activity calling this
-     * @param root The viewgroup the view will be added to
+     * @param root The viewGroup the view will be added to
      */
     public void getNewView(LauncherActivity activity, ViewGroup root, Consumer<View> onReady) {
         if (!isObservingInstallations) observeInstallations(activity);
@@ -100,7 +100,7 @@ public class LauncherService extends Service {
      * Gets an existing inactive launcher view, which prevents the need to create a new one
      * (Operates on a similar concept to RecyclerViews)
      * @param activity The activity calling this
-     * @param root The viewgroup the view will be added to
+     * @param root The viewGroup the view will be added to
      * @return The view itself
      */
     public View getExistingView(LauncherActivity activity, ViewGroup root) {

@@ -26,7 +26,6 @@ import com.threethan.launcher.R;
 import com.threethan.launchercore.view.LcContainerView;
 
 
-import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -35,13 +34,11 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 public class AppsAdapter<VH extends AppsAdapter.AppViewHolder>
         extends ListAdapter<ApplicationInfo, VH> {
 
     private List<ApplicationInfo> fullAppList;
-    @Nullable protected App.Type showOnly;
     protected final int itemLayoutResId;
 
     private static final Set<AppsAdapter<?>> instances = new HashSet<>();
@@ -49,9 +46,6 @@ public class AppsAdapter<VH extends AppsAdapter.AppViewHolder>
     private static void runOnEachInstance(Consumer<AppsAdapter<?>> consumer) {
         instances.forEach(consumer);
     }
-
-    /** @noinspection rawtypes*/
-    public static WeakReference<AppsAdapter> lastInstanceReference = new WeakReference<>(null);
 
     private static final DiffUtil.ItemCallback<ApplicationInfo> DIFF_CALLBACK = new DiffUtil.ItemCallback<>() {
         @Override
@@ -65,10 +59,9 @@ public class AppsAdapter<VH extends AppsAdapter.AppViewHolder>
         }
     };
 
-    public AppsAdapter(int itemLayoutResId, @Nullable App.Type showOnly) {
+    public AppsAdapter(int itemLayoutResId) {
         super(DIFF_CALLBACK);
         setHasStableIds(true);
-        this.showOnly = showOnly;
         this.itemLayoutResId = itemLayoutResId;
         instances.add(this);
     }
@@ -79,7 +72,6 @@ public class AppsAdapter<VH extends AppsAdapter.AppViewHolder>
     }
 
     public void refresh() {
-        lastInstanceReference = new WeakReference<>(this);
         if (fullAppList == null) return;
 
         submitList(fullAppList);
@@ -89,17 +81,6 @@ public class AppsAdapter<VH extends AppsAdapter.AppViewHolder>
         if (items.equals(fullAppList)) return;
         fullAppList = items;
         refresh();
-    }
-
-    public synchronized void filterBy(String text) {
-        if (text.isBlank()) {
-            setFullItems(fullAppList);
-        } else {
-            List<ApplicationInfo> filteredList = fullAppList.stream()
-                    .filter(item -> App.getLabel(item).contains(text.strip()))
-                    .collect(Collectors.toList());
-            submitList(filteredList);
-        }
     }
 
     protected static class AppViewHolder extends RecyclerView.ViewHolder {

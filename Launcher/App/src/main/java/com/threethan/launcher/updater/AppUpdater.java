@@ -13,8 +13,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.threethan.launcher.activity.dialog.BasicDialog;
-import com.threethan.launcher.activity.support.DataStoreEditor;
 import com.threethan.launchercore.lib.FileLib;
 import com.threethan.launcher.R;
 import com.threethan.launchercore.util.CustomDialog;
@@ -72,7 +70,7 @@ public abstract class AppUpdater extends RemotePackageUpdater {
 
     /**
      * Gets the github repo of the app
-     * @return GitHub repo in the format myacct/my-app-repo
+     * @return GitHub repo in the format my-acct/my-app-repo
      */
     protected abstract String getGitRepo();
 
@@ -203,7 +201,6 @@ public abstract class AppUpdater extends RemotePackageUpdater {
             JSONObject latestReleaseJson = new JSONObject(response);
             String tagName = latestReleaseJson.getString("tag_name");
             if (callback != null) callback.onResponse(tagName);
-            latestVersionTag = tagName;
         } catch (JSONException ignored) {}
     }
 

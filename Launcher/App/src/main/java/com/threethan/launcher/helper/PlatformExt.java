@@ -27,7 +27,7 @@ import java.util.Set;
  */
 public abstract class PlatformExt {
     public static List<ApplicationInfo> installedApps;
-    public static Set<ApplicationInfo> apps = Collections.synchronizedSet(new HashSet<>());
+    public static final Set<ApplicationInfo> apps = Collections.synchronizedSet(new HashSet<>());
     public static int changeIndex = 0; //Used to track changes, specifically adding websites
 
     public static final Map<String, String> infoOverrides = new HashMap<>();
@@ -103,6 +103,7 @@ public abstract class PlatformExt {
         return validTypes;
     }
 
+    /** @noinspection SameReturnValue*/
     public static Set<ApplicationInfo> listInstalledApps(LauncherActivity launcherActivity) {
         apps.clear();
         apps.addAll(Platform.listInstalledApps());

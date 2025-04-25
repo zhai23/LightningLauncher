@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/** @noinspection unused*/
+/** @noinspection unused, SpellCheckingInspection */
 public abstract class Platform {
     static {
         // Get package info on startup, so we can get info with only the package name

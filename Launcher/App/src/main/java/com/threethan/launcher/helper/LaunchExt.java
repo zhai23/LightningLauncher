@@ -156,7 +156,7 @@ public abstract class LaunchExt extends Launch {
 
     /**
      * Gets the intent used to actually launch the given app,
-     * including workarounds for browsers & panel appsf
+     * including workarounds for browsers & panel apps
      */
     @Nullable
     private static Intent getIntentForLaunch(LauncherActivity activity, ApplicationInfo app) {

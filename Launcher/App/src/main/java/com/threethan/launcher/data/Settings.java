@@ -129,7 +129,7 @@ public abstract class Settings {
     public static final String KEY_LAUNCH_BROWSER = "prefLaunchBrowser";
     public static final String KEY_DEFAULT_BROWSER = "KEY_DEFAULT_BROWSER";
 
-    /** @noinspection rawtypes*/
+    /** @noinspection rawtypes */
     public static final Class[] launchSizeClasses = {
             null,
             ChainLoadActivityPhone.class,

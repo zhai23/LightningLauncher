@@ -43,7 +43,7 @@ import java.util.concurrent.CountDownLatch;
 public class WallpaperLoader {
 
     private Bitmap imageBitmap = null;
-    LauncherActivity owner;
+    final LauncherActivity owner;
     public WallpaperLoader(LauncherActivity owner) {
         this.owner = owner;
     }

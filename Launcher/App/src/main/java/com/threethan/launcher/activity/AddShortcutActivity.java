@@ -88,7 +88,7 @@ public class AddShortcutActivity extends Activity {
         return new GsonBuilder()
                 .setExclusionStrategies(getExclusionStrategy()).create();
     }
-    /** Gets a Gson reader that works around duplicate field & unwritable value errors */
+    /** Gets a Gson reader that works around duplicate field & un-writable value errors */
     protected static Gson getFixedGsonReader() {
         return new GsonBuilder()
                 .setExclusionStrategies(getExclusionStrategy())
