@@ -55,7 +55,7 @@
     <string name="advanced_backup">Settings Backup</string>
     <string name="advanced_alpha">Background Translucency</string>
     <string name="advanced_alpha_preserve">Preserve Details with Translucency</string>
-    <string name="advanced_alpha_preserve_tip">Preserve background details when passthrough is off,\nuse fancy partial translucency when it\'s on.</string>
+    <string name="advanced_alpha_preserve_tip">Preserve background details when passthrough is off,\nuse fancy partial translucency when it\'s on.\n<i>Works best with dark backgrounds.</i></string>
     <string name="advanced_alpha_tip">Makes the background of Lightning Launcher translucent in passthrough.</string>
 
     <string name="dark_mode">Dark Mode</string>

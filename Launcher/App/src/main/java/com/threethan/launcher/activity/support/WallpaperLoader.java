@@ -42,8 +42,10 @@ import java.util.concurrent.CountDownLatch;
 
 public class WallpaperLoader {
 
+    private Bitmap baseBitmap = null;
     private Bitmap imageBitmap = null;
     final LauncherActivity owner;
+    private final Object lock = new Object();
     public WallpaperLoader(LauncherActivity owner) {
         this.owner = owner;
     }
@@ -63,42 +65,44 @@ public class WallpaperLoader {
 
     private void cropInternal() {
         if (imageBitmap == null) loadInternal();
-        if (imageBitmap == null) return;
-        float aspectScreen = getAspectScreen(owner);
+        synchronized (lock) {
+            if (imageBitmap == null || baseBitmap == null) return;
 
-        float aspectImage = imageBitmap.getWidth() / (float) imageBitmap.getHeight();
-        int cropWidth = imageBitmap.getWidth();
-        int cropHeight = imageBitmap.getHeight();
+            imageBitmap = baseBitmap.copy(Bitmap.Config.ARGB_8888, true);
+            float aspectScreen = getAspectScreen(owner);
 
-        if (aspectScreen < aspectImage)
-            cropWidth = (int) (imageBitmap.getHeight() * aspectScreen);
-        else cropHeight = (int) (imageBitmap.getWidth() / aspectScreen);
+            float aspectImage = imageBitmap.getWidth() / (float) imageBitmap.getHeight();
+            int cropWidth = imageBitmap.getWidth();
+            int cropHeight = imageBitmap.getHeight();
 
-        int cropMarginWidth = imageBitmap.getWidth() - cropWidth;
-        int cropMarginHeight = imageBitmap.getHeight() - cropHeight;
+            if (aspectScreen < aspectImage)
+                cropWidth = (int) (imageBitmap.getHeight() * aspectScreen);
+            else cropHeight = (int) (imageBitmap.getWidth() / aspectScreen);
 
-        imageBitmap = Bitmap.createBitmap(imageBitmap, cropMarginWidth, cropMarginHeight,
-                imageBitmap.getWidth() - cropMarginWidth,
-                imageBitmap.getHeight() - cropMarginHeight);
+            int cropMarginWidth = imageBitmap.getWidth() - cropWidth;
+            int cropMarginHeight = imageBitmap.getHeight() - cropHeight;
 
+            imageBitmap = Bitmap.createBitmap(imageBitmap, cropMarginWidth, cropMarginHeight,
+                    imageBitmap.getWidth() - cropMarginWidth,
+                    imageBitmap.getHeight() - cropMarginHeight);
 
-        BitmapDrawable wallpaperDrawable = new BitmapDrawable(Resources.getSystem(), imageBitmap);
+            BitmapDrawable wallpaperDrawable = new BitmapDrawable(Resources.getSystem(), imageBitmap);
 
-        if (Platform.isQuest())
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
-            && owner.dataStoreEditor.getBoolean(Settings.KEY_BACKGROUND_ALPHA_PRESERVE,
-                    Settings.DEFAULT_BACKGROUND_ALPHA_PRESERVE)) {
-                float alpha = getBackgroundAlpha(owner.dataStoreEditor) / 255f;
-                imageBitmap = preserveAlphaBitmap(imageBitmap, alpha);
-                wallpaperDrawable = new BitmapDrawable(Resources.getSystem(), imageBitmap);
-            } else {
-                wallpaperDrawable.setAlpha(getBackgroundAlpha(owner.dataStoreEditor) + 1);
-            }
-        // Apply
-        BitmapDrawable finalWallpaperDrawable = wallpaperDrawable;
-        owner.runOnUiThread(() ->
-                owner.getWindow().setBackgroundDrawable(finalWallpaperDrawable));
-
+            if (Platform.isQuest())
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+                        && owner.dataStoreEditor.getBoolean(Settings.KEY_BACKGROUND_ALPHA_PRESERVE,
+                        Settings.DEFAULT_BACKGROUND_ALPHA_PRESERVE)) {
+                    float alpha = getBackgroundAlpha(owner.dataStoreEditor) / 255f;
+                    imageBitmap = preserveAlphaBitmap(imageBitmap, alpha);
+                    wallpaperDrawable = new BitmapDrawable(Resources.getSystem(), imageBitmap);
+                } else {
+                    wallpaperDrawable.setAlpha(getBackgroundAlpha(owner.dataStoreEditor) + 1);
+                }
+            // Apply
+            BitmapDrawable finalWallpaperDrawable = wallpaperDrawable;
+            owner.runOnUiThread(() ->
+                    owner.getWindow().setBackgroundDrawable(finalWallpaperDrawable));
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
@@ -107,16 +111,18 @@ public class WallpaperLoader {
         @Language("AGSL") String shaderCode = """
             uniform shader content;
             uniform float fade;
+            uniform float cap;
         
             half4 main(float2 coord) {
                 half4 color = content.eval(coord);
                 float len = length(color.rgb) / 1.25;
                 float a = fade + (1.0 - fade) * len;
-                float b = ((1. - a) / 3) + 1.;
+                float b = ((1. - a) / 3) + 1. + (1. - clamp(cap, 0., 1.))/3;
                 color.r *= b;
                 color.g *= b;
                 color.b *= b;
                 color.a *= a;
+                color.a = clamp(color.a, 0.01, cap);
                 return color;
             }
         """;
@@ -128,7 +134,8 @@ public class WallpaperLoader {
     private static Bitmap preserveAlphaBitmap(Bitmap imageBitmap, float alpha) {
 
         RuntimeShader runtimeShader = getPreserveAlphaRuntimeShader();
-        runtimeShader.setFloatUniform("fade", alpha);
+        runtimeShader.setFloatUniform("fade",(alpha*0.6f-0.3f)*3.34f);
+        runtimeShader.setFloatUniform("cap", alpha*0.5f+0.5f);
 
         // Set up RenderNode to render to a HardwareBuffer
         RenderNode renderNode = new RenderNode("shaderNode");
@@ -171,17 +178,20 @@ public class WallpaperLoader {
     }
 
     public void loadInternal() {
-        int background = LauncherActivity.backgroundIndex;
-        imageBitmap = null;
-        if (background >= 0 && background < SettingsManager.BACKGROUND_DRAWABLES.length) {
-
-            // Create a cropped image asset for the window background
-            imageBitmap = BitmapFactory.decodeResource(owner.getResources(), SettingsManager.BACKGROUND_DRAWABLES[background]);
-        } else {
-            File file = new File(owner.getApplicationInfo().dataDir, Settings.CUSTOM_BACKGROUND_PATH);
-            try {
-                imageBitmap = ImageLib.bitmapFromFile(file);
-            } catch (Exception ignored) {} // In case file no longer exists or similar
+        synchronized (lock) {
+            int background = LauncherActivity.backgroundIndex;
+            imageBitmap = null;
+            if (background >= 0 && background < SettingsManager.BACKGROUND_DRAWABLES.length) {
+                // Create a cropped image asset for the window background
+                imageBitmap = BitmapFactory.decodeResource(owner.getResources(), SettingsManager.BACKGROUND_DRAWABLES[background]);
+                baseBitmap = imageBitmap;
+            } else {
+                File file = new File(owner.getApplicationInfo().dataDir, Settings.CUSTOM_BACKGROUND_PATH);
+                try {
+                    imageBitmap = ImageLib.bitmapFromFile(file);
+                } catch (Exception ignored) {
+                } // In case file no longer exists or similar
+            }
         }
     }
 

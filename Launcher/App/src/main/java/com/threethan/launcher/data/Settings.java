@@ -75,7 +75,7 @@ public abstract class Settings {
     public static final String KEY_SEARCH_HIDDEN = "KEY_SEARCH_HIDDEN";
     public static final int DEFAULT_BACKGROUND_VR = 0;
     public static final int DEFAULT_BACKGROUND_TV = 9;
-    public static final int DEFAULT_ALPHA = 64;
+    public static final int DEFAULT_ALPHA = 128;
     public static final boolean DEFAULT_BACKGROUND_ALPHA_PRESERVE = true;
     public static final boolean DEFAULT_DARK_MODE = true;
     public static final boolean DEFAULT_GROUPS_ENABLED = true;
