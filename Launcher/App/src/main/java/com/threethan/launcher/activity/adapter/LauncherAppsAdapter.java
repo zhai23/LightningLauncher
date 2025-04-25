@@ -3,6 +3,7 @@ package com.threethan.launcher.activity.adapter;
 import android.animation.ObjectAnimator;
 import android.content.pm.ApplicationInfo;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -344,82 +345,47 @@ public class LauncherAppsAdapter extends AppsAdapter<LauncherAppsAdapter.AppView
     // Animation
 
     private void animateOpen(AppViewHolderExt holder) {
+        try {
+            int[] l = new int[2];
+            int[] lw = new int[2];
+            holder.imageView.getLocationInWindow(l);
+            launcherActivity.rootView.getLocationInWindow(lw);
+            l[0] -= lw[0];
+            l[1] -= lw[1];
 
-        int[] l = new int[2];
-        holder.imageView.getLocationInWindow(l);
-        int w = holder.imageView.getWidth();
-        int h = holder.imageView.getHeight();
+            int w = holder.imageView.getWidth();
+            int h = holder.imageView.getHeight();
 
-        View openAnim = launcherActivity.rootView.findViewById(R.id.openAnim);
-        openAnim.setX(l[0] + (Platform.isTv() ? 30 : 3));
-        openAnim.setY(l[1] + (Platform.isTv() ? 30 : 3));
-        ViewGroup.LayoutParams layoutParams = new FrameLayout.LayoutParams(w, h);
-        openAnim.setLayoutParams(layoutParams);
+            View openAnim = launcherActivity.rootView.findViewById(R.id.openAnim);
+            openAnim.setX(l[0] + (Platform.isTv() ? 30 : 3));
+            openAnim.setY(l[1] + (Platform.isTv() ? 30 : 3));
+            ViewGroup.LayoutParams layoutParams = new FrameLayout.LayoutParams(w, h);
+            openAnim.setLayoutParams(layoutParams);
 
-        openAnim.setVisibility(View.VISIBLE);
-        openAnim.setAlpha(1F);
-        openAnim.setClipToOutline(true);
-        openAnim.setScaleX(Platform.isTv() ? 1.40F : 1.15F);
-        openAnim.setScaleY(Platform.isTv() ? 1.40F : 1.15F);
+            openAnim.setVisibility(View.VISIBLE);
+            openAnim.setAlpha(1F);
+            openAnim.setClipToOutline(true);
+            openAnim.setScaleX(Platform.isTv() ? 1.40F : 1.15F);
+            openAnim.setScaleY(Platform.isTv() ? 1.40F : 1.15F);
 
-        ImageView animIcon = openAnim.findViewById(R.id.openIcon);
-        ImageView animIconBg = openAnim.findViewById(R.id.openIconBg);
-        animIcon.setImageDrawable(holder.imageView.getDrawable());
-        animIconBg.setImageDrawable(holder.imageView.getDrawable());
-        animIconBg.setAlpha(1f);
+            ImageView animIcon = openAnim.findViewById(R.id.openIcon);
+            animIcon.setImageDrawable(holder.imageView.getDrawable());
 
-        View openProgress = launcherActivity.rootView.findViewById(R.id.openProgress);
-        openProgress.setVisibility(View.VISIBLE);
-        openProgress.setAlpha(0f);
-
-        ObjectAnimator aX = ObjectAnimator.ofFloat(openAnim, "ScaleX", 100f);
-        ObjectAnimator aY = ObjectAnimator.ofFloat(openAnim, "ScaleY", 100f);
-        ObjectAnimator aA = ObjectAnimator.ofFloat(animIcon, "Alpha", 0f);
-        ObjectAnimator aP = ObjectAnimator.ofFloat(openProgress, "Alpha", 0.8f);
-        ObjectAnimator aPo= ObjectAnimator.ofFloat(openProgress, "Alpha", 0.0f);
-        aX.setDuration(1000);
-        aY.setDuration(1000);
-        aA.setDuration(500);
-        aP.setDuration(500);
-        aPo.setDuration(3000);
-        aP.setStartDelay(1000);
-        aPo.setStartDelay(7000);
-        aX.start();
-        aY.start();
-        aA.start();
-        aP.start();
-        aPo.start();
-    }
-    public static boolean animateClose(LauncherActivity launcherActivity) {
-        View openAnim = launcherActivity.rootView.findViewById(R.id.openAnim);
-        ImageView animIcon = openAnim.findViewById(R.id.openIcon);
-
-        View openProgress = launcherActivity.rootView.findViewById(R.id.openProgress);
-        openProgress.setVisibility(View.INVISIBLE);
-
-        final boolean rv = (openAnim.getVisibility() == View.VISIBLE);
-        {
-            // This animation assumes the app already animated open, and therefore does not set icon
-            ImageView animIconBg = openAnim.findViewById(R.id.openIconBg);
-
-            openAnim.setScaleX(3f);
-            openAnim.setScaleY(3f);
-            animIcon.setAlpha(1f);
-
-            ObjectAnimator aX = ObjectAnimator.ofFloat(openAnim, "ScaleX", 1.08f);
-            ObjectAnimator aY = ObjectAnimator.ofFloat(openAnim, "ScaleY", 1.08f);
-            ObjectAnimator aA = ObjectAnimator.ofFloat(animIconBg, "Alpha", 0f);
-
-            aX.setDuration(100);
-            aY.setDuration(100);
-            aA.setDuration(50);
-            aA.setStartDelay(50);
-            aA.start();
+            ObjectAnimator aX = ObjectAnimator.ofFloat(openAnim, "ScaleX", 100f);
+            ObjectAnimator aY = ObjectAnimator.ofFloat(openAnim, "ScaleY", 100f);
+            ObjectAnimator aA = ObjectAnimator.ofFloat(animIcon, "Alpha", 0f);
+            aX.setDuration(800);
+            aY.setDuration(800);
+            aA.setDuration(400);
             aX.start();
             aY.start();
+            aA.start();
 
-            openAnim.postDelayed(() -> openAnim.setVisibility(View.INVISIBLE), 100);
-        }
-        return rv;
+            openAnim.postDelayed(() -> openAnim.setVisibility(View.GONE), 1000);
+        } catch (Exception ignored) {}
+    }
+    public static void animateClose(LauncherActivity launcherActivity) {
+        View openAnim = launcherActivity.rootView.findViewById(R.id.openAnim);
+        openAnim.post(() -> openAnim.setVisibility(View.GONE));
     }
 }

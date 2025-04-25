@@ -237,36 +237,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/bkg_app"
-        android:elevation="15dp"
-        android:focusable="true"
-        android:touchscreenBlocksFocus="true"
         android:visibility="gone"
         tools:visibility="gone">
-
-        <ImageView
-            android:id="@+id/openIconBg"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="fitXY"
-            android:scaleX="100"
-            android:scaleY="100" />
 
         <ImageView
             android:id="@+id/openIcon"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop" />
+            android:scaleType="fitXY" />
 
     </FrameLayout>
-
-    <ProgressBar
-        android:id="@+id/openProgress"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_gravity="center"
-        android:alpha="0"
-        android:indeterminate="true"
-        android:indeterminateTint="#AAAAAA"
-        android:visibility="gone" />
 
 </FrameLayout>

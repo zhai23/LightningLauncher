@@ -151,7 +151,6 @@ public class LauncherActivity extends Launch.LaunchingActivity {
         });
     }
     protected void handleBackPressed() {
-        if (LauncherAppsAdapter.animateClose(this)) return;
         if (!settingsVisible) new SettingsDialog(this).show();
     }
     public View rootView;
@@ -319,13 +318,10 @@ public class LauncherActivity extends Launch.LaunchingActivity {
         foregroundInstance = new WeakReference<>(this);
 
         try {
+            LauncherAppsAdapter.animateClose(this);
             // Hide KB
             Keyboard.hide( mainView);
-
-            // Bind browser service
-            LauncherAppsAdapter.animateClose(this);
         } catch (Exception ignored) {} // Will fail if service hasn't started yet
-
 
         postDelayed(() -> new LauncherUpdater(this).checkAppUpdateInteractive(), 1000);
     }
