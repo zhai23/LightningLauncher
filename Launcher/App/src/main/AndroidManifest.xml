@@ -61,7 +61,7 @@
 
         <!-- Main activity -->
         <activity
-            android:name="Lightning.Launcher"
+            android:name="com.threethan.LightningLauncher"
             android:configChanges="density|keyboard|keyboardHidden|navigation|orientation|screenLayout|screenSize|uiMode"
             android:windowSoftInputMode="adjustNothing"
             android:resizeableActivity="true"

@@ -20,76 +20,115 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
+import androidx.annotation.Nullable;
+
 public class LcBlurCanvas extends LcContainerView {
-    private int frameCount;
+    protected static final RenderNode renderNode = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ? new RenderNode("BackgroundNode") : null;
+    protected static @Nullable Bitmap fallbackBitmap = null;
+    protected static final float BLUR_RADIUS = 25f;
+
+    /** Legacy blur (API < Q) is much less performant, so it is rendered at resolution / this */
+    protected static final int LEGACY_DOWN_SAMPLE = 32;
+
+    public static RenderNode getRenderNode() {
+        return renderNode;
+    }
+
+    @Nullable
+    public static Bitmap getFallbackBitmap() {
+        return fallbackBitmap;
+    }
+
+    /** Drawn on top of the canvas */
+    private static int overlayColor = Color.TRANSPARENT;
+
+    /** Sets a color to be drawn on top of the canvas */
+    public static void setOverlayColor(int overlayColor) {
+        LcBlurCanvas.overlayColor = overlayColor;
+    }
+
+
+    /** Renders the canvas as-needed */
     private final ViewTreeObserver.OnPreDrawListener listener = () -> {
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) try {
-
+        try {
             if (getChildCount() == 0) return true;
-            int height = getChildAt(0).getHeight();
-            int width = getChildAt(0).getWidth();
+            // Get window dimensions
+            int height;
+            int width;
+            try {
+                height = ((Activity) getContext()).getWindow().getDecorView().getHeight();
+                width = ((Activity) getContext()).getWindow().getDecorView().getWidth();
+            } catch (Exception e) {
+                height = getChildAt(0).getHeight();
+                width = getChildAt(0).getWidth();
+            }
+            if (width == 0 || height == 0) {
+                width = 1280;
+                height = 720;
+            }
 
-            renderNode.setPosition(0, 0, width, height);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                renderNode.setPosition(0, 0, width, height);
 
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    Canvas canvas = renderNode.beginRecording();
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                Canvas canvas = renderNode.beginRecording();
+                    // Draw window background
+                    drawWindowBackground(canvas);
+                    drawChild(canvas);
 
-                // Draw window background
-                drawWindowBackground(canvas);
+                    // Canvas overlay
+                    canvas.drawColor(overlayColor);
 
-                int[] location = new int[2];
-                getLocationInWindow(location);
-                canvas.translate(location[0], location[1]);
-                // Draw child
-                getChildAt(0).draw(canvas);
-                canvas.translate(-location[0], -location[1]);
+                    renderNode.endRecording();
 
-                // Canvas overlay
-                canvas.drawColor(overlayColor);
+                    renderNode.setRenderEffect(RenderEffect.createBlurEffect(BLUR_RADIUS, BLUR_RADIUS, Shader.TileMode.CLAMP));
 
-                renderNode.endRecording();
-
-                renderNode.setRenderEffect(RenderEffect.createBlurEffect(20, 20, Shader.TileMode.CLAMP));
-
-            } else if (frameCount++ % 4 == 0) {
-                // Reduces rate & resolution blur for older devices
-                final int DOWN_SAMPLE = 10;
-                Canvas canvas = renderNode.beginRecording();
-
-                if (width == 0 || height == 0) {
-                    width = 256;
-                    height = 256;
+                } else {
+                    renderLegacyBlur(renderNode.beginRecording(), width, height);
+                    renderNode.endRecording();
                 }
-
-                Bitmap bitmap = Bitmap.createBitmap(width/DOWN_SAMPLE, height/DOWN_SAMPLE, Bitmap.Config.ARGB_8888);
-                Canvas canvas1 = new Canvas(bitmap);
-                canvas1.scale(1f/DOWN_SAMPLE, 1f/DOWN_SAMPLE);
-                // Draw window background
-                drawWindowBackground(canvas1);
-                getChildAt(0).draw(canvas1);
-
-                // Blur bitmap
-                blurBitmap(bitmap,50f/DOWN_SAMPLE);
-
-                canvas.scale(DOWN_SAMPLE, DOWN_SAMPLE);
-                Paint paint = new Paint();
-                paint.setFilterBitmap(true);
-                canvas.drawBitmap(bitmap, 0, 0, paint);
-
-                canvas.drawColor(overlayColor);
-                renderNode.endRecording();
+            } else {
+                fallbackBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+                renderLegacyBlur(new Canvas(fallbackBitmap), width, height);
             }
         } catch (Exception e) {
             Log.w("LcBlurCanvas", "Error while drawing", e);
         }
 
-
         return true;
     };
 
-    /** @noinspection deprecation, SameParameterValue */
+    private void drawChild(Canvas canvas) {
+        int[] location = new int[2];
+        getLocationInWindow(location);
+        canvas.translate(location[0], location[1]);
+        // Draw child
+        getChildAt(0).draw(canvas);
+        canvas.translate(-location[0], -location[1]);
+    }
+
+    private void renderLegacyBlur(Canvas canvas, int width, int height) {
+        Bitmap bitmap = Bitmap.createBitmap(width / LEGACY_DOWN_SAMPLE, height / LEGACY_DOWN_SAMPLE, Bitmap.Config.ARGB_8888);
+        Canvas bitmapCanvas = new Canvas(bitmap);
+        bitmapCanvas.scale(1f / LEGACY_DOWN_SAMPLE, 1f / LEGACY_DOWN_SAMPLE);
+        // Draw window background
+        drawWindowBackground(bitmapCanvas);
+        drawChild(bitmapCanvas);
+
+        // Blur bitmap
+        blurBitmap(bitmap, (float) Math.ceil(BLUR_RADIUS / LEGACY_DOWN_SAMPLE));
+
+        canvas.scale(LEGACY_DOWN_SAMPLE, LEGACY_DOWN_SAMPLE);
+        Paint paint = new Paint();
+        paint.setFilterBitmap(true);
+        canvas.drawBitmap(bitmap, 0, 0, paint);
+        canvas.drawColor(overlayColor);
+    }
+
+    /**
+     * @noinspection deprecation, SameParameterValue
+     */
     private void blurBitmap(Bitmap bitmap, float radius) {
         RenderScript rs = RenderScript.create(getContext());
         ScriptIntrinsicBlur blur = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs));
@@ -124,14 +163,6 @@ public class LcBlurCanvas extends LcContainerView {
     public LcBlurCanvas(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
-
-    private static int overlayColor = Color.TRANSPARENT;
-
-    public static void setOverlayColor(int overlayColor) {
-        LcBlurCanvas.overlayColor = overlayColor;
-    }
-
-    public static final RenderNode renderNode = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ? new RenderNode("BackgroundNode") : null;
 
     @Override
     public void addView(View child, int index, LayoutParams params) {

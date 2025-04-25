@@ -85,7 +85,8 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
         View addonsButton = dialog.findViewById(R.id.addonsButton);
         if (!Platform.isVr() && !Platform.isTv()) addonsButton.setVisibility(View.GONE);
         addonsButton.setOnClickListener(view -> new AddonDialog(a).show());
-        if (!a.dataStoreEditor.getBoolean(Settings.KEY_SEEN_ADDONS, false)) {
+        if (!a.dataStoreEditor.getBoolean(Settings.KEY_SEEN_ADDONS, false)
+                && (Platform.isVr() || Platform.isTv())) {
             View addonsButtonAttract = dialog.findViewById(R.id.addonsButtonAttract);
             addonsButtonAttract.setVisibility(View.VISIBLE);
             addonsButton.setVisibility(View.GONE);
@@ -106,6 +107,7 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
                 a.settingsManager.setSelectedGroups(selectFirst);
             }
         });
+        dialog.findViewById(R.id.topSettingsArea).setClipToOutline(true);
 
         View addWebsite = dialog.findViewById(R.id.addWebsiteButton);
         addWebsite.setOnClickListener(v -> a.addWebsite());
@@ -323,13 +325,13 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
                     a.refreshBackground();
                 }
             }));
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                Switch alphaPreserve = dialog.findViewById(R.id.alphaPreserveSwitch);
+            Switch alphaPreserve = dialog.findViewById(R.id.alphaPreserveSwitch);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && Platform.isQuest()) {
                 attachSwitchToSetting(alphaPreserve, Settings.KEY_BACKGROUND_ALPHA_PRESERVE,
                         Settings.DEFAULT_BACKGROUND_ALPHA_PRESERVE, v -> a.refreshBackground(), false);
-            } else {
-                dialog.findViewById(R.id.alphaPreserveSwitch).setVisibility(View.GONE);
+                alphaPreserve.setVisibility(View.VISIBLE);
             }
+
         }
 
         // Advanced
@@ -429,6 +431,9 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
             }
         }
 
+        if (!Platform.isTv() && !Platform.isVr()) {
+            dialog.findViewById(R.id.displayBannerMinimalSection).setClipToOutline(true);
+        }
         // Names
         attachSwitchToSetting(dialog.findViewById(R.id.namesSquareSwitch),
                 Settings.KEY_SHOW_NAMES_SQUARE, Settings.DEFAULT_SHOW_NAMES_SQUARE,

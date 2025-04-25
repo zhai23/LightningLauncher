@@ -1,6 +1,7 @@
 package com.threethan.launchercore.view;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.PorterDuff;
 import android.os.Build;
@@ -34,11 +35,15 @@ public class LcBlurView extends FrameLayout {
         canvas.drawColor(0, PorterDuff.Mode.CLEAR);
 
         // Draw blurred content
+        canvas.translate(-position[0], -position[1]);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            canvas.translate(-position[0], -position[1]);
-            canvas.drawRenderNode(LcBlurCanvas.renderNode);
-            canvas.translate(position[0], position[1]);
+            canvas.drawRenderNode(LcBlurCanvas.getRenderNode());
+        } else {
+            Bitmap bitmap = LcBlurCanvas.getFallbackBitmap();
+            if (bitmap != null) canvas.drawBitmap(bitmap, 0, 0, null);
+            invalidate();
         }
+        canvas.translate(position[0], position[1]);
 
         super.draw(canvas);
     }
