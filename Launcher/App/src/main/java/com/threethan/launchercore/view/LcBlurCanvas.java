@@ -16,6 +16,7 @@ import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
@@ -23,7 +24,7 @@ public class LcBlurCanvas extends LcContainerView {
     private int frameCount;
     private final ViewTreeObserver.OnPreDrawListener listener = () -> {
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) try {
 
             if (getChildCount() == 0) return true;
             int height = getChildAt(0).getHeight();
@@ -57,6 +58,11 @@ public class LcBlurCanvas extends LcContainerView {
                 final int DOWN_SAMPLE = 10;
                 Canvas canvas = renderNode.beginRecording();
 
+                if (width == 0 || height == 0) {
+                    width = 256;
+                    height = 256;
+                }
+
                 Bitmap bitmap = Bitmap.createBitmap(width/DOWN_SAMPLE, height/DOWN_SAMPLE, Bitmap.Config.ARGB_8888);
                 Canvas canvas1 = new Canvas(bitmap);
                 canvas1.scale(1f/DOWN_SAMPLE, 1f/DOWN_SAMPLE);
@@ -75,6 +81,8 @@ public class LcBlurCanvas extends LcContainerView {
                 canvas.drawColor(overlayColor);
                 renderNode.endRecording();
             }
+        } catch (Exception e) {
+            Log.w("LcBlurCanvas", "Error while drawing", e);
         }
 
 
