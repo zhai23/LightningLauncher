@@ -60,7 +60,7 @@ public class LcBlurCanvas extends LcContainerView {
                 height = ((Activity) getContext()).getWindow().getDecorView().getHeight();
                 width = ((Activity) getContext()).getWindow().getDecorView().getWidth();
             } catch (Exception e) {
-                height = getChildAt(0).getHeight();
+                height = getChildAt(0).getHeight() + 100;
                 width = getChildAt(0).getWidth();
             }
             if (width == 0 || height == 0) {
@@ -111,7 +111,9 @@ public class LcBlurCanvas extends LcContainerView {
     }
 
     private void renderLegacyBlur(Canvas canvas, int width, int height) {
-        Bitmap bitmap = Bitmap.createBitmap(width / LEGACY_DOWN_SAMPLE, height / LEGACY_DOWN_SAMPLE, Bitmap.Config.ARGB_8888);
+        final int bitmapWidth = (int) Math.ceil((double) width / LEGACY_DOWN_SAMPLE);
+        final int bitmapHeight = (int) Math.ceil((double) height / LEGACY_DOWN_SAMPLE);
+        Bitmap bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888);
         Canvas bitmapCanvas = new Canvas(bitmap);
         bitmapCanvas.scale(1f / LEGACY_DOWN_SAMPLE, 1f / LEGACY_DOWN_SAMPLE);
         // Draw window background

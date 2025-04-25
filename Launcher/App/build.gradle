@@ -7,8 +7,8 @@ android {
         compileSdk 35
         minSdkVersion 24
         targetSdkVersion 35
-        versionCode 901
-        versionName "9.0.1"
+        versionCode 902
+        versionName "9.0.2"
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
