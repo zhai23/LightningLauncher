@@ -1,14 +1,9 @@
 <resources>
     <string name="add_group">グループ追加</string>
-    <string name="delete_group">グループ削除</string>
-    <string name="edit_group">編集グループ</string>
-    <string name="app_details">アプリ詳細</string>
     <string name="apps_hidden">- ヒドゥン</string>
     <string name="migrated">古い設定は移行されました</string>
     <string name="edit_mode">編集モード</string>
     <string name="edit_mode_tip">グループの変更、ウェブサイトの追加など。</string>
-    <string name="edit_mode_disabled">メインウィンドウのみ編集可能</string>
-    <string name="edit_mode_stop">編集停止</string>
     <string name="new_multitasking">アプリを開いた後、ランチャーウィンドウを閉じる</string>
     <string name="new_multitasking_tip">有効にすると、アプリを開いたときにLightning Launcherが自動的に終了します。</string>
     <string name="allow_chain_launch">クエストネイティブ起動の使用</string>
@@ -27,7 +22,6 @@
     <string name="app_name_icon">下のアプリのアイコン</string>
     <string name="app_name_wide">アプリバナーの下</string>
     <string name="settings_main">ライトニング・ランチャー</string>
-    <string name="settings_appearance">外観のカスタマイズ</string>
     <string name="settings_addons_attract">ショートカット</string>
     <string name="settings_addons">ショートカット</string>
     <string name="settings_addons_tip">Lightning Launcherへのアクセスをより簡単に。</string>
@@ -37,7 +31,6 @@
     \以前は、更新をスキップするときにこの機能をオフにしていました。</string>
     <string name="behavior_header">行動</string>
     <string name="background_header">壁紙＆スタイル</string>
-    <string name="hdr_icon">アイコンレイアウト</string>
     <string name="disp_wide">バナーとして表示</string>
     <string name="disp_icon">アイコン表示</string>
     <string name="disp_name">常に名前を表示</string>
@@ -47,7 +40,6 @@
     <string name="advanced_interface">インターフェース</string>
     <string name="advanced_reset">リフレッシュ＆リセット</string>
     <string name="advanced_launching">起動環境設定</string>
-    <string name="advanced_features">追加機能</string>
     <string name="advanced_search">検索設定</string>
     <string name="advanced_backup">設定のバックアップ</string>
     <string name="advanced_alpha">背景の透明度</string>
@@ -65,7 +57,6 @@
         \長い名前が切れないようにします。
         \n
         \グループ数が多い場合にのみ表示されます。</string>
-    <string name="clear_cache">すべてのアイコンをリセット</string>
     <string name="clear_labels">すべてのアプリのラベルをデフォルトに戻す</string>
     <string name="group_defaults_button">デフォルトグループ</string>
     <string name="icons_settings_button">アイコンのリフレッシュ</string>
@@ -88,35 +79,19 @@
     <string name="long_press">長押しで編集</string>
     <string name="long_press_tip">オンの場合、アプリを長押しすると編集モードになり、アプリが選択されます。
     \オフの場合、アプリを長押しすると詳細が表示されます。</string>
-    <string name="default_launch_out">デフォルトで自分のウィンドウでアプリを起動する</string>
     <string name="search_web">検索結果にウェブ検索エンジンを表示する</string>
     <string name="search_hidden">検索に隠しアプリを表示する</string>
     <string name="settings_save">エクスポート設定</string>
     <string name="settings_load">インポート設定</string>
     <string name="groupings_save">輸出グループ</string>
     <string name="groupings_load">インポート・グルーピング</string>
-    <string name="advanced_sizing">追加電話アプリのウィンドウサイズを有効にする</string>
-    <string name="advanced_sizing_tip">アプリを異なるサイズのウィンドウで開けるようにすると、問題が発生する可能性がある。</string>
-    <string name="toast_advanced_sizing">新しいサイズオプションは、アプリごとの設定で循環させることができる</string>
     <string name="reload_icon">リセットアイコン</string>
     <string name="open_tuning">チューニング</string>
     <string name="open_tuning_tip">Quest Game Tunerでは、解像度やFPSなどを調整できます！</string>
     <string name="tuner_options">⚙</string>
-    <string name="launch_out_message">2Dアプリやウェブサイトを独自のウィンドウで起動することで、Questデバイスでのマルチタスクが容易になります、
-        しかし、特定のアプリが起動しないことがあります。問題がある場合は、このオプションを無効にしてください！</string>
-    <string name="launch_size_message">2Dアプリやウェブサイトを独自のウィンドウで起動することで、Questデバイスでのマルチタスクが容易になります、
-        しかし、特定のアプリが起動しないことがあります。
-        \カスタムウィンドウサイズを設定することで、起動しないアプリが修正され、一部のアプリが少し見やすく表示され、フラットビューで異なるウィンドウサイズを使用できるようになります。
-        \ただし、ウィンドウが動かなくなったり、Lightning Launcherがクラッシュすることがあります。
-        \これらのオプションはすべて、アプリごとにのみ設定できます。
-        \問題がある場合は、このオプションをオフにし、アプリが独自のウィンドウで起動するように設定されていないことを確認してください。再起動すると、動かなくなったウィンドウが直ります。</string>
     <string name="hidden_groups_message">このオプションをオフにすると、編集モードでないときにトップバーが非表示になります。\n
         \編集モードでないときは、設定ボタンも非表示になります。
         \代わりに、戻るボタンを押して設定を開きます。</string>
-    <string name="set_default_launcher_message">Lightning Launcherをデフォルトのアンドロイドホームアプリに設定すると、他のアプリがホーム画面にショートカットアイコンを追加できるようになります。
-        \これは一度だけ行う必要があります。
-        \また、Lightning Launcher自体の動作を変更することはありません。
-        Lightningランチャーへのショートカットは、ショートカットの設定/ショートカットの設定をご確認ください。</string>
     <string name="download_browser_message">Lightning Launcherでウェブサイトを開くには、Lightningブラウザをインストールする必要があります。
         \(または、[設定] -&gt; [詳細設定] でブラウザを変更してみてください)</string>
     <string name="update_browser_message">ライトニング・ブラウザをアップデートしてください。</string>
@@ -132,7 +107,6 @@
     <string name="website_info3">Quest端末では、VRウェブコンテンツに対応したMeta Quest Browserで起動できます。
         \デフォルトは「詳細設定」で設定できます。</string>
     <string name="add_website">ウェブサイトを追加する</string>
-    <string name="add_website_tip">ランチャーにウェブサイトを追加する</string>
     <string name="add_website_url_label">任意のウェブサイトのURLを入力</string>
     <string name="add_website_bad_url">有効なURLを入力してください。</string>
     <string name="add_website_used_url">このウェブサイトはすでに %1$s に登録されています。</string>
@@ -151,8 +125,6 @@
     <string name="cancel">キャンセル</string>
     <string name="understood">了解！</string>
     <string name="confirm">確認</string>
-    <string name="next">続ける</string>
-    <string name="size_none">既定のウィンドウで開く</string>
     <string name="size_own">自ウィンドウで開く</string>
     <string name="size_phone">電話スタイルのウィンドウで開く</string>
     <string name="size_small">小さな4:3ウィンドウで開く</string>
@@ -165,19 +137,17 @@
     <string name="browser_quest">クエストブラウザのタブで開く</string>
     <string name="browser_quest_shortcut">クエストブラウザのウェブアプリとして開く</string>
     <string name="browser_system">システムデフォルトで開く</string>
-    <string name="edit_off">編集モードをオンにする</string>
-    <string name="edit_on">編集モードをオフにする</string>
     <string name="edit_move">移動</string>
     <string name="edit_copy">コピー</string>
     <string name="selection_hint_none">アプリをクリックして選択するか、ここをクリックしてすべてを選択する。</string>
     <string name="selection_hint_single_move">1つのアプリを選択し、グループをクリックして移動する</string>
     <string name="selection_hint_single_copy">1つのアプリを選択し、グループをクリックしてコピーを作成します。</string>
-    <string name="selection_hint_multiple_move">d個のアプリが選択されています。</string>
-    <string name="selection_hint_multiple_copy">d個のアプリが選択されています。</string>
+    <string name="selection_hint_multiple_move">%d個のアプリが選択されています。</string>
+    <string name="selection_hint_multiple_copy">%d個のアプリが選択されています。</string>
     <string name="selection_moved_single">アプリを %1$s に移動しました。</string>
     <string name="selection_copied_single">アプリを %1$s にコピーしました。</string>
-    <string name="selection_moved_multiple">1$d 個のアプリを %2$s に移動しました。</string>
-    <string name="selection_copied_multiple">1$d 個のアプリを %2$s にコピーしました。</string>
+    <string name="selection_moved_multiple">%1$d 個のアプリを %2$s に移動しました。</string>
+    <string name="selection_copied_multiple">%1$d 個のアプリを %2$s にコピーしました。</string>
     <string name="selection_hint_cleared">選択範囲をクリア</string>
     <string name="selection_hint_all">表示されているすべてのアプリを選択</string>
     <string name="update_title">アップデートがある！</string>
@@ -186,7 +156,7 @@
     <string name="update_skip_button">このアップデートをスキップする</string>
     <string name="update_skip_toast">スキップ・バージョン</string>
     <string name="update_skip_all_toast">すべてのアップデートを隠す</string>
-    <string name="update_downloading_title">s の最新バージョンをダウンロードしています。</string>
+    <string name="update_downloading_title">%s の最新バージョンをダウンロードしています。</string>
     <string name="update_downloading_content">まもなくインストールを促すプロンプトが表示されるはずです。
     \誤って解除してしまったり、許可を与えなかったり、エラーが表示された場合は、設定から再試行できます、
     設定からやり直せる。</string>
@@ -205,8 +175,6 @@
     <string name="saved_settings">保存された設定</string>
     <string name="saved_settings_loading">インポート中です。</string>
     <string name="saved_settings_error">ファイルのコピー中にエラーが発生しました！</string>
-    <string name="loaded_settings1">インポートされたコンフィギュレーション、</string>
-    <string name="loaded_settings2">ランチャーを閉じなければならない！</string>
     <string name="default_groups_title">デフォルトのグループ設定</string>
     <string name="default_groups_info">現在のデフォルトグループ           %1$s  編集モードでグループを編集することで変更できます。     これからどうしますか？</string>
     <string name="default_groups_reset_groups">すべてのグループとソートをデフォルトに戻す</string>
@@ -228,16 +196,10 @@
     <string name="clear_icons_cancel">Go Back, Don\'t do Anything</string>
     <string name="toast_cleared_icon_cache">アイコンキャッシュがクリアされました</string>
     <string name="toast_cleared_icon_all">すべてのアイコンはデフォルトにリセットされました</string>
-    <string name="tip_kill_process">バックグラウンドでの実行を停止する</string>
-    <string name="tip_launch">アプリの起動</string>
     <string name="tip_info_website">ウェブサイトの追加について</string>
-    <string name="tip_stop_editing">編集モードをオフにする</string>
-    <string name="tip_select_all">すべての表示アプリの選択/選択解除</string>
     <string name="tip_uninstall">アンインストール/削除</string>
-    <string name="tip_uninstall_bulk">アンインストール/選択したすべての削除</string>
     <string name="tip_info">Androidアプリ情報</string>
     <string name="tip_charts">Playtime Chartsを見る Game Tuner</string>
-    <string name="tip_change_icon">アイコンの変更</string>
     <string name="tip_save_settings">すべての設定とグループ化をバックアップする</string>
     <string name="tip_load_settings">すべての設定とグループ化を復元</string>
     <string name="tip_hide">このアプリを隠す</string>
@@ -245,11 +207,8 @@
     <string name="moved_hidden">に移動した。</string>
     <string name="moved_hidden_bold">隠しグループ</string>
     <string name="moved_shown">に移動した。</string>
-    <string name="refreshed_icon">アイコンをリフレッシュ…</string>
     <string name="addons_main_vr">ショートカット</string>
     <string name="addons_main_tv">ショートカット・オプション</string>
-    <string name="addons_info">ショートカットを使うとランチャーを開きやすくなります。
-        \少なくとも1つは設定することを強くお勧めします。</string>
     <string name="addons_tv_info">残念ながら、Android TVはアクセシビリティ・サービスやサードパーティ製ランチャーの機能を制限している。</string>
     <string name="addons_exit">設定に戻る</string>
     <string name="addons_androidtv">Android TV ランチャー・マネージャー</string>
@@ -302,7 +261,6 @@
         \n
         \Quest Game Tunerは、Lightning Launcherを開発したデベロッパーによる、数百時間に及ぶ開発、研究、テストの成果です。</string>
     <string name="tuner_info_get">itch.ioでQuest Game Tunerを手に入れよう！</string>
-    <string name="apk_installer">APKインストーラー</string>
     <string name="apk_installer_tip">インストールするAPKファイルを選択する</string>
     <string name="advanced_alpha_preserve">詳細の保存</string>
 </resources>

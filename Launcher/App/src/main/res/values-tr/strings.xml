@@ -1,14 +1,9 @@
 <resources>
     <string name="add_group">Grup Ekle</string>
-    <string name="delete_group">Grup Silme</string>
-    <string name="edit_group">Grubu Düzenle</string>
-    <string name="app_details">Uygulama Detayları</string>
     <string name="apps_hidden">- Gizli</string>
     <string name="migrated">Eski ayarlar taşındı</string>
     <string name="edit_mode">Düzenleme Modu</string>
     <string name="edit_mode_tip">Grupları değiştirin, web siteleri ekleyin ve daha fazlasını yapın.</string>
-    <string name="edit_mode_disabled">Sadece ana pencere düzenleyebilir</string>
-    <string name="edit_mode_stop">Düzenlemeyi Durdur</string>
     <string name="new_multitasking">Uygulamaları açtıktan sonra Başlatıcı penceresini kapatma</string>
     <string name="new_multitasking_tip">Etkinleştirilirse, bir uygulamayı açtığınızda Lightning Launcher kendini kapatır.</string>
     <string name="allow_chain_launch">Quest Native Başlatmayı Kullanın</string>
@@ -27,7 +22,6 @@
     <string name="app_name_icon">Uygulama Simgelerinin Altında</string>
     <string name="app_name_wide">Uygulama Afişlerinin Altında</string>
     <string name="settings_main">Yıldırım Fırlatıcı</string>
-    <string name="settings_appearance">Görünümü Özelleştir</string>
     <string name="settings_addons_attract">Kısayollar</string>
     <string name="settings_addons">Kısayollar</string>
     <string name="settings_addons_tip">Lightning Launcher\'a erişimi kolaylaştırın.</string>
@@ -37,7 +31,6 @@
     \nDaha önce bir güncellemeyi atlarken bunu kapatmıştınız.</string>
     <string name="behavior_header">Davranış</string>
     <string name="background_header">Duvar Kağıdı &amp; Stil</string>
-    <string name="hdr_icon">Simge Düzeni</string>
     <string name="disp_wide">Banner Olarak Göster</string>
     <string name="disp_icon">Simge Olarak Göster</string>
     <string name="disp_name">Her Zaman İsimleri Göster</string>
@@ -47,7 +40,6 @@
     <string name="advanced_interface">Arayüz</string>
     <string name="advanced_reset">Yenile ve Sıfırla</string>
     <string name="advanced_launching">Başlatma Tercihleri</string>
-    <string name="advanced_features">Ekstra Özellikler</string>
     <string name="advanced_search">Arama Ayarları</string>
     <string name="advanced_backup">Ayarlar Yedekleme</string>
     <string name="advanced_alpha">Arka Plan Saydamlığı</string>
@@ -65,7 +57,6 @@
         \Uzun isimlerin kesilmemesini sağlamak.
         \n
         \nSadece çok sayıda grup olduğunda fark edilir.</string>
-    <string name="clear_cache">Tüm Simgeleri Sıfırla</string>
     <string name="clear_labels">Tüm Uygulama Etiketlerini Varsayılana Sıfırla</string>
     <string name="group_defaults_button">Varsayılan Gruplar</string>
     <string name="icons_settings_button">Yenileme Simgeleri</string>
@@ -88,35 +79,19 @@
     <string name="long_press">Düzenlemek için Uzun Basın</string>
     <string name="long_press_tip">Açıkken, bir uygulamaya uzun basıldığında düzenleme moduna girilir ve uygulama seçilir.
     \nKapalıyken, bir uygulamaya uzun basıldığında ayrıntılar gösterilir.</string>
-    <string name="default_launch_out">Uygulamaları Varsayılan Olarak Kendi Penceresinde Başlatın</string>
     <string name="search_web">Aramalarda Web Arama Motorlarını Göster</string>
     <string name="search_hidden">Aramalarda Gizli Uygulamaları Göster</string>
     <string name="settings_save">Dışa Aktarma Ayarları</string>
     <string name="settings_load">Ayarları İçe Aktar</string>
     <string name="groupings_save">İhracat Gruplamaları</string>
     <string name="groupings_load">Gruplamaları İçe Aktarma</string>
-    <string name="advanced_sizing">Ek Telefon Uygulaması Pencere Boyutlarını Etkinleştirme</string>
-    <string name="advanced_sizing_tip">Uygulamaların farklı boyutlardaki pencerelerde açılmasına izin verir, sorunlara neden olabilir.</string>
-    <string name="toast_advanced_sizing">Yeni boyut seçenekleri uygulama başına ayarlarda çevrilebilir</string>
     <string name="reload_icon">Sıfırlama Simgesi</string>
     <string name="open_tuning">Ile ayarlayın</string>
     <string name="open_tuning_tip">Quest Game Tuner çözünürlüğü, FPS\'yi ve daha fazlasını ayarlamanızı sağlar!</string>
     <string name="tuner_options">⚙</string>
-    <string name="launch_out_message">2D uygulamaları veya web sitelerini kendi pencerelerinde başlatmak, Quest cihazlarında çoklu görevlerin daha kolay yapılmasını sağlar,
-        ancak bazı uygulamaların her zaman başlatılamamasına neden olacaktır.\n\nHerhangi bir sorun yaşarsanız, bu seçeneği devre dışı bırakın!</string>
-    <string name="launch_size_message">2D uygulamaları veya web sitelerini kendi pencerelerinde başlatmak, Quest cihazlarında çoklu görevlerin daha kolay yapılmasını sağlar,
-        ancak bazı uygulamaların her zaman başlatılamamasına neden olur.\n
-        \nÖzel pencere boyutları ayarlamak, uygulamaların başlatılmamasını düzeltir, bazı uygulamaları biraz daha net görüntüler ve düz görünümde farklı pencere boyutlarına izin verir.
-        \Ancak, zaman pencerelerin takılmasına veya Lightning Launcher\'ın çökmesine neden olabilir.\n
-        \nTüm bu seçenekler yalnızca uygulama bazında ayarlanabilir.\n
-        \nSorun yaşıyorsanız, bu seçeneği kapatın ve herhangi bir uygulamanın kendi pencerelerinde başlatılacak şekilde ayarlanmadığından emin olun. Takılan pencereleri düzeltmek için yeniden başlatın.</string>
     <string name="hidden_groups_message">Bu seçeneğin kapatılması, Düzenleme Modunda değilken üst çubuğu gizleyecektir. \n
         \nAyarlar düğmesi Düzenleme Modunda değilken de gizlenecektir.\n
         \nBunun yerine, ayarları açmak için geri düğmesine basın.</string>
-    <string name="set_default_launcher_message">Lightning Launcher\'ı varsayılan android ana ekran uygulamanız olarak ayarlamak, diğer uygulamaların ana ekrana kısayol simgeleri eklemesine izin verecektir.
-        \Bunun yalnızca bir kez yapılması gerekir
-        \VR cihazlarındaki gerçek varsayılan başlatıcının yerini ALMAYACAKTIR ve Lightning Launcher\'ın çalışmasını değiştirmeyecektir.\n\n
-        Bunu yapmak istiyorsanız, Lightning Launcher\'a kısayollar için Kısayolları Ayarla/Kısayol Ayarları\'nı kontrol edin.</string>
     <string name="download_browser_message">En iyi deneyim için, Lightning Launcher\'da web sitelerini açmak için Lightning Browser\'ı yüklemeniz gerekir.\n
         \n(Alternatif olarak, tarayıcıyı Ayarlar -&gt; Gelişmiş Ayarlar\'da değiştirmeyi deneyebilirsiniz)</string>
     <string name="update_browser_message">En iyi deneyim için Lightning Browser\'ı güncellemeniz gerekir.</string>
@@ -132,7 +107,6 @@
     <string name="website_info3">Quest cihazlarında, VR web içeriğini destekleyen Meta Quest Browser\'da başlatabilirsiniz.
         \nVarsayılan ayar Gelişmiş Ayarlar\'dan yapılabilir.</string>
     <string name="add_website">Web Sitesi Ekleme</string>
-    <string name="add_website_tip">Başlatıcıya Web Sitesi Ekleme</string>
     <string name="add_website_url_label">Herhangi Bir Web Sitesi URL\'si Girin</string>
     <string name="add_website_bad_url">Geçerli bir URL girin</string>
     <string name="add_website_used_url">Bu web sitesi zaten %1$s içinde</string>
@@ -151,8 +125,6 @@
     <string name="cancel">İptal</string>
     <string name="understood">Tamamdır!</string>
     <string name="confirm">Onaylayın</string>
-    <string name="next">Devam et</string>
-    <string name="size_none">Varsayılan Pencerede Aç</string>
     <string name="size_own">App\'in Kendi Penceresinde Aç</string>
     <string name="size_phone">Telefon Tarzı Pencerede Aç</string>
     <string name="size_small">Küçük 4:3 Pencerede Aç</string>
@@ -165,23 +137,21 @@
     <string name="browser_quest">Görev Tarayıcı Sekmesinde Aç</string>
     <string name="browser_quest_shortcut">Quest Browser Web Uygulaması Olarak Aç</string>
     <string name="browser_system">Sistem Varsayılanında Açmayı Deneyin</string>
-    <string name="edit_off">Düzenleme Modunu Açın</string>
-    <string name="edit_on">Düzenleme Modunu Kapatma</string>
     <string name="edit_move">Hareket</string>
     <string name="edit_copy">Anlaşıldı</string>
     <string name="selection_hint_none">Seçmek için bir uygulamaya tıklayın veya tümünü seçmek için buraya tıklayın</string>
     <string name="selection_hint_single_move">1 uygulama seçili, taşımak için bir gruba tıklayın</string>
     <string name="selection_hint_single_copy">1 uygulama seçili, kopyalamak için bir gruba tıklayın</string>
-    <string name="selection_hint_multiple_move">d uygulama seçili, taşımak için bir gruba tıklayın</string>
-    <string name="selection_hint_multiple_copy">d uygulama seçili, kopya yapmak için bir gruba tıklayın</string>
+    <string name="selection_hint_multiple_move">%d uygulama seçili, taşımak için bir gruba tıklayın</string>
+    <string name="selection_hint_multiple_copy">%d uygulama seçili, kopya yapmak için bir gruba tıklayın</string>
     <string name="selection_moved_single">Bir uygulamayı %1$s\'ye taşıdı</string>
     <string name="selection_copied_single">Bir uygulamayı %1$s\'ye kopyaladı</string>
-    <string name="selection_moved_multiple">1$d uygulamaları %2$s\'ye taşıdı</string>
-    <string name="selection_copied_multiple">1$d uygulamayı %2$s\'ye kopyaladı</string>
+    <string name="selection_moved_multiple">%1$d uygulamaları %2$s\'ye taşıdı</string>
+    <string name="selection_copied_multiple">%1$d uygulamayı %2$s\'ye kopyaladı</string>
     <string name="selection_hint_cleared">Seçim temizlendi</string>
     <string name="selection_hint_all">Görünür tüm uygulamaları seçti</string>
     <string name="update_title">Bir güncelleme mevcut!</string>
-    <string name="update_content">1$s sürümünden %2$s sürümüne tamamen cihaz üzerinde güncelleme yapabilirsiniz.</string>
+    <string name="update_content">%1$s sürümünden %2$s sürümüne tamamen cihaz üzerinde güncelleme yapabilirsiniz.</string>
     <string name="update_button">Devam et</string>
     <string name="update_skip_button">Bu Güncellemeyi Atlayın</string>
     <string name="update_skip_toast">Atlanan sürüm</string>
@@ -193,7 +163,7 @@
     <string name="update_hide_button">Gizle</string>
     <string name="update_failed_title">Paket indirilemedi!</string>
     <string name="update_failed_content">İyi bir internet bağlantınız olduğundan emin olun ve daha sonra tekrar deneyin.</string>
-    <string name="update_skip_title">1$s sürümüne güncellemeyi atla?</string>
+    <string name="update_skip_title">%1$s sürümüne güncellemeyi atla?</string>
     <string name="update_skip_content">Güncellemeler şiddetle tavsiye edilir ve önemli düzeltmeler içerebilir.
         \n
         \nBir sorun nedeniyle bu güncellemeden kaçınıyorsanız, lütfen github.com/threethan/LightningLauncher adresinden bildirin
@@ -205,8 +175,6 @@
     <string name="saved_settings">Yapılandırmayı şu adrese kaydeder</string>
     <string name="saved_settings_loading">İçe aktarılıyor, lütfen bekleyin..</string>
     <string name="saved_settings_error">Dosya kopyalanırken hata oluştu!</string>
-    <string name="loaded_settings1">İçe aktarılan yapılandırma,</string>
-    <string name="loaded_settings2">fırlatıcı şimdi kapanmalıdır!</string>
     <string name="default_groups_title">Varsayılan Grup Ayarları</string>
     <string name="default_groups_info">Mevcut Varsayılan Gruplar:\n
         \n%1$s\n
@@ -232,16 +200,10 @@
     <string name="clear_icons_cancel">Geri Dön, Hiçbir Şey Yapma</string>
     <string name="toast_cleared_icon_cache">Simge önbelleği temizlendi</string>
     <string name="toast_cleared_icon_all">Tüm simgeler varsayılana sıfırlandı</string>
-    <string name="tip_kill_process">Arka Planda Çalışmayı Durdur</string>
-    <string name="tip_launch">Uygulamayı Başlat</string>
     <string name="tip_info_website">Web Sitesi Ekleme Hakkında</string>
-    <string name="tip_stop_editing">Düzenleme Modunu Kapatma</string>
-    <string name="tip_select_all">Tüm Görünür Uygulamaları Seçme/Seçimini Kaldırma</string>
     <string name="tip_uninstall">Kaldırma / Kaldırma</string>
-    <string name="tip_uninstall_bulk">Seçilenlerin Tümünü Kaldır / Kaldır</string>
     <string name="tip_info">Android Uygulama Bilgisi</string>
     <string name="tip_charts">Oyun Süresi Çizelgelerini Görüntüle\nin Quest Oyun Ayarlayıcı</string>
-    <string name="tip_change_icon">Simge Değiştir</string>
     <string name="tip_save_settings">Tüm Ayarları ve Gruplamaları Yedekle</string>
     <string name="tip_load_settings">Tüm Ayarları ve Gruplamaları Geri Yükle</string>
     <string name="tip_hide">Bu Uygulamayı Gizle</string>
@@ -249,11 +211,8 @@
     <string name="moved_hidden">Şuraya taşındı</string>
     <string name="moved_hidden_bold">Gizli Grup</string>
     <string name="moved_shown">Şuraya taşındı</string>
-    <string name="refreshed_icon">Simge yenileniyor..</string>
     <string name="addons_main_vr">Kısayollar</string>
     <string name="addons_main_tv">Kısayol Seçenekleri</string>
-    <string name="addons_info">Kısayollar başlatıcıyı açmayı kolaylaştırır.
-        \En az bir tane kullanmanız şiddetle tavsiye edilir.</string>
     <string name="addons_tv_info">Ne yazık ki Android TV, erişilebilirlik hizmetlerinin ve üçüncü taraf başlatıcıların işlevselliğini sınırlıyor.</string>
     <string name="addons_exit">Ayarlara Geri Dön</string>
     <string name="addons_androidtv">Android TV Başlatıcı Yöneticisi</string>
@@ -306,7 +265,6 @@
         \n
         \nQuest Game Tuner, Lightning Launcher\'ı yapan aynı geliştirici tarafından yüzlerce saat süren geliştirme, araştırma ve testlerin sonucudur.</string>
     <string name="tuner_info_get">Quest Game Tuner\'ı itch.io\'da edinin!</string>
-    <string name="apk_installer">APK yükleyici</string>
     <string name="apk_installer_tip">Yüklemek için bir APK dosyası seçin</string>
     <string name="advanced_alpha_preserve">Ayrıntıları Koru</string>
 </resources>

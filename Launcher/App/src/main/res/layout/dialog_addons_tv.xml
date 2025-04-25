@@ -10,14 +10,12 @@
     tools:ignore="TextSizeCheck">
 
     <LinearLayout
-        android:id="@+id/itemLaunch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="20dp">
 
         <View
-            android:id="@+id/view"
             android:layout_width="460dp"
             android:layout_height="wrap_content" />
 

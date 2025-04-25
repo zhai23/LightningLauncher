@@ -1,14 +1,9 @@
 <resources>
     <string name="add_group">Aggiungi gruppo</string>
-    <string name="delete_group">Cancellare il gruppo</string>
-    <string name="edit_group">Gruppo di modifica</string>
-    <string name="app_details">Dettagli dell\'applicazione</string>
     <string name="apps_hidden">- Nascosto</string>
     <string name="migrated">Le vecchie impostazioni sono state migrate</string>
     <string name="edit_mode">Modalità di modifica</string>
     <string name="edit_mode_tip">Modificare i gruppi, aggiungere siti web e altro ancora.</string>
-    <string name="edit_mode_disabled">Solo la finestra principale può essere modificata</string>
-    <string name="edit_mode_stop">Interrompere la modifica</string>
     <string name="new_multitasking">Chiudere la finestra del Launcher dopo l\'apertura delle applicazioni</string>
     <string name="new_multitasking_tip">Se abilitato, Lightning Launcher si chiude da solo quando si apre un\'applicazione.</string>
     <string name="allow_chain_launch">Utilizzare l\'avvio nativo di Quest</string>
@@ -27,7 +22,6 @@
     <string name="app_name_icon">Sotto le icone delle app</string>
     <string name="app_name_wide">Sotto i banner delle app</string>
     <string name="settings_main">Lanciatore di fulmini</string>
-    <string name="settings_appearance">Personalizzazione dell\'aspetto</string>
     <string name="settings_addons_attract">Scorciatoie</string>
     <string name="settings_addons">Scorciatoie</string>
     <string name="settings_addons_tip">Facilitare l\'accesso a Lightning Launcher.</string>
@@ -37,7 +31,6 @@
     \In precedenza, l\'opzione era disattivata quando si saltava un aggiornamento.</string>
     <string name="behavior_header">Comportamento</string>
     <string name="background_header">Carta da parati e stile</string>
-    <string name="hdr_icon">Layout delle icone</string>
     <string name="disp_wide">Visualizzazione come banner</string>
     <string name="disp_icon">Visualizzazione come icona</string>
     <string name="disp_name">Mostra sempre i nomi</string>
@@ -47,7 +40,6 @@
     <string name="advanced_interface">Interfaccia</string>
     <string name="advanced_reset">Aggiornare e resettare</string>
     <string name="advanced_launching">Preferenze di avvio</string>
-    <string name="advanced_features">Caratteristiche extra</string>
     <string name="advanced_search">Impostazioni di ricerca</string>
     <string name="advanced_backup">Backup delle impostazioni</string>
     <string name="advanced_alpha">Traslucenza dello sfondo</string>
@@ -65,7 +57,6 @@
         \´per evitare che i nomi più lunghi vengano tagliati.
         \n
         \Si nota solo quando ci sono molti gruppi.</string>
-    <string name="clear_cache">Azzeramento di tutte le icone</string>
     <string name="clear_labels">Ripristinare tutte le etichette delle app come predefinite</string>
     <string name="group_defaults_button">Gruppi predefiniti</string>
     <string name="icons_settings_button">Aggiorna le icone</string>
@@ -88,35 +79,19 @@
     <string name="long_press">Premere a lungo per modificare</string>
     <string name="long_press_tip">Quando è attivo, premendo a lungo un\'applicazione si accede alla modalità di modifica e la si seleziona.
     \Quando è spenta, premendo a lungo un\'applicazione vengono visualizzati i dettagli.</string>
-    <string name="default_launch_out">Avvio predefinito delle applicazioni nella propria finestra</string>
     <string name="search_web">Mostra i motori di ricerca web nelle ricerche</string>
     <string name="search_hidden">Mostra le applicazioni nascoste nelle ricerche</string>
     <string name="settings_save">Impostazioni di esportazione</string>
     <string name="settings_load">Impostazioni di importazione</string>
     <string name="groupings_save">Raggruppamenti di esportazione</string>
     <string name="groupings_load">Importazione di raggruppamenti</string>
-    <string name="advanced_sizing">Abilitare le dimensioni aggiuntive delle finestre delle app del telefono</string>
-    <string name="advanced_sizing_tip">Consente di aprire le app in finestre di dimensioni diverse, il che può causare problemi.</string>
-    <string name="toast_advanced_sizing">Le nuove opzioni di dimensione possono essere selezionate ciclicamente nelle impostazioni per-app</string>
     <string name="reload_icon">Icona Reset</string>
     <string name="open_tuning">Sintonia con</string>
     <string name="open_tuning_tip">Quest Game Tuner consente di regolare risoluzione, FPS e altro ancora!</string>
     <string name="tuner_options">⚙</string>
-    <string name="launch_out_message">L\'avvio di applicazioni o siti Web 2D nella propria finestra consente di semplificare il multitasking sui dispositivi Quest,
-        se si verificano problemi, disattivare questa opzione!</string>
-    <string name="launch_size_message">L\'avvio di applicazioni o siti web 2D nella propria finestra consente di semplificare il multitasking sui dispositivi Quest,
-        ma alcune applicazioni non si avviano sempre.\n
-        \L\'impostazione di dimensioni personalizzate delle finestre risolve il problema del mancato avvio delle app, ne visualizza alcune in modo leggermente più chiaro e consente di avere finestre di dimensioni diverse nella vista piatta.
-        \Tuttavia, a volte può causare il blocco delle finestre o l\'arresto anomalo di Lightning Launcher
-        \Tutte queste opzioni possono essere impostate solo su base individuale
-        \Se si verificano problemi, disattivare questa opzione e assicurarsi che le applicazioni non siano impostate per essere avviate nelle proprie finestre. Riavviare per risolvere le finestre bloccate.</string>
     <string name="hidden_groups_message">Se si disattiva questa opzione, la barra superiore viene nascosta quando non si è in modalità di modifica. \n
         \Anche il pulsante delle impostazioni viene nascosto quando non si è in modalità di modifica
         \In alternativa, premere il tasto indietro per aprire le impostazioni.</string>
-    <string name="set_default_launcher_message">Impostando Lightning Launcher come app predefinita per la home di Android, altre app potranno aggiungere icone di collegamento alla schermata iniziale.
-        \Questo deve essere fatto solo una volta
-        \NON sostituirà il launcher predefinito sui dispositivi VR e non modificherà il funzionamento di Lightning Launcher stesso
-        Se si desidera farlo, controllare Imposta collegamenti/Impostazioni collegamenti per Lightning Launcher.</string>
     <string name="download_browser_message">Per un\'esperienza ottimale, è necessario installare Lightning Browser per aprire i siti web in Lightning Launcher
         \(In alternativa, potete provare a cambiare il browser in Impostazioni -&gt; Impostazioni avanzate)</string>
     <string name="update_browser_message">Per un\'esperienza ottimale, è necessario aggiornare Lightning Browser.</string>
@@ -132,7 +107,6 @@
     <string name="website_info3">Sui dispositivi Quest, è possibile avviare Meta Quest Browser, che supporta i contenuti web VR.
         \Il valore predefinito può essere impostato in Impostazioni avanzate.</string>
     <string name="add_website">Aggiungere un sito web</string>
-    <string name="add_website_tip">Aggiungere un sito web al Launcher</string>
     <string name="add_website_url_label">Inserite l\'URL di qualsiasi sito web</string>
     <string name="add_website_bad_url">Immettere un URL valido</string>
     <string name="add_website_used_url">Questo sito è già in %1$s</string>
@@ -151,8 +125,6 @@
     <string name="cancel">Annullamento</string>
     <string name="understood">Preso!</string>
     <string name="confirm">Confermare</string>
-    <string name="next">Continua</string>
-    <string name="size_none">Aprire la finestra predefinita</string>
     <string name="size_own">Aprire nella propria finestra</string>
     <string name="size_phone">Aprire in una finestra stile telefono</string>
     <string name="size_small">Aprire in una piccola finestra 4:3</string>
@@ -165,8 +137,6 @@
     <string name="browser_quest">Aprire la scheda del browser Quest</string>
     <string name="browser_quest_shortcut">Aprire come applicazione web Quest Browser</string>
     <string name="browser_system">Provare ad aprire in System Default</string>
-    <string name="edit_off">Attivare la modalità di modifica</string>
-    <string name="edit_on">Disattivare la modalità di modifica</string>
     <string name="edit_move">Muoversi</string>
     <string name="edit_copy">Copia</string>
     <string name="selection_hint_none">Fare clic su un\'applicazione per selezionarla o fare clic qui per selezionarle tutte</string>
@@ -205,8 +175,6 @@
     <string name="saved_settings">Configurazione salvata in</string>
     <string name="saved_settings_loading">Importazione, attendere prego..</string>
     <string name="saved_settings_error">Errore durante la copia del file!</string>
-    <string name="loaded_settings1">Configurazione importata,</string>
-    <string name="loaded_settings2">il lanciatore deve ora chiudersi!</string>
     <string name="default_groups_title">Impostazioni di gruppo predefinite</string>
     <string name="default_groups_info">Gruppi predefiniti attuali:          \n\n\n%1$s         \n\nÈ possibile modificarli modificando un gruppo in modalità di modifica. \n\nCosa si desidera fare ora?</string>
     <string name="default_groups_reset_groups">Ripristinare tutti i gruppi e l\'ordinamento predefinito</string>
@@ -228,16 +196,10 @@
     <string name="clear_icons_cancel">Tornare indietro, non fare niente</string>
     <string name="toast_cleared_icon_cache">La cache delle icone è stata cancellata</string>
     <string name="toast_cleared_icon_all">Tutte le icone sono state riportate ai valori predefiniti</string>
-    <string name="tip_kill_process">Interrompere l\'esecuzione in background</string>
-    <string name="tip_launch">Avviare l\'applicazione</string>
     <string name="tip_info_website">Informazioni sull\'aggiunta di siti web</string>
-    <string name="tip_stop_editing">Disattivare la modalità di modifica</string>
-    <string name="tip_select_all">Selezionare/deselezionare tutte le applicazioni visibili</string>
     <string name="tip_uninstall">Disinstallare / Rimuovere</string>
-    <string name="tip_uninstall_bulk">Disinstallare / Rimuovere tutti i selezionati</string>
     <string name="tip_info">Informazioni sull\'applicazione Android</string>
     <string name="tip_charts">Visualizza i grafici dei tempi di gioco</string>
-    <string name="tip_change_icon">Icona Cambia</string>
     <string name="tip_save_settings">Backup di tutte le impostazioni e dei raggruppamenti</string>
     <string name="tip_load_settings">Ripristina tutte le impostazioni e i raggruppamenti</string>
     <string name="tip_hide">Nascondere questa applicazione</string>
@@ -245,11 +207,8 @@
     <string name="moved_hidden">Spostato in</string>
     <string name="moved_hidden_bold">Gruppo nascosto</string>
     <string name="moved_shown">Spostato in</string>
-    <string name="refreshed_icon">Aggiornare l\'icona..</string>
     <string name="addons_main_vr">Scorciatoie</string>
     <string name="addons_main_tv">Opzioni di scelta rapida</string>
-    <string name="addons_info">I collegamenti facilitano l\'apertura del programma di avvio.
-        \Si consiglia vivamente di impostarne almeno una.</string>
     <string name="addons_tv_info">Purtroppo, Android TV limita la funzionalità dei servizi di accessibilità e dei launcher di terze parti.</string>
     <string name="addons_exit">Ritorno alle impostazioni</string>
     <string name="addons_androidtv">Android TV Launcher Manager</string>
@@ -302,7 +261,6 @@
         \n
         \Quest Game Tuner è il risultato di centinaia di ore di sviluppo, ricerca e test da parte dello stesso sviluppatore che ha realizzato Lightning Launcher.</string>
     <string name="tuner_info_get">Ottieni Quest Game Tuner su itch.io!</string>
-    <string name="apk_installer">Programma di installazione APK</string>
     <string name="apk_installer_tip">Selezionare un file APK da installare</string>
     <string name="advanced_alpha_preserve">Conserva i dettagli</string>
 </resources>

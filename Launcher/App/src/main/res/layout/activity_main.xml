@@ -31,7 +31,6 @@
         android:visibility="gone">
 
         <View
-            android:id="@+id/clickSafeZone"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginBottom="-8dp"
@@ -149,7 +148,6 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <FrameLayout
-        android:id="@+id/searchBarLayout"
         android:layout_width="match_parent"
         android:layout_height="88dp">
 
@@ -166,7 +164,6 @@
             tools:visibility="visible">
 
             <View
-                android:id="@+id/clickSafeZoneSearch"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="-24dp"

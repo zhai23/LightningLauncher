@@ -1,19 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name" translatable="false">Lightning Launcher</string>
     <string name="app_name_for_list" translatable="false"> ➜ <u>Lightning</u> Launcher</string>
     <string name="app_name_for_activity" translatable="false">Lightning Launcher</string>
     <string name="add_group">Add Group</string>
-    <string name="delete_group">Delete Group</string>
-    <string name="edit_group">Edit Group</string>
-    <string name="app_details">App Details</string>
     <string name="apps_hidden">- Hidden</string>
     <string name="migrated">Old settings have been migrated</string>
 
     <string name="edit_mode">Edit Mode</string>
     <string name="edit_mode_tip">Change groups, add websites, and more.</string>
-    <string name="edit_mode_disabled">Only main window can edit</string>
-    <string name="edit_mode_stop">Stop Editing</string>
 
     <string name="new_multitasking">Close Launcher window after opening apps</string>
     <string name="new_multitasking_tip">If enabled, Lightning Launcher will close itself when you open an app.</string>
@@ -37,7 +32,6 @@
     <string name="app_name_wide">Below App Banners</string>
 
     <string name="settings_main">Lightning Launcher</string>
-    <string name="settings_appearance">Customize Appearance</string>
     <string name="settings_addons_attract">Shortcuts</string>
     <string name="settings_addons">Shortcuts</string>
     <string name="settings_addons_tip">Make Lightning Launcher easier to access.</string>
@@ -48,7 +42,6 @@
 
     <string name="behavior_header">Behavior</string>
     <string name="background_header">Wallpaper &amp; Style</string>
-    <string name="hdr_icon">Icon Layout</string>
     <string name="disp_wide">Display as Banner</string>
     <string name="disp_icon">Display as Icon</string>
     <string name="disp_name">Always Show Names</string>
@@ -58,7 +51,6 @@
     <string name="advanced_interface">Interface</string>
     <string name="advanced_reset">Refresh &amp; Reset</string>
     <string name="advanced_launching">Launch Preferences</string>
-    <string name="advanced_features">Extra Features</string>
     <string name="advanced_search">Search Settings</string>
     <string name="advanced_backup">Settings Backup</string>
     <string name="advanced_alpha">Background Translucency</string>
@@ -79,7 +71,6 @@
         \n
         \n<i>Only noticeable when there are many groups.</i></string>
 
-    <string name="clear_cache">Reset All Icons</string>
     <string name="clear_labels">Reset All App Labels to Default</string>
     <string name="group_defaults_button">Default Groups</string>
     <string name="icons_settings_button">Refresh Icons</string>
@@ -108,17 +99,12 @@
     <string name="long_press_tip"><b>When on,</b> long-pressing an app will enter edit mode and select it.
     \n<b>When off,</b> long-pressing an app will show details.</string>
 
-    <string name="default_launch_out">Launch Apps in Own Window by Default</string>
     <string name="search_web">Show Web Search Engines in Searches</string>
     <string name="search_hidden">Show Hidden Apps in Searches</string>
     <string name="settings_save">Export Settings</string>
     <string name="settings_load">Import Settings</string>
     <string name="groupings_save">Export Groupings</string>
     <string name="groupings_load">Import Groupings</string>
-
-    <string name="advanced_sizing">Enable Additional Phone App Window Sizes</string>
-    <string name="advanced_sizing_tip">Allows apps to be opened in different sized windows, may cause issues.</string>
-    <string name="toast_advanced_sizing">New size options can be cycled in per-app settings</string>
 
 
     <string name="reload_icon">Reset Icon</string>
@@ -127,22 +113,9 @@
 
     <string name="tuner_options">⚙</string>
 
-    <string name="launch_out_message">Launching 2D apps or websites in their own window allows for easier multitasking on Quest devices,
-        but will cause certain apps to not always launch.\n\nIf you have any issues, disable this option!</string>
-    <string name="launch_size_message">Launching 2D apps or websites in their own window allows for easier multitasking on Quest devices,
-        but will cause certain apps to not always launch.\n
-        \nSetting custom window sizes will fix apps not launching, display some apps slightly clearer, and allow for different window sizes in the flat view.
-        \nHowever, it may occasionally cause windows to get stuck or Lightning Launcher to crash.\n
-        \nAll of these options can be set only on a per-app basis.\n
-        \nIf you have issues, turn this option off and make sure any apps are not set to launch in their own windows. Reboot to fix stuck windows.</string>
     <string name="hidden_groups_message">Turning this option off will hide the top bar when not in Edit Mode. \n
         \nThe settings button will also be hidden when not in Edit Mode.\n
         \nInstead, <b>press the back button to open settings.</b>
-    </string>
-    <string name="set_default_launcher_message">Setting Lightning Launcher as your default android home app will allow other apps to add shortcut icons to the home screen.
-        \nThis only needs to be done once.\n
-        \nIt WILL NOT replace the actual default launcher on VR devices, and with not change the operation of Lightning Launcher itself.\n\n
-        If you want to do that, check Set Up Shortcuts/Shortcut Settings for shortcuts TO Lightning Launcher.
     </string>
     <string name="download_browser_message">For the best experience, you must install Lightning Browser to open websites in Lightning Launcher.\n
         \n(Alternatively, you can try to change the browser in Settings -> Advanced Settings)
@@ -169,7 +142,6 @@
     </string>
 
     <string name="add_website">Add a Website</string>
-    <string name="add_website_tip">Add a Website to the Launcher</string>
     <string name="add_website_url_label">Enter Any Website URL</string>
     <string name="add_website_bad_url">Enter a valid URL</string>
     <string name="add_website_used_url">This website is already in %1$s</string>
@@ -191,9 +163,7 @@
     <string name="cancel">Cancel</string>
     <string name="understood">Got It!</string>
     <string name="confirm">Confirm</string>
-    <string name="next">Continue</string>
 
-    <string name="size_none">Open in Default Window</string>
     <string name="size_own">Open in App\'s Own Window</string>
     <string name="size_phone">Open in Phone-Style Window</string>
     <string name="size_small">Open in Small 4:3 Window</string>
@@ -208,21 +178,18 @@
     <string name="browser_quest_shortcut">Open as Quest Browser Web App</string>
     <string name="browser_system">Try to Open in System Default</string>
 
-    <string name="edit_off">Turn On Edit Mode</string>
-    <string name="edit_on">Turn Off Edit Mode</string>
-
     <string name="edit_move">Move</string>
     <string name="edit_copy">Copy</string>
 
     <string name="selection_hint_none">Click an app to select it or click here to select all</string>
     <string name="selection_hint_single_move">1 app selected, click a group to move it</string>
     <string name="selection_hint_single_copy">1 app selected, click a group to make a copy</string>
-    <string name="selection_hint_multiple_move">%d apps selected, click a group to move them</string>
-    <string name="selection_hint_multiple_copy">%d apps selected, click a group to make copies</string>
+    <string name="selection_hint_multiple_move" tools:ignore="PluralsCandidate">%d apps selected, click a group to move them</string>
+    <string name="selection_hint_multiple_copy" tools:ignore="PluralsCandidate">%d apps selected, click a group to make copies</string>
     <string name="selection_moved_single">Moved an app to %1$s</string>
     <string name="selection_copied_single">Copied an app to %1$s</string>
-    <string name="selection_moved_multiple">Moved %1$d apps to %2$s</string>
-    <string name="selection_copied_multiple">Copied %1$d apps to %2$s</string>
+    <string name="selection_moved_multiple" tools:ignore="PluralsCandidate">Moved %1$d apps to %2$s</string>
+    <string name="selection_copied_multiple" tools:ignore="PluralsCandidate">Copied %1$d apps to %2$s</string>
     <string name="selection_hint_cleared">Cleared selection</string>
     <string name="selection_hint_all">Selected all visible apps</string>
 
@@ -256,8 +223,6 @@
     <string name="saved_settings">Saved configuration to</string>
     <string name="saved_settings_loading">Importing, please wait…</string>
     <string name="saved_settings_error">Error while copying file!</string>
-    <string name="loaded_settings1">Imported configuration,</string>
-    <string name="loaded_settings2">the launcher must now close!</string>
 
     <string name="default_groups_title">Default Group Settings</string>
     <string name="default_groups_info"><b>Current Default Groups:</b>\n
@@ -292,19 +257,12 @@
     <string name="toast_cleared_icon_all">All icons have been reset to default</string>
 
     <!--  Tooltips  -->
-    <string name="tip_kill_process">Stop Running in the Background</string>
-    <string name="tip_launch">Launch App</string>
 
     <string name="tip_info_website">About Adding Websites</string>
 
-    <string name="tip_stop_editing">Turn Off Edit Mode</string>
-    <string name="tip_select_all">Select/Deselect All Visible Apps</string>
-
     <string name="tip_uninstall">Uninstall / Remove</string>
-    <string name="tip_uninstall_bulk">Uninstall / Remove All Selected</string>
     <string name="tip_info">Android App Info</string>
     <string name="tip_charts">View Playtime Charts\nin <i>Quest Game Tuner</i></string>
-    <string name="tip_change_icon">Change Icon</string>
 
     <string name="tip_save_settings">Backup All Settings &amp; Groupings</string>
     <string name="tip_load_settings">Restore All Settings &amp; Groupings</string>
@@ -316,7 +274,6 @@
     <string name="moved_hidden">Moved to</string>
     <string name="moved_hidden_bold">Hidden Group</string>
     <string name="moved_shown">Moved to</string>
-    <string name="refreshed_icon">Refreshing icon…</string>
 
     <!--  Web Presets  -->
     <string name="preset_google" translatable="false">google.com</string>
@@ -330,8 +287,6 @@
     <!-- Addons -->
     <string name="addons_main_vr">Shortcuts</string>
     <string name="addons_main_tv">Shortcut Options</string>
-    <string name="addons_info">Shortcuts make it easier to open the launcher.
-        \nIt\'s highly recommended that you set up use at least one.</string>
     <string name="addons_tv_info">Unfortunately, Android TV limits the functionality of accessibility services and third-party launchers.</string>
     <string name="addons_exit">Return to Settings</string>
 
@@ -405,6 +360,5 @@
     <string name="tuner_info_get_link" translatable="false">threethan.itch.io/quest-game-tuner</string>
 
     <!-- v74 APK INSTALLER -->
-    <string name="apk_installer">APK installer</string>
     <string name="apk_installer_tip">Select an APK file to install</string>
 </resources>

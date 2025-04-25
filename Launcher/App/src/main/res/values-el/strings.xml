@@ -1,14 +1,9 @@
 <resources>
     <string name="add_group">Προσθήκη ομάδας</string>
-    <string name="delete_group">Διαγραφή ομάδας</string>
-    <string name="edit_group">Επεξεργασία ομάδας</string>
-    <string name="app_details">Λεπτομέρειες εφαρμογής</string>
     <string name="apps_hidden">- Κρυφό</string>
     <string name="migrated">Οι παλιές ρυθμίσεις έχουν μεταφερθεί</string>
     <string name="edit_mode">Λειτουργία επεξεργασίας</string>
     <string name="edit_mode_tip">Αλλάξτε ομάδες, προσθέστε ιστότοπους και πολλά άλλα.</string>
-    <string name="edit_mode_disabled">Μόνο το κύριο παράθυρο μπορεί να επεξεργαστεί</string>
-    <string name="edit_mode_stop">Σταματήστε την επεξεργασία</string>
     <string name="new_multitasking">Κλείσιμο παραθύρου εκτοξευτή μετά το άνοιγμα εφαρμογών</string>
     <string name="new_multitasking_tip">Εάν είναι ενεργοποιημένη, ο Lightning Launcher θα κλείνει μόνος του όταν ανοίγετε μια εφαρμογή.</string>
     <string name="allow_chain_launch">Χρήση Quest Native Launching</string>
@@ -27,7 +22,6 @@
     <string name="app_name_icon">Κάτω από τα εικονίδια εφαρμογών</string>
     <string name="app_name_wide">Κάτω από το App Banners</string>
     <string name="settings_main">Εκτοξευτής αστραπών</string>
-    <string name="settings_appearance">Προσαρμογή εμφάνισης</string>
     <string name="settings_addons_attract">Συντομεύσεις</string>
     <string name="settings_addons">Συντομεύσεις</string>
     <string name="settings_addons_tip">Διευκόλυνση της πρόσβασης στον Lightning Launcher.</string>
@@ -37,7 +31,6 @@
     \nΠροηγουμένως την απενεργοποιήσατε όταν παραλείπατε μια ενημέρωση.</string>
     <string name="behavior_header">Συμπεριφορά</string>
     <string name="background_header">Ταπετσαρία &amp; στυλ</string>
-    <string name="hdr_icon">Διάταξη εικονιδίων</string>
     <string name="disp_wide">Εμφάνιση ως Banner</string>
     <string name="disp_icon">Εμφάνιση ως εικονίδιο</string>
     <string name="disp_name">Να εμφανίζονται πάντα τα ονόματα</string>
@@ -47,7 +40,6 @@
     <string name="advanced_interface">Διεπαφή</string>
     <string name="advanced_reset">Ανανέωση &amp; επαναφορά</string>
     <string name="advanced_launching">Προτιμήσεις εκκίνησης</string>
-    <string name="advanced_features">Επιπλέον χαρακτηριστικά</string>
     <string name="advanced_search">Ρυθμίσεις αναζήτησης</string>
     <string name="advanced_backup">Δημιουργία αντιγράφων ασφαλείας ρυθμίσεων</string>
     <string name="advanced_alpha">Διαφάνεια φόντου</string>
@@ -65,7 +57,6 @@
         \εξασφαλίζει ότι τα μεγαλύτερα ονόματα δεν θα αποκόπτονται.
         \n
         \nΜόνο όταν υπάρχουν πολλές ομάδες.</string>
-    <string name="clear_cache">Επαναφορά όλων των εικονιδίων</string>
     <string name="clear_labels">Επαναφορά όλων των ετικετών εφαρμογών στην προεπιλογή</string>
     <string name="group_defaults_button">Προεπιλεγμένες ομάδες</string>
     <string name="icons_settings_button">Ανανέωση εικονιδίων</string>
@@ -88,35 +79,19 @@
     <string name="long_press">Παρατεταμένο πάτημα για επεξεργασία</string>
     <string name="long_press_tip">Όταν είναι ενεργοποιημένη, πατώντας παρατεταμένα μια εφαρμογή θα εισέλθετε στη λειτουργία επεξεργασίας και θα την επιλέξετε.
     \nΌταν είναι απενεργοποιημένη, πατώντας παρατεταμένα μια εφαρμογή θα εμφανιστούν λεπτομέρειες.</string>
-    <string name="default_launch_out">Εκκίνηση εφαρμογών σε δικό σας παράθυρο από προεπιλογή</string>
     <string name="search_web">Εμφάνιση μηχανών αναζήτησης στο Web στις αναζητήσεις</string>
     <string name="search_hidden">Εμφάνιση κρυφών εφαρμογών στις αναζητήσεις</string>
     <string name="settings_save">Ρυθμίσεις εξαγωγής</string>
     <string name="settings_load">Ρυθμίσεις εισαγωγής</string>
     <string name="groupings_save">Ομαδοποιήσεις εξαγωγής</string>
     <string name="groupings_load">Ομαδοποιήσεις εισαγωγής</string>
-    <string name="advanced_sizing">Ενεργοποίηση πρόσθετων μεγεθών παραθύρων εφαρμογών τηλεφώνου</string>
-    <string name="advanced_sizing_tip">Επιτρέπει το άνοιγμα εφαρμογών σε παράθυρα διαφορετικού μεγέθους, μπορεί να προκαλέσει προβλήματα.</string>
-    <string name="toast_advanced_sizing">Οι νέες επιλογές μεγέθους μπορούν να εναλλάσσονται στις ρυθμίσεις ανά εφαρμογή</string>
     <string name="reload_icon">Εικονίδιο επαναφοράς</string>
     <string name="open_tuning">Συντονιστείτε με</string>
     <string name="open_tuning_tip">Το Quest Game Tuner σας επιτρέπει να ρυθμίσετε την ανάλυση, τα FPS και πολλά άλλα!</string>
     <string name="tuner_options">⚙</string>
-    <string name="launch_out_message">Η εκκίνηση εφαρμογών ή ιστότοπων 2D σε δικό τους παράθυρο επιτρέπει ευκολότερη πολυδιεργασία σε συσκευές Quest,
-        αλλά μπορεί να προκαλέσει το γεγονός ότι ορισμένες εφαρμογές δεν ξεκινούν πάντα.\n\nΕάν έχετε οποιοδήποτε πρόβλημα, απενεργοποιήστε αυτή την επιλογή!</string>
-    <string name="launch_size_message">Η εκκίνηση εφαρμογών ή ιστότοπων 2D σε δικό τους παράθυρο επιτρέπει ευκολότερη πολυδιεργασία στις συσκευές Quest,
-        αλλά θα έχει ως αποτέλεσμα ορισμένες εφαρμογές να μην ξεκινούν πάντα.\n
-        \nΗ ρύθμιση προσαρμοσμένων μεγεθών παραθύρων θα διορθώσει τις εφαρμογές που δεν εκκινούνται, θα εμφανίσει ορισμένες εφαρμογές ελαφρώς πιο καθαρά και θα επιτρέψει διαφορετικά μεγέθη παραθύρων στην επίπεδη προβολή.
-        \nΌμως, μπορεί περιστασιακά να προκαλέσει κόλλημα των παραθύρων ή συντριβή του Lightning Launcher.\n
-        \nΌλες αυτές οι επιλογές μπορούν να ρυθμιστούν μόνο ανά εφαρμογή.\n
-        \nΕάν έχετε προβλήματα, απενεργοποιήστε αυτή την επιλογή και βεβαιωθείτε ότι οι εφαρμογές δεν έχουν ρυθμιστεί να εκκινούνται σε δικά τους παράθυρα. Κάντε επανεκκίνηση για να διορθώσετε τα κολλημένα παράθυρα.</string>
     <string name="hidden_groups_message">Η απενεργοποίηση αυτής της επιλογής θα αποκρύψει την επάνω μπάρα όταν δεν βρίσκεστε σε Λειτουργία επεξεργασίας. \n
         \nΤο κουμπί ρυθμίσεων θα είναι επίσης κρυμμένο όταν δεν βρίσκεστε σε Λειτουργία επεξεργασίας.\n
         \nΑντ\' αυτού, πατήστε το κουμπί επιστροφής για να ανοίξετε τις ρυθμίσεις.</string>
-    <string name="set_default_launcher_message">Ο ορισμός του Lightning Launcher ως προεπιλεγμένη αρχική εφαρμογή του Android θα επιτρέψει σε άλλες εφαρμογές να προσθέσουν εικονίδια συντόμευσης στην αρχική οθόνη.
-        \nΑυτό χρειάζεται να γίνει μόνο μία φορά.\n
-        \nΔεν θα αντικαταστήσει τον πραγματικό προεπιλεγμένο εκτοξευτή στις συσκευές VR και δεν θα αλλάξει τη λειτουργία του ίδιου του Lightning Launcher.\n\n
-        Αν θέλετε να το κάνετε αυτό, ελέγξτε την ενότητα Ρύθμιση συντομεύσεων/Ρυθμίσεις συντομεύσεων για συντομεύσεις TO Lightning Launcher.</string>
     <string name="download_browser_message">Για την καλύτερη δυνατή εμπειρία, πρέπει να εγκαταστήσετε το Lightning Browser για να ανοίξετε ιστότοπους στο Lightning Launcher.\n
         \n(Εναλλακτικά, μπορείτε να προσπαθήσετε να αλλάξετε το πρόγραμμα περιήγησης στις Ρυθμίσεις -&gt; Ρυθμίσεις για προχωρημένους)</string>
     <string name="update_browser_message">Για την καλύτερη δυνατή εμπειρία, πρέπει να ενημερώσετε το Lightning Browser.</string>
@@ -132,7 +107,6 @@
     <string name="website_info3">Στις συσκευές Quest, μπορείτε να εκκινήσετε το Meta Quest Browser, το οποίο υποστηρίζει περιεχόμενο ιστού VR.
         \nΗ προεπιλογή μπορεί να οριστεί στις Ρυθμίσεις για προχωρημένους.</string>
     <string name="add_website">Προσθέστε έναν ιστότοπο</string>
-    <string name="add_website_tip">Προσθέστε έναν ιστότοπο στον εκτοξευτή</string>
     <string name="add_website_url_label">Εισάγετε οποιαδήποτε διεύθυνση URL ιστότοπου</string>
     <string name="add_website_bad_url">Εισάγετε ένα έγκυρο URL</string>
     <string name="add_website_used_url">Αυτός ο ιστότοπος βρίσκεται ήδη στο %1$s</string>
@@ -151,8 +125,6 @@
     <string name="cancel">Ακύρωση</string>
     <string name="understood">Το βρήκα!</string>
     <string name="confirm">Επιβεβαίωση</string>
-    <string name="next">Συνεχίστε</string>
-    <string name="size_none">Άνοιγμα σε προεπιλεγμένο παράθυρο</string>
     <string name="size_own">Άνοιγμα στο δικό σας παράθυρο της App\</string>
     <string name="size_phone">Άνοιγμα σε παράθυρο τύπου τηλεφώνου</string>
     <string name="size_small">Άνοιγμα σε μικρό παράθυρο 4:3</string>
@@ -165,8 +137,6 @@
     <string name="browser_quest">Άνοιγμα σε καρτέλα του προγράμματος περιήγησης Quest</string>
     <string name="browser_quest_shortcut">Άνοιγμα ως εφαρμογή Web Quest Browser</string>
     <string name="browser_system">Προσπαθήστε να ανοίξετε στην Προεπιλογή συστήματος</string>
-    <string name="edit_off">Ενεργοποίηση της λειτουργίας επεξεργασίας</string>
-    <string name="edit_on">Απενεργοποίηση λειτουργίας επεξεργασίας</string>
     <string name="edit_move">Μετακίνηση</string>
     <string name="edit_copy">Αντιγραφή</string>
     <string name="selection_hint_none">Κάντε κλικ σε μια εφαρμογή για να την επιλέξετε ή κάντε κλικ εδώ για να επιλέξετε όλες</string>
@@ -205,8 +175,6 @@
     <string name="saved_settings">Αποθηκευμένη διαμόρφωση στο</string>
     <string name="saved_settings_loading">Εισαγωγή, παρακαλώ περιμένετε..</string>
     <string name="saved_settings_error">Σφάλμα κατά την αντιγραφή αρχείου!</string>
-    <string name="loaded_settings1">Εισαγόμενη διαμόρφωση,</string>
-    <string name="loaded_settings2">ο εκτοξευτής πρέπει τώρα να κλείσει!</string>
     <string name="default_groups_title">Προεπιλεγμένες ρυθμίσεις ομάδας</string>
     <string name="default_groups_info">Τρέχουσες προεπιλεγμένες ομάδες:\n
         \n%1$s\n
@@ -232,16 +200,10 @@
     <string name="clear_icons_cancel">Πήγαινε πίσω, μην κάνεις τίποτα</string>
     <string name="toast_cleared_icon_cache">Η προσωρινή μνήμη εικονιδίων έχει εκκαθαριστεί</string>
     <string name="toast_cleared_icon_all">Όλα τα εικονίδια έχουν επανέλθει στις προεπιλογές</string>
-    <string name="tip_kill_process">Σταματήστε την εκτέλεση στο παρασκήνιο</string>
-    <string name="tip_launch">Εκκίνηση εφαρμογής</string>
     <string name="tip_info_website">Σχετικά με την προσθήκη ιστοσελίδων</string>
-    <string name="tip_stop_editing">Απενεργοποίηση λειτουργίας επεξεργασίας</string>
-    <string name="tip_select_all">Επιλογή/αποεπιλογή όλων των ορατών εφαρμογών</string>
     <string name="tip_uninstall">Απεγκατάσταση / Αφαίρεση</string>
-    <string name="tip_uninstall_bulk">Απεγκατάσταση / Κατάργηση όλων των επιλεγμένων</string>
     <string name="tip_info">Πληροφορίες εφαρμογής Android</string>
     <string name="tip_charts">Προβολή διαγραμμάτων χρόνου παιχνιδιού\nin Quest Game Tuner</string>
-    <string name="tip_change_icon">Εικονίδιο αλλαγής</string>
     <string name="tip_save_settings">Δημιουργία αντιγράφων ασφαλείας όλων των ρυθμίσεων &amp; ομαδοποιήσεων</string>
     <string name="tip_load_settings">Επαναφορά όλων των ρυθμίσεων &amp; ομαδοποιήσεων</string>
     <string name="tip_hide">Απόκρυψη αυτής της εφαρμογής</string>
@@ -249,11 +211,8 @@
     <string name="moved_hidden">Μεταφέρθηκε στο</string>
     <string name="moved_hidden_bold">Κρυφή ομάδα</string>
     <string name="moved_shown">Μεταφέρθηκε στο</string>
-    <string name="refreshed_icon">Ανανέωση εικονιδίου..</string>
     <string name="addons_main_vr">Συντομεύσεις</string>
     <string name="addons_main_tv">Επιλογές συντόμευσης</string>
-    <string name="addons_info">Οι συντομεύσεις διευκολύνουν το άνοιγμα του εκτοξευτή.
-        \nΣυνιστάται ιδιαίτερα να ρυθμίσετε τη χρήση τουλάχιστον μίας.</string>
     <string name="addons_tv_info">Δυστυχώς, το Android TV περιορίζει τη λειτουργικότητα των υπηρεσιών προσβασιμότητας και των εκτοξευτών τρίτων.</string>
     <string name="addons_exit">Επιστροφή στις ρυθμίσεις</string>
     <string name="addons_androidtv">Διαχειριστής εκτοξευτή Android TV</string>
@@ -306,7 +265,6 @@
         \n
         \nΤο Quest Game Tuner είναι το αποτέλεσμα εκατοντάδων ωρών ανάπτυξης, έρευνας και δοκιμών από τον ίδιο προγραμματιστή που δημιούργησε το Lightning Launcher.</string>
     <string name="tuner_info_get">Αποκτήστε το Quest Game Tuner στο itch.io!</string>
-    <string name="apk_installer">Εγκαταστάτης APK</string>
     <string name="apk_installer_tip">Επιλέξτε ένα αρχείο APK για εγκατάσταση</string>
     <string name="advanced_alpha_preserve">Διατήρηση λεπτομερειών</string>
 </resources>

@@ -1,14 +1,9 @@
 <resources>
     <string name="add_group">Добавить группу</string>
-    <string name="delete_group">Удалить группу</string>
-    <string name="edit_group">Группа редактирования</string>
-    <string name="app_details">Приложение Подробности</string>
     <string name="apps_hidden">- Скрытый</string>
     <string name="migrated">Старые настройки были перенесены</string>
     <string name="edit_mode">Режим редактирования</string>
     <string name="edit_mode_tip">Меняйте группы, добавляйте веб-сайты и многое другое.</string>
-    <string name="edit_mode_disabled">Редактировать можно только в главном окне</string>
-    <string name="edit_mode_stop">Остановить редактирование</string>
     <string name="new_multitasking">Закрытие окна Launcher после открытия приложений</string>
     <string name="new_multitasking_tip">Если эта функция включена, Lightning Launcher будет закрываться сам, когда вы открываете приложение.</string>
     <string name="allow_chain_launch">Используйте нативный запуск квестов</string>
@@ -27,7 +22,6 @@
     <string name="app_name_icon">Иконки приложений</string>
     <string name="app_name_wide">Баннеры ниже приложения</string>
     <string name="settings_main">Пусковая установка "Молния</string>
-    <string name="settings_appearance">Настройка внешнего вида</string>
     <string name="settings_addons_attract">Ярлыки</string>
     <string name="settings_addons">Ярлыки</string>
     <string name="settings_addons_tip">Упростите доступ к Lightning Launcher.</string>
@@ -37,7 +31,6 @@
     \n Ранее вы отключали эту функцию при пропуске обновления.</string>
     <string name="behavior_header">Поведение</string>
     <string name="background_header">Обои и стиль</string>
-    <string name="hdr_icon">Макет иконки</string>
     <string name="disp_wide">Отображение в виде баннера</string>
     <string name="disp_icon">Отображение в виде значка</string>
     <string name="disp_name">Всегда показывайте имена</string>
@@ -47,7 +40,6 @@
     <string name="advanced_interface">Интерфейс</string>
     <string name="advanced_reset">Обновление и перезагрузка</string>
     <string name="advanced_launching">Параметры запуска</string>
-    <string name="advanced_features">Дополнительные функции</string>
     <string name="advanced_search">Настройки поиска</string>
     <string name="advanced_backup">Резервное копирование настроек</string>
     <string name="advanced_alpha">Прозрачность фона</string>
@@ -65,7 +57,6 @@
         \nзаботясь о том, чтобы длинные имена не обрезались.
         \n
         \nОсобенно заметно, когда групп много.</string>
-    <string name="clear_cache">Сбросить все значки</string>
     <string name="clear_labels">Сбросьте все ярлыки приложений по умолчанию</string>
     <string name="group_defaults_button">Группы по умолчанию</string>
     <string name="icons_settings_button">Обновить значки</string>
@@ -88,35 +79,19 @@
     <string name="long_press">Длительное нажатие для редактирования</string>
     <string name="long_press_tip">При включении долгое нажатие на приложение переводит его в режим редактирования и позволяет выбрать его.
     \nВ выключенном состоянии при длительном нажатии на приложение отображаются подробные сведения.</string>
-    <string name="default_launch_out">Запуск приложений в собственном окне по умолчанию</string>
     <string name="search_web">Показывать поисковые системы в поисковых запросах</string>
     <string name="search_hidden">Показывать скрытые приложения в поиске</string>
     <string name="settings_save">Настройки экспорта</string>
     <string name="settings_load">Настройки импорта</string>
     <string name="groupings_save">Группы экспорта</string>
     <string name="groupings_load">Группировки импорта</string>
-    <string name="advanced_sizing">Включение дополнительных размеров окон приложений для телефона</string>
-    <string name="advanced_sizing_tip">Позволяет открывать приложения в окнах разного размера, что может вызвать проблемы.</string>
-    <string name="toast_advanced_sizing">Новые варианты размеров можно циклически менять в настройках каждого приложения</string>
     <string name="reload_icon">Значок сброса</string>
     <string name="open_tuning">Настройтесь на</string>
     <string name="open_tuning_tip">Quest Game Tuner позволяет настроить разрешение, FPS и многое другое!</string>
     <string name="tuner_options">⚙</string>
-    <string name="launch_out_message">Запуск 2D-приложений или веб-сайтов в собственном окне позволяет упростить многозадачность на устройствах Quest,
-        но некоторые приложения могут запускаться не всегда.\n\nЕсли у вас возникли проблемы, отключите эту опцию!</string>
-    <string name="launch_size_message">Запуск 2D-приложений или веб-сайтов в собственном окне позволяет упростить многозадачность на устройствах Quest,
-        но некоторые приложения не всегда запускаются.\n
-        \nУстановка пользовательских размеров окон устраняет проблемы с запуском приложений, отображает некоторые приложения немного четче и позволяет использовать различные размеры окон в плоском представлении.
-        \Однако иногда это может привести к застреванию окон или сбою Lightning Launcher.\n
-        \nВсе эти параметры могут быть установлены только для каждого приложения.\n
-        \nЕсли у вас возникли проблемы, отключите эту опцию и убедитесь, что все приложения не настроены на запуск в собственных окнах. Перезагрузите компьютер, чтобы исправить зависшие окна.</string>
     <string name="hidden_groups_message">Если отключить эту опцию, верхняя панель будет скрыта, когда вы не находитесь в режиме редактирования. \n
         \nКнопка настроек также будет скрыта, когда вы не находитесь в режиме редактирования.\n
         \nДля того чтобы открыть настройки, нажмите кнопку назад.</string>
-    <string name="set_default_launcher_message">Установка Lightning Launcher в качестве домашнего приложения по умолчанию позволит другим приложениям добавлять значки быстрого доступа на домашний экран.
-        \nЭто нужно сделать только один раз.\n
-        \nЭто не заменит пусковую установку по умолчанию на устройствах VR и не изменит работу самой программы Lightning Launcher.\n\n
-        Если вы хотите сделать это, проверьте Настройка ярлыков/Настройки ярлыков для ярлыков в Lightning Launcher.</string>
     <string name="download_browser_message">Чтобы получить максимальную отдачу, вы должны установить Lightning Browser, чтобы открывать сайты в Lightning Launcher.\n
         \n(Также вы можете попробовать изменить браузер в Настройки -&gt; Дополнительные настройки)</string>
     <string name="update_browser_message">Чтобы получить максимальную отдачу, необходимо обновить Lightning Browser.</string>
@@ -132,7 +107,6 @@
     <string name="website_info3">На устройствах Quest можно запустить браузер Meta Quest Browser, который поддерживает веб-контент VR.
         \nУстановку по умолчанию можно задать в разделе "Дополнительные настройки".</string>
     <string name="add_website">Добавить сайт</string>
-    <string name="add_website_tip">Добавление веб-сайта в пусковую установку</string>
     <string name="add_website_url_label">Введите URL-адрес любого веб-сайта</string>
     <string name="add_website_bad_url">Введите действительный URL-адрес</string>
     <string name="add_website_used_url">Этот сайт уже находится в %1$s</string>
@@ -151,8 +125,6 @@
     <string name="cancel">Отмена</string>
     <string name="understood">Есть!</string>
     <string name="confirm">Подтвердите</string>
-    <string name="next">Продолжить</string>
-    <string name="size_none">Открыть в окне по умолчанию</string>
     <string name="size_own">Открыть в собственном окне App\</string>
     <string name="size_phone">Открыть в окне в стиле телефона</string>
     <string name="size_small">Открыть в маленьком окне 4:3</string>
@@ -165,8 +137,6 @@
     <string name="browser_quest">Открыть вкладку браузера Quest</string>
     <string name="browser_quest_shortcut">Открыть как веб-приложение Quest Browser</string>
     <string name="browser_system">Попробуйте открыть в системе по умолчанию</string>
-    <string name="edit_off">Включите режим редактирования</string>
-    <string name="edit_on">Выключить режим редактирования</string>
     <string name="edit_move">Переместить</string>
     <string name="edit_copy">Копировать</string>
     <string name="selection_hint_none">Нажмите на приложение, чтобы выбрать его, или нажмите здесь, чтобы выбрать все</string>
@@ -205,8 +175,6 @@
     <string name="saved_settings">Сохранение конфигурации в</string>
     <string name="saved_settings_loading">Импорт, пожалуйста, подождите..</string>
     <string name="saved_settings_error">Ошибка при копировании файла!</string>
-    <string name="loaded_settings1">Импортированная конфигурация,</string>
-    <string name="loaded_settings2">теперь пусковая установка должна закрыться!</string>
     <string name="default_groups_title">Настройки группы по умолчанию</string>
     <string name="default_groups_info">Текущие группы по умолчанию:\n
         \n%1$s\n
@@ -232,16 +200,10 @@
     <string name="clear_icons_cancel">Вернуться, ничего не делать</string>
     <string name="toast_cleared_icon_cache">Кэш значков был очищен</string>
     <string name="toast_cleared_icon_all">Все иконки были сброшены к значениям по умолчанию</string>
-    <string name="tip_kill_process">Прекратить работу в фоновом режиме</string>
-    <string name="tip_launch">Запуск приложения</string>
     <string name="tip_info_website">О добавлении веб-сайтов</string>
-    <string name="tip_stop_editing">Выключить режим редактирования</string>
-    <string name="tip_select_all">Выбрать/отменить выбор всех видимых приложений</string>
     <string name="tip_uninstall">Деинсталляция / удаление</string>
-    <string name="tip_uninstall_bulk">Деинсталляция / удаление всех выбранных</string>
     <string name="tip_info">Информация о приложении для Android</string>
     <string name="tip_charts">Просмотр графиков игрового времени\nin Quest Game Tuner</string>
-    <string name="tip_change_icon">Значок изменения</string>
     <string name="tip_save_settings">Резервное копирование всех настроек и группировок</string>
     <string name="tip_load_settings">Восстановление всех настроек и группировок</string>
     <string name="tip_hide">Скрыть это приложение</string>
@@ -249,11 +211,8 @@
     <string name="moved_hidden">Перемещено в</string>
     <string name="moved_hidden_bold">Скрытая группа</string>
     <string name="moved_shown">Перемещено в</string>
-    <string name="refreshed_icon">Обновление значка..</string>
     <string name="addons_main_vr">Ярлыки</string>
     <string name="addons_main_tv">Параметры быстрого доступа</string>
-    <string name="addons_info">Ярлыки облегчают открытие программы запуска.
-        \nIt\ настоятельно рекомендуется установить хотя бы один.</string>
     <string name="addons_tv_info">К сожалению, Android TV ограничивает функциональность сервисов доступности и сторонних пусковых установок.</string>
     <string name="addons_exit">Вернуться к настройкам</string>
     <string name="addons_androidtv">Менеджер запуска Android TV Launcher</string>
@@ -306,7 +265,6 @@
         \n
         \nQuest Game Tuner - это результат сотен часов разработки, исследований и тестирования, проведенных тем же разработчиком, который создал Lightning Launcher.</string>
     <string name="tuner_info_get">Получите Quest Game Tuner на itch.io!</string>
-    <string name="apk_installer">APK-установщик</string>
     <string name="apk_installer_tip">Выберите APK-файл для установки</string>
     <string name="advanced_alpha_preserve">Сохранить детали</string>
 </resources>

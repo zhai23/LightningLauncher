@@ -67,7 +67,6 @@
         android:layout_height="0dp" />
 
     <LinearLayout
-        android:id="@+id/presets"
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:layout_marginEnd="-8dp"
@@ -224,7 +223,6 @@
         tools:visibility="visible" />
 
     <TextView
-        android:id="@+id/usedUrl"
         style="@style/SettingButtonLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -1,17 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="add_group">添加分组</string>
-    <string name="delete_group">删除分组</string>
-    <string name="edit_group">编辑分组</string>
-    <string name="app_details">应用详情</string>
     <string name="apps_hidden">- 隐藏</string>
     <string name="migrated">已导入之前的配置</string>
 
     <string name="edit_mode">编辑模式</string>
     <string name="edit_mode_tip">更改群组、添加网站等等。</string>
-    <string name="edit_mode_disabled">只有主窗口可以编辑</string>
-    <string name="edit_mode_stop">停止编辑</string>
-
     <string name="new_multitasking">启动其他应用程序时关闭 Lightning Launcher 窗口</string>
     <string name="new_multitasking_tip">如果启用，Lightning Launcher 将在您从中打开应用程序时自动关闭</string>
 
@@ -34,7 +28,6 @@
     <string name="app_name_wide">横幅下方</string>
 
     <string name="settings_main">设置</string>
-    <string name="settings_appearance">自定义外观</string>
     <string name="settings_addons_attract">设置快捷方式</string>
     <string name="settings_addons">快捷方式设置</string>
     <string name="settings_addons_tip">使 Lightning Launcher 更易于访问。</string>
@@ -46,7 +39,6 @@
 
     <string name="behavior_header">行为</string>
     <string name="background_header">壁纸样式</string>
-    <string name="hdr_icon">图标布局</string>
     <string name="disp_wide">显示为横幅</string>
     <string name="disp_icon">显示为正方形</string>
     <string name="disp_name">显示名称</string>
@@ -56,7 +48,6 @@
     <string name="advanced_interface">界面选项</string>
     <string name="advanced_reset">重置为默认值</string>
     <string name="advanced_launching">启动选项</string>
-    <string name="advanced_features">附加特性</string>
     <string name="advanced_search">搜索设置</string>
     <string name="advanced_backup">备份恢复</string>
     <string name="advanced_alpha">背景透明度</string>
@@ -72,7 +63,6 @@
     <string name="group_wide_tip">加宽组按钮以确保较长的名称不会被截断。
 \n 仅在启用组并且存在许多组时才会引人注目。</string>
 
-    <string name="clear_cache">重置所有图标</string>
     <string name="clear_labels">重置所有标签</string>
     <string name="group_defaults_button">默认分组</string>
     <string name="icons_settings_button">重置/更新图标</string>
@@ -97,7 +87,6 @@
     <string name="long_press">长按编辑</string>
     <string name="long_press_tip"><b>开启时</b>，长按某个应用程序将进入编辑模式并选择它。
         \n<b>关闭时</b>，长按某个应用程序将显示详细信息。</string>
-    <string name="default_launch_out">默认在应用自身窗口启动</string>
     <string name="search_web">在搜索中显示网络搜索引擎</string>
     <string name="search_hidden">显示搜索中隐藏的应用程序</string>
     <string name="settings_save">导出配置</string>
@@ -105,20 +94,13 @@
     <string name="groupings_save">导出分组</string>
     <string name="groupings_load">导入分组</string>
 
-    <string name="advanced_sizing">允许手机应用使用自身的窗口大小</string>
-    <string name="advanced_sizing_tip">允许在不同大小的窗口中打开应用，可能会导致问题</string>
-    <string name="toast_advanced_sizing">新尺寸选项可在每个应用程序设置中复用</string>
-
     <string name="reload_icon">刷新图标</string>
     <string name="open_tuning">性能优化</string>
     <string name="open_tuning_tip">Quest Game Tuner 可让您调整分辨率、FPS 等！</string>
 
     <string name="tuner_options">选项</string>
 
-    <string name="launch_out_message">在应用自身的窗口中启动 2D 应用程序或网站可让 Quest 设备上的多任务处理变得更轻松，但会导致某些应用程序无法启动。\n\n如果有任何问题，请禁用此选项！</string>
-    <string name="launch_size_message">在应用自身的窗口中启动 2D 应用程序或网站可让 Quest 设备上的多任务处理变得更轻松、但会导致某些应用程序无法启动。\n\n        \n设置自定义窗口大小可以解决应用程序无法启动的问题，使某些应用程序显示得更清晰，并允许在平面视图中使用不同的窗口大小。\n        \n不过，偶尔也会导致窗口卡住或 Lightning Launcher 崩溃。\n\n        \n所有这些选项都只能按应用程序设置。\n\n        \n如果遇到问题，请关闭该选项，并确保任何应用程序都未设置为在自己的窗口中启动。重启以修复卡死的窗口。</string>
     <string name="hidden_groups_message">"关闭该选项将在不进入编辑模式时隐藏顶栏。\n\n        \n不在编辑模式下时，设置按钮也将隐藏。\n\n        \n相反，按下窗口顶部的返回按钮或控制器上的 B 键即可打开设置。\n    "</string>
-    <string name="set_default_launcher_message">"将 Lightning Launcher 设置为默认的安卓主应用程序，其他应用程序就可以在主屏幕上添加快捷图标。\n        \n只需执行一次。\n\n        \n它不会取代VR设备上的实际默认启动器，也不会改变Lightning Launcher本身的操作。\n\n\n        如果你想这样做，请查看设置快捷方式/快捷方式设置以获取Lightning Launcher的快捷方式。\n    "</string>
     <string name="download_browser_message">为了获得最佳体验，您必须安装 Lightning Browser 才能在 Lightning Launcher 中打开网站。\n\n（或者您可以尝试在“高级设置”中更改浏览器，但这可能无法按预期工作）</string>
     <string name="update_browser_message">为了获得最佳体验，您必须更新 Lightning Browser.</string>
 
@@ -133,7 +115,6 @@
     <string name="website_subtitle3">浏览器选择</string>
     <string name="website_info3">在 Quest 设备上，您可以选择在 Meta Quest 浏览器中启动，该浏览器支持 VR 网页内容，但不支持背景音频。</string>
     <string name="add_website">添加网站</string>
-    <string name="add_website_tip">添加网站到启动器</string>
     <string name="add_website_url_label">输入网站 URL</string>
     <string name="add_website_bad_url">输入有效的 URL</string>
     <string name="add_website_used_url">该网站已存在与 %1$s</string>
@@ -153,9 +134,6 @@
     <string name="cancel">关闭</string>
     <string name="understood">了解!</string>
     <string name="confirm">确认</string>
-    <string name="next">继续</string>
-
-    <string name="size_none">打开默认窗口</string>
     <string name="size_own">在自身窗口打开</string>
     <string name="size_phone">在手机窗口中打开</string>
     <string name="size_small">在 4:3 小窗口中打开</string>
@@ -169,9 +147,6 @@
     <string name="browser_quest">在 Meta Quest 浏览器中打开</string>
     <string name="browser_quest_shortcut">以 Quest 浏览器网页应用形式打开</string>
     <string name="browser_system">尝试用默认浏览器打开</string>
-
-    <string name="edit_off">开启编辑模式</string>
-    <string name="edit_on">关闭编辑模式</string>
 
     <string name="edit_move">移动</string>
     <string name="edit_copy">复制</string>
@@ -212,9 +187,6 @@
     <string name="saved_settings">保存配置到</string>
     <string name="saved_settings_loading">正在导入，请稍候…</string>
     <string name="saved_settings_error">复制文件时出错！</string>
-    <string name="loaded_settings1">导入配置</string>
-    <string name="loaded_settings2">现在必须关闭启动器！</string>
-
     <string name="default_groups_title">默认分组设置</string>
     <string name="default_groups_info">当前默认组：\n\n\n        \n%1$s\n\n        \n您可以在编辑模式下通过编辑组来更改他们。\n        \n您现在想做什么？</string>
 
@@ -241,20 +213,11 @@
     <string name="toast_cleared_icon_all">所有图标已经重置为默认</string>
 
     <!--  Tooltips  -->
-    <string name="tip_kill_process">停止后台运行</string>
-    <string name="tip_launch">在应用自身窗口启动一次</string>
-
     <string name="tip_info_website">关于添加网站</string>git
 
-    <string name="tip_stop_editing">关闭编辑模式</string>
-    <string name="tip_select_all">选择/反选所有可见的应用</string>
-
     <string name="tip_uninstall">卸载 / 删除</string>
-    <string name="tip_uninstall_bulk">卸载 / 删除所有选中内容</string>
     <string name="tip_info">安卓应用信息</string>
     <string name="tip_charts">查看游戏时间图表\n使用<i>Quest Game Tuner</i></string>
-    <string name="tip_change_icon">更换图标</string>
-
     <string name="tip_save_settings">备份全部设置和分组</string>
     <string name="tip_load_settings">恢复所有设置和分组</string>
 
@@ -265,12 +228,9 @@
     <string name="moved_hidden">移动到</string>
     <string name="moved_hidden_bold">隐藏分组</string>
     <string name="moved_shown">移动到</string>
-    <string name="refreshed_icon">刷新图标.....</string>
-
     <!-- Addons -->
     <string name="addons_main_vr">安装快捷方式</string>
     <string name="addons_main_tv">快捷方式选项</string>
-    <string name="addons_info">快捷方式能让你更轻松地打开启动器。\n        \\n强烈建议你至少设置使用一个。</string>
     <string name="addons_tv_info">遗憾的是，Android TV 限制了辅助服务和第三方启动器的功能</string>
     <string name="addons_exit">回到设置</string>
 
@@ -325,7 +285,6 @@
     <string name="installed_successfully">安装成功</string>
 
     <!-- v74 APK INSTALLER -->
-    <string name="apk_installer">APK安装程序</string>
     <string name="apk_installer_tip"><b>Quest Game Tuner</b> 是 Lightning Launcher 的开发者历经数百小时开发、研究和测试的成果。</string>
     <string name="advanced_alpha_preserve">保留细节</string>
     <string name="tuner_info_desc">Meta 限制了应用的性能。 <b>Quest Game Tuner</b> 打破了这些限制，让您能够充分利用现有硬件。 您还可以<i>录制更优质的视频</i>、<i>屏蔽广告</i>、<i>自动关机</i>等等。  <b>Quest Game Tuner</b> 是 Lightning Launcher 的开发者历经数百小时开发、研究和测试的成果。</string>
