@@ -152,7 +152,14 @@ public class SettingsManager extends Settings {
         if (!starred && !banner) return base;
 
         final char[] rv = new char[base.length() + 1];
-        rv[0] = banner ? starred ? '\0' : '\1' : '\2';
+        rv[0] = banner ? (starred ? '\0' : '\1') : '\2';
+        base.getChars(0, base.length(), rv, 1);
+        return new String(rv);
+    }
+    public static String getSortableGroupLabel(String base) {
+        if (!StringLib.hasStar(base)) return base;
+        final char[] rv = new char[base.length() + 1];
+        rv[0] = '\0';
         base.getChars(0, base.length(), rv, 1);
         return new String(rv);
     }
@@ -373,7 +380,7 @@ public class SettingsManager extends Settings {
         if ((selected ? selectedGroupsSet : appGroupsSet).isEmpty()) readGroupsAndSort();
         ArrayList<String> sortedGroupList = new ArrayList<>(selected ? getSelectedGroups() : getAppGroups());
 
-        sortedGroupList.sort(Comparator.comparing(StringLib::withoutStar));
+        sortedGroupList.sort(Comparator.comparing(SettingsManager::getSortableGroupLabel));
 
         // Move hidden group to end
         if (sortedGroupList.contains(Settings.HIDDEN_GROUP)) {
