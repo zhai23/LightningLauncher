@@ -1,6 +1,7 @@
 package com.threethan.launcher.data;
 
 import android.graphics.Color;
+import android.os.Build;
 
 import com.threethan.launcher.R;
 import com.threethan.launcher.activity.chainload.ChainLoadActivity;
@@ -11,9 +12,9 @@ import com.threethan.launcher.activity.chainload.ChainLoadActivitySmall;
 import com.threethan.launcher.activity.chainload.ChainLoadActivityWide;
 import com.threethan.launchercore.lib.StringLib;
 import com.threethan.launchercore.util.App;
+import com.threethan.launchercore.util.Platform;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -78,8 +79,9 @@ public abstract class Settings {
     public static final String KEY_SEARCH_HIDDEN = "KEY_SEARCH_HIDDEN";
     public static final int DEFAULT_BACKGROUND_VR = 0;
     public static final int DEFAULT_BACKGROUND_TV = 9;
-    public static final int DEFAULT_ALPHA = 128;
-    public static final boolean DEFAULT_BACKGROUND_ALPHA_PRESERVE = true;
+    public static final int DEFAULT_ALPHA = Platform.isQuest() ? 128 : 255;
+    public static final boolean DEFAULT_BACKGROUND_ALPHA_PRESERVE
+            = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && Platform.isQuest();
     public static final boolean DEFAULT_DARK_MODE = true;
     public static final boolean DEFAULT_GROUPS_ENABLED = true;
     public static final boolean DEFAULT_GROUPS_WIDE = false;

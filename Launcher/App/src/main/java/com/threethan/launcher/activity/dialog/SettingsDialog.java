@@ -4,7 +4,6 @@ import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.os.Build;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
@@ -24,7 +23,6 @@ import com.threethan.launcher.helper.PlatformExt;
 import com.threethan.launcher.helper.PlaytimeHelper;
 import com.threethan.launcher.helper.SettingsSaver;
 import com.threethan.launcher.updater.LauncherUpdater;
-import com.threethan.launchercore.lib.DelayLib;
 import com.threethan.launchercore.util.App;
 import com.threethan.launchercore.util.CustomDialog;
 import com.threethan.launchercore.util.Platform;
@@ -33,7 +31,6 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -315,7 +312,7 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
         dialog.findViewById(R.id.alphaLayout)
                 .setVisibility(Platform.isQuest() ? View.VISIBLE : View.GONE);
 
-        if (Platform.isQuest() && !PlatformExt.isOldVrOs()) {
+        if (Platform.isQuest()) {
             SeekBar alpha = dialog.findViewById(R.id.alphaSeekBar);
             alpha.setProgress(255 - a.dataStoreEditor.getInt(Settings.KEY_BACKGROUND_ALPHA, Settings.DEFAULT_ALPHA));
             alpha.post(() -> alpha.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -345,8 +342,10 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
                 attachSwitchToSetting(alphaPreserve, Settings.KEY_BACKGROUND_ALPHA_PRESERVE,
                         Settings.DEFAULT_BACKGROUND_ALPHA_PRESERVE, v -> a.refreshBackground(), false);
                 alphaPreserve.setVisibility(View.VISIBLE);
+            } else if (Platform.isQuest()) {
+                // Quest 1 supports alpha but not alpha preserve
+                dialog.findViewById(R.id.alphaLayout).setBackgroundResource(R.drawable.lc_bkg_button_section);
             }
-
         }
 
         // Advanced
