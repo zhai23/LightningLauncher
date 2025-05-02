@@ -69,7 +69,7 @@ public class ImageLib {
             //noinspection ResultOfMethodCallIgnored
             Objects.requireNonNull(destinationFile.getParentFile()).mkdirs();
         } catch (Exception ignored) {}
-        try (FileOutputStream fileOutputStream = new FileOutputStream(destinationFile);){
+        try (FileOutputStream fileOutputStream = new FileOutputStream(destinationFile)){
             bitmap.compress(Bitmap.CompressFormat.WEBP, 100, fileOutputStream);
             fileOutputStream.flush();
         } catch (IOException e) {
