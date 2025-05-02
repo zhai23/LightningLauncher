@@ -189,6 +189,7 @@ public class WallpaperLoader {
                 File file = new File(owner.getApplicationInfo().dataDir, Settings.CUSTOM_BACKGROUND_PATH);
                 try {
                     imageBitmap = ImageLib.bitmapFromFile(file);
+                    baseBitmap = imageBitmap;
                 } catch (Exception ignored) {
                 } // In case file no longer exists or similar
             }
