@@ -338,10 +338,17 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
                 }
             }));
             Switch alphaPreserve = dialog.findViewById(R.id.alphaPreserveSwitch);
+            Switch alphaClamp = dialog.findViewById(R.id.alphaClampSwitch);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && Platform.isQuest()) {
                 attachSwitchToSetting(alphaPreserve, Settings.KEY_BACKGROUND_ALPHA_PRESERVE,
                         Settings.DEFAULT_BACKGROUND_ALPHA_PRESERVE, v -> a.refreshBackground(), false);
                 alphaPreserve.setVisibility(View.VISIBLE);
+
+                if (Platform.getVrOsVersion() >= 77 && Platform.isQuestGen3()) {
+                    attachSwitchToSetting(alphaClamp, Settings.KEY_BACKGROUND_BLUR_CLAMP,
+                            Settings.DEFAULT_BACKGROUND_BLUR_CLAMP, v -> a.refreshBackground(), false);
+                    alphaClamp.setVisibility(View.VISIBLE);
+                }
             } else if (Platform.isQuest()) {
                 // Quest 1 supports alpha but not alpha preserve
                 dialog.findViewById(R.id.alphaLayout).setBackgroundResource(R.drawable.lc_bkg_button_section);
