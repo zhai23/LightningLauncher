@@ -46,6 +46,7 @@
     <string name="advanced_alpha">Achtergrond doorschijnendheid</string>
     <string name="advanced_alpha_preserve_tip">Behoud achtergronddetails wanneer passthrough is uitgeschakeld en gebruik</string>
     <string name="advanced_alpha_tip">doorsnedetranslucentie wanneer deze is ingeschakeld.</string>
+    <string name="advanced_alpha_clamp_tip">Zorgt voor een wazige achtergrond tijdens de passthrough. <i>Beperkt de hoeveelheid doorschijnendheid.</i></string>
     <string name="dark_mode">Donkere modus</string>
     <string name="dark_mode_tip">Als deze optie is ingeschakeld, worden labels wit weergegeven op een donkere achtergrond.</string>
     <string name="group_mode">Groepen inschakelen</string>
@@ -265,4 +266,5 @@
     <string name="apk_installer_tip">Selecteer een APK-bestand om te installeren</string>
     <string name="advanced_alpha_preserve">Details behouden</string>
     <string name="force_untranslated">Brug engelsk sprog</string>
+    <string name="advanced_alpha_clamp">Quest 3 passthrough transparantievervaging</string>
 </resources>

@@ -46,6 +46,7 @@
     <string name="advanced_alpha">Przezroczystość tła</string>
     <string name="advanced_alpha_preserve_tip">Zachowaj szczegóły tła, gdy przepuszczanie jest wyłączone, i użyj przezroczystości sekcyjnej, gdy jest włączona.</string>
     <string name="advanced_alpha_tip">Sprawia, że tło Lightning Launcher jest półprzezroczyste w trybie passthrough.</string>
+    <string name="advanced_alpha_clamp_tip">Umożliwia rozmycie tła podczas przechodzenia. <i>Ogranicza stopień przezroczystości.</i></string>
     <string name="dark_mode">Tryb ciemny</string>
     <string name="dark_mode_tip">Jeśli jest włączona, etykiety będą białe na ciemnym tle.</string>
     <string name="group_mode">Włącz grupy</string>
@@ -269,4 +270,5 @@
     <string name="apk_installer_tip">Wybierz plik APK do zainstalowania</string>
     <string name="advanced_alpha_preserve">Zachowaj szczegóły</string>
     <string name="force_untranslated">Używaj języka angielskiego</string>
+    <string name="advanced_alpha_clamp">Zadanie 3 przepuszczanie przezroczystości rozmycie</string>
 </resources>

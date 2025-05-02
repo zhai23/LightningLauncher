@@ -46,6 +46,7 @@
     <string name="advanced_alpha">Genomskinlighet i bakgrunden</string>
     <string name="advanced_alpha_preserve_tip">Spara bakgrundsdetaljer när passthrough är avstängd och använd</string>
     <string name="advanced_alpha_tip">sektionsgenomskinlighet när den är på.</string>
+    <string name="advanced_alpha_clamp_tip">Tillåter en suddig bakgrund vid passthrough. <i>Begränsar mängden genomskinlighet.</i></string>
     <string name="dark_mode">Mörkt läge</string>
     <string name="dark_mode_tip">Om den är aktiverad visas etiketterna vita på en mörk bakgrund.</string>
     <string name="group_mode">Aktivera grupper</string>
@@ -269,4 +270,5 @@
     <string name="apk_installer_tip">Välj en APK-fil som ska installeras</string>
     <string name="advanced_alpha_preserve">Bevara detaljer</string>
     <string name="force_untranslated">Använd engelska språket</string>
+    <string name="advanced_alpha_clamp">Oskärpa genomskinlighet i Quest 3</string>
 </resources>

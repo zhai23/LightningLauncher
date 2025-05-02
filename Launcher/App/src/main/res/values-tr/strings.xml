@@ -46,6 +46,7 @@
     <string name="advanced_alpha">Arka Plan Saydamlığı</string>
     <string name="advanced_alpha_preserve_tip">Geçiş kapalıyken arka plan ayrıntılarını koru ve açıkken kesitsel yarı saydamlığı kullan.</string>
     <string name="advanced_alpha_tip">Lightning Launcher\'ın arka planını geçişte yarı saydam hale getirir.</string>
+    <string name="advanced_alpha_clamp_tip">Geçiş sırasında bulanık bir arka plana izin verir. <i>Yarı saydamlık miktarını sınırlar.</i></string>
     <string name="dark_mode">Karanlık Mod</string>
     <string name="dark_mode_tip">Açıksa, etiketler koyu bir arka plan üzerinde beyaz görünecektir.</string>
     <string name="group_mode">Grupları Etkinleştir</string>
@@ -269,4 +270,5 @@
     <string name="apk_installer_tip">Yüklemek için bir APK dosyası seçin</string>
     <string name="advanced_alpha_preserve">Ayrıntıları Koru</string>
     <string name="force_untranslated">İngilizce Dilini Kullan</string>
+    <string name="advanced_alpha_clamp">Görev 3 geçiş şeffaflığı bulanıklığı</string>
 </resources>

@@ -46,6 +46,7 @@
     <string name="advanced_alpha">Transluciditate fundal</string>
     <string name="advanced_alpha_preserve_tip">Păstrați detaliile de fundal când trecerea este dezactivată și utilizați</string>
     <string name="advanced_alpha_tip">transluciditatea secțională atunci când este activată.</string>
+    <string name="advanced_alpha_clamp_tip">Permite un fundal neclar în timpul trecerii. <i>Limitează cantitatea de transluciditate.</i></string>
     <string name="dark_mode">Mod întunecat</string>
     <string name="dark_mode_tip">Dacă este activată, etichetele vor apărea albe pe un fundal închis.</string>
     <string name="group_mode">Activarea grupurilor</string>
@@ -269,4 +270,5 @@
     <string name="apk_installer_tip">Selectați un fișier APK pentru instalare</string>
     <string name="advanced_alpha_preserve">Păstrează detaliile</string>
     <string name="force_untranslated">Folosiți limba engleză</string>
+    <string name="advanced_alpha_clamp">Încețoșarea transparenței Quest 3</string>
 </resources>

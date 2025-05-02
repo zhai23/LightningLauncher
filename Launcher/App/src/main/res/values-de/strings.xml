@@ -46,6 +46,7 @@
     <string name="advanced_alpha">Transluzenz des Hintergrunds</string>
     <string name="advanced_alpha_preserve_tip">Bewahren Sie Hintergrunddetails, wenn die Passthrough-Funktion deaktiviert ist, und verwenden Sie die abschnittsweise Transluzenz, wenn sie aktiviert ist.</string>
     <string name="advanced_alpha_tip">Macht den Hintergrund von Lightning Launcher im Passthrough durchsichtig.</string>
+    <string name="advanced_alpha_clamp_tip">Ermöglicht einen unscharfen Hintergrund im Durchgang. <i>Begrenzt die Transparenz.</i></string>
     <string name="dark_mode">Dunkler Modus</string>
     <string name="dark_mode_tip">Wenn diese Option aktiviert ist, erscheinen die Etiketten weiß auf einem dunklen Hintergrund.</string>
     <string name="group_mode">Gruppen freigeben</string>
@@ -269,4 +270,5 @@
     <string name="apk_installer_tip">Wählen Sie eine APK-Datei zur Installation aus</string>
     <string name="advanced_alpha_preserve">Details bewahren</string>
     <string name="force_untranslated">Verwenden Sie die englische Sprache</string>
+    <string name="advanced_alpha_clamp">Quest 3 Passthrough-Transparenzunschärfe</string>
 </resources>

@@ -46,6 +46,7 @@
     <string name="advanced_alpha">배경 반투명도</string>
     <string name="advanced_alpha_preserve_tip">패스스루가 꺼져 있으면 배경 디테일을 유지하고,</string>
     <string name="advanced_alpha_tip">켜져 있으면 단면 반투명도를 사용합니다.</string>
+    <string name="advanced_alpha_clamp_tip">패스스루 중 배경을 흐리게 처리할 수 있습니다. <i>반투명도의 양을 제한합니다.</i></string>
     <string name="dark_mode">다크 모드</string>
     <string name="dark_mode_tip">켜져 있으면 레이블이 어두운 배경에 흰색으로 표시됩니다.</string>
     <string name="group_mode">그룹 사용</string>
@@ -269,4 +270,5 @@
     <string name="apk_installer_tip">설치할 APK 파일 선택</string>
     <string name="advanced_alpha_preserve">세부정보 유지</string>
     <string name="force_untranslated">영어를 사용하세요</string>
+    <string name="advanced_alpha_clamp">퀘스트 3 패스스루 투명도 흐림</string>
 </resources>

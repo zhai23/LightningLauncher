@@ -46,6 +46,7 @@
     <string name="advanced_alpha">Translucidité de l\'arrière-plan</string>
     <string name="advanced_alpha_preserve_tip">Conservez les détails de l\'arrière-plan lorsque le passage est désactivé et utilisez la translucidité sectionnelle lorsqu\'il est activé.</string>
     <string name="advanced_alpha_tip">Rend l\'arrière-plan du Lightning Launcher translucide en transparence.</string>
+    <string name="advanced_alpha_clamp_tip">Permet un arrière-plan flou lors du passage. <i>Limite la translucidité.</i></string>
     <string name="dark_mode">Mode sombre</string>
     <string name="dark_mode_tip">Si cette option est activée, les étiquettes apparaîtront en blanc sur un fond sombre.</string>
     <string name="group_mode">Activer les groupes</string>
@@ -265,4 +266,5 @@
     <string name="apk_installer_tip">Sélectionnez un fichier APK à installer</string>
     <string name="advanced_alpha_preserve">Conserver les détails</string>
     <string name="force_untranslated">Utiliser la langue anglaise</string>
+    <string name="advanced_alpha_clamp">Flou de transparence du passage Quest 3</string>
 </resources>

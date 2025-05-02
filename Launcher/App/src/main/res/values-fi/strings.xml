@@ -46,6 +46,7 @@
     <string name="advanced_alpha">Taustan läpikuultavuus</string>
     <string name="advanced_alpha_preserve_tip">Säilytä taustatiedot, kun läpivienti on pois päältä, ja käytä</string>
     <string name="advanced_alpha_tip">poikkileikkauksen läpikuultavuus, kun se on päällä.</string>
+    <string name="advanced_alpha_clamp_tip">Mahdollistaa taustan sumentumisen läpiviennin aikana. <i>Rajoittaa läpikuultavuuden määrää.</i></string>
     <string name="dark_mode">Tumma tila</string>
     <string name="dark_mode_tip">Jos tämä on päällä, tarrat näkyvät valkoisina tummalla taustalla.</string>
     <string name="group_mode">Ota ryhmät käyttöön</string>
@@ -269,4 +270,5 @@
     <string name="apk_installer_tip">Valitse asennettava APK-tiedosto</string>
     <string name="advanced_alpha_preserve">Säilytä tiedot</string>
     <string name="force_untranslated">Käytä englannin kieltä</string>
+    <string name="advanced_alpha_clamp">Quest 3:n läpinäkyvyyden hämärtyminen</string>
 </resources>

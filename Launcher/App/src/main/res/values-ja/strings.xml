@@ -46,6 +46,7 @@
     <string name="advanced_alpha">背景の透明度</string>
     <string name="advanced_alpha_preserve_tip">パススルーがオフの場合は背景の詳細​​を保持し、オンの場合は断面の半透明を使用します。</string>
     <string name="advanced_alpha_tip">Lightning Launcherの背景をパススルーで半透明にする。</string>
+    <string name="advanced_alpha_clamp_tip">パススルー中に背景をぼかすことができます。<i>半透明の量を制限します。</i></string>
     <string name="dark_mode">ダークモード</string>
     <string name="dark_mode_tip">オンの場合、ラベルは暗い背景に白く表示される。</string>
     <string name="group_mode">グループを有効にする</string>
@@ -265,4 +266,5 @@
     <string name="apk_installer_tip">インストールするAPKファイルを選択する</string>
     <string name="advanced_alpha_preserve">詳細の保存</string>
     <string name="force_untranslated">英語を使用する</string>
+    <string name="advanced_alpha_clamp">クエスト3のパススルー透明ぼかし</string>
 </resources>

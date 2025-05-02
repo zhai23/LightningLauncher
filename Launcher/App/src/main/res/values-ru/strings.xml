@@ -46,6 +46,7 @@
     <string name="advanced_alpha">Прозрачность фона</string>
     <string name="advanced_alpha_preserve_tip">Сохраняйте детали фона, когда сквозное пропускание отключено, и используйте полупрозрачность секций, когда оно включено.</string>
     <string name="advanced_alpha_tip">Делает фон Lightning Launcher полупрозрачным в режиме passthrough.</string>
+    <string name="advanced_alpha_clamp_tip">Позволяет использовать размытый фон при сквозном прохождении. <i>Ограничивает степень полупрозрачности.</i></string>
     <string name="dark_mode">Темный режим</string>
     <string name="dark_mode_tip">Если включено, то этикетки будут выглядеть белыми на темном фоне.</string>
     <string name="group_mode">Включить группы</string>
@@ -269,4 +270,5 @@
     <string name="apk_installer_tip">Выберите APK-файл для установки</string>
     <string name="advanced_alpha_preserve">Сохранить детали</string>
     <string name="force_untranslated">Используйте английский язык</string>
+    <string name="advanced_alpha_clamp">Quest 3 сквозная прозрачность размытие</string>
 </resources>

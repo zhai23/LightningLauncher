@@ -46,6 +46,7 @@
     <string name="advanced_alpha">Gennemsigtighed i baggrunden</string>
     <string name="advanced_alpha_preserve_tip">Bevar baggrundsdetaljer, når passthrough er slået fra, og brug</string>
     <string name="advanced_alpha_tip">sektionsgennemsigtighed, når den er tændt.</string>
+    <string name="advanced_alpha_clamp_tip">Giver mulighed for en sløret baggrund i passthrough. <i>Begrænser mængden af ​​gennemsigtighed.</i></string>
     <string name="dark_mode">Mørk tilstand</string>
     <string name="dark_mode_tip">Hvis den er slået til, bliver etiketterne hvide på en mørk baggrund.</string>
     <string name="group_mode">Aktivér grupper</string>
@@ -269,4 +270,5 @@
     <string name="apk_installer_tip">Vælg en APK-fil, der skal installeres</string>
     <string name="advanced_alpha_preserve">Bevar detaljer</string>
     <string name="force_untranslated">Brug engelsk sprog</string>
+    <string name="advanced_alpha_clamp">Quest 3-gennemsigtighedssløring</string>
 </resources>

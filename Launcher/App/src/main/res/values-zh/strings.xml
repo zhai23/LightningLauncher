@@ -55,6 +55,7 @@
 
     <string name="advanced_alpha_preserve_tip">关闭透视时保留背景细节，开启透视时使用局部半透明效果。</string>
     <string name="advanced_alpha_tip">当直通摄像头打开时，使 Lightning Launcher 的背景变得半透明。</string>
+    <string name="advanced_alpha_clamp_tip">允许在真实世界透视模式下模糊背景。<i>限制半透明度。</i></string>
     <string name="dark_mode">深色模式主题。</string>
     <string name="dark_mode_tip">如果打开，标签将在深色背景上显示白色。</string>
     <string name="group_mode">启用分组</string>
@@ -291,4 +292,5 @@
     <string name="tuner_info_desc">Meta 限制了应用的性能。 <b>Quest Game Tuner</b> 打破了这些限制，让您能够充分利用现有硬件。 您还可以<i>录制更优质的视频</i>、<i>屏蔽广告</i>、<i>自动关机</i>等等。  <b>Quest Game Tuner</b> 是 Lightning Launcher 的开发者历经数百小时开发、研究和测试的成果。</string>
     <string name="tuner_info_get">在 itch.io 上获取<b>Quest Game Tuner</b>！</string>
     <string name="force_untranslated">使用英语</string>
+    <string name="advanced_alpha_clamp">Quest 3 透视透明模糊</string>
 </resources>

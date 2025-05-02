@@ -46,6 +46,7 @@
     <string name="advanced_alpha">Διαφάνεια φόντου</string>
     <string name="advanced_alpha_preserve_tip">Διατηρήστε τις λεπτομέρειες του φόντου όταν η διέλευση είναι απενεργοποιημένη και χρησιμοποιήστε</string>
     <string name="advanced_alpha_tip">ημιδιαφάνεια τομής όταν είναι ενεργοποιημένο.</string>
+    <string name="advanced_alpha_clamp_tip">Επιτρέπει ένα θολό φόντο κατά τη μετάβαση. <i>Περιορίζει την ποσότητα ημιδιαφάνειας.</i></string>
     <string name="dark_mode">Σκοτεινή λειτουργία</string>
     <string name="dark_mode_tip">Εάν είναι ενεργοποιημένη, οι ετικέτες θα εμφανίζονται λευκές σε σκούρο φόντο.</string>
     <string name="group_mode">Ενεργοποίηση ομάδων</string>
@@ -269,4 +270,5 @@
     <string name="apk_installer_tip">Επιλέξτε ένα αρχείο APK για εγκατάσταση</string>
     <string name="advanced_alpha_preserve">Διατήρηση λεπτομερειών</string>
     <string name="force_untranslated">Χρησιμοποιήστε την αγγλική γλώσσα</string>
+    <string name="advanced_alpha_clamp">Θάμπωμα διαφάνειας διέλευσης Quest 3</string>
 </resources>
