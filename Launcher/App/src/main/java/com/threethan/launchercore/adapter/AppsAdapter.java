@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.asynclayoutinflater.view.AsyncLayoutInflater;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
@@ -34,6 +33,8 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
+
+import tech.okcredit.layout_inflator.OkLayoutInflater;
 
 public class AppsAdapter<VH extends AppsAdapter.AppViewHolder>
         extends ListAdapter<ApplicationInfo, VH> {
@@ -123,7 +124,7 @@ public class AppsAdapter<VH extends AppsAdapter.AppViewHolder>
         }
     }
 
-    private final AsyncLayoutInflater inflater = new AsyncLayoutInflater(Core.context());
+    private final OkLayoutInflater inflater = new OkLayoutInflater(Core.context());
 
     @NonNull
     @Override
@@ -134,7 +135,7 @@ public class AppsAdapter<VH extends AppsAdapter.AppViewHolder>
         holder.container = container;
 
         inflater.inflate(itemLayoutResId, parent,
-                (view, resId, parent1) -> {
+                (view, continuation) -> {
                     holder.view = view;
                     holder.imageView = view.findViewById(R.id.itemImage);
 
@@ -143,6 +144,8 @@ public class AppsAdapter<VH extends AppsAdapter.AppViewHolder>
                     setupViewHolder(holder);
 
                     holder.container.post(holder::onReady);
+
+                    return continuation;
                 });
 
         return holder;
