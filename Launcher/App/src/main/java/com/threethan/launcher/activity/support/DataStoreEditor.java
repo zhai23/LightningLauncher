@@ -1,6 +1,5 @@
 package com.threethan.launcher.activity.support;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -210,7 +209,6 @@ public class DataStoreEditor implements SharedPreferences, SharedPreferences.Edi
                 "null was passed as default value on a data store read, " +
                 "this may not work as expected!\n A saved value of '" + nnDef +
                 "' will be considered as equivalent to a nonexistent value for this operation.");
-        @SuppressLint("UnsafeOptInUsageWarning")
         Single<T> value = dataStoreRX.data().firstOrError()
                 .map(prefs -> prefs.get(prefKey)).onErrorReturn(throwable -> nnDef);
         if (def == null) {
@@ -228,7 +226,6 @@ public class DataStoreEditor implements SharedPreferences, SharedPreferences.Edi
     public <T> T getValue(String key, @NonNull T def) {
         Preferences.Key<T> prefKey = getKey(key, def);
         T nullFallback = null;
-        @SuppressLint("UnsafeOptInUsageWarning")
         Single<T> value = dataStoreRX.data().firstOrError()
                 .map(prefs -> prefs.get(prefKey)).onErrorReturn(throwable -> def);
         return value.blockingGet();
@@ -334,7 +331,6 @@ public class DataStoreEditor implements SharedPreferences, SharedPreferences.Edi
      */
     public <T> void removeValue(String key, Class<T> tClass, boolean synchronous){
         Preferences.Key<T> prefKey = getKey(key, tClass);
-        @SuppressLint("UnsafeOptInUsageWarning")
         Single<Preferences> updateResult =  dataStoreRX.updateDataAsync(prefsIn -> {
             MutablePreferences mutablePreferences = prefsIn.toMutablePreferences();
             T remove = mutablePreferences.remove(prefKey);
@@ -347,7 +343,6 @@ public class DataStoreEditor implements SharedPreferences, SharedPreferences.Edi
      * Asynchronously clears ALL data in the store
      */
     public DataStoreEditor clear(){
-        @SuppressLint("UnsafeOptInUsageWarning")
         Single<Preferences> updateResult =  dataStoreRX.updateDataAsync(prefsIn -> {
             MutablePreferences mutablePreferences = prefsIn.toMutablePreferences();
             mutablePreferences.clear();
