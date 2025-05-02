@@ -166,7 +166,6 @@ public abstract class IconUpdater {
         try (InputStream inputStream = new URL(url).openStream()) {
             // Try to save
             if (saveStream(inputStream, iconFile)) {
-                inputStream.close();
                 return true;
             }
         } catch (IOException ignored) {}

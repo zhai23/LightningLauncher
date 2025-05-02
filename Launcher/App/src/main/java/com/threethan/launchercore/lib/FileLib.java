@@ -26,21 +26,18 @@ public class FileLib {
         return fileOrDirectory.delete();
     }
 
-    /** */ // Fix requires higher API
-    public static boolean copy(File fIn, File fOut) {
-        try {
-            InputStream in = new FileInputStream(fIn);
-            //noinspection ResultOfMethodCallIgnored
-            Objects.requireNonNull(fOut.getParentFile()).mkdirs();
-            OutputStream out = new FileOutputStream(fOut);
+    public static boolean copy(File src, File dst) {
+        try (InputStream in = new FileInputStream(src);
+             OutputStream out = new FileOutputStream(dst)) {
+            // Transfer bytes from in to out
             byte[] buf = new byte[1024];
             int len;
-            while ((len = in.read(buf)) > 0) out.write(buf, 0, len);
-            in.close();
-            out.close();
+            while ((len = in.read(buf)) > 0) {
+                out.write(buf, 0, len);
+            }
             return true;
         } catch (IOException e) {
-            Log.w("Error when copying file", e);
+            Log.w("FileLib", "Failed to copy file", e);
             return false;
         }
     }

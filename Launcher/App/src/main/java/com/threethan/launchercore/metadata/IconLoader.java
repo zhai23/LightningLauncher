@@ -59,53 +59,46 @@ public abstract class IconLoader {
     private static void loadIcon(Consumer<Drawable> callback, ApplicationInfo app) {
         // Everything in the try will still attempt to download an icon
         Drawable appIcon = null;
-        try {
-            // Try to load from external custom icon file
-            final File iconCustomFile = iconCustomFileForApp(app);
-            if (iconCustomFile.exists())
-                appIcon = Drawable.createFromPath(iconCustomFile.getAbsolutePath());
-            if (appIcon != null) {
-                callback.accept(appIcon);
-                return;
-            }
-
-            // Try to load from cached icon file
-            final File iconCacheFile = iconCacheFileForApp(app);
-
-            if (iconCacheFile.exists())
-                appIcon = Drawable.createFromPath(iconCacheFile.getAbsolutePath());
-            if (appIcon != null) {
-                callback.accept(appIcon);
-                return;
-            }
-
-            // Check Icon
-            int iconId = app.icon;
-            // Check AndroidTV banner
-            if (app.banner != 0 && App.isBanner(app)) iconId = app.banner;
-
-            // Try to load from package manager
-            PackageManager packageManager = Core.context().getPackageManager();
-            Resources resources = packageManager.getResourcesForApplication(app);
-
-            if (iconId == 0) iconId = android.R.drawable.sym_def_app_icon;
-            appIcon = ResourcesCompat.getDrawable(resources, iconId, null);
+        // Try to load from external custom icon file
+        final File iconCustomFile = iconCustomFileForApp(app);
+        if (iconCustomFile.exists())
+            appIcon = Drawable.createFromPath(iconCustomFile.getAbsolutePath());
+        if (appIcon != null) {
             callback.accept(appIcon);
-        } catch (PackageManager.NameNotFoundException ignored) {
-        } finally {
-            // Attempt to download the icon for this app from an online repo
-            // Done AFTER saving the drawable version to prevent a race condition)
-            Drawable oldIcon = appIcon;
-            IconUpdater.check(app, icon -> {
-                // Callback again only if icon has changed
-                if (oldIcon instanceof BitmapDrawable oldBmp && icon instanceof BitmapDrawable newBmp) {
-                    if (!ImageLib.isIdenticalFast(oldBmp.getBitmap(), newBmp.getBitmap()))
-                        callback.accept(icon);
-                } else {
-                    callback.accept(icon);
-                }
-            });
+            return;
         }
+
+        // Try to load from cached icon file
+        final File iconCacheFile = iconCacheFileForApp(app);
+
+        if (iconCacheFile.exists())
+            appIcon = Drawable.createFromPath(iconCacheFile.getAbsolutePath());
+        if (appIcon != null) {
+            callback.accept(appIcon);
+            return;
+        }
+        // Try to load from package manager
+        PackageManager packageManager = Core.context().getPackageManager();
+        if (app.banner != 0 && App.isBanner(app)) {
+            appIcon = packageManager.getApplicationBanner(app);
+            callback.accept(appIcon);
+        } else {
+            appIcon = packageManager.getApplicationIcon(app);
+            callback.accept(appIcon);
+        }
+
+        // Attempt to download the icon for this app from an online repo
+        // Done AFTER saving the drawable version to prevent a race condition)
+        Drawable oldIcon = appIcon;
+        IconUpdater.check(app, icon -> {
+            // Callback again only if icon has changed
+            if (oldIcon instanceof BitmapDrawable oldBmp && icon instanceof BitmapDrawable newBmp) {
+                if (!ImageLib.isIdenticalFast(oldBmp.getBitmap(), newBmp.getBitmap()))
+                    callback.accept(icon);
+            } else {
+                callback.accept(icon);
+            }
+        });
     }
 
     /** @return The file location which should be used for the applications cache file */

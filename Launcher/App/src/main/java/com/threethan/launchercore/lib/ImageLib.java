@@ -3,6 +3,7 @@ package com.threethan.launchercore.lib;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
@@ -17,53 +18,19 @@ import java.util.Objects;
 /** @noinspection unused*/
 public class ImageLib {
 
-    public static Bitmap getResizedBitmap(Bitmap originalBitmap, int maxHeight) {
+    public static Bitmap getResizedBitmap(Bitmap originalBitmap, int maxSize) {
         int width = originalBitmap.getWidth();
         int height = originalBitmap.getHeight();
 
         float bitmapRatio = (float) width / (float) height;
-
-        height = maxHeight;
-        width = (int) (height * bitmapRatio);
-        return Bitmap.createScaledBitmap(originalBitmap, width, height, true);
-    }
-
-    public static void saveBitmap(Bitmap bitmap, File destinationFile) {
-        FileOutputStream fileOutputStream;
-        try {
-            //noinspection ResultOfMethodCallIgnored
-            Objects.requireNonNull(destinationFile.getParentFile()).mkdirs();
-            fileOutputStream = new FileOutputStream(destinationFile);
-            bitmap.compress(Bitmap.CompressFormat.WEBP, 90, fileOutputStream);
-            fileOutputStream.flush();
-            fileOutputStream.close();
-        } catch (IOException e) {
-            //noinspection CallToPrintStackTrace
-            e.printStackTrace();
+        if (bitmapRatio > 1) {
+            width = maxSize;
+            height = (int) (width / bitmapRatio);
+        } else {
+            height = maxSize;
+            width = (int) (height * bitmapRatio);
         }
-    }
-
-    public static Bitmap bitmapFromDrawable (Drawable drawable) {
-        if (drawable instanceof BitmapDrawable) return ((BitmapDrawable)drawable).getBitmap();
-
-        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawable.draw(canvas);
-
-        return bitmap;
-    }
-
-    @Nullable
-    public static Bitmap bitmapFromFile (File file) {
-        return BitmapFactory.decodeFile(file.getPath());
-    }
-
-    @Nullable
-    public static Bitmap bitmapFromStream(InputStream stream) {
-        final Bitmap bitmap = BitmapFactory.decodeStream(stream);
-        try { stream.close(); } catch (IOException ignored) {}
-        return bitmap;
+        return Bitmap.createScaledBitmap(originalBitmap, width, height, true);
     }
 
     /**
@@ -95,5 +62,85 @@ public class ImageLib {
             if (a.getPixel(x,y) != b.getPixel(x,y)) return false;
         }
         return true;
+    }
+
+    public static void saveBitmap(Bitmap bitmap, File destinationFile) {
+        try {
+            //noinspection ResultOfMethodCallIgnored
+            Objects.requireNonNull(destinationFile.getParentFile()).mkdirs();
+        } catch (Exception ignored) {}
+        try (FileOutputStream fileOutputStream = new FileOutputStream(destinationFile);){
+            bitmap.compress(Bitmap.CompressFormat.WEBP, 100, fileOutputStream);
+            fileOutputStream.flush();
+        } catch (IOException e) {
+            //noinspection CallToPrintStackTrace
+            e.printStackTrace();
+        }
+    }
+
+    public static Bitmap bitmapFromDrawable (Drawable drawable) {
+        if (drawable instanceof BitmapDrawable) return ((BitmapDrawable)drawable).getBitmap();
+
+        if (drawable == null || drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) return null;
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        final Rect bounds = drawable.getBounds();
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+        drawable.setBounds(bounds);
+        return bitmap;
+    }
+
+    @Nullable
+    public static Bitmap bitmapFromFile (File file) {
+        return BitmapFactory.decodeFile(file.getPath());
+    }
+
+    @Nullable
+    public static Bitmap bitmapFromStream(InputStream stream) {
+        final Bitmap bitmap = BitmapFactory.decodeStream(stream);
+        try { stream.close(); } catch (IOException ignored) {}
+        return bitmap;
+    }
+
+    public static Bitmap cropBitmapToRatio(Bitmap originalBitmap, float targetRatio) {
+        int originalWidth = originalBitmap.getWidth();
+        int originalHeight = originalBitmap.getHeight();
+
+        // Calculate the target width and height based on the desired ratio
+        int targetWidth, targetHeight;
+
+        if (originalWidth > originalHeight * targetRatio) {
+            // The original bitmap is wider than the target ratio
+            targetHeight = originalHeight;
+            targetWidth = (int) (targetHeight * targetRatio);
+        } else if (originalWidth < originalHeight * targetRatio) {
+            // The original bitmap is taller than the target ratio
+            targetWidth = originalWidth;
+            targetHeight = (int) (targetWidth / targetRatio);
+        } else return originalBitmap;
+
+        // Calculate the starting point for cropping (to center the crop area)
+        int startX = (originalWidth - targetWidth) / 2;
+        int startY = (originalHeight - targetHeight) / 2;
+
+        // Crop the bitmap
+        return Bitmap.createBitmap(originalBitmap, startX, startY, targetWidth, targetHeight);
+    }
+    public static Bitmap bitmapFromDrawableAtSize(Drawable drawable, int targetWidth, int targetHeight) {
+        if (drawable == null ) return null;
+        Bitmap bitmap = Bitmap.createBitmap(targetWidth, targetHeight, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+
+        final float ratio = (float) drawable.getIntrinsicHeight() /drawable.getIntrinsicWidth();
+        final int dHeight = (int) (ratio * canvas.getWidth());
+        final int vOffset = (targetHeight-dHeight) / 2;
+
+        final Rect bounds = drawable.getBounds();
+        drawable.setBounds(0, vOffset, canvas.getWidth(), dHeight+vOffset);
+        drawable.draw(canvas);
+        drawable.setBounds(bounds);
+
+        return bitmap;
     }
 }
