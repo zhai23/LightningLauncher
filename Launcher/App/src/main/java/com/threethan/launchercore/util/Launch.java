@@ -13,6 +13,8 @@ import android.util.Log;
 import androidx.activity.ComponentActivity;
 import androidx.annotation.Nullable;
 
+import com.threethan.launcher.R;
+import com.threethan.launcher.activity.dialog.BasicDialog;
 import com.threethan.launcher.helper.PlatformExt;
 import com.threethan.launchercore.Core;
 import com.threethan.launchercore.lib.DelayLib;
@@ -87,12 +89,22 @@ public abstract class Launch {
             intent.removeFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
         }
         Runnable onPostDestroy = () -> {
-            activity.startActivity(intent);
+            try {
+                activity.startActivity(intent);
+            } catch (SecurityException ignored) {
+                BasicDialog.toast("No permission to launch app");
+            }
             if (Platform.supportsNewVrOsMultiWindow() && allowNewVrOsMultiWindow) {
                 PackageManager pm = Core.context().getPackageManager();
                 Intent relaunch = pm.getLaunchIntentForPackage(activity.getPackageName());
                 DelayLib.delayed(() -> activity.startActivity(relaunch), 550);
-                DelayLib.delayed(() -> activity.startActivity(intent), 2000);
+                DelayLib.delayed(() -> {
+                    try {
+                        activity.startActivity(intent);
+                    } catch (SecurityException ignored) {
+                        BasicDialog.toast("No permission to launch app");
+                    }
+                }, 2000);
             }
         };
 

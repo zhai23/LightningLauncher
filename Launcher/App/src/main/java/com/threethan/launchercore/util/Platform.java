@@ -120,7 +120,9 @@ public abstract class Platform {
             "com.android.metacam",
             "com.oculus.metacam",
             "com.oculus.horizonmediaplayer",
-            "com.android.healthconnect.controller"
+            "com.android.healthconnect.controller",
+            "com.oculus.globalsearch",
+            "com.oculus.panelapp.devicepairing"
     );
 
     /**
