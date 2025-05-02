@@ -6,11 +6,11 @@ import android.content.Intent;
 import android.content.pm.PackageInstaller;
 import android.os.Binder;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
-import androidx.asynclayoutinflater.view.AsyncLayoutInflater;
 import androidx.core.util.Consumer;
 
 import com.threethan.launcher.activity.LauncherActivity;
@@ -19,6 +19,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import tech.okcredit.layout_inflator.OkLayoutInflater;
 
 /**
     This class runs as a service, but does not do anything on its own.
@@ -55,11 +57,16 @@ public class LauncherService extends Service {
         if (!isObservingInstallations) observeInstallations(activity);
         final int index = getNewActivityIndex();
 
-        new AsyncLayoutInflater(activity).inflate(R.layout.activity_main, root, (view, resId, parent) -> {
+        Log.d("LauncherService", "New index: " + index);
+
+        new OkLayoutInflater(activity).inflate(R.layout.activity_main, root, (view, continuation) -> {
             viewByIndex.put(index, view);
             activityByIndex.put(activity, index);
-            root.addView(view);
-            onReady.accept(view);
+            root.post(() -> {
+                root.addView(view);
+                onReady.accept(view);
+            });
+            return continuation;
         });
     }
 
