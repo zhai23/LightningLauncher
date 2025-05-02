@@ -298,6 +298,7 @@ public class SettingsManager extends Settings {
 
         // Remove disabled/uninstalled apps
         currentApps.removeIf(Objects::isNull);
+        currentApps.removeIf(app -> Platform.excludedPackageNames.contains(app.packageName));
 
         // Must be set here, else labels might async load during sort which causes issues
         Map<ApplicationInfo, String> labels = new HashMap<>();

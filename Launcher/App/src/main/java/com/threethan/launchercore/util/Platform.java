@@ -82,7 +82,7 @@ public abstract class Platform {
         labelOverrides.put("com.oculus.tv", "Meta Quest TV");
         labelOverrides.put("com.oculus.browser", "Browser");
     }
-    static final Set<String> excludedPackageNames = Set.of(
+    public static final Set<String> excludedPackageNames = Set.of(
             "android",
             "com.oculus.panelapp.library",
             "com.oculus.cvp",
