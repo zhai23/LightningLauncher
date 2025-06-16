@@ -301,7 +301,7 @@ public class LauncherActivityEditable extends LauncherActivity {
 
         TextView badUrl  = dialog.findViewById(R.id.badUrl);
         urlEdit.setOnEdited(url -> {
-            if (StringLib.isInvalidUrl(url)) url = "https://" + url;
+            if (StringLib.isInvalidUrl(url) && url.contains(".")) url = "https://" + url;
             badUrl .setVisibility(StringLib.isInvalidUrl(url)
                     ? View.VISIBLE : View.GONE);
         });

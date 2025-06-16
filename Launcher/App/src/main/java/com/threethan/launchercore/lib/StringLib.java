@@ -23,7 +23,9 @@ public class StringLib {
 
     public static boolean isInvalidUrl(String url) {
         if (url.startsWith("about:")) return false;
-        return ((!url.contains("://") || !url.contains(".")));
+        if (url.startsWith("http") && !url.contains(".")) return true;
+        if (url.endsWith(".") || url.endsWith("://")) return true;
+        return !url.contains("://");
     }
     public static String toValidFilename(String string) {
         if (string.startsWith("json://")) // Hash json that would otherwise be too long
