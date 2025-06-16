@@ -310,7 +310,7 @@
     <string name="addons_preamble"><b>Redirects</b> open Lighting Launcher when <i>hovering</i> a dock icon.
         \nEach redirect must be individually installed, then activated.
     </string>
-    <string name="addons_preamble_dock">You can add Lighting Launcher to directly to your dock!</string>
+    <string name="addons_preamble_dock">You <i>may be able to</i> add this app\'s icon directly to the dock</string>
     <string name="addons_dock_button">How to Add Lightning Launcher to the Quest Dock</string>
     <string name="addons_dock_title">Adding LL to the Dock</string>
 

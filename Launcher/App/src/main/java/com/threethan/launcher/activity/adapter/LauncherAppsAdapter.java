@@ -3,7 +3,6 @@ package com.threethan.launcher.activity.adapter;
 import android.animation.ObjectAnimator;
 import android.content.pm.ApplicationInfo;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -89,8 +88,9 @@ public class LauncherAppsAdapter extends AppsAdapter<LauncherAppsAdapter.AppView
         boolean showHidden = !text.isEmpty() && launcherActivity.dataStoreEditor.getBoolean(
                 Settings.KEY_SEARCH_HIDDEN, Settings.DEFAULT_SEARCH_HIDDEN);
 
-        boolean reList = !text.startsWith(prevFilterText);
+        boolean reList = !text.startsWith(prevFilterText) || text.length() == 1;
         prevFilterText = text;
+
 
         final List<ApplicationInfo> newItems = reList ?
                 settingsManager.getVisibleAppsSorted(
