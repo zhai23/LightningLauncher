@@ -155,6 +155,18 @@
                 android:thumb="@null" />
 
         </LinearLayout>
+
+        <com.threethan.launchercore.view.LcSwitch
+            android:id="@+id/alphaClampSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:background="@drawable/lc_bkg_button_middle"
+            android:text="@string/advanced_alpha_clamp"
+            android:tooltipText="@string/advanced_alpha_clamp_tip"
+            android:visibility="gone"
+            tools:ignore="UnusedAttribute" />
+
         <com.threethan.launchercore.view.LcSwitch
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -164,16 +176,6 @@
             android:visibility="gone"
             android:text="@string/advanced_alpha_preserve"
             android:tooltipText="@string/advanced_alpha_preserve_tip"
-            tools:ignore="UnusedAttribute" />
-        <com.threethan.launchercore.view.LcSwitch
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:background="@drawable/lc_bkg_button_bottom"
-            android:id="@+id/alphaClampSwitch"
-            android:visibility="gone"
-            android:text="@string/advanced_alpha_clamp"
-            android:tooltipText="@string/advanced_alpha_clamp_tip"
             tools:ignore="UnusedAttribute" />
 
         <TextView
