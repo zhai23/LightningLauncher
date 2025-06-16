@@ -69,7 +69,11 @@ public abstract class Platform {
             "systemux://aui-social-v2",
             "systemux://events",
             "systemux://file-manager",
-            "systemux://sharing"
+            "systemux://sharing",
+
+            "systemux://navigator-spaces",
+            "systemux://navigator",
+            "systemux://dogfood-hub"
             );
     public static final Map<String, String> labelOverrides = new HashMap<>();
     static {
@@ -85,6 +89,7 @@ public abstract class Platform {
     public static final Set<String> excludedPackageNames = Set.of(
             "android",
             "com.oculus.panelapp.library",
+            "com.oculus.panelapp.devicepairing",
             "com.oculus.cvp",
             "com.oculus.vrshell",
             "com.oculus.shellenv",
@@ -117,12 +122,12 @@ public abstract class Platform {
             "com.oculus.guidebook",
             "com.oculus.vrshell.desktop",
             "com.oculus.systemux",
+            "com.android.healthconnect.controller",
             "com.android.metacam",
             "com.oculus.metacam",
-            "com.oculus.horizonmediaplayer",
-            "com.android.healthconnect.controller",
-            "com.oculus.globalsearch",
-            "com.oculus.panelapp.devicepairing"
+            "com.oculus.horizonmediaplayer", // Broken as of v78.1027
+            "com.meta.worlds", // Broken as of v78.1027
+            "com.oculus.guardiansetup"
     );
 
     /**
