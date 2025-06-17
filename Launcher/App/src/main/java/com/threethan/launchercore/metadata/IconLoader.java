@@ -3,10 +3,13 @@ package com.threethan.launchercore.metadata;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.util.Log;
 
+import com.threethan.launcher.R;
 import com.threethan.launchercore.Core;
 import com.threethan.launchercore.adapter.UtilityApplicationInfo;
 import com.threethan.launchercore.lib.ImageLib;
@@ -35,6 +38,12 @@ public abstract class IconLoader {
     public static final Map<String, Drawable> cachedIcons = new ConcurrentHashMap<>();
     public static final Object ICON_CUSTOM_FOLDER = "/icon-custom";
 
+    private static Drawable FALLBACK_DRAWABLE = null;
+    static {
+        Core.whenReady(() -> FALLBACK_DRAWABLE
+                = Core.context().getDrawable(R.drawable.ic_missing_icon));
+    }
+
     /**
      * Loads the icon for an app.
      * The callback will be called immediately on this thread,
@@ -49,7 +58,11 @@ public abstract class IconLoader {
             consumer.accept(IconLoader.cachedIcons.get(app.packageName));
         else loadIcon(icon -> {
                 consumer.accept(icon);
-                cachedIcons.put(app.packageName, icon);
+                if (icon != FALLBACK_DRAWABLE) cachedIcons.put(
+                        App.getType(app).equals(App.Type.WEB)
+                                ? StringLib.baseUrl(app.packageName)
+                                : app.packageName,
+                        icon);
             }, app);
     }
 
@@ -76,13 +89,16 @@ public abstract class IconLoader {
         }
         // Try to load from package manager
         PackageManager packageManager = Core.context().getPackageManager();
-        if (app.banner != 0 && App.isBanner(app)) {
-            appIcon = packageManager.getApplicationBanner(app);
-            callback.accept(appIcon);
-        } else {
-            appIcon = packageManager.getApplicationIcon(app);
-            callback.accept(appIcon);
-        }
+        appIcon = app.banner != 0 && App.isBanner(app)
+                ? packageManager.getApplicationBanner(app)
+                : packageManager.getApplicationIcon(app);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+                && appIcon instanceof AdaptiveIconDrawable adaptiveIcon
+                && adaptiveIcon.getIntrinsicWidth() == 0)
+            appIcon = null;
+
+        callback.accept(appIcon == null ? FALLBACK_DRAWABLE : appIcon);
 
         // Attempt to download the icon for this app from an online repo
         // Done AFTER saving the drawable version to prevent a race condition)
