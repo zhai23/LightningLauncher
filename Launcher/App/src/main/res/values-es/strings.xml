@@ -94,6 +94,7 @@
     <string name="hidden_groups_message">Si desactiva esta opción, se ocultará la barra superior cuando no esté en Modo Edición. \n
         \El botón de configuración también se ocultará cuando no esté en Modo Edición
         \En su lugar, pulse el botón Atrás para abrir la configuración.</string>
+    <string name="custom_window_size_message">Los tamaños de ventana personalizados no funcionan correctamente en todas las aplicaciones.  Si una aplicación no se abre con un tamaño personalizado,  revierte esta configuración a la ventana propia de la aplicación.</string>
     <string name="download_browser_message">Para una mejor experiencia, debes instalar Lightning Browser para abrir sitios web en Lightning Launcher.\n
         \n(Alternativamente, puedes intentar cambiar el navegador en Ajustes -&gt; Ajustes avanzados)</string>
     <string name="update_browser_message">Para disfrutar de la mejor experiencia, debes actualizar Lightning Browser.</string>

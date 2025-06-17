@@ -94,6 +94,7 @@
     <string name="hidden_groups_message">Wenn Sie diese Option deaktivieren, wird die obere Leiste ausgeblendet, wenn Sie sich nicht im Bearbeitungsmodus befinden. \n
         \nDie Schaltfläche Einstellungen wird ebenfalls ausgeblendet, wenn Sie sich nicht im Bearbeitungsmodus befinden.\n
         \nDrücken Sie stattdessen die Zurück-Taste, um die Einstellungen zu öffnen.</string>
+    <string name="custom_window_size_message">Benutzerdefinierte Fenstergrößen funktionieren nicht bei jeder App korrekt.  Wenn eine App nicht mit einer benutzerdefinierten Größe geöffnet wird,  setzen Sie diese Einstellung auf „App-eigenes Fenster“ zurück.</string>
     <string name="download_browser_message">Für ein optimales Erlebnis müssen Sie den Lightning Browser installieren, um Websites im Lightning Launcher zu öffnen.\n
         \n(Alternativ können Sie versuchen, den Browser unter Einstellungen -&gt; Erweiterte Einstellungen zu ändern)</string>
     <string name="update_browser_message">Um eine optimale Nutzung zu gewährleisten, müssen Sie Lightning Browser aktualisieren.</string>

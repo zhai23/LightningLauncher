@@ -69,11 +69,7 @@ public abstract class Platform {
             "systemux://aui-social-v2",
             "systemux://events",
             "systemux://file-manager",
-            "systemux://sharing",
-
-            "systemux://navigator-spaces",
-            "systemux://navigator",
-            "systemux://dogfood-hub"
+            "systemux://sharing"
             );
     public static final Map<String, String> labelOverrides = new HashMap<>();
     static {
@@ -83,6 +79,7 @@ public abstract class Platform {
         labelOverrides.put("systemux://file-manager", "File Manager");
         labelOverrides.put("systemux://sharing", "Camera");
         labelOverrides.put("builtin://apk-install", "APK Installer");
+        labelOverrides.put("com.android.settings", "Android Settings");
         labelOverrides.put("com.oculus.tv", "Meta Quest TV");
         labelOverrides.put("com.oculus.browser", "Browser");
     }

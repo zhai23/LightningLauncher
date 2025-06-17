@@ -94,6 +94,7 @@
     <string name="hidden_groups_message">Se desativar esta opção, a barra superior será ocultada quando não estiver no Modo de Edição. \n
         \nO botão de definições também será ocultado quando não estiver no Modo de Edição.\n
         \nEm vez disso, prima o botão para trás para abrir as definições.</string>
+    <string name="custom_window_size_message">Os tamanhos de janela personalizados não funcionarão corretamente para todas as aplicações.  Se uma aplicação não abrir utilizando um tamanho personalizado,  reverta esta configuração para Janela Própria da Aplicação.</string>
     <string name="download_browser_message">Para obter a melhor experiência, é necessário instalar o Lightning Browser para abrir sites no Lightning Launcher.\n
         \n(Em alternativa, podes tentar alterar o navegador em Definições -&gt; Definições avançadas)</string>
     <string name="update_browser_message">Para obter a melhor experiência, é necessário atualizar o Lightning Browser.</string>

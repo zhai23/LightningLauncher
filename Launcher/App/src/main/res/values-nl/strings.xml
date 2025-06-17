@@ -94,6 +94,7 @@
     <string name="hidden_groups_message">Als u deze optie uitschakelt, wordt de bovenste balk verborgen als u niet in de bewerkingsmodus bent. \n
         \De instellingenknop wordt ook verborgen als je niet in de bewerkingsmodus bent
         \Druk in plaats daarvan op de terugknop om de instellingen te openen.</string>
+    <string name="custom_window_size_message">Aangepaste venstergroottes werken niet voor elke app correct.  Als een app niet met een aangepaste grootte opent,  zet u deze instelling terug naar het venster van de app zelf.</string>
     <string name="download_browser_message">Voor de beste ervaring moet je Lightning Browser installeren om websites te openen in Lightning Launcher
         \(U kunt ook proberen de browser te wijzigen in Instellingen -&gt; Geavanceerde instellingen)</string>
     <string name="update_browser_message">Voor de beste ervaring moet je Lightning Browser bijwerken.</string>

@@ -118,10 +118,17 @@
 
     <string name="tuner_options">⚙</string>
 
-    <string name="hidden_groups_message">Turning this option off will hide the top bar when not in Edit Mode. \n
+    <string name="hidden_groups_message">Turning this option off will hide the top bar when not in Edit Mode.\n
         \nThe settings button will also be hidden when not in Edit Mode.\n
         \nInstead, <b>press the back button to open settings.</b>
     </string>
+
+    <string name="custom_window_size_message">Custom window sizes won\'t work correctly for every app.\n
+        \nIf an app does not open using a custom size,
+        \nrevert this setting to "App\'s Own Window".
+    </string>
+
+
     <string name="download_browser_message">For the best experience, you must install Lightning Browser to open websites in Lightning Launcher.\n
         \n(Alternatively, you can try to change the browser in Settings -> Advanced Settings)
     </string>

@@ -94,6 +94,7 @@
     <string name="hidden_groups_message">Hvis du slår denne indstilling fra, skjules den øverste bjælke, når du ikke er i redigeringstilstand. \n
         \Indstillingsknappen bliver også skjult, når du ikke er i redigeringstilstand
         \n Tryk i stedet på tilbage-knappen for at åbne indstillingerne.</string>
+    <string name="custom_window_size_message">Brugerdefinerede vinduesstørrelser fungerer ikke korrekt for alle apps.  Hvis en app ikke åbnes med en brugerdefineret størrelse, skal du  vende tilbage til denne indstilling til Appens eget vindue.</string>
     <string name="download_browser_message">For at få den bedste oplevelse skal du installere Lightning Browser for at åbne hjemmesider i Lightning Launcher
         \n(Alternativt kan du prøve at ændre browseren i Indstillinger -&gt; Avancerede indstillinger)</string>
     <string name="update_browser_message">For at få den bedste oplevelse skal du opdatere Lightning Browser.</string>

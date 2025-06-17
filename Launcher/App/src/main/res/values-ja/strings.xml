@@ -94,6 +94,7 @@
     <string name="hidden_groups_message">このオプションをオフにすると、編集モードでないときにトップバーが非表示になります。\n
         \編集モードでないときは、設定ボタンも非表示になります。
         \代わりに、戻るボタンを押して設定を開きます。</string>
+    <string name="custom_window_size_message">カスタムウィンドウサイズは、すべてのアプリで正しく機能するとは限りません。  アプリがカスタムサイズで開かない場合は、  この設定を「アプリ独自のウィンドウ」に戻してください。</string>
     <string name="download_browser_message">Lightning Launcherでウェブサイトを開くには、Lightningブラウザをインストールする必要があります。
         \(または、[設定] -&gt; [詳細設定] でブラウザを変更してみてください)</string>
     <string name="update_browser_message">ライトニング・ブラウザをアップデートしてください。</string>

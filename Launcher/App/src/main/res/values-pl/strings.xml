@@ -94,6 +94,7 @@
     <string name="hidden_groups_message">Wyłączenie tej opcji spowoduje ukrycie górnego paska, gdy nie jest on w trybie edycji. \n
         \Przycisk ustawień będzie również ukryty, gdy nie będzie w trybie edycji
         \Zamiast tego naciśnij przycisk Wstecz, aby otworzyć ustawienia.</string>
+    <string name="custom_window_size_message">Niestandardowe rozmiary okien nie będą działać poprawnie dla każdej aplikacji.  Jeśli aplikacja nie otwiera się w niestandardowym rozmiarze,  przywróć to ustawienie do Własnego okna aplikacji.</string>
     <string name="download_browser_message">Aby uzyskać najlepsze wrażenia, musisz zainstalować przeglądarkę Lightning Browser, aby otwierać strony internetowe w Lightning Launcher.\n
         \n(Alternatywnie możesz spróbować zmienić przeglądarkę w Ustawienia -&gt; Ustawienia zaawansowane)</string>
     <string name="update_browser_message">Aby uzyskać najlepsze wrażenia, należy zaktualizować przeglądarkę Lightning Browser.</string>

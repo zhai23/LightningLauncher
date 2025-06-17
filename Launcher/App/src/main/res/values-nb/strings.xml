@@ -94,6 +94,7 @@
     <string name="hidden_groups_message">Hvis du slår av dette alternativet, skjules den øverste linjen når du ikke er i redigeringsmodus. \n
         \nInnstillingsknappen vil også være skjult når du ikke er i redigeringsmodus. \n
         \nI stedet kan du trykke på tilbake-knappen for å åpne innstillingene.</string>
+    <string name="custom_window_size_message">Tilpassede vindusstørrelser fungerer ikke riktig for alle apper.  Hvis en app ikke åpnes med en tilpasset størrelse,  tilbakestill denne innstillingen til Appens eget vindu.</string>
     <string name="download_browser_message">For å få den beste opplevelsen må du installere Lightning Browser for å åpne nettsteder i Lightning Launcher
         \(Alternativt kan du prøve å endre nettleseren i Innstillinger -&gt; Avanserte innstillinger)</string>
     <string name="update_browser_message">For å få den beste opplevelsen må du oppdatere Lightning Browser.</string>

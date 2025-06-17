@@ -94,6 +94,7 @@
     <string name="hidden_groups_message">Tämän vaihtoehdon kytkeminen pois päältä piilottaa yläpalkin, kun se ei ole muokkaustilassa. \n
         \nSäätöpainike piilotetaan myös silloin, kun se ei ole muokkaustilassa.\n
         \nAvaa sen sijaan asetukset painamalla takaisin-painiketta.</string>
+    <string name="custom_window_size_message">Mukautetut ikkunakoot eivät toimi oikein kaikissa sovelluksissa.  Jos sovellus ei avaudu mukautetulla koolla,  palauta tämä asetus asetukseksi Sovelluksen oma ikkuna.</string>
     <string name="download_browser_message">Parhaan käyttökokemuksen saamiseksi sinun on asennettava Lightning Browser, jotta voit avata verkkosivustoja Lightning Launcherissa.\n
         \n(Vaihtoehtoisesti voit yrittää vaihtaa selaimen Asetukset -&gt; Lisäasetukset)</string>
     <string name="update_browser_message">Parhaan käyttökokemuksen saat päivittämällä Lightning Browserin.</string>

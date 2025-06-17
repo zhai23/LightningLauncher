@@ -94,6 +94,7 @@
     <string name="hidden_groups_message">Bu seçeneğin kapatılması, Düzenleme Modunda değilken üst çubuğu gizleyecektir. \n
         \nAyarlar düğmesi Düzenleme Modunda değilken de gizlenecektir.\n
         \nBunun yerine, ayarları açmak için geri düğmesine basın.</string>
+    <string name="custom_window_size_message">Özel pencere boyutları her uygulama için doğru şekilde çalışmayacaktır.  Bir uygulama özel bir boyut kullanarak açılmazsa,  bu ayarı Uygulamanın Kendi Penceresi\'ne geri döndürün.</string>
     <string name="download_browser_message">En iyi deneyim için, Lightning Launcher\'da web sitelerini açmak için Lightning Browser\'ı yüklemeniz gerekir.\n
         \n(Alternatif olarak, tarayıcıyı Ayarlar -&gt; Gelişmiş Ayarlar\'da değiştirmeyi deneyebilirsiniz)</string>
     <string name="update_browser_message">En iyi deneyim için Lightning Browser\'ı güncellemeniz gerekir.</string>

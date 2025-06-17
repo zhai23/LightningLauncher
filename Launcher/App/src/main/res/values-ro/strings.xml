@@ -94,6 +94,7 @@
     <string name="hidden_groups_message">Dezactivarea acestei opțiuni va ascunde bara de sus atunci când nu sunteți în modul Editare. \n
         \nBotonul Setări va fi, de asemenea, ascuns atunci când nu vă aflați în modul Editare.\n
         \nÎn schimb, apăsați butonul înapoi pentru a deschide setările.</string>
+    <string name="custom_window_size_message">Dimensiunile personalizate ale ferestrelor nu vor funcționa corect pentru fiecare aplicație.  Dacă o aplicație nu se deschide folosind o dimensiune personalizată,  reveniți la setarea „Fereastra proprie a aplicației”.</string>
     <string name="download_browser_message">Pentru o experiență optimă, trebuie să instalați Lightning Browser pentru a deschide site-uri web în Lightning Launcher.\n
         \n(Alternativ, puteți încerca să schimbați browserul în Setări -&gt; Setări avansate)</string>
     <string name="update_browser_message">Pentru o experiență optimă, trebuie să actualizați Lightning Browser.</string>

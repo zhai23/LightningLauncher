@@ -94,6 +94,7 @@
     <string name="hidden_groups_message">Se si disattiva questa opzione, la barra superiore viene nascosta quando non si è in modalità di modifica. \n
         \Anche il pulsante delle impostazioni viene nascosto quando non si è in modalità di modifica
         \In alternativa, premere il tasto indietro per aprire le impostazioni.</string>
+    <string name="custom_window_size_message">Le dimensioni personalizzate delle finestre non funzionano correttamente per tutte le app.  Se un\'app non si apre con una dimensione personalizzata,  ripristina questa impostazione selezionando \"Finestra dell\'app\".</string>
     <string name="download_browser_message">Per un\'esperienza ottimale, è necessario installare Lightning Browser per aprire i siti web in Lightning Launcher
         \(In alternativa, potete provare a cambiare il browser in Impostazioni -&gt; Impostazioni avanzate)</string>
     <string name="update_browser_message">Per un\'esperienza ottimale, è necessario aggiornare Lightning Browser.</string>

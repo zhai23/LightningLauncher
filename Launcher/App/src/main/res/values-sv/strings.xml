@@ -94,6 +94,7 @@
     <string name="hidden_groups_message">Om du stänger av det här alternativet döljs det övre fältet när du inte är i redigeringsläge. \n
         \nInställningsknappen döljs också när du inte är i redigeringsläge. \n
         \n Tryck i stället på bakåtknappen för att öppna inställningarna.</string>
+    <string name="custom_window_size_message">Anpassade fönsterstorlekar fungerar inte korrekt för alla appar.  Om en app inte öppnas med en anpassad storlek, återställ den här inställningen till Appens eget fönster.</string>
     <string name="download_browser_message">För bästa möjliga upplevelse måste du installera Lightning Browser för att öppna webbplatser i Lightning Launcher.\n
         \n(Alternativt kan du försöka ändra webbläsaren i Inställningar -&gt; Avancerade inställningar)</string>
     <string name="update_browser_message">För bästa möjliga upplevelse måste du uppdatera Lightning Browser.</string>
