@@ -124,9 +124,9 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
             topBar.setAlpha(1F);
             topBar.postDelayed(this::fixState, 500);
             refreshAdapters();
-            searchFor("");
 
         } catch (NullPointerException ignored) {}
+        searchFor("");
 
     }
     protected void fixState() {

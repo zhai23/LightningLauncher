@@ -119,10 +119,6 @@ public class LauncherAppsAdapter extends AppsAdapter<LauncherAppsAdapter.AppView
             youTubeProxy.packageName = StringLib.youTubeSearchForUrl(text);
             newItems.add(youTubeProxy);
 
-            final ApplicationInfo apkPureProxy = new ApplicationInfo();
-            apkPureProxy.packageName = StringLib.apkPureSearchForUrl(text);
-            newItems.add(apkPureProxy);
-
             final ApplicationInfo apkMirrorProxy = new ApplicationInfo();
             apkMirrorProxy.packageName = StringLib.apkMirrorSearchForUrl(text);
             newItems.add(apkMirrorProxy);
@@ -278,68 +274,70 @@ public class LauncherAppsAdapter extends AppsAdapter<LauncherAppsAdapter.AppView
             if (focusedHolderBySource.containsValue(holder)) return;
         }
 
-        if (holder.hovered == focused) return;
+        try {
+            if (holder.hovered == focused) return;
 
-        if (!Platform.isTv())
-            holder.moreButton.setVisibility(focused ? View.VISIBLE : View.INVISIBLE);
+            if (!Platform.isTv())
+                holder.moreButton.setVisibility(focused ? View.VISIBLE : View.INVISIBLE);
 
-        if (!Platform.isTv() && LauncherActivity.timesBanner) {
-            if (focused) {
-                // Show and update view holder
-                holder.playtimeButton.setVisibility(Boolean.TRUE.equals(holder.banner)
-                        && !holder.app.packageName.contains("://")
-                        ? View.VISIBLE : View.INVISIBLE);
-                if (Boolean.TRUE.equals(holder.banner)
-                        && !holder.app.packageName.contains("://")) {
-                    PlaytimeHelper.getPlaytime(holder.app.packageName,
-                            t -> launcherActivity.runOnUiThread(()
-                                    -> holder.playtimeButton.setText(t)));
-                }
-            } else holder.playtimeButton.setVisibility(View.INVISIBLE);
-        }
-        final boolean tv = Platform.isTv();
-        final float newScaleInner = focused ? (tv ? 1.055f : 1.050f) : 1.005f;
-        final float newScaleOuter = focused ? (tv ? 1.270f : 1.085f) : 1.005f;
-
-        final float newElevation = focused ? 20f : 3f;
-
-        final float textScale = 1-(1-(1/newScaleOuter))*0.7f;
-        final int duration = tv ? 175 : 250;
-        BaseInterpolator interpolator = Platform.isTv() ?
-                new LinearInterpolator() : new OvershootInterpolator();
-
-        holder.imageView.animate().scaleX(newScaleInner).scaleY(newScaleInner)
-                .setDuration(duration).setInterpolator(interpolator).start();
-        holder.view     .animate().scaleX(newScaleOuter).scaleY(newScaleOuter)
-                .setDuration(duration).setInterpolator(interpolator).start();
-        holder.moreButton.animate().alpha(focused ? 1f : 0f)
-                .setDuration(duration).setInterpolator(interpolator).start();
-        holder.textView .animate().scaleX(textScale).scaleY(textScale)
-                .setDuration(duration).setInterpolator(interpolator).start();
-
-        ObjectAnimator aE = ObjectAnimator.ofFloat(holder.imageView, "elevation",
-            newElevation);
-        aE.setDuration(duration).start();
-
-        boolean banner = Boolean.TRUE.equals(holder.banner);
-        if (banner && !LauncherActivity.namesBanner || !banner && !LauncherActivity.namesSquare)
-            holder.textView.setVisibility(focused ? View.VISIBLE : View.INVISIBLE);
-
-        holder.view.setActivated(true);
-        // Force correct state, even if interrupted
-        holder.view.postDelayed(() -> {
-            if (Objects.equals(focusedHolderBySource.get(source), holder)) {
-                holder.imageView.setScaleX(newScaleInner);
-                holder.imageView.setScaleY(newScaleInner);
-                holder.view.setScaleX(newScaleOuter);
-                holder.view.setScaleY(newScaleOuter);
-                holder.imageView.setElevation(newElevation);
-                holder.view.setActivated(false);
+            if (!Platform.isTv() && LauncherActivity.timesBanner) {
+                if (focused) {
+                    // Show and update view holder
+                    holder.playtimeButton.setVisibility(Boolean.TRUE.equals(holder.banner)
+                            && !holder.app.packageName.contains("://")
+                            ? View.VISIBLE : View.INVISIBLE);
+                    if (Boolean.TRUE.equals(holder.banner)
+                            && !holder.app.packageName.contains("://")) {
+                        PlaytimeHelper.getPlaytime(holder.app.packageName,
+                                t -> launcherActivity.runOnUiThread(()
+                                        -> holder.playtimeButton.setText(t)));
+                    }
+                } else holder.playtimeButton.setVisibility(View.INVISIBLE);
             }
-        },  tv ? 200 : 300);
+            final boolean tv = Platform.isTv();
+            final float newScaleInner = focused ? (tv ? 1.055f : 1.050f) : 1.005f;
+            final float newScaleOuter = focused ? (tv ? 1.270f : 1.085f) : 1.005f;
 
-        holder.view.setZ(focused ? 2 : 1);
-        holder.hovered = focused;
+            final float newElevation = focused ? 20f : 3f;
+
+            final float textScale = 1 - (1 - (1 / newScaleOuter)) * 0.7f;
+            final int duration = tv ? 175 : 250;
+            BaseInterpolator interpolator = Platform.isTv() ?
+                    new LinearInterpolator() : new OvershootInterpolator();
+
+            holder.imageView.animate().scaleX(newScaleInner).scaleY(newScaleInner)
+                    .setDuration(duration).setInterpolator(interpolator).start();
+            holder.view.animate().scaleX(newScaleOuter).scaleY(newScaleOuter)
+                    .setDuration(duration).setInterpolator(interpolator).start();
+            holder.moreButton.animate().alpha(focused ? 1f : 0f)
+                    .setDuration(duration).setInterpolator(interpolator).start();
+            holder.textView.animate().scaleX(textScale).scaleY(textScale)
+                    .setDuration(duration).setInterpolator(interpolator).start();
+
+            ObjectAnimator aE = ObjectAnimator.ofFloat(holder.imageView, "elevation",
+                    newElevation);
+            aE.setDuration(duration).start();
+
+            boolean banner = Boolean.TRUE.equals(holder.banner);
+            if (banner && !LauncherActivity.namesBanner || !banner && !LauncherActivity.namesSquare)
+                holder.textView.setVisibility(focused ? View.VISIBLE : View.INVISIBLE);
+
+            holder.view.setActivated(true);
+            // Force correct state, even if interrupted
+            holder.view.postDelayed(() -> {
+                if (Objects.equals(focusedHolderBySource.get(source), holder)) {
+                    holder.imageView.setScaleX(newScaleInner);
+                    holder.imageView.setScaleY(newScaleInner);
+                    holder.view.setScaleX(newScaleOuter);
+                    holder.view.setScaleY(newScaleOuter);
+                    holder.imageView.setElevation(newElevation);
+                    holder.view.setActivated(false);
+                }
+            }, tv ? 200 : 300);
+
+            holder.view.setZ(focused ? 2 : 1);
+            holder.hovered = focused;
+        } catch (Exception ignored) {}
     }
 
     // Animation

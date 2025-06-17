@@ -66,7 +66,6 @@ public class StringLib {
     }
     public static final String GOOGLE_SEARCH_PRE = "https://www.google.com/search?q=";
     public static final String YOUTUBE_SEARCH_PRE = "https://www.youtube.com/results?search_query=";
-    public static final String APK_PURE_SEARCH_PRE = "https://apkpure.com/search?q=";
     public static final String APK_MIRROR_SEARCH_PRE = "https://www.apkmirror.com/?post_type=app_release&searchtype=apk&s=";
 
     public static String googleSearchForUrl(String string) {
@@ -74,10 +73,6 @@ public class StringLib {
     }
     public static String youTubeSearchForUrl(String string) {
         return YOUTUBE_SEARCH_PRE+string;
-    }
-
-    public static String apkPureSearchForUrl(String string) {
-        return APK_PURE_SEARCH_PRE +string;
     }
     public static String apkMirrorSearchForUrl(String string) {
         return APK_MIRROR_SEARCH_PRE +string;
