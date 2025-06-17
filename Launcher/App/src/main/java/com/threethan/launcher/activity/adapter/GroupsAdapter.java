@@ -186,7 +186,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.GroupViewH
             itemView.setBackgroundResource(shapeResourceId);
             TextView textView = itemView.findViewById(R.id.itemLabel);
             textView.setTextColor(LauncherActivity.darkMode ? 0xFFFFFFFF : 0xFF000000); // set selected tab text color
-            textView.setTypeface(null, Typeface.BOLD);
+            textView.setTypeface(textView.getTypeface(), Typeface.BOLD);
 
             if (isEditMode && (position < getCount() - 2)) menu.setVisibility(View.VISIBLE);
             else                                           menu.setVisibility(View.GONE);
@@ -195,7 +195,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.GroupViewH
             TextView textView = itemView.findViewById(R.id.itemLabel);
             textView.setTextColor(LauncherActivity.darkMode ? 0x99FFFFFF : 0x99000000); // set unselected tab text color
             menu.setVisibility(View.GONE);
-            textView.setTypeface(null, Typeface.NORMAL);
+            textView.setTypeface(Typeface.create(textView.getTypeface(), Typeface.NORMAL));
         }
     }
 

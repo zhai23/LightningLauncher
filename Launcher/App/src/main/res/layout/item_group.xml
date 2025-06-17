@@ -11,6 +11,7 @@
         android:layout_height="match_parent"
         android:focusable="true"
         android:focusableInTouchMode="false"
+        android:fontFamily="@font/sansserif"
         android:gravity="center"
         android:paddingLeft="20dp"
         android:paddingTop="5dp"

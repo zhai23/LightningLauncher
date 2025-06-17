@@ -29,12 +29,14 @@ import com.threethan.launchercore.metadata.IconLoader;
 import com.threethan.launchercore.lib.ImageLib;
 import com.threethan.launchercore.lib.StringLib;
 import com.threethan.launchercore.util.App;
+import com.threethan.launchercore.util.CustomDialog;
 import com.threethan.launchercore.util.Platform;
 import com.threethan.launchercore.view.LcToolTipHelper;
 
 import java.io.File;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -156,8 +158,22 @@ public class AppDetailsDialog extends BasicDialog<LauncherActivity> {
                 final int launchSizeSelection = a.dataStoreEditor.getInt(
                         launchSizeKey,
                         SettingsManager.getAppLaunchOut(app.packageName) ? 0 : 1);
-                initSpinner(launchSizeSpinner, R.array.advanced_launch_sizes, p ->
-                                a.dataStoreEditor.putInt(launchSizeKey, p),
+                AtomicBoolean isInit = new AtomicBoolean(true);
+                initSpinner(launchSizeSpinner, R.array.advanced_launch_sizes, p -> {
+                    a.dataStoreEditor.putInt(launchSizeKey, p);
+                    if (!isInit.get() && !a.dataStoreEditor.getBoolean("HAS_SEEN_3LS_PROMPT", false)) {
+                        new CustomDialog.Builder(a)
+                                .setTitle(R.string.warning)
+                                .setMessage(R.string.custom_window_size_message)
+                                .setPositiveButton(R.string.understood, (d, w)
+                                        -> {
+                                    d.dismiss();
+                                    a.dataStoreEditor.putBoolean("HAS_SEEN_3LS_PROMPT", true);
+                                })
+                                .show();
+                    }
+                    isInit.set(false);
+                },
                         launchSizeSelection
                 );
                 launchSizeSpinner.setVisibility(View.VISIBLE);

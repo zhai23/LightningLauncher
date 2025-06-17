@@ -3,7 +3,6 @@
     android:id="@+id/itemLaunch"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/bkg_dialog"
     android:orientation="vertical"
     android:padding="20dp">
 
@@ -18,13 +17,13 @@
         android:text="@string/default_groups_title" />
 
     <TextView
-        android:layout_marginHorizontal="10dp"
         android:id="@+id/infoText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
         android:layout_marginBottom="10dp"
-        android:minLines="12"
         android:backgroundTint="@android:color/white"
+        android:minLines="12"
         android:text="@string/default_groups_info"
         android:textColor="@android:color/white" />
 
@@ -35,21 +34,21 @@
         android:orientation="vertical">
 
         <com.threethan.launchercore.view.LcButton
-            android:background="@drawable/lc_bkg_button_top"
             android:id="@+id/resetGroups"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_weight="1"
+            android:background="@drawable/lc_bkg_button_top"
             android:nextFocusDown="@id/resortOnly"
             android:text="@string/default_groups_reset_groups" />
 
         <com.threethan.launchercore.view.LcButton
-            android:background="@drawable/lc_bkg_button_bottom"
             android:id="@+id/resortOnly"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginTop="2dp"
             android:layout_weight="1"
+            android:background="@drawable/lc_bkg_button_bottom"
             android:nextFocusDown="@id/resortOnly"
             android:text="@string/default_groups_resort_only" />
 

@@ -84,6 +84,7 @@
             <meta-data android:name="com.oculus.lazy_gpumem_allocation" android:value="true" />
 
             <intent-filter>
+                <data/>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.HOME"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -101,48 +102,52 @@
             android:exported="true"
             android:launchMode="singleInstancePerTask"
             android:resizeableActivity="true"
-            android:theme="@style/ThemeOverlay.Standard">
+            android:theme="@style/ThemeOverlay.Standard"
+            android:label="-">
 
-            <layout android:defaultWidth="362dp" android:defaultHeight="640dp" android:gravity="top|end" />
+        <layout android:defaultWidth="362dp" android:defaultHeight="640dp" android:gravity="top|end" />
             <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
             <meta-data android:name="com.oculus.vrshell.free_resizing_limits" android:value="300,2000,500,1000"/>
-            <meta-data android:name="com.oculus.vrdesktop.control_bar_config" android:value="{'show_title':false}"/>
+            <meta-data android:name="com.oculus.vrdesktop.control_bar_config" android:value="{'show_title':false, 'use_activity_label':true}"/>
         </activity>
         <activity android:name=".activity.chainload.ChainLoadActivitySmall"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
             android:exported="true"
             android:launchMode="singleInstancePerTask"
             android:resizeableActivity="true"
-            android:theme="@style/ThemeOverlay.Standard">
+            android:theme="@style/ThemeOverlay.Standard"
+            android:label="-">
 
             <layout android:defaultWidth="557dp" android:defaultHeight="417dp" android:gravity="top|end" />
             <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
             <meta-data android:name="com.oculus.vrshell.free_resizing_limits" android:value="300,2000,500,1000"/>
-            <meta-data android:name="com.oculus.vrdesktop.control_bar_config" android:value="{'show_title':false}"/>
+            <meta-data android:name="com.oculus.vrdesktop.control_bar_config" android:value="{'show_title':false, 'use_activity_label':true}"/>
         </activity>
         <activity android:name=".activity.chainload.ChainLoadActivity"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
             android:exported="true"
             android:launchMode="singleInstancePerTask"
             android:resizeableActivity="true"
-            android:theme="@style/ThemeOverlay.Standard">
+            android:theme="@style/ThemeOverlay.Standard"
+            android:label="-">
 
-            <layout android:defaultWidth="1024dp" android:defaultHeight="640dp" android:gravity="top|end" />
+        <layout android:defaultWidth="1024dp" android:defaultHeight="640dp" android:gravity="top|end" />
             <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
             <meta-data android:name="com.oculus.vrshell.free_resizing_limits" android:value="300,2000,500,1000"/>
-            <meta-data android:name="com.oculus.vrdesktop.control_bar_config" android:value="{'show_title':false}"/>
+            <meta-data android:name="com.oculus.vrdesktop.control_bar_config" android:value="{'show_title':false, 'use_activity_label':true}"/>
         </activity>
         <activity android:name=".activity.chainload.ChainLoadActivityLarge"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
             android:exported="true"
             android:launchMode="singleInstancePerTask"
             android:resizeableActivity="true"
-            android:theme="@style/ThemeOverlay.Standard">
+            android:theme="@style/ThemeOverlay.Standard"
+            android:label="-">
 
             <layout android:defaultWidth="1392dp" android:defaultHeight="783dp" android:gravity="top|end" />
             <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
             <meta-data android:name="com.oculus.vrshell.free_resizing_limits" android:value="300,2000,500,1000"/>
-            <meta-data android:name="com.oculus.vrdesktop.control_bar_config" android:value="{'show_title':false}"/>
+            <meta-data android:name="com.oculus.vrdesktop.control_bar_config" android:value="{'show_title':false, 'use_activity_label':true}"/>
         </activity>
         <activity android:name=".activity.chainload.ChainLoadActivityHuge"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
@@ -154,31 +159,33 @@
             <layout android:defaultWidth="1763dp" android:defaultHeight="992dp" android:gravity="top|end" />
             <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
             <meta-data android:name="com.oculus.vrshell.free_resizing_limits" android:value="300,2000,500,1000"/>
-            <meta-data android:name="com.oculus.vrdesktop.control_bar_config" android:value="{'show_title':false}"/>
+            <meta-data android:name="com.oculus.vrdesktop.control_bar_config" android:value="{'show_title':false, 'use_activity_label':true}"/>
         </activity>
         <activity android:name=".activity.chainload.ChainLoadActivityPortrait"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
             android:exported="true"
             android:launchMode="singleInstancePerTask"
             android:resizeableActivity="true"
-            android:theme="@style/ThemeOverlay.Standard">
+            android:theme="@style/ThemeOverlay.Standard"
+            android:label="-">
 
-            <layout android:defaultWidth="640dp" android:defaultHeight="1044dp" android:gravity="top|end" />
+        <layout android:defaultWidth="640dp" android:defaultHeight="1044dp" android:gravity="top|end" />
             <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
             <meta-data android:name="com.oculus.vrshell.free_resizing_limits" android:value="300,2000,500,1000"/>
-            <meta-data android:name="com.oculus.vrdesktop.control_bar_config" android:value="{'show_title':false}"/>
+            <meta-data android:name="com.oculus.vrdesktop.control_bar_config" android:value="{'show_title':false, 'use_activity_label':true}"/>
         </activity>
         <activity android:name=".activity.chainload.ChainLoadActivityWide"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
             android:exported="true"
             android:launchMode="singleInstancePerTask"
             android:resizeableActivity="true"
-            android:theme="@style/ThemeOverlay.Standard">
+            android:theme="@style/ThemeOverlay.Standard"
+            android:label="-">
 
             <layout android:defaultWidth="1827dp" android:defaultHeight="783dp" android:gravity="top|end" />
             <meta-data android:name="com.oculus.vrshell.supports_free_resizing" android:value="true"/>
             <meta-data android:name="com.oculus.vrshell.free_resizing_limits" android:value="630,2520,270,1080"/>
-            <meta-data android:name="com.oculus.vrdesktop.control_bar_config" android:value="{'show_title':false}"/>
+            <meta-data android:name="com.oculus.vrdesktop.control_bar_config" android:value="{'show_title':false, 'use_activity_label':true}"/>
         </activity>
 
         <!-- Service that provides/manages Launcher views -->

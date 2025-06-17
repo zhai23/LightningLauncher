@@ -6,13 +6,12 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginStart="2.5dp"
-    android:background="@drawable/bkg_dialog"
     android:orientation="vertical"
     android:padding="20dp">
 
     <View
         android:id="@+id/sizer"
-        android:layout_width="390dp"
+        android:layout_width="400dp"
         android:layout_height="0dp" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -70,47 +69,48 @@
     <TextView
         style="@style/SettingSubtitle"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:layout_marginTop="10dp"
+        android:layout_weight="1"
         android:singleLine="true"
         android:text="@string/default_group" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:baselineAligned="false"
         android:orientation="horizontal">
 
         <com.threethan.launchercore.view.LcSwitch
-            android:background="@drawable/lc_bkg_button_top_left"
             android:id="@+id/defaultVrSwitch"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-
+            android:layout_height="wrap_content"
             android:layout_weight="1"
+
+            android:background="@drawable/lc_bkg_button_top_left"
             android:text="@string/apps_vr"
             tools:ignore="UseSwitchCompatOrMaterialXml" />
 
         <com.threethan.launchercore.view.LcSwitch
-            android:background="@drawable/lc_bkg_button_top_right"
             android:id="@+id/defaultPanelSwitch"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-
             android:layout_marginStart="2dp"
+
             android:layout_weight="1"
+            android:background="@drawable/lc_bkg_button_top_right"
             android:text="@string/apps_panel"
             tools:ignore="UseSwitchCompatOrMaterialXml" />
 
         <com.threethan.launchercore.view.LcSwitch
-            android:background="@drawable/lc_bkg_button_top_right"
             android:id="@+id/defaultTvSwitch"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-
             android:layout_marginStart="2dp"
+
             android:layout_weight="1"
+            android:background="@drawable/lc_bkg_button_top_right"
             android:text="@string/apps_tv"
+            android:visibility="gone"
             tools:ignore="UseSwitchCompatOrMaterialXml" />
 
     </LinearLayout>
@@ -123,23 +123,23 @@
         android:orientation="horizontal">
 
         <com.threethan.launchercore.view.LcSwitch
-            android:background="@drawable/lc_bkg_button_bottom_left"
             android:id="@+id/defaultPhoneSwitch"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-
             android:layout_weight="1"
+
+            android:background="@drawable/lc_bkg_button_bottom_left"
             android:text="@string/apps_phone"
             tools:ignore="UseSwitchCompatOrMaterialXml" />
 
         <com.threethan.launchercore.view.LcSwitch
-            android:background="@drawable/lc_bkg_button_bottom_right"
             android:id="@+id/defaultWebsiteSwitch"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-
+            android:layout_height="wrap_content"
             android:layout_marginStart="2dp"
+
             android:layout_weight="1"
+            android:background="@drawable/lc_bkg_button_bottom_right"
             android:text="@string/apps_web"
             tools:ignore="UseSwitchCompatOrMaterialXml" />
     </LinearLayout>

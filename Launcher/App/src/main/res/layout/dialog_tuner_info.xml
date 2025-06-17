@@ -3,7 +3,6 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bkg_dialog"
     android:orientation="vertical">
 
     <ImageView
@@ -42,18 +41,21 @@
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="8dp"
         android:foreground="@drawable/flipper_fg">
+
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/tuner_info_header_a"/>
+            android:src="@drawable/tuner_info_header_a" />
+
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/tuner_info_header_b"/>
+            android:src="@drawable/tuner_info_header_b" />
+
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/tuner_info_header_c"/>
+            android:src="@drawable/tuner_info_header_c" />
     </com.threethan.launcher.activity.view.ViewFlinger>
 
     <TextView

@@ -3,7 +3,6 @@
     android:id="@+id/itemLaunch"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/bkg_dialog"
     android:orientation="vertical"
     android:padding="20dp">
 
@@ -18,27 +17,27 @@
         android:text="@string/clear_icons_title" />
 
     <TextView
-        android:layout_marginHorizontal="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
         android:minLines="2"
         android:text="@string/clear_icons_info"
         android:textColor="@android:color/white" />
 
 
     <TextView
-        android:layout_marginHorizontal="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
         android:layout_marginTop="10dp"
         android:minLines="4"
         android:text="@string/clear_icons_info_quest"
         android:textColor="@android:color/white" />
 
     <TextView
-        android:layout_marginHorizontal="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
         android:minLines="3"
@@ -51,21 +50,21 @@
         android:orientation="vertical">
 
         <com.threethan.launchercore.view.LcButton
-            android:background="@drawable/lc_bkg_button_top"
             android:id="@+id/clearCache"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_weight="1"
+            android:background="@drawable/lc_bkg_button_top"
             android:nextFocusDown="@id/resortOnly"
             android:text="@string/clear_icons_clear_cache" />
 
         <com.threethan.launchercore.view.LcButton
-            android:background="@drawable/lc_bkg_button_bottom"
             android:id="@+id/clearAll"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginTop="2dp"
             android:layout_weight="1"
+            android:background="@drawable/lc_bkg_button_bottom"
             android:nextFocusUp="@id/resetGroups"
             android:nextFocusDown="@id/cancel"
             android:text="@string/clear_icons_clear_all" />
@@ -74,8 +73,8 @@
             android:id="@+id/cancel"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:layout_weight="1"
             android:layout_marginTop="10dp"
+            android:layout_weight="1"
             android:nextFocusUp="@id/resortOnly"
             android:text="@string/clear_icons_cancel" />
     </LinearLayout>

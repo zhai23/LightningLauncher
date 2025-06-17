@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/bkg_dialog"
     android:clipChildren="true"
     android:orientation="vertical"
     android:padding="0dp"
@@ -29,62 +28,64 @@
             android:text="@string/addons_main_vr" />
 
         <TextView
+            style="@style/SettingSubtitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/SettingSubtitle"
             android:layout_marginTop="20dp"
             android:gravity="center|start"
             android:text="@string/addons_add" />
+
         <TextView
-            android:background="@drawable/lc_bkg_button_top"
             android:id="@+id/addToDockText"
             style="@style/SettingsText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:alpha="0.7"
+            android:background="@drawable/lc_bkg_button_top"
             android:gravity="bottom|center"
             android:minHeight="30sp"
             android:text="@string/addons_preamble_dock" />
 
         <TextView
-            android:background="@drawable/lc_bkg_button_bottom"
             android:id="@+id/addToDockButton"
             style="@style/SettingButtonLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
+            android:background="@drawable/lc_bkg_button_bottom"
             android:gravity="center"
             android:orientation="horizontal"
             android:singleLine="true"
-            android:textStyle="bold"
             android:text="@string/addons_dock_button"
+            android:textStyle="bold"
             tools:ignore="NestedWeights">
 
         </TextView>
 
         <TextView
+            style="@style/SettingSubtitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/SettingSubtitle"
             android:layout_marginTop="20dp"
             android:gravity="center|start"
             android:text="@string/addons_redirect" />
+
         <TextView
             style="@style/SettingsText"
-            android:background="@drawable/lc_bkg_button_top"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:alpha="0.7"
+            android:background="@drawable/lc_bkg_button_top"
             android:gravity="bottom|center"
             android:minHeight="50sp"
             android:text="@string/addons_preamble" />
 
         <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_marginTop="2dp"
             android:background="@drawable/lc_bkg_button_middle"
             android:backgroundTint="#8000"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
             android:orientation="vertical">
 
             <LinearLayout
@@ -137,11 +138,11 @@
         </LinearLayout>
 
         <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_marginTop="2dp"
             android:background="@drawable/lc_bkg_button_middle"
             android:backgroundTint="#8000"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
             android:orientation="vertical">
 
             <LinearLayout
@@ -194,13 +195,12 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_marginTop="2dp"
-            android:background="@drawable/lc_bkg_button_middle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
+            android:layout_marginTop="2dp"
+            android:background="@drawable/lc_bkg_button_middle"
             android:backgroundTint="#8000"
-            >
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -252,11 +252,11 @@
         </LinearLayout>
 
         <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_marginTop="2dp"
             android:background="@drawable/lc_bkg_button_bottom"
             android:backgroundTint="#8000"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
             android:orientation="vertical">
 
             <LinearLayout
