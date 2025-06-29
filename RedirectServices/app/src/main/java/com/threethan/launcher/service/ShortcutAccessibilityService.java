@@ -13,6 +13,7 @@ import java.util.TimerTask;
 public class ShortcutAccessibilityService extends AccessibilityService {
     private static final int HOVER_DELAY_MS = 500;
     private static final int LAUNCH_COOLDOWN_MS = 250;
+    private static final int LAUNCH_COOLDOWN_EXTENDED_MS = 1750;
 
     /**
      * Times how long you continue to hover an icon.
@@ -29,8 +30,6 @@ public class ShortcutAccessibilityService extends AccessibilityService {
     private static Timer launchCooldownTimer = null;
 
     public void onAccessibilityEvent(AccessibilityEvent event) {
-        if (!event.getPackageName().equals("com.oculus.systemux")) return;
-
         String eventText = event.getText().toString();
         String targetName = getResources().getString(R.string.target_name);
 
@@ -62,27 +61,30 @@ public class ShortcutAccessibilityService extends AccessibilityService {
             try {
                 hoverHoldTimer.cancel();} catch (Exception ignored) {}
             hoverHoldTimer = null;
-            if (launchCooldownTimer != null) setLaunchCooldownTimer();
+            if (launchCooldownTimer != null) setLaunchCooldownTimer(false);
         } else {
             // Handle click or window open (indicates a definitely intentional interaction)
             try {
                 hoverHoldTimer.cancel();} catch (Exception ignored) {}
             if (launchCooldownTimer == null) {
+
+                boolean useExtendedDelay
+                        = event.getEventType() != AccessibilityEvent.TYPE_VIEW_CLICKED;
                 launchCooldownTimer = new Timer();
-                setLaunchCooldownTimer();
+                setLaunchCooldownTimer(useExtendedDelay);
                 doLaunch();
             }
         }
     }
 
     /** Set a timer that, while active, prevents a new launch */
-    private static void setLaunchCooldownTimer() {
+    private static void setLaunchCooldownTimer(boolean extended) {
         launchCooldownTimer.schedule(new TimerTask() {
             @Override
             public void run() {
                 launchCooldownTimer = null;
             }
-        }, LAUNCH_COOLDOWN_MS);
+        }, extended ? LAUNCH_COOLDOWN_EXTENDED_MS : LAUNCH_COOLDOWN_MS);
     }
 
     /** Launches a wrapped instance of Lightning Launcher using the appropriate intent */
@@ -100,5 +102,6 @@ public class ShortcutAccessibilityService extends AccessibilityService {
         return Build.HARDWARE.equalsIgnoreCase("eureka")
                 || Build.HARDWARE.equalsIgnoreCase("panther");
     }
+
     public void onInterrupt() {}
 }

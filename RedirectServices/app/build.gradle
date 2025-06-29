@@ -4,12 +4,12 @@ plugins {
 
 android {
     namespace 'com.threethan.launcher.service'
-    compileSdk 34
+    compileSdk 35
 
     defaultConfig {
         applicationId "com.threethan.launcher.service"
         minSdk 23
-        targetSdkVersion 34
+        targetSdkVersion 35
         versionCode 830
         versionName "8.3.0"
     }
@@ -47,6 +47,10 @@ android {
         store {
             dimension 'target'
             applicationIdSuffix '.store'
+        }
+        navigator {
+            dimension 'target'
+            applicationIdSuffix '.navigator'
         }
     }
 }
