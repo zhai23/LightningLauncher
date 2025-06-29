@@ -210,5 +210,17 @@
             android:grantUriPermissions="true"
             tools:ignore="ExportedContentProvider">
         </provider>
+
+        <receiver
+            android:name="com.threethan.launcher.PackageChangeReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_ADDED"/>
+                <action android:name="android.intent.action.PACKAGE_REPLACED"/>
+                <action android:name="android.intent.action.PACKAGE_REMOVED"/>
+                <data android:scheme="package"/>
+            </intent-filter>
+        </receiver>
+
     </application>
 </manifest>
