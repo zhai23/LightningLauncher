@@ -30,6 +30,8 @@ public class ShortcutAccessibilityService extends AccessibilityService {
     private static Timer launchCooldownTimer = null;
 
     public void onAccessibilityEvent(AccessibilityEvent event) {
+        Log.v("LLNAVISERV", event.toString());
+
         String eventText = event.getText().toString();
         String targetName = getResources().getString(R.string.target_name);
 

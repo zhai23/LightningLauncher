@@ -78,22 +78,28 @@ def generate_strings(target_string: str, target_dir: str):
         print("Finished cleaning", out_dir)
         return
 
+    untranslated_file = os.path.join(res_dir, VALUES_DIR, STRING_XML_IN)
+    if not os.path.isfile(untranslated_file):
+        raise RuntimeError("Untranslated strings.xml not found")
+
+    target_key = get_key_matching_target_string(untranslated_file, target_string)
+    if target_key == None:
+        raise RuntimeError("Untranslated value matching", target_string, "not found")
+
     for value_folder in os.listdir(res_dir):
         if value_folder.startswith(VALUES_DIR):
             in_path = os.path.join(res_dir, value_folder, STRING_XML_IN)
             if os.path.isfile(in_path):
-                value = get_target_string_value(in_path, target_string)
+                value = get_target_string_value(in_path, target_key)
                 if value is not None:
                     out_path = in_path.replace(res_dir, out_dir).replace(STRING_XML_IN, STRING_XML_OUT)
                     out_path_dir = out_path.replace(STRING_XML_OUT, "")
                     if not os.path.isdir(out_path_dir):
                         os.makedirs(out_path_dir)
 
-                    if value_folder == VALUES_DIR:
-                        default = value
                     write_string_file(out_path, value)
                     count += 1
-    print("Wrote {} translations of '{}' from '{}'".format(count, default, target_string))
+    print("Wrote {} translations of '{}' from '{}'".format(count, target_string, target_key))
 
 
 def cleanup_old_outputs(out_dir: str):
@@ -110,7 +116,7 @@ def cleanup_old_outputs(out_dir: str):
                             os.rmdir(os.path.join(out_dir, value_folder))
 
 
-def get_target_string_value(path: str, value_name: str):
+def get_target_string_value(path: str, key: str):
     import xml.etree.ElementTree as ElementTree
     tree = ElementTree.parse(path)
 
@@ -118,9 +124,19 @@ def get_target_string_value(path: str, value_name: str):
 
     # Find the first occurrence of the tag and return its text
     for tag in root.findall('string'):
-        if tag.get('name') == value_name:
+        if tag.get('name') == key:
             return tag.text
 
+def get_key_matching_target_string(path: str, target_string: str):
+    import xml.etree.ElementTree as ElementTree
+    tree = ElementTree.parse(path)
+
+    root = tree.getroot()
+
+    # Find the last occurrence of the string and return its tag
+    for tag in reversed(root.findall('string')):
+        if tag.text == target_string:
+            return tag.get('name')
 
 def write_string_file(path: str, value: str):
     with open(path, 'w', encoding='utf-8') as file:
@@ -128,10 +144,11 @@ def write_string_file(path: str, value: str):
 
 
 def generate_all_strings():
-    generate_strings("anytime_tablet_aui_horizon_feed_button", "../src/feed/res")
-    generate_strings("anytime_tablet_library_people_button"  , "../src/people/res")
-    generate_strings("anytime_tablet_library_store_button"   , "../src/store/res")
-    generate_strings("library_display_name_side_nav_enabled" , "../src/library/res")
+    generate_strings("Horizon Feed"         , "../src/feed/res")
+    generate_strings("People"               , "../src/people/res")
+    generate_strings("Meta Horizon Store"   , "../src/store/res")
+    generate_strings("App Library"          , "../src/library/res")
+    generate_strings("Library"              , "../src/navigator/res")
 
 
 def run():
