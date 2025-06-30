@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Lightning Launcher (Navigator)</string>
-    <string name="service_name" translatable="false">Hover Navigator to open Lightning Launcher</string>
-    <string name="service_desc">Enable this service using the switch up top to open Lightning Launcher when you hover over the &quot;Navigator&quot; button on bar.</string>
+    <string name="service_name" translatable="false">Open Lightning Launcher with Navigator Button</string>
+    <string name="service_desc">Enable this service using to open Lightning Launcher when you press the Meta button to open the Navigator.
+        \n\nPress the Meta button after Lightning Launcher is open to actually open the Navigator.</string>
 </resources>

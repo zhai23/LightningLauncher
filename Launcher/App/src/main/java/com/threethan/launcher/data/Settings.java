@@ -71,7 +71,7 @@ public abstract class Settings {
     public static final String KEY_BACKGROUND = "KEY_CUSTOM_THEME";
     public static final String KEY_BACKGROUND_ALPHA = "KEY_CUSTOM_ALPHA";
     public static final String KEY_BACKGROUND_ALPHA_PRESERVE = "KEY_BACKGROUND_ALPHA_PRESERVE";
-    public static final String KEY_BACKGROUND_BLUR_CLAMP = "KEY_BACKGROUND_BLUR_CLAMP";
+    public static final String KEY_BACKGROUND_BLUR = "KEY_BACKGROUND_BLUR_CLAMP";
     public static final String KEY_DARK_MODE = "KEY_DARK_MODE";
     public static final String KEY_GROUPS_ENABLED = "KEY_GROUPS_ENABLED";
     public static final String KEY_GROUPS_WIDE = "KEY_GROUPS_ENABLED";
@@ -83,7 +83,7 @@ public abstract class Settings {
     public static final int DEFAULT_ALPHA = Platform.isQuestGen3() ? 0 : (Platform.isQuest() ? 128 : 255);
     public static final boolean DEFAULT_BACKGROUND_ALPHA_PRESERVE
             = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && Platform.isQuest();
-    public static final boolean DEFAULT_BACKGROUND_BLUR_CLAMP = true;
+    public static final boolean DEFAULT_BACKGROUND_BLUR = true;
     public static final boolean DEFAULT_DARK_MODE = true;
     public static final boolean DEFAULT_GROUPS_ENABLED = true;
     public static final boolean DEFAULT_GROUPS_WIDE = false;

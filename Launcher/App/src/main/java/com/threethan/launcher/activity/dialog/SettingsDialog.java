@@ -345,8 +345,8 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
                 alphaPreserve.setVisibility(View.VISIBLE);
 
                 if (Platform.getVrOsVersion() >= 77 && Platform.isQuestGen3()) {
-                    attachSwitchToSetting(alphaClamp, Settings.KEY_BACKGROUND_BLUR_CLAMP,
-                            Settings.DEFAULT_BACKGROUND_BLUR_CLAMP, v -> a.refreshBackground(), false);
+                    attachSwitchToSetting(alphaClamp, Settings.KEY_BACKGROUND_BLUR,
+                            Settings.DEFAULT_BACKGROUND_BLUR, v -> a.refreshBackground(), false);
                     alphaClamp.setVisibility(View.VISIBLE);
                 }
             } else if (Platform.isQuest()) {

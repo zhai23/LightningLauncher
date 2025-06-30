@@ -220,7 +220,7 @@ public class WallpaperLoader {
     }
     private static boolean shouldClampAlpha(DataStoreEditor dataStoreEditor) {
         return Platform.getVrOsVersion() >= 77 && Platform.isQuestGen3()
-                && dataStoreEditor.getBoolean(Settings.KEY_BACKGROUND_BLUR_CLAMP,
-                                              Settings.DEFAULT_BACKGROUND_BLUR_CLAMP);
+                && dataStoreEditor.getBoolean(Settings.KEY_BACKGROUND_BLUR,
+                                              Settings.DEFAULT_BACKGROUND_BLUR);
     }
 }

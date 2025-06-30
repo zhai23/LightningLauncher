@@ -2,7 +2,8 @@ package com.threethan.launcher.service;
 
 import android.accessibilityservice.AccessibilityService;
 import android.content.Intent;
-import android.os.Build;
+import android.database.Cursor;
+import android.net.Uri;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 
@@ -30,18 +31,23 @@ public class ShortcutAccessibilityService extends AccessibilityService {
     private static Timer launchCooldownTimer = null;
 
     public void onAccessibilityEvent(AccessibilityEvent event) {
-        Log.v("LLNAVISERV", event.toString());
-
         String eventText = event.getText().toString();
         String targetName = getResources().getString(R.string.target_name);
+        String targetNameAlt = getResources().getString(R.string.target_name_alt);
 
         // Return if event does not contain expected text (in text or contentDescription)
         if (eventText.compareTo("[]") == 0) {
-            if (event.getContentDescription() == null) return;
-            if (targetName.compareToIgnoreCase(event.getContentDescription().toString()) != 0) return;
+            if (event.getContentDescription() == null)
+                return;
+            if (targetName.compareToIgnoreCase(event.getContentDescription().toString()) != 0
+            &&  targetNameAlt.compareToIgnoreCase(event.getContentDescription().toString()) != 0)
+                return;
         } else {
             String targetEventName = "[" + targetName + "]";
-            if (targetEventName.toLowerCase().compareToIgnoreCase(eventText) != 0) return;
+            String targetEventNameAlt = "[" + targetNameAlt + "]";
+            if (targetEventName.toLowerCase().compareToIgnoreCase(eventText) != 0
+            &&  targetEventNameAlt.toLowerCase().compareToIgnoreCase(eventText) != 0)
+                return;
         }
 
         // Now we know the event is valid, so handle it:
@@ -52,7 +58,7 @@ public class ShortcutAccessibilityService extends AccessibilityService {
                 hoverHoldTimer.schedule(new TimerTask() {
                     @Override
                     public void run() {
-                        doLaunch();
+                        trigger();
                         try {launchCooldownTimer.cancel();} catch (Exception ignored) {}
                         launchCooldownTimer = new Timer();
                     }
@@ -74,7 +80,7 @@ public class ShortcutAccessibilityService extends AccessibilityService {
                         = event.getEventType() != AccessibilityEvent.TYPE_VIEW_CLICKED;
                 launchCooldownTimer = new Timer();
                 setLaunchCooldownTimer(useExtendedDelay);
-                doLaunch();
+                trigger();
             }
         }
     }
@@ -89,20 +95,38 @@ public class ShortcutAccessibilityService extends AccessibilityService {
         }, extended ? LAUNCH_COOLDOWN_EXTENDED_MS : LAUNCH_COOLDOWN_MS);
     }
 
-    /** Launches a wrapped instance of Lightning Launcher using the appropriate intent */
-    private void doLaunch() {
+    /** Launches a wrapped instance of Lightning Launcher if/as appropriate */
+    private void trigger() {
+        Log.i("LightningLauncherService", "Triggered from accessibility event");
+        Uri uri = Uri.parse("content://com.threethan.launcher.shortcutStateProvider");
+        try (
+                Cursor cursor = getContentResolver()
+                .query(uri, null, null, null, null)
+        ){
+            assert cursor != null;
+            cursor.moveToFirst();
+
+            int isOpenIndex = cursor.getColumnIndex("isOpen");
+            int shouldBlurIndex = cursor.getColumnIndex("shouldBlur");
+
+            boolean currentlyOpen = cursor.getInt(isOpenIndex) != 0;
+            if (currentlyOpen) return; // Don't launch if already open
+            boolean shouldBlur = cursor.getInt(shouldBlurIndex) != 0;
+
+            launch(shouldBlur);
+        } catch (Throwable e) {
+            Log.e("LightningLauncherService", "Error reading state", e);
+        }
+    }
+
+    /** Launch LightningLauncher with the appropriate intent */
+    private void launch(boolean shouldBlur) {
         Intent launchIntent = new Intent(this,
-                isQuestGen3() ? MainActivityBlur.class : MainActivity.class);
+                shouldBlur ? MainActivityBlur.class : MainActivity.class);
         launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
 
         Log.i("LightningLauncherService", "Opening launcher activity from accessibility event");
         startActivity(launchIntent);
-    }
-
-    /** @return True, if on a Quest 3 or 3S, which support blend effects */
-    public static boolean isQuestGen3() {
-        return Build.HARDWARE.equalsIgnoreCase("eureka")
-                || Build.HARDWARE.equalsIgnoreCase("panther");
     }
 
     public void onInterrupt() {}

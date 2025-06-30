@@ -28,6 +28,7 @@ Arguments:
 XML_TEMPLATE = """<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="target_name">{}</string>
+    <string name="target_name_alt">{}</string>
 </resources>
 """
 
@@ -62,7 +63,7 @@ def extract_apk():
         raise RuntimeError("ApkTool jar not found. Must be placed in " + apk_path)
 
 
-def generate_strings(target_string: str, target_dir: str):
+def generate_strings(target_string: str, target_string_alt: str, target_dir: str):
     count = 0
     default = ""
 
@@ -85,19 +86,21 @@ def generate_strings(target_string: str, target_dir: str):
     target_key = get_key_matching_target_string(untranslated_file, target_string)
     if target_key == None:
         raise RuntimeError("Untranslated value matching", target_string, "not found")
+    target_key_alt = get_key_matching_target_string(untranslated_file, target_string_alt)
 
     for value_folder in os.listdir(res_dir):
         if value_folder.startswith(VALUES_DIR):
             in_path = os.path.join(res_dir, value_folder, STRING_XML_IN)
             if os.path.isfile(in_path):
-                value = get_target_string_value(in_path, target_key)
+                value     = get_target_string_value(in_path, target_key)
+                value_alt = get_target_string_value(in_path, target_key_alt) if target_key_alt else ""
                 if value is not None:
                     out_path = in_path.replace(res_dir, out_dir).replace(STRING_XML_IN, STRING_XML_OUT)
                     out_path_dir = out_path.replace(STRING_XML_OUT, "")
                     if not os.path.isdir(out_path_dir):
                         os.makedirs(out_path_dir)
 
-                    write_string_file(out_path, value)
+                    write_string_file(out_path, value, value_alt)
                     count += 1
     print("Wrote {} translations of '{}' from '{}'".format(count, target_string, target_key))
 
@@ -138,17 +141,17 @@ def get_key_matching_target_string(path: str, target_string: str):
         if tag.text == target_string:
             return tag.get('name')
 
-def write_string_file(path: str, value: str):
+def write_string_file(path: str, value: str, value_alt):
     with open(path, 'w', encoding='utf-8') as file:
-        file.write(XML_TEMPLATE.format(value))
+        file.write(XML_TEMPLATE.format(value, value_alt))
 
 
 def generate_all_strings():
-    generate_strings("Horizon Feed"         , "../src/feed/res")
-    generate_strings("People"               , "../src/people/res")
-    generate_strings("Meta Horizon Store"   , "../src/store/res")
-    generate_strings("App Library"          , "../src/library/res")
-    generate_strings("Library"              , "../src/navigator/res")
+    generate_strings("Horizon Feed", "Feed", "../src/feed/res")
+    generate_strings("People", "", "../src/people/res")
+    generate_strings("Meta Horizon Store", "Store", "../src/store/res")
+    generate_strings("App Library", "Library", "../src/library/res")
+    generate_strings("Library", "Navigator", "../src/navigator/res")
 
 
 def run():

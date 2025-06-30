@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="target_name">Meta Horizon-butiken</string>
+    <string name="target_name_alt">Butiken</string>
 </resources>

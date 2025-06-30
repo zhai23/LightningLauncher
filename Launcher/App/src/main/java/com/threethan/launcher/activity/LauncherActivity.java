@@ -114,6 +114,7 @@ public class LauncherActivity extends Launch.LaunchingActivity {
     private static WeakReference<LauncherActivity> foregroundInstance = null;
 
     public static Locale implicitLocale = null;
+    public boolean isActive = false;
 
     /**
      * Gets an instance of a LauncherActivity, preferring that which was most recently resumed
@@ -194,7 +195,6 @@ public class LauncherActivity extends Launch.LaunchingActivity {
 
         if (hasView) startWithExistingView();
         else startWithNewView();
-
 
     }
     protected void startWithNewView() {
@@ -278,6 +278,8 @@ public class LauncherActivity extends Launch.LaunchingActivity {
             // For the GC & easier debugging
             settingsManager = null;
         } catch (RuntimeException ignored) {} //Runtime exception called when a service is invalid
+
+        isActive = false;
         super.onDestroy();
     }
 
@@ -345,6 +347,7 @@ public class LauncherActivity extends Launch.LaunchingActivity {
         super.onResume();
 
         Core.init(this);
+        isActive = true;
 
         foregroundInstance = new WeakReference<>(this);
 
@@ -837,5 +840,23 @@ public class LauncherActivity extends Launch.LaunchingActivity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_F2) ActivityCapture.takeAndStoreCapture(this);
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    protected void onPause() {
+        isActive = false;
+        super.onPause();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        isActive = true;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        isActive = false;
     }
 }
