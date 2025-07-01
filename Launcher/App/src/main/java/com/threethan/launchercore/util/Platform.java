@@ -124,7 +124,8 @@ public abstract class Platform {
             "com.oculus.metacam",
             "com.oculus.horizonmediaplayer", // Broken as of v78.1027
             "com.meta.worlds", // Broken as of v78.1027
-            "com.oculus.guardiansetup"
+            "com.oculus.guardiansetup",
+            "com.oculus.globalsearch" // Intended as part of the Navigator UI
     );
 
     /**

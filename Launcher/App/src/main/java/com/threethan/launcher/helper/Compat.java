@@ -171,6 +171,8 @@ public abstract class Compat {
                     case (10):
                         clearIconCache(launcherActivity);
                         clearIcons(launcherActivity);
+                    case (11):
+                        clearIconCache(launcherActivity);
                 }
             }
             Log.i(TAG, String.format("Settings Updated from v%s to v%s (Settings versions are not the same as app versions)",

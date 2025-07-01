@@ -15,6 +15,7 @@ import com.threethan.launchercore.adapter.UtilityApplicationInfo;
 import com.threethan.launchercore.lib.ImageLib;
 import com.threethan.launchercore.lib.StringLib;
 import com.threethan.launchercore.util.App;
+import com.threethan.launchercore.util.Platform;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -32,8 +33,8 @@ import java.util.function.Consumer;
  */
 
 public abstract class IconLoader {
-    private static final int ICON_QUALITY = 50;
-    public static final int ICON_HEIGHT = 192;
+    private static final int ICON_QUALITY = 25;
+    public static final int ICON_HEIGHT = Platform.isQuestGen3() ? 360 : 240;
     public static final String ICON_CACHE_FOLDER = "/icon-cache";
     public static final Map<String, Drawable> cachedIcons = new ConcurrentHashMap<>();
     public static final Object ICON_CUSTOM_FOLDER = "/icon-custom";
