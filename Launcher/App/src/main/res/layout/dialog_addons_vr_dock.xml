@@ -27,40 +27,45 @@
             android:paddingBottom="2dp"
             android:text="@string/addons_main_vr" />
 
-        <TextView
-            style="@style/SettingSubtitle"
+
+        <LinearLayout
+            android:id="@+id/addToDockSuggest"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:gravity="center|start"
-            android:text="@string/addons_add" />
+            android:orientation="vertical">
+            <TextView
+                style="@style/SettingSubtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center|start"
+                android:text="@string/addons_add" />
 
-        <TextView
-            android:id="@+id/addToDockText"
-            style="@style/SettingsText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:alpha="0.7"
-            android:background="@drawable/lc_bkg_button_top"
-            android:gravity="bottom|center"
-            android:minHeight="30sp"
-            android:text="@string/addons_preamble_dock" />
+            <TextView
+                style="@style/SettingsText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:alpha="0.7"
+                android:background="@drawable/lc_bkg_button_top"
+                android:gravity="bottom|center"
+                android:minHeight="30sp"
+                android:text="@string/addons_preamble_dock" />
 
-        <TextView
-            android:id="@+id/addToDockButton"
-            style="@style/SettingButtonLabel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:background="@drawable/lc_bkg_button_bottom"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:singleLine="true"
-            android:text="@string/addons_dock_button"
-            android:textStyle="bold"
-            tools:ignore="NestedWeights">
+            <TextView
+                android:id="@+id/addToDockButton"
+                style="@style/SettingButtonLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:background="@drawable/lc_bkg_button_bottom"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:singleLine="true"
+                android:text="@string/addons_dock_button"
+                android:textStyle="bold"
+                tools:ignore="NestedWeights"/>
 
-        </TextView>
+        </LinearLayout>
 
         <TextView
             style="@style/SettingSubtitle"
@@ -109,7 +114,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_gravity="center|start"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="2dp"
                     android:layout_marginBottom="0dp"
                     android:layout_weight="1"
                     android:paddingStart="0dp"
@@ -125,7 +130,7 @@
                 layout="@layout/addon_buttons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="40dp"
+                android:layout_marginStart="35dp"
                 android:layout_marginBottom="10dp" />
 
             <TextView
@@ -166,7 +171,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_gravity="center|start"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="2dp"
                     android:layout_marginBottom="0dp"
                     android:layout_weight="1"
                     android:paddingStart="0dp"
@@ -182,7 +187,7 @@
                 layout="@layout/addon_buttons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="40dp"
+                android:layout_marginStart="35dp"
                 android:layout_marginBottom="10dp" />
 
             <TextView
@@ -223,7 +228,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_gravity="center|start"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="2dp"
                     android:layout_marginBottom="0dp"
                     android:layout_weight="1"
                     android:paddingStart="0dp"
@@ -239,7 +244,7 @@
                 layout="@layout/addon_buttons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="40dp"
+                android:layout_marginStart="35dp"
                 android:layout_marginBottom="10dp" />
 
             <TextView
@@ -280,7 +285,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_gravity="center|start"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="2dp"
                     android:layout_marginBottom="0dp"
                     android:layout_weight="1"
                     android:paddingStart="0dp"
@@ -296,7 +301,7 @@
                 layout="@layout/addon_buttons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="40dp"
+                android:layout_marginStart="35dp"
                 android:layout_marginBottom="10dp" />
 
             <TextView
@@ -309,6 +314,18 @@
                 android:text="@string/addons_explore_desc" />
 
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/addonIndeterminateGotoButton"
+            style="@style/SettingButtonLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/lc_bkg_button"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:singleLine="true"
+            android:text="@string/addons_navigator_suggest_title" />
 
         <TextView
             android:id="@+id/exitButton"

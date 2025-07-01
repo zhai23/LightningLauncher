@@ -7,7 +7,7 @@
     android:layout_marginBottom="10dp"
     android:baselineAligned="false"
     android:orientation="horizontal"
-    tools:showIn="@layout/dialog_addons_vr">
+    tools:showIn="@layout/dialog_addons_vr_dock">
 
     <com.threethan.launchercore.view.LcButton
         android:id="@+id/addonUninstall"

@@ -62,7 +62,7 @@ public class AddonUpdater extends RemotePackageUpdater {
     public static final String TAG_PEOPLE   = "People Shortcut Service";
     public static final String TAG_STORE   = "Store Shortcut Service";
     public static final String TAG_FEED     = "Feed Shortcut Service";
-    public static final String TAG_ATV_LM   = "Android TV Launcher Manager";
+    public static final String TAG_NAVIGATOR= "Navigator Redirection Service";
 
     // Addons are currently on the main repo
     private static final String GIT_REPO_ADDONS = "threethan/LightningLauncher";
@@ -91,10 +91,8 @@ public class AddonUpdater extends RemotePackageUpdater {
             new Addon(TAG_STORE, "com.threethan.launcher.service.store",
                     SHORTCUT_ADDON_VERSION, true, addonUrl("ShortcutStore")),
 
-            // AndroidTV-Exclusive
-            new Addon(TAG_ATV_LM, "com.wolf.google.lm",
-                    "LM (ATV) - 1.0.4", false,
-                    "https://xdaforums.com/attachments/lm-atv-1-0-4-apk.5498333/")
+            new Addon(TAG_NAVIGATOR, "com.threethan.launcher.service.navigator",
+                    SHORTCUT_ADDON_VERSION, true, addonUrl("ShortcutNavigator")),
     };
 
     /**

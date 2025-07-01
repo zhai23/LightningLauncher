@@ -8,6 +8,7 @@ import android.view.View;
 
 import com.threethan.launcher.R;
 import com.threethan.launcher.activity.LauncherActivity;
+import com.threethan.launcher.data.Settings;
 import com.threethan.launcher.helper.PlatformExt;
 import com.threethan.launcher.updater.AddonUpdater;
 import com.threethan.launchercore.util.Platform;
@@ -30,7 +31,31 @@ public class AddonDialog extends BasicDialog<LauncherActivity> {
      * @param activity LauncherActivity Context to show the dialog
      */
     public AddonDialog(LauncherActivity activity) {
-        super(activity, Platform.isVr() ? R.layout.dialog_addons_vr : R.layout.dialog_addons_tv);
+        super(activity, determineLayoutRes(activity));
+    }
+
+    /** Determine the layout resource to use on current platform */
+    private static int determineLayoutRes(LauncherActivity activity) {
+        if (Platform.isVr()) {
+            if (
+                    Platform.getVrOsVersion() > 76 &&
+                            Platform.getVrOsVersion() < 82 && // [SPECULATION] Navigator will be default by v82
+                            !activity.dataStoreEditor.getBoolean(Settings.KEY_ADDONS_VR_TYPE_KNOWN, false)
+            ) {
+                return R.layout.dialog_addons_vr_indeterminate;
+            } else {
+                boolean defaultHasNavigator = Platform.getVrOsVersion() > 76;
+                boolean hasNavigator = activity.dataStoreEditor.getBoolean(
+                        Settings.KEY_ADDONS_VR_HAS_NAVIGATOR,
+                        defaultHasNavigator
+                );
+                return hasNavigator
+                        ? R.layout.dialog_addons_vr_navigator
+                        : R.layout.dialog_addons_vr_dock;
+            }
+        } else {
+            return R.layout.dialog_addons_tv;
+        }
     }
 
     public AlertDialog show() {
@@ -44,23 +69,49 @@ public class AddonDialog extends BasicDialog<LauncherActivity> {
         if (addonLibrary!=null) updateAddonButton(a, addonLibrary, AddonUpdater.TAG_LIBRARY);
 
         View addonPeople = dialog.findViewById(R.id.addonPeople);
-        if (addonLibrary!=null) updateAddonButton(a, addonPeople, AddonUpdater.TAG_PEOPLE);
+        if (addonPeople!=null) updateAddonButton(a, addonPeople, AddonUpdater.TAG_PEOPLE);
 
         View addonStore = dialog.findViewById(R.id.addonStore);
-        if (addonLibrary!=null) updateAddonButton(a, addonStore, AddonUpdater.TAG_STORE);
+        if (addonStore!=null) updateAddonButton(a, addonStore, AddonUpdater.TAG_STORE);
 
-
-        View addonAndroidTv = dialog.findViewById(R.id.addonAndroidTv);
-        if (addonAndroidTv!=null) updateAddonButton(a, addonAndroidTv, AddonUpdater.TAG_ATV_LM);
+        View addonNavigator = dialog.findViewById(R.id.addonNavigator);
+        if (addonNavigator!=null) updateAddonButton(a, addonNavigator, AddonUpdater.TAG_NAVIGATOR);
 
         View addDockButton = dialog.findViewById(R.id.addToDockButton);
         if (addDockButton != null) addDockButton.setOnClickListener(v -> showDockDialog());
         dialog.findViewById(R.id.exitButton).setOnClickListener(v -> dialog.dismiss());
 
         if (PlatformExt.isOldVrOs()) {
-            dialog.findViewById(R.id.addToDockText).setVisibility(View.GONE);
-            dialog.findViewById(R.id.addToDockButton).setVisibility(View.GONE);
+            View addToDockSuggest = dialog.findViewById(R.id.addToDockSuggest);
+            if (addToDockSuggest != null) addToDockSuggest.setVisibility(View.GONE);
+        } if (Platform.getVrOsVersion() < 78) {
+            View addonNavigatorSuggest = dialog.findViewById(R.id.addonNavigatorSuggest);
+            if (addonNavigatorSuggest != null) addonNavigatorSuggest.setVisibility(View.GONE);
         }
+
+        View navigatorGotoView = dialog.findViewById(R.id.addonNavigatorGotoButton);
+        if (navigatorGotoView != null) navigatorGotoView.setOnClickListener(v -> {
+            a.dataStoreEditor.putValue(Settings.KEY_ADDONS_VR_TYPE_KNOWN, true, true);
+            a.dataStoreEditor.putValue(Settings.KEY_ADDONS_VR_HAS_NAVIGATOR, true, true);
+            dialog.dismiss();
+            new AddonDialog(a).show();
+        });
+
+        View dockGotoButton    = dialog.findViewById(R.id.addonDockGotoButton);
+        if (dockGotoButton    != null) dockGotoButton   .setOnClickListener(v -> {
+            a.dataStoreEditor.putValue(Settings.KEY_ADDONS_VR_TYPE_KNOWN, true, true);
+            a.dataStoreEditor.putValue(Settings.KEY_ADDONS_VR_HAS_NAVIGATOR, false, true);
+            dialog.dismiss();
+            new AddonDialog(a).show();
+        });
+
+        View indeterminateGotoView = dialog.findViewById(R.id.addonIndeterminateGotoButton);
+        if (indeterminateGotoView != null) indeterminateGotoView.setOnClickListener(v -> {
+            a.dataStoreEditor.putValue(Settings.KEY_ADDONS_VR_TYPE_KNOWN, false, true);
+            dialog.dismiss();
+            new AddonDialog(a).show();
+        });
+
         return dialog;
     }
     public static void updateAddonButton(final Activity a, final View layout, final String tag) {

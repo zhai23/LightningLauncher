@@ -303,10 +303,11 @@
     <string name="addons_exit">Return to Settings</string>
 
     <string name="addons_androidtv">Android TV Launcher Manager</string>
-    <string name="addons_androidtv_desc">Install a third-party application which may allow you to change the default home on Android TV.
+    <string name="addons_androidtv_desc">You may be able to install a third-party application to change the default home on Android TV.
+        \n
     \nThis requires ADB Debugging to be enabled, and may not work on every device.
     \n
-    \nIf it doesn\'t install through here, look up &quot;Android TV Launcher Manager XDA&quot;, then manually download &amp; install. <i>(Will not work on Fire TV)</i></string>
+    \nLook up &quot;Android TV Launcher Manager XDA&quot;, then manually download &amp; install.</string>
 
     <string name="addons_androidtv_alt">Or… Just Use the Back Button!</string>
     <string name="addons_androidtv_alt_desc">If you just use the back button on your remote, instead of the home button, you will always come back to Lightning Launcher.
@@ -338,17 +339,36 @@
     <string name="addons_dock_section_2_below">You can\'t have more than five apps pinned.</string>
 
     <string name="addons_add">Add Dock Icon</string>
-    <string name="addons_redirect">Redirect Built-In Icons</string>
+    <string name="addons_redirect">Redirect Built-In Dock Icons</string>
 
     <string name="addons_explore">Feed Redirect</string>
     <string name="addons_explore_desc">Install then activate to open Lightning Launcher when you press the <b>Horizon Feed</b> button on the dock.</string>
-
     <string name="addons_library">Library Redirect</string>
     <string name="addons_library_desc">Install then activate to open Lightning Launcher when you hover the <b>App Library</b> button on the dock.</string>
     <string name="addons_store">Store Redirect</string>
     <string name="addons_store_desc">Install then activate to open Lightning Launcher when you hover the <b>Store</b> button on the dock.</string>
     <string name="addons_people">People Redirect</string>
     <string name="addons_people_desc">Install then activate to open Lightning Launcher when you hover the <b>People</b> button on the dock.</string>
+
+
+    <string name="addons_dock_suggest_title">Shortcuts for Dock UI</string>
+    <string name="addons_dock_suggest_0">The Dock is a bar with the time and a row of app icons - <b>which is always present below 2D windows</b>.</string>
+    <string name="addons_dock_suggest_1">The dock has been part of the Quest UI since the beginning, but it is being replaced by the Navigator.</string>
+    <string name="addons_dock_goto_button">I have the Dock</string>
+
+    <string name="addons_navigator_suggest_title">Shortcuts for Navigator UI</string>
+    <string name="addons_navigator_suggest_0">The Navigator is a special overlay which opens in front of your 2D windows and lets you launch official apps.</string>
+    <string name="addons_navigator_suggest_1">Meta is rolling this new UI out to some Quest devices.
+        \n\nIf you have the Navigator, <b>you won\'t have a Dock.</b></string>
+    <string name="addons_navigator_goto_button">I have the Navigator</string>
+
+
+    <string name="addons_navigator_title">Open Lightning Launcher with Navigator Button</string>
+    <string name="addons_navigator_preamble">You must install the service application, <b>then activate it.</b></string>
+
+    <string name="addons_navigator">Navigator Button Redirection Service</string>
+    <string name="addons_navigator_desc">Install, then activate, to open Lightning Launcher when you press the <b>Meta / Navigator</b> button.</string>
+    <string name="addons_navigator_postamble">You\'ll still be able to open the Navigator by pressing the button again - after Lightning Launcher is open.</string>
 
     <string name="addons_install">Install</string>
     <string name="addons_update">Update</string>

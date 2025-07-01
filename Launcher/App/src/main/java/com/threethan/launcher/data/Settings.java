@@ -105,6 +105,8 @@ public abstract class Settings {
     public static final boolean DEFAULT_ALLOW_CHAIN_LAUNCH = true;
     public static final String KEY_EDIT_MODE = "KEY_EDIT_MODE";
     public static final String KEY_SEEN_ADDONS = "KEY_SEEN_ADDONS";
+    public static final String KEY_ADDONS_VR_TYPE_KNOWN = "KEY_ADDONS_VR_TYPE_KNOWN";
+    public static final String KEY_ADDONS_VR_HAS_NAVIGATOR = "KEY_ADDONS_VR_HAS_NAVIGATOR";
 
     // banner-style display by app type
     public static final String KEY_BANNER = "prefTypeIsWide";
