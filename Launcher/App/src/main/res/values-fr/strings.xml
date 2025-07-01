@@ -250,6 +250,7 @@
     <string name="addons_store_desc">Installez puis activez pour ouvrir Lightning Launcher lorsque vous survolez le bouton Store sur le dock.</string>
     <string name="addons_people">Redirection des personnes</string>
     <string name="addons_people_desc">Installez puis activez pour ouvrir Lightning Launcher lorsque vous survolez le bouton Personnes sur le dock.</string>
+    <string name="addons_navigator_postamble">Vous pourrez toujours ouvrir le Navigateur en appuyant à nouveau sur le bouton, une fois Lightning Launcher ouvert.</string>
     <string name="addons_install">Installer</string>
     <string name="addons_update">Mise à jour</string>
     <string name="addons_activate">Activer</string>
@@ -268,4 +269,17 @@
     <string name="advanced_alpha_preserve">Conserver les détails</string>
     <string name="force_untranslated">Utiliser la langue anglaise</string>
     <string name="advanced_alpha_clamp">Flou de transparence du passage Quest 3</string>
+    <string name="addons_dock_suggest_title">Raccourcis pour l\'interface du Dock</string>
+    <string name="addons_dock_suggest_0">Le Dock est une barre avec l\'heure et une rangée d\'icônes d\'applications, toujours présente sous les fenêtres 2D.</string>
+    <string name="addons_dock_suggest_1">Le Dock fait partie de l\'interface Quest depuis le début, mais il est remplacé par le Navigateur.</string>
+    <string name="addons_dock_goto_button">J\'ai le Dock</string>
+    <string name="addons_navigator_suggest_title">Raccourcis pour l\'interface du Navigateur</string>
+    <string name="addons_navigator_suggest_0">Le Navigateur est une superposition spéciale qui s\'ouvre devant vos fenêtres 2D et vous permet de lancer des applications officielles.</string>
+    <string name="addons_navigator_suggest_1">Meta déploie cette nouvelle interface sur certains appareils Quest.</string>
+    <string name="addons_navigator_suggest_2">Si vous avez le Navigator, <b>vous n\'aurez pas de Dock.</b></string>
+    <string name="addons_navigator_goto_button">J\'ai le Navigateur</string>
+    <string name="addons_navigator_title">Ouvrir Lightning Launcher avec le bouton Navigateur</string>
+    <string name="addons_navigator_preamble">Vous devez installer l\'application de service, puis l\'activer.</string>
+    <string name="addons_navigator">Service de redirection du bouton Navigateur</string>
+    <string name="addons_navigator_desc">Installez-la, puis activez-la pour ouvrir Lightning Launcher en appuyant sur le bouton <b>Meta / Navigateur</b>.</string>
 </resources>

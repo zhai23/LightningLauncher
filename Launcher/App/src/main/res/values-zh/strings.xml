@@ -278,6 +278,7 @@
     <string name="addons_store">Store 快捷方式服务</string>
     <string name="addons_store_desc">安装后，只要悬停在 dock 上的 &quot;Store&quot; 按钮上，就会激活打开 Lightning Launcher。</string>
 
+    <string name="addons_navigator_postamble">在 Lightning Launcher 打开后，您仍然可以通过再次按下该按钮来打开 Navigator。</string>
     <string name="addons_install">安装</string>
     <string name="addons_update">更新</string>
     <string name="addons_activate">激活</string>
@@ -294,4 +295,17 @@
     <string name="tuner_info_get">在 itch.io 上获取<b>Quest Game Tuner</b>！</string>
     <string name="force_untranslated">使用英语</string>
     <string name="advanced_alpha_clamp">Quest 3 透视透明模糊</string>
+    <string name="addons_dock_suggest_title">Dock UI 的快捷方式</string>
+    <string name="addons_dock_suggest_0">Dock 是一个包含时间和一排应用图标的栏 - <b>它始终显示在 2D 窗口下方</b>。</string>
+    <string name="addons_dock_suggest_1">Dock 自诞生之日起就一直是 Quest UI 的一部分，但它正在被 Navigator 取代。</string>
+    <string name="addons_dock_goto_button">我拥有 Dock</string>
+    <string name="addons_navigator_suggest_title">Navigator UI 的快捷方式</string>
+    <string name="addons_navigator_suggest_0">Navigator 是一个特殊的覆盖层，它会在 2D 窗口前打开，并允许您启动官方应用。</string>
+    <string name="addons_navigator_suggest_1">Meta 正在将这个新的 UI 推广到部分 Quest 设备。</string>
+    <string name="addons_navigator_suggest_2">如果您有 Navigator，<b>那么您就不会有 Dock。</b></string>
+    <string name="addons_navigator_goto_button">我拥有 Navigator</string>
+    <string name="addons_navigator_title">使用 Navigator 按钮打开 Lightning Launcher</string>
+    <string name="addons_navigator_preamble">您必须安装该服务应用程序，<b>然后激活它。</b></string>
+    <string name="addons_navigator">Navigator 按钮重定向服务</string>
+    <string name="addons_navigator_desc">安装并激活后，按下 <b>Meta / Navigator</b> 按钮即可打开 Lightning Launcher。</string>
 </resources>

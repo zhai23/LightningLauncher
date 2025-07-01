@@ -358,8 +358,8 @@
 
     <string name="addons_navigator_suggest_title">Shortcuts for Navigator UI</string>
     <string name="addons_navigator_suggest_0">The Navigator is a special overlay which opens in front of your 2D windows and lets you launch official apps.</string>
-    <string name="addons_navigator_suggest_1">Meta is rolling this new UI out to some Quest devices.
-        \n\nIf you have the Navigator, <b>you won\'t have a Dock.</b></string>
+    <string name="addons_navigator_suggest_1">Meta is rolling this new UI out to some Quest devices.</string>
+    <string name="addons_navigator_suggest_2">If you have the Navigator, <b>you won\'t have a Dock.</b></string>
     <string name="addons_navigator_goto_button">I have the Navigator</string>
 
 

@@ -254,6 +254,7 @@
     <string name="addons_store_desc">Yükleyin ve ardından dock üzerindeki Mağaza düğmesinin üzerine geldiğinizde Lightning Launcher\'ı açmak için etkinleştirin.</string>
     <string name="addons_people">Kişi Yönlendirme</string>
     <string name="addons_people_desc">Yükleyin ve ardından dock üzerindeki Kişiler düğmesinin üzerine geldiğinizde Lightning Launcher\'ı açmak için etkinleştirin.</string>
+    <string name="addons_navigator_postamble">Lightning Launcher açıldıktan sonra düğmeye tekrar basarak Navigator\'ı açabilirsiniz</string>
     <string name="addons_install">Kurulum</string>
     <string name="addons_update">Güncelleme</string>
     <string name="addons_activate">Etkinleştir</string>
@@ -272,4 +273,17 @@
     <string name="advanced_alpha_preserve">Ayrıntıları Koru</string>
     <string name="force_untranslated">İngilizce Dilini Kullan</string>
     <string name="advanced_alpha_clamp">Görev 3 geçiş şeffaflığı bulanıklığı</string>
+    <string name="addons_dock_suggest_title">Dock UI için kısayollar</string>
+    <string name="addons_dock_suggest_0">Dock, zaman ve bir sıra uygulama simgesinin bulunduğu bir çubuktur - <b>bu her zaman 2D pencerelerin altında bulunur</b>.</string>
+    <string name="addons_dock_suggest_1">Dock, Quest UI\'nin başından beri bir parçasıydı, ancak yerini Navigator alıyor.</string>
+    <string name="addons_dock_goto_button">Dock\'um var</string>
+    <string name="addons_navigator_suggest_title">Navigator UI için kısayollar</string>
+    <string name="addons_navigator_suggest_0">Navigator, 2D pencerelerinizin önünde açılan ve resmi uygulamaları başlatmanızı sağlayan özel bir katmandır.</string>
+    <string name="addons_navigator_suggest_1">Meta bu yeni kullanıcı arayüzünü bazı Quest cihazlarına sunuyor.</string>
+    <string name="addons_navigator_suggest_2">Eğer Navigator\'ınız varsa, <b>bir Dock\'unuz olmayacak.</b></string>
+    <string name="addons_navigator_goto_button">Navigator\'um var</string>
+    <string name="addons_navigator_title">Navigator Düğmesiyle Lightning Launcher\'ı açın</string>
+    <string name="addons_navigator_preamble">Hizmet uygulamasını yüklemeli ve <b>sonra etkinleştirmelisiniz.</b></string>
+    <string name="addons_navigator">Navigator Düğmesi Yönlendirme Hizmeti</string>
+    <string name="addons_navigator_desc"><b>Meta / Navigator</b> düğmesine bastığınızda Lightning Launcher\'ı açmak için yükleyin ve ardından etkinleştirin.</string>
 </resources>

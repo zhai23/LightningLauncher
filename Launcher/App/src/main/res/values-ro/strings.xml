@@ -254,6 +254,7 @@
     <string name="addons_store_desc">Instalați apoi activați pentru a deschide Lightning Launcher atunci când treceți peste butonul Magazin de pe dock.</string>
     <string name="addons_people">Redirecționarea persoanelor</string>
     <string name="addons_people_desc">Instalați apoi activați pentru a deschide Lightning Launcher atunci când treceți butonul Persoane pe dock.</string>
+    <string name="addons_navigator_postamble">Veți putea în continuare deschide Navigator apăsând din nou butonul - după ce Lightning Launcher este deschis</string>
     <string name="addons_install">Instalați</string>
     <string name="addons_update">Actualizare</string>
     <string name="addons_activate">Activați</string>
@@ -272,4 +273,17 @@
     <string name="advanced_alpha_preserve">Păstrează detaliile</string>
     <string name="force_untranslated">Folosiți limba engleză</string>
     <string name="advanced_alpha_clamp">Încețoșarea transparenței Quest 3</string>
+    <string name="addons_dock_suggest_title">Comenzi rapide pentru interfața cu Dock</string>
+    <string name="addons_dock_suggest_0">Dock este o bară cu ora și un rând de pictograme de aplicații - <b>care este întotdeauna prezentă sub ferestrele 2D</b>.</string>
+    <string name="addons_dock_suggest_1">Dock a făcut parte din interfața cu Quest de la început, dar este înlocuită de Navigator.</string>
+    <string name="addons_dock_goto_button">Am Dock</string>
+    <string name="addons_navigator_suggest_title">Comenzi rapide pentru interfața cu Navigator</string>
+    <string name="addons_navigator_suggest_0">Navigator este o suprapunere specială care se deschide în fața ferestrelor 2D și vă permite să lansați aplicații oficiale.</string>
+    <string name="addons_navigator_suggest_1">Meta lansează această nouă interfață cu utilizatorul pe unele dispozitive Quest.</string>
+    <string name="addons_navigator_suggest_2">Dacă aveți Navigator, <b>nu veți avea un Dock</b>.</string>
+    <string name="addons_navigator_goto_button">Am Navigator</string>
+    <string name="addons_navigator_title">Deschideți Lightning Launcher cu butonul Navigator</string>
+    <string name="addons_navigator_preamble">Trebuie să instalați aplicația de serviciu, <b>apoi să o activați.</b></string>
+    <string name="addons_navigator">Serviciu de redirecționare a butonului Navigator</string>
+    <string name="addons_navigator_desc">Instalați, apoi activați, pentru a deschide Lightning Launcher atunci când apăsați butonul <b>Meta / Navigator</b>.</string>
 </resources>

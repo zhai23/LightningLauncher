@@ -254,6 +254,7 @@
     <string name="addons_store_desc">Installer og aktiver derefter for at åbne Lightning Launcher, når du holder Store-knappen på docken.</string>
     <string name="addons_people">Omdirigering af personer</string>
     <string name="addons_people_desc">Installer og aktiver derefter for at åbne Lightning Launcher, når du holder People-knappen på docken.</string>
+    <string name="addons_navigator_postamble">Du vil stadig kunne åbne Navigator ved at trykke på knappen igen - efter at Lightning Launcher er åben.</string>
     <string name="addons_install">Installer</string>
     <string name="addons_update">Opdatering</string>
     <string name="addons_activate">Aktiver</string>
@@ -272,4 +273,17 @@
     <string name="advanced_alpha_preserve">Bevar detaljer</string>
     <string name="force_untranslated">Brug engelsk sprog</string>
     <string name="advanced_alpha_clamp">Quest 3-gennemsigtighedssløring</string>
+    <string name="addons_dock_suggest_title">Genveje til Dock UI</string>
+    <string name="addons_dock_suggest_0">Dock er en bjælke med tiden og en række appikoner - <b>som altid er til stede under 2D-vinduer</b>.</string>
+    <string name="addons_dock_suggest_1">Dock har været en del af Quest UI siden starten, men den bliver erstattet af Navigator.</string>
+    <string name="addons_dock_goto_button">Jeg har Dock</string>
+    <string name="addons_navigator_suggest_title">Genveje til Navigator UI</string>
+    <string name="addons_navigator_suggest_0">Navigator er et særligt overlay, der åbnes foran dine 2D-vinduer og lader dig starte officielle apps.</string>
+    <string name="addons_navigator_suggest_1">Meta ruller denne nye brugergrænseflade ud til nogle Quest-enheder.</string>
+    <string name="addons_navigator_suggest_2">Hvis du har Navigator, <b>har du ikke en Dock.</b></string>
+    <string name="addons_navigator_goto_button">Jeg har Navigator</string>
+    <string name="addons_navigator_title">Åbn Lightning Launcher med Navigator-knappen</string>
+    <string name="addons_navigator_preamble">Du skal installere serviceapplikationen og <b>derefter aktivere den.</b></string>
+    <string name="addons_navigator">Omdirigeringstjeneste for Navigator-knap</string>
+    <string name="addons_navigator_desc">Installer, og aktiver derefter for at åbne Lightning Launcher, når du trykker på <b>Meta / Navigator</b>-knappen.</string>
 </resources>

@@ -254,6 +254,7 @@
     <string name="addons_store_desc">Установите, а затем активируйте, чтобы Lightning Launcher открывался при наведении на кнопку Store в доке.</string>
     <string name="addons_people">Перенаправление людей</string>
     <string name="addons_people_desc">Установите, а затем активируйте, чтобы Lightning Launcher открывался при наведении на кнопку People в доке.</string>
+    <string name="addons_navigator_postamble">Вы по-прежнему сможете открыть Navigator, нажав кнопку еще раз — после открытия Lightning Launcher</string>
     <string name="addons_install">Установите</string>
     <string name="addons_update">Обновление</string>
     <string name="addons_activate">Активируйте</string>
@@ -272,4 +273,17 @@
     <string name="advanced_alpha_preserve">Сохранить детали</string>
     <string name="force_untranslated">Используйте английский язык</string>
     <string name="advanced_alpha_clamp">Quest 3 сквозная прозрачность размытие</string>
+    <string name="addons_dock_suggest_title">Ярлыки для интерфейса Dock</string>
+    <string name="addons_dock_suggest_0">Dock — это панель со временем и рядом значков приложений, <b>которая всегда находится под 2D-окнами</b>.</string>
+    <string name="addons_dock_suggest_1">Dock был частью пользовательского интерфейса Quest с самого начала, но теперь его заменяет Navigator.</string>
+    <string name="addons_dock_goto_button">У меня есть Dock</string>
+    <string name="addons_navigator_suggest_title">Ярлыки для интерфейса Navigator</string>
+    <string name="addons_navigator_suggest_0">Navigator — это специальный оверлей, который открывается перед вашими 2D-окнами и позволяет запускать официальные приложения.</string>
+    <string name="addons_navigator_suggest_1">Meta внедряет этот новый пользовательский интерфейс на некоторые устройства Quest.</string>
+    <string name="addons_navigator_suggest_2">Если у вас есть Navigator, <b>у вас не будет Dock.</b></string>
+    <string name="addons_navigator_goto_button">У меня есть Navigator</string>
+    <string name="addons_navigator_title">Открытие Lightning Launcher с помощью кнопки Navigator</string>
+    <string name="addons_navigator_preamble">Необходимо установить приложение-службу, <b>а затем активировать его.</b></string>
+    <string name="addons_navigator">Служба перенаправления кнопок Navigator</string>
+    <string name="addons_navigator_desc">Установите, а затем активируйте, чтобы открыть Lightning Launcher при нажатии кнопки <b>Meta / Navigator</b>.</string>
 </resources>

@@ -254,6 +254,7 @@
     <string name="addons_store_desc">설치한 다음 활성화하면 도크의 스토어 버튼에 마우스를 갖다 대면 Lightning 런처가 열립니다.</string>
     <string name="addons_people">사람 리디렉션</string>
     <string name="addons_people_desc">설치한 후 활성화하면 도크의 사람들 버튼에 마우스를 갖다 대면 라이트닝 런처가 열립니다.</string>
+    <string name="addons_navigator_postamble">Lightning Launcher가 열린 후에도 버튼을 다시 누르면 Navigator를 열 수 있습니다.</string>
     <string name="addons_install">설치</string>
     <string name="addons_update">업데이트</string>
     <string name="addons_activate">활성화</string>
@@ -272,4 +273,17 @@
     <string name="advanced_alpha_preserve">세부정보 유지</string>
     <string name="force_untranslated">영어를 사용하세요</string>
     <string name="advanced_alpha_clamp">퀘스트 3 패스스루 투명도 흐림</string>
+    <string name="addons_dock_suggest_title">Dock UI 바로가기</string>
+    <string name="addons_dock_suggest_0">Dock은 시간과 앱 아이콘이 나열된 막대로, <b>항상 2D 창 아래에 표시됩니다</b>.</string>
+    <string name="addons_dock_suggest_1">Dock은 처음부터 Quest UI의 일부였지만, Navigator로 대체됩니다.</string>
+    <string name="addons_dock_goto_button">Dock이 있습니다.</string>
+    <string name="addons_navigator_suggest_title">Navigator UI 바로가기</string>
+    <string name="addons_navigator_suggest_0">Navigator는 2D 창 앞에 열리는 특수 오버레이로, 공식 앱을 실행할 수 있습니다.</string>
+    <string name="addons_navigator_suggest_1">Meta에서 이 새로운 UI를 일부 Quest 기기에 출시할 예정입니다.</string>
+    <string name="addons_navigator_suggest_2">Navigator가 있으면 <b>Dock은 없습니다.</b></string>
+    <string name="addons_navigator_goto_button">Navigator가 있습니다.</string>
+    <string name="addons_navigator_title">Navigator 버튼으로 Lightning Launcher 열기</string>
+    <string name="addons_navigator_preamble">서비스 애플리케이션을 설치한 후 <b>활성화</b>해야 합니다.</string>
+    <string name="addons_navigator">Navigator 버튼 리디렉션 서비스</string>
+    <string name="addons_navigator_desc"><b>Meta/Navigator</b> 버튼을 누를 때 Lightning Launcher가 열리도록 설치한 후 활성화하세요.</string>
 </resources>

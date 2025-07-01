@@ -254,6 +254,7 @@
     <string name="addons_store_desc">Εγκαταστήστε και ενεργοποιήστε το για να ανοίξει ο Lightning Launcher όταν μετακινείτε το κουμπί Store στο dock.</string>
     <string name="addons_people">Επανακατεύθυνση ανθρώπων</string>
     <string name="addons_people_desc">Εγκαταστήστε και ενεργοποιήστε το για να ανοίξει ο Lightning Launcher όταν μετακινείτε το κουμπί People στο dock.</string>
+    <string name="addons_navigator_postamble">Θα μπορείτε ακόμα να ανοίξετε το Navigator πατώντας ξανά το κουμπί - αφού ανοίξει το Lightning Launcher.</string>
     <string name="addons_install">Εγκαταστήστε το</string>
     <string name="addons_update">Ενημέρωση</string>
     <string name="addons_activate">Ενεργοποίηση</string>
@@ -272,4 +273,17 @@
     <string name="advanced_alpha_preserve">Διατήρηση λεπτομερειών</string>
     <string name="force_untranslated">Χρησιμοποιήστε την αγγλική γλώσσα</string>
     <string name="advanced_alpha_clamp">Θάμπωμα διαφάνειας διέλευσης Quest 3</string>
+    <string name="addons_dock_suggest_title">Συντομεύσεις για το Dock UI</string>
+    <string name="addons_dock_suggest_0">Το Dock είναι μια γραμμή με την ώρα και μια σειρά από εικονίδια εφαρμογών - <b>η οποία υπάρχει πάντα κάτω από τα δισδιάστατα παράθυρα</b>.</string>
+    <string name="addons_dock_suggest_1">Το dock αποτελεί μέρος του Quest UI από την αρχή, αλλά αντικαθίσταται από το Navigator.</string>
+    <string name="addons_dock_goto_button">Έχω το Dock</string>
+    <string name="addons_navigator_suggest_title">Συντομεύσεις για το Navigator UI</string>
+    <string name="addons_navigator_suggest_0">Το Navigator είναι μια ειδική επικάλυψη που ανοίγει μπροστά από τα δισδιάστατα παράθυρά σας και σας επιτρέπει να εκκινείτε επίσημες εφαρμογές.</string>
+    <string name="addons_navigator_suggest_1">Το Meta κυκλοφορεί αυτό το νέο UI σε ορισμένες συσκευές Quest.</string>
+    <string name="addons_navigator_suggest_2">Αν έχετε το Navigator, <b>δεν θα έχετε Dock.</b></string>
+    <string name="addons_navigator_goto_button">Έχω το Navigator</string>
+    <string name="addons_navigator_title">Άνοιγμα του Lightning Launcher με το κουμπί Navigator</string>
+    <string name="addons_navigator_preamble">Πρέπει να εγκαταστήσετε την εφαρμογή υπηρεσίας και, στη συνέχεια, να την ενεργοποιήσετε.</string>
+    <string name="addons_navigator">Υπηρεσία ανακατεύθυνσης κουμπιού Navigator</string>
+    <string name="addons_navigator_desc">Εγκαταστήστε και, στη συνέχεια, ενεργοποιήστε το για να ανοίξετε το Lightning Launcher όταν πατάτε το κουμπί <b>Meta / Navigator</b>.</string>
 </resources>

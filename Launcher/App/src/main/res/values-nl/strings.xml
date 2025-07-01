@@ -250,6 +250,7 @@
     <string name="addons_store_desc">Installeer en activeer vervolgens om Lightning Launcher te openen wanneer je met de muis over de Store-knop op het dock gaat.</string>
     <string name="addons_people">Mensen omleiden</string>
     <string name="addons_people_desc">Installeer en activeer vervolgens om Lightning Launcher te openen wanneer je met de muis over de knop Mensen op het dock gaat.</string>
+    <string name="addons_navigator_postamble">Je kunt de Navigator nog steeds openen door nogmaals op de knop te drukken - nadat Lightning Launcher is geopend.</string>
     <string name="addons_install">Installeer</string>
     <string name="addons_update">Update</string>
     <string name="addons_activate">Activeer</string>
@@ -268,4 +269,17 @@
     <string name="advanced_alpha_preserve">Details behouden</string>
     <string name="force_untranslated">Brug engelsk sprog</string>
     <string name="advanced_alpha_clamp">Quest 3 passthrough transparantievervaging</string>
+    <string name="addons_dock_suggest_title">Snelkoppelingen voor de Dock-gebruikersinterface</string>
+    <string name="addons_dock_suggest_0">Het Dock is een balk met de tijd en een rij app-pictogrammen - <b>die altijd onder 2D-vensters staat</b>.</string>
+    <string name="addons_dock_suggest_1">Het Dock maakt al sinds het begin deel uit van de Quest-gebruikersinterface, maar wordt vervangen door de Navigator.</string>
+    <string name="addons_dock_goto_button">Ik heb de Dock</string>
+    <string name="addons_navigator_suggest_title">Snelkoppelingen voor de Navigator-gebruikersinterface</string>
+    <string name="addons_navigator_suggest_0">De Navigator is een speciale overlay die voor je 2D-vensters wordt geopend en waarmee je officiële apps kunt starten.</string>
+    <string name="addons_navigator_suggest_1">Meta rolt deze nieuwe gebruikersinterface uit naar sommige Quest-apparaten.</string>
+    <string name="addons_navigator_suggest_2">Als je de Navigator hebt, <b>heb je geen Dock.</b></string>
+    <string name="addons_navigator_goto_button">Ik heb de Navigator</string>
+    <string name="addons_navigator_title">Open Lightning Launcher met de Navigator-knop</string>
+    <string name="addons_navigator_preamble">Je moet de service-app installeren en <b>vervolgens activeren</b>.</string>
+    <string name="addons_navigator">Navigator-knop omleidingsservice</string>
+    <string name="addons_navigator_desc">Installeer en activeer vervolgens om Lightning Launcher te openen wanneer je op de <b>Meta / Navigator</b>-knop drukt.</string>
 </resources>

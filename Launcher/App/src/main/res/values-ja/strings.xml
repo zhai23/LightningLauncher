@@ -250,6 +250,7 @@
     <string name="addons_store_desc">インストール後、ドック上のStoreボタンにカーソルを合わせると、Lightning Launcherが起動します。</string>
     <string name="addons_people">ピープル・リダイレクト</string>
     <string name="addons_people_desc">インストール後、ドック上のPeopleボタンにカーソルを合わせるとLightning Launcherが起動します。</string>
+    <string name="addons_navigator_postamble">Lightning Launcher を開いた後でも、ボタンをもう一度押すとナビゲーターを開くことができます。</string>
     <string name="addons_install">インストール</string>
     <string name="addons_update">更新</string>
     <string name="addons_activate">アクティベート</string>
@@ -268,4 +269,17 @@
     <string name="advanced_alpha_preserve">詳細の保存</string>
     <string name="force_untranslated">英語を使用する</string>
     <string name="advanced_alpha_clamp">クエスト3のパススルー透明ぼかし</string>
+    <string name="addons_dock_suggest_title">Dock UI のショートカット</string>
+    <string name="addons_dock_suggest_0">Dock は、時刻とアプリアイコンが並んだバーで、<b>2D ウィンドウの下に常に表示されます</b>。</string>
+    <string name="addons_dock_suggest_1">Dock は当初から Quest UI の一部でしたが、ナビゲーターに置き換えられます。</string>
+    <string name="addons_dock_goto_button">Dock を使用しています</string>
+    <string name="addons_navigator_suggest_title">ナビゲーター UI のショートカット</string>
+    <string name="addons_navigator_suggest_0">ナビゲーターは、2D ウィンドウの前面に表示される特別なオーバーレイで、公式アプリを起動できます。</string>
+    <string name="addons_navigator_suggest_1">Meta はこの新しい UI を一部の Quest デバイスに展開しています。</string>
+    <string name="addons_navigator_suggest_2">Navigator をお持ちの場合は、<b>Dock はありません。</b></string>
+    <string name="addons_navigator_goto_button">ナビゲーターを使用しています</string>
+    <string name="addons_navigator_title">ナビゲーターボタンで Lightning Launcher を開く</string>
+    <string name="addons_navigator_preamble">サービスアプリケーションをインストールし、<b>有効化</b>する必要があります。</string>
+    <string name="addons_navigator">ナビゲーターボタンリダイレクトサービス</string>
+    <string name="addons_navigator_desc">インストールして有効化すると、<b>Meta / ナビゲーター</b> ボタンを押したときに Lightning Launcher が開きます。</string>
 </resources>

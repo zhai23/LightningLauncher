@@ -254,6 +254,7 @@
     <string name="addons_store_desc">Installieren und aktivieren Sie dann Lightning Launcher, wenn Sie die Store-Schaltfläche auf dem Dock bewegen.</string>
     <string name="addons_people">Menschen umleiten</string>
     <string name="addons_people_desc">Installieren und aktivieren Sie dann den Lightning Launcher, wenn Sie mit dem Mauszeiger über die Schaltfläche Personen im Dock fahren.</string>
+    <string name="addons_navigator_postamble">Sie können den Navigator auch dann noch öffnen, wenn Sie die Schaltfläche erneut drücken – nachdem der Lightning Launcher geöffnet wurde.</string>
     <string name="addons_install">Installieren Sie</string>
     <string name="addons_update">Update</string>
     <string name="addons_activate">Aktivieren Sie</string>
@@ -272,4 +273,17 @@
     <string name="advanced_alpha_preserve">Details bewahren</string>
     <string name="force_untranslated">Verwenden Sie die englische Sprache</string>
     <string name="advanced_alpha_clamp">Quest 3 Passthrough-Transparenzunschärfe</string>
+    <string name="addons_dock_suggest_title">Tastenkombinationen für die Dock-Benutzeroberfläche</string>
+    <string name="addons_dock_suggest_0">Das Dock ist eine Leiste mit der Uhrzeit und einer Reihe von App-Symbolen – <b>die immer unter 2D-Fenstern angezeigt wird</b>.</string>
+    <string name="addons_dock_suggest_1">Das Dock war von Anfang an Teil der Quest-Benutzeroberfläche, wird aber durch den Navigator ersetzt.</string>
+    <string name="addons_dock_goto_button">Ich habe das Dock.</string>
+    <string name="addons_navigator_suggest_title">Tastenkombinationen für die Navigator-Benutzeroberfläche</string>
+    <string name="addons_navigator_suggest_0">Der Navigator ist ein spezielles Overlay, das sich vor Ihren 2D-Fenstern öffnet und Ihnen den Start offizieller Apps ermöglicht.</string>
+    <string name="addons_navigator_suggest_1">Meta führt diese neue Benutzeroberfläche derzeit auf einigen Quest-Geräten ein.</string>
+    <string name="addons_navigator_suggest_2">Wenn Sie den Navigator haben, <b>haben Sie kein Dock.</b></string>
+    <string name="addons_navigator_goto_button">Ich habe den Navigator.</string>
+    <string name="addons_navigator_title">Lightning Launcher mit der Navigator-Schaltfläche öffnen</string>
+    <string name="addons_navigator_preamble">Sie müssen die Dienstanwendung installieren und <b>anschließend aktivieren</b>.</string>
+    <string name="addons_navigator">Navigator-Schaltflächen-Umleitungsdienst</string>
+    <string name="addons_navigator_desc">Installieren und aktivieren Sie die Anwendung, um den Lightning Launcher zu öffnen, wenn Sie die <b>Meta / Navigator</b>-Schaltfläche drücken.</string>
 </resources>

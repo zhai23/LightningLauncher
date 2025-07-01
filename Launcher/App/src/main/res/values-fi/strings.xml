@@ -254,6 +254,7 @@
     <string name="addons_store_desc">Asenna ja aktivoi sitten Lightning Launcher, kun viet Store-painikkeen telakalle.</string>
     <string name="addons_people">Ihmiset uudelleenohjaus</string>
     <string name="addons_people_desc">Asenna ja aktivoi sitten Lightning Launcher, kun viet Ihmiset-painiketta telakalle.</string>
+    <string name="addons_navigator_postamble">Voit edelleen avata Navigatorin painamalla painiketta uudelleen - sen jälkeen, kun Lightning Launcher on avattu.</string>
     <string name="addons_install">Asenna</string>
     <string name="addons_update">Päivitys</string>
     <string name="addons_activate">Aktivoi</string>
@@ -272,4 +273,17 @@
     <string name="advanced_alpha_preserve">Säilytä tiedot</string>
     <string name="force_untranslated">Käytä englannin kieltä</string>
     <string name="advanced_alpha_clamp">Quest 3:n läpinäkyvyyden hämärtyminen</string>
+    <string name="addons_dock_suggest_title">Dock-käyttöliittymän pikavalinnat</string>
+    <string name="addons_dock_suggest_0">Dock on palkki, jossa on aika ja rivi sovelluskuvakkeita - <b>joka on aina läsnä 2D-ikkunoiden alapuolella</b>.</string>
+    <string name="addons_dock_suggest_1">Dock on ollut osa Quest-käyttöliittymää alusta asti, mutta se korvataan Navigatorilla.</string>
+    <string name="addons_dock_goto_button">Minulla on Dock</string>
+    <string name="addons_navigator_suggest_title">Navigator-käyttöliittymän pikavalinnat</string>
+    <string name="addons_navigator_suggest_0">Navigator on erityinen päällekkäiskuva, joka avautuu 2D-ikkunoiden eteen ja jonka avulla voit käynnistää virallisia sovelluksia.</string>
+    <string name="addons_navigator_suggest_1">Meta julkaisee tätä uutta käyttöliittymää joihinkin Quest-laitteisiin.</string>
+    <string name="addons_navigator_suggest_2">Jos sinulla on Navigator, <b>sinulla ei ole Dockia.</b></string>
+    <string name="addons_navigator_goto_button">Minulla on Navigator</string>
+    <string name="addons_navigator_title">Avaa Lightning Launcher Navigator-painikkeella</string>
+    <string name="addons_navigator_preamble">Sinun on asennettava palvelusovellus ja <b>aktivoitava se.</b></string>
+    <string name="addons_navigator">Navigator-painikkeen uudelleenohjauspalvelu</string>
+    <string name="addons_navigator_desc">Asenna ja aktivoi, jotta Lightning Launcher avautuu, kun painat <b>Meta / Navigator</b>-painiketta.</string>
 </resources>
