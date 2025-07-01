@@ -322,7 +322,16 @@ public class LauncherAppsAdapter extends AppsAdapter<LauncherAppsAdapter.AppView
             if (banner && !LauncherActivity.namesBanner || !banner && !LauncherActivity.namesSquare)
                 holder.textView.setVisibility(focused ? View.VISIBLE : View.INVISIBLE);
 
-            holder.view.setActivated(true);
+//            View pv = holder.view;
+//            while (pv.getParent() instanceof View pv1) {
+//                pv1.bringToFront();
+//                pv1.setZ(10f);
+//                pv1.setTranslationZ(10f);
+//                pv = pv1;
+//            }
+//            holder.view.bringToFront();
+//            holder.view.setTranslationZ(10f);
+//            holder.view.setActivated(true);
             // Force correct state, even if interrupted
             holder.view.postDelayed(() -> {
                 if (Objects.equals(focusedHolderBySource.get(source), holder)) {
@@ -335,7 +344,10 @@ public class LauncherAppsAdapter extends AppsAdapter<LauncherAppsAdapter.AppView
                 }
             }, tv ? 200 : 300);
 
-            holder.view.setZ(focused ? 2 : 1);
+            View pv = holder.view.getParent() instanceof View
+                    ? (View) holder.view.getParent() : holder.view;
+            pv.bringToFront();
+            pv.setZ(focused ? 2 : 1);
             holder.hovered = focused;
         } catch (Exception ignored) {}
     }
