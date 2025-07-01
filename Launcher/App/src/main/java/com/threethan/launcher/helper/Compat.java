@@ -229,9 +229,8 @@ public abstract class Compat {
             Set<String> appGroupsSet = launcherActivity.dataStoreEditor.getStringSet(Settings.KEY_GROUPS, new HashSet<>());
             for (String groupName : appGroupsSet)
                 launcherActivity.dataStoreEditor.removeStringSet(Settings.KEY_GROUP_APP_LIST + groupName);
-            SettingsManager.getGroupAppsMap().clear();
+            SettingsManager.clearDefaultGroupsCache();
             launcherActivity.settingsManager.resetGroupsAndSort();
-
             storeAndReload(launcherActivity);
         }).start();
     }
@@ -240,7 +239,7 @@ public abstract class Compat {
         new Thread(() -> {
             for (App.Type type : PlatformExt.getSupportedAppTypes())
                 launcherActivity.dataStoreEditor.removeString(Settings.KEY_DEFAULT_GROUP + type);
-
+            SettingsManager.clearDefaultGroupsCache();
             clearSort(launcherActivity);
         }).start();
     }

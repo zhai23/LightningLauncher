@@ -2,6 +2,7 @@ package com.threethan.launcher.activity.dialog;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -44,6 +45,8 @@ public class GroupDetailsDialog extends BasicDialog<LauncherActivity> {
         SettingsManager settingsManager = a.settingsManager;
         final String groupName = settingsManager.getAppGroupsSorted(false).get(groupPosition);
         if (groupName == null) return null;
+        if (groupName.equals(Settings.UNSUPPORTED_GROUP)) return null;
+        if (groupName.equals(Settings.HIDDEN_GROUP)) return null;
 
         AlertDialog dialog = super.show();
         if (dialog == null) return null;
@@ -97,7 +100,9 @@ public class GroupDetailsDialog extends BasicDialog<LauncherActivity> {
             // Move the default group when we rename
             for (App.Type type : PlatformExt.getSupportedAppTypes())
                 if (SettingsManager.getDefaultGroupFor(type).equals(groupName))
-                    a.dataStoreEditor.putString(Settings.KEY_DEFAULT_GROUP + type, newGroupName);
+                    a.dataStoreEditor.putValue(Settings.KEY_DEFAULT_GROUP + type,
+                            newGroupName, true);
+            SettingsManager.clearDefaultGroupsCache();
 
             if (!newGroupName.isEmpty()) {
                 appGroupsSet.remove(groupName);
@@ -139,6 +144,7 @@ public class GroupDetailsDialog extends BasicDialog<LauncherActivity> {
             }
             dialog.dismiss();
 
+            SettingsManager.clearDefaultGroupsCache();
             a.launcherService.forEachActivity(LauncherActivity::refreshInterface);
         });
         return dialog;

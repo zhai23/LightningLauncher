@@ -234,6 +234,7 @@ public class SettingsManager extends Settings {
         if (groupAppsMap.isEmpty()) readGroupsAndSort();
         return groupAppsMap;
     }
+
     public void setAppGroup(String packageName, String group) {
         ConcurrentHashMap<String, Set<String>> gam = SettingsManager.getGroupAppsMap();
         // Remove from old group(s)
@@ -335,7 +336,7 @@ public class SettingsManager extends Settings {
     public static Set<String> getDefaultGroupsSet() {
         Set<String> defaultGroupsSet = new HashSet<>();
         for (App.Type type : PlatformExt.getSupportedAppTypes())
-            defaultGroupsSet.add(SettingsManager.getDefaultGroupFor(type));
+            defaultGroupsSet.add(SettingsManager.defaultFallbackGroupFor(type));
 
         return (defaultGroupsSet);
     }
@@ -430,8 +431,7 @@ public class SettingsManager extends Settings {
      * make sure not to call directly after writingGroupsAndSort or there will be issues
      * since writing is async
      */
-    private static synchronized void readGroupsAndSort
-    () {
+    private static synchronized void readGroupsAndSort() {
         try {
             appGroupsSet.clear();
             appGroupsSet.addAll(dataStoreEditorSort.getStringSet(KEY_GROUPS, getDefaultGroupsSet()));
@@ -446,7 +446,6 @@ public class SettingsManager extends Settings {
                 appListSet = dataStoreEditorSort.getStringSet(KEY_GROUP_APP_LIST + group, appListSet);
                 groupAppsMap.put(group, appListSet);
             }
-
 
         } catch (Exception e) {
             Log.e("Settings Manager", "Error while reading groups & sort", e);
@@ -506,6 +505,10 @@ public class SettingsManager extends Settings {
     }
 
     final private static Map<App.Type, String> defaultGroupCache = new ConcurrentHashMap<>();
+    /** Clear the cache of default groups by app type */
+    public static void clearDefaultGroupsCache() {
+        defaultGroupCache.clear();
+    }
 
     /**
      * Sets the default group for new apps of a given type
@@ -526,15 +529,27 @@ public class SettingsManager extends Settings {
     public static String getDefaultGroupFor(App.Type type) {
         if (defaultGroupCache.containsKey(type)) return defaultGroupCache.get(type);
         String def = checkDefaultGroupFor(type);
-        defaultGroupCache.put(type, def);
+        if (appGroupsSet.contains(def)) defaultGroupCache.put(type, def);
+
         return def;
     }
     private static String checkDefaultGroupFor(App.Type type) {
         String key = Settings.KEY_DEFAULT_GROUP + type;
-        if (!Settings.FALLBACK_GROUPS.containsKey(type)) type = App.Type.PHONE;
-        String def = Settings.FALLBACK_GROUPS.get(type);
+        String def = defaultFallbackGroupFor(type);
 
-        return SettingsManager.dataStoreEditor.getString(key, def);
+        String group = SettingsManager.dataStoreEditor.getString(key, def);
+        Set<String> normalGroupsSet = new HashSet(appGroupsSet);
+        normalGroupsSet.remove(Settings.HIDDEN_GROUP);
+        normalGroupsSet.remove(Settings.UNSUPPORTED_GROUP);
+        if (!normalGroupsSet.contains(group)) {
+            if (normalGroupsSet.isEmpty()) group = def;
+            else group = normalGroupsSet.iterator().next();
+        }
+        return group;
+    }
+    private static String defaultFallbackGroupFor(App.Type type) {
+        if (!Settings.FALLBACK_GROUPS.containsKey(type)) type = App.Type.PHONE;
+        return Settings.FALLBACK_GROUPS.get(type);
     }
 
     private static final Map<App.Type, Boolean> isBannerCache = new ConcurrentHashMap<>();
