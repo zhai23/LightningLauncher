@@ -6,9 +6,9 @@ android {
     defaultConfig {
         compileSdk 35
         minSdkVersion 24
-        targetSdkVersion 35
-        versionCode 903
-        versionName "9.0.3"
+        targetSdkVersion 36
+        versionCode 910
+        versionName "9.1.0"
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
@@ -35,9 +35,9 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
 
     implementation 'com.android.volley:volley:1.2.1'
-    implementation 'com.google.code.gson:gson:2.11.0'
+    implementation 'com.google.code.gson:gson:2.13.1'
 
-    implementation 'androidx.datastore:datastore-preferences-rxjava3:1.1.5'
+    implementation 'androidx.datastore:datastore-preferences-rxjava3:1.1.7'
     implementation 'androidx.recyclerview:recyclerview:1.4.0'
     implementation 'com.github.okcredit:OkLayoutInflater:1.0.2'
 
