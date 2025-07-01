@@ -286,4 +286,9 @@
     <string name="addons_navigator_preamble">Sie müssen die Dienstanwendung installieren und <b>anschließend aktivieren</b>.</string>
     <string name="addons_navigator">Navigator-Schaltflächen-Umleitungsdienst</string>
     <string name="addons_navigator_desc">Installieren und aktivieren Sie die Anwendung, um den Lightning Launcher zu öffnen, wenn Sie die <b>Meta / Navigator</b>-Schaltfläche drücken.</string>
+    <string name="browser_default_tip">Wählen Sie die App aus, die die Websites öffnet, die Sie zu Lightning Launcher hinzugefügt haben.</string>
+    <string name="new_label_duration_setting">►Apps anzeigen:</string>
+    <string name="new_label_duration_tip">Zeigt ► vor dem Namen kürzlich zu Lightning Launcher hinzugefügter Apps an und sortiert sie vor anderen Apps.</string>
+    <string name="new_label_duration_zero">Nicht anzeigen</string>
+    <string name="new_label_duration_template">Für %d Minuten</string>
 </resources>

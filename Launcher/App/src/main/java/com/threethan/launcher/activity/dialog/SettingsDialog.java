@@ -6,6 +6,8 @@ import android.app.AlertDialog;
 import android.os.Build;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
@@ -31,6 +33,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -363,6 +366,35 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
                 Settings.KEY_SHOW_TIMES_BANNER, Settings.DEFAULT_SHOW_TIMES_BANNER,
                 b -> a.launcherService.forEachActivity(LauncherActivity::refreshInterface), false);
         dialog.findViewById(R.id.openUsageSettings).setOnClickListener(v -> PlaytimeHelper.requestPermission());
+
+        // New label duration spinner
+        LauncherActivity ctx = LauncherActivity.getForegroundInstance();
+        if (ctx != null) {
+            final Spinner newLabelDurationSpinner = dialog.findViewById(R.id.newLabelDurationSpinner);
+            final int newLabelValue = a.dataStoreEditor.getInt(
+                    Settings.KEY_NEWLY_ADDED_DURATION,
+                    Settings.DEFAULT_NEWLY_ADDED_DURATION);
+            final int newLabelIndex = Settings.NEWLY_ADDED_DURATION_OPTIONS.indexOf(newLabelValue);
+
+            List<String> items = new ArrayList<>();
+            for (Integer n : Settings.NEWLY_ADDED_DURATION_OPTIONS)
+                items.add(n == 0 ? ctx.getString(R.string.new_label_duration_zero)
+                        : ctx.getString(R.string.new_label_duration_template, n));
+
+            ArrayAdapter<String> adapter
+                    = new ArrayAdapter<>(ctx, android.R.layout.simple_spinner_dropdown_item, items);
+            newLabelDurationSpinner.setAdapter(adapter);
+            if (newLabelIndex >= 0) newLabelDurationSpinner.setSelection(newLabelIndex);
+            newLabelDurationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    ctx.dataStoreEditor.putInt(Settings.KEY_NEWLY_ADDED_DURATION,
+                            Settings.NEWLY_ADDED_DURATION_OPTIONS.get(position));
+                }
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {}
+            });
+        }
 
         // Launch Section
         final Spinner defaultBrowserSpinner = dialog.findViewById(R.id.launchBrowserSpinner);

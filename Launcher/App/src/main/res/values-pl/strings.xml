@@ -286,4 +286,9 @@
     <string name="addons_navigator_preamble">Musisz zainstalować aplikację usługi, <b>a następnie ją aktywować.</b></string>
     <string name="addons_navigator">Usługa przekierowania przycisku Navigatora</string>
     <string name="addons_navigator_desc">Zainstaluj, a następnie aktywuj, aby otworzyć Lightning Launcher po naciśnięciu przycisku <b>Meta / Navigator</b>.</string>
+    <string name="browser_default_tip">Wybierz aplikację, która będzie otwierać strony internetowe dodane do Lightning Launcher.</string>
+    <string name="new_label_duration_setting">Wskaż ►Aplikacje:</string>
+    <string name="new_label_duration_tip">Pokazuje ►przed nazwą aplikacji ostatnio dodanych do Lightning Launcher i sortuje je przed innymi aplikacjami.</string>
+    <string name="new_label_duration_zero">Nie pokazuj</string>
+    <string name="new_label_duration_template">Przez %d minut</string>
 </resources>

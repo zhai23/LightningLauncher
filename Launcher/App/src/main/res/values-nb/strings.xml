@@ -286,4 +286,9 @@
     <string name="addons_navigator_preamble">Du må installere tjenesteapplikasjonen, <b>og deretter aktivere den.</b></string>
     <string name="addons_navigator">Omdirigeringstjeneste for navigatorknapp</string>
     <string name="addons_navigator_desc">Installer, og aktiver deretter, for å åpne Lightning Launcher når du trykker på <b>Meta / Navigator</b>-knappen.</string>
+    <string name="browser_default_tip">Velg appen som åpner nettsteder du har lagt til i Lightning Launcher.</string>
+    <string name="new_label_duration_setting">Angi ►Apper:</string>
+    <string name="new_label_duration_tip">Viser ►før navnet på apper som nylig er lagt til i Lightning Launcher, og sorterer dem før andre apper.</string>
+    <string name="new_label_duration_zero">Ikke vis</string>
+    <string name="new_label_duration_template">I %d minutter</string>
 </resources>

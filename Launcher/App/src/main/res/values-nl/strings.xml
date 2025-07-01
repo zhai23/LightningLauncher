@@ -282,4 +282,9 @@
     <string name="addons_navigator_preamble">Je moet de service-app installeren en <b>vervolgens activeren</b>.</string>
     <string name="addons_navigator">Navigator-knop omleidingsservice</string>
     <string name="addons_navigator_desc">Installeer en activeer vervolgens om Lightning Launcher te openen wanneer je op de <b>Meta / Navigator</b>-knop drukt.</string>
+    <string name="browser_default_tip">Selecteer de app waarmee u de websites opent die u aan Lightning Launcher hebt toegevoegd.</string>
+    <string name="new_label_duration_setting">►Apps aangeven:</string>
+    <string name="new_label_duration_tip">Toont ►vóór de naam van apps die recentelijk aan Lightning Launcher zijn toegevoegd en sorteert ze vóór andere apps.</string>
+    <string name="new_label_duration_zero">Niet weergeven</string>
+    <string name="new_label_duration_template">Gedurende %d minuten</string>
 </resources>

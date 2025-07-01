@@ -286,4 +286,9 @@
     <string name="addons_navigator_preamble">Trebuie să instalați aplicația de serviciu, <b>apoi să o activați.</b></string>
     <string name="addons_navigator">Serviciu de redirecționare a butonului Navigator</string>
     <string name="addons_navigator_desc">Instalați, apoi activați, pentru a deschide Lightning Launcher atunci când apăsați butonul <b>Meta / Navigator</b>.</string>
+    <string name="browser_default_tip">Selectați aplicația care va deschide site-urile web pe care le-ați adăugat la Lightning Launcher.</string>
+    <string name="new_label_duration_setting">Indicați ►Aplicații:</string>
+    <string name="new_label_duration_tip">Se afișează ►înaintea numelui aplicațiilor adăugate recent în Lightning Launcher și le sortează înaintea altor aplicații.</string>
+    <string name="new_label_duration_zero">Nu se afișează</string>
+    <string name="new_label_duration_template">Timp de %d minute</string>
 </resources>

@@ -110,10 +110,16 @@ public class SettingsManager extends Settings {
      * @param onLabel Called when the label is ready, may be called more than once!
      */
     public static void getAppLabel(ApplicationInfo app, Consumer<String> onLabel) {
-        if (appLabelCache.containsKey(app)) onLabel.accept(appLabelCache.get(app));
+        Consumer<String> mOnLabel = label -> {
+            label = StringLib.setNew(label,
+                    isNewlyAddedPackage(app.packageName) && !StringLib.hasStar(label));
+            onLabel.accept(label);
+        };
+
+        if (appLabelCache.containsKey(app)) mOnLabel.accept(appLabelCache.get(app));
         final String customLabel = dataStoreEditor.getString(app.packageName, "");
-        onLabel.accept(processAppLabel(app, customLabel));
-        if (customLabel.isEmpty()) fetchLabelAsync(app, onLabel);
+        mOnLabel.accept(processAppLabel(app, customLabel));
+        if (customLabel.isEmpty()) fetchLabelAsync(app, mOnLabel);
     }
 
     /**
@@ -146,13 +152,14 @@ public class SettingsManager extends Settings {
         if (app == null) return "";
 
         final String base = getAppLabel(app);
-        final boolean starred = StringLib.hasStar(base);
+        final boolean isStarred = StringLib.hasStar(base);
+        final boolean isNew = !isStarred && isNewlyAddedPackage(app.packageName);
         final boolean banner = SettingsManager.getAppIsBanner(app);
 
-        if (!starred && !banner) return base;
+        if (!isStarred && !banner && !isNew) return base;
 
         final char[] rv = new char[base.length() + 1];
-        rv[0] = banner ? (starred ? '\0' : '\1') : '\2';
+        rv[0] = banner ? (isStarred ? '\0' : (isNew ? '\1' : '\2')) : (isStarred ? '\3' : '\4');
         base.getChars(0, base.length(), rv, 1);
         return new String(rv);
     }
@@ -169,6 +176,7 @@ public class SettingsManager extends Settings {
 
         if (Platform.labelOverrides.containsKey(app.packageName))
             return Platform.labelOverrides.get(app.packageName);
+
         if (App.isWebsite(app.packageName) || StringLib.isSearchUrl(app.packageName)) {
             try {
                 name = app.packageName.split("//")[1];
@@ -269,7 +277,8 @@ public class SettingsManager extends Settings {
 
         ArrayList<ApplicationInfo> unsorted = new ArrayList<>(allApps);
         unsorted.removeIf(Objects::isNull);
-        gam.values().forEach(groupApps -> unsorted.removeIf(ai -> groupApps.contains(ai.packageName)));
+        gam.values().forEach(groupApps
+                -> unsorted.removeIf(ai -> groupApps.contains(ai.packageName)));
 
         // Sort unsorted apps if needed
         for (ApplicationInfo app : unsorted) {
@@ -277,6 +286,8 @@ public class SettingsManager extends Settings {
             String targetGroup = type == App.Type.UNSUPPORTED
                     ? Settings.UNSUPPORTED_GROUP
                     : SettingsManager.getDefaultGroupFor(AppExt.getType(app));
+
+            SettingsManager.registerNewApp(app);
 
             // Create group if needed
             if (!gam.containsKey(targetGroup))
@@ -308,6 +319,50 @@ public class SettingsManager extends Settings {
         currentApps.sort(Comparator.comparing(labels::get));
         // Sort Done!
         return currentApps;
+    }
+
+    private static @Nullable Set<String> newlyAddedAppsInternalCache = null;
+    /** Get apps which should show the "NEW" label */
+    private static Set<String> getNewlyAddedApps() {
+        // Don't flag everything right after install
+        long baseline = dataStoreEditor.getLong(Settings.KEY_NEWLY_ADDED_BASELINE, -1);
+        if (baseline == -1) {
+            baseline = System.currentTimeMillis() + 1000 * 60; // 1-minute exclusion period
+            dataStoreEditor.putLong(Settings.KEY_NEWLY_ADDED_BASELINE, baseline);
+        }
+        // Get newly added apps and remove them if not-so-new anymore
+        Set<String> newlyAddedApps = dataStoreEditor.getStringSet(Settings.KEY_NEWLY_ADDED, new HashSet<>());
+        long finalBaseline = baseline;
+        long newLabelDurationMs
+                = dataStoreEditor.getInt(Settings.KEY_NEWLY_ADDED_DURATION,
+                Settings.DEFAULT_NEWLY_ADDED_DURATION) * 60 * 1000L;
+        newlyAddedApps.removeIf(pkgName -> {
+            long t0 = dataStoreEditor.getLong(Settings.PREF_NEWLY_ADDED_TIME+pkgName, 0);
+            return t0 < System.currentTimeMillis() - newLabelDurationMs
+                    || t0 < finalBaseline;
+        });
+        newlyAddedAppsInternalCache = newlyAddedApps;
+        return newlyAddedApps;
+    }
+
+    /** Check if a package should display the "NEW" label */
+    private static boolean isNewlyAddedPackage(String packageName) {
+        if (newlyAddedAppsInternalCache == null
+                || newlyAddedAppsInternalCache.contains(packageName)) {
+            Log.v("SettingsManager", "packageName" + "new?: " + getNewlyAddedApps().contains(packageName));
+
+            return getNewlyAddedApps().contains(packageName);
+        }
+        else return false;
+    }
+
+    /** Register a newly added app */
+    private static void registerNewApp(ApplicationInfo app) {
+        Log.v("SettingsManager", "Register " + app.packageName + " as a new app");
+        if (newlyAddedAppsInternalCache == null) getNewlyAddedApps();
+        newlyAddedAppsInternalCache.add(app.packageName);
+        dataStoreEditor.putStringSet(Settings.KEY_NEWLY_ADDED, newlyAddedAppsInternalCache);
+        dataStoreEditor.putLong(Settings.PREF_NEWLY_ADDED_TIME+app.packageName, System.currentTimeMillis());
     }
 
     /**
@@ -538,7 +593,7 @@ public class SettingsManager extends Settings {
         String def = defaultFallbackGroupFor(type);
 
         String group = SettingsManager.dataStoreEditor.getString(key, def);
-        Set<String> normalGroupsSet = new HashSet(appGroupsSet);
+        Set<String> normalGroupsSet = new HashSet<>(appGroupsSet);
         normalGroupsSet.remove(Settings.HIDDEN_GROUP);
         normalGroupsSet.remove(Settings.UNSUPPORTED_GROUP);
         if (!normalGroupsSet.contains(group)) {

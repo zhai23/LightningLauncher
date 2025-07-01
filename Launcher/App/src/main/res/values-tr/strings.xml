@@ -140,8 +140,8 @@
     <string name="browser_quest">Görev Tarayıcı Sekmesinde Aç</string>
     <string name="browser_quest_shortcut">Quest Browser Web Uygulaması Olarak Aç</string>
     <string name="browser_system">Sistem Varsayılanında Açmayı Deneyin</string>
-    <string name="edit_move">Hareket</string>
-    <string name="edit_copy">Anlaşıldı</string>
+    <string name="edit_move">Anlaşıldı</string>
+    <string name="edit_copy">Kopyala</string>
     <string name="selection_hint_none">Seçmek için bir uygulamaya tıklayın veya tümünü seçmek için buraya tıklayın</string>
     <string name="selection_hint_single_move">1 uygulama seçili, taşımak için bir gruba tıklayın</string>
     <string name="selection_hint_single_copy">1 uygulama seçili, kopyalamak için bir gruba tıklayın</string>
@@ -286,4 +286,9 @@
     <string name="addons_navigator_preamble">Hizmet uygulamasını yüklemeli ve <b>sonra etkinleştirmelisiniz.</b></string>
     <string name="addons_navigator">Navigator Düğmesi Yönlendirme Hizmeti</string>
     <string name="addons_navigator_desc"><b>Meta / Navigator</b> düğmesine bastığınızda Lightning Launcher\'ı açmak için yükleyin ve ardından etkinleştirin.</string>
+    <string name="browser_default_tip">Lightning Launcher\'a eklediğiniz web sitelerini açacak uygulamayı seçin.</string>
+    <string name="new_label_duration_setting">►Uygulamalar\'ı göster:</string>
+    <string name="new_label_duration_tip">Lightning Launcher\'a son eklenen uygulamaların adından önce ►gösterir ve bunları diğer uygulamalardan önce sıralar.</string>
+    <string name="new_label_duration_template">%d dakika boyunca</string>
+    <string name="new_label_duration_zero">Gösterme</string>
 </resources>

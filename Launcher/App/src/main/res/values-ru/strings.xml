@@ -286,4 +286,9 @@
     <string name="addons_navigator_preamble">Необходимо установить приложение-службу, <b>а затем активировать его.</b></string>
     <string name="addons_navigator">Служба перенаправления кнопок Navigator</string>
     <string name="addons_navigator_desc">Установите, а затем активируйте, чтобы открыть Lightning Launcher при нажатии кнопки <b>Meta / Navigator</b>.</string>
+    <string name="browser_default_tip">Выберите приложение, которое будет открывать веб-сайты, добавленные вами в Lightning Launcher.</string>
+    <string name="new_label_duration_setting">Указать ►Приложения:</string>
+    <string name="new_label_duration_tip">Показывает ►перед названием приложений, недавно добавленных в Lightning Launcher, и сортирует их перед другими приложениями.</string>
+    <string name="new_label_duration_zero">Не показывать</string>
+    <string name="new_label_duration_template">В течение %d минут</string>
 </resources>

@@ -282,4 +282,9 @@
     <string name="addons_navigator_preamble">Vous devez installer l\'application de service, puis l\'activer.</string>
     <string name="addons_navigator">Service de redirection du bouton Navigateur</string>
     <string name="addons_navigator_desc">Installez-la, puis activez-la pour ouvrir Lightning Launcher en appuyant sur le bouton <b>Meta / Navigateur</b>.</string>
+    <string name="browser_default_tip">Sélectionnez l\'application qui ouvrira les sites Web que vous avez ajoutés à Lightning Launcher.</string>
+    <string name="new_label_duration_setting">Indiquer ►Applications :</string>
+    <string name="new_label_duration_tip">Affiche ► avant le nom des applications récemment ajoutées à Lightning Launcher et les classe avant les autres applications.</string>
+    <string name="new_label_duration_zero">Ne pas afficher</string>
+    <string name="new_label_duration_template">Pendant %d minutes</string>
 </resources>

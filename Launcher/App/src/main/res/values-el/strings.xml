@@ -286,4 +286,9 @@
     <string name="addons_navigator_preamble">Πρέπει να εγκαταστήσετε την εφαρμογή υπηρεσίας και, στη συνέχεια, να την ενεργοποιήσετε.</string>
     <string name="addons_navigator">Υπηρεσία ανακατεύθυνσης κουμπιού Navigator</string>
     <string name="addons_navigator_desc">Εγκαταστήστε και, στη συνέχεια, ενεργοποιήστε το για να ανοίξετε το Lightning Launcher όταν πατάτε το κουμπί <b>Meta / Navigator</b>.</string>
+    <string name="browser_default_tip">Επιλέξτε την εφαρμογή που θα ανοίξει ιστότοπους που έχετε προσθέσει στο Lightning Launcher.</string>
+    <string name="new_label_duration_setting">Υποδείξτε ►Εφαρμογές:</string>
+    <string name="new_label_duration_tip">Εμφανίζεται ►πριν από το όνομα των εφαρμογών που προστέθηκαν πρόσφατα στο Lightning Launcher και τις ταξινομεί πριν από άλλες εφαρμογές.</string>
+    <string name="new_label_duration_zero">Μην εμφανίζεται</string>
+    <string name="new_label_duration_template">Για %d λεπτά</string>
 </resources>

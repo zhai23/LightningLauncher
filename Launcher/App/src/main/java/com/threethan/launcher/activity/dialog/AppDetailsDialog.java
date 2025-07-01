@@ -255,7 +255,7 @@ public class AppDetailsDialog extends BasicDialog<LauncherActivity> {
         final EditText appNameEditText = dialog.findViewById(R.id.appLabel);
         SettingsManager.getAppLabel(app, l -> {
             label[0] = l;
-            appNameEditText.setText(StringLib.withoutStar(label[0]));
+            appNameEditText.setText(StringLib.withoutNew(StringLib.withoutStar(label[0])));
         });
         // Star (actually changes label)
         final ImageView starButton = dialog.findViewById(R.id.star);

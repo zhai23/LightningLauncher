@@ -15,9 +15,26 @@ public class StringLib {
         if (hasStar(in)) return in.substring(1);
         else return in;
     }
-    public static String setStarred(String in, boolean starred) {
+    public static String setStarred(String in, boolean isStarred) {
         in = in.trim();
-        if (hasStar(in) != starred) return toggleStar(in);
+        if (hasStar(in) != isStarred) return toggleStar(in);
+        else return in;
+    }
+
+    private static final char NEW = '►';
+    public static String toggleNew(String in) {
+        if (hasNew(in)) return in.substring(1);
+        else return NEW + in;
+    }
+    public static String withoutNew(String in) {
+        if (hasNew(in)) return in.substring(1);
+        else return in;
+    }
+    public static boolean hasNew(String in) {
+        return in.charAt(0) == NEW;
+    }
+    public static String setNew(String in, boolean isNew) {
+        if (hasNew(in) != isNew) return toggleNew(in);
         else return in;
     }
 

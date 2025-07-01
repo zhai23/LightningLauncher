@@ -286,4 +286,9 @@
     <string name="addons_navigator_preamble">Sinun on asennettava palvelusovellus ja <b>aktivoitava se.</b></string>
     <string name="addons_navigator">Navigator-painikkeen uudelleenohjauspalvelu</string>
     <string name="addons_navigator_desc">Asenna ja aktivoi, jotta Lightning Launcher avautuu, kun painat <b>Meta / Navigator</b>-painiketta.</string>
+    <string name="browser_default_tip">Valitse sovellus, joka avaa Lightning Launcheriin lisäämäsi verkkosivustot.</string>
+    <string name="new_label_duration_setting">Osoita ►Sovellukset:</string>
+    <string name="new_label_duration_tip">Näyttää ►Lightning Launcheriin äskettäin lisättyjen sovellusten nimen edessä ja lajittelee ne muiden sovellusten edelle.</string>
+    <string name="new_label_duration_zero">Älä näytä</string>
+    <string name="new_label_duration_template">%d minuuttia</string>
 </resources>

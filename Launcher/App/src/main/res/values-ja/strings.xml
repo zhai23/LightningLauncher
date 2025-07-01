@@ -282,4 +282,9 @@
     <string name="addons_navigator_preamble">サービスアプリケーションをインストールし、<b>有効化</b>する必要があります。</string>
     <string name="addons_navigator">ナビゲーターボタンリダイレクトサービス</string>
     <string name="addons_navigator_desc">インストールして有効化すると、<b>Meta / ナビゲーター</b> ボタンを押したときに Lightning Launcher が開きます。</string>
+    <string name="browser_default_tip">Lightning Launcher に追加した Web サイトを開くアプリを選択します。</string>
+    <string name="new_label_duration_setting">►アプリを表示:</string>
+    <string name="new_label_duration_tip">Lightning Launcher に最近追加されたアプリの名前の前に ► を表示し、他のアプリよりも前に表示します。</string>
+    <string name="new_label_duration_zero">表示しない</string>
+    <string name="new_label_duration_template">%d 分間</string>
 </resources>

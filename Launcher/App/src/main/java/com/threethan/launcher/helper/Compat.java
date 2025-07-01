@@ -42,7 +42,7 @@ import java.util.function.Consumer;
  */
 public abstract class Compat {
     public static final String KEY_COMPATIBILITY_VERSION = "KEY_COMPATIBILITY_VERSION";
-    public static final int CURRENT_COMPATIBILITY_VERSION = 10;
+    public static final int CURRENT_COMPATIBILITY_VERSION = 11;
     public static final boolean DEBUG_COMPATIBILITY = false;
     private static final String TAG = "Compatibility";
 
@@ -180,6 +180,7 @@ public abstract class Compat {
             Log.e(TAG, "An exception occurred when attempting to perform the compatibility update", e);
         }
 
+        launcherActivity.dataStoreEditor.removeStringSet(Settings.KEY_GROUP_APP_LIST + Settings.UNSUPPORTED_GROUP);
         launcherActivity.needsUpdateCleanup = true;
 
         // Store the updated version

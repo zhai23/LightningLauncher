@@ -15,6 +15,7 @@ import com.threethan.launchercore.util.App;
 import com.threethan.launchercore.util.Platform;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -166,4 +167,10 @@ public abstract class Settings {
     public static final String HIDDEN_GROUP = "HIDDEN!";
     public static final String UNSUPPORTED_GROUP = "UNSUPPORTED!";
 
+    public static final String KEY_NEWLY_ADDED_BASELINE = "KEY_NEWLY_ADDED_BASELINE";
+    public static final String KEY_NEWLY_ADDED = "KEY_NEWLY_ADDED";
+    public static final String PREF_NEWLY_ADDED_TIME = "prefNewlyAddedTime";
+    public static final String KEY_NEWLY_ADDED_DURATION = "KEY_NEWLY_ADDED_DURATION";
+    public static final int DEFAULT_NEWLY_ADDED_DURATION = 15; // 15 minutes
+    public static final List<Integer> NEWLY_ADDED_DURATION_OPTIONS = List.of(0, 5, 15, 30, 90);
 }
