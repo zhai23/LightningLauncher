@@ -391,13 +391,22 @@ public class LauncherActivity extends Launch.LaunchingActivity {
             }
         });
     }
+
+    private static int forceRefreshCounter = 0;
     public void forceRefreshPackages() {
         Log.v(TAG, "Package Refresh - Forced");
 
         needsForceRefresh = false;
-        PackageManager packageManager = getPackageManager();
-        refreshPackagesInternal(Collections.synchronizedList(
-                packageManager.getInstalledApplications(PackageManager.GET_META_DATA)));
+
+        forceRefreshCounter ++;
+        final int finalForceRefreshCounter = forceRefreshCounter;
+        postDelayed(() -> {
+            if (forceRefreshCounter == finalForceRefreshCounter) {
+                PackageManager packageManager = getPackageManager();
+                refreshPackagesInternal(Collections.synchronizedList(
+                        packageManager.getInstalledApplications(PackageManager.GET_META_DATA)));
+            }
+        }, PlatformExt.installedApps == null || PlatformExt.installedApps.isEmpty() ? 0 : 1000);
     }
     private void refreshPackagesInternal(List<ApplicationInfo> newApps) {
         PlatformExt.installedApps = newApps;
