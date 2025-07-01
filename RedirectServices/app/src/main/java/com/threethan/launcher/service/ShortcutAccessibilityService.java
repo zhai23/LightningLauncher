@@ -99,10 +99,18 @@ public class ShortcutAccessibilityService extends AccessibilityService {
     private void trigger() {
         Log.i("LightningLauncherService", "Triggered from accessibility event");
         Uri uri = Uri.parse("content://com.threethan.launcher.shortcutStateProvider");
+        try {
+            // Attempt to gain permission to use the provider when the launcher is closed
+            getContentResolver().takePersistableUriPermission(
+                    uri,
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+            );
+        } catch (Exception ignored) {}
         try (
                 Cursor cursor = getContentResolver()
                 .query(uri, null, null, null, null)
         ){
+
             assert cursor != null;
             cursor.moveToFirst();
 
@@ -115,7 +123,8 @@ public class ShortcutAccessibilityService extends AccessibilityService {
 
             launch(shouldBlur);
         } catch (Throwable e) {
-            Log.e("LightningLauncherService", "Error reading state", e);
+            Log.w("LightningLauncherService", "Error reading state", e);
+            launch(false); // Fallback to non-blurred launch
         }
     }
 
