@@ -203,17 +203,21 @@ public abstract class Compat {
     }
     // Clears all icons, except for custom icons, and sets them to be re-downloaded
     public static void clearIconCache(LauncherActivity launcherActivity) {
-        Log.i(TAG, "Icon cache is being cleared");
-        FileLib.delete(launcherActivity.getApplicationInfo().dataDir + IconLoader.ICON_CACHE_FOLDER);
-
-        IconLoader.cachedIcons.clear();
-        IconUpdater.nextCheckByPackageMs.clear();
+        clearIconCacheNoRefresh(launcherActivity);
 
         launcherActivity.launcherService.forEachActivity(a -> {
             if (a.getAppAdapter() != null) a.getAppAdapter().notifyAllChanged();
         });
     }
-    // Clears any custom labels assigned to apps, including whether they've been starred
+    public static void clearIconCacheNoRefresh(LauncherActivity launcherActivity) {
+        Log.i(TAG, "Icon cache is being cleared");
+        FileLib.delete(launcherActivity.getApplicationInfo().dataDir + IconLoader.ICON_CACHE_FOLDER);
+
+        IconLoader.cachedIcons.clear();
+        IconUpdater.nextCheckByPackageMs.clear();
+    }
+
+        // Clears any custom labels assigned to apps, including whether they've been starred
     public static void clearLabels(LauncherActivity launcherActivity) {
         Log.i(TAG, "Labels are being cleared");
         SettingsManager.appLabelCache.clear();

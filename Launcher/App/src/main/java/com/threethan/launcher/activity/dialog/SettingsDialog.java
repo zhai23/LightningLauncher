@@ -295,8 +295,7 @@ public class SettingsDialog extends BasicDialog<LauncherActivity> {
         dialog.findViewById(R.id.refreshButton).setOnClickListener(view -> {
             view.setEnabled(false);
             LauncherActivity fi = LauncherActivity.getForegroundInstance();
-            if (fi != null) Compat.clearIconCache(fi);
-            a.launcherService.forEachActivity(LauncherActivity::refreshInterface);
+            if (fi != null) Compat.clearIconCacheNoRefresh(fi);
             a.launcherService.forEachActivity(LauncherActivity::forceRefreshPackages);
         });
         return dialog;
