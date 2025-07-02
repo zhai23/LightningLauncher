@@ -195,7 +195,7 @@
     <string name="new_label_duration_setting">Indicate\ \ ►Apps:</string>
     <string name="new_label_duration_tip">Shows \ \ ►before the name of apps recently added to Lightning Launcher, and sorts them before other apps.</string>
     <string name="new_label_duration_zero">Never</string>
-    <string name="new_label_duration_template">For %s minutes</string>
+    <string name="new_label_duration_template">For %d minutes</string>
 
 
     <string name="edit_move">Move</string>

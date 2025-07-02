@@ -237,7 +237,7 @@ public abstract class Compat {
             for (String groupName : appGroupsSet)
                 launcherActivity.dataStoreEditor.removeStringSet(Settings.KEY_GROUP_APP_LIST + groupName);
             SettingsManager.clearDefaultGroupsCache();
-            launcherActivity.settingsManager.resetGroupsAndSort();
+            dataStoreEditor.removeLong(Settings.KEY_NEWLY_ADDED_BASELINE); // Reset newly added baseline
             storeAndReload(launcherActivity);
         }).start();
     }
@@ -247,6 +247,7 @@ public abstract class Compat {
             for (App.Type type : PlatformExt.getSupportedAppTypes())
                 launcherActivity.dataStoreEditor.removeString(Settings.KEY_DEFAULT_GROUP + type);
             SettingsManager.clearDefaultGroupsCache();
+            launcherActivity.settingsManager.resetGroupsAndSort();
             clearSort(launcherActivity);
         }).start();
     }

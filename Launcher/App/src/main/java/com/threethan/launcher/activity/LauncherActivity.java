@@ -393,6 +393,7 @@ public class LauncherActivity extends Launch.LaunchingActivity {
     }
 
     private static int forceRefreshCounter = 0;
+    private static boolean forceRefreshOnCooldown = false;
     public void forceRefreshPackages() {
         Log.v(TAG, "Package Refresh - Forced");
 
@@ -403,7 +404,7 @@ public class LauncherActivity extends Launch.LaunchingActivity {
             PackageManager packageManager = getPackageManager();
             refreshPackagesInternal(Collections.synchronizedList(
                     packageManager.getInstalledApplications(PackageManager.GET_META_DATA)));
-        } else {
+        } else if (!forceRefreshOnCooldown) {
             forceRefreshCounter++;
             final int finalForceRefreshCounter = forceRefreshCounter;
             postDelayed(() -> {
@@ -411,6 +412,8 @@ public class LauncherActivity extends Launch.LaunchingActivity {
                     PackageManager packageManager = getPackageManager();
                     refreshPackagesInternal(Collections.synchronizedList(
                             packageManager.getInstalledApplications(PackageManager.GET_META_DATA)));
+                    forceRefreshOnCooldown = true;
+                    postDelayed(() -> forceRefreshOnCooldown = false, 1000);
                 }
             }, 1000);
         }

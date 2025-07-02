@@ -287,7 +287,7 @@ public class SettingsManager extends Settings {
                     ? Settings.UNSUPPORTED_GROUP
                     : SettingsManager.getDefaultGroupFor(AppExt.getType(app));
 
-            SettingsManager.registerNewApp(app);
+            SettingsManager.registerNewlyAddedPackage(app);
 
             // Create group if needed
             if (!gam.containsKey(targetGroup))
@@ -349,15 +349,13 @@ public class SettingsManager extends Settings {
     private static boolean isNewlyAddedPackage(String packageName) {
         if (newlyAddedAppsInternalCache == null
                 || newlyAddedAppsInternalCache.contains(packageName)) {
-            Log.v("SettingsManager", "packageName" + "new?: " + getNewlyAddedApps().contains(packageName));
-
             return getNewlyAddedApps().contains(packageName);
         }
         else return false;
     }
 
     /** Register a newly added app */
-    private static void registerNewApp(ApplicationInfo app) {
+    private static void registerNewlyAddedPackage(ApplicationInfo app) {
         Log.v("SettingsManager", "Register " + app.packageName + " as a new app");
         if (newlyAddedAppsInternalCache == null) getNewlyAddedApps();
         newlyAddedAppsInternalCache.add(app.packageName);
@@ -563,6 +561,7 @@ public class SettingsManager extends Settings {
     /** Clear the cache of default groups by app type */
     public static void clearDefaultGroupsCache() {
         defaultGroupCache.clear();
+        readGroupsAndSort();
     }
 
     /**

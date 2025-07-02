@@ -36,9 +36,11 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
         super.onCreate(savedInstanceState);
     }
     private boolean searching = false;
+    private boolean isNewSearch = true;
 
     protected void searchFor(String text) {
-        Objects.requireNonNull(getAppAdapter()).filterBy(text);
+        Objects.requireNonNull(getAppAdapter()).filterBy(text, isNewSearch);
+        isNewSearch = false;
     }
     Timer searchTimer = new Timer();
     private boolean beenNonEmpty = false;
@@ -116,6 +118,8 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
     void hideSearchBar() {
         try {
             searching = false;
+            isNewSearch = true;
+
             Keyboard.hide(mainView);
 
             searchBar.setVisibility(View.GONE);
@@ -141,6 +145,7 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
     @Override
     public void refreshInterface() {
         searching = false;
+        isNewSearch = true;
 
         if (searchBar.getVisibility() == View.VISIBLE) {
             hideSearchBar();
@@ -205,6 +210,7 @@ public class LauncherActivitySearchable extends LauncherActivityEditable {
         findViewById(R.id.searchCancelIcon).setOnClickListener(v -> hideSearchBar());
 
         searching = false;
+        isNewSearch = true;
     }
 
     @Override

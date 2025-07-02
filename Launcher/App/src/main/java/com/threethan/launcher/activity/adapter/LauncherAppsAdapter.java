@@ -75,7 +75,7 @@ public class LauncherAppsAdapter extends AppsAdapter<LauncherAppsAdapter.AppView
     }
 
     private static String prevFilterText = "";
-    public synchronized void filterBy(String text) {
+    public synchronized void filterBy(String text, boolean newSearch) {
         if (text.isEmpty()) {
             prevFilterText = "";
             updateAppFocus(null, true, FocusSource.SEARCH);
@@ -88,7 +88,7 @@ public class LauncherAppsAdapter extends AppsAdapter<LauncherAppsAdapter.AppView
         boolean showHidden = !text.isEmpty() && launcherActivity.dataStoreEditor.getBoolean(
                 Settings.KEY_SEARCH_HIDDEN, Settings.DEFAULT_SEARCH_HIDDEN);
 
-        boolean reList = !text.startsWith(prevFilterText) || text.length() == 1;
+        boolean reList = !text.startsWith(prevFilterText) || newSearch;
         prevFilterText = text;
 
 
