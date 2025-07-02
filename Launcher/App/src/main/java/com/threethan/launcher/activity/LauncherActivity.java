@@ -398,15 +398,22 @@ public class LauncherActivity extends Launch.LaunchingActivity {
 
         needsForceRefresh = false;
 
-        forceRefreshCounter ++;
-        final int finalForceRefreshCounter = forceRefreshCounter;
-        postDelayed(() -> {
-            if (forceRefreshCounter == finalForceRefreshCounter) {
-                PackageManager packageManager = getPackageManager();
-                refreshPackagesInternal(Collections.synchronizedList(
-                        packageManager.getInstalledApplications(PackageManager.GET_META_DATA)));
-            }
-        }, PlatformExt.installedApps == null || PlatformExt.installedApps.isEmpty() ? 0 : 1000);
+        if (PlatformExt.installedApps == null || PlatformExt.installedApps.isEmpty()) {
+            // Synchronous initial load
+            PackageManager packageManager = getPackageManager();
+            refreshPackagesInternal(Collections.synchronizedList(
+                    packageManager.getInstalledApplications(PackageManager.GET_META_DATA)));
+        } else {
+            forceRefreshCounter++;
+            final int finalForceRefreshCounter = forceRefreshCounter;
+            postDelayed(() -> {
+                if (forceRefreshCounter == finalForceRefreshCounter) {
+                    PackageManager packageManager = getPackageManager();
+                    refreshPackagesInternal(Collections.synchronizedList(
+                            packageManager.getInstalledApplications(PackageManager.GET_META_DATA)));
+                }
+            }, 1000);
+        }
     }
     private void refreshPackagesInternal(List<ApplicationInfo> newApps) {
         PlatformExt.installedApps = newApps;

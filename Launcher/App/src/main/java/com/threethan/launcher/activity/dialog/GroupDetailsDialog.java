@@ -110,7 +110,7 @@ public class GroupDetailsDialog extends BasicDialog<LauncherActivity> {
 
                 // Move contents when we rename
                 Set<String> contents = gam.remove(groupName);
-                gam.put(newGroupName, contents);
+                if (contents != null) gam.put(newGroupName, contents);
 
                 HashSet<String> selectedGroup = new HashSet<>();
                 selectedGroup.add(newGroupName);
