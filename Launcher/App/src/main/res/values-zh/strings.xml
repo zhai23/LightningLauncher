@@ -14,7 +14,7 @@
     <string name="allow_chain_launch_tip">使用与 Quest 默认启动器类似的方法启动应用程序。
 \n关闭此功能将改变窗口的组织方式，并可能导致问题。</string>
 
-    <string name="icons_size">浆纱</string>
+    <string name="icons_size">图标大小</string>
     <string name="icons_size_tip"><i>如果所有三个桌面空间都在使用中，应用程序将无法正确打开。 </i></string>
     <string name="icons_margin">图标距离</string>
 
