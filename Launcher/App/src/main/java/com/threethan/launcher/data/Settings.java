@@ -79,7 +79,7 @@ public abstract class Settings {
     public static final String KEY_DETAILS_LONG_PRESS = "KEY_DETAILS_LONG_PRESS";
     public static final String KEY_SEARCH_WEB = "KEY_SEARCH_WEB";
     public static final String KEY_SEARCH_HIDDEN = "KEY_SEARCH_HIDDEN";
-    public static final int DEFAULT_BACKGROUND_VR = 0;
+    public static final int DEFAULT_BACKGROUND_VR = 7;
     public static final int DEFAULT_BACKGROUND_TV = 9;
     public static final int DEFAULT_ALPHA = Platform.isQuestGen3() ? 0 : (Platform.isQuest() ? 128 : 255);
     public static final boolean DEFAULT_BACKGROUND_ALPHA_PRESERVE
